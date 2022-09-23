@@ -161,9 +161,9 @@ public abstract class SimplePrepare implements RunPrepare{
 	 
 	/** 
 	 * 设置查询条件变量值(XML定义) 
-	 * @param	condition	 条件ID 
-	 * @param	variable 变量key 
-	 * @param	value  值 
+	 * @param condition	 条件ID 
+	 * @param variable 变量key 
+	 * @param value  值 
 	 * @return RunPrepare
 	 */ 
 	public RunPrepare setConditionValue(String condition, String variable, Object value) {
@@ -171,9 +171,9 @@ public abstract class SimplePrepare implements RunPrepare{
 	} 
 	/** 
 	 * 添加查询条件(自动生成) 
-	 * @param	column  列名
-	 * @param	value  值
-	 * @param	compare  比较方式
+	 * @param column  列名
+	 * @param value  值
+	 * @param compare  比较方式
 	 * @return RunPrepare
 	 */ 
 	public RunPrepare addCondition(String column, Object value, int compare) {

@@ -580,7 +580,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		} 
 		if(null != run){
 			run.setStrict(prepare.isStrict());
-			run.setCreater(this); 
+			run.setAdapter(this);
 			run.setPrepare(prepare);
 			run.setConfigStore(configs); 
 			run.addConditions(conditions);
@@ -598,7 +598,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 			run = new TextRunSQL();
 		}
 		if(null != run){
-			run.setCreater(this);
+			run.setAdapter(this);
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
 			run.addConditions(conditions);

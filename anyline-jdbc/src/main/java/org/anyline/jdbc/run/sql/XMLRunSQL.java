@@ -392,7 +392,7 @@ public class XMLRunSQL extends BasicRunSQL implements Run {
 		if(null == conditionChain || !conditionChain.isActive()){ 
 			return; 
 		} 
-		if(!endwithWhere(builder.toString())){
+		if(!endWithWhere(builder.toString())){
 			builder.append(" WHERE 1=1");
 		}
 		builder.append(conditionChain.getRunText(adapter));
@@ -404,7 +404,7 @@ public class XMLRunSQL extends BasicRunSQL implements Run {
 //		} 
 	} 
 	private void appendStaticCondition(){ 
-		if(!endwithWhere(builder.toString())){
+		if(!endWithWhere(builder.toString())){
 			builder.append(" WHERE 1=1");
 		} 
 		if(null != staticConditions){ 
@@ -454,9 +454,9 @@ public class XMLRunSQL extends BasicRunSQL implements Run {
 	 *
 	 * @param required 是否必须
 	 * @param strictRequired 是否严格验证必须
-	 * @param	prefix  查询条件ID
-	 * @param	variable  列名|变量key
-	 * @param	value  值
+	 * @param prefix  查询条件ID
+	 * @param variable  列名|变量key
+	 * @param value  值
 	 * @param compare 比较方式
 	 * @return Run
 	 */

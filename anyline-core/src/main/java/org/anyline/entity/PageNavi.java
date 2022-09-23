@@ -148,7 +148,7 @@ public interface PageNavi extends Serializable{
 	 * @return PageNavi
 	 */
 	public PageNavi setLazy(long ms);
-	public String html(String creater);
+	public String html(String adapter);
 	public PageNavi setFlag(String flag);
 	public String getFlag();
 	public PageNavi setType(int type);

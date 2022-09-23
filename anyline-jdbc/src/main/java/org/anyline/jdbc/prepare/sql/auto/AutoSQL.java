@@ -39,11 +39,11 @@ public interface AutoSQL extends RunPrepare {
 	 * *******************************************************************************************/ 
 	/** 
 	 * 添加查询条件 
-	 * @param	required  是否必须 
+	 * @param required  是否必须 
 	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
-	 * @param	column  列名 
-	 * @param	value  值 
-	 * @param	compare  比较方式 
+	 * @param column  列名 
+	 * @param value  值 
+	 * @param compare  比较方式 
 	 * @return RunPrepare
 	 */
 	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare);

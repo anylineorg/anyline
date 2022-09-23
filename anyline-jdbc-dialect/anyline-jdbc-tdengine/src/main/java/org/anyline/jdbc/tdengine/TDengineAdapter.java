@@ -52,7 +52,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override 
 	public String parseFinalQueryTxt(Run run){
 		String sql = run.getBaseQueryTxt(); 
-		String cols = run.getFetchColumns(); 
+		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){ 
 			String reg = "(?i)^select[\\s\\S]+from"; 
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 

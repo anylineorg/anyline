@@ -274,7 +274,7 @@ public class TextRunSQL extends BasicRunSQL implements Run {
 			return; 
 		} 
 		String txt = builder.toString();
-		boolean where = endwithWhere(txt); 
+		boolean where = endWithWhere(txt); 
 		if(!where){ 
 			builder.append(" WHERE 1=1"); 
 		}
@@ -415,12 +415,12 @@ public class TextRunSQL extends BasicRunSQL implements Run {
  
 	/** 
 	 * 添加查询条件 
-	 * @param	required  是否必须
-	 * @param	strictRequired  是否必须
-	 * @param	prefix 表名
-	 * @param	var  列名
-	 * @param	value  值
-	 * @param	compare  比较方式
+	 * @param required  是否必须
+	 * @param strictRequired  是否必须
+	 * @param prefix 表名
+	 * @param var  列名
+	 * @param value  值
+	 * @param compare  比较方式
 	 * @return Run
 	 */ 
 	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare){

@@ -56,9 +56,9 @@ public interface AnylineDao<E>{
 	public boolean exists(RunPrepare prepare, String ... conditions);
 	/** 
 	 * 更新 
-	 * @param	columns  需要更新的列 
-	 * @param	dst  表 
-	 * @param	data data
+	 * @param columns  需要更新的列 
+	 * @param dst  表 
+	 * @param data data
 	 * @return int
 	 */ 
 	public int update(String dst, Object data, String ... columns); 

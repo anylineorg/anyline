@@ -53,9 +53,9 @@ public interface XMLSQL extends RunPrepare{
 	 * ***********************************************************************************************************************************/ 
 	/** 
 	 * 添加查询条件 
-	 * @param	condition  列名|查询条件ID
-	 * @param	variable  变量key
-	 * @param	value  值
+	 * @param condition  列名|查询条件ID
+	 * @param variable  变量key
+	 * @param value  值
 	 * @return RunPrepare
 	 */ 
 	public RunPrepare setConditionValue(String condition, String variable, Object value);

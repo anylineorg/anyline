@@ -457,10 +457,10 @@ public class PageNaviImpl implements PageNavi{
 	}
  
 	/** 
-	 *  @param creater creater
+	 *  @param adapter adapter
 	 * @return String
 	 */ 
-	public String html(String creater){ 
+	public String html(String adapter){
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
 		if(null == config){
 			config = new PageNaviConfig();
@@ -476,17 +476,17 @@ public class PageNaviImpl implements PageNavi{
 		if(null == flag){ 
 			flag = ""; 
 		} 
-		if("ajax".equals(creater)){ 
+		if("ajax".equals(adapter)){
 			configVarKey = config.KEY_ID_FLAG + flag;	//_anyline_navi_conf_0 
 		} 
-		if("html".equals(creater)){ 
+		if("html".equals(adapter)){
 			navi.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n"); 
 			navi.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n"); 
 		} 
-		if("html".equals(creater)){ 
+		if("html".equals(adapter)){
 			navi.append("<form class=\"form\" action=\"" + baseLink + "\" method=\"post\">\n"); 
 		} 
-		if("ajax".equals(creater)){ 
+		if("ajax".equals(adapter)){
 			navi.append("<div class=\"form\">\n"); 
 		} 
 		//当前页 
@@ -500,7 +500,7 @@ public class PageNaviImpl implements PageNavi{
 			navi.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='_anyline_navi_page_rows_key' value='"+config.KEY_PAGE_ROWS+"'/>\n"); 
 			navi.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n"); 
 		} 
-		if("ajax".equals(creater)){ 
+		if("ajax".equals(adapter)){
 			navi.append("<input type='hidden' class='"+config.KEY_ID_FLAG+"' value='" + flag + "'/>"); 
 		} 
 		navi.append(createHidParams(config)); 
@@ -653,10 +653,10 @@ public class PageNaviImpl implements PageNavi{
 		navi.append(layout_html); 
 		navi.append("</div>"); 
  
-		if("html".equals(creater)){ 
+		if("html".equals(adapter)){
 			navi.append("</form>\n"); 
 		} 
-		if("ajax".equals(creater)){ 
+		if("ajax".equals(adapter)){
 			navi.append("</div>\n"); 
 		} 
 		return navi.toString(); 

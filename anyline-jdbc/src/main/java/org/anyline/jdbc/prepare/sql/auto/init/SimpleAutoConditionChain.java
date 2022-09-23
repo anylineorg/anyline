@@ -56,9 +56,9 @@ public class SimpleAutoConditionChain extends SimpleConditionChain implements Co
 		for(int i=0; i<size; i++){
 			Condition condition = conditions.get(i);
 //			if(condition.isContainer()){
-//				txt = ((ConditionChain) condition).getRunText(creater);
+//				txt = ((ConditionChain) condition).getRunText(adapter);
 //			}else{
-//				txt = condition.getRunText(creater);
+//				txt = condition.getRunText(adapter);
 //			}
 			if(null == condition){
 				continue;

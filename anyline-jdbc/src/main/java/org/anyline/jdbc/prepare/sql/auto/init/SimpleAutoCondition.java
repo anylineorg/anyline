@@ -62,12 +62,12 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 		} 
 	} 
 	/** 
-	 * @param	required  是否必须 
+	 * @param required  是否必须 
 	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
-	 * @param	prefix  表
-	 * @param	var  列
-	 * @param	values 值 
-	 * @param	compare  比较方式 
+	 * @param prefix  表
+	 * @param var  列
+	 * @param values 值 
+	 * @param compare  比较方式 
 	 */ 
 	public SimpleAutoCondition(boolean required, boolean strictRequired, String prefix, String var, Object values, COMPARE_TYPE compare){
 		setRequired(required);
@@ -88,7 +88,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	} 
 
 //	@SuppressWarnings("unchecked") 
-//	public String getRunText(SQLCreater creater){ 
+//	public String getRunText(SQLAdapter adapter){
 //		String delimiterFr = adapter.getDelimiterFr();
 //		String delimiterTo = adapter.getDelimiterTo();
 //		runValues = new ArrayList<Object>(); /////////////////////////////////////////////////////////////////////////////
@@ -145,11 +145,11 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 //					text += "= ?"; 
 //				} 
 //			}else if(compare == RunPrepare.COMPARE_TYPE.LIKE){
-//				text += " LIKE "+ creater.concat("'%'", "?" , "'%'"); 
+//				text += " LIKE "+ adapter.concat("'%'", "?" , "'%'");
 //			}else if(compare == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){ 
-//				text += " LIKE "+ creater.concat("?" , "'%'"); 
+//				text += " LIKE "+ adapter.concat("?" , "'%'");
 //			}else if(compare == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){ 
-//				text += " LIKE "+ creater.concat("'%'", "?"); 
+//				text += " LIKE "+ adapter.concat("'%'", "?");
 //			}  
 //			text += ""; 
 //			//runtime value

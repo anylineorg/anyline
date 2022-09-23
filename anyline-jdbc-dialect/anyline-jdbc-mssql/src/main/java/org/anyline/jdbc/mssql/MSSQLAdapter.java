@@ -83,7 +83,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override 
 	public String parseFinalQueryTxt(Run run){
 		StringBuilder builder = new StringBuilder(); 
-		String cols = run.getFetchColumns(); 
+		String cols = run.getQueryColumns(); 
 		PageNavi navi = run.getPageNavi(); 
 		String sql = run.getBaseQueryTxt(); 
 		OrderStore orders = run.getOrderStore(); 

@@ -43,7 +43,7 @@ public class Navi extends BodyTagSupport{
 	private String page				;	//返回内容显示容器class或id(如果body与page分开)
 	private String bodyContainer	;	//如果body与page分开(兼容上一版本)
 	private String naviContainer	;	//如果body与page分开(兼容上一版本)
-	private String creater = "ajax"	;	//分页方式 ajax | html
+	private String adapter = "ajax"	;	//分页方式 ajax | html
 	private String scroll			;   //自动翻页时 监听的滚动事件源 默认window
 	private String method = "post"	;
 	private String id				;	//一个页面内多个标签时需要id区分
@@ -173,7 +173,7 @@ public class Navi extends BodyTagSupport{
 
 			builder.append("jump:").append(jump).append(",");
 			builder.append("stat:").append(stat).append(",");
-			builder.append("creater:'").append(creater).append("'");
+			builder.append("adapter:'").append(adapter).append("'");
 			builder.append("};\n");
 			if(null == cur){
 				cur = pageContext.getRequest().getParameter(config.KEY_PAGE_NO);
@@ -253,7 +253,7 @@ public class Navi extends BodyTagSupport{
 		function		= null	;
 		refresh			= null	;
 		type			= 0		;
-		creater			= "ajax";
+		adapter = "ajax";
 		stat			= false	;
 		jump			= false	;
 		auto			= null	;
@@ -340,11 +340,11 @@ public class Navi extends BodyTagSupport{
 	public void setAfter(String after) {
 		this.after = after;
 	}
-	public String getCreater() {
-		return creater;
+	public String getAdapter() {
+		return adapter;
 	}
-	public void setCreater(String creater) {
-		this.creater = creater;
+	public void setAdapter(String adapter) {
+		this.adapter = adapter;
 	}
 	public int getType() {
 		return type;

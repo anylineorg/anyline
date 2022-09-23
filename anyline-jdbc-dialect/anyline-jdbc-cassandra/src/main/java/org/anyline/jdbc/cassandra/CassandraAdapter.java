@@ -37,7 +37,7 @@ public class CassandraAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	@Override 
 	public String parseFinalQueryTxt(Run run){
 		String sql = run.getBaseQueryTxt(); 
-		String cols = run.getFetchColumns(); 
+		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){ 
 			String reg = "(?i)^select[\\s\\S]+from"; 
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 

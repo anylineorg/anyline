@@ -177,11 +177,11 @@ public class SimpleXMLSQL extends SimplePrepare implements XMLSQL{
 	 * ***********************************************************************************************************************************/ 
 	/** 
 	 * 添加查询条件 
-	 * @param	condition 
+	 * @param condition 
 	 * 			列名|查询条件ID 
-	 * @param	variable 
+	 * @param variable 
 	 * 			变量key 
-	 * @param	value 
+	 * @param value 
 	 * 			值 
 	 */ 
 	public RunPrepare setConditionValue(String condition, String variable, Object value){
