@@ -32,7 +32,7 @@ import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
-public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.config.http.ConfigChain{ 
+public class WebConfigChain extends WebConfig implements org.anyline.web.config.http.ConfigChain{
 	private List<Config> configs = new ArrayList<Config>();
 
 	public Config getConfig(String prefix, String var){

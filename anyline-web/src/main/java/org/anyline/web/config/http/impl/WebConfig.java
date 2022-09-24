@@ -17,39 +17,23 @@
  */
 
 
-package org.anyline.web.config.http.impl;
-
-import java.util.List;
-
+package org.anyline.web.config.http.impl; 
+ 
 import javax.servlet.http.HttpServletRequest;
 
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.init.SimpleConfigStore;
-import org.anyline.web.config.http.ConfigStore;
+import org.anyline.jdbc.param.init.SimpleConfig;
+import org.anyline.web.config.http.Config;
+import org.anyline.web.util.WebUtil;
+ 
+public class WebConfig extends SimpleConfig implements Config{
 
-
-/**
- * 查询参数 
- * @author zh 
- * 
- */ 
-public class ConfigStoreImpl extends SimpleConfigStore implements ConfigStore{
-	@Override 
-	public ConfigStore setValue(HttpServletRequest request){
-		if(null == chain){ 
-			return this; 
-		} 
-		List<Config> configs = chain.getConfigs(); 
-		for(Config config:configs){
-			if(null == config){
-				continue;
-			} 
-			config.setValue(request); 
-		} 
-		setNaviParam();
-		return this; 
+	@Override
+	public void setValue(HttpServletRequest request) {
+		super.setValue(WebUtil.values(request));
 	}
-
-} 
- 
- 
+	public WebConfig(){
+	}
+	public WebConfig(String config){
+		super(config);
+	}
+}
