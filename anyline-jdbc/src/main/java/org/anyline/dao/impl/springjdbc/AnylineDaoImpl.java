@@ -2709,7 +2709,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	private static String random(){
 		StringBuilder builder = new StringBuilder();
-		builder.append("[RunPrepare:").append(System.currentTimeMillis()).append("-").append(LogUtil.format(BasicUtil.getRandomNumberString(8), 34))
+		builder.append("[RunPrepare:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
 				.append("][thread:")
 				.append(Thread.currentThread().getId()).append("][ds:").append(DataSourceHolder.getDataSource()).append("]");
 		return builder.toString();
