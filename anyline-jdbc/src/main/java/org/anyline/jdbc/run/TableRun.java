@@ -85,11 +85,8 @@ public class TableRun extends BasicRun implements Run {
 			} 
 		}
 	}
-	private void checkValid(){
-		if(null != conditionChain && !conditionChain.isValid()){
-			this.valid = false;
-		}
-	}
+	/*
+	// adapter中实现
 	@Override
 	public void createRunQueryTxt(){
 		TableSQL sql = (TableSQL)this.getPrepare();
@@ -156,14 +153,14 @@ public class TableRun extends BasicRun implements Run {
 		 
  
  
-		/*添加查询条件*/ 
+		*//*添加查询条件*//*
 		//appendConfigStore(); 
 		appendCondition();
 		appendGroup();
 		appendOrderStore();
 		checkValid();
-	}
-
+	}*//*
+	// adapter 中实现
 	public void createRunDeleteTxt(){
 		TableSQL sql = (TableSQL)this.getPrepare();
 		builder.append("DELETE FROM ");
@@ -193,29 +190,35 @@ public class TableRun extends BasicRun implements Run {
 
 
 
-		/*添加查询条件*/
+		*//*添加查询条件*//*
 		//appendConfigStore();
 		appendCondition();
 		appendGroup();
 		appendOrderStore();
 		checkValid();
-	}
+	}*/
 
-	private void appendOrderStore(){
+	public void appendOrderStore(){
 		 
-	} 
-	private void appendGroup(){
+	}
+	public void appendGroup(){
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		}
 		if(BasicUtil.isNotEmpty(having)){
 			builder.append(" HAVING ").append(having);
 		} 
-	} 
+	}
+
+	public void checkValid(){
+		if(null != conditionChain && !conditionChain.isValid()){
+			this.valid = false;
+		}
+	}
 	/** 
 	 * 拼接查询条件
 	 */ 
-	private void appendCondition(){
+	public void appendCondition(){
 		if(null == conditionChain){ 
 			return; 
 		}

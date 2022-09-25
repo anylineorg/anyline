@@ -25,6 +25,7 @@ import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
+import org.anyline.jdbc.run.TableRun;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.sql.ResultSet;
@@ -191,6 +192,13 @@ public interface JDBCAdapter {
 	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
+	 * 构造查询主体
+	 * @param run run
+	 * @return Run
+	 */
+	public Run buildQueryRunContent(Run run);
+
+	/**
 	 * 基础SQL 不含排序 分页等
 	 * @param run run
 	 * @return String
@@ -255,7 +263,6 @@ public interface JDBCAdapter {
 	 * @return Run
 	 */
 	public Run buildDeleteRunSQL(String dest, Object obj, String ... columns);
-
 	/**
 	 * 根据key values删除
 	 * @param table 表
@@ -264,6 +271,13 @@ public interface JDBCAdapter {
 	 * @return Run
 	 */
 	public Run buildDeleteRunSQL(String table, String key, Object values);
+
+	/**
+	 * 构造删除主体
+	 * @param run run
+	 * @return Run
+	 */
+	public Run buildDeleteRunContent(Run run);
 
 
 

@@ -27,6 +27,8 @@ import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.jdbc.prepare.Variable;
+import org.anyline.jdbc.prepare.sql.auto.AutoSQL;
 import org.anyline.jdbc.prepare.sql.auto.init.Join;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
@@ -616,6 +618,95 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run;
 	}
 	protected Run buildQueryRunContent(TextRun run){
+		StringBuilder builder = run.getBuilder();
+		RunPrepare prepare = run.getPrepare();
+		List<Variable> variables = run.getVariables();
+		String result = prepare.getText();
+		if(null != variables){
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				if(var.getType() == Variable.VAR_TYPE_REPLACE){
+					//CD = ::CD
+					Object varValue = var.getValues();
+					String value = null;
+					if(BasicUtil.isNotEmpty(varValue)){
+						value = varValue.toString();
+					}
+					if(null != value){
+						result = result.replace("::"+var.getKey(), value);
+					}else{
+						result = result.replace("::"+var.getKey(), "NULL");
+					}
+				}
+			}
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
+					//CD = ':CD'
+					List<Object> varValues = var.getValues();
+					String value = null;
+					if(BasicUtil.isNotEmpty(true,varValues)){
+						value = (String)varValues.get(0);
+					}
+					if(null != value){
+						result = result.replace(":"+var.getKey(), value);
+					}else{
+						result = result.replace(":"+var.getKey(), "");
+					}
+				}
+			}
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				if(var.getType() == Variable.VAR_TYPE_KEY){
+					// CD = :CD
+					List<Object> varValues = var.getValues();
+					if(BasicUtil.isNotEmpty(true, varValues)){
+						if(var.getCompare() == RunPrepare.COMPARE_TYPE.IN){
+							//多个值IN
+							String replaceSrc = ":"+var.getKey();
+							String replaceDst = "";
+							for(Object tmp:varValues){
+								run.addValues(var.getKey(),tmp);
+								replaceDst += " ?";
+							}
+							replaceDst = replaceDst.trim().replace(" ", ",");
+							result = result.replace(replaceSrc, replaceDst);
+						}else{
+							//单个值
+							result = result.replace(":"+var.getKey(), "?");
+							run.addValues(var.getKey(), varValues.get(0));
+						}
+					}
+				}
+			}
+			//添加其他变量值
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				//CD = ?
+				if(var.getType() == Variable.VAR_TYPE_INDEX){
+					List<Object> varValues = var.getValues();
+					String value = null;
+					if(BasicUtil.isNotEmpty(true, varValues)){
+						value = (String)varValues.get(0);
+					}
+					run.addValues(var.getKey(), value);
+				}
+			}
+		}
+
+		builder.append(result);
+		run.appendCondition();
+		run.appendGroup();
+		//appendOrderStore();
+		run.checkValid();
 		return run;
 	}
 	protected Run buildQueryRunContent(TableRun run){
@@ -736,12 +827,68 @@ public abstract class SQLAdapter implements JDBCAdapter {
 			run.setConfigStore((ConfigStore)obj);
 			run.addConditions(columns);
 			run.init();
-			run.createRunDeleteTxt();
+			buildDeleteRunContent(run);
 		}else{
 			run = createDeleteRunSQLFromEntity(dest, obj, columns);
 		}
 		return run; 
 	}
+
+	/**
+	 * 构造删除主体
+	 * @param run run
+	 * @return Run
+	 */
+	@Override
+	public Run buildDeleteRunContent(Run run){
+		if(null != run){
+			if(run instanceof TableRun){
+				TableRun r = (TableRun) run;
+				return buildDeleteRunContent(r);
+			}
+		}
+		return run;
+	}
+	public Run buildDeleteRunContent(TableRun run){
+		AutoSQL prepare =  (AutoSQL)run.getPrepare();
+		StringBuilder builder = run.getBuilder();
+		builder.append("DELETE FROM ");
+		if(null != run.getSchema()){
+			SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
+		}
+
+		SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
+		builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
+		if(BasicUtil.isNotEmpty(prepare.getAlias())){
+			//builder.append(" AS ").append(sql.getAlias());
+			builder.append("  ").append(prepare.getAlias());
+		}
+		List<Join> joins = prepare.getJoins();
+		if(null != joins) {
+			for (Join join:joins) {
+				builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+				SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
+				if(BasicUtil.isNotEmpty(join.getAlias())){
+					builder.append("  ").append(join.getAlias());
+				}
+				builder.append(" ON ").append(join.getCondition());
+			}
+		}
+
+		builder.append("\nWHERE 1=1\n\t");
+
+
+
+		/*添加查询条件*/
+		//appendConfigStore();
+		run.appendCondition();
+		run.appendGroup();
+		run.appendOrderStore();
+		run.checkValid();
+
+		return run;
+	}
+
 	@SuppressWarnings("rawtypes")
 	protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
 		if(null == table || null == key || null == values){

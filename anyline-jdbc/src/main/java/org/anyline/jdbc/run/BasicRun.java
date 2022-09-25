@@ -459,14 +459,6 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public void createRunDeleteTxt(){
-
-	}
-	@Override
-	public void createRunQueryTxt(){
-
-	}
-	@Override
 	public void setBuilder(StringBuilder builder){
 		this.builder = builder;
 	}
@@ -629,6 +621,14 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return result;
+	}
+
+	public List<Variable> getVariables() {
+		return variables;
+	}
+
+	public void setVariables(List<Variable> variables) {
+		this.variables = variables;
 	}
 }
  

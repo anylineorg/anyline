@@ -35,8 +35,6 @@ import java.util.List;
 public interface Run {
 	public void setAdapter(JDBCAdapter adapter);
 	public void init();
-	public void createRunDeleteTxt();
-	public void createRunQueryTxt();
 	 
 	/** 
 	 * 添加查询条件 

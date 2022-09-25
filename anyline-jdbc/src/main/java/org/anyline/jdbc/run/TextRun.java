@@ -162,108 +162,20 @@ public class TextRun extends BasicRun implements Run {
 			e.printStackTrace(); 
 		} 
 	}
-	private void checkValid(){
+	public void checkValid(){
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false;
 		}
 	}
-	public void createRunQueryTxt(){
-		String result = prepare.getText();
-		if(null != variables){ 
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				} 
-				if(var.getType() == Variable.VAR_TYPE_REPLACE){
-					//CD = ::CD 
-					Object varValue = var.getValues(); 
-					String value = null; 
-					if(BasicUtil.isNotEmpty(varValue)){ 
-						value = varValue.toString(); 
-					} 
-					if(null != value){ 
-						result = result.replace("::"+var.getKey(), value); 
-					}else{ 
-						result = result.replace("::"+var.getKey(), "NULL"); 
-					} 
-				} 
-			} 
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				} 
-				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-					//CD = ':CD' 
-					List<Object> varValues = var.getValues(); 
-					String value = null; 
-					if(BasicUtil.isNotEmpty(true,varValues)){ 
-						value = (String)varValues.get(0); 
-					} 
-					if(null != value){ 
-						result = result.replace(":"+var.getKey(), value); 
-					}else{ 
-						result = result.replace(":"+var.getKey(), ""); 
-					} 
-				} 
-			} 
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				} 
-				if(var.getType() == Variable.VAR_TYPE_KEY){
-					// CD = :CD 
-					List<Object> varValues = var.getValues(); 
-					if(BasicUtil.isNotEmpty(true, varValues)){ 
-						if(var.getCompare() == COMPARE_TYPE.IN){
-							//多个值IN 
-							String replaceSrc = ":"+var.getKey(); 
-							String replaceDst = "";  
-							for(Object tmp:varValues){ 
-								addValues(var.getKey(),tmp);
-								replaceDst += " ?"; 
-							} 
-							replaceDst = replaceDst.trim().replace(" ", ","); 
-							result = result.replace(replaceSrc, replaceDst); 
-						}else{ 
-							//单个值 
-							result = result.replace(":"+var.getKey(), "?"); 
-							addValues(var.getKey(), varValues.get(0));
-						} 
-					} 
-				} 
-			} 
-			//添加其他变量值 
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				} 
-				//CD = ? 
-				if(var.getType() == Variable.VAR_TYPE_INDEX){
-					List<Object> varValues = var.getValues(); 
-					String value = null; 
-					if(BasicUtil.isNotEmpty(true, varValues)){ 
-						value = (String)varValues.get(0); 
-					} 
-					addValues(var.getKey(), value);
-				} 
-			} 
-		} 
-		 
-		builder.append(result); 
-		appendCondition(); 
-		appendGroup(); 
-		//appendOrderStore();
-		checkValid();
-	} 
-	private void appendGroup(){ 
+	public void appendGroup(){
 		if(null != groupStore){ 
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		} 
 	}
 	/** 
 	 * 拼接查询条件
-	 */ 
-	private void appendCondition(){ 
+	 */
+	public void appendCondition(){
 		if(null == conditionChain){ 
 			return; 
 		} 
@@ -429,7 +341,7 @@ public class TextRun extends BasicRun implements Run {
 		conditionChain.addCondition(condition); 
 		return this; 
 	} 
-	private Variable getVariable(String key){
+	public Variable getVariable(String key){
 		if(null == key || null == variables){ 
 			return null; 
 		} 
@@ -442,5 +354,6 @@ public class TextRun extends BasicRun implements Run {
 			} 
 		} 
 		return null; 
-	} 
+	}
+
 }
