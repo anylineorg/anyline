@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.run.sql;
+package org.anyline.jdbc.run;
 
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
@@ -28,6 +28,7 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.jdbc.run.BasicRun;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.prepare.sql.auto.TableSQL;
@@ -38,9 +39,9 @@ import org.anyline.util.SQLUtil;
 
 import java.util.List;
 
-public class TableRunSQL extends BasicRunSQL implements Run {
+public class TableRun extends BasicRun implements Run {
 
-	public TableRunSQL(JDBCAdapter adapter, String table){
+	public TableRun(JDBCAdapter adapter, String table){
 		this.conditionChain = new SimpleAutoConditionChain();
 		this.orderStore = new OrderStoreImpl();
 		this.table = table;
@@ -89,6 +90,7 @@ public class TableRunSQL extends BasicRunSQL implements Run {
 			this.valid = false;
 		}
 	}
+	@Override
 	public void createRunQueryTxt(){
 		TableSQL sql = (TableSQL)this.getPrepare();
 		builder.append("SELECT ");

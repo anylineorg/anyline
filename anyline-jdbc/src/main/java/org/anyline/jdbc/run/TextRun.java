@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.run.sql;
+package org.anyline.jdbc.run;
 
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
@@ -30,8 +30,6 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import org.anyline.jdbc.prepare.init.SimpleVariable;
-import org.anyline.jdbc.run.RunValue;
-import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.prepare.sql.auto.AutoCondition;
 import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoConditionChain;
 import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoCondition;
@@ -43,8 +41,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class TextRunSQL extends BasicRunSQL implements Run {
-	public TextRunSQL(){
+public class TextRun extends BasicRun implements Run {
+	public TextRun(){
 		this.conditionChain = new SimpleAutoConditionChain();
 		this.orderStore = new OrderStoreImpl();
 		setStrict(false); 
@@ -330,10 +328,10 @@ public class TextRunSQL extends BasicRunSQL implements Run {
 	 * 添加参数值 
 	 * @param key  key
 	 * @param obj  obj
-	 * @return TextRunSQL
+	 * @return TextRun
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public TextRunSQL addValues(String key, Object obj){
+	public TextRun addValues(String key, Object obj){
 		if(null == obj){ 
 			return this; 
 		} 

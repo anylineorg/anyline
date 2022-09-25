@@ -17,7 +17,7 @@
  */ 
  
  
-package org.anyline.jdbc.run.sql;
+package org.anyline.jdbc.run;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -33,6 +33,7 @@ import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.param.ParseResult;
 import org.anyline.jdbc.prepare.init.SimpleGroupStore;
+import org.anyline.jdbc.run.BasicRun;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoCondition;
 import org.anyline.jdbc.prepare.sql.xml.init.SimpleXMLConditionChain;
@@ -42,10 +43,10 @@ import org.anyline.util.DefaultMemberAccess;
 
 import java.util.*;
 
-public class XMLRunSQL extends BasicRunSQL implements Run {
+public class XMLRun extends BasicRun implements Run {
 	private List<String> conditions; 
 	private List<String> staticConditions; 
-	public XMLRunSQL(){
+	public XMLRun(){
 		this.conditionChain = new SimpleXMLConditionChain();
 		this.orderStore = new OrderStoreImpl(); 
 		this.groupStore = new SimpleGroupStore();
