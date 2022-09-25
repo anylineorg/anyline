@@ -29,9 +29,9 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.run.sql.TableRunSQL;
-import org.anyline.jdbc.run.sql.TextRunSQL;
-import org.anyline.jdbc.run.sql.XMLRunSQL;
+import org.anyline.jdbc.run.TableRun;
+import org.anyline.jdbc.run.TextRun;
+import org.anyline.jdbc.run.XMLRun;
 import org.anyline.jdbc.prepare.sql.auto.TableSQL;
 import org.anyline.jdbc.prepare.sql.auto.TextSQL;
 import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
@@ -405,7 +405,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	protected Run createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQL(this,dest);
+		Run run = new TableRun(this,dest);
 		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
@@ -509,7 +509,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	protected Run createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQL(this,dest);
+		Run run = new TableRun(this,dest);
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
 			throw new SQLException("空数据");
@@ -572,11 +572,11 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof TableSQL){
-			run = new TableRunSQL(this,prepare.getTable());
+			run = new TableRun(this,prepare.getTable());
 		}else if(prepare instanceof XMLSQL){
-			run = new XMLRunSQL();
+			run = new XMLRun();
 		}else if(prepare instanceof TextSQL){
-			run = new TextRunSQL();
+			run = new TextRun();
 		} 
 		if(null != run){
 			run.setStrict(prepare.isStrict());
@@ -593,9 +593,9 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof XMLSQL){
-			run = new XMLRunSQL();
+			run = new XMLRun();
 		}else if(prepare instanceof TextSQL){
-			run = new TextRunSQL();
+			run = new TextRun();
 		}
 		if(null != run){
 			run.setAdapter(this);
@@ -629,7 +629,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 			}
 		}
 		if(obj instanceof ConfigStore){
-			run = new TableRunSQL(this,dest);
+			run = new TableRun(this,dest);
 			RunPrepare prepare = new SimpleTableSQL();
 			prepare.setDataSource(dest);
 			run.setPrepare(prepare);
@@ -648,7 +648,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		TableRunSQL run = new TableRunSQL(this,table);
+		TableRun run = new TableRun(this,table);
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
@@ -682,7 +682,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run;
 	}
 	protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-		TableRunSQL run = new TableRunSQL(this,dest);
+		TableRun run = new TableRun(this,dest);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<>();
@@ -842,7 +842,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	}
 
 	protected Run createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQL(this,dest);
+		Run run = new TableRun(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		List<String> keys = null;
@@ -919,7 +919,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run;
 	}
 	protected Run createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQL(this,dest);
+		Run run = new TableRun(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/ 
