@@ -6,6 +6,8 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
 import org.anyline.util.BasicUtil;
@@ -45,8 +47,44 @@ public class Neo4jAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 											DML
 	 *
 	 * ****************************************************************************************************/
-	@Override 
+
+	/* *****************************************************************************************************************
+	 * 													QUERY
+	 ******************************************************************************************************************/
+
+	/**
+	 * 创建查询SQL
+	 * @param prepare  prepare
+	 * @param configs 查询条件配置
+	 * @param conditions 查询条件
+	 * @return Run
+	 */
+	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
+		Run run = null;
+		return run;
+	}
+
+	/**
+	 * 基础SQL 不含排序 分页等
+	 * @param run run
+	 * @return String
+	 */
+	public String parseBaseQueryTxt(Run run){
+		StringBuilder builder = new StringBuilder();
+		return builder.toString();
+	}
+
+	/**
+	 * 创建最终执行查询SQL
+	 * @param run  run
+	 * @return String
+	 */
 	public String parseFinalQueryTxt(Run run){
+		StringBuilder builder = new StringBuilder();
+		return builder.toString();
+	}
+
+	public String parseFinalQueryTxt1(Run run){
 		String sql = run.getBaseQueryTxt(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){ 

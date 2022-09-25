@@ -446,7 +446,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     /**
      * 按条件查询
-     * @param sql           表｜视图｜函数｜自定义SQL |RunPrepare
+     * @param prepare       表｜视图｜函数｜自定义SQL |RunPrepare
      * @param configs		根据http等上下文构造查询条件
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions    固定查询条件

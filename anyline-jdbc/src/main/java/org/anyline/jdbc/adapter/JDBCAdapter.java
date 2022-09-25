@@ -183,7 +183,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 创建查询SQL
-	 * @param sql  sql
+	 * @param prepare  prepare
 	 * @param configs 查询条件配置
 	 * @param conditions 查询条件
 	 * @return Run
