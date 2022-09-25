@@ -64,48 +64,12 @@ public class Neo4jAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return run;
 	}
 
-	/**
-	 * 基础SQL 不含排序 分页等
-	 * @param run run
-	 * @return String
-	 */
-	public String parseBaseQueryTxt(Run run){
-		StringBuilder builder = new StringBuilder();
-		return builder.toString();
+
+	@Override
+	public String parseFinalQueryTxt(Run run) {
+		return null;
 	}
 
-	/**
-	 * 创建最终执行查询SQL
-	 * @param run  run
-	 * @return String
-	 */
-	public String parseFinalQueryTxt(Run run){
-		StringBuilder builder = new StringBuilder();
-		return builder.toString();
-	}
-
-	public String parseFinalQueryTxt1(Run run){
-		String sql = run.getBaseQueryTxt(); 
-		String cols = run.getQueryColumns(); 
-		if(!"*".equals(cols)){ 
-			String reg = "(?i)^select[\\s\\S]+from"; 
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
-		} 
-		OrderStore orders = run.getOrderStore(); 
-		if(null != orders){ 
-			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		} 
-		PageNavi navi = run.getPageNavi(); 
-		if(null != navi){ 
-			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
-			if(limit < 0){ 
-				limit = 0; 
-			} 
-			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
-		} 
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
-		return sql; 
-	}
 
 	public String concat(String ... args){
 		return concatFun(args);

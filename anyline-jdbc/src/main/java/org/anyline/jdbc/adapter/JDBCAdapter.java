@@ -198,12 +198,6 @@ public interface JDBCAdapter {
 	 */
 	public Run buildQueryRunContent(Run run);
 
-	/**
-	 * 基础SQL 不含排序 分页等
-	 * @param run run
-	 * @return String
-	 */
-	public String parseBaseQueryTxt(Run run);
 
 	/**
 	 * 创建最终执行查询SQL
