@@ -8,7 +8,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
 import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.run.sql.TableRunSQL;
+import org.anyline.jdbc.run.TableRun;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,7 +74,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
-			run = new TableRunSQL(this,dest);
+			run = new TableRun(this,dest);
 			if(obj instanceof DataRow){
 				DataRow row = (DataRow)obj;
 				List<String> cols = confirmInsertColumns(dest, obj, columns);
