@@ -499,12 +499,12 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String parseTotalQueryTxt(Run run){
+	public String parseTotalQuery(Run run){
 		return null;
 	}
 
 	@Override
-	public String parseExistsTxt(Run run){
+	public String parseExists(Run run){
 		return null;
 	}
 

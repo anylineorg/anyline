@@ -627,14 +627,14 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * @return String
      */
     @Override
-    public String parseTotalQueryTxt(Run run){
+    public String parseTotalQuery(Run run){
         String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
         sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
     }
 
     @Override
-    public String parseExistsTxt(Run run){
+    public String parseExists(Run run){
         String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
         sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;

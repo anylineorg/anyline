@@ -308,7 +308,7 @@ public abstract class BasicRun implements Run {
 	} 
 	@Override 
 	public String getTotalQuery() {
-		String text = adapter.parseTotalQueryTxt(this);
+		String text = adapter.parseTotalQuery(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -316,7 +316,7 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public String getFinalExists(){
-		String text =  adapter.parseExistsTxt(this);
+		String text =  adapter.parseExists(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}

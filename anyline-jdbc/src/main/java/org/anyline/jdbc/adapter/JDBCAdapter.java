@@ -216,7 +216,7 @@ public interface JDBCAdapter {
 	 * @param run  Run
 	 * @return String
 	 */
-	public String parseTotalQueryTxt(Run run);
+	public String parseTotalQuery(Run run);
 
 
 	/* *****************************************************************************************************************
@@ -228,7 +228,7 @@ public interface JDBCAdapter {
 	 * @param run run
 	 * @return String
 	 */
-	public String parseExistsTxt(Run run);
+	public String parseExists(Run run);
 
 
 	/* *****************************************************************************************************************

@@ -145,7 +145,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		 
 	} 
 	@Override 
-	public String parseExistsTxt(Run run){
+	public String parseExists(Run run){
 		String sql = "IF EXISTS(\n" + run.getBuilder().toString() +"\n) SELECT 1 AS IS_EXISTS ELSE SELECT 0 AS IS_EXISTS"; 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
