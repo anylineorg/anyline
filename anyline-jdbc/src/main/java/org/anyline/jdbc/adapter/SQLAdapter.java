@@ -20,45 +20,23 @@
 package org.anyline.jdbc.adapter;
 
 
-import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.prepare.sql.auto.AutoSQL;
 import org.anyline.jdbc.prepare.sql.auto.init.Join;
-import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.run.TableRun;
 import org.anyline.jdbc.run.TextRun;
 import org.anyline.jdbc.run.XMLRun;
 import org.anyline.jdbc.prepare.sql.auto.TableSQL;
-import org.anyline.jdbc.prepare.sql.auto.TextSQL;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
-import org.anyline.jdbc.prepare.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
-import org.anyline.jdbc.entity.*;
-import org.anyline.service.AnylineService;
 import org.anyline.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 
@@ -66,7 +44,7 @@ import java.util.*;
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
 
-public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
+public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapter {
 
     /**
      * 创建INSERT RunPrepare
@@ -77,24 +55,8 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
      * @return Run
      */
     @Override
-    public Run buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
-        if(null == obj){
-            return null;
-        }
-        if(null == dest){
-            dest = DataSourceHolder.parseDataSource(dest,obj);
-        }
-
-        if(obj instanceof Collection){
-            Collection list = (Collection) obj;
-            if(list.size() >0){
-                return createInsertTxtFromCollection(dest, list, checkParimary, columns);
-            }
-            return null;
-        }else {
-            return createInsertTxtFromEntity(dest, obj, checkParimary, columns);
-        }
-
+    public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns){
+        return super.buildInsertRun(dest, obj, checkParimary, columns);
     }
 
     /**
@@ -105,7 +67,7 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
      * @param keys 需插入的列
      */
     @Override
-    public void createInsertsTxt(StringBuilder builder, String dest, DataSet set,  List<String> keys){
+    public void createInserts(StringBuilder builder, String dest, DataSet set,  List<String> keys){
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
@@ -146,10 +108,10 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
      * @param keys 需插入的列
      */
     @Override
-    public void createInsertsTxt(StringBuilder builder, String dest, Collection list,  List<String> keys){
+    public void createInserts(StringBuilder builder, String dest, Collection list,  List<String> keys){
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInsertsTxt(builder, dest, set, keys);
+            createInserts(builder, dest, set, keys);
             return;
         }
         builder.append("INSERT INTO ").append(parseTable(dest));
@@ -210,7 +172,7 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
      * @return Run
      */
     @Override
-    protected Run createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
+    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
         Run run = new TableRun(this,dest);
         //List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
@@ -315,7 +277,7 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
      * @return Run
      */
     @Override
-    protected Run createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
+    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         if(null == list || list.size() ==0){
@@ -347,7 +309,7 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
         if(null == keys || keys.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        createInsertsTxt(builder, dest, list, keys);
+        createInserts(builder, dest, list, keys);
         run.setBuilder(builder);
 
         return run;
@@ -370,10 +332,9 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
         builder.append(")");
     }
 
-    protected Run buildQueryRunContent(XMLRun run){
-        return run;
+    protected void buildQueryRunContent(XMLRun run){
     }
-    protected Run buildQueryRunContent(TextRun run){
+    protected void buildQueryRunContent(TextRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -463,9 +424,8 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
         run.appendGroup();
         //appendOrderStore();
         run.checkValid();
-        return run;
     }
-    protected Run buildQueryRunContent(TableRun run){
+    protected void buildQueryRunContent(TableRun run){
         StringBuilder builder = run.getBuilder();
         TableSQL sql = (TableSQL)run.getPrepare();
         builder.append("SELECT ");
@@ -534,7 +494,6 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
         run.appendGroup();
         run.appendOrderStore();
         run.checkValid();
-        return run;
     }
     protected Run buildDeleteRunContent(TableRun run){
         AutoSQL prepare =  (AutoSQL)run.getPrepare();
@@ -681,7 +640,7 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
         return sql;
     }
 
-    protected Run createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();
@@ -758,7 +717,7 @@ public abstract class SQLAdapter extends SimpleAdapter implements JDBCAdapter {
 
         return run;
     }
-    protected Run createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();

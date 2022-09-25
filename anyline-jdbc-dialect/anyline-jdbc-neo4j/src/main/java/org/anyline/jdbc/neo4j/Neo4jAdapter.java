@@ -66,7 +66,7 @@ public class Neo4jAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 
 	@Override
-	public String parseFinalQueryTxt(Run run) {
+	public String parseFinalQuery(Run run) {
 		return null;
 	}
 

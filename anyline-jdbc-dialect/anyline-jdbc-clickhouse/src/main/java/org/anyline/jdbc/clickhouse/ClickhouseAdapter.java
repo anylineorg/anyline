@@ -35,8 +35,8 @@ public class ClickhouseAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(Run run){
-		String sql = run.getBaseQueryTxt(); 
+	public String parseFinalQuery(Run run){
+		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){ 
 			String reg = "(?i)^select[\\s\\S]+from"; 

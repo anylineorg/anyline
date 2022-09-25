@@ -41,8 +41,8 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(Run run){
-		String sql = run.getBaseQueryTxt(); 
+	public String parseFinalQuery(Run run){
+		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){ 
 			String reg = "(?i)^select[\\s\\S]+from"; 
@@ -70,7 +70,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-	public Run buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
+	public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns){
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
@@ -107,7 +107,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 		return run;
 	}
-	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){
+	public void createInserts(StringBuilder builder, String dest, DataSet set, List<String> keys){
 		return;
 	}
 } 

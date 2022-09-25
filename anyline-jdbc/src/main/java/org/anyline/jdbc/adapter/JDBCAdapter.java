@@ -119,7 +119,7 @@ public interface JDBCAdapter {
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
-	public Run buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns);
+	public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns);
 
 	/**
 	 * 根据Collection创建批量插入SQL
@@ -128,7 +128,7 @@ public interface JDBCAdapter {
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInsertsTxt(StringBuilder builder, String dest, Collection list, List<String> keys);
+	public void createInserts(StringBuilder builder, String dest, Collection list, List<String> keys);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
@@ -137,7 +137,7 @@ public interface JDBCAdapter {
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys);
+	public void createInserts(StringBuilder builder, String dest, DataSet set, List<String> keys);
 
 	/**
 	 * 确认需要插入的列
@@ -174,7 +174,7 @@ public interface JDBCAdapter {
 	 * @param columns columns
 	 * @return Run
 	 */
-	public Run createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns);
+	public Run buildUpdateRun(String dest, Object obj, boolean checkParimary, String ... columns);
 
 
 
@@ -196,7 +196,7 @@ public interface JDBCAdapter {
 	 * @param run run
 	 * @return Run
 	 */
-	public Run buildQueryRunContent(Run run);
+	public void buildQueryRunContent(Run run);
 
 
 	/**
@@ -204,7 +204,7 @@ public interface JDBCAdapter {
 	 * @param run  run
 	 * @return String
 	 */
-	public String parseFinalQueryTxt(Run run);
+	public String parseFinalQuery(Run run);
 
 
 	/* *****************************************************************************************************************

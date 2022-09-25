@@ -299,15 +299,15 @@ public abstract class BasicRun implements Run {
 		} 
 	} 
 	@Override 
-	public String getFinalQueryTxt() { 
-		String text = adapter.parseFinalQueryTxt(this);
+	public String getFinalQuery() { 
+		String text = adapter.parseFinalQuery(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	} 
 	@Override 
-	public String getTotalQueryTxt() {
+	public String getTotalQuery() {
 		String text = adapter.parseTotalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -315,7 +315,7 @@ public abstract class BasicRun implements Run {
 		return text;
 	}
 	@Override
-	public String getExistsTxt(){
+	public String getFinalExists(){
 		String text =  adapter.parseExistsTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -323,7 +323,7 @@ public abstract class BasicRun implements Run {
 		return text;
 	}
 	@Override 
-	public String getBaseQueryTxt() { 
+	public String getBaseQuery() { 
 		return builder.toString();
 	}
 	@Override
@@ -406,21 +406,21 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public String getDeleteTxt(){
+	public String getFinalDelete(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	}
 	@Override
-	public String getInsertTxt(){
+	public String getFinalInsert(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	}
 	@Override
-	public String getUpdateTxt(){
+	public String getFinalUpdate(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
@@ -436,7 +436,7 @@ public abstract class BasicRun implements Run {
 	} 
 
 	@Override
-	public String getExecuteTxt(){
+	public String getFinalExecute(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return  SQLUtil.placeholder(prepare.getText(), delimiterFr, delimiterTo);
 		}

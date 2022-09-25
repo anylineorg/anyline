@@ -56,11 +56,11 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 *  *****************************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(Run run){
+	public String parseFinalQuery(Run run){
 		StringBuilder builder = new StringBuilder(); 
 		String cols = run.getQueryColumns(); 
 		PageNavi navi = run.getPageNavi(); 
-		String sql = run.getBaseQueryTxt(); 
+		String sql = run.getBaseQuery(); 
 		OrderStore orders = run.getOrderStore(); 
 		int first = 0; 
 		int last = 0; 
@@ -107,7 +107,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @param keys keys
 	 */
 	@Override
-	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){
+	public void createInserts(StringBuilder builder, String dest, DataSet set, List<String> keys){
 		builder.append("INSERT ALL \n");
 		String head = "INTO " + dest + " (";
 		int keySize = keys.size();
@@ -140,10 +140,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	@Override
-	public void createInsertsTxt(StringBuilder builder, String dest, Collection list, List<String> keys){
+	public void createInserts(StringBuilder builder, String dest, Collection list, List<String> keys){
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInsertsTxt(builder, dest, set, keys);
+			createInserts(builder, dest, set, keys);
 			return;
 		}
 		builder.append("INSERT ALL \n");

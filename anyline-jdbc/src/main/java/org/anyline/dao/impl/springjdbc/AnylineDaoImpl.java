@@ -122,7 +122,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				maps = maps(run.getFinalQueryTxt(), run.getValues());
+				maps = maps(run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run, maps);
 				}
@@ -172,7 +172,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					} else {
 						//未计数(总数 )
 						if (navi.getTotalRow() == 0) {
-							total = getTotal(run.getTotalQueryTxt(), run.getValues());
+							total = getTotal(run.getTotalQuery(), run.getValues());
 							navi.setTotalRow(total);
 						} else {
 							total = navi.getTotalRow();
@@ -190,7 +190,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				set = select(run.getFinalQueryTxt(), run.getValues());
+				set = select(run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run,set);
 
@@ -241,7 +241,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					} else {
 						//未计数(总数 )
 						if (navi.getTotalRow() == 0) {
-							total = getTotal(run.getTotalQueryTxt(), run.getValues());
+							total = getTotal(run.getTotalQuery(), run.getValues());
 							navi.setTotalRow(total);
 						} else {
 							total = navi.getTotalRow();
@@ -259,7 +259,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				list = select(clazz, run.getFinalQueryTxt(), run.getValues());
+				list = select(clazz, run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this, run, list);
 
@@ -301,7 +301,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(null != listener){
 				listener.beforeCount(this,run);
 			}
-			count = getTotal(run.getTotalQueryTxt(), run.getValues());
+			count = getTotal(run.getTotalQuery(), run.getValues());
 			if(null != listener){
 				listener.afterCount(this,run, count);
 			}
@@ -320,7 +320,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = false;
 		try {
 			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
-			String txt = run.getExistsTxt();
+			String txt = run.getFinalExists();
 			List<Object> values = run.getValues();
 
 			long fr = System.currentTimeMillis();
@@ -402,8 +402,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			return result;
 		}
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).createUpdateTxt(dest, obj, false, columns);
-		String sql = run.getUpdateTxt();
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildUpdateRun(dest, obj, false, columns);
+		String sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
 			return -1;
@@ -525,12 +525,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildInsertTxt(dest, data, checkParimary, columns);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildInsertRun(dest, data, checkParimary, columns);
 		if(null == run){
 			return 0;
 		}
 		int cnt = 0;
-		final String sql = run.getInsertTxt();
+		final String sql = run.getFinalInsert();
 		final List<Object> values = run.getValues();
 		KeyHolder keyholder = new GeneratedKeyHolder();
 		long fr = System.currentTimeMillis();
@@ -836,7 +836,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			return -1;
 		}
-		String txt = run.getExecuteTxt();
+		String txt = run.getFinalExecute();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";
@@ -1168,7 +1168,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	protected int exeDelete(Run run){
 		int result = 0;
-		final String sql = run.getDeleteTxt();
+		final String sql = run.getFinalDelete();
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";

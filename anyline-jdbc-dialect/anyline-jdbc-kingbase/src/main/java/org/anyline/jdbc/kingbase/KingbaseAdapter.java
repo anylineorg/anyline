@@ -43,11 +43,11 @@ public class KingbaseAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(Run run){
+	public String parseFinalQuery(Run run){
 		StringBuilder builder = new StringBuilder(); 
 		String cols = run.getQueryColumns(); 
 		PageNavi navi = run.getPageNavi(); 
-		String sql = run.getBaseQueryTxt(); 
+		String sql = run.getBaseQuery(); 
 		OrderStore orders = run.getOrderStore(); 
 		int first = 0; 
 		int last = 0; 
