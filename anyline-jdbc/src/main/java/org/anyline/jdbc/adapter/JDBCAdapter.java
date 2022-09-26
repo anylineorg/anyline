@@ -26,8 +26,10 @@ import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.run.TableRun;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -115,11 +117,11 @@ public interface JDBCAdapter {
 	 * 创建insert RunPrepare
 	 * @param dest 表
 	 * @param obj 实体
-	 * @param checkParimary 是否检测主键
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
-	public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns);
+	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns);
 
 	/**
 	 * 根据Collection创建批量插入SQL
@@ -161,6 +163,18 @@ public interface JDBCAdapter {
 	 */
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 
+	/**
+	 * 执行 insert
+	 * @param random random
+	 * @param jdbc jdbc
+	 * @param data data
+	 * @param sql sql
+	 * @param values value
+	 * @return int
+	 * @throws Exception
+	 */
+	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception;
+
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE
@@ -170,11 +184,11 @@ public interface JDBCAdapter {
 	 * 创建更新SQL
 	 * @param dest dest
 	 * @param obj obj
-	 * @param checkParimary checkParimary
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns columns
 	 * @return Run
 	 */
-	public Run buildUpdateRun(String dest, Object obj, boolean checkParimary, String ... columns);
+	public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns);
 
 
 
