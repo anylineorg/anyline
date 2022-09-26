@@ -38,19 +38,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.Date;
 
 
 /**
@@ -117,27 +119,27 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns)
+	 * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns)
 	 * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
 	 * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
 	 * public List<String> confirmInsertColumns(String dst, Object obj, String ... columns)
 	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
 	 *
 	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
-	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
-	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
+	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns)
+	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns)
 	 ******************************************************************************************************************/
 
 	/**
 	 * 创建INSERT RunPrepare
 	 * @param dest 表
 	 * @param obj 实体
-	 * @param checkParimary 是否检测主键
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
 	@Override
-	public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns){
+	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
 		if(null == obj){
 			return null;
 		}
@@ -148,11 +150,11 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
 			if(list.size() >0){
-				return createInsertRunFromCollection(dest, list, checkParimary, columns);
+				return createInsertRunFromCollection(dest, list, checkPrimary, columns);
 			}
 			return null;
 		}else {
-			return createInsertRunFromEntity(dest, obj, checkParimary, columns);
+			return createInsertRunFromEntity(dest, obj, checkPrimary, columns);
 		}
 
 	}
@@ -310,14 +312,34 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 
 
 	/**
+	 * 设置主键值
+	 * @param obj obj
+	 * @param value value
+	 */
+	protected void setPrimaryValue(Object obj, Object value){
+		if(null == obj){
+			return;
+		}
+		if(obj instanceof DataRow){
+			DataRow row = (DataRow)obj;
+			row.put(row.getPrimaryKey(), value);
+		}else{
+			if(AdapterProxy.hasAdapter()){
+				String key = AdapterProxy.primaryKey(obj.getClass());
+				Field field = AdapterProxy.field(obj.getClass(), key);
+				BeanUtil.setFieldValue(obj, field, value);
+			}
+		}
+	}
+	/**
 	 * 根据entity创建 INSERT RunPrepare
 	 * @param dest
 	 * @param obj
-	 * @param checkParimary
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns
 	 * @return Run
 	 */
-	protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
+	protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns){
 		return null;
 	}
 
@@ -325,11 +347,11 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * 根据collection创建 INSERT RunPrepare
 	 * @param dest 表
 	 * @param list 对象集合
-	 * @param checkParimary 是否检测主键
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要插入的列，如果不指定则全部插入
 	 * @return Run
 	 */
-	protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
+	protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns){
 		return null;
 	}
 
@@ -570,7 +592,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 
 
 	@Override
-	public Run buildUpdateRun(String dest, Object obj, boolean checkParimary, String ... columns){
+	public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns){
 		if(null == obj){
 			return null;
 		}
@@ -578,16 +600,16 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			dest = DataSourceHolder.parseDataSource(null,obj);
 		}
 		if(obj instanceof DataRow){
-			return buildUpdateRunFromDataRow(dest,(DataRow)obj,checkParimary, columns);
+			return buildUpdateRunFromDataRow(dest,(DataRow)obj,checkPrimary, columns);
 		}else{
-			return buildUpdateRunFromObject(dest, obj,checkParimary, columns);
+			return buildUpdateRunFromObject(dest, obj,checkPrimary, columns);
 		}
 	}
 
-	protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+	protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
 		return null;
 	}
-	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
 		return null;
 	}
 
