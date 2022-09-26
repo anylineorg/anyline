@@ -40,13 +40,14 @@ import java.util.Vector;
 public abstract class SimplePrepare implements RunPrepare{
 
 	protected static final Logger log = LoggerFactory.getLogger(SimplePrepare.class);
-	protected ConditionChain chain;			//查询条件 
-	protected OrderStore orders;			//排序
-	protected GroupStore groups;			//分组条件 
-	protected PageNavi navi;				//分页
-	protected List<String> primaryKeys = new ArrayList<>();		//主键
-	protected List<String> fetchKeys   = new ArrayList<>();		//最终需要封装的列
-	protected boolean valid 		   = true;
+	protected ConditionChain chain							; // 查询条件
+	protected OrderStore orders								; // 排序
+	protected GroupStore groups								; // 分组条件
+	protected PageNavi navi									; // 分页
+	protected List<String> primaryKeys = new ArrayList<>()	; // 主键
+	protected List<String> fetchKeys   = new ArrayList<>()	; // 最终需要封装的列
+	protected boolean valid 		   = true				;
+	protected String alias									;
 
 
 	//运行时参数值 
@@ -395,4 +396,13 @@ public abstract class SimplePrepare implements RunPrepare{
 		return null;
 	}
 
+	@Override
+	public String getAlias() {
+		return alias;
+	}
+
+	@Override
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 } 

@@ -81,6 +81,4 @@ public interface AutoSQL extends RunPrepare {
 	public void setSchema(String schema) ; 
 	public void setTable(String table) ; 
 	public String getDistinct();
-	public void setAlias(String alias);
-	public String getAlias();
 } 

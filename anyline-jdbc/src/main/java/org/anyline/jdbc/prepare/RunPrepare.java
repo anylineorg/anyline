@@ -193,5 +193,7 @@ public interface RunPrepare extends Cloneable {
 	public RunPrepare right(String table, String condition);
 	public RunPrepare full(String table, String condition);
 	public List<Join> getJoins();
+	public void setAlias(String alias);
+	public String getAlias();
 	
 } 
