@@ -189,7 +189,7 @@ public class TextRun extends BasicRun implements Run {
 		if(!where){ 
 			builder.append(" WHERE 1=1"); 
 		}
-		builder.append(conditionChain.getRunText(adapter));
+		builder.append(conditionChain.getRunText(null, adapter));
 		addValues(conditionChain.getRunValues());
 	}
 	 

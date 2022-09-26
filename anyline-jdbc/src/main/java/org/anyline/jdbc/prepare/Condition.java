@@ -37,10 +37,11 @@ public interface Condition extends Cloneable{
 	 
 	/** 
 	 * 运行时文本 
+	 * @param prefix 前缀
 	 * @param adapter adapter
 	 * @return String
-	 */ 
-	public String getRunText(JDBCAdapter adapter);
+	 */
+	public String getRunText(String prefix, JDBCAdapter adapter);
 	/** 
 	 * 运行时参数值 
 	 * @return List

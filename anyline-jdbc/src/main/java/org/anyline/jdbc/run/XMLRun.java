@@ -395,7 +395,7 @@ public class XMLRun extends BasicRun implements Run {
 		if(!endWithWhere(builder.toString())){
 			builder.append(" WHERE 1=1");
 		}
-		builder.append(conditionChain.getRunText(adapter));
+		builder.append(conditionChain.getRunText(null, adapter));
 		addValues(conditionChain.getRunValues()); 
 //		if(null != staticConditions){ 
 //			for(String con:staticConditions){ 

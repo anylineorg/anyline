@@ -121,8 +121,9 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
 	 * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
 	 * public List<String> confirmInsertColumns(String dst, Object obj, String ... columns)
-	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
+	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
 	 *
+	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
 	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
 	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
 	 ******************************************************************************************************************/
@@ -386,6 +387,18 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	}
 	protected void buildQueryRunContent(TableRun run){
 	}
+
+
+	/**
+	 * JDBC执行完成后的结果处理
+	 * @param list JDBC执行结果
+	 * @return  DataSet
+	 */
+	@Override
+	public List<Map<String,Object>> process(List<Map<String,Object>> list){
+		return list;
+	}
+
 	@Override
 	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;

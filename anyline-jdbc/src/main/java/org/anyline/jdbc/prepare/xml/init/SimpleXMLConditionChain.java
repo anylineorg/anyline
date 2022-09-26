@@ -32,7 +32,8 @@ import java.util.List;
  
 public class SimpleXMLConditionChain extends SimpleConditionChain implements ConditionChain{
 
-	public String getRunText(JDBCAdapter adapter){
+	@Override
+	public String getRunText(String prefix, JDBCAdapter adapter){
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
 		if(null != conditions){ 
@@ -43,10 +44,10 @@ public class SimpleXMLConditionChain extends SimpleConditionChain implements Con
 				String txt = ""; 
 				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){ 
 					builder.append("\n\t");
-					txt = condition.getRunText(adapter);
+					txt = condition.getRunText(prefix, adapter);
 				}else if(condition.isActive()){ 
 					builder.append("\n\t");
-					txt = condition.getRunText(adapter);
+					txt = condition.getRunText(prefix, adapter);
 					List<RunValue> values = condition.getRunValues();
 					if(BasicUtil.isEmpty(true, values)){
 						String reg = "=\\s*\\?";

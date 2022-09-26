@@ -184,11 +184,12 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
  
 	public String getText() { 
 		return text; 
-	} 
- 
-	 
- 
-	public String getRunText(JDBCAdapter adapter) {
+	}
+
+
+
+	@Override
+	public String getRunText(String prefix, JDBCAdapter adapter) {
 		String result = text; 
 		runValues = new ArrayList<>();
 		if(null == variables){

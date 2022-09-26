@@ -44,8 +44,9 @@ public class SimpleAutoConditionChain extends SimpleConditionChain implements Co
 				conditions.add(new SimpleAutoCondition(config));
 			}
 		}
-	} 
-	public String getRunText(JDBCAdapter adapter){
+	}
+	@Override
+	public String getRunText(String prefix, JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		int size = conditions.size(); 
 		if(size == 0){ 
@@ -63,7 +64,7 @@ public class SimpleAutoConditionChain extends SimpleConditionChain implements Co
 			if(null == condition){
 				continue;
 			}
-			txt = condition.getRunText(adapter);
+			txt = condition.getRunText(prefix, adapter);
 			if(BasicUtil.isEmpty(txt)){
 				continue;
 			}

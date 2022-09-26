@@ -87,92 +87,15 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE); 
 	} 
 
-//	@SuppressWarnings("unchecked") 
-//	public String getRunText(SQLAdapter adapter){
-//		String delimiterFr = adapter.getDelimiterFr();
-//		String delimiterTo = adapter.getDelimiterTo();
-//		runValues = new ArrayList<Object>(); /////////////////////////////////////////////////////////////////////////////
-//		String text = ""; 
-//		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){  /////////////////////////////////////////////////////////////////////////////
-//			//static txt
-//			text = this.text; 
-//		}else{ 
-//			text = delimiterFr + column.replace(".", delimiterTo+"."+delimiterFr) + delimiterTo;
-//			
-//			if(compare == RunPrepare.COMPARE_TYPE.EQUAL){ 
-//				if(null == getValue() || "NULL".equals(getValue())){ 
-//					text += " IS NULL"; 
-//					if("NULL".equals(getValue())){
-//						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
-//					}
-//				}else{
-//					text += compare.getSql(); 
-//				} 
-//			}else if(compare == RunPrepare.COMPARE_TYPE.GREAT){ 
-//				//text += "> ?";
-//				text += compare.getSql(); 
-//			}else if(compare == RunPrepare.COMPARE_TYPE.GREAT_EQUAL){ 
-//				//text += ">= ?";
-//				text += compare.getSql(); 
-//			}else if(compare == RunPrepare.COMPARE_TYPE.LESS){ 
-//				//text += "< ?";
-//				text += compare.getSql(); 
-//			}else if(compare == RunPrepare.COMPARE_TYPE.NOT_EQUAL){ 
-//				//text += "<> ?";
-//				text += compare.getSql(); 
-//			}else if(compare == RunPrepare.COMPARE_TYPE.LESS_EQUAL){
-//				//text += "<= ?";
-//				text += compare.getSql();
-//			}else if(compare == RunPrepare.COMPARE_TYPE.BETWEEN){
-//				//text += " BETWEEN ? AND ?";
-//				text += compare.getSql();
-//			}else if(compare == RunPrepare.COMPARE_TYPE.IN || compare == RunPrepare.COMPARE_TYPE.NOT_IN){
-//				if(compare == RunPrepare.COMPARE_TYPE.NOT_IN){
-//					text += " NOT";
-//				}
-//				text += " IN ("; 
-//				if(values instanceof Collection){ 
-//					Collection<Object> coll = (Collection)values; 
-//					int size = coll.size(); 
-//					for(int i=0; i<size; i++){ 
-//						text += "?"; 
-//						if(i < size-1){ 
-//							text += ","; 
-//						} 
-//					} 
-//					text += ")"; 
-//				}else{ 
-//					text += "= ?"; 
-//				} 
-//			}else if(compare == RunPrepare.COMPARE_TYPE.LIKE){
-//				text += " LIKE "+ adapter.concat("'%'", "?" , "'%'");
-//			}else if(compare == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){ 
-//				text += " LIKE "+ adapter.concat("?" , "'%'");
-//			}else if(compare == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){ 
-//				text += " LIKE "+ adapter.concat("'%'", "?");
-//			}  
-//			text += ""; 
-//			//runtime value
-//			if(compare == RunPrepare.COMPARE_TYPE.IN || compare == RunPrepare.COMPARE_TYPE.NOT_IN || compare == RunPrepare.COMPARE_TYPE.BETWEEN){ 
-//				runValues = getValues(); 
-//			}else{ 
-//				Object value = getValue(); 
-//				runValues = new ArrayList<Object>(); 
-//				if((null == value || "NULL".equals(value)) && compare == RunPrepare.COMPARE_TYPE.EQUAL){ 
-//				}else{ 
-//					runValues.add(value); 
-//				} 
-//			} 
-//		} 
-//		return text; 
-//	} 
 
 	/** 
 	 * 运行时文本
+	 * @param prefix 前缀
 	 * @param adapter adapter
 	 * @return String
-	 */ 
-	public String getRunText(JDBCAdapter adapter){
+	 */
+	@Override
+	public String getRunText(String prefix, JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
@@ -180,12 +103,12 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 		}else{ 
 			String txt = "";
 			if(BasicUtil.isNotEmpty(true, values) || isRequired()){
-				txt = getRunText(adapter, values, compare);
+				txt = getRunText(prefix, adapter, values, compare);
 				if(BasicUtil.isNotEmpty(txt)){
 					text = txt;
 				}
 				if(BasicUtil.isNotEmpty(true, orValues)){
-					txt = getRunText(adapter, orValues, orCompare);
+					txt = getRunText(prefix, adapter, orValues, orCompare);
 					if(BasicUtil.isNotEmpty(txt)){
 						if(BasicUtil.isEmpty(text)){
 							text = txt;
@@ -201,12 +124,18 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	} 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public String getRunText(JDBCAdapter adapter, Object val, COMPARE_TYPE compare){
+	public String getRunText(String prefix, JDBCAdapter adapter, Object val, COMPARE_TYPE compare){
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
 		String text = "";
-		if(BasicUtil.isNotEmpty(table)){
-			text += SQLUtil.delimiter(table,delimiterFr, delimiterTo) + ".";
+		if(!column.contains(".")){
+			if(BasicUtil.isNotEmpty(prefix)){
+				text += SQLUtil.delimiter(prefix, delimiterFr, delimiterTo) + ".";
+			}else {
+				if (BasicUtil.isNotEmpty(table)) {
+					text += SQLUtil.delimiter(table, delimiterFr, delimiterTo) + ".";
+				}
+			}
 		}
 
 		text += SQLUtil.delimiter(column, delimiterFr, delimiterTo);
