@@ -4,6 +4,12 @@
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
 
+有问题请联系QQ群:  86020680  
+[
+<img src="http://alcms.oss-cn-shanghai.aliyuncs.com/anyline/img/ab/rhodilywys.jpg" />
+](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad) 
+
+
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
 其重点是：  
 - 以最简单、快速的方式操作数据库  
