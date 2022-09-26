@@ -1261,12 +1261,13 @@ public class SimpleService<E> implements AnylineService<E> {
     @SuppressWarnings("rawtypes")
     @Override
     public int delete(String dest, DataSet set, String ... columns) {
-            int cnt = 0;
-            int size = set.size();
-            for (int i = 0; i < size; i++) {
-                cnt += delete(dest, set.getRow(i), columns);
-            }
-            return cnt;
+        int cnt = 0;
+        int size = set.size();
+        for (int i = 0; i < size; i++) {
+            cnt += delete(dest, set.getRow(i), columns);
+        }
+        log.warn("[delete DataSet][影响行数:{}]", LogUtil.format(cnt, 34));
+        return cnt;
     }
 
     @Override

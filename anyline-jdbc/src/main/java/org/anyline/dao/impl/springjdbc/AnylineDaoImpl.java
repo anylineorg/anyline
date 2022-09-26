@@ -356,7 +356,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					listener.afterExists(this,run, result);
 				}
 				if (showSQL) {
-					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, result);
+					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 			} catch (Exception e) {
 				if (showSQLWhenError) {
@@ -435,7 +435,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					listener.afterUpdate(this, run, result, dest, obj, columns);
 				}
 				if (showSQL) {
-					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, result);
+					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 
 			}
@@ -558,7 +558,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
 				}
 				if (showSQL) {
-					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , System.currentTimeMillis() - fr, cnt);
+					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , System.currentTimeMillis() - fr, LogUtil.format(cnt, 34));
 				}
 			}
 		}catch(Exception e){
@@ -840,7 +840,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					listener.afterExecute(this, run, result);
 				}
 				if (showSQL) {
-					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, result);
+					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 
 			}
@@ -1128,6 +1128,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				for(Object item:list){
 					size += delete(dest, item, columns);
 				}
+				log.warn("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 			}else{
 				Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(dest, obj, columns);
 				size = exeDelete(run);
@@ -1167,9 +1168,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					result = getJdbc().update(sql, values.toArray());
 				}
 				if (showSQL) {
-					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, result);
+					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
-				result = 1;
+				//result = 1;
 				if(null != listener){
 					listener.afterDelete(this,run, result);
 				}
