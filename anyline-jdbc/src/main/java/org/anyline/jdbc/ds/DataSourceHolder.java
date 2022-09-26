@@ -30,10 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataSourceHolder { 
 	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class); 
@@ -142,7 +139,10 @@ public class DataSourceHolder {
 			if(set.size()>0){
 				result = parseDataSource(dest, set.getRow(0));
 			}
-		}else{
+		} else if (obj instanceof Collection) {
+			Object first = ((Collection)obj).iterator().next();
+			result = AdapterProxy.table(first.getClass());
+		} else{
 			result = AdapterProxy.table(obj.getClass());
 		}
 		result = parseDataSource(result);
