@@ -353,16 +353,15 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * 执行 insert
      * @param random random
      * @param jdbc jdbc
-     * @param data data
+     * @param data entity|DataRow|DataSet
      * @param sql sql
-     * @param values value
-     * @return int
+     * @param values 占位参数值
+     * @return int 影响行数
      * @throws Exception
      */
     @Override
     public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception{
         int cnt = 0;
-        Long id = null;
         KeyHolder keyholder = new GeneratedKeyHolder();
         cnt = jdbc.update(new PreparedStatementCreator() {
             @Override
@@ -377,17 +376,25 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 return ps;
             }
         }, keyholder);
+        List<Object> ids = new ArrayList<>();
         if(data instanceof Collection){
             Collection list = (Collection) data;
             List<Map<String,Object>> keys = keyholder.getKeyList();
             int i = 0;
             for(Object item:list){
                 Map<String,Object> key = keys.get(i);
-                setPrimaryValue(item, key.get("GENERATED_KEY"));
+                Object id = key.get("GENERATED_KEY");
+                ids.add(id);
+                setPrimaryValue(item, id);
                 i++;
             }
         }else{
-            setPrimaryValue(data, keyholder.getKey());
+            Object id = keyholder.getKey();
+            setPrimaryValue(data, id);
+            ids.add(id);
+        }
+        if(ids.size() > 0) {
+            log.warn("{}[exe insert][生成主键:{}]", random, ids);
         }
         return cnt;
     }
