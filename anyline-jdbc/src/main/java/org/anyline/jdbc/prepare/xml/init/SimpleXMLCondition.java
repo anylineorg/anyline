@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.xml.init;
+package org.anyline.jdbc.prepare.xml.init;
 
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.prepare.Condition;

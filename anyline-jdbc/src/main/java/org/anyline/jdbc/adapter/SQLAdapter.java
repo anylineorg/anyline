@@ -26,13 +26,13 @@ import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.prepare.sql.auto.AutoSQL;
-import org.anyline.jdbc.prepare.sql.auto.init.Join;
+import org.anyline.jdbc.prepare.auto.AutoPrepare;
+import org.anyline.jdbc.prepare.auto.init.Join;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.run.TableRun;
 import org.anyline.jdbc.run.TextRun;
 import org.anyline.jdbc.run.XMLRun;
-import org.anyline.jdbc.prepare.sql.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TableSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.util.*;
 
@@ -506,7 +506,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         run.checkValid();
     }
     protected Run buildDeleteRunContent(TableRun run){
-        AutoSQL prepare =  (AutoSQL)run.getPrepare();
+        AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
         if(null != run.getSchema()){

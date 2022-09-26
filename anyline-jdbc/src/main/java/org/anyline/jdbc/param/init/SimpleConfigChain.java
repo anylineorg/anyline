@@ -24,7 +24,7 @@ import org.anyline.jdbc.param.ConfigChain;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoConditionChain;
+import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;

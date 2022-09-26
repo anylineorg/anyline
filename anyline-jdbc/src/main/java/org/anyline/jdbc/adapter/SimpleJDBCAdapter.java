@@ -27,10 +27,10 @@ import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.auto.TableSQL;
-import org.anyline.jdbc.prepare.sql.auto.TextSQL;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
-import org.anyline.jdbc.prepare.sql.xml.XMLSQL;
+import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TextPrepare;
+import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
+import org.anyline.jdbc.prepare.xml.XMLPrepare;
 import org.anyline.jdbc.run.*;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
@@ -343,9 +343,9 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		Run run = null;
 		if(prepare instanceof TableSQL){
 			run = new TableRun(this,prepare.getTable());
-		}else if(prepare instanceof XMLSQL){
+		}else if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
-		}else if(prepare instanceof TextSQL){
+		}else if(prepare instanceof TextPrepare){
 			run = new TextRun();
 		}
 		if(null != run){
@@ -389,9 +389,9 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	@Override
 	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
-		if(prepare instanceof XMLSQL){
+		if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
-		}else if(prepare instanceof TextSQL){
+		}else if(prepare instanceof TextPrepare){
 			run = new TextRun();
 		}
 		if(null != run){
@@ -427,7 +427,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		}
 		if(obj instanceof ConfigStore){
 			run = new TableRun(this,dest);
-			RunPrepare prepare = new SimpleTableSQL();
+			RunPrepare prepare = new SimpleTablePrepare();
 			prepare.setDataSource(dest);
 			run.setPrepare(prepare);
 			run.setConfigStore((ConfigStore)obj);

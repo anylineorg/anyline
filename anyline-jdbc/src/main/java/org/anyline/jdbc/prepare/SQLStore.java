@@ -17,8 +17,13 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto;
+package org.anyline.jdbc.prepare;
+
+
+public abstract class SQLStore{
  
+	public static void loadSQL(){} 
  
-public interface TableSQL extends AutoSQL{
+	public static synchronized SQLStore getInstance() {return null; } 
+	public static RunPrepare parseSQL(String id){return null;}
 }

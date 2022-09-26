@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto;
+package org.anyline.jdbc.prepare.auto;
  
  
-public interface AutoConditionChain extends AutoCondition{ 
-} 
+public interface TablePrepare extends AutoPrepare{
+}

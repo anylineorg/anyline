@@ -1,11 +1,11 @@
-package org.anyline.jdbc.prepare.sql;
+package org.anyline.jdbc.prepare;
  
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import org.anyline.jdbc.prepare.init.SimpleVariable;
 import org.anyline.util.BasicUtil; 
  
-public class SQLHelper { 
+public class SyntaxHelper {
  
 	/** 
 0.[ID=:ID ]				1.[ID=]				2.[:ID]			3.[ ]		 

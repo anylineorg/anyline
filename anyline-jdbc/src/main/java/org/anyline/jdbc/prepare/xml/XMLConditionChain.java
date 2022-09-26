@@ -17,9 +17,10 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto;
-
-import org.anyline.jdbc.prepare.RunPrepare;
+package org.anyline.jdbc.prepare.xml;
  
-public interface TextSQL extends RunPrepare{
-}
+import org.anyline.jdbc.prepare.ConditionChain;
+ 
+public interface XMLConditionChain extends ConditionChain{ 
+ 
+} 

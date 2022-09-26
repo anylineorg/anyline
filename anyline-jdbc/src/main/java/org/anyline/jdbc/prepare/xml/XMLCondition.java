@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.xml;
+package org.anyline.jdbc.prepare.xml;
  
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.Variable;

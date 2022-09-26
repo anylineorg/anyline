@@ -27,7 +27,7 @@ import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.GroupStore;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.auto.init.Join;
+import org.anyline.jdbc.prepare.auto.init.Join;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

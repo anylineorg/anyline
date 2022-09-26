@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto.init;
+package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.entity.Order;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.init.SimplePrepare;
-import org.anyline.jdbc.prepare.sql.auto.AutoSQL;
+import org.anyline.jdbc.prepare.auto.AutoPrepare;
 import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ParseResult;
 import org.anyline.jdbc.prepare.Condition;
@@ -33,7 +33,7 @@ import org.anyline.util.BasicUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleAutoSQL extends SimplePrepare implements AutoSQL {
+public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 	protected String datasoruce;
 	protected String schema;
 	protected String table;
@@ -44,7 +44,7 @@ public class SimpleAutoSQL extends SimplePrepare implements AutoSQL {
 
 
 
-	public SimpleAutoSQL(){
+	public SimpleAutoPrepare(){
 		super();
 		chain = new SimpleAutoConditionChain();
 	}

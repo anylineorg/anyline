@@ -1,8 +1,8 @@
 package org.anyline.jdbc.param;
 
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.auto.init.Join;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
+import org.anyline.jdbc.prepare.auto.init.Join;
+import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class TableBuilder {
         return this;
     }
     public RunPrepare build(){
-        SimpleTableSQL sql = new SimpleTableSQL();
+        SimpleTablePrepare sql = new SimpleTablePrepare();
         sql.setDataSource(datasource);
         sql.setTable(table);
         if(BasicUtil.isNotEmpty(alias)) {

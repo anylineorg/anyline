@@ -30,9 +30,9 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Procedure;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.init.SimpleProcedure;
-import org.anyline.jdbc.prepare.sql.init.SimpleSQLStore;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleTextSQL;
+import org.anyline.jdbc.prepare.init.SimpleSQLStore;
+import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
+import org.anyline.jdbc.prepare.auto.init.SimpleTextPrepare;
 import org.anyline.jdbc.param.init.SimpleConfigStore;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
@@ -1442,7 +1442,7 @@ public class SimpleService<E> implements AnylineService<E> {
             src = src.substring(2,src.length()-1);
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
-            prepare = new SimpleTextSQL(src);
+            prepare = new SimpleTextPrepare(src);
         } else {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
@@ -1466,7 +1466,7 @@ public class SimpleService<E> implements AnylineService<E> {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
-                prepare = new SimpleTextSQL(src);
+                prepare = new SimpleTextPrepare(src);
             }else if (RegularUtil.match(src, RunPrepare.XML_SQL_ID_STYLE)) {
                 /* XML定义 */
                 if(ConfigTable.isSQLDebug()){
@@ -1481,7 +1481,7 @@ public class SimpleService<E> implements AnylineService<E> {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
                 }
-                prepare = new SimpleTableSQL();
+                prepare = new SimpleTablePrepare();
                 prepare.setDataSource(src);
             }
         }

@@ -17,13 +17,13 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto.init;
+package org.anyline.jdbc.prepare.auto.init;
  
-import org.anyline.jdbc.prepare.sql.auto.TextSQL;
+import org.anyline.jdbc.prepare.auto.TextPrepare;
 
-public class SimpleTextSQL extends SimpleAutoSQL implements TextSQL {
+public class SimpleTextPrepare extends SimpleAutoPrepare implements TextPrepare {
 	private String text; 
-	public SimpleTextSQL(String text){
+	public SimpleTextPrepare(String text){
 		super(); 
 		this.text = text; 
 		chain = new SimpleAutoConditionChain();

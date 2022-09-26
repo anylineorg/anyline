@@ -17,10 +17,27 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.xml;
+package org.anyline.jdbc.prepare.auto;
+
+import org.anyline.jdbc.prepare.Condition;
+import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+
+import java.util.List;
  
-import org.anyline.jdbc.prepare.ConditionChain;
  
-public interface XMLConditionChain extends ConditionChain{ 
- 
+/** 
+ * 自动生成的参数 
+ * @author zh 
+ * 
+ */ 
+public interface AutoCondition extends Condition{ 
+	public Object getValue(); 
+	public List<Object> getValues(); 
+	public String getId();
+	public String getColumn() ; 
+	public void setColumn(String column) ; 
+	public void setValues(Object values) ; 
+	public COMPARE_TYPE getCompare() ; 
+	public AutoCondition setCompare(COMPARE_TYPE compare) ; 
+	public AutoCondition setOrCompare(COMPARE_TYPE compare) ; 
 } 

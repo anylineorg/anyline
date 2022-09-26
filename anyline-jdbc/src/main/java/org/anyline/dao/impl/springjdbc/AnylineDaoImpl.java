@@ -36,8 +36,8 @@ import org.anyline.jdbc.prepare.Procedure;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.ProcedureParam;
 import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.prepare.sql.auto.TableSQL;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
+import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.util.SQLAdapterUtil;
@@ -218,7 +218,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
-			RunPrepare prepare = new SimpleTableSQL();
+			RunPrepare prepare = new SimpleTablePrepare();
 			if(AdapterProxy.hasAdapter()){
 				prepare.setDataSource(AdapterProxy.table(clazz));
 			}

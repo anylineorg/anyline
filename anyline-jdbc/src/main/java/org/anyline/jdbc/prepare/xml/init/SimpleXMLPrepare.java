@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.xml.init;
+package org.anyline.jdbc.prepare.xml.init;
 
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
@@ -27,22 +27,22 @@ import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ParseResult;
 import org.anyline.jdbc.prepare.init.SimplePrepare;
 import org.anyline.jdbc.prepare.init.SimpleVariable;
-import org.anyline.jdbc.prepare.sql.SQLHelper;
-import org.anyline.jdbc.prepare.sql.xml.XMLSQL;
+import org.anyline.jdbc.prepare.SyntaxHelper;
+import org.anyline.jdbc.prepare.xml.XMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-public class SimpleXMLSQL extends SimplePrepare implements XMLSQL{
+public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 	/*解析XML*/ 
 	private String id; 
 	private String text;
 	private boolean strict = true;	//严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables;
 	 
-	public SimpleXMLSQL(){
+	public SimpleXMLPrepare(){
 		super(); 
 		chain = new SimpleXMLConditionChain();
 	} 
@@ -67,7 +67,7 @@ public class SimpleXMLSQL extends SimplePrepare implements XMLSQL{
 		return this; 
 	} 
 	public Object clone() throws CloneNotSupportedException{ 
-		SimpleXMLSQL clone = (SimpleXMLSQL)super.clone();
+		SimpleXMLPrepare clone = (SimpleXMLPrepare)super.clone();
 		clone.chain = (ConditionChain)chain.clone();
 		if(null != variables){ 
 			List<Variable> cVariables = new ArrayList<Variable>();
@@ -138,7 +138,7 @@ public class SimpleXMLSQL extends SimplePrepare implements XMLSQL{
 				//AND CD = :CD 
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i); 
-					Variable var = SQLHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
 					var.setRequired(true);
 					addVariable(var); 
 				}// end for 

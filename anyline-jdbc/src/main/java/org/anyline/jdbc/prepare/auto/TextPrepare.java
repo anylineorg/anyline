@@ -17,15 +17,9 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql;
-
+package org.anyline.jdbc.prepare.auto;
 
 import org.anyline.jdbc.prepare.RunPrepare;
-
-public abstract class SQLStore{
  
-	public static void loadSQL(){} 
- 
-	public static synchronized SQLStore getInstance() {return null; } 
-	public static RunPrepare parseSQL(String id){return null;}
+public interface TextPrepare extends RunPrepare{
 }

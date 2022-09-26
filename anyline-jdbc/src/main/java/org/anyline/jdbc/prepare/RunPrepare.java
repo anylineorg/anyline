@@ -22,7 +22,7 @@ package org.anyline.jdbc.prepare;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.prepare.sql.auto.init.Join;
+import org.anyline.jdbc.prepare.auto.init.Join;
 
 import java.util.Collection;
 import java.util.List;

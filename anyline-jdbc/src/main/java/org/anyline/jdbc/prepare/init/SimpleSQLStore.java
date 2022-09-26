@@ -17,14 +17,14 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.init;
+package org.anyline.jdbc.prepare.init;
 
 
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.SQLStore;
-import org.anyline.jdbc.prepare.sql.xml.init.SimpleXMLCondition;
-import org.anyline.jdbc.prepare.sql.xml.init.SimpleXMLSQL;
+import org.anyline.jdbc.prepare.SQLStore;
+import org.anyline.jdbc.prepare.xml.init.SimpleXMLCondition;
+import org.anyline.jdbc.prepare.xml.init.SimpleXMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -163,7 +163,7 @@ public class SimpleSQLStore extends SQLStore {
 			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        //RunPrepare 主键
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    //是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text");                                    //RunPrepare 文本
-			RunPrepare prepare = new SimpleXMLSQL();
+			RunPrepare prepare = new SimpleXMLPrepare();
 			prepare.setDataSource(fileName + ":" + sqlId);
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);
@@ -206,7 +206,7 @@ public class SimpleSQLStore extends SQLStore {
 			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        //RunPrepare 主键
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    //是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text");                                    //RunPrepare 文本
-			RunPrepare prepare = new SimpleXMLSQL();
+			RunPrepare prepare = new SimpleXMLPrepare();
 			prepare.setDataSource(fileName + ":" + sqlId);
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);

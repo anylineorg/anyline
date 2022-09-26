@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto.init;
+package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.param.Config;

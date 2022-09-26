@@ -17,12 +17,11 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto.init;
+package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import org.anyline.jdbc.prepare.init.SimpleCondition;
-import org.anyline.jdbc.prepare.sql.auto.AutoCondition;
 import org.anyline.jdbc.param.Config;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.run.RunValue; 

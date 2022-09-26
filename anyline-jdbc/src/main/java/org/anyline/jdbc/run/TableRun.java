@@ -28,14 +28,9 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.run.BasicRun;
-import org.anyline.jdbc.run.RunValue;
-import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.prepare.sql.auto.TableSQL;
-import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoConditionChain;
-import org.anyline.jdbc.prepare.sql.auto.init.Join;
+import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.SQLUtil;
 
 import java.util.List;
 
@@ -90,7 +85,7 @@ public class TableRun extends BasicRun implements Run {
 	// adapter中实现
 	@Override
 	public void createRunQueryTxt(){
-		TableSQL sql = (TableSQL)this.getPrepare();
+		TablePrepare sql = (TablePrepare)this.getPrepare();
 		builder.append("SELECT ");
 		if(null != sql.getDistinct()){
 			builder.append(sql.getDistinct());
@@ -163,7 +158,7 @@ public class TableRun extends BasicRun implements Run {
 	}*//*
 	// adapter 中实现
 	public void createRunDeleteTxt(){
-		TableSQL sql = (TableSQL)this.getPrepare();
+		TablePrepare sql = (TablePrepare)this.getPrepare();
 		builder.append("DELETE FROM ");
 		if(null != schema){
 			SQLUtil.delimiter(builder, schema, delimiterFr, delimiterTo).append(".");

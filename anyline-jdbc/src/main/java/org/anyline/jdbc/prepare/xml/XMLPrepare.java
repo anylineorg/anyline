@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.xml;
+package org.anyline.jdbc.prepare.xml;
 
 import org.anyline.jdbc.prepare.RunPrepare; 
 import org.anyline.jdbc.prepare.Variable;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public interface XMLSQL extends RunPrepare{
+public interface XMLPrepare extends RunPrepare{
 	public RunPrepare init() ;
  
 	/** 

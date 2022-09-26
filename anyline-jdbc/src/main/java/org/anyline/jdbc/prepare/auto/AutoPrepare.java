@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto;
+package org.anyline.jdbc.prepare.auto;
 
 
 import org.anyline.jdbc.prepare.RunPrepare;
 
-public interface AutoSQL extends RunPrepare {
+public interface AutoPrepare extends RunPrepare {
 	public RunPrepare init();
  
 	/** 

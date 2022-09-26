@@ -17,14 +17,14 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.xml.init;
+package org.anyline.jdbc.prepare.xml.init;
 
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.prepare.init.SimpleConditionChain;
-import org.anyline.jdbc.prepare.sql.auto.AutoCondition;
+import org.anyline.jdbc.prepare.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 

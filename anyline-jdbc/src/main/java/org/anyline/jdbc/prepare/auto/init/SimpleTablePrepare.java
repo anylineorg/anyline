@@ -17,16 +17,16 @@
  */
 
 
-package org.anyline.jdbc.prepare.sql.auto.init;
+package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TableSQL;
 
 import java.util.List;
  
-public class SimpleTableSQL extends SimpleAutoSQL implements TableSQL {
+public class SimpleTablePrepare extends SimpleAutoPrepare implements TableSQL {
 
-	public SimpleTableSQL(){
+	public SimpleTablePrepare(){
 		super(); 
 		chain = new SimpleAutoConditionChain();
 	} 
