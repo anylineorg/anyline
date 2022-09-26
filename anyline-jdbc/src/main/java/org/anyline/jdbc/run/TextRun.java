@@ -43,6 +43,7 @@ import java.util.List;
 
 public class TextRun extends BasicRun implements Run {
 	public TextRun(){
+		this.builder = new StringBuilder();
 		this.conditionChain = new SimpleAutoConditionChain();
 		this.orderStore = new OrderStoreImpl();
 		setStrict(false); 

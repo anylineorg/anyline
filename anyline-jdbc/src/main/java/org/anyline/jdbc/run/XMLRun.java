@@ -47,6 +47,7 @@ public class XMLRun extends BasicRun implements Run {
 	private List<String> conditions; 
 	private List<String> staticConditions; 
 	public XMLRun(){
+		this.builder = new StringBuilder();
 		this.conditionChain = new SimpleXMLConditionChain();
 		this.orderStore = new OrderStoreImpl(); 
 		this.groupStore = new SimpleGroupStore();

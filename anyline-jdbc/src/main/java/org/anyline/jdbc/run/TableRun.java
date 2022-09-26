@@ -42,6 +42,7 @@ import java.util.List;
 public class TableRun extends BasicRun implements Run {
 
 	public TableRun(JDBCAdapter adapter, String table){
+		this.builder = new StringBuilder();
 		this.conditionChain = new SimpleAutoConditionChain();
 		this.orderStore = new OrderStoreImpl();
 		this.table = table;
