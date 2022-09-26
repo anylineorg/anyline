@@ -106,7 +106,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
+			JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
@@ -122,9 +123,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				maps = maps(run.getFinalQuery(), run.getValues());
+				maps = maps(adapter, run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run, maps);
+				}
+				if(null != adapter){
+					maps = adapter.process(maps);
 				}
 			} else {
 				maps = new ArrayList<Map<String,Object>>();
@@ -147,7 +151,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
+			JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
@@ -190,7 +195,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				set = select(run.getFinalQuery(), run.getValues());
+				set = select(adapter, run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run,set);
 
@@ -222,7 +227,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(AdapterProxy.hasAdapter()){
 				prepare.setDataSource(AdapterProxy.table(clazz));
 			}
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
+			JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
@@ -259,7 +265,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				list = select(clazz, run.getFinalQuery(), run.getValues());
+				list = select(adapter, clazz, run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this, run, list);
 
@@ -378,7 +384,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 */
 	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
-		DataSet set = select(sql,values);
+		DataSet set = select(null, sql,values);
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
@@ -700,7 +706,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @param values  values
 	 * @return List
 	 */
-	protected List<Map<String,Object>> maps(String sql, List<Object> values){
+	protected List<Map<String,Object>> maps(JDBCAdapter adapter, String sql, List<Object> values){
 		List<Map<String,Object>> maps = null;
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
@@ -722,6 +728,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
+			if(null != adapter){
+				maps = adapter.process(maps);
+			}
 			if(showSQL){
 				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,maps.size() );
 			}
@@ -736,11 +745,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	/**
 	 * 查询
+	 * @param adapter  adapter
 	 * @param sql  sql
 	 * @param values  values
 	 * @return DataSet
 	 */
-	protected DataSet select(String sql, List<Object> values){
+	protected DataSet select(JDBCAdapter adapter, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -763,6 +773,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
+			if(null != adapter) {
+				list = adapter.process(list);
+			}
 			for(Map<String,Object> map:list){
 				DataRow row = new DataRow(map);
 				row.clearUpdateColumns();
@@ -782,7 +795,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return set;
 	}
 
-	protected <T> EntitySet<T> select(Class<T> clazz, String sql, List<Object> values){
+	protected <T> EntitySet<T> select(JDBCAdapter adapter, Class<T> clazz, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -804,6 +817,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			long mid = System.currentTimeMillis();
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
+			}
+			if(null != adapter) {
+				list = adapter.process(list);
 			}
 			for(Map<String,Object> map:list){
 				if(AdapterProxy.hasAdapter()){
@@ -1292,7 +1308,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(sql, null);
+							DataSet set = select(adapter, sql, null);
 							tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1397,7 +1413,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(sql, null);
+							DataSet set = select(adapter, sql, null);
 							tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1497,7 +1513,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(sql, null);
+							DataSet set = select(adapter, sql, null);
 							tables = adapter.ptables(idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 						}
 					}
@@ -1581,7 +1597,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(sql, null);
+						DataSet set = select(adapter, sql, null);
 						columns = adapter.columns(idx, true, table, columns, set);
 					}
 					idx ++;
@@ -1697,7 +1713,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(sql, null);
+						DataSet set = select(adapter, sql, null);
 						tags = adapter.tags(idx, true, table, tags, set);
 					}
 					idx ++;

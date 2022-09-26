@@ -207,6 +207,14 @@ public interface JDBCAdapter {
 	public String parseFinalQuery(Run run);
 
 
+	/**
+	 * JDBC执行完成后的结果处理
+	 * @param list JDBC执行结果
+	 * @return  DataSet
+	 */
+	public List<Map<String,Object>> process(List<Map<String,Object>> list);
+
+
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 ******************************************************************************************************************/
