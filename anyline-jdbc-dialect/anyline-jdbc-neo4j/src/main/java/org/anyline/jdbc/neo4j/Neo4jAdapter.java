@@ -504,52 +504,6 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
         }
         builder.append(") ");
-        /*
-        List<String> columns = sql.getColumns();
-        if(null != columns && columns.size()>0){
-            //指定查询列
-            int size = columns.size();
-            for(int i=0; i<size; i++){
-                String column = columns.get(i);
-                if(BasicUtil.isEmpty(column)){
-                    continue;
-                }
-                if(column.startsWith("${") && column.endsWith("}")){
-                    column = column.substring(2, column.length()-1);
-                    builder.append(column);
-                }else{
-                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
-                        builder.append(column);
-                    }else if("*".equals(column)){
-                        builder.append("*");
-                    }else{
-                        SQLUtil.delimiter(builder, column, delimiterFr, delimiterTo);
-                    }
-                }
-                if(i<size-1){
-                    builder.append(",");
-                }
-            }
-            builder.append(JDBCAdapter.BR);
-        }else{
-            //全部查询
-            builder.append("*");
-            builder.append(JDBCAdapter.BR);
-        }*/
-/*        List<Join> joins = prepare.getJoins();
-        if(null != joins) {
-            for (Join join:joins) {
-                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-                SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
-                if(BasicUtil.isNotEmpty(join.getAlias())){
-                    //builder.append(" AS ").append(join.getAlias());
-                    builder.append("  ").append(join.getAlias());
-                }
-                builder.append(" ON ").append(join.getCondition());
-            }
-        }
-
-       */
         builder.append(" WHERE 1=1 ");
         /*添加查询条件*/
         //appendConfigStore();
