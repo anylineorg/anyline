@@ -1,5 +1,7 @@
 package org.anyline.util;
 
+import java.math.BigDecimal;
+
 public class LogUtil {
     /**
      * @param color  前景色代号(31-36) 背景颜色(41-46)
@@ -34,5 +36,20 @@ public class LogUtil {
     }
     public static String format(String content, int color) {
         return format(content, color, 0);
+    }
+    public static String format(int content, int color) {
+        return format(content+"", color, 0);
+    }
+    public static String format(double content, int color) {
+        return format(content+"", color, 0);
+    }
+    public static String format(long content, int color) {
+        return format(content+"", color, 0);
+    }
+    public static String format(BigDecimal content, int color) {
+        return format(content+"", color, 0);
+    }
+    public static String format(boolean content, int color) {
+        return format(content+"", color, 0);
     }
 }
