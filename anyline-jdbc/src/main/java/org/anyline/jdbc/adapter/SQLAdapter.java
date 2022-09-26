@@ -376,8 +376,8 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 return ps;
             }
         }, keyholder);
-        List<Object> ids = new ArrayList<>();
         if(data instanceof Collection){
+            List<Object> ids = new ArrayList<>();
             Collection list = (Collection) data;
             List<Map<String,Object>> keys = keyholder.getKeyList();
             int i = 0;
@@ -388,13 +388,11 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 setPrimaryValue(item, id);
                 i++;
             }
+            log.warn("{}[exe insert][生成主键:{}]", random, ids);
         }else{
             Object id = keyholder.getKey();
             setPrimaryValue(data, id);
-            ids.add(id);
-        }
-        if(ids.size() > 0) {
-            log.warn("{}[exe insert][生成主键:{}]", random, ids);
+            log.warn("{}[exe insert][生成主键:{}]", random, id);
         }
         return cnt;
     }
