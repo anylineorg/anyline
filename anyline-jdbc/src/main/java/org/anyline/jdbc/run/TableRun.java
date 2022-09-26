@@ -28,7 +28,7 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 

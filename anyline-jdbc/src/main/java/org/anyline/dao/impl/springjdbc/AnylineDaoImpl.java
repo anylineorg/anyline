@@ -36,7 +36,7 @@ import org.anyline.jdbc.prepare.Procedure;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.ProcedureParam;
 import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
@@ -110,7 +110,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
-				if (prepare instanceof TableSQL) {
+				if (prepare instanceof TablePrepare) {
 					src = prepare.getTable();
 				} else {
 					src = prepare.getText();
@@ -151,7 +151,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
-				if (prepare instanceof TableSQL) {
+				if (prepare instanceof TablePrepare) {
 					src = prepare.getTable();
 				} else {
 					src = prepare.getText();

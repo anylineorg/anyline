@@ -21,6 +21,7 @@ package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.jdbc.prepare.auto.AutoCondition;
 import org.anyline.jdbc.prepare.init.SimpleCondition;
 import org.anyline.jdbc.param.Config;
 import org.anyline.jdbc.prepare.Condition;

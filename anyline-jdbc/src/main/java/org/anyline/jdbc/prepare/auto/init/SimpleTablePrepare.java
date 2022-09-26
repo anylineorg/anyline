@@ -20,11 +20,11 @@
 package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TablePrepare;
 
 import java.util.List;
  
-public class SimpleTablePrepare extends SimpleAutoPrepare implements TableSQL {
+public class SimpleTablePrepare extends SimpleAutoPrepare implements TablePrepare {
 
 	public SimpleTablePrepare(){
 		super(); 

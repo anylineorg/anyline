@@ -27,7 +27,7 @@ import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.prepare.auto.TextPrepare;
 import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
 import org.anyline.jdbc.prepare.xml.XMLPrepare;
@@ -341,7 +341,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	@Override
 	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
-		if(prepare instanceof TableSQL){
+		if(prepare instanceof TablePrepare){
 			run = new TableRun(this,prepare.getTable());
 		}else if(prepare instanceof XMLPrepare){
 			run = new XMLRun();

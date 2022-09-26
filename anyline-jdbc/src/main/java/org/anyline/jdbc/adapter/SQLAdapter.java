@@ -32,7 +32,7 @@ import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.run.TableRun;
 import org.anyline.jdbc.run.TextRun;
 import org.anyline.jdbc.run.XMLRun;
-import org.anyline.jdbc.prepare.auto.TableSQL;
+import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.util.*;
 
@@ -437,7 +437,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     }
     protected void buildQueryRunContent(TableRun run){
         StringBuilder builder = run.getBuilder();
-        TableSQL sql = (TableSQL)run.getPrepare();
+        TablePrepare sql = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
         if(null != sql.getDistinct()){
             builder.append(sql.getDistinct());
