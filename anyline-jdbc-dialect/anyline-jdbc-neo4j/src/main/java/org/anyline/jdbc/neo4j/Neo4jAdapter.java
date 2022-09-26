@@ -1,5 +1,6 @@
 package org.anyline.jdbc.neo4j;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -20,14 +21,15 @@ import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.*;
 
 @Repository("anyline.jdbc.sql.adapter.neo4j")
@@ -504,6 +506,52 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
         }
         builder.append(") ");
+        /*
+        List<String> columns = sql.getColumns();
+        if(null != columns && columns.size()>0){
+            //指定查询列
+            int size = columns.size();
+            for(int i=0; i<size; i++){
+                String column = columns.get(i);
+                if(BasicUtil.isEmpty(column)){
+                    continue;
+                }
+                if(column.startsWith("${") && column.endsWith("}")){
+                    column = column.substring(2, column.length()-1);
+                    builder.append(column);
+                }else{
+                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
+                        builder.append(column);
+                    }else if("*".equals(column)){
+                        builder.append("*");
+                    }else{
+                        SQLUtil.delimiter(builder, column, delimiterFr, delimiterTo);
+                    }
+                }
+                if(i<size-1){
+                    builder.append(",");
+                }
+            }
+            builder.append(JDBCAdapter.BR);
+        }else{
+            //全部查询
+            builder.append("*");
+            builder.append(JDBCAdapter.BR);
+        }*/
+/*        List<Join> joins = prepare.getJoins();
+        if(null != joins) {
+            for (Join join:joins) {
+                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+                SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
+                if(BasicUtil.isNotEmpty(join.getAlias())){
+                    //builder.append(" AS ").append(join.getAlias());
+                    builder.append("  ").append(join.getAlias());
+                }
+                builder.append(" ON ").append(join.getCondition());
+            }
+        }
+
+       */
         builder.append(" WHERE 1=1 ");
         /*添加查询条件*/
         //appendConfigStore();
@@ -589,10 +637,17 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
 
         return run;
     }
+
     protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
         TableRun run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
-        builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
+        builder.append("MATCH (d");
+        String table = parseTable(dest);
+        if(BasicUtil.isNotEmpty(table)){
+            builder.append(":").append(table);
+        }
+        builder.append(")");
+        builder.append(" WHERE ");
         List<String> keys = new ArrayList<>();
         if(null != columns && columns.length>0){
             for(String col:columns){
@@ -615,7 +670,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 }
                 String key = keys.get(i);
 
-                SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
+                SQLUtil.delimiter(builder, "d."+key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
                 Object value = null;
                 if(obj instanceof DataRow){
                     value = ((DataRow)obj).get(key);
@@ -631,6 +686,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         }else{
             throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
         }
+        builder.append(" DELETE d");
         run.setBuilder(builder);
 
         return run;
@@ -667,7 +723,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             String id_key = "__ID";
             boolean mapHashIdKey = BasicUtil.containsString(true, true, keys, "__ID");
             if((2 == keys.size() && keys.contains(id_key)
-               || keys.size() == 1
+                    || keys.size() == 1
             )){
                 String key = null;
                 for(String k:keys){
