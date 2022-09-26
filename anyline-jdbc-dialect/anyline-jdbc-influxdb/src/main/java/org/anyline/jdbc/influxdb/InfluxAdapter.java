@@ -107,7 +107,4 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 		return run;
 	}
-	public void createInserts(StringBuilder builder, String dest, DataSet set, List<String> keys){
-		return;
-	}
 } 

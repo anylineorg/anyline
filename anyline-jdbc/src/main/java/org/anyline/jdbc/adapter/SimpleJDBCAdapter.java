@@ -118,10 +118,10 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns)
-	 * public void createInserts(StringBuilder builder, String dest, DataSet set,  List<String> keys)
-	 * public void createInserts(StringBuilder builder, String dest, Collection list,  List<String> keys)
+	 * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
+	 * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
 	 * public List<String> confirmInsertColumns(String dst, Object obj, String ... columns)
-	 * protected void insertValue(StringBuilder builder, Object obj, List<String> keys)
+	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
 	 *
 	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
 	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
@@ -158,24 +158,24 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * 根据DataSet创建批量INSERT RunPrepare
-	 * @param builder builder
+	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(StringBuilder builder, String dest, DataSet set,  List<String> keys){
+	public void createInserts(Run run, String dest, DataSet set,  List<String> keys){
 	}
 
 	/**
 	 * 根据Collection创建批量INSERT RunPrepare
-	 * @param builder builder
+	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(StringBuilder builder, String dest, Collection list,  List<String> keys){
+	public void createInserts(Run run, String dest, Collection list,  List<String> keys){
 	}
 
 	/**

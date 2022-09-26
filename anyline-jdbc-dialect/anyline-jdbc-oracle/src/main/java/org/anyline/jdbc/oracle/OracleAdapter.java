@@ -102,12 +102,17 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * INTO T (ID, NAME) VALUES (2,'N2')
 	 * INTO T (ID, NAME) VALUES (3,'N3')
 	 * SELECT 1 FROM DUAL
-	 * @param builder builder
+	 * @param run run
 	 * @param dest dest
 	 * @param keys keys
 	 */
 	@Override
-	public void createInserts(StringBuilder builder, String dest, DataSet set, List<String> keys){
+	public void createInserts(Run run, String dest, DataSet set, List<String> keys){
+		StringBuilder builder = run.getBuilder();
+		if(null == builder){
+			builder = new StringBuilder();
+			run.setBuilder(builder);
+		}
 		builder.append("INSERT ALL \n");
 		String head = "INTO " + dest + " (";
 		int keySize = keys.size();
@@ -133,17 +138,22 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				row.put(pk, primaryCreater.createPrimary(this.type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}
 			builder.append(head).append("VALUES ");
-			insertValue(builder, row, keys);
+			insertValue(run, row, false, keys);
 			builder.append(" \n");
 		}
 		builder.append("SELECT 1 FROM DUAL");
 	}
 
 	@Override
-	public void createInserts(StringBuilder builder, String dest, Collection list, List<String> keys){
+	public void createInserts(Run run, String dest, Collection list, List<String> keys){
+		StringBuilder builder = run.getBuilder();
+		if(null == builder){
+			builder = new StringBuilder();
+			run.setBuilder(builder);
+		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInserts(builder, dest, set, keys);
+			createInserts(run, dest, set, keys);
 			return;
 		}
 		builder.append("INSERT ALL \n");
@@ -169,7 +179,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					row.put(pk, primaryCreater.createPrimary(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 				}
 				builder.append(head).append("VALUES ");
-				insertValue(builder, row, keys);
+				insertValue(run, row, false, keys);
 			}else{
 				String pk = null;
 				Object pv = null;
@@ -186,7 +196,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					}
 				}
 				builder.append(head).append("VALUES ");
-				insertValue(builder, obj, keys);
+				insertValue(run, obj, false, keys);
 			}
 			builder.append(" \n");
 		}

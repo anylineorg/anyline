@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SQLAdapterUtil {
 
 	private static ConcurrentHashMap<String, JDBCAdapter> adapters= new ConcurrentHashMap<>();
-
+	public SQLAdapterUtil(){}
 	@Autowired(required = false)
 	public void setAdapters(Map<String, JDBCAdapter> map){
 		for (JDBCAdapter adapter:map.values()){

@@ -61,13 +61,18 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
 
     /**
      * 根据DataSet创建批量INSERT RunPrepare
-     * @param builder builder
+     * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(StringBuilder builder, String dest, DataSet set,  List<String> keys){
+    public void createInserts(Run run, String dest, DataSet set,  List<String> keys){
+        StringBuilder builder = run.getBuilder();
+        if(null == builder){
+            builder = new StringBuilder();
+            run.setBuilder(builder);
+        }
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
@@ -93,7 +98,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 }
                 row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
             }
-            insertValue(builder, row, keys);
+            insertValue(run, row, false, keys);
             if(i<dataSize-1){
                 builder.append(",");
             }
@@ -102,16 +107,21 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
 
     /**
      * 根据Collection创建批量INSERT RunPrepare
-     * @param builder builder
+     * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(StringBuilder builder, String dest, Collection list,  List<String> keys){
+    public void createInserts(Run run, String dest, Collection list,  List<String> keys){
+        StringBuilder builder = run.getBuilder();
+        if(null == builder){
+            builder = new StringBuilder();
+            run.setBuilder(builder);
+        }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(builder, dest, set, keys);
+            createInserts(run, dest, set, keys);
             return;
         }
         builder.append("INSERT INTO ").append(parseTable(dest));
@@ -138,7 +148,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                     }
                     row.put(pk, primaryCreater.createPrimary(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
                 }
-                insertValue(builder, row, keys);
+                insertValue(run, row, false, keys);
             }else{
                 String pk = null;
                 Object pv = null;
@@ -154,7 +164,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                         BeanUtil.setFieldValue(obj, pk, pv);
                     }
                 }
-                insertValue(builder, obj, keys);
+                insertValue(run, obj, false, keys);
             }
             if(idx<dataSize-1){
                 builder.append(",");
@@ -279,7 +289,6 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     @Override
     protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
         Run run = new TableRun(this,dest);
-        StringBuilder builder = new StringBuilder();
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
         }
@@ -309,18 +318,19 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         if(null == keys || keys.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        createInserts(builder, dest, list, keys);
-        run.setBuilder(builder);
+        createInserts(run, dest, list, keys);
 
         return run;
     }
     /**
      * 生成insert sql的value部分,每个Entity(每行数据)调用一次
-     * @param builder builder
+     * @param run run
      * @param obj Entity或DataRow
+     * @param placeholder 是否使用占位符(批量操作时不要超出数量)
      * @param keys 需要插入的列
      */
-    protected void insertValue(StringBuilder builder, Object obj, List<String> keys){
+    protected void insertValue(Run run, Object obj, boolean placeholder , List<String> keys){
+        StringBuilder builder = run.getBuilder();
         int keySize = keys.size();
         builder.append("(");
         for(int j=0; j<keySize; j++){

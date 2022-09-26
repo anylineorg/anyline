@@ -123,21 +123,21 @@ public interface JDBCAdapter {
 
 	/**
 	 * 根据Collection创建批量插入SQL
-	 * @param builder builder
+	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInserts(StringBuilder builder, String dest, Collection list, List<String> keys);
+	public void createInserts(Run run, String dest, Collection list, List<String> keys);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
-	 * @param builder builder
+	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInserts(StringBuilder builder, String dest, DataSet set, List<String> keys);
+	public void createInserts(Run run, String dest, DataSet set, List<String> keys);
 
 	/**
 	 * 确认需要插入的列
