@@ -116,11 +116,11 @@ public interface DMListener {
      * @param run sql
      * @param dest 需要插入的表
      * @param obj 接入内容
-     * @param checkParimary 是否需要检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
      * @return 是否执行  如果返回false 将不执行插入
      */
-    public boolean beforeInsert(AnylineDao dao, Run run, String dest, Object obj, boolean checkParimary, String ... columns);
+    public boolean beforeInsert(AnylineDao dao, Run run, String dest, Object obj, boolean checkPrimary, String ... columns);
 
     /**
      * 插入之后调用
@@ -129,31 +129,31 @@ public interface DMListener {
      * @param count 影响行数
      * @param dest 需要插入的表
      * @param obj 接入内容
-     * @param checkParimary 是否需要检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
      */
-    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkParimary, String ... columns);
+    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkPrimary, String ... columns);
 
     /**
      * 批量插入前调用
      * @param dao dao
      * @param dest 需要插入的表
      * @param obj 插入内容
-     * @param checkParimary 是否需要检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
      * @return 是否执行  如果返回false 将不执行插入
      */
-    public boolean beforeBatchInsert(AnylineDao dao, String dest, Object obj, boolean checkParimary, String ... columns);
+    public boolean beforeBatchInsert(AnylineDao dao, String dest, Object obj, boolean checkPrimary, String ... columns);
     /**
      * 批量插入之后调用
      * @param dao dao
      * @param count 影响行数
      * @param dest 需要插入的表
      * @param obj 接入内容
-     * @param checkParimary 是否需要检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
      */
-    public void afterBatchInsert(AnylineDao dao, int count, String dest, Object obj, boolean checkParimary, String ... columns);
+    public void afterBatchInsert(AnylineDao dao, int count, String dest, Object obj, boolean checkPrimary, String ... columns);
 
     /**
      * 执行SQL之前调用
