@@ -461,7 +461,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * 保存(insert|upate)
 	 */
 	@Override
-	public int save(String dest, Object data, boolean checkParimary, String ... columns){
+	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 			throw new SQLUpdateException("保存空数据");
 		}
@@ -469,17 +469,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			Collection<?> items = (Collection<?>)data;
 			int cnt = 0;
 			for(Object item:items){
-				cnt += save(dest, item, checkParimary, columns);
+				cnt += save(dest, item, checkPrimary, columns);
 			}
 			return cnt;
 		}
-		return saveObject(dest, data, checkParimary, columns);
+		return saveObject(dest, data, checkPrimary, columns);
 
 	}
 
 	@Override
-	public int save(Object data, boolean checkParimary, String ... columns){
-		return save(null, data, checkParimary, columns);
+	public int save(Object data, boolean checkPrimary, String ... columns){
+		return save(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int save(String dest, Object data, String ... columns){
@@ -491,12 +491,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 
-	protected int saveObject(String dest, Object data, boolean checkParimary, String ... columns){
+	protected int saveObject(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 			return 0;
 		}
 		if(checkIsNew(data)){
-			return insert(dest, data, checkParimary, columns);
+			return insert(dest, data, checkPrimary, columns);
 		}else{
 			return update(dest, data, columns);
 		}
@@ -523,22 +523,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	/**
 	 * 添加
-	 * @param checkParimary   是否需要检查重复主键,默认不检查
+	 * @param checkPrimary   是否需要检查重复主键,默认不检查
 	 * @param columns  需要插入的列
 	 * @param dest  dest
 	 * @param data  data
 	 * @return int
 	 */
 	@Override
-	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildInsertRun(dest, data, checkParimary, columns);
+	public int insert(String dest, Object data, boolean checkPrimary, String ... columns) {
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		Run run = adapter.buildInsertRun(dest, data, checkPrimary, columns);
 		if(null == run){
 			return 0;
 		}
 		int cnt = 0;
 		final String sql = run.getFinalInsert();
 		final List<Object> values = run.getValues();
-		KeyHolder keyholder = new GeneratedKeyHolder();
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
@@ -550,39 +550,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeInsert(this,run, dest, data,checkParimary, columns);
+				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, columns);
 			}
 			if(listenerResult) {
-				Long id = null;
-				if(null != values && values.size()>0){
-					cnt = getJdbc().update(new PreparedStatementCreator() {
-						@Override
-						public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-							PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-							int idx = 0;
-							if (null != values) {
-								for (Object obj : values) {
-									ps.setObject(++idx, obj);
-								}
-							}
-							return ps;
-						}
-					}, keyholder);
-					if (cnt == 1) {
-						try {
-							id =  keyholder.getKey().longValue();
-							setPrimaryValue(data, id);
-						} catch (Exception e) {}
-					}
-				}else{
-					cnt = getJdbc().update(sql);
-				}
-
+				cnt = adapter.insert(random, jdbc, data, sql, values);
 				if (null != listener) {
-					listener.afterInsert(this, run, cnt, dest, data, checkParimary, columns);
+					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
 				}
 				if (showSQL) {
-					log.warn(random + "[执行耗时:{}ms][影响行数:{}][主键:{}]", System.currentTimeMillis() - fr, cnt, id);
+					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , System.currentTimeMillis() - fr, cnt);
 				}
 			}
 		}catch(Exception e){
@@ -590,7 +566,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("插入异常", 33), sql);
 				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getInsertColumns(),values));
 			}
-			throw e;
+			e.printStackTrace();
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -601,8 +577,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public int insert(Object data, boolean checkParimary, String ... columns){
-		return insert(null, data, checkParimary, columns);
+	public int insert(Object data, boolean checkPrimary, String ... columns){
+		return insert(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int insert(String dest, Object data, String ... columns){
@@ -614,7 +590,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public int batchInsert(final String dest, final Object data, final boolean checkParimary, final String ... columns){
+	public int batchInsert(final String dest, final Object data, final boolean checkPrimary, final String ... columns){
 		if(null == data){
 			return 0;
 		}
@@ -622,7 +598,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			DataSet set = (DataSet)data;
 			int size = set.size();
 			for(int i=0; i<size; i++){
-				batchInsert(dest, set.getRow(i), checkParimary, columns);
+				batchInsert(dest, set.getRow(i), checkPrimary, columns);
 			}
 		}
 
@@ -648,12 +624,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 									boolean listenerResult = true;
 									if(null != listener){
-										listenerResult = listener.beforeBatchInsert(AnylineDaoImpl.this,dest, list, checkParimary, columns);
+										listenerResult = listener.beforeBatchInsert(AnylineDaoImpl.this,dest, list, checkPrimary, columns);
 									}
 									if(listenerResult) {
-										int cnt = insert(dest, list, checkParimary, columns);
+										int cnt = insert(dest, list, checkPrimary, columns);
 										if (null != listener) {
-											listener.afterBatchInsert(AnylineDaoImpl.this, cnt, dest, list, checkParimary, columns);
+											listener.afterBatchInsert(AnylineDaoImpl.this, cnt, dest, list, checkPrimary, columns);
 										}
 
 									}
@@ -673,8 +649,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public int batchInsert(Object data, boolean checkParimary, String ... columns){
-		return batchInsert(null, data, checkParimary, columns);
+	public int batchInsert(Object data, boolean checkPrimary, String ... columns){
+		return batchInsert(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int batchInsert(String dest, Object data, String ... columns){
@@ -684,21 +660,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public int batchInsert(Object data, String ... columns){
 		return batchInsert(null, data, false, columns);
 	}
-	protected void setPrimaryValue(Object obj, long value){
-		if(null == obj){
-			return;
-		}
-		if(obj instanceof DataRow){
-			DataRow row = (DataRow)obj;
-			row.put(row.getPrimaryKey(), value);
-		}else{
-			if(AdapterProxy.hasAdapter()){
-				String key = AdapterProxy.primaryKey(obj.getClass());
-				Field field = AdapterProxy.field(obj.getClass(), key);
-				BeanUtil.setFieldValue(obj, field, value);
-			}
-		}
-	}
+
 
 	/**
 	 * 查询

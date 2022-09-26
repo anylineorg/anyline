@@ -67,31 +67,31 @@ public interface AnylineDao<E>{
 	/** 
 	 * 添加 
 	 * @param data 需要插入的数据 
-	 * @param checkParimary   是否需要检查重复主键,默认不检查 
+	 * @param checkPrimary   是否需要检查重复主键,默认不检查 
 	 * @param columns  需要插入的列 
 	 * @param dst 表 
 	 * @return int
 	 */
-	public int insert(String dst, Object data, boolean checkParimary, String ... columns);
-	public int insert(Object data, boolean checkParimary, String ... columns); 
+	public int insert(String dst, Object data, boolean checkPrimary, String ... columns);
+	public int insert(Object data, boolean checkPrimary, String ... columns); 
 	public int insert(String dst, Object data, String ... columns); 
 	public int insert(Object data, String ... columns); 
 	
 
-	public int batchInsert(String dst, Object data, boolean checkParimary, String ... columns);
-	public int batchInsert(Object data, boolean checkParimary, String ... columns);
+	public int batchInsert(String dst, Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(Object data, boolean checkPrimary, String ... columns);
 	public int batchInsert(String dst, Object data, String ... columns);
 	public int batchInsert(Object data, String ... columns);
 	/** 
 	 * 保存(insert|update) 
 	 * @param dst  dst
 	 * @param data  data
-	 * @param checkParimary 是否检查主键 
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns  columns
 	 * @return int
 	 */ 
-	public int save(String dst, Object data, boolean checkParimary, String ... columns); 
-	public int save(Object data, boolean checkParimary, String ... columns); 
+	public int save(String dst, Object data, boolean checkPrimary, String ... columns); 
+	public int save(Object data, boolean checkPrimary, String ... columns); 
 	public int save(String dst, Object data, String ... columns); 
 	public int save(Object data, String ... columns); 
  

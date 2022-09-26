@@ -35,8 +35,14 @@ import org.anyline.jdbc.run.XMLRun;
 import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.util.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.*;
 
 
@@ -50,13 +56,13 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * 创建INSERT RunPrepare
      * @param dest 表
      * @param obj 实体
-     * @param checkParimary 是否检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return Run
      */
     @Override
-    public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns){
-        return super.buildInsertRun(dest, obj, checkParimary, columns);
+    public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+        return super.buildInsertRun(dest, obj, checkPrimary, columns);
     }
 
     /**
@@ -177,12 +183,12 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * 根据entity创建 INSERT RunPrepare
      * @param dest
      * @param obj
-     * @param checkParimary
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
+    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns){
         Run run = new TableRun(this,dest);
         //List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
@@ -282,12 +288,12 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * 根据collection创建 INSERT RunPrepare
      * @param dest 表
      * @param list 对象集合
-     * @param checkParimary 是否检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列，如果不指定则全部插入
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
+    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns){
         Run run = new TableRun(this,dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
@@ -342,6 +348,49 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         builder.append(")");
     }
 
+
+    /**
+     * 执行 insert
+     * @param random random
+     * @param jdbc jdbc
+     * @param data data
+     * @param sql sql
+     * @param values value
+     * @return int
+     * @throws Exception
+     */
+    @Override
+    public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception{
+        int cnt = 0;
+        Long id = null;
+        KeyHolder keyholder = new GeneratedKeyHolder();
+        cnt = jdbc.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
+                PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                int idx = 0;
+                if (null != values) {
+                    for (Object obj : values) {
+                        ps.setObject(++idx, obj);
+                    }
+                }
+                return ps;
+            }
+        }, keyholder);
+        if(data instanceof Collection){
+            Collection list = (Collection) data;
+            List<Map<String,Object>> keys = keyholder.getKeyList();
+            int i = 0;
+            for(Object item:list){
+                Map<String,Object> key = keys.get(i);
+                setPrimaryValue(item, key.get("GENERATED_KEY"));
+                i++;
+            }
+        }else{
+            setPrimaryValue(data, keyholder.getKey());
+        }
+        return cnt;
+    }
     protected void buildQueryRunContent(XMLRun run){
     }
     protected void buildQueryRunContent(TextRun run){
@@ -650,7 +699,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         return sql;
     }
 
-    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();
@@ -727,7 +776,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
 
         return run;
     }
-    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();
