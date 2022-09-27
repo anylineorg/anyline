@@ -406,25 +406,60 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 return ps;
             }
         }, keyholder);
-        if(data instanceof Collection){
-            List<Object> ids = new ArrayList<>();
-            Collection list = (Collection) data;
-            List<Map<String,Object>> keys = keyholder.getKeyList();
-            int i = 0;
-            for(Object item:list){
-                Map<String,Object> key = keys.get(i);
-                Object id = key.get("GENERATED_KEY");
-                ids.add(id);
-                setPrimaryValue(item, id);
-                i++;
-            }
-            log.warn("{}[exe insert][生成主键:{}]", random, ids);
-        }else{
-            Object id = keyholder.getKey();
-            setPrimaryValue(data, id);
-            log.warn("{}[exe insert][生成主键:{}]", random, id);
-        }
+        identity(random, data, keyholder);
         return cnt;
+    }
+    @Override
+    public boolean identity(String random, Object data, KeyHolder keyholder){
+        try {
+            if(null == keyholder){
+                return false;
+            }
+            List<Map<String,Object>> keys = keyholder.getKeyList();
+            String id_key = generatedKey();
+            if(null == id_key && keys.size()>0){
+                Map<String,Object> key = keys.get(0);
+                id_key = key.keySet().iterator().next();
+            }
+            if(data instanceof Collection){
+                List<Object> ids = new ArrayList<>();
+                Collection list = (Collection) data;
+                if(BasicUtil.isEmpty(id_key)){
+                    return false;
+                }
+                int i = 0;
+                int data_size = list.size();
+                if(list.size() == keys.size()) {
+                    for (Object item : list) {
+                        Map<String, Object> key = keys.get(i);
+                        Object id = key.get(id_key);
+                        ids.add(id);
+                        setPrimaryValue(item, id);
+                        i++;
+                    }
+                }else{
+                    Object last = keys.get(0).get(id_key);
+                    if(last instanceof Number){
+                        Long num = BasicUtil.parseLong(last.toString(), null);
+                        if(null != num){
+                            num = num - data_size + 1;
+                            for(Object item:list){
+                                setPrimaryValue(item, num++);
+                            }
+                        }
+                    }
+                }
+                log.warn("{}[exe insert][生成主键:{}]", random, ids);
+            }else{
+                Object id = keys.get(0).get(id_key);
+                setPrimaryValue(data, id);
+                log.warn("{}[exe insert][生成主键:{}]", random, id);
+            }
+        }catch (Exception e){
+            log.warn("{}[exe insert][返回主键失败]", random);
+            return false;
+        }
+        return true;
     }
 
     /* *****************************************************************************************************************

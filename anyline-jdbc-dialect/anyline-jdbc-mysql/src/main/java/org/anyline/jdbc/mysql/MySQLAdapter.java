@@ -25,7 +25,13 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
  
 	public DB_TYPE type(){
 		return DB_TYPE.MYSQL; 
-	} 
+	}
+
+	@Override
+	public String generatedKey() {
+		return "GENERATED_KEY";
+	}
+
 	public MySQLAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";

@@ -355,6 +355,10 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
+	@Override
+	public String generatedKey() {
+		return null;
+	}
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------

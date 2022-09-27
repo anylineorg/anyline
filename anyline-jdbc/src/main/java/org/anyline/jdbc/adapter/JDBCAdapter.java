@@ -27,6 +27,7 @@ import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.run.TableRun;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.sql.PreparedStatement;
@@ -175,7 +176,8 @@ public interface JDBCAdapter {
 	 */
 	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception;
 
-
+	public boolean identity(String random, Object data, KeyHolder keyholder);
+	public String generatedKey();
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/

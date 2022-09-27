@@ -1114,6 +1114,6 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 
 
 	public String concat(String ... args){ 
-		return concatFun(args);
+		return concatOr(args);
 	} 
 } 
