@@ -796,19 +796,6 @@ public class SimpleService<E> implements AnylineService<E> {
         }
     }
     @Override
-    public int update(boolean async, Object data, List<String> fixs ,String... columns) {
-        return update(async, null, data, BeanUtil.merge(fixs, columns));
-    }
-    @Override
-    public int update(boolean async, Object data, String[] fixs ,String... columns) {
-        return update(async, null, data, BeanUtil.array2list(fixs, columns));
-    }
-    @Override
-    public int update(boolean async, Object data,String... columns) {
-        return update(async, null, data, BeanUtil.array2list(columns));
-    }
-
-    @Override
     public int update(boolean async, String dest, Object data, List<String> fixs, String... columns) {
         return update(async, dest, data, null, fixs, columns);
     }
@@ -830,6 +817,35 @@ public class SimpleService<E> implements AnylineService<E> {
     public int update(boolean async, String dest, Object data, ConfigStore configs, String... columns) {
         return update(async, dest, data, configs, BeanUtil.array2list(columns));
     }
+
+
+    @Override
+    public int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+        return update(async, null, data, configs, fixs, columns);
+    }
+    @Override
+    public int update(boolean async, Object data, List<String> fixs, String... columns) {
+        return update(async, null, data, null, fixs, columns);
+    }
+    @Override
+    public int update(boolean async, Object data, String[] fixs, String... columns) {
+        return update(async, null, data, null, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int update(boolean async, Object data, String... columns) {
+        return update(async, null, data, null, BeanUtil.array2list(columns));
+    }
+
+    @Override
+    public int update(boolean async,  Object data, ConfigStore configs, String[] fixs, String... columns) {
+        return update(async, null, data, configs, BeanUtil.array2list(fixs, columns));
+    }
+
+    @Override
+    public int update(boolean async, Object data, ConfigStore configs, String... columns) {
+        return update(async, null, data, configs, BeanUtil.array2list(columns));
+    }
+
 
     @Override
     public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
@@ -858,19 +874,35 @@ public class SimpleService<E> implements AnylineService<E> {
         return update(false, dest, data, null, BeanUtil.array2list(columns));
     }
 
-
+    @Override
+    public int update(Object data, ConfigStore configs, List<String> fixs, String... columns) {
+        return update(false, null, data, configs, fixs, columns);
+    }
+    @Override
+    public int update(Object data, ConfigStore configs, String[] fixs, String... columns) {
+        return update(false, null,  data, configs, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int update(Object data, ConfigStore configs, String... columns) {
+        return update(false, null, data, configs, BeanUtil.array2list(columns));
+    }
     @Override
     public int update(Object data, List<String> fixs, String... columns) {
-        return update(false,null, data, null, fixs, columns);
+        return update(false, null, data, null, fixs, columns);
     }
+
     @Override
     public int update(Object data, String[] fixs, String... columns) {
-        return update(false,null, data, null, fixs, columns);
+        return update(false, null, data, null, BeanUtil.array2list(fixs, columns));
     }
+
     @Override
-    public int update(Object data,  String... columns) {
-        return update(false,null, data, null, BeanUtil.array2list(columns));
+    public int update(Object data, String... columns) {
+        return update(false, null, data, null, BeanUtil.array2list(columns));
     }
+
+
+
 
     public int save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs,  String... columns) {
         return save(async, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));

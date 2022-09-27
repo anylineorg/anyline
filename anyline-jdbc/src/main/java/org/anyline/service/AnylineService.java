@@ -121,23 +121,32 @@ public interface AnylineService<E>{
 	public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
 	public int update(String dest, Object data, List<String> fixs, String ... columns);
 	public int update(String dest, Object data, String[] fixs, String ... columns);
-	public int update(Object data, String[] fixs, String ... columns);
-	public int update(Object data, List<String> fixs, String... columns);
 	public int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(String dest, Object data, String ... columns);
-	public int update(Object data, String ... columns);
 	public int update(String dest, Object data, ConfigStore configs, String ... columns);
+
+	public int update(Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	public int update(Object data, List<String> fixs, String ... columns);
+	public int update(Object data, String[] fixs, String ... columns);
+	public int update(Object data, ConfigStore configs, String[] fixs, String ... columns);
+	public int update(Object data, String ... columns);
+	public int update(Object data, ConfigStore configs, String ... columns);
+
 
 
 	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
-	public int update(boolean async, Object data, String[] fixs, String ... columns);
-	public int update(boolean async, Object data, List<String> fixs, String... columns);
 	public int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, String ... columns);
-	public int update(boolean async, Object data, String ... columns);
 	public int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns);
+	
+	public int update(boolean async, Object data, List<String> fixs, String ... columns);
+	public int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	public int update(boolean async, Object data, String[] fixs, String ... columns);
+	public int update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns);
+	public int update(boolean async, Object data, String ... columns);
+	public int update(boolean async, Object data, ConfigStore configs, String ... columns);
 
 
 	/* *****************************************************************************************************************
