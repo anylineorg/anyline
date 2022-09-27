@@ -355,8 +355,180 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
+	/* *****************************************************************************************************************
+	 * 													UPDATE
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns)
+	 * public List<String> checkMetadata(String table, List<String> columns)
+	 *
+	 * protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns)
+	 * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns)
+	 * protected List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns)
+	 ******************************************************************************************************************/
 
 
+	@Override
+	public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+		if(null == obj){
+			return null;
+		}
+		if(null == dest){
+			dest = DataSourceHolder.parseDataSource(null,obj);
+		}
+		if(obj instanceof DataRow){
+			return buildUpdateRunFromDataRow(dest,(DataRow)obj,checkPrimary, columns);
+		}else{
+			return buildUpdateRunFromObject(dest, obj,checkPrimary, columns);
+		}
+	}
+
+	protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
+		return null;
+	}
+	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
+		return null;
+	}
+
+	/**
+	 * 过滤掉表结构中不存在的列
+	 * @param table 表
+	 * @param columns columns
+	 * @return List
+	 */
+	public List<String> checkMetadata(String table, List<String> columns){
+		if(!ConfigTable.IS_AUTO_CHECK_METADATA || null == service){
+			return columns;
+		}
+		List<String> list = new ArrayList<>();
+		List<String> metadatas = service.columns(table);
+		metadatas = BeanUtil.toUpperCase(metadatas);
+		for (String item:columns){
+			if(metadatas.contains(item.toUpperCase())){
+				list.add(item);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 确认需要更新的列
+	 * @param row DataRow
+	 * @param columns 提供额外的判断依据
+	 *                列可以加前缀
+	 *                +:表示必须插入
+	 *                -:表示必须不插入
+	 *                ?:根据是否有值
+	 *
+	 *        先DataRow解析出必须更新的列与colums中必须更新的列合并
+	 *        再从DataRow中解析出必须忽略的列与columns中必须忽略更新的列合并
+	 *        DataRow.put时可以设置 必须更新(插入)或必须忽略更新(插入) put("+KEY", "VALUE") put("-KEY", "VALUE")
+	 *
+	 *        如果提供了columns并且长度>0则不遍历row.keys
+	 *        如果没有提供columns 但row.keys中有必须更新的列 也不再遍历row.keys
+	 *        其他情况需要遍历row.keys
+	 *
+	 *        以上执行完后，如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
+	 *        则把执行结果与表结构对比，删除表中没有的列
+	 * @return List
+	 */
+	protected List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
+		List<String> keys = null;/*确定需要更新的列*/
+		if(null == row){
+			return new ArrayList<>();
+		}
+		boolean each = true;//是否需要从row中查找列
+		List<String> masters = BeanUtil.copy(row.getUpdateColumns())		; //必须更新列
+		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; //必须不更新列
+		List<String> factKeys = new ArrayList<>()							; //根据是否空值
+		BeanUtil.removeAll(ignores, columns);
+
+		if(null != columns && columns.length>0){
+			each = false;
+			keys = new ArrayList<>();
+			for(String column:columns){
+				if(BasicUtil.isEmpty(column)){
+					continue;
+				}
+				if(column.startsWith("+")){
+					column = column.substring(1, column.length());
+					masters.add(column);
+					each = true;
+				}else if(column.startsWith("-")){
+					column = column.substring(1, column.length());
+					ignores.add(column);
+					each = true;
+				}else if(column.startsWith("?")){
+					column = column.substring(1, column.length());
+					factKeys.add(column);
+					each = true;
+				}
+				keys.add(column);
+			}
+		}else if(null != masters && masters.size()>0){
+			each = false;
+			keys = masters;
+		}
+		if(each){
+			keys = row.keys();
+			for(String k:masters){
+				if(!keys.contains(k)){
+					keys.add(k);
+				}
+			}
+			//是否更新null及""列
+			boolean isUpdateNullColumn = row.isUpdateNullColumn();
+			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
+			BeanUtil.removeAll(keys, ignores);
+			int size = keys.size();
+			for(int i=size-1;i>=0; i--){
+				String key = keys.get(i);
+				if(masters.contains(key)){
+					//必须更新
+					continue;
+				}
+
+				Object value = row.get(key);
+				if(null == value){
+					if(factKeys.contains(key)){
+						keys.remove(key);
+						continue;
+					}
+					if(!isUpdateNullColumn){
+						keys.remove(i);
+						continue;
+					}
+				}else if("".equals(value.toString().trim())){
+					if(factKeys.contains(key)){
+						keys.remove(key);
+						continue;
+					}
+					if(!isUpdateEmptyColumn){
+						keys.remove(i);
+						continue;
+					}
+				}
+
+			}
+		}
+		keys.removeAll(ignores);
+		keys = checkMetadata(dest, keys);
+		keys = BeanUtil.distinct(keys);
+		return keys;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													QUERY
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
+	 * public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 *
+	 * public void buildQueryRunContent(Run run)
+	 * protected void buildQueryRunContent(XMLRun run)
+	 * protected void buildQueryRunContent(TextRun run)
+	 * protected void buildQueryRunContent(TableRun run)
+	 ******************************************************************************************************************/
 
 	/**
 	 * 创建查询SQL
@@ -438,6 +610,47 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		}
 		return run;
 	}
+
+
+	/* *****************************************************************************************************************
+	 * 													EXISTS
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String parseExists(Run run)
+	 ******************************************************************************************************************/
+
+	@Override
+	public String parseExists(Run run){
+		return null;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													COUNT
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String parseTotalQuery(Run run)
+	 ******************************************************************************************************************/
+	/**
+	 * 求总数SQL
+	 * Run 反转调用
+	 * @param run  run
+	 * @return String
+	 */
+	@Override
+	public String parseTotalQuery(Run run){
+		return null;
+	}
+
+
+
+	/* *****************************************************************************************************************
+	 * 													DELETE
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public Run buildDeleteRunSQL(String table, String key, Object values)
+	 * public Run buildDeleteRunSQL(String dest, Object obj, String ... columns)
+	 * public Run buildDeleteRunContent(Run run)
+	 *
+	 * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
+	 * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
+	 ******************************************************************************************************************/
 	@Override
 	public Run buildDeleteRunSQL(String table, String key, Object values){
 		return createDeleteRunSQLFromTable(table, key, values);
@@ -502,436 +715,6 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
 
 		return null;
-	}
-
-	@Override
-	public String getPrimaryKey(Object obj){
-		if(null == obj){
-			return null;
-		}
-		if(obj instanceof DataRow){
-			return ((DataRow)obj).getPrimaryKey();
-		}else{
-			return null;
-		}
-	}
-	@Override
-	public Object getPrimaryValue(Object obj){
-		if(null == obj){
-			return null;
-		}
-		if(obj instanceof DataRow){
-			return ((DataRow)obj).getPrimaryValue();
-		}else{
-			return null;
-		}
-	}
-
-	/**
-	 * 求总数SQL
-	 * Run 反转调用
-	 * @param run  run
-	 * @return String
-	 */
-	@Override
-	public String parseTotalQuery(Run run){
-		return null;
-	}
-
-	@Override
-	public String parseExists(Run run){
-		return null;
-	}
-
-	@Override
-	public void value(StringBuilder builder, Object obj, String key){
-		Object value = null;
-		if(obj instanceof DataRow){
-			value = ((DataRow)obj).get(key);
-		}else {
-			if (AdapterProxy.hasAdapter()) {
-				Field field = AdapterProxy.field(obj.getClass(), key);
-				value = BeanUtil.getFieldValue(obj, field);
-			} else {
-				value = BeanUtil.getFieldValue(obj, key);
-			}
-		}
-		format(builder, value);
-	}
-	@Override
-	public void format(StringBuilder builder, Object value){
-		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-			builder.append("null");
-		}else if(value instanceof String){
-			String str = value.toString();
-			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
-				str = str.substring(2, str.length()-1);
-			}else if(str.startsWith("'") && str.endsWith("'")){
-			}else{
-				str = "'" + str.replace("'", "''") + "'";
-			}
-			builder.append(str);
-		}else if(value instanceof Timestamp){
-			builder.append("'").append(value.toString()).append("'");
-		}else if(value instanceof java.sql.Date){
-			builder.append("'").append(value.toString()).append("'");
-		}else if(value instanceof LocalDate){
-			builder.append("'").append(value.toString()).append("'");
-		}else if(value instanceof LocalTime){
-			builder.append("'").append(value.toString()).append("'");
-		}else if(value instanceof LocalDateTime){
-			builder.append("'").append(value.toString()).append("'");
-		}else if(value instanceof Date){
-			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
-		}else if(value instanceof Number || value instanceof Boolean){
-			builder.append(value.toString());
-		}else{
-			builder.append(value.toString());
-		}
-	}
-
-
-	@Override
-	public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns){
-		if(null == obj){
-			return null;
-		}
-		if(null == dest){
-			dest = DataSourceHolder.parseDataSource(null,obj);
-		}
-		if(obj instanceof DataRow){
-			return buildUpdateRunFromDataRow(dest,(DataRow)obj,checkPrimary, columns);
-		}else{
-			return buildUpdateRunFromObject(dest, obj,checkPrimary, columns);
-		}
-	}
-
-	protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
-		return null;
-	}
-	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
-		return null;
-	}
-
-	/**
-	 * 过滤掉表结构中不存在的列
-	 * @param table 表
-	 * @param columns columns
-	 * @return List
-	 */
-	public List<String> checkMetadata(String table, List<String> columns){
-		if(!ConfigTable.IS_AUTO_CHECK_METADATA || null == service){
-			return columns;
-		}
-		List<String> list = new ArrayList<>();
-		List<String> metadatas = service.columns(table);
-		metadatas = BeanUtil.toUpperCase(metadatas);
-		for (String item:columns){
-			if(metadatas.contains(item.toUpperCase())){
-				list.add(item);
-			}
-		}
-		return list;
-	}
-
-	/**
-	 * 确认需要更新的列
-	 * @param row DataRow
-	 * @param columns 提供额外的判断依据
-	 *                列可以加前缀
-	 *                +:表示必须插入
-	 *                -:表示必须不插入
-	 *                ?:根据是否有值
-	 *
-	 *        先DataRow解析出必须更新的列与colums中必须更新的列合并
-	 *        再从DataRow中解析出必须忽略的列与columns中必须忽略更新的列合并
-	 *        DataRow.put时可以设置 必须更新(插入)或必须忽略更新(插入) put("+KEY", "VALUE") put("-KEY", "VALUE")
-	 *
-	 *        如果提供了columns并且长度>0则不遍历row.keys
-	 *        如果没有提供columns 但row.keys中有必须更新的列 也不再遍历row.keys
-	 *        其他情况需要遍历row.keys
-	 *
-	 *        以上执行完后，如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
-	 *        则把执行结果与表结构对比，删除表中没有的列
-	 * @return List
-	 */
-	protected List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
-		List<String> keys = null;/*确定需要更新的列*/
-		if(null == row){ 
-			return new ArrayList<>();
-		} 
-		boolean each = true;//是否需要从row中查找列 
-		List<String> masters = BeanUtil.copy(row.getUpdateColumns())		; //必须更新列
-		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; //必须不更新列
-		List<String> factKeys = new ArrayList<>()							; //根据是否空值
-		BeanUtil.removeAll(ignores, columns);
-
-		if(null != columns && columns.length>0){ 
-			each = false; 
-			keys = new ArrayList<>();
-			for(String column:columns){ 
-				if(BasicUtil.isEmpty(column)){ 
-					continue; 
-				} 
-				if(column.startsWith("+")){ 
-					column = column.substring(1, column.length());
-					masters.add(column);
-					each = true; 
-				}else if(column.startsWith("-")){
-					column = column.substring(1, column.length()); 
-					ignores.add(column);
-					each = true; 
-				}else if(column.startsWith("?")){
-					column = column.substring(1, column.length()); 
-					factKeys.add(column); 
-					each = true; 
-				} 
-				keys.add(column); 
-			} 
-		}else if(null != masters && masters.size()>0){
-			each = false;
-			keys = masters;
-		}
-		if(each){ 
-			keys = row.keys();
-			for(String k:masters){
-				if(!keys.contains(k)){
-					keys.add(k);
-				}
-			}
-			//是否更新null及""列 
-			boolean isUpdateNullColumn = row.isUpdateNullColumn();
-			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
-			BeanUtil.removeAll(keys, ignores);
-			int size = keys.size(); 
-			for(int i=size-1;i>=0; i--){ 
-				String key = keys.get(i); 
-				if(masters.contains(key)){
-					//必须更新 
-					continue; 
-				}
-				 
-				Object value = row.get(key); 
-				if(null == value){ 
-					if(factKeys.contains(key)){ 
-						keys.remove(key); 
-						continue; 
-					}	 
-					if(!isUpdateNullColumn){ 
-						keys.remove(i); 
-						continue; 
-					} 
-				}else if("".equals(value.toString().trim())){ 
-					if(factKeys.contains(key)){ 
-						keys.remove(key); 
-						continue; 
-					}	 
-					if(!isUpdateEmptyColumn){ 
-						keys.remove(i); 
-						continue; 
-					} 
-				} 
-				 
-			} 
-		}
-		keys.removeAll(ignores);
-		keys = checkMetadata(dest, keys);
-		keys = BeanUtil.distinct(keys);
-		return keys; 
-	}
-	public String parseTable(String table){
-		if(null == table){
-			return table;
-		}
-		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
-		table = DataSourceHolder.parseDataSource(table, null);
-		if(table.contains(".")){
-			String tmps[] = table.split("\\.");
-			table = SQLUtil.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
-					+ "."
-					+ SQLUtil.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
-		}else{
-			table = SQLUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
-		}
-		return table;
-	}
-
-
-	@Override
-	public boolean convert(String catalog, String schema, String table, RunValue run){
-		boolean result = false;
-		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table);
-			result = convert(columns, run);
-		}
-		return result;
-	}
-	@Override
-	public boolean convert(Map<String,Column> columns, RunValue value){
-		boolean result = false;
-		if(null != columns && null != value){
-			Column meta = columns.get(value.getKey().toUpperCase());
-			result = convert(meta, value);
-		}
-		return result;
-	}
-
-	/**
-	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
-	 * @param column 列
-	 * @param run RunValue
-	 * @return boolean 是否完成类型转换，决定下一步是否继续
-	 */
-	@Override
-	public boolean convert(Column column, RunValue run){
-		if(null == column){
-			return false;
-		}
-		if(null == run){
-			return true;
-		}
-		Object value = run.getValue();
-		if(null == value){
-			return true;
-		}
-		try {
-			String clazz = column.getClassName();
-			String typeName = column.getTypeName().toUpperCase();
-			if(null != typeName){
-				//根据数据库类型
-				if(typeName.equals("UUID")){
-					if(value instanceof UUID) {
-					}else{
-						run.setValue(UUID.fromString(value.toString()));
-					}
-					return true;
-				}else if(
-						typeName.contains("CHAR")
-								|| typeName.contains("TEXT")
-				){
-					if(value instanceof String){
-					}else if(value instanceof Date){
-						run.setValue(DateUtil.format((Date)value));
-					}else{
-						run.setValue(value.toString());
-					}
-					return true;
-				}else if(typeName.equals("BIT")){
-					if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
-						run.setValue("0");
-					}else{
-						run.setValue("1");
-					}
-					return true;
-				}else if(typeName.equals("DATETIME")){
-					if(value instanceof Timestamp || value instanceof Date){
-					}else {
-						Date date = DateUtil.parse(value);
-						if(null != date) {
-							run.setValue(new Timestamp(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(typeName.equals("DATE")){
-					if(value instanceof java.sql.Date){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue(new java.sql.Date(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(typeName.equals("TIME")){
-					if(value instanceof Time){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue( new Time(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}
-			}
-			if(null != clazz){
-				// 根据Java类
-				// 不要解析String 许多不识别的类型会对应String 交给子类解析
-				// 不要解析Boolean类型 有可能是 0,1
-				if(clazz.contains("Integer")){
-					if(value instanceof Integer){
-					}else {
-						run.setValue(BasicUtil.parseInt(value, null));
-					}
-					return true;
-				}else if(clazz.contains("Long")){
-					if(value instanceof Long){
-					}else {
-						run.setValue(BasicUtil.parseLong(value, null));
-					}
-					return true;
-				}else if(clazz.contains("Double")){
-					if(value instanceof Double){
-					}else {
-						run.setValue(BasicUtil.parseDouble(value, null));
-					}
-					return true;
-				}else if(clazz.contains("Float")){
-					if(value instanceof Float){
-					}else {
-						run.setValue(BasicUtil.parseFloat(value, null));
-					}
-					return true;
-				}else if(clazz.contains("BigDecimal")){
-					if(value instanceof BigDecimal){
-					}else {
-						run.setValue(BasicUtil.parseDecimal(value, null));
-					}
-					return true;
-				}else if(clazz.contains("java.sql.Timestamp")){
-					if(value instanceof Timestamp){
-					}else {
-						Date date = DateUtil.parse(value);
-						if(null != date) {
-							run.setValue(new Timestamp(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(clazz.equals("java.sql.Time")){
-					if(value instanceof Time){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue( new Time(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(clazz.contains("java.sql.Date")){
-					if(value instanceof java.sql.Date){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue(new java.sql.Date(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}
-			}
-
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 
@@ -2725,5 +2508,268 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	protected Object value(Map<String, Integer> keys, String key, ResultSet set) throws Exception{
 		return value(keys, key, set, null);
 	}
+	@Override
+	public void value(StringBuilder builder, Object obj, String key){
+		Object value = null;
+		if(obj instanceof DataRow){
+			value = ((DataRow)obj).get(key);
+		}else {
+			if (AdapterProxy.hasAdapter()) {
+				Field field = AdapterProxy.field(obj.getClass(), key);
+				value = BeanUtil.getFieldValue(obj, field);
+			} else {
+				value = BeanUtil.getFieldValue(obj, key);
+			}
+		}
+		format(builder, value);
+	}
+	@Override
+	public void format(StringBuilder builder, Object value){
+		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+			builder.append("null");
+		}else if(value instanceof String){
+			String str = value.toString();
+			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
+				str = str.substring(2, str.length()-1);
+			}else if(str.startsWith("'") && str.endsWith("'")){
+			}else{
+				str = "'" + str.replace("'", "''") + "'";
+			}
+			builder.append(str);
+		}else if(value instanceof Timestamp){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof java.sql.Date){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof LocalDate){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof LocalTime){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof LocalDateTime){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof Date){
+			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
+		}else if(value instanceof Number || value instanceof Boolean){
+			builder.append(value.toString());
+		}else{
+			builder.append(value.toString());
+		}
+	}
 
+	@Override
+	public String getPrimaryKey(Object obj){
+		if(null == obj){
+			return null;
+		}
+		if(obj instanceof DataRow){
+			return ((DataRow)obj).getPrimaryKey();
+		}else{
+			return null;
+		}
+	}
+	@Override
+	public Object getPrimaryValue(Object obj){
+		if(null == obj){
+			return null;
+		}
+		if(obj instanceof DataRow){
+			return ((DataRow)obj).getPrimaryValue();
+		}else{
+			return null;
+		}
+	}
+
+	public String parseTable(String table){
+		if(null == table){
+			return table;
+		}
+		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
+		table = DataSourceHolder.parseDataSource(table, null);
+		if(table.contains(".")){
+			String tmps[] = table.split("\\.");
+			table = SQLUtil.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
+					+ "."
+					+ SQLUtil.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
+		}else{
+			table = SQLUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
+		}
+		return table;
+	}
+
+
+	@Override
+	public boolean convert(String catalog, String schema, String table, RunValue run){
+		boolean result = false;
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table);
+			result = convert(columns, run);
+		}
+		return result;
+	}
+	@Override
+	public boolean convert(Map<String,Column> columns, RunValue value){
+		boolean result = false;
+		if(null != columns && null != value){
+			Column meta = columns.get(value.getKey().toUpperCase());
+			result = convert(meta, value);
+		}
+		return result;
+	}
+
+	/**
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
+	 * @param column 列
+	 * @param run RunValue
+	 * @return boolean 是否完成类型转换，决定下一步是否继续
+	 */
+	@Override
+	public boolean convert(Column column, RunValue run){
+		if(null == column){
+			return false;
+		}
+		if(null == run){
+			return true;
+		}
+		Object value = run.getValue();
+		if(null == value){
+			return true;
+		}
+		try {
+			String clazz = column.getClassName();
+			String typeName = column.getTypeName().toUpperCase();
+			if(null != typeName){
+				//根据数据库类型
+				if(typeName.equals("UUID")){
+					if(value instanceof UUID) {
+					}else{
+						run.setValue(UUID.fromString(value.toString()));
+					}
+					return true;
+				}else if(
+						typeName.contains("CHAR")
+								|| typeName.contains("TEXT")
+				){
+					if(value instanceof String){
+					}else if(value instanceof Date){
+						run.setValue(DateUtil.format((Date)value));
+					}else{
+						run.setValue(value.toString());
+					}
+					return true;
+				}else if(typeName.equals("BIT")){
+					if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
+						run.setValue("0");
+					}else{
+						run.setValue("1");
+					}
+					return true;
+				}else if(typeName.equals("DATETIME")){
+					if(value instanceof Timestamp || value instanceof Date){
+					}else {
+						Date date = DateUtil.parse(value);
+						if(null != date) {
+							run.setValue(new Timestamp(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(typeName.equals("DATE")){
+					if(value instanceof java.sql.Date){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue(new java.sql.Date(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(typeName.equals("TIME")){
+					if(value instanceof Time){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue( new Time(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}
+			}
+			if(null != clazz){
+				// 根据Java类
+				// 不要解析String 许多不识别的类型会对应String 交给子类解析
+				// 不要解析Boolean类型 有可能是 0,1
+				if(clazz.contains("Integer")){
+					if(value instanceof Integer){
+					}else {
+						run.setValue(BasicUtil.parseInt(value, null));
+					}
+					return true;
+				}else if(clazz.contains("Long")){
+					if(value instanceof Long){
+					}else {
+						run.setValue(BasicUtil.parseLong(value, null));
+					}
+					return true;
+				}else if(clazz.contains("Double")){
+					if(value instanceof Double){
+					}else {
+						run.setValue(BasicUtil.parseDouble(value, null));
+					}
+					return true;
+				}else if(clazz.contains("Float")){
+					if(value instanceof Float){
+					}else {
+						run.setValue(BasicUtil.parseFloat(value, null));
+					}
+					return true;
+				}else if(clazz.contains("BigDecimal")){
+					if(value instanceof BigDecimal){
+					}else {
+						run.setValue(BasicUtil.parseDecimal(value, null));
+					}
+					return true;
+				}else if(clazz.contains("java.sql.Timestamp")){
+					if(value instanceof Timestamp){
+					}else {
+						Date date = DateUtil.parse(value);
+						if(null != date) {
+							run.setValue(new Timestamp(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(clazz.equals("java.sql.Time")){
+					if(value instanceof Time){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue( new Time(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(clazz.contains("java.sql.Date")){
+					if(value instanceof java.sql.Date){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue(new java.sql.Date(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

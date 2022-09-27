@@ -185,7 +185,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 	 * user as u(id,nm)
 	 * &lt;ds_hr&gt;user as u(id,nm)
 	 */
-	protected void parseTable(){
+	public void parseTable(){
 		if(null != table){
 			if(table.startsWith("<")){
 				datasoruce = table.substring(1,table.indexOf(">"));

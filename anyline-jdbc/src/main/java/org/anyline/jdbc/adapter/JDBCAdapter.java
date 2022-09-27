@@ -222,6 +222,23 @@ public interface JDBCAdapter {
 
 
 	/**
+	 * 构造 LIKE 查询条件
+	 * @param builder builder
+	 * @param compare compare
+	 * @return builder
+	 */
+	public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare);
+
+	/**
+	 * 构造(NOT) IN 查询条件
+	 * @param builder builder
+	 * @param compare compare
+	 * @param value value
+	 * @return builder
+	 */
+	public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value);
+
+	/**
 	 * JDBC执行完成后的结果处理
 	 * @param list JDBC执行结果
 	 * @return  DataSet

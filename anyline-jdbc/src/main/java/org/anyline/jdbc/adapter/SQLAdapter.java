@@ -52,6 +52,36 @@ import java.util.*;
 
 public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapter {
 
+
+    /* *****************************************************************************************************************
+     *
+     * 													DML
+     *
+     * =================================================================================================================
+     * INSERT			: 插入
+     * UPDATE			: 更新
+     * SAVE				: 根据情况插入或更新
+     * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS			: 是否存在
+     * COUNT			: 统计
+     * EXECUTE			: 执行(原生SQL及存储过程)
+     * DELETE			: 删除
+     *
+     ******************************************************************************************************************/
+
+
+    /* *****************************************************************************************************************
+     * 													INSERT
+     * -----------------------------------------------------------------------------------------------------------------
+     * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns)
+     * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
+     * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
+     * public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception
+     *
+     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns)
+     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns)
+     * protected void insertValue(Run run, Object obj, boolean placeholder , List<String> keys)
+     ******************************************************************************************************************/
     /**
      * 创建INSERT RunPrepare
      * @param dest 表
@@ -396,6 +426,193 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         }
         return cnt;
     }
+
+
+
+
+    /* *****************************************************************************************************************
+     * 													UPDATE
+     * -----------------------------------------------------------------------------------------------------------------
+     * protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns)
+     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns)
+     ******************************************************************************************************************/
+
+    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
+        Run run = new TableRun(this,dest);
+        StringBuilder builder = new StringBuilder();
+        //List<Object> values = new ArrayList<Object>();
+        List<String> keys = null;
+        List<String> primaryKeys = null;
+        if(null != columns && columns.length >0 ){
+            keys = BeanUtil.array2list(columns);
+        }else{
+            if(AdapterProxy.hasAdapter()){
+                keys = AdapterProxy.columns(obj.getClass());
+            }
+        }
+        if(AdapterProxy.hasAdapter()){
+            primaryKeys = AdapterProxy.primaryKeys(obj.getClass());
+        }else{
+            primaryKeys = new ArrayList<>();
+            primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+        }
+        //不更新主键
+        keys.removeAll(primaryKeys);
+
+        List<String> updateColumns = new ArrayList<>();
+        /*构造SQL*/
+        int size = keys.size();
+        if(size > 0){
+            builder.append("UPDATE ").append(parseTable(dest));
+            builder.append(" SET").append(JDBCAdapter.BR_TAB);
+            for(int i=0; i<size; i++){
+                String key = keys.get(i);
+                Object value = null;
+                if(AdapterProxy.hasAdapter()){
+                    Field field = AdapterProxy.field(obj.getClass(), key);
+                    value = BeanUtil.getFieldValue(obj, field);
+                }else {
+                    value = BeanUtil.getFieldValue(obj, key);
+                }
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+                }else{
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+                    if("NULL".equals(value)){
+                        value = null;
+                    }
+                    updateColumns.add(key);
+                    //values.add(value);
+                    run.addValues(key, value);
+                }
+                if(i<size-1){
+                    builder.append(",");
+                }
+            }
+            builder.append(JDBCAdapter.BR);
+            builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
+            for(String pk:primaryKeys){
+                builder.append(" AND ");
+                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+                updateColumns.add(pk);
+                if(AdapterProxy.hasAdapter()){
+                    Field field = AdapterProxy.field(obj.getClass(), pk);
+                    //values.add(BeanUtil.getFieldValue(obj, field));
+                    run.addValues(pk, BeanUtil.getFieldValue(obj, field));
+                }else {
+                    //values.add(BeanUtil.getFieldValue(obj, pk));
+                    run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
+                }
+            }
+            //run.addValues(values);
+        }
+        run.setUpdateColumns(updateColumns);
+        run.setBuilder(builder);
+
+        return run;
+    }
+    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
+        Run run = new TableRun(this,dest);
+        StringBuilder builder = new StringBuilder();
+        //List<Object> values = new ArrayList<Object>();
+        /*确定需要更新的列*/
+        List<String> keys = confirmUpdateColumns(dest, row, columns);
+        List<String> primaryKeys = row.getPrimaryKeys();
+        if(primaryKeys.size() == 0){
+            throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
+        }
+
+        //不更新主键
+        keys.removeAll(primaryKeys);
+
+        List<String> updateColumns = new ArrayList<>();
+        /*构造SQL*/
+        int size = keys.size();
+        if(size > 0){
+            builder.append("UPDATE ").append(parseTable(dest));
+            builder.append(" SET").append(JDBCAdapter.BR_TAB);
+            for(int i=0; i<size; i++){
+                String key = keys.get(i);
+                Object value = row.get(key);
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+                }else{
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+                    if("NULL".equals(value)){
+                        value = null;
+                    }
+                    updateColumns.add(key);
+                    //values.add(value);
+                    run.addValues(key, value);
+                }
+                if(i<size-1){
+                    builder.append(",");
+                }
+            }
+            builder.append(JDBCAdapter.BR);
+            builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
+            for(String pk:primaryKeys){
+                builder.append(" AND ");
+                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+                updateColumns.add(pk);
+                //values.add(row.get(pk));
+                run.addValues(pk, row.get(pk));
+            }
+            //run.addValues(values);
+        }
+        run.setUpdateColumns(updateColumns);
+        run.setBuilder(builder);
+
+        return run;
+    }
+
+
+    /* *****************************************************************************************************************
+     * 													QUERY
+     * -----------------------------------------------------------------------------------------------------------------
+     * protected void buildQueryRunContent(XMLRun run)
+     * protected void buildQueryRunContent(TextRun run)
+     * protected void buildQueryRunContent(TableRun run)
+     ******************************************************************************************************************/
+
+    @Override
+    public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare){
+        if(compare == RunPrepare.COMPARE_TYPE.LIKE){
+            builder.append(" LIKE ").append(concat("'%'", "?" , "'%'"));
+        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){
+            builder.append(" LIKE ").append(concat("?" , "'%'"));
+        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){
+            builder.append(" LIKE ").append(concat("'%'", "?"));
+        }
+        return builder;
+    }
+    @Override
+    public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value){
+        if(compare == RunPrepare.COMPARE_TYPE.NOT_IN){
+            builder.append(" NOT");
+        }
+        builder.append(" IN (");
+        if(value instanceof Collection){
+            Collection<Object> coll = (Collection)value;
+            int size = coll.size();
+            for(int i=0; i<size; i++){
+                builder.append("?");
+                if(i < size-1){
+                    builder.append(",");
+                }
+            }
+            builder.append(")");
+        }else{
+            builder.append("= ?");
+        }
+        return builder;
+    }
+
     protected void buildQueryRunContent(XMLRun run){
     }
     protected void buildQueryRunContent(TextRun run){
@@ -559,6 +776,48 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         run.appendOrderStore();
         run.checkValid();
     }
+
+    /* *****************************************************************************************************************
+     * 													EXISTS
+     * -----------------------------------------------------------------------------------------------------------------
+     * public String parseExists(Run run)
+     ******************************************************************************************************************/
+
+    @Override
+    public String parseExists(Run run){
+        String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
+        return sql;
+    }
+
+    /* *****************************************************************************************************************
+     * 													TOTAL
+     * -----------------------------------------------------------------------------------------------------------------
+     * public String parseTotalQuery(Run run)
+     ******************************************************************************************************************/
+
+    /**
+     * 求总数SQL
+     * Run 反转调用
+     * @param run  run
+     * @return String
+     */
+    @Override
+    public String parseTotalQuery(Run run){
+        String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
+        return sql;
+    }
+
+
+    /* *****************************************************************************************************************
+     * 													DELETE
+     * -----------------------------------------------------------------------------------------------------------------
+     * protected Run buildDeleteRunContent(TableRun run)
+     * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
+     * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
+     ******************************************************************************************************************/
+
     protected Run buildDeleteRunContent(TableRun run){
         AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
         StringBuilder builder = run.getBuilder();
@@ -684,159 +943,13 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         return run;
     }
 
-    /**
-     * 求总数SQL
-     * Run 反转调用
-     * @param run  run
-     * @return String
-     */
-    @Override
-    public String parseTotalQuery(Run run){
-        String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
-        return sql;
-    }
-
-    @Override
-    public String parseExists(Run run){
-        String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
-        return sql;
-    }
-
-    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
-        Run run = new TableRun(this,dest);
-        StringBuilder builder = new StringBuilder();
-        //List<Object> values = new ArrayList<Object>();
-        List<String> keys = null;
-        List<String> primaryKeys = null;
-        if(null != columns && columns.length >0 ){
-            keys = BeanUtil.array2list(columns);
-        }else{
-            if(AdapterProxy.hasAdapter()){
-                keys = AdapterProxy.columns(obj.getClass());
-            }
-        }
-        if(AdapterProxy.hasAdapter()){
-            primaryKeys = AdapterProxy.primaryKeys(obj.getClass());
-        }else{
-            primaryKeys = new ArrayList<>();
-            primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
-        }
-        //不更新主键
-        keys.removeAll(primaryKeys);
-
-        List<String> updateColumns = new ArrayList<>();
-        /*构造SQL*/
-        int size = keys.size();
-        if(size > 0){
-            builder.append("UPDATE ").append(parseTable(dest));
-            builder.append(" SET").append(JDBCAdapter.BR_TAB);
-            for(int i=0; i<size; i++){
-                String key = keys.get(i);
-                Object value = null;
-                if(AdapterProxy.hasAdapter()){
-                    Field field = AdapterProxy.field(obj.getClass(), key);
-                    value = BeanUtil.getFieldValue(obj, field);
-                }else {
-                    value = BeanUtil.getFieldValue(obj, key);
-                }
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
-                    String str = value.toString();
-                    value = str.substring(2, str.length()-1);
-
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
-                }else{
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
-                    if("NULL".equals(value)){
-                        value = null;
-                    }
-                    updateColumns.add(key);
-                    //values.add(value);
-                    run.addValues(key, value);
-                }
-                if(i<size-1){
-                    builder.append(",");
-                }
-            }
-            builder.append(JDBCAdapter.BR);
-            builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
-            for(String pk:primaryKeys){
-                builder.append(" AND ");
-                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
-                updateColumns.add(pk);
-                if(AdapterProxy.hasAdapter()){
-                    Field field = AdapterProxy.field(obj.getClass(), pk);
-                    //values.add(BeanUtil.getFieldValue(obj, field));
-                    run.addValues(pk, BeanUtil.getFieldValue(obj, field));
-                }else {
-                    //values.add(BeanUtil.getFieldValue(obj, pk));
-                    run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
-                }
-            }
-            //run.addValues(values);
-        }
-        run.setUpdateColumns(updateColumns);
-        run.setBuilder(builder);
-
-        return run;
-    }
-    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
-        Run run = new TableRun(this,dest);
-        StringBuilder builder = new StringBuilder();
-        //List<Object> values = new ArrayList<Object>();
-        /*确定需要更新的列*/
-        List<String> keys = confirmUpdateColumns(dest, row, columns);
-        List<String> primaryKeys = row.getPrimaryKeys();
-        if(primaryKeys.size() == 0){
-            throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
-        }
-
-        //不更新主键
-        keys.removeAll(primaryKeys);
-
-        List<String> updateColumns = new ArrayList<>();
-        /*构造SQL*/
-        int size = keys.size();
-        if(size > 0){
-            builder.append("UPDATE ").append(parseTable(dest));
-            builder.append(" SET").append(JDBCAdapter.BR_TAB);
-            for(int i=0; i<size; i++){
-                String key = keys.get(i);
-                Object value = row.get(key);
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
-                    String str = value.toString();
-                    value = str.substring(2, str.length()-1);
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
-                }else{
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
-                    if("NULL".equals(value)){
-                        value = null;
-                    }
-                    updateColumns.add(key);
-                    //values.add(value);
-                    run.addValues(key, value);
-                }
-                if(i<size-1){
-                    builder.append(",");
-                }
-            }
-            builder.append(JDBCAdapter.BR);
-            builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
-            for(String pk:primaryKeys){
-                builder.append(" AND ");
-                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
-                updateColumns.add(pk);
-                //values.add(row.get(pk));
-                run.addValues(pk, row.get(pk));
-            }
-            //run.addValues(values);
-        }
-        run.setUpdateColumns(updateColumns);
-        run.setBuilder(builder);
-
-        return run;
-    }
+    /* *****************************************************************************************************************
+     * 													COMMON
+     * -----------------------------------------------------------------------------------------------------------------
+     * protected String concatFun(String ... args)
+     * protected String concatOr(String ... args)
+     * protected String concatAdd(String ... args)
+     ******************************************************************************************************************/
 
     /* ************** 拼接字符串 *************** */
     protected String concatFun(String ... args){

@@ -118,82 +118,59 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 					}
 				}
 			}
-			
 		} 
 		return text; 
 	} 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String getRunText(String prefix, JDBCAdapter adapter, Object val, COMPARE_TYPE compare){
+		StringBuilder builder = new StringBuilder();
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
-		String text = "";
 		if(!column.contains(".")){
 			if(BasicUtil.isNotEmpty(prefix)){
-				text += SQLUtil.delimiter(prefix, delimiterFr, delimiterTo) + ".";
+				SQLUtil.delimiter(builder, prefix, delimiterFr, delimiterTo).append(".");
 			}else {
 				if (BasicUtil.isNotEmpty(table)) {
-					text += SQLUtil.delimiter(table, delimiterFr, delimiterTo) + ".";
+					SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo).append(".");
 				}
 			}
 		}
-
-		text += SQLUtil.delimiter(column, delimiterFr, delimiterTo);
-
+		SQLUtil.delimiter(builder, column, delimiterFr, delimiterTo);
+		int compareCode = compare.getCode();
 		if(compare == COMPARE_TYPE.EQUAL){
 			Object v = getValue(val);
 			if(null == v || "NULL".equals(v.toString())){
-				text += " IS NULL";
+				builder.append(" IS NULL");
 				if("NULL".equals(getValue())){
 					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
 				}
 			}else{
-				text += compare.getSql();
+				builder.append(compare.getSql());
 			}
 		}else if(compare == COMPARE_TYPE.GREAT){
-			//text += "> ?";
-			text += compare.getSql();
+			// "> ?";
+			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.GREAT_EQUAL){
-			//text += ">= ?";
-			text += compare.getSql();
+			//">= ?";
+			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.LESS){
-			//text += "< ?";
-			text += compare.getSql();
+			//"< ?";
+			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.NOT_EQUAL){
-			//text += "<> ?";
-			text += compare.getSql();
+			//"<> ?";
+			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.LESS_EQUAL){
-			//text += "<= ?";
-			text += compare.getSql();
+			// "<= ?";
+			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.BETWEEN){
-			//text += " BETWEEN ? AND ?";
-			text += compare.getSql();
+			// " BETWEEN ? AND ?";
+			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN){
-			if(compare == COMPARE_TYPE.NOT_IN){
-				text += " NOT";
-			}
-			text += " IN (";
-			if(val instanceof Collection){
-				Collection<Object> coll = (Collection)val;
-				int size = coll.size();
-				for(int i=0; i<size; i++){
-					text += "?";
-					if(i < size-1){
-						text += ",";
-					}
-				}
-				text += ")";
-			}else{
-				text += "= ?";
-			}
-		}else if(compare == COMPARE_TYPE.LIKE){
-			text += " LIKE "+ adapter.concat("'%'", "?" , "'%'");
-		}else if(compare == COMPARE_TYPE.LIKE_PREFIX){
-			text += " LIKE "+ adapter.concat("?" , "'%'");
-		}else if(compare == COMPARE_TYPE.LIKE_SUBFIX){
-			text += " LIKE "+ adapter.concat("'%'", "?");
+			adapter.buildConditionIn(builder, compare, val);
+		}else if(compareCode >= 50 && compareCode <= 52){
+			adapter.buildConditionLike(builder, compare);
 		}
-		text += "";
 		//runtime value
 		if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN || compare == COMPARE_TYPE.BETWEEN){
 			List<Object> list = getValues(val);
@@ -209,7 +186,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 				runValues.add(new RunValue(this.column,value));
 			}
 		}
-		return text; 
+		return builder.toString();
 	} 
 
 	@SuppressWarnings({ "rawtypes" }) 
