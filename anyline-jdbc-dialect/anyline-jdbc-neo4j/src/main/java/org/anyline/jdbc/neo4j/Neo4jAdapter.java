@@ -832,6 +832,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 }
             }else{
                 run.setConfigStore(configs);
+                run.init();
                 run.appendCondition();
             }
             // run.addValues(values);
@@ -902,6 +903,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 }
             }else{
                 run.setConfigStore(configs);
+                run.init();
                 run.appendCondition();
             }
             // run.addValues(values);

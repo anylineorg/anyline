@@ -516,6 +516,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 }
             }else{
                 run.setConfigStore(configs);
+                run.init();
                 run.appendCondition();
             }
             // run.addValues(values);
@@ -583,6 +584,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 }
             }else{
                 run.setConfigStore(configs);
+                run.init();
                 run.appendCondition();
             }
             // run.addValues(values);
