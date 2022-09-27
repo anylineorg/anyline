@@ -69,7 +69,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     /* *****************************************************************************************************************
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
-     * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns)
+     * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
      *
@@ -87,7 +87,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * @return Run
      */
     @Override
-    public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+    public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
         return super.buildInsertRun(dest, obj, checkPrimary, columns);
     }
 

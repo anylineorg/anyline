@@ -70,7 +70,8 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+	@Override
+	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();

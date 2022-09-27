@@ -119,7 +119,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns)
+	 * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
 	 * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
 	 * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
 	 * public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns)
@@ -139,7 +139,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	@Override
-	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
 		if(null == obj){
 			return null;
 		}
@@ -150,11 +150,11 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
 			if(list.size() >0){
-				return createInsertRunFromCollection(dest, list, checkPrimary, BeanUtil.array2list(columns));
+				return createInsertRunFromCollection(dest, list, checkPrimary,columns);
 			}
 			return null;
 		}else {
-			return createInsertRunFromEntity(dest, obj, checkPrimary, BeanUtil.array2list(columns));
+			return createInsertRunFromEntity(dest, obj, checkPrimary,columns);
 		}
 
 	}

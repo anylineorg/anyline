@@ -121,7 +121,7 @@ public interface JDBCAdapter {
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
-	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns);
+	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns);
 
 	/**
 	 * 根据Collection创建批量插入SQL

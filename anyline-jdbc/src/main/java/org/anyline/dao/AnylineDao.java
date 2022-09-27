@@ -81,10 +81,15 @@ public interface AnylineDao<E>{
 	 * @return int
 	 */
 	public int insert(String dest, Object data, boolean checkPrimary, String ... columns);
-	public int insert(Object data, boolean checkPrimary, String ... columns); 
-	public int insert(String dest, Object data, String ... columns); 
-	public int insert(Object data, String ... columns); 
-	
+	public int insert(Object data, boolean checkPrimary, String ... columns);
+	public int insert(String dest, Object data, String ... columns);
+	public int insert(Object data, String ... columns);
+
+	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns);
+	public int insert(Object data, boolean checkPrimary, List<String> columns);
+	public int insert(String dest, Object data, List<String> columns);
+	public int insert(Object data, List<String> columns);
+
 
 	public int batchInsert(String dest, Object data, boolean checkPrimary, String ... columns);
 	public int batchInsert(Object data, boolean checkPrimary, String ... columns);

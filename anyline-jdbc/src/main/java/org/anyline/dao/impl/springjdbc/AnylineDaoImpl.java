@@ -399,7 +399,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @return int 影响行数
 	 */
 	@Override
-	public int update(String dest, Object data, ConfigStore configs, List<String> columns ){
+	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == data){
 			throw new SQLUpdateException("更新空数据");
 		}
@@ -552,12 +552,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * 添加
 	 * @param checkPrimary   是否需要检查重复主键,默认不检查
 	 * @param columns  需要插入的列
-	 * @param dest  dest
+	 * @param dest  表
 	 * @param data  data
-	 * @return int
+	 * @return int 影响行数
 	 */
 	@Override
-	public int insert(String dest, Object data, boolean checkPrimary, String ... columns) {
+	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
 		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		Run run = adapter.buildInsertRun(dest, data, checkPrimary, columns);
 		if(null == run){
@@ -577,12 +577,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, BeanUtil.array2list(columns));
+				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, columns);
 			}
 			if(listenerResult) {
 				cnt = adapter.insert(random, jdbc, data, sql, values);
 				if (null != listener) {
-					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, BeanUtil.array2list(columns));
+					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
 				}
 				if (showSQL) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , System.currentTimeMillis() - fr, LogUtil.format(cnt, 34));
@@ -604,18 +604,36 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public int insert(Object data, boolean checkPrimary, String ... columns){
+	public int insert(Object data, boolean checkPrimary, List<String> columns){
 		return insert(null, data, checkPrimary, columns);
 	}
 	@Override
-	public int insert(String dest, Object data, String ... columns){
+	public int insert(String dest, Object data, List<String> columns){
 		return insert(dest, data, false, columns);
 	}
 	@Override
-	public int insert(Object data, String ... columns){
+	public int insert(Object data, List<String> columns){
 		return insert(null, data, false, columns);
 	}
 
+
+	@Override
+	public int insert(String dest, Object data, boolean checkPrimary, String ... columns) {
+		return insert(dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+
+	@Override
+	public int insert(Object data, boolean checkPrimary, String ... columns){
+		return insert(null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	@Override
+	public int insert(String dest, Object data, String ... columns){
+		return insert(dest, data, false, BeanUtil.array2list(columns));
+	}
+	@Override
+	public int insert(Object data, String ... columns){
+		return insert(null, data, false, BeanUtil.array2list(columns));
+	}
 	@Override
 	public int batchInsert(final String dest, final Object data, final boolean checkPrimary, final String ... columns){
 		if(null == data){
@@ -630,7 +648,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 
 		String table = DataSourceHolder.parseDataSource(dest,data);//SQLAdapterUtil.getAdapter(getJdbc()).getDataSource(data);
-		List<String> cols = SQLAdapterUtil.getAdapter(getJdbc()).confirmInsertColumns(dest, data, columns);
+		List<String> cols = SQLAdapterUtil.getAdapter(getJdbc()).confirmInsertColumns(dest, data, BeanUtil.array2list(columns));
 		String strCols = "";
 		int size = cols.size();
 		for(int i=0; i<size; i++){
