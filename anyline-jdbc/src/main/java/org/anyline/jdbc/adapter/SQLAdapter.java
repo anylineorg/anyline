@@ -379,7 +379,6 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         builder.append(")");
     }
 
-
     /**
      * 执行 insert
      * @param random random
@@ -428,9 +427,6 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         return cnt;
     }
 
-
-
-
     /* *****************************************************************************************************************
      * 													UPDATE
      * -----------------------------------------------------------------------------------------------------------------
@@ -439,8 +435,8 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      ******************************************************************************************************************/
 
     protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
-        Run run = new TableRun(this,dest);
-        StringBuilder builder = new StringBuilder();
+        TableRun run = new TableRun(this,dest);
+        StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
         List<String> primaryKeys = null;
@@ -457,8 +453,17 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
             primaryKeys = new ArrayList<>();
             primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
         }
-        // 不更新主键
-        keys.removeAll(primaryKeys);
+
+        // 不更新主键 除非显示指定
+        for(String pk:primaryKeys){
+            if(!columns.contains(pk)) {
+                keys.remove(pk);
+            }
+        }
+        //不更新默认主键  除非显示指定
+        if(!columns.contains(DataRow.DEFAULT_PRIMARY_KEY)) {
+            keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
+        }
 
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
@@ -495,29 +500,33 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
             }
             builder.append(JDBCAdapter.BR);
             builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
-            for(String pk:primaryKeys){
-                builder.append(" AND ");
-                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
-                updateColumns.add(pk);
-                if(AdapterProxy.hasAdapter()){
-                    Field field = AdapterProxy.field(obj.getClass(), pk);
-                    // values.add(BeanUtil.getFieldValue(obj, field));
-                    run.addValues(pk, BeanUtil.getFieldValue(obj, field));
-                }else {
-                    // values.add(BeanUtil.getFieldValue(obj, pk));
-                    run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
+            if(null == configs) {
+                for (String pk : primaryKeys) {
+                    builder.append(" AND ");
+                    SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+                    updateColumns.add(pk);
+                    if (AdapterProxy.hasAdapter()) {
+                        Field field = AdapterProxy.field(obj.getClass(), pk);
+                        // values.add(BeanUtil.getFieldValue(obj, field));
+                        run.addValues(pk, BeanUtil.getFieldValue(obj, field));
+                    } else {
+                        // values.add(BeanUtil.getFieldValue(obj, pk));
+                        run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
+                    }
                 }
+            }else{
+                run.setConfigStore(configs);
+                run.appendCondition();
             }
             // run.addValues(values);
         }
         run.setUpdateColumns(updateColumns);
-        run.setBuilder(builder);
 
         return run;
     }
     protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
-        Run run = new TableRun(this,dest);
-        StringBuilder builder = new StringBuilder();
+        TableRun run = new TableRun(this,dest);
+        StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
         List<String> keys = confirmUpdateColumns(dest, row, configs, columns);
@@ -526,9 +535,16 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
             throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
         }
 
-        // 不更新主键
-        keys.removeAll(primaryKeys);
-
+        // 不更新主键 除非显示指定
+        for(String pk:primaryKeys){
+            if(!columns.contains(pk)) {
+                keys.remove(pk);
+            }
+        }
+        //不更新默认主键  除非显示指定
+        if(!columns.contains(DataRow.DEFAULT_PRIMARY_KEY)) {
+            keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
+        }
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
         int size = keys.size();
@@ -557,17 +573,21 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
             }
             builder.append(JDBCAdapter.BR);
             builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
-            for(String pk:primaryKeys){
-                builder.append(" AND ");
-                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
-                updateColumns.add(pk);
-                // values.add(row.get(pk));
-                run.addValues(pk, row.get(pk));
+            if(null == configs) {
+                for (String pk : primaryKeys) {
+                    builder.append(" AND ");
+                    SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+                    updateColumns.add(pk);
+                    // values.add(row.get(pk));
+                    run.addValues(pk, row.get(pk));
+                }
+            }else{
+                run.setConfigStore(configs);
+                run.appendCondition();
             }
             // run.addValues(values);
         }
         run.setUpdateColumns(updateColumns);
-        run.setBuilder(builder);
 
         return run;
     }
