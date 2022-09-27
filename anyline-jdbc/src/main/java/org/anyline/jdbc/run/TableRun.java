@@ -28,7 +28,6 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
@@ -44,14 +43,16 @@ public class TableRun extends BasicRun implements Run {
 		this.adapter = adapter;
 	}
 
-	private void parseDataSource(){ 
-		table = prepare.getTable();
+	private void parseDataSource(){
+		if(null != prepare) {
+			table = prepare.getTable();
+		}
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
 		if(table.contains(".")){ 
 			this.schema = table.substring(0,table.indexOf("."));
 			this.table = table.substring(table.indexOf(".") + 1); 
 		} else{
-			if(BasicUtil.isNotEmpty(prepare.getSchema())){
+			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())){
 				schema = prepare.getSchema();
 			}
 		}
@@ -81,118 +82,6 @@ public class TableRun extends BasicRun implements Run {
 			} 
 		}
 	}
-	/*
-	// adapter中实现
-	@Override
-	public void createRunQueryTxt(){
-		TablePrepare sql = (TablePrepare)this.getPrepare();
-		builder.append("SELECT ");
-		if(null != sql.getDistinct()){
-			builder.append(sql.getDistinct());
-		}
-		builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
-		List<String> columns = sql.getColumns(); 
-		if(null != columns && columns.size()>0){ 
-			// 指定查询列 
-			int size = columns.size(); 
-			for(int i=0; i<size; i++){ 
-				String column = columns.get(i);
-				if(BasicUtil.isEmpty(column)){
-					continue;
-				} 
-				if(column.startsWith("${") && column.endsWith("}")){
-					column = column.substring(2, column.length()-1);
-					builder.append(column); 
-				}else{
-					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
-						builder.append(column);
-					}else if("*".equals(column)){
-						builder.append("*");
-					}else{
-						SQLUtil.delimiter(builder, column, delimiterFr, delimiterTo);
-					} 
-				} 
-				if(i<size-1){ 
-					builder.append(","); 
-				} 
-			} 
-			builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
-		}else{ 
-			// 全部查询 
-			builder.append("*"); 
-			builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
-		} 
-		builder.append("FROM").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
-		if(null != schema){
-			SQLUtil.delimiter(builder, schema, delimiterFr, delimiterTo).append(".");
-		}
-		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
-		builder.append(JDBCAdapter.BR);
-		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			// builder.append(" AS ").append(sql.getAlias());
-			builder.append("  ").append(sql.getAlias());
-		}
-		List<Join> joins = sql.getJoins();
-		if(null != joins) {
-			for (Join join:joins) {
-				builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-				SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
-				if(BasicUtil.isNotEmpty(join.getAlias())){
-					// builder.append(" AS ").append(join.getAlias());
-					builder.append("  ").append(join.getAlias());
-				}
-				builder.append(" ON ").append(join.getCondition());
-			}
-		}
-
-		builder.append("\nWHERE 1=1\n\t"); 
-		 
- 
- 
-		*//*添加查询条件*//*
-		// appendConfigStore(); 
-		appendCondition();
-		appendGroup();
-		appendOrderStore();
-		checkValid();
-	}*//*
-	// adapter 中实现
-	public void createRunDeleteTxt(){
-		TablePrepare sql = (TablePrepare)this.getPrepare();
-		builder.append("DELETE FROM ");
-		if(null != schema){
-			SQLUtil.delimiter(builder, schema, delimiterFr, delimiterTo).append(".");
-		}
-
-		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
-		builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
-		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			// builder.append(" AS ").append(sql.getAlias());
-			builder.append("  ").append(sql.getAlias());
-		}
-		List<Join> joins = sql.getJoins();
-		if(null != joins) {
-			for (Join join:joins) {
-				builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-				SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
-				if(BasicUtil.isNotEmpty(join.getAlias())){
-					builder.append("  ").append(join.getAlias());
-				}
-				builder.append(" ON ").append(join.getCondition());
-			}
-		}
-
-		builder.append("\nWHERE 1=1\n\t");
-
-
-
-		*//*添加查询条件*//*
-		// appendConfigStore();
-		appendCondition();
-		appendGroup();
-		appendOrderStore();
-		checkValid();
-	}*/
 
 	public void appendOrderStore(){
 		 
