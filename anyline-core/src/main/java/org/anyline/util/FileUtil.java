@@ -105,14 +105,14 @@ public class FileUtil {
 
 	/**
 	 * 判断当前应用程序的目录类别 0-jar包形式
-	 * @param dst  dst
+	 * @param dest  dest
 	 * @return int
 	 */
 	@SuppressWarnings("rawtypes")
-	public static int getPathType(Class dst){
+	public static int getPathType(Class dest){
 		int type = -1;
 		try{
-			String path = dst.getResource("").getPath();
+			String path = dest.getResource("").getPath();
 			if(path.indexOf(".jar!") != -1){
 				//jar 目录
 				type = 0;
@@ -562,7 +562,7 @@ public class FileUtil {
 	/**
 	 * 复制文件  源文件  目标文件
 	 * @param src  src
-	 * @param dst  dst
+	 * @param dest  表
 	 * @return boolean
 	 */
 	public static boolean copy(File src, File dst){
@@ -1025,7 +1025,7 @@ public class FileUtil {
 	}
 	/**
 	 * 合并文件
-	 * @param dst dst
+	 * @param dest dst
 	 * @param items items
 	 */
 	public static void merge(File dst, List<File> items){
@@ -1067,7 +1067,7 @@ public class FileUtil {
     }
 	/**
 	 * 合并文件
-	 * @param dst dst
+	 * @param dest dst
 	 * @param dir dir
 	 */
 	public static void merge(File dst, File dir){
