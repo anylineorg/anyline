@@ -7,7 +7,7 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
-public class Column {
+public class Column implements org.anyline.entity.jdbc.Column{
 
     protected String keyword = "COLUMN"            ;
 
