@@ -218,7 +218,10 @@ public class TableRun extends BasicRun implements Run {
 		if(null == conditionChain){ 
 			return; 
 		}
-		String alias = getPrepare().getAlias();
+		String alias = null;
+		if(null != prepare){
+			alias = prepare.getAlias();
+		}
 		builder.append(conditionChain.getRunText(alias, adapter));
 		List<RunValue> values = conditionChain.getRunValues();
 		addValues(values);
