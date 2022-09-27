@@ -78,6 +78,7 @@ public interface ConfigStore {
 	 * @return ConfigStore
 	 */
 	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore addCondition(String text);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String id, String var, Object value);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value, boolean overCondition, boolean overValue);

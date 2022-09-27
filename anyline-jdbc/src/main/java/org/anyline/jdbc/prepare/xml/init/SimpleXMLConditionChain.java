@@ -67,7 +67,14 @@ public class SimpleXMLConditionChain extends SimpleConditionChain implements Con
 			} 
 		} 
 		return builder.toString(); 
-	} 
+	}
+
+	@Override
+	public Condition setRunText(String text) {
+		this.text = text;
+		return this;
+	}
+
 	public void setValue(String name, Object value){ 
 		if(null != conditions){ 
 			for(Condition con:conditions){

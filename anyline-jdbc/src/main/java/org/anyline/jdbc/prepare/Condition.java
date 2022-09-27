@@ -42,6 +42,13 @@ public interface Condition extends Cloneable{
 	 * @return String
 	 */
 	public String getRunText(String prefix, JDBCAdapter adapter);
+
+	/**
+	 * 静态SQL
+	 * @param text TEXT
+	 * @return Condition
+	 */
+	public Condition setRunText(String text);
 	/** 
 	 * 运行时参数值 
 	 * @return List
@@ -79,7 +86,8 @@ public interface Condition extends Cloneable{
 	public void setStrictRequired(boolean strictRequired);
 	public boolean isValid();
 	public void setActive(boolean active); 
-	public int getVariableType(); 
+	public int getVariableType();
+	public void setVariableType(int variableType);
 	/* ************************************************************************************************************ 
 	 *  
 	 * 													 自动生成 

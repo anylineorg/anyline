@@ -277,4 +277,9 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 		this.table = table;
 	}
 
+	@Override
+	public Condition setRunText(String text) {
+		this.text = text;
+		return this;
+	}
 }

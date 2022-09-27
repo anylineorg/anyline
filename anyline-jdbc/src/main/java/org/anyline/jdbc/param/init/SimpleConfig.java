@@ -28,6 +28,7 @@ import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoCondition;
+import org.anyline.jdbc.prepare.init.SimpleCondition;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -37,9 +38,10 @@ import java.util.*;
 
 public class SimpleConfig implements Config{
 	protected static final Logger log = LoggerFactory.getLogger(SimpleConfig.class);
-	protected List<Object> values;	// VALUE
-	protected List<Object> orValues;
-	protected boolean empty;			// 是否值为空
+	protected String text				; // 静态条件(如原生SQL) 没有参数
+	protected List<Object> values		; // VALUE
+	protected List<Object> orValues		; // OR VALUE
+	protected boolean empty				; // 是否值为空
 	protected ParseResult parser;
 	@Override
 	public Object clone(){
@@ -151,8 +153,16 @@ public class SimpleConfig implements Config{
 				condition = new SimpleAutoConditionChain((ConfigChain)this).setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 				condition.setContainer(chain);
 			}else{
-				condition = new SimpleAutoCondition(this).setOrCompare(getOrCompare()).setJoin(parser.getJoin());
-				condition.setContainer(chain);
+				if(null != text){
+					condition = new SimpleAutoCondition(this);
+					condition.setRunText(text);
+					condition.setContainer(chain);
+					condition.setActive(true);
+					condition.setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
+				}else {
+					condition = new SimpleAutoCondition(this).setOrCompare(getOrCompare()).setJoin(parser.getJoin());
+					condition.setContainer(chain);
+				}
 			} 
 		} 
 		return condition; 
@@ -247,5 +257,15 @@ public class SimpleConfig implements Config{
 	}
 	public String getTable(){
 		return parser.getPrefix();
+	}
+
+	@Override
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	@Override
+	public String getText() {
+		return text;
 	}
 }

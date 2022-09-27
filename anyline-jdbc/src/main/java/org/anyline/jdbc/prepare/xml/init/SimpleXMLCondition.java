@@ -282,7 +282,14 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 			} 
 		} 
 		return result; 
-	} 
+	}
+
+	@Override
+	public Condition setRunText(String text) {
+		this.text = text;
+		return this;
+	}
+
 	public Variable getVariable(String var) {
 		if(null == variables || null == var){
 			return null; 

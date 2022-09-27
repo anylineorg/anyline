@@ -101,7 +101,14 @@ public class SimpleAutoConditionChain extends SimpleConditionChain implements Co
 		}else{
 			return "";
 		} 
-	} 
+	}
+
+	@Override
+	public Condition setRunText(String text) {
+		this.text = text;
+		return this;
+	}
+
 	private int getContainerJoinSize(){ 
 		if(hasContainer()){ 
 			return getContainer().getJoinSize(); 

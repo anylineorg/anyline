@@ -177,6 +177,13 @@ public class SimpleConfigStore implements ConfigStore {
 		return addCondition((String)null, var, value, overCondition, overValue);
 	}
 	@Override
+	public ConfigStore addCondition(String text){
+		Config conf = new SimpleConfig();
+		conf.setText(text);
+		chain.addConfig(conf);
+		return this;
+	}
+	@Override
 	public ConfigStore addCondition(String prefix, String var, Object value, boolean overCondition, boolean overValue){
 		return addCondition(COMPARE_TYPE.EQUAL, prefix, var, value, overCondition, overValue);
 //		Config conf = null;
