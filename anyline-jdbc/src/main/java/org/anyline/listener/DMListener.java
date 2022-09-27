@@ -98,7 +98,7 @@ public interface DMListener {
      * @param columns 需要更新的列
      * @return 是否执行  如果返回false 将不执行更新
      */
-    public boolean beforeUpdate(AnylineDao dao, Run run, String dest, Object obj, String ... columns);
+    public boolean beforeUpdate(AnylineDao dao, Run run, String dest, Object obj, List<String> columns);
     /**
      * 更新之前调用
      * @param dao dao
@@ -108,7 +108,7 @@ public interface DMListener {
      * @param obj 更新内容
      * @param columns 需要更新的列
      */
-    public void afterUpdate(AnylineDao dao, Run run, int count, String dest, Object obj, String ... columns);
+    public void afterUpdate(AnylineDao dao, Run run, int count, String dest, Object obj, List<String> columns);
 
     /**
      * 插入之前调用
@@ -120,7 +120,7 @@ public interface DMListener {
      * @param columns 需要插入的列
      * @return 是否执行  如果返回false 将不执行插入
      */
-    public boolean beforeInsert(AnylineDao dao, Run run, String dest, Object obj, boolean checkPrimary, String ... columns);
+    public boolean beforeInsert(AnylineDao dao, Run run, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
     /**
      * 插入之后调用
@@ -132,7 +132,7 @@ public interface DMListener {
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
      */
-    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkPrimary, String ... columns);
+    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
     /**
      * 批量插入前调用
@@ -143,7 +143,7 @@ public interface DMListener {
      * @param columns 需要插入的列
      * @return 是否执行  如果返回false 将不执行插入
      */
-    public boolean beforeBatchInsert(AnylineDao dao, String dest, Object obj, boolean checkPrimary, String ... columns);
+    public boolean beforeBatchInsert(AnylineDao dao, String dest, Object obj, boolean checkPrimary, List<String> columns);
     /**
      * 批量插入之后调用
      * @param dao dao
@@ -153,7 +153,7 @@ public interface DMListener {
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
      */
-    public void afterBatchInsert(AnylineDao dao, int count, String dest, Object obj, boolean checkPrimary, String ... columns);
+    public void afterBatchInsert(AnylineDao dao, int count, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
     /**
      * 执行SQL之前调用

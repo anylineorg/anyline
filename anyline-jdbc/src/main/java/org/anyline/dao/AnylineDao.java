@@ -54,45 +54,53 @@ public interface AnylineDao<E>{
 	
 	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	public boolean exists(RunPrepare prepare, String ... conditions);
-	/** 
-	 * 更新 
-	 * @param columns  需要更新的列 
-	 * @param dst  表 
-	 * @param data data
-	 * @return int
-	 */ 
-	public int update(String dst, Object data, String ... columns); 
-	public int update(Object data, String ... columns); 
+
+	/**
+	 * 更新记录
+	 * @param data		需要更新的数据
+	 * @param dest		需要更新的表，如果没有提供则根据data解析
+	 * @param columns	需要更新的列 如果没有提供则解析data解析
+	 * @param configs	更新条件 如果没提供则根据data主键
+	 * @return int 影响行数
+	 */
+	public int update(String dest, Object data, ConfigStore configs, List<String> columns);
+	public int update(String dest, Object data, ConfigStore configs, String ... columns);
+	public int update(Object data, ConfigStore configs, String ... columns);
+	public int update(Object data, ConfigStore configs, List<String> columns);
+	public int update(String dest, Object data, String ... columns);
+	public int update(Object data, String ... columns);
+	public int update(String dest, Object data, List<String> columns);
+	public int update(Object data, List<String> columns);
 	 
 	/** 
 	 * 添加 
 	 * @param data 需要插入的数据 
 	 * @param checkPrimary   是否需要检查重复主键,默认不检查 
 	 * @param columns  需要插入的列 
-	 * @param dst 表 
+	 * @param dest 表 
 	 * @return int
 	 */
-	public int insert(String dst, Object data, boolean checkPrimary, String ... columns);
+	public int insert(String dest, Object data, boolean checkPrimary, String ... columns);
 	public int insert(Object data, boolean checkPrimary, String ... columns); 
-	public int insert(String dst, Object data, String ... columns); 
+	public int insert(String dest, Object data, String ... columns); 
 	public int insert(Object data, String ... columns); 
 	
 
-	public int batchInsert(String dst, Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(String dest, Object data, boolean checkPrimary, String ... columns);
 	public int batchInsert(Object data, boolean checkPrimary, String ... columns);
-	public int batchInsert(String dst, Object data, String ... columns);
+	public int batchInsert(String dest, Object data, String ... columns);
 	public int batchInsert(Object data, String ... columns);
 	/** 
 	 * 保存(insert|update) 
-	 * @param dst  dst
+	 * @param dest  表
 	 * @param data  data
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns  columns
 	 * @return int
 	 */ 
-	public int save(String dst, Object data, boolean checkPrimary, String ... columns); 
+	public int save(String dest, Object data, boolean checkPrimary, String ... columns); 
 	public int save(Object data, boolean checkPrimary, String ... columns); 
-	public int save(String dst, Object data, String ... columns); 
+	public int save(String dest, Object data, String ... columns); 
 	public int save(Object data, String ... columns); 
  
 

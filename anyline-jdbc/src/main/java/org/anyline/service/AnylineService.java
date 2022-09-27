@@ -106,35 +106,39 @@ public interface AnylineService<E>{
 
 	/**
 	 * 更新记录
-	 * @param fixs	  需要更新的列
-	 * @param columns	  需要更新的列
-	 * @param dest	   表
-	 * @param data data
-	 * @return int
+	 * 默认情况下以主键为更新条件，需在更新的数据保存在data中
+	 * 如果提供了dest则更新dest表，如果没有提供则根据data解析出表名
+	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键，则根据TYPE_CODE更新
+	 * 可以提供了ConfigStore以实现更复杂的更新条件
+	 * 需要更新的列通过fixs/columns提供
+	 * @param fixs	  	需要更新的列
+	 * @param columns	需要更新的列
+	 * @param dest	   	表
+	 * @param data 		更新的数据及更新条件(如果有ConfigStore则以ConfigStore为准)
+	 * @param configs 	更新条件
+	 * @return int 影响行数
 	 */
+	public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
 	public int update(String dest, Object data, List<String> fixs, String ... columns);
-	public int update(Object data, List<String> fixs, String ... columns);
-	public int update(String dest, ConfigStore configs, List<String> fixs, String ... conditions);
-
-	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
-	public int update(boolean async, Object data, List<String> fixs, String ... columns);
-
-
 	public int update(String dest, Object data, String[] fixs, String ... columns);
 	public int update(Object data, String[] fixs, String ... columns);
-	public int update(String dest, ConfigStore configs, String[] fixs, String ... conditions);
-
-	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
-	public int update(boolean async, Object data, String[] fixs, String ... columns);
-
-
-
+	public int update(Object data, List<String> fixs, String... columns);
+	public int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(String dest, Object data, String ... columns);
 	public int update(Object data, String ... columns);
-	public int update(String dest, ConfigStore configs, String ... conditions);
+	public int update(String dest, Object data, ConfigStore configs, String ... columns);
 
+
+	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
+	public int update(boolean async, Object data, String[] fixs, String ... columns);
+	public int update(boolean async, Object data, List<String> fixs, String... columns);
+	public int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, String ... columns);
 	public int update(boolean async, Object data, String ... columns);
+	public int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns);
+
 
 	/* *****************************************************************************************************************
 	 * 													SAVE

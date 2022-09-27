@@ -122,12 +122,12 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns)
 	 * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
 	 * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
-	 * public List<String> confirmInsertColumns(String dst, Object obj, String ... columns)
+	 * public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns)
 	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
 	 *
 	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
-	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns)
-	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns)
+	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
+	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
 	 ******************************************************************************************************************/
 
 	/**
@@ -150,11 +150,11 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
 			if(list.size() >0){
-				return createInsertRunFromCollection(dest, list, checkPrimary, columns);
+				return createInsertRunFromCollection(dest, list, checkPrimary, BeanUtil.array2list(columns));
 			}
 			return null;
 		}else {
-			return createInsertRunFromEntity(dest, obj, checkPrimary, columns);
+			return createInsertRunFromEntity(dest, obj, checkPrimary, BeanUtil.array2list(columns));
 		}
 
 	}
@@ -202,7 +202,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> confirmInsertColumns(String dst, Object obj, String ... columns){
+	public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns){
 		List<String> keys = null;/*确定需要插入的列*/
 		if(null == obj){
 			return new ArrayList<>();
@@ -212,7 +212,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		List<String> ignores = new ArrayList<>();		//必须不插入列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
 
-		if(null != columns && columns.length>0){
+		if(null != columns && columns.size()>0){
 			each = false;
 			keys = new ArrayList<>();
 			for(String column:columns){
@@ -305,7 +305,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 
 			}
 		}
-		keys = checkMetadata(dst, keys);
+		keys = checkMetadata(dest, keys);
 		keys = BeanUtil.distinct(keys);
 		return keys;
 	}
@@ -339,7 +339,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * @param columns
 	 * @return Run
 	 */
-	protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns){
+	protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 
@@ -351,24 +351,24 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * @param columns 需要插入的列，如果不指定则全部插入
 	 * @return Run
 	 */
-	protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns){
+	protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns)
+	 * public Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
 	 * public List<String> checkMetadata(String table, List<String> columns)
 	 *
-	 * protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns)
-	 * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns)
-	 * protected List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns)
+	 * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+	 * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
+	 * protected List<String> confirmUpdateColumns(String dest, DataRow row, List<String> columns)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+	public Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		if(null == obj){
 			return null;
 		}
@@ -376,16 +376,16 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			dest = DataSourceHolder.parseDataSource(null,obj);
 		}
 		if(obj instanceof DataRow){
-			return buildUpdateRunFromDataRow(dest,(DataRow)obj,checkPrimary, columns);
+			return buildUpdateRunFromDataRow(dest, (DataRow)obj, configs, checkPrimary, columns);
 		}else{
-			return buildUpdateRunFromObject(dest, obj,checkPrimary, columns);
+			return buildUpdateRunFromObject(dest, obj, configs, checkPrimary, columns);
 		}
 	}
 
-	protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
+	protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		return null;
 	}
-	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
+	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 
@@ -431,7 +431,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 *        则把执行结果与表结构对比，删除表中没有的列
 	 * @return List
 	 */
-	protected List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
+	protected List<String> confirmUpdateColumns(String dest, DataRow row, List<String> columns){
 		List<String> keys = null;/*确定需要更新的列*/
 		if(null == row){
 			return new ArrayList<>();
@@ -442,7 +442,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		List<String> factKeys = new ArrayList<>()							; //根据是否空值
 		BeanUtil.removeAll(ignores, columns);
 
-		if(null != columns && columns.length>0){
+		if(null != columns && columns.size()>0){
 			each = false;
 			keys = new ArrayList<>();
 			for(String column:columns){
