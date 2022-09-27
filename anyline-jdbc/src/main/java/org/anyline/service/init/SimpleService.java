@@ -763,87 +763,38 @@ public class SimpleService<E> implements AnylineService<E> {
 
     /**
      * 更新记录
-     *
-     * @param async  是否异步
-     * @param dest  dest
-     * @param data  需要更新的数据
-     * @param fixs 需要更新的列
-     * @param columns 需要更新的列
-     * @return int
+     * 默认情况下以主键为更新条件，需在更新的数据保存在data中
+     * 如果提供了dest则更新dest表，如果没有提供则根据data解析出表名
+     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键，则根据TYPE_CODE更新
+     * 可以提供了ConfigStore以实现更复杂的更新条件
+     * 需要更新的列通过fixs/columns提供
+     * @param fixs	  	需要更新的列
+     * @param columns	需要更新的列
+     * @param dest	   	表
+     * @param data 		更新的数据及更新条件(如果有ConfigStore则以ConfigStore为准)
+     * @param configs 	更新条件
+     * @return int 影响行数
      */
     @Override
-    public int update(boolean async, String dest, Object data, List<String> fixs, String... columns) {
+    public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
         dest = DataSourceHolder.parseDataSource(dest,dest);
         fixs = BeanUtil.merge(fixs, columns);
-        final String cols[] = BasicUtil.compressionSpace(BeanUtil.list2array(fixs));
+        final List<String> cols = BeanUtil.merge(fixs, columns);
         final String _dest = BasicUtil.compressionSpace(dest);
         final Object _data = data;
+        final ConfigStore _configs = configs;
         if(async){
             new Thread(new Runnable(){
                 @Override
                 public void run() {
-                    dao.update(_dest, _data, cols);
+                    dao.update(_dest, _data, _configs,  cols);
                 }
             }).start();
             return 0;
         }else{
-            return dao.update(dest, data, cols);
+            return dao.update(dest, data, configs, cols);
         }
     }
-
-    public int update(boolean async, String dest, Object data, String[] fixs, String... columns) {
-        return update(async, dest, data, BeanUtil.array2list(fixs, columns));
-    }
-    public int update(boolean async, String dest, Object data, String... columns) {
-        return update(async, dest, data, BeanUtil.array2list(columns));
-    }
-
-    @Override
-    public int update(String dest, ConfigStore configs, List<String> fixs, String... conditions) {
-        //TODO
-        return 0;
-    }
-    public int update(String dest, ConfigStore configs, String[] fixs, String... conditions) {
-        //TODO
-        return 0;
-    }
-    public int update(String dest, ConfigStore configs, String... conditions) {
-        //TODO
-        return 0;
-    }
-    @Override
-    public int update(String dest, Object data, List<String> fixs, String... columns) {
-        fixs = BeanUtil.merge(fixs, columns);
-        dest = BasicUtil.compressionSpace(dest);
-        dest = DataSourceHolder.parseDataSource(dest,data);
-        columns = BasicUtil.compressionSpace(BeanUtil.list2array(fixs));
-        return dao.update(dest, data, columns);
-    }
-
-    @Override
-    public int update(String dest, Object data, String[] fixs, String... columns) {
-        return update(dest, data, BeanUtil.array2list(fixs, columns));
-    }
-
-    @Override
-    public int update(String dest, Object data, String... columns) {
-        return update(dest, data, BeanUtil.array2list(columns));
-    }
-
-
-    @Override
-    public int update(Object data, List<String> fixs, String... columns) {
-        return update(null, data, fixs, columns);
-    }
-    @Override
-    public int update(Object data, String[] fixs, String... columns) {
-        return update(null, data, fixs, columns);
-    }
-    @Override
-    public int update(Object data,  String... columns) {
-        return update(null, data,  columns);
-    }
-
     @Override
     public int update(boolean async, Object data, List<String> fixs ,String... columns) {
         return update(async, null, data, BeanUtil.merge(fixs, columns));
@@ -856,9 +807,82 @@ public class SimpleService<E> implements AnylineService<E> {
     public int update(boolean async, Object data,String... columns) {
         return update(async, null, data, BeanUtil.array2list(columns));
     }
+
+    @Override
+    public int update(boolean async, String dest, Object data, List<String> fixs, String... columns) {
+        return update(async, dest, data, null, fixs, columns);
+    }
+    @Override
+    public int update(boolean async, String dest, Object data, String[] fixs, String... columns) {
+        return update(async, dest, data, null, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int update(boolean async, String dest, Object data, String... columns) {
+        return update(async, dest, data, null, BeanUtil.array2list(columns));
+    }
+
+    @Override
+    public int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String... columns) {
+        return update(async, dest, data, configs, BeanUtil.array2list(fixs, columns));
+    }
+
+    @Override
+    public int update(boolean async, String dest, Object data, ConfigStore configs, String... columns) {
+        return update(async, dest, data, configs, BeanUtil.array2list(columns));
+    }
+
+    @Override
+    public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
+        return update(false, dest, data, configs, fixs, columns);
+    }
+    @Override
+    public int update(String dest, Object data, ConfigStore configs, String[] fixs, String... columns) {
+        return update(false, dest,  data, configs, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int update(String dest, Object data, ConfigStore configs, String... columns) {
+        return update(false, dest, data, configs, BeanUtil.array2list(columns));
+    }
+    @Override
+    public int update(String dest, Object data, List<String> fixs, String... columns) {
+        return update(false, dest, data, null, fixs, columns);
+    }
+
+    @Override
+    public int update(String dest, Object data, String[] fixs, String... columns) {
+        return update(false, dest, data, null, BeanUtil.array2list(fixs, columns));
+    }
+
+    @Override
+    public int update(String dest, Object data, String... columns) {
+        return update(false, dest, data, null, BeanUtil.array2list(columns));
+    }
+
+
+    @Override
+    public int update(Object data, List<String> fixs, String... columns) {
+        return update(false,null, data, null, fixs, columns);
+    }
+    @Override
+    public int update(Object data, String[] fixs, String... columns) {
+        return update(false,null, data, null, fixs, columns);
+    }
+    @Override
+    public int update(Object data,  String... columns) {
+        return update(false,null, data, null, BeanUtil.array2list(columns));
+    }
+
+    public int save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs,  String... columns) {
+        return save(async, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+    }
+    public int save(boolean async, String dest, Object data, boolean checkPrimary,  String... columns) {
+        return save(async, dest, data, checkPrimary, BeanUtil.array2list(columns));
+    }
+
     @Override
     public int save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs,  String... columns) {
         if(async){
+
             final String _dest = dest;
             final Object _data = data;
             final boolean _chk = checkPrimary;
@@ -875,13 +899,6 @@ public class SimpleService<E> implements AnylineService<E> {
             return save(dest, data, checkPrimary, columns);
         }
 
-    }
-
-    public int save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs,  String... columns) {
-        return save(async, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
-    public int save(boolean async, String dest, Object data, boolean checkPrimary,  String... columns) {
-        return save(async, dest, data, checkPrimary, BeanUtil.array2list(columns));
     }
     @SuppressWarnings("rawtypes")
     @Override

@@ -229,27 +229,27 @@ public class HttpUtil {
 	public static DownloadTask download(String url, File dst){ 
 		return download(url, dst, null, null, false);
 	} 
-	public static DownloadTask download(String url, String dst, Map<String,String> headers,Map<String,Object> params){ 
+	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params){ 
 		File file = new File(dst); 
 		return download(url, file, headers, params, false);
 	} 
 	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params){ 
 		return download(url, dst, headers, params, false);
 	} 
-	public static DownloadTask download(String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
+	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){ 
 		File file = new File(dst); 
 		return download(url, file, headers, params, override);
 	} 
 	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
 		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dst, boolean override){ 
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){ 
 		return download(progress, url, new File(dst), null, null, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){ 
 		return download(progress, url, dst, null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){ 
 		return download(progress, url, new File(dst), headers, params, override);
 	}
 

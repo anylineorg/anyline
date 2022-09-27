@@ -24,6 +24,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
+import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.prepare.auto.AutoPrepare;
@@ -78,8 +79,8 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
      * public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception
      *
-     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns)
-     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns)
+     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
      * protected void insertValue(Run run, Object obj, boolean placeholder , List<String> keys)
      ******************************************************************************************************************/
     /**
@@ -218,7 +219,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, String ... columns){
+    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         //List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
@@ -323,7 +324,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, String ... columns){
+    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
@@ -433,18 +434,18 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     /* *****************************************************************************************************************
      * 													UPDATE
      * -----------------------------------------------------------------------------------------------------------------
-     * protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns)
-     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns)
+     * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
      ******************************************************************************************************************/
 
-    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkPrimary, String ... columns){
+    protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
         List<String> primaryKeys = null;
-        if(null != columns && columns.length >0 ){
-            keys = BeanUtil.array2list(columns);
+        if(null != columns && columns.size() >0 ){
+            keys = columns;
         }else{
             if(AdapterProxy.hasAdapter()){
                 keys = AdapterProxy.columns(obj.getClass());
@@ -514,7 +515,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
 
         return run;
     }
-    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
+    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();

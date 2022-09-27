@@ -161,7 +161,7 @@ public interface JDBCAdapter {
 	 *        则把执行结果与表结构对比，删除表中没有的列
 	 * @return List
 	 */
-	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
+	public List<String> confirmInsertColumns(String dest, Object data, List<String> columns);
 
 	/**
 	 * 执行 insert
@@ -186,9 +186,10 @@ public interface JDBCAdapter {
 	 * @param obj obj
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns columns
+	 * @param configs 更新条件
 	 * @return Run
 	 */
-	public Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns);
+	public Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
 
 
 

@@ -30,6 +30,7 @@ import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.adapter.JDBCAdapter;
+import org.anyline.jdbc.param.Config;
 import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Procedure;
@@ -47,6 +48,7 @@ import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -390,25 +392,26 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	/**
 	 * 更新记录
-	 * @param obj		需要更新的数据  row		需要更新的数据
-	 * @param dest	dest
-	 * @param columns	需要更新的列  columns	需要更新的列
-	 * @return int
+	 * @param data		需要更新的数据
+	 * @param dest		需要更新的表，如果没有提供则根据data解析
+	 * @param columns	需要更新的列 如果没有提供则解析data解析
+	 * @param configs	更新条件 如果没提供则根据data主键
+	 * @return int 影响行数
 	 */
 	@Override
-	public int update(String dest, Object obj, String ... columns ){
-		if(null == obj){
+	public int update(String dest, Object data, ConfigStore configs, List<String> columns ){
+		if(null == data){
 			throw new SQLUpdateException("更新空数据");
 		}
 		int result = 0;
-		if(obj instanceof DataSet){
-			DataSet set = (DataSet)obj;
+		if(data instanceof DataSet){
+			DataSet set = (DataSet)data;
 			for(int i=0; i<set.size(); i++){
-				result += update(dest, set.getRow(i), columns);
+				result += update(dest, set.getRow(i), configs,  columns);
 			}
 			return result;
 		}
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildUpdateRun(dest, obj, false, columns);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildUpdateRun(dest, data, configs,false, columns);
 		String sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
@@ -424,15 +427,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		/*执行SQL*/
 		try{
-
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeUpdate(this,run, dest, obj, columns);
+				listenerResult = listener.beforeUpdate(this,run, dest, data, columns);
 			}
 			if(listenerResult) {
 				result = getJdbc().update(sql, values.toArray());
 				if (null != listener) {
-					listener.afterUpdate(this, run, result, dest, obj, columns);
+					listener.afterUpdate(this, run, result, dest, data, columns);
 				}
 				if (showSQL) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, LogUtil.format(result, 34));
@@ -453,9 +455,34 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
+
+	@Override
+	public int update(Object data, ConfigStore configs, String ... columns){
+		return update(null, data, configs, BeanUtil.array2list(columns));
+	}
+	@Override
+	public int update(String dest, Object data, ConfigStore configs, String ... columns){
+		return update(dest, data, configs, BeanUtil.array2list(columns));
+	}
+	@Override
+	public int update(Object data, ConfigStore configs, List<String> columns){
+		return update(null, data, configs, columns);
+	}
+	@Override
+	public int update(String dest, Object data, String ... columns){
+		return update(dest, data, (ConfigStore) null, BeanUtil.array2list(columns));
+	}
 	@Override
 	public int update(Object data, String ... columns){
-		return update(null, data, columns);
+		return update(null, data, (ConfigStore) null, BeanUtil.array2list(columns));
+	}
+	@Override
+	public int update(String dest, Object data, List<String> columns){
+		return update(dest, data, (ConfigStore) null, columns);
+	}
+	@Override
+	public int update(Object data, List<String> columns){
+		return update(null, data, (ConfigStore) null, columns);
 	}
 	/**
 	 * 保存(insert|upate)
@@ -550,12 +577,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, columns);
+				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, BeanUtil.array2list(columns));
 			}
 			if(listenerResult) {
 				cnt = adapter.insert(random, jdbc, data, sql, values);
 				if (null != listener) {
-					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
+					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, BeanUtil.array2list(columns));
 				}
 				if (showSQL) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , System.currentTimeMillis() - fr, LogUtil.format(cnt, 34));
@@ -624,12 +651,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 									boolean listenerResult = true;
 									if(null != listener){
-										listenerResult = listener.beforeBatchInsert(AnylineDaoImpl.this,dest, list, checkPrimary, columns);
+										listenerResult = listener.beforeBatchInsert(AnylineDaoImpl.this,dest, list, checkPrimary, BeanUtil.array2list(columns));
 									}
 									if(listenerResult) {
 										int cnt = insert(dest, list, checkPrimary, columns);
 										if (null != listener) {
-											listener.afterBatchInsert(AnylineDaoImpl.this, cnt, dest, list, checkPrimary, columns);
+											listener.afterBatchInsert(AnylineDaoImpl.this, cnt, dest, list, checkPrimary, BeanUtil.array2list(columns));
 										}
 
 									}

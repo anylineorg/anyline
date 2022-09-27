@@ -9,6 +9,7 @@ import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SimpleJDBCAdapter;
+import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.prepare.auto.init.Join;
@@ -68,12 +69,12 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     /* *****************************************************************************************************************
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
-     * public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns)
+     * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns)
      * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
      *
-     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
-     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
+     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
      *  public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception
      ******************************************************************************************************************/
 
@@ -81,13 +82,13 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * 创建INSERT RunPrepare
      * @param dest 表
      * @param obj 实体
-     * @param checkParimary 是否检测主键
+     * @param checkPrimary 是否检测主键
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return Run
      */
     @Override
-    public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns){
-        return super.buildInsertRun(dest, obj, checkParimary, columns);
+    public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+        return super.buildInsertRun(dest, obj, checkPrimary, columns);
     }
 
     /**
@@ -113,7 +114,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             if(null == row){
                 continue;
             }
-            insertValue("e"+i,run,  dest,  row, BeanUtil.list2array(keys));
+            insertValue("e"+i,run,  dest,  row, keys);
             if(i<dataSize-1){
                 builder.append(",");
             }
@@ -152,7 +153,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         int dataSize = list.size();
         int idx = 0;
         for(Object obj:list){
-            insertValue("e"+idx,run, dest, obj, BeanUtil.list2array(keys));
+            insertValue("e"+idx,run, dest, obj, keys);
             if(idx<dataSize-1){
                 builder.append(",");
             }
@@ -171,12 +172,12 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * 根据entity创建 INSERT RunPrepare
      * @param dest
      * @param obj
-     * @param checkParimary
+     * @param checkPrimary
      * @param columns
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
+    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this, dest);
         run.setPrepare(new SimpleTablePrepare());
         StringBuilder builder = run.getBuilder();
@@ -194,17 +195,17 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * 根据collection创建 INSERT RunPrepare
      * @param dest 表
      * @param list 对象集合
-     * @param checkParimary 是否检测主键
+     * @param checkPrimary 是否检测主键
      * @param columns 需要插入的列，如果不指定则全部插入
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
+    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
         }
-        createInserts(run, dest, list, BeanUtil.array2list(columns));
+        createInserts(run, dest, list, columns);
 
         return run;
     }
@@ -215,7 +216,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * @param obj Entity或DataRow
      * @param columns 需要插入的列
      */
-    protected void insertValue(String alias, Run run, String dest, Object obj, String ... columns){
+    protected void insertValue(String alias, Run run, String dest, Object obj, List<String> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -743,20 +744,20 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     /* *****************************************************************************************************************
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
-     * protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns)
-     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns)
+     * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildDeleteRunContent(TableRun run)
      * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
      * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
-    protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+    protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
         List<String> primaryKeys = null;
-        if(null != columns && columns.length >0 ){
-            keys = BeanUtil.array2list(columns);
+        if(null != columns && columns.size() >0 ){
+            keys = columns;
         }else{
             if(AdapterProxy.hasAdapter()){
                 keys = AdapterProxy.columns(obj.getClass());
@@ -826,7 +827,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
 
         return run;
     }
-    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
         //List<Object> values = new ArrayList<Object>();
