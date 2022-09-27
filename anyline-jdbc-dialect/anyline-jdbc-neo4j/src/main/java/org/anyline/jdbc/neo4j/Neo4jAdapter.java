@@ -48,6 +48,35 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     public void afterPropertiesSet() throws Exception {
         setDelimiter(delimiter);
     }
+
+    /* *****************************************************************************************************************
+     *
+     * 													DML
+     *
+     * =================================================================================================================
+     * INSERT			: 插入
+     * UPDATE			: 更新
+     * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
+     * EXISTS			: 是否存在
+     * COUNT			: 统计
+     * EXECUTE			: 执行(原生SQL及存储过程)
+     * DELETE			: 删除
+     * COMMON			：其他通用
+     ******************************************************************************************************************/
+
+
+    /* *****************************************************************************************************************
+     * 													INSERT
+     * -----------------------------------------------------------------------------------------------------------------
+     * public Run buildInsertRun(String dest, Object obj, boolean checkParimary, String ... columns)
+     * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
+     * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
+     *
+     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
+     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
+     *  public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception
+     ******************************************************************************************************************/
+
     /**
      * 创建INSERT RunPrepare
      * @param dest 表
@@ -327,6 +356,23 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         }
         return cnt;
     }
+
+
+
+    /* *****************************************************************************************************************
+     * 													QUERY
+     * -----------------------------------------------------------------------------------------------------------------
+     * public String parseFinalQuery(Run run)
+     * public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare)
+     * public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value)
+     * public List<Map<String,Object>> process(List<Map<String,Object>> list)
+     *
+     * protected void buildQueryRunContent(XMLRun run)
+     * protected void buildQueryRunContent(TextRun run)
+     * protected void buildQueryRunContent(TableRun run)
+     ******************************************************************************************************************/
+
+
     /**
      * MATCH (n)  WHERE n.name='u1' RETURN n  ORDER BY n.age DESC SKIP 0 LIMIT 200
      * @param run  run
@@ -390,8 +436,112 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         String content = builder.toString();
         return content;
     }
+    /**
+     * 构造 LIKE 查询条件
+     * MATCH (n:Dept) where n.name CONTAINS '财务' RETURN n
+     * MATCH (n:Dept) where n.name STARTS WITH  '财' RETURN n
+     * MATCH (n:Dept) where n.name END WITH  '财' RETURN n
+     *
+     * @param builder builder
+     * @param compare compare
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare){
+        if(compare == RunPrepare.COMPARE_TYPE.LIKE){
+            builder.append(" CONTAINS ?");
+        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){
+            builder.append(" START WITH ?");
+        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){
+            builder.append(" END WITH ?");
+        }
+        return builder;
+    }
+
+    /**
+     * 构造(NOT) IN 查询条件
+     * @param builder builder
+     * @param compare compare
+     * @param value value
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value){
+        if(compare == RunPrepare.COMPARE_TYPE.NOT_IN){
+            builder.append(" NOT");
+        }
+        builder.append(" IN [");
+        if(value instanceof Collection){
+            Collection<Object> coll = (Collection)value;
+            int size = coll.size();
+            for(int i=0; i<size; i++){
+                builder.append("?");
+                if(i < size-1){
+                    builder.append(",");
+                }
+            }
+            builder.append("]");
+        }else{
+            builder.append("= ?");
+        }
+        return builder;
+    }
+
+
+    /**
+     * JDBC执行结果处理
+     * return e
+     * 只有一个return项时执行
+     * [e:{id:1,name:''},e:{id:2,name:''}]
+     * 转换成
+     * [,{id:1,name:''},{id:2,name:''}]
+     * @param list JDBC执行结果
+     * @return List
+     */
+    @Override
+    public List<Map<String,Object>> process(List<Map<String,Object>> list){
+        List<Map<String,Object>> result = list;
+        if(null != list && !list.isEmpty()){
+            Map<String,Object> map = list.get(0);
+            Set<String> keys = map.keySet();
+            String id_key = "__ID";
+            boolean mapHashIdKey = BasicUtil.containsString(true, true, keys, "__ID");
+            if((2 == keys.size() && keys.contains(id_key)
+                    || keys.size() == 1
+            )){
+                String key = null;
+                for(String k:keys){
+                    if(!id_key.equalsIgnoreCase(k)){
+                        key = k;
+                        break;
+                    }
+                }
+                Object chk = list.get(0).get(key);
+                if(null != chk && chk instanceof Map) {
+                    result = new ArrayList<>();
+                    for (Map<String, Object> item : list) {
+                        Map<String, Object> value = (Map<String, Object>)item.get(key);
+                        if(mapHashIdKey){//MAP中有__ID
+                            value.put("id", item.get(id_key));
+                        }
+                        result.add(value);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 生成基础查询主体
+     * @param run run
+     */
     protected void buildQueryRunContent(XMLRun run){
     }
+    /**
+     * 生成基础查询主体
+     * @param run run
+     */
     protected void buildQueryRunContent(TextRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
@@ -483,10 +633,9 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         //appendOrderStore();
         run.checkValid();
     }
-
     /**
      * 生成基础查询主体
-     * @param run
+     * @param run run
      */
     protected void buildQueryRunContent(TableRun run){
         StringBuilder builder = run.getBuilder();
@@ -560,138 +709,13 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         run.appendOrderStore();
         run.checkValid();
     }
-    protected Run buildDeleteRunContent(TableRun run){
-        RunPrepare prepare =   run.getPrepare();
-        StringBuilder builder = run.getBuilder();
-        builder.append("DELETE FROM ");
-        if(null != run.getSchema()){
-            SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
-        }
-
-        SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
-        builder.append(JDBCAdapter.BR);
-        if(BasicUtil.isNotEmpty(prepare.getAlias())){
-            builder.append("  ").append(prepare.getAlias());
-        }
-        List<Join> joins = prepare.getJoins();
-        if(null != joins) {
-            for (Join join:joins) {
-                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-                SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
-                if(BasicUtil.isNotEmpty(join.getAlias())){
-                    builder.append("  ").append(join.getAlias());
-                }
-                builder.append(" ON ").append(join.getCondition());
-            }
-        }
-
-        builder.append("\nWHERE 1=1\n\t");
 
 
-
-        /*添加查询条件*/
-        //appendConfigStore();
-        run.appendCondition();
-        run.appendGroup();
-        run.appendOrderStore();
-        run.checkValid();
-
-        return run;
-    }
-    @SuppressWarnings("rawtypes")
-    protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
-        if(null == table || null == key || null == values){
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-        TableRun run = new TableRun(this,table);
-        builder.append("DELETE FROM ").append(table).append(" WHERE ");
-        if(values instanceof Collection){
-            Collection cons = (Collection)values;
-            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            if(cons.size() > 1){
-                builder.append(" IN(");
-                int idx = 0;
-                for(Object obj:cons){
-                    if(idx > 0){
-                        builder.append(",");
-                    }
-                    //builder.append("'").append(obj).append("'");
-                    builder.append("?");
-                    idx ++;
-                }
-                builder.append(")");
-            }else if(cons.size() == 1){
-                for(Object obj:cons){
-                    builder.append("=?");
-                }
-            }else{
-                throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
-            }
-        }else{
-            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            builder.append("=?");
-        }
-        run.addValues(key, values);
-        run.setBuilder(builder);
-
-        return run;
-    }
-
-    protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-        TableRun run = new TableRun(this,dest);
-        StringBuilder builder = new StringBuilder();
-        builder.append("MATCH (d");
-        String table = parseTable(dest);
-        if(BasicUtil.isNotEmpty(table)){
-            builder.append(":").append(table);
-        }
-        builder.append(")");
-        builder.append(" WHERE ");
-        List<String> keys = new ArrayList<>();
-        if(null != columns && columns.length>0){
-            for(String col:columns){
-                keys.add(col);
-            }
-        }else{
-            if(obj instanceof DataRow){
-                keys = ((DataRow)obj).getPrimaryKeys();
-            }else{
-                if(AdapterProxy.hasAdapter()){
-                    keys = AdapterProxy.primaryKeys(obj.getClass());
-                }
-            }
-        }
-        int size = keys.size();
-        if(size >0){
-            for(int i=0; i<size; i++){
-                if(i > 0){
-                    builder.append("\nAND ");
-                }
-                String key = keys.get(i);
-
-                SQLUtil.delimiter(builder, "d."+key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
-                Object value = null;
-                if(obj instanceof DataRow){
-                    value = ((DataRow)obj).get(key);
-                }else{
-                    if(AdapterProxy.hasAdapter()){
-                        value = BeanUtil.getFieldValue(obj,AdapterProxy.field(obj.getClass(), key));
-                    }else{
-                        value = BeanUtil.getFieldValue(obj, key);
-                    }
-                }
-                run.addValues(key,value);
-            }
-        }else{
-            throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
-        }
-        builder.append(" DELETE d");
-        run.setBuilder(builder);
-
-        return run;
-    }
-
+    /* *****************************************************************************************************************
+     * 													COUNT
+     * -----------------------------------------------------------------------------------------------------------------
+     * public String parseTotalQuery(Run run)
+     ******************************************************************************************************************/
     /**
      * 求总数SQL
      * Run 反转调用
@@ -704,60 +728,27 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         return sql;
     }
 
-    /**
-     * JDBC执行结果处理
-     * return e
-     * 只有一个return项时执行
-     * [e:{id:1,name:''},e:{id:2,name:''}]
-     * 转换成
-     * [,{id:1,name:''},{id:2,name:''}]
-     * @param list JDBC执行结果
-     * @return List
-     */
-    @Override
-    public List<Map<String,Object>> process(List<Map<String,Object>> list){
-        List<Map<String,Object>> result = list;
-        if(null != list && !list.isEmpty()){
-            Map<String,Object> map = list.get(0);
-            Set<String> keys = map.keySet();
-            String id_key = "__ID";
-            boolean mapHashIdKey = BasicUtil.containsString(true, true, keys, "__ID");
-            if((2 == keys.size() && keys.contains(id_key)
-                    || keys.size() == 1
-            )){
-                String key = null;
-                for(String k:keys){
-                    if(!id_key.equalsIgnoreCase(k)){
-                        key = k;
-                        break;
-                    }
-                }
-                Object chk = list.get(0).get(key);
-                if(null != chk && chk instanceof Map) {
-                    result = new ArrayList<>();
-                    for (Map<String, Object> item : list) {
-                        Map<String, Object> value = (Map<String, Object>)item.get(key);
-                        if(mapHashIdKey){//MAP中有__ID
-                            value.put("id", item.get(id_key));
-                        }
-                        result.add(value);
-                    }
-                }
-            }
-        }
-        return result;
-    }
+
+    /* *****************************************************************************************************************
+     * 													EXISTS
+     * -----------------------------------------------------------------------------------------------------------------
+     * public String parseExists(Run run)
+     ******************************************************************************************************************/
     @Override
     public String parseExists(Run run){
         String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") > 0  AS IS_EXISTS";
         return sql;
     }
 
-    @Override
-    public String concat(String... args) {
-        return null;
-    }
-
+    /* *****************************************************************************************************************
+     * 													DELETE
+     * -----------------------------------------------------------------------------------------------------------------
+     * protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns)
+     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns)
+     * protected Run buildDeleteRunContent(TableRun run)
+     * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
+     * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
+     ******************************************************************************************************************/
     protected Run buildUpdateRunFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
@@ -892,6 +883,147 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         return run;
     }
 
+    protected Run buildDeleteRunContent(TableRun run){
+        RunPrepare prepare =   run.getPrepare();
+        StringBuilder builder = run.getBuilder();
+        builder.append("DELETE FROM ");
+        if(null != run.getSchema()){
+            SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
+        }
+
+        SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
+        builder.append(JDBCAdapter.BR);
+        if(BasicUtil.isNotEmpty(prepare.getAlias())){
+            builder.append("  ").append(prepare.getAlias());
+        }
+        List<Join> joins = prepare.getJoins();
+        if(null != joins) {
+            for (Join join:joins) {
+                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+                SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
+                if(BasicUtil.isNotEmpty(join.getAlias())){
+                    builder.append("  ").append(join.getAlias());
+                }
+                builder.append(" ON ").append(join.getCondition());
+            }
+        }
+
+        builder.append("\nWHERE 1=1\n\t");
+
+
+
+        /*添加查询条件*/
+        //appendConfigStore();
+        run.appendCondition();
+        run.appendGroup();
+        run.appendOrderStore();
+        run.checkValid();
+
+        return run;
+    }
+    @SuppressWarnings("rawtypes")
+    protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
+        if(null == table || null == key || null == values){
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        TableRun run = new TableRun(this,table);
+        builder.append("DELETE FROM ").append(table).append(" WHERE ");
+        if(values instanceof Collection){
+            Collection cons = (Collection)values;
+            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+            if(cons.size() > 1){
+                builder.append(" IN(");
+                int idx = 0;
+                for(Object obj:cons){
+                    if(idx > 0){
+                        builder.append(",");
+                    }
+                    //builder.append("'").append(obj).append("'");
+                    builder.append("?");
+                    idx ++;
+                }
+                builder.append(")");
+            }else if(cons.size() == 1){
+                for(Object obj:cons){
+                    builder.append("=?");
+                }
+            }else{
+                throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
+            }
+        }else{
+            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+            builder.append("=?");
+        }
+        run.addValues(key, values);
+        run.setBuilder(builder);
+
+        return run;
+    }
+
+    protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
+        TableRun run = new TableRun(this,dest);
+        StringBuilder builder = new StringBuilder();
+        builder.append("MATCH (d");
+        String table = parseTable(dest);
+        if(BasicUtil.isNotEmpty(table)){
+            builder.append(":").append(table);
+        }
+        builder.append(")");
+        builder.append(" WHERE ");
+        List<String> keys = new ArrayList<>();
+        if(null != columns && columns.length>0){
+            for(String col:columns){
+                keys.add(col);
+            }
+        }else{
+            if(obj instanceof DataRow){
+                keys = ((DataRow)obj).getPrimaryKeys();
+            }else{
+                if(AdapterProxy.hasAdapter()){
+                    keys = AdapterProxy.primaryKeys(obj.getClass());
+                }
+            }
+        }
+        int size = keys.size();
+        if(size >0){
+            for(int i=0; i<size; i++){
+                if(i > 0){
+                    builder.append("\nAND ");
+                }
+                String key = keys.get(i);
+
+                SQLUtil.delimiter(builder, "d."+key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
+                Object value = null;
+                if(obj instanceof DataRow){
+                    value = ((DataRow)obj).get(key);
+                }else{
+                    if(AdapterProxy.hasAdapter()){
+                        value = BeanUtil.getFieldValue(obj,AdapterProxy.field(obj.getClass(), key));
+                    }else{
+                        value = BeanUtil.getFieldValue(obj, key);
+                    }
+                }
+                run.addValues(key,value);
+            }
+        }else{
+            throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
+        }
+        builder.append(" DELETE d");
+        run.setBuilder(builder);
+
+        return run;
+    }
+
+    /* *****************************************************************************************************************
+     * 													COMMON
+     * -----------------------------------------------------------------------------------------------------------------
+     *  public String concat(String... args)
+     ******************************************************************************************************************/
+    @Override
+    public String concat(String... args) {
+        return null;
+    }
     /* ************** 拼接字符串 *************** */
     protected String concatFun(String ... args){
         String result = "";

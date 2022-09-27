@@ -575,11 +575,20 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
+     * public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare)
+     * public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value)
+     *
      * protected void buildQueryRunContent(XMLRun run)
      * protected void buildQueryRunContent(TextRun run)
      * protected void buildQueryRunContent(TableRun run)
      ******************************************************************************************************************/
 
+    /**
+     * 构造 LIKE 查询条件
+     * @param builder builder
+     * @param compare compare
+     * @return StringBuilder
+     */
     @Override
     public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare){
         if(compare == RunPrepare.COMPARE_TYPE.LIKE){
@@ -591,6 +600,14 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         }
         return builder;
     }
+
+    /**
+     * 构造(NOT) IN 查询条件
+     * @param builder builder
+     * @param compare compare
+     * @param value value
+     * @return StringBuilder
+     */
     @Override
     public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value){
         if(compare == RunPrepare.COMPARE_TYPE.NOT_IN){
