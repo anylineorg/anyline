@@ -246,7 +246,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
-        //是否启动缓存
+        // 是否启动缓存
         if(null == cache){
             return query(src, configs, obj, conditions);
         }
@@ -558,7 +558,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public DataRow cache(String cache, RunPrepare table, ConfigStore configs, Object obj, String ... conditions){
-        //是否启动缓存
+        // 是否启动缓存
         if(null == cache){
             return query(table, configs, obj, conditions);
         }
@@ -730,7 +730,7 @@ public class SimpleService<E> implements AnylineService<E> {
     public int count(String src, ConfigStore configs, Object obj, String ... conditions){
         int count = -1;
         try {
-            //conditions = parseConditions(conditions);
+            // conditions = parseConditions(conditions);
             src = BasicUtil.compressionSpace(src);
             conditions = BasicUtil.compressionSpace(conditions);
             RunPrepare prepare = createSQL(src);
@@ -1452,7 +1452,7 @@ public class SimpleService<E> implements AnylineService<E> {
         RunPrepare prepare = null;
         src = src.trim();
         List<String> pks = new ArrayList<>();
-        //文本sql
+        // 文本sql
         if (src.startsWith("${") && src.endsWith("}")) {
             if(ConfigTable.isSQLDebug()){
                 log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
@@ -1464,7 +1464,7 @@ public class SimpleService<E> implements AnylineService<E> {
         } else {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
-            //String chk = src.toUpperCase().trim().replace("\t"," ");
+            // String chk = src.toUpperCase().trim().replace("\t"," ");
             /*if (chk.startsWith("SELECT ")
                     || chk.startsWith("DELETE ")
                     || chk.startsWith("INSERT ")
@@ -1535,7 +1535,7 @@ public class SimpleService<E> implements AnylineService<E> {
                 } else {
                     log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
                 }
-//        	//开启新线程提前更新缓存(90%时间)
+//       	// 开启新线程提前更新缓存(90%时间)
                 long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
                 final int _max = cacheElement.getExpires();
                 if (age > _max * 0.9) {
@@ -2021,7 +2021,7 @@ public class SimpleService<E> implements AnylineService<E> {
                     cacheProvider.put(cache, key, columns);
                 }
             }else{
-                //通过静态变量缓存
+                // 通过静态变量缓存
                 DataRow static_cache = cache_metadatas.get(key);
                 if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                     columns = (LinkedHashMap<String,Column>) static_cache.get("keys");
@@ -2075,7 +2075,7 @@ public class SimpleService<E> implements AnylineService<E> {
                     cacheProvider.put(cache, key, tags);
                 }
             }else{
-                //通过静态变量缓存
+                // 通过静态变量缓存
                 DataRow static_cache = cache_metadatas.get(key);
                 if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                     tags = (LinkedHashMap<String,Tag>) static_cache.get("keys");

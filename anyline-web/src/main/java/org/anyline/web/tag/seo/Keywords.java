@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Keywords extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L; 
-	//<seo:keyword key="java" count="3"/> 
-	//<al:param key ="" count="3"/> 
+	// <seo:keyword key="java" count="3"/>
+	// <al:param key ="" count="3"/>
  
 	 
 	public int doAfterBody() throws JspException { 
@@ -57,7 +57,7 @@ public class Keywords extends BaseBodyTag{
 		JspWriter out = null; 
 		try{ 
 			HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
-			boolean insert = false;	//是否插入关键词 
+			boolean insert = false;	// 是否插入关键词
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS",insert); 
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS_"+request.getServerName(),insert); 
 			 

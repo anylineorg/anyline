@@ -79,7 +79,7 @@ public class AESUtil {
 	 */ 
 	public static String decrypt(CIPHER cipher, String password, String vector, String content) {
 		try { 
-			// 实例化 
+			// 实例化
 			Cipher cipherInstance = Cipher.getInstance(cipher.getCode());
 			// 使用密钥初始化,设置为解密模式
 			if(BasicUtil.isNotEmpty(vector)){
@@ -90,7 +90,7 @@ public class AESUtil {
 			}else {
 				cipherInstance.init(Cipher.DECRYPT_MODE, getSecretKey(password));
 			}
-			// 执行操作 
+			// 执行操作
 			byte[] result = cipherInstance.doFinal(Base64Util.decode(content));
 			return new String(result, "utf-8"); 
 		} catch (Exception ex) {
@@ -115,13 +115,13 @@ public class AESUtil {
 	 * @return SecretKeySpec
 	 */ 
 	private static SecretKeySpec getSecretKey(final String password) { 
-		// 返回生成指定算法密钥生成器的 KeyGenerator 对象 
+		// 返回生成指定算法密钥生成器的 KeyGenerator 对象
 		KeyGenerator kg = null;
 		try {
 			kg = KeyGenerator.getInstance(KEY);
-			// AES 要求密钥长度为 128 
+			// AES 要求密钥长度为 128
 			kg.init(128, new SecureRandom(password.getBytes()));
-			// 生成一个密钥 
+			// 生成一个密钥
 			SecretKey secretKey = kg.generateKey(); 
 			return new SecretKeySpec(secretKey.getEncoded(), KEY);// 转换为AES专用密钥
 		} catch (Exception ex) {

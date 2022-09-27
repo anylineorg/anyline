@@ -72,8 +72,8 @@ public class FTPUtil {
     public void setTimeOut(int defaultTimeoutSecond, int connectTimeoutSecond, int dataTimeoutSecond){   
         try {   
             client.setDefaultTimeout(defaultTimeoutSecond * 1000);   
-            client.setConnectTimeout(connectTimeoutSecond * 1000); //commons-net-3.5.jar   
-            client.setSoTimeout(connectTimeoutSecond * 1000); //commons-net-1.4.1.jar 连接后才能设置   
+            client.setConnectTimeout(connectTimeoutSecond * 1000); // commons-net-3.5.jar   
+            client.setSoTimeout(connectTimeoutSecond * 1000); // commons-net-1.4.1.jar 连接后才能设置   
             client.setDataTimeout(dataTimeoutSecond * 1000);   
         } catch (SocketException e) { 
         	e.printStackTrace(); 
@@ -116,7 +116,7 @@ public class FTPUtil {
 	    log.warn("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),FileUtil.length(local.length()),remote, local.getAbsolutePath()); 
 	    return success;   
 	} 
-	///////////////////////////// 
+	// ///////////////////////////
     public FTPClient getFTPClient(){   
         return client;   
     }   
@@ -143,7 +143,7 @@ public class FTPUtil {
 	            disconnect();   
 	        }   
 	        client.setFileType(FTP.BINARY_FILE_TYPE);   
-	        //ftp.setFileType(FTP.ASCII_FILE_TYPE);   
+	        // ftp.setFileType(FTP.ASCII_FILE_TYPE);   
 	        client.enterLocalPassiveMode();  
     	}catch(Exception e){ 
     		e.printStackTrace(); 
@@ -303,7 +303,7 @@ public class FTPUtil {
 				} catch (IOException e) { 
 					e.printStackTrace(); 
 				}  
-                cd(remotePath); //切换成返回true,失败（不存在）返回false   
+                cd(remotePath); // 切换成返回true,失败（不存在）返回false   
             }   
             File[] files = local.listFiles();   
             for (File f : files) {   

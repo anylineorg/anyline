@@ -97,27 +97,27 @@ public abstract class NumberTextUtil {
  
 		static enum Power { 
  
-			Thousand("thousand"), // 10 ^ 3 
-			Million("million"), // 10 ^ 6 
-			Billion("billion"), // 10 ^ 9 
-			Trillion("trillion"), // 10 ^ 12 
-			Quadrillion("quadrillion"), // 10 ^ 15 
-			Quintillion("quintillion"), // 10 ^ 18 (enough for Long.MAX_VALUE) 
-			Sextillion("sextillion"), // 10 ^ 21 
-			Septillion("septillion"), // 10 ^ 24 
-			Octillion("octillion"), // 10 ^ 27 
-			Nonillion("nonillion"), // 10 ^ 30 
-			Decillion("decillion"), // 10 ^ 33 
-			Undecillion("undecillion"), // 10 ^ 36 
-			Duodecillion("duodecillion"), // 10 ^ 39 
-			Tredecillion("tredecillion"), // 10 ^ 42 
-			Quattuordecillion("quattuordecillion"), // 10 ^ 45 
-			Quindecillion("quindecillion"), // 10 ^ 48 
-			Sexdecillion("sexdecillion"), // 10 ^ 51 
-			Septendecillion("septendecillion"), // 10 ^ 54 
-			Octodecillion("octodecillion"), // 10 ^ 57 
-			Novemdecillion("novemdecillion"), // 10 ^ 60 
-			Vigintillion("vigintillion"), // 10 ^ 63 
+			Thousand("thousand"), // 10 ^ 3
+			Million("million"), // 10 ^ 6
+			Billion("billion"), // 10 ^ 9
+			Trillion("trillion"), // 10 ^ 12
+			Quadrillion("quadrillion"), // 10 ^ 15
+			Quintillion("quintillion"), // 10 ^ 18 (enough for Long.MAX_VALUE)
+			Sextillion("sextillion"), // 10 ^ 21
+			Septillion("septillion"), // 10 ^ 24
+			Octillion("octillion"), // 10 ^ 27
+			Nonillion("nonillion"), // 10 ^ 30
+			Decillion("decillion"), // 10 ^ 33
+			Undecillion("undecillion"), // 10 ^ 36
+			Duodecillion("duodecillion"), // 10 ^ 39
+			Tredecillion("tredecillion"), // 10 ^ 42
+			Quattuordecillion("quattuordecillion"), // 10 ^ 45
+			Quindecillion("quindecillion"), // 10 ^ 48
+			Sexdecillion("sexdecillion"), // 10 ^ 51
+			Septendecillion("septendecillion"), // 10 ^ 54
+			Octodecillion("octodecillion"), // 10 ^ 57
+			Novemdecillion("novemdecillion"), // 10 ^ 60
+			Vigintillion("vigintillion"), // 10 ^ 63
 			; 
  
 			final String display; 
@@ -344,17 +344,17 @@ public abstract class NumberTextUtil {
  
 		static enum Power { 
  
-			Wan("万", "萬"), // 10^4 
-			Yi("亿", "億"), // 10^8 
-			Zhao("兆", "兆"), // 10^12 
-			Jing("京", "京"), // 10^16 (enough for Long.MAX_VALUE) 
-			Gai("垓", "垓"), // 10^20 
-			Zi("秭", "秭"), // 10^24 
-			Rang("穰", "穰"), // 10^28 
-			Gou("沟", "溝"), // 10^32 
-			Jian("涧", "澗"), // 10^36 
-			Zheng("正", "正"), // 10^40 
-			Zai("载", "載"), // 10^44 
+			Wan("万", "萬"), // 10^4
+			Yi("亿", "億"), // 10^8
+			Zhao("兆", "兆"), // 10^12
+			Jing("京", "京"), // 10^16 (enough for Long.MAX_VALUE)
+			Gai("垓", "垓"), // 10^20
+			Zi("秭", "秭"), // 10^24
+			Rang("穰", "穰"), // 10^28
+			Gou("沟", "溝"), // 10^32
+			Jian("涧", "澗"), // 10^36
+			Zheng("正", "正"), // 10^40
+			Zai("载", "載"), // 10^44
 			; 
  
 			final String display, displayTraditional; 
@@ -367,7 +367,7 @@ public abstract class NumberTextUtil {
  
 		static enum Digit { 
  
-			Ling("零", "零"), // just to occupy this position 
+			Ling("零", "零"), // just to occupy this position
 			Yi("一", "壹"), Er("二", "贰"), San("三", "叁"), Si("四", "肆"), Wu("五", 
 					"伍"), Liu("六", "陆"), Qi("七", "柒"), Ba("八", "捌"), Jiu("九", 
 					"玖"), ; 
@@ -438,7 +438,7 @@ public abstract class NumberTextUtil {
 			int shi = len > 1 ? (int) (number.charAt(len - 2) - '0') : -1; 
 			int ind = (int) (number.charAt(len - 1) - '0'); 
  
-			boolean nonZero = false; // true if any of the digits is not zero 
+			boolean nonZero = false; // true if any of the digits is not zero
 			if (qian == 0) { 
 				if (bai > 0 || shi > 0 || ind > 0) 
 					builder.append(getConnectDisplay(Connect.Ling)); 

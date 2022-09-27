@@ -43,7 +43,7 @@ public class I18N extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
 	private Object data; 
-	private String lang;			//语言 
+	private String lang;			// 语言
 	private String key;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 	private String textKey = "NM"; 
@@ -106,7 +106,7 @@ public class I18N extends BaseBodyTag{
 		 }else{ 
 			 html = I18NUtil.get(lang, key); 
 		 } 
-		//输出 
+		// 输出
 		JspWriter out = pageContext.getOut(); 
 		try{ 
 			out.print(html); 
@@ -136,15 +136,15 @@ public class I18N extends BaseBodyTag{
 			lang = (String)request.getSession().getAttribute(ConfigTable.getString("I18N_MESSAGE_SESSION_KEY")); 
 		} 
 		if(BasicUtil.isEmpty(lang)){ 
-			//配置文件默认 
+			// 配置文件默认
 			lang = ConfigTable.getString("I18N_MESSAGE_DEFAULT_LANG"); 
 		} 
 		if(BasicUtil.isEmpty(lang)){ 
-			//struts 
+			// struts
 			lang = (String)request.getSession().getAttribute("WW_TRANS_I18N_LOCALE"); 
 		} 
 		if(BasicUtil.isEmpty(lang)){ 
-			//Local 
+			// Local
 			lang = Locale.getDefault().getCountry().toLowerCase(); 
 		} 
 		if(BasicUtil.isEmpty(lang)){ 

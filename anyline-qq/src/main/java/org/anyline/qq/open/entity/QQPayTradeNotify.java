@@ -4,23 +4,23 @@ package org.anyline.qq.open.entity;
  * 
  */ 
 public class QQPayTradeNotify { 
-	private String appid			; //应用ID	String(32)	否	腾讯开放平台审核通过的应用APPID或腾讯公众平台审核通过的公众号APPID	1007033799 
-	private String mch_id			; //商户号	String(32)	是	QQ钱包分配的商户号	1900000109 
-	private String nonce_str		; //随机字符串	String(32)	是	随机字符串,不长于32位	3e5a036cb4bc3a677a38ad9d69eb3feb 
-	private String sign				; //签名	String(128)	是	商户签名,详见商户签名算法规则C380BEC2BFD727A4B6845133519F3AD6 
-	private String device_info		; //设备号	String(32)	否	调用接口提交的终端设备号	013467007045764 
-	private String trade_type		; //支付场景	String(16)	是	MICROPAY、APP、JSAPI、NATIVE	MICROPAY 
-	private String trade_state		; //支付状态	String(32)	是	固定值Success	Success 
-	private String bank_type		; //付款银行	String(16)	是	银行类型,采用字符串类型的银行卡标识	CCB_DEBIT 
-	private String fee_type			; //货币类型	String(16)	是	默认为人民币:CNY	CNY 
-	private String total_fee		; //订单金额	Int	是	商户订单总金额,单位为分,只能为整数,详见交易金额 
-	private String cash_fee			; //用户支付金额	Int	是	用户本次交易中,实际支付的金额	666 
-	private String coupon_fee		; //QQ钱包优惠金额	Int	否	本次交易中,QQ钱包提供的优惠金额	222 
-	private String transaction_id	; //QQ钱包订单号	String(32)	是	QQ钱包订单号	1353933301461607211903715555 
-	private String out_trade_no		; //商户订单号	String(32)	是	商户系统内部的订单号	20150806125346 
-	private String attach			; //附加数据	String(128)	否	附加数据,在查询API和支付通知中原样返回,该字段主要用于商户携带订单的自定义数据	说明 
-	private String time_end			; //支付完成时间	String(14)	是	订单支付时间,格式为yyyyMMddHHmmss,如2009年12月25日9点10分10秒表示为20091225091010	20141030133525 
-	private String openid			; //用户标识	String(128)	否	用户在商户appid下的唯一标识	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o 
+	private String appid			; // 应用ID	String(32)	否	腾讯开放平台审核通过的应用APPID或腾讯公众平台审核通过的公众号APPID	1007033799
+	private String mch_id			; // 商户号	String(32)	是	QQ钱包分配的商户号	1900000109
+	private String nonce_str		; // 随机字符串	String(32)	是	随机字符串,不长于32位	3e5a036cb4bc3a677a38ad9d69eb3feb
+	private String sign				; // 签名	String(128)	是	商户签名,详见商户签名算法规则C380BEC2BFD727A4B6845133519F3AD6
+	private String device_info		; // 设备号	String(32)	否	调用接口提交的终端设备号	013467007045764
+	private String trade_type		; // 支付场景	String(16)	是	MICROPAY、APP、JSAPI、NATIVE	MICROPAY
+	private String trade_state		; // 支付状态	String(32)	是	固定值Success	Success
+	private String bank_type		; // 付款银行	String(16)	是	银行类型,采用字符串类型的银行卡标识	CCB_DEBIT
+	private String fee_type			; // 货币类型	String(16)	是	默认为人民币:CNY	CNY
+	private String total_fee		; // 订单金额	Int	是	商户订单总金额,单位为分,只能为整数,详见交易金额
+	private String cash_fee			; // 用户支付金额	Int	是	用户本次交易中,实际支付的金额	666
+	private String coupon_fee		; // QQ钱包优惠金额	Int	否	本次交易中,QQ钱包提供的优惠金额	222
+	private String transaction_id	; // QQ钱包订单号	String(32)	是	QQ钱包订单号	1353933301461607211903715555
+	private String out_trade_no		; // 商户订单号	String(32)	是	商户系统内部的订单号	20150806125346
+	private String attach			; // 附加数据	String(128)	否	附加数据,在查询API和支付通知中原样返回,该字段主要用于商户携带订单的自定义数据	说明
+	private String time_end			; // 支付完成时间	String(14)	是	订单支付时间,格式为yyyyMMddHHmmss,如2009年12月25日9点10分10秒表示为20091225091010	20141030133525
+	private String openid			; // 用户标识	String(128)	否	用户在商户appid下的唯一标识	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o
 	public String getAppid() { 
 		return appid; 
 	} 

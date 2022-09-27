@@ -16,9 +16,9 @@ public class IDCardUtil {
 			"23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", 
 			"44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", 
 			"64", "65", "71", "81", "82", "91" }; 
-	// 每位加权因子 
+	// 每位加权因子
 	private static int power[] = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 }; 
-	// 第18位校检码 
+	// 第18位校检码
 	private static String verifyCode[] = { "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" }; 
 	static{ 
 		CODE_NM.put( "11", "北京" ); 
@@ -105,17 +105,17 @@ public class IDCardUtil {
 	 * @return boolean
 	 */ 
 	private static boolean isValidate18Idcard(String idcard) { 
-		// 非18位为假 
+		// 非18位为假
 		if (idcard.length() != 18) { 
 			return false; 
 		} 
-		// 获取前17位 
+		// 获取前17位
 		String idcard17 = idcard.substring(0, 17); 
-		// 获取第18位 
+		// 获取第18位
 		String idcard18Code = idcard.substring(17, 18); 
 		char c[] = null; 
 		String checkCode = ""; 
-		// 是否都为数字 
+		// 是否都为数字
 		if (isDigital(idcard17)) { 
 			c = idcard17.toCharArray(); 
 		} else { 
@@ -131,12 +131,12 @@ public class IDCardUtil {
  
 			sum17 = getPowerSum(bit); 
  
-			// 将和值与11取模得到余数进行校验码判断 
+			// 将和值与11取模得到余数进行校验码判断
 			checkCode = getCheckCodeBySum(sum17); 
 			if (null == checkCode) { 
 				return false; 
 			} 
-			// 将身份证的第18位与算出来的校码进行匹配,不相等就为假 
+			// 将身份证的第18位与算出来的校码进行匹配,不相等就为假
 			if (!idcard18Code.equalsIgnoreCase(checkCode)) { 
 				return false; 
 			} 
@@ -151,12 +151,12 @@ public class IDCardUtil {
 	 * @return boolean
 	 */ 
 	public static boolean validate15(String idcard) { 
-		// 非15位为假 
+		// 非15位为假
 		if (idcard.length() != 15) { 
 			return false; 
 		} 
  
-		// 是否全都为数字 
+		// 是否全都为数字
 		if (isDigital(idcard)) { 
 			String provinceid = idcard.substring(0, 2); 
 			String birthday = idcard.substring(6, 12); 
@@ -164,7 +164,7 @@ public class IDCardUtil {
 			int month = Integer.parseInt(idcard.substring(8, 10)); 
 			int day = Integer.parseInt(idcard.substring(10, 12)); 
  
-			// 判断是否为合法的省份 
+			// 判断是否为合法的省份
 			boolean flag = false; 
 			for (String id : CITY_CODE) { 
 				if (id.equals(provinceid)) { 
@@ -175,7 +175,7 @@ public class IDCardUtil {
 			if (!flag) { 
 				return false; 
 			} 
-			// 该身份证生出日期在当前日期之后时为假 
+			// 该身份证生出日期在当前日期之后时为假
 			Date birthdate = null; 
 			try { 
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
@@ -186,23 +186,23 @@ public class IDCardUtil {
 				return false; 
 			} 
  
-			// 判断是否为合法的年份 
+			// 判断是否为合法的年份
 			GregorianCalendar curDay = new GregorianCalendar(); 
 			int curYear = curDay.get(Calendar.YEAR); 
 			int year2bit = Integer.parseInt(String.valueOf(curYear) 
 					.substring(2)); 
  
-			// 判断该年份的两位表示法,小于50的和大于当前年份的,为假 
+			// 判断该年份的两位表示法,小于50的和大于当前年份的,为假
 			if ((year < 50 && year > year2bit)) { 
 				return false; 
 			} 
  
-			// 判断是否为合法的月份 
+			// 判断是否为合法的月份
 			if (month < 1 || month > 12) { 
 				return false; 
 			} 
  
-			// 判断是否为合法的日期 
+			// 判断是否为合法的日期
 			boolean mflag = false; 
 			curDay.setTime(birthdate); // 将该身份证的出生日期赋于对象curDay 
 			switch (month) { 
@@ -246,13 +246,13 @@ public class IDCardUtil {
 	 */ 
 	public static String convertIdcarBy15bit(String idcard) { 
 		String idcard17 = null; 
-		// 非15位身份证 
+		// 非15位身份证
 		if (idcard.length() != 15) { 
 			return null; 
 		} 
  
 		if (isDigital(idcard)) { 
-			// 获取出生年月日 
+			// 获取出生年月日
 			String birthday = idcard.substring(6, 12); 
 			Date birthdate = null; 
 			try { 
@@ -272,19 +272,19 @@ public class IDCardUtil {
 			if (null != c) { 
 				int bit[] = new int[idcard17.length()]; 
  
-				// 将字符数组转为整型数组 
+				// 将字符数组转为整型数组
 				bit = converCharToInt(c); 
 				int sum17 = 0; 
 				sum17 = getPowerSum(bit); 
  
-				// 获取和值与11取模得到余数进行校验码 
+				// 获取和值与11取模得到余数进行校验码
 				checkCode = getCheckCodeBySum(sum17); 
-				// 获取不到校验位 
+				// 获取不到校验位
 				if (null == checkCode) { 
 					return null; 
 				} 
  
-				// 将前17位与第18位校验码拼接 
+				// 将前17位与第18位校验码拼接
 				idcard17 += checkCode; 
 			} 
 		} else { // 身份证包含数字 

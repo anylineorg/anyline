@@ -2,11 +2,11 @@ package org.anyline.alipay.entity;
  
 public class BasicResult { 
 	protected boolean success	; 
-	protected String code		; //网关返回码,详见文档	40004 
-	protected String msg		; //网关返回码描述,详见文档	Business Failed 
-	protected String sub_code	; //业务返回码,详见文档	ACQ.TRADE_HAS_SUCCESS 
-	protected String sub_msg	; //业务返回码描述,详见文档	交易已被支付 
-	protected String sign		; // 
+	protected String code		; // 网关返回码,详见文档	40004
+	protected String msg		; // 网关返回码描述,详见文档	Business Failed
+	protected String sub_code	; // 业务返回码,详见文档	ACQ.TRADE_HAS_SUCCESS
+	protected String sub_msg	; // 业务返回码描述,详见文档	交易已被支付
+	protected String sign		; //
 	public String getCode() { 
 		return code; 
 	} 

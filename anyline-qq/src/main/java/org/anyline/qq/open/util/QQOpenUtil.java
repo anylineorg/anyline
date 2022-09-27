@@ -130,7 +130,7 @@ public class QQOpenUtil{
         // 完成 Mac 操作 
         byte[] dst = mac.doFinal(byteSrc); 
         // Base64 
-        //result = Base64.getEncoder().encode2String(dst);
+        // result = Base64.getEncoder().encode2String(dst);
 		result = Base64Util.encode(dst);
 		} catch (Exception e) { 
 			e.printStackTrace(); 
@@ -173,7 +173,7 @@ public class QQOpenUtil{
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[QQ登录][get openid][txt:"+txt+"]"); 
 		} 
-		//callback( {"client_id":"1106186286","openid":"0B6D8FD1AF2B686CDF78AC34E981D9C4","unionid":"UID_8687A0501C64D5AD725C283107C5BB83"} ); 
+		// callback( {"client_id":"1106186286","openid":"0B6D8FD1AF2B686CDF78AC34E981D9C4","unionid":"UID_8687A0501C64D5AD725C283107C5BB83"} ); 
 		String openid= RegularUtil.cut(txt, "openid",":","\"","\""); 
 		String unionid = RegularUtil.cut(txt, "unionid",":","\"","\""); 
 		row.put("OPENID", openid); 

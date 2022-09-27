@@ -51,8 +51,8 @@ public class SyntaxHelper {
 			// AND CD = ':CD' 
 			varType = Variable.VAR_TYPE_KEY_REPLACE;
 		}else if(prefix.endsWith("%") || afterChar.startsWith("%")){ 
-			//AND CD LIKE '%{CD}%' 
-			//AND CD LIKE '%:CD%' 
+			// AND CD LIKE '%{CD}%' 
+			// AND CD LIKE '%:CD%' 
 			varType = Variable.VAR_TYPE_KEY;
 			if(prefix.endsWith("%") && afterChar.startsWith("%")){ 
 				compare = COMPARE_TYPE.LIKE;
@@ -64,7 +64,7 @@ public class SyntaxHelper {
 		}else{ 
 			varType = Variable.VAR_TYPE_KEY;
 			if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
-				//AND CD IN({CD}) 
+				// AND CD IN({CD}) 
 				compare = COMPARE_TYPE.IN;
 			} 
 		} 

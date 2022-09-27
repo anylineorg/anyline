@@ -43,10 +43,10 @@ import java.util.*;
  
 public class DESUtil {
 	private static final Logger log = LoggerFactory.getLogger(DESUtil.class); 
-	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	//默认密钥 
-	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	//盐值 
-	private Cipher encryptCipher = null;					//加密 
-	private Cipher decryptCipher = null;					//解密
+	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	// 默认密钥
+	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	// 盐值
+	private Cipher encryptCipher = null;					// 加密
+	private Cipher decryptCipher = null;					// 解密
 	private String salt = DEFAULT_SALT;
 	 
 	private static Map<String,DESUtil> instances = new Hashtable<String,DESUtil>(); 
@@ -165,7 +165,7 @@ public class DESUtil {
 	 * @return Key
 	 */
 	private Key getKey(byte[] arrBTmp) { 
-		byte[] arrB = new byte[8];	// 创建一个空的8位字节数组（默认值为0） 
+		byte[] arrB = new byte[8];	// 创建一个空的8位字节数组（默认值为0）
 		/* 将原始字节数组转换为8位 */ 
 		for (int i = 0; i < arrBTmp.length && i < arrB.length; i++) { 
 			arrB[i] = arrBTmp[i]; 
@@ -240,13 +240,13 @@ public class DESUtil {
 	
 	/*
 	 * public static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
-	 * "wwwanylineorgk"; //参数名加密前缀 public static final String
-	 * HTTP_REQUEST_PARAM_VALUE_PREFIX = "wwwanylineorgv"; //参数值加密前缀 public
+	 * "wwwanylineorgk"; // 参数名加密前缀 public static final String
+	 * HTTP_REQUEST_PARAM_VALUE_PREFIX = "wwwanylineorgv"; // 参数值加密前缀 public
 	 * static final String HPPT_REQUEST_PARAM_PREFIX = "wwwanylineorgf";
-	 * //参数整体加密前缀 public static final String HTTP_REQUEST_PARAM_FULL_DES_KEY =
-	 * "@#$%0(*7#"; //整体加密密钥 public static final String
-	 * HTTP_REQUEST_PARAM_KEY_DES_KEY = "@#$%#"; //参数名加密密钥 public static final
-	 * String HTTP_REQUEST_PARAM_VALUE_DES_KEY = "@#23$%097#"; //参数值加密密钥
+	 * // 参数整体加密前缀 public static final String HTTP_REQUEST_PARAM_FULL_DES_KEY =
+	 * "@#$%0(*7#"; // 整体加密密钥 public static final String
+	 * HTTP_REQUEST_PARAM_KEY_DES_KEY = "@#$%#"; // 参数名加密密钥 public static final
+	 * String HTTP_REQUEST_PARAM_VALUE_DES_KEY = "@#23$%097#"; // 参数值加密密钥
 	 */
 	private static Map<String, DESKey> deskeys = null;
 	private static DESKey defaultDesKey = null;
@@ -744,7 +744,7 @@ public class DESUtil {
 			} else{ 
 				v = encryptKey(v, mix, keys); 
 			} 
-			//map.put(k, v); 
+			// map.put(k, v);
 		} 
 		return map; 
 	} 
@@ -787,7 +787,7 @@ public class DESUtil {
 		} else if (obj instanceof Collection) { 
 			obj = encryptKey((Collection<Object>) obj, mix, keys); 
 		} else { 
-			//Object无法加密 
+			// Object无法加密
 		} 
 		return obj; 
 	} 

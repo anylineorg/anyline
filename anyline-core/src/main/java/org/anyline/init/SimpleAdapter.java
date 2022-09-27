@@ -19,18 +19,18 @@ public class SimpleAdapter implements EntityAdapter {
     @Override
     public String table(Class clazz) {
         String key = clazz.getName();
-        //1.缓存
+        // 1.缓存
         String name = class2table.get(key);
         if(BasicUtil.isNotEmpty(name)){
             return name;
         }
-        //2.注解
+        // 2.注解
         name = ClassUtil.parseAnnotationFieldValue(clazz, "table.name", "table.value", "tableName.name", "tableName.value");
         if(BasicUtil.isNotEmpty(name)){
             class2table.put(key, name.toString());
             return name;
         }
-        //3.类名
+        // 3.类名
         name = clazz.getSimpleName();
         class2table.put(key, name.toString());
         return name;
@@ -58,12 +58,12 @@ public class SimpleAdapter implements EntityAdapter {
     @Override
     public String column(Class clazz, Field field) {
         String key = clazz.getName()+":"+field.getName().toUpperCase();
-        //1.缓存
+        // 1.缓存
         String name = field2column.get(key);
         if(BasicUtil.isNotEmpty(name)){
             return name;
         }
-        //2.注解
+        // 2.注解
         name = ClassUtil.parseAnnotationFieldValue(field, "column.name", "column.value", "TableField.name","TableField.value","TableId.value");
         if(BasicUtil.isNotEmpty(name)){
             field2column.put(key, name);
@@ -71,14 +71,14 @@ public class SimpleAdapter implements EntityAdapter {
             return name;
         }
 
-        //3.属性名转成列名
+        // 3.属性名转成列名
         if("camel_".equals(ConfigTable.getString("ENTITY_FIELD_COLUMN_MAP"))){
             name = BeanUtil.camel_(field.getName());
             field2column.put(key, name);
             column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
             return name;
         }
-        //4.属性名
+        // 4.属性名
 
         Class c = field.getType();
         if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
@@ -181,7 +181,7 @@ public class SimpleAdapter implements EntityAdapter {
 
     @Override
     public DataRow row(DataRow row, Object obj, String... keys) {
-        //注意不要调用 DataRow.public static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
+        // 注意不要调用 DataRow.public static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
         return DataRow.parse(row, KeyAdapter.KEY_CASE.CONFIG, obj, keys);
     }
     @Override
@@ -203,8 +203,8 @@ public class SimpleAdapter implements EntityAdapter {
     @Override
     public String column2param(String metadata){
         String param = null;
-        //注意这里只支持下划线转驼峰
-        //如果数据库中已经是驼峰,不要配置这个参数
+        // 注意这里只支持下划线转驼峰
+        // 如果数据库中已经是驼峰,不要配置这个参数
         String keyCase = ConfigTable.HTTP_PARAM_KEY_CASE;
         if("camel".equals(keyCase)){
             param = metadata + ":" + BeanUtil.camel(metadata.toLowerCase());

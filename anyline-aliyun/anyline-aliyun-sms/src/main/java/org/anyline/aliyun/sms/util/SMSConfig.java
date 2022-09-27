@@ -14,7 +14,7 @@ public class SMSConfig extends AnylineConfig {
 	public static String DEFAULT_SIGN	 		= "";
 
 
-	//服务器配置 
+	// 服务器配置
 	public String ACCESS_KEY 	= DEFAULT_ACCESS_KEY		;
 	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET		;
 	public String SIGN 			= DEFAULT_SIGN				;
@@ -43,7 +43,7 @@ public class SMSConfig extends AnylineConfig {
 	 * 初始化默认配置文件
 	 */
 	public static void init() {
-		//加载配置文件 
+		// 加载配置文件
 		load();
 	}
 

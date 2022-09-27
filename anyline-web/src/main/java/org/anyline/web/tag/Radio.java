@@ -83,7 +83,7 @@ public class Radio extends BaseBodyTag{
 					data = list; 
 				}
 
-				//条目边框
+				// 条目边框
 				String itemBorderTagName ="";
 				String itemBorderStartTag = "";
 				String itemBorderEndTag = "";

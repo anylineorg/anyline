@@ -84,7 +84,7 @@ public class QQMapUtil {
         if(null != row){
             int status = row.getInt("status",-1);
             if(status != 0){
-                //[code:121][info:此key每日调用量已达到上限]
+                // [code:121][info:此key每日调用量已达到上限]
                 log.warn("[IP地址解析][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
                 log.warn("[IP地址解析][response:{}]",txt);
                 if("121".equals(status)) {
@@ -128,12 +128,12 @@ public class QQMapUtil {
 
         String api = "/ws/geocoder/v1";
         Map<String, Object> params = new HashMap<>();
-        params.put("location", coordinate.getLat()+","+coordinate.getLng());        //这里是纬度在前
+        params.put("location", coordinate.getLat()+","+coordinate.getLng());        // 这里是纬度在前
         params.put("key", config.KEY);
         String sign = sign(api, params);
         String url = QQMapConfig.HOST + api+"?"+BeanUtil.map2string(params, false,true)+"&sig="+sign;
 
-        //换回原坐标系
+        // 换回原坐标系
         coordinate.setLng(_lng);
         coordinate.setLat(_lat);
         coordinate.setType(_type);

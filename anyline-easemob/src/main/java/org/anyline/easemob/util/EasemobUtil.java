@@ -362,7 +362,7 @@ public class EasemobUtil {
 	 */ 
 	public DataRow addBlock(String user, String block){ 
 		DataRow result = null; 
-		//删除好友 
+		// 删除好友
 		deleteFriend(user, block); 
 		String url = baseUrl + "/users/" + user + "/blocks/users"; 
 		try { 
@@ -371,7 +371,7 @@ public class EasemobUtil {
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[add blocks][result:{}]",txt); 
 			} 
-			//封装添加成功的用户username 
+			// 封装添加成功的用户username
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 

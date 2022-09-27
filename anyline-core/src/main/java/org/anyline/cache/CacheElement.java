@@ -18,9 +18,9 @@
 package org.anyline.cache;
 
 public class CacheElement {
-    private long createTime;    //创建时间
-    private int expires;        //过期时间(毫秒)
-    private Object value;       //value
+    private long createTime;    // 创建时间
+    private int expires;        // 过期时间(毫秒)
+    private Object value;       // value
     public CacheElement(){
         this.createTime = System.currentTimeMillis();
     }

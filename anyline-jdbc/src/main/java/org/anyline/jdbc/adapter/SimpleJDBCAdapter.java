@@ -208,9 +208,9 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			return new ArrayList<>();
 		}
 		boolean each = true;//是否需要从row中查找列
-		List<String> mastKeys = new ArrayList<>();		//必须插入列
-		List<String> ignores = new ArrayList<>();		//必须不插入列
-		List<String> factKeys = new ArrayList<>();		//根据是否空值
+		List<String> mastKeys = new ArrayList<>();		// 必须插入列
+		List<String> ignores = new ArrayList<>();		// 必须不插入列
+		List<String> factKeys = new ArrayList<>();		// 根据是否空值
 
 		if(null != columns && columns.size()>0){
 			each = false;
@@ -236,7 +236,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			}
 		}
 		if(each){
-			//是否插入null及""列
+			// 是否插入null及""列
 			boolean isInsertNullColumn =  false;
 			boolean isInsertEmptyColumn = false;
 			DataRow row = null;
@@ -270,7 +270,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);
 				if(mastKeys.contains(key)){
-					//必须插入
+					// 必须插入
 					continue;
 				}
 				Object value = null;
@@ -413,6 +413,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 确认需要更新的列
 	 * @param row DataRow
+	 * @param configs 更新条件
 	 * @param columns 提供额外的判断依据
 	 *                列可以加前缀
 	 *                +:表示必须插入
@@ -431,15 +432,16 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 *        则把执行结果与表结构对比，删除表中没有的列
 	 * @return List
 	 */
-	protected List<String> confirmUpdateColumns(String dest, DataRow row, List<String> columns){
+	protected List<String> confirmUpdateColumns(String dest, DataRow row, ConfigStore configs, List<String> columns){
 		List<String> keys = null;/*确定需要更新的列*/
 		if(null == row){
 			return new ArrayList<>();
 		}
 		boolean each = true;//是否需要从row中查找列
-		List<String> masters = BeanUtil.copy(row.getUpdateColumns())		; //必须更新列
-		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; //必须不更新列
-		List<String> factKeys = new ArrayList<>()							; //根据是否空值
+		List<String> conditions = new ArrayList<>()							; // 更新条件
+ 		List<String> masters = BeanUtil.copy(row.getUpdateColumns())		; // 必须更新列
+		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; // 必须不更新列
+		List<String> factKeys = new ArrayList<>()							; // 根据是否空值
 		BeanUtil.removeAll(ignores, columns);
 
 		if(null != columns && columns.size()>0){
@@ -475,7 +477,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					keys.add(k);
 				}
 			}
-			//是否更新null及""列
+			// 是否更新null及""列
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();
 			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
 			BeanUtil.removeAll(keys, ignores);
@@ -483,7 +485,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);
 				if(masters.contains(key)){
-					//必须更新
+					// 必须更新
 					continue;
 				}
 
@@ -797,7 +799,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			table.setRefGeneration(string(keys, "REF_GENERATION", set));
 			tables.put(tableName.toUpperCase(), table);
 
-			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 		}
 		return tables;
 	}
@@ -867,7 +869,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			table.setRefGeneration(string(keys, "REF_GENERATION", set));
 			tables.put(tableName.toUpperCase(), table);
 
-			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 		}
 		return tables;
 	}
@@ -989,7 +991,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			table.setRefGeneration(string(keys, "REF_GENERATION", set));
 			tables.put(tableName.toUpperCase(), table);
 
-			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 		}
 		return tables;
 	}
@@ -1691,13 +1693,13 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		Table table = column.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
-		//Column update = column.getUpdate();
-		//if(null == update){
-		//添加列
+		// Column update = column.getUpdate();
+		// if(null == update){
+		// 添加列
 		builder.append(" ADD ").append(column.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
-		//}
+		// }
 		return builder.toString();
 	}
 
@@ -1716,7 +1718,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			column.setCreater(this);
 			update.setCreater(this);
 
-			//修改列名
+			// 修改列名
 			String name = column.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
@@ -1726,7 +1728,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 				}
 			}
 			column.setName(uname);
-			//修改数据类型
+			// 修改数据类型
 			String type = type2type(column.getTypeName());
 			String utype = type2type(update.getTypeName());
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
@@ -1735,7 +1737,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					sqls.addAll(list);
 				}
 			}
-			//修改默认值
+			// 修改默认值
 			Object def = column.getDefaultValue();
 			Object udef = update.getDefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)){
@@ -1744,7 +1746,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					sqls.add(sql);
 				}
 			}
-			//修改非空限制
+			// 修改非空限制
 			int nullable = column.isNullable();
 			int unullable = update.isNullable();
 			if(nullable != unullable){
@@ -1753,7 +1755,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					sqls.add(sql);
 				}
 			}
-			//修改备注
+			// 修改备注
 			String comment = column.getComment();
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
@@ -1874,21 +1876,21 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder define(StringBuilder builder, Column column){
-		//数据类型
+		// 数据类型
 		type(builder, column);
 		// 编码
 		charset(builder, column);
-		//默认值
+		// 默认值
 		defaultValue(builder, column);
-		//递增列
+		// 递增列
 		increment(builder, column);
-		//非空
+		// 非空
 		nullable(builder, column);
-		//更新行事件
+		// 更新行事件
 		onupdate(builder, column);
-		//备注
+		// 备注
 		comment(builder, column);
-		//位置
+		// 位置
 		position(builder, column);
 		return builder;
 	}
@@ -1902,7 +1904,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	public StringBuilder type(StringBuilder builder, Column column){
 
 		builder.append(type2type(column.getTypeName()));
-		//精度
+		// 精度
 		Integer precision = column.getPrecision();
 		Integer scale = column.getScale();
 		if(null != precision) {
@@ -2073,13 +2075,13 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		Table table = tag.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
-		//Tag update = tag.getUpdate();
-		//if(null == update){
-		//添加标签
+		// Tag update = tag.getUpdate();
+		// if(null == update){
+		// 添加标签
 		builder.append(" ADD TAG ");
 		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, tag);
-		//}
+		// }
 		return builder.toString();
 	}
 
@@ -2098,7 +2100,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			tag.setCreater(this);
 			update.setCreater(this);
 
-			//修改标签名
+			// 修改标签名
 			String name = tag.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
@@ -2108,7 +2110,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 				}
 			}
 			tag.setName(uname);
-			//修改数据类型
+			// 修改数据类型
 			String type = type2type(tag.getTypeName());
 			String utype = type2type(update.getTypeName());
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
@@ -2117,7 +2119,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					sqls.addAll(list);
 				}
 			}
-			//修改默认值
+			// 修改默认值
 			Object def = tag.getDefaultValue();
 			Object udef = update.getDefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)){
@@ -2126,7 +2128,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					sqls.add(sql);
 				}
 			}
-			//修改非空限制
+			// 修改非空限制
 			int nullable = tag.isNullable();
 			int unullable = update.isNullable();
 			if(nullable != unullable){
@@ -2135,7 +2137,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 					sqls.add(sql);
 				}
 			}
-			//修改备注
+			// 修改备注
 			String comment = tag.getComment();
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
@@ -2379,7 +2381,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 				return true;
 			}
 		}else{
-			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			// 如果没有同步法数据库，直接生成column可能只设置了type Name
 			String type = column.getTypeName();
 			if(null != type){
 				type = type.toLowerCase();
@@ -2408,13 +2410,13 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 							|| clazz.contains("float")
 							|| clazz.contains("double")
 							|| clazz.contains("timestamp")
-							//|| clazz.contains("bit")
+							// || clazz.contains("bit")
 							|| clazz.contains("short")
 			){
 				return true;
 			}
 		}else{
-			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			// 如果没有同步法数据库，直接生成column可能只设置了type Name
 			String type = column.getTypeName();
 			if(null != type){
 				type = type.toLowerCase();
@@ -2500,7 +2502,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	protected Object value(Map<String, Integer> keys, String key, ResultSet set, Object def) throws Exception{
 		Integer index = keys.get(key);
 		if(null != index){
-			//db2 直接用 set.getObject(String) 可能发行 参数无效：未知列名 String
+			// db2 直接用 set.getObject(String) 可能发行 参数无效：未知列名 String
 			return set.getObject(index);
 		}
 		return def;
@@ -2637,7 +2639,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 			String clazz = column.getClassName();
 			String typeName = column.getTypeName().toUpperCase();
 			if(null != typeName){
-				//根据数据库类型
+				// 根据数据库类型
 				if(typeName.equals("UUID")){
 					if(value instanceof UUID) {
 					}else{

@@ -28,13 +28,13 @@ import java.io.Serializable;
 import java.util.List;
  
 public interface Variable extends Cloneable,Serializable{
-	public static final int VAR_TYPE_INDEX			= 0;		//根据下标区分 CD = ? 
-	public static final int VAR_TYPE_KEY			= 1;		//根据KEY区分  CD = :CD 
-	public static final int VAR_TYPE_KEY_REPLACE	= 2;		//字符替换 CD=':CD' 
-	public static final int VAR_TYPE_REPLACE		= 3;		//字符替换 CD=::CD
+	public static final int VAR_TYPE_INDEX			= 0;		// 根据下标区分 CD = ? 
+	public static final int VAR_TYPE_KEY			= 1;		// 根据KEY区分  CD = :CD 
+	public static final int VAR_TYPE_KEY_REPLACE	= 2;		// 字符替换 CD=':CD' 
+	public static final int VAR_TYPE_REPLACE		= 3;		// 字符替换 CD=::CD
 
-	public static final int KEY_TYPE_SIGN_V1				= 1; //以:或::区分
-	public static final int KEY_TYPE_SIGN_V2				= 2; //以{}或${}区分 (8.5之后用${})
+	public static final int KEY_TYPE_SIGN_V1				= 1; // 以:或::区分
+	public static final int KEY_TYPE_SIGN_V2				= 2; // 以{}或${}区分 (8.5之后用${})
 	
 	public int getSignType();
 	public void setSignType(int signType); 

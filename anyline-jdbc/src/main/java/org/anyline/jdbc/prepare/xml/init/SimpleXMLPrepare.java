@@ -39,7 +39,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 	/*解析XML*/ 
 	private String id; 
 	private String text;
-	private boolean strict = true;	//严格格式, true:不允许添加XML定义之外 的临时查询条件
+	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables;
 	 
 	public SimpleXMLPrepare(){
@@ -135,7 +135,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 				type = 2;
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
-				//AND CD = :CD 
+				// AND CD = :CD 
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i); 
 					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
@@ -268,7 +268,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 // 
 //		for(Variable var:variables){
 //			if(var.getType() == Variable.VAR_TYPE_REPLACE){
-//				//CD = ::CD 
+//				// CD = ::CD 
 //				Object varValue = var.getValues(); 
 //				String value = null; 
 //				if(BasicUtil.isNotEmpty(varValue)){ 
@@ -283,7 +283,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 //		} 
 //		for(Variable var:variables){
 //			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-//				//CD = ':CD' 
+//				// CD = ':CD' 
 //				List<Object> varValues = var.getValues(); 
 //				String value = null; 
 //				if(BasicUtil.isNotEmpty(true,varValues)){ 
@@ -302,7 +302,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 //				List<Object> varValues = var.getValues(); 
 //				if(BasicUtil.isNotEmpty(true, varValues)){ 
 //					if(var.getCompare() == RunPrepare.COMPARE_TYPE_IN){
-//						//多个值IN 
+//						// 多个值IN 
 //						String replaceSrc = ":"+var.getKey(); 
 //						String replaceDst = "";  
 //						for(Object tmp:varValues){ 
@@ -312,16 +312,16 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 //						replaceDst = replaceDst.trim().replace(" ", ","); 
 //						result = result.replace(replaceSrc, replaceDst); 
 //					}else{ 
-//						//单个值 
+//						// 单个值 
 //						result = result.replace(":"+var.getKey(), "?"); 
 //						addRunValue(varValues.get(0)); 
 //					} 
 //				} 
 //			} 
 //		} 
-//		//添加其他变量值 
+//		// 添加其他变量值 
 //		for(Variable var:variables){
-//			//CD = ? 
+//			// CD = ? 
 //			if(var.getType() == Variable.VAR_TYPE_INDEX){
 //				List<Object> varValues = var.getValues(); 
 //				String value = null; 

@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Ajax extends BodyTagSupport{
 	private static final long serialVersionUID = 1L; 
-	private String url				;	//数据来源 
-	private String param			;	//参数收集函数
-	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
-	private String callback			;	//回调函数
+	private String url				;	// 数据来源
+	private String param			;	// 参数收集函数
+	private Boolean intime = false	;	// 实时执行,否则放入jqery.ready
+	private String callback			;	// 回调函数
 	private boolean async = true		;
 
 	public int doStartTag() throws JspException { 
@@ -75,8 +75,8 @@ public class Ajax extends BodyTagSupport{
 	@Override 
 	public void release() { 
 		super.release(); 
-		param 			= null	;	//参数收集函数
-		callback 		= null	;	//回调函数
+		param 			= null	;	// 参数收集函数
+		callback 		= null	;	// 回调函数
 		intime 			= false	;
 		url 			= null	;
 		id 				= null	;

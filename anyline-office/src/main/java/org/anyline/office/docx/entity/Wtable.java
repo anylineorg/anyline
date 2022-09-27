@@ -14,7 +14,7 @@ import java.util.Map;
 public class Wtable {
     private WDocument doc;
     private Element src;
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
     private List<Wtr> wtrs = new ArrayList<>();
     private boolean isAutoLoad = true;
     public Wtable(WDocument doc){
@@ -59,7 +59,7 @@ public class Wtable {
             Element td = tds.get(i);
             Map<String,String> styles = StyleParser.parse(td.attributeValue("style"));
             wtc.setHtml(td);
-            //this.doc.block(tc, null, td, null);
+            // this.doc.block(tc, null, td, null);
             /*Element t = DomUtil.element(tc,"t");
             if(null == t){
                 t = tc.element("p").addElement("w:r").addElement("w:t");

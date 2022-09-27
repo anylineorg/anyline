@@ -259,7 +259,7 @@ public final class Perl5Util implements MatchResult {
 	compiler.compile(__matchExpression, Perl5Compiler.SINGLELINE_MASK);
     } catch(MalformedPatternException e) {
       // This should only happen during debugging.
-      //e.printStackTrace();
+      // e.printStackTrace();
       throw new RuntimeException(e.getMessage());
     }
   }
@@ -987,9 +987,9 @@ public final class Perl5Util implements MatchResult {
     return split("/\\s+/", input);
   }
 
-  //
+  // 
   // MatchResult interface methods.
-  //
+  // 
 
   /**
    * Returns the length of the last match found.

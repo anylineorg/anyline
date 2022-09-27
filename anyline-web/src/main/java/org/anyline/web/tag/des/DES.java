@@ -31,8 +31,8 @@ import org.anyline.web.tag.BaseBodyTag;
  */ 
 public class DES extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L; 
-	private String key;			//密钥 
-	private String value;		//被加密数据 
+	private String key;			// 密钥 
+	private String value;		// 被加密数据 
  
 	public int doEndTag() throws JspException {    
 		try{ 

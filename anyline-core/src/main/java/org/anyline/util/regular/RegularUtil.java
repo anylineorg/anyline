@@ -32,12 +32,12 @@ import java.util.Map;
 
 public class RegularUtil {
 	private static Regular regular; 
-	public static Regular regularMatch 		= new RegularMatch();			//完全匹配模式 
-	public static Regular regularMatchPrefix 	= new RegularMatchPrefix();		//前缀匹配模式 
-	public static Regular regularContain 		= new RegularContain();			//包含匹配模式 
+	public static Regular regularMatch 		= new RegularMatch();			// 完全匹配模式
+	public static Regular regularMatchPrefix 	= new RegularMatchPrefix();		// 前缀匹配模式
+	public static Regular regularContain 		= new RegularContain();			// 包含匹配模式
 	 
 	private static final Map<Regular.MATCH_MODE,Regular> regularList = new HashMap<Regular.MATCH_MODE,Regular>(); 
-	public static final String REGEX_VARIABLE = "${(\\w+)}";		//变量{ID}
+	public static final String REGEX_VARIABLE = "${(\\w+)}";		// 变量{ID}
 
 	public static final String TAG_BEGIN = "${begin}";
 	public static final String TAG_END = "${end}"; 
@@ -263,8 +263,8 @@ public class RegularUtil {
 	 */
 	public static List<List<String>> getAllTagAndBodyWithAttribute(String src, String attribute) throws Exception{
 		List<List<String>> result = new ArrayList<>();
-		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	//双标签
-				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			//单标签
+		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	// 双标签
+				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			// 单标签
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		List<List<String>> list = regular.fetchs(src, reg);
 		int idx = 0;
@@ -323,7 +323,7 @@ public class RegularUtil {
 	public static List<List<String>> getAllTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
 		List<List<String>> result = new ArrayList<>();
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
-		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	//双标签
+		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	// 双标签
 		List<List<String>> list = regular.fetchs(src, reg);
 		int idx = 0;
 		for(List<String> tmp:list){
@@ -341,7 +341,7 @@ public class RegularUtil {
 			result.add(item);
 		}
 
-		reg = "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";	//单标签
+		reg = "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";	// 单标签
 		list = regular.fetchs(src, reg);
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<>();
@@ -548,14 +548,14 @@ public class RegularUtil {
 			for(List<String> item:items){
 				List<String> rtn = new ArrayList<>();
 				if(null == item.get(7)){
-					//双标签 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
+					// 双标签 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
 					rtn.add(item.get(0));
 					rtn.add(item.get(2));
 					rtn.add(item.get(3));
 					rtn.add(item.get(4));
 					rtn.add(item.get(5));
 				}else{
-					//单标签  0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
+					// 单标签  0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
 					rtn.add(item.get(0));
 					rtn.add(item.get(0));
 					rtn.add(item.get(7));
@@ -635,8 +635,8 @@ public class RegularUtil {
 			/*没有开始结束标志*/ 
 			return null; 
 		} 
-		int _fr = -1;	//开始下标 
-		int _to = -1;	//结束下标 
+		int _fr = -1;	// 开始下标
+		int _to = -1;	// 结束下标
 		String frTag = ""; 
 		String toTag = tags[tags.length-1];
 		int frLength = 0;
@@ -695,7 +695,7 @@ public class RegularUtil {
 			}else{ 
 				list.add(item);
 				int idx = 0;
-				//计算新起点 
+				// 计算新起点
 				for(int i=0; i<tags.length; i++){
 					if(idx>0){
 						idx += 1;

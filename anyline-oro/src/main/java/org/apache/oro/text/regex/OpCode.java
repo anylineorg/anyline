@@ -112,7 +112,7 @@ final class OpCode {
      _WHILEM  = 34,  // no       Do curly processing and see if rest matches.
      _ANYOFUN = 35,  // yes      Match unicode character in this class.
      _NANYOFUN= 36,  // yes      Match unicode character not in this class.
-     _RANGE   = 37,  // yes      Range flag in 
+     _RANGE   = 37,  // yes      Range flag in
     // Change the names of these constants later to make it clear they
     // are POSIX classes.
      _ALPHA   = 38,
@@ -136,8 +136,8 @@ final class OpCode {
     2, 2, 0, 0, 0, 0, 0, 0, 0, 0, // OpCode 10-19
     0, 0, 0, 0, 0, 0, 1, 1, 1, 0, // OpCode 20-29
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // OpCode 30-39
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // OpCode 40-49 
-    0, 0                          // OpCode 50-51 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // OpCode 40-49
+    0, 0                          // OpCode 50-51
   };
 
   static final char _opType[] = {

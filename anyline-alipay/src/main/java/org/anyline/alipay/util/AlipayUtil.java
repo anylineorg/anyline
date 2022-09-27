@@ -124,7 +124,7 @@ public class AlipayUtil {
 	    alipayRequest.setNotifyUrl(config.NOTIFY_URL); 
 	    alipayRequest.setBizContent(BeanUtil.object2json(order));//填充业务参数 
 	    try { 
-	        result = client.pageExecute(alipayRequest).getBody(); //调用SDK生成表单 
+	        result = client.pageExecute(alipayRequest).getBody(); // 调用SDK生成表单 
 	    } catch (AlipayApiException e) { 
 	        e.printStackTrace(); 
 	    } 
@@ -237,7 +237,7 @@ public class AlipayUtil {
 			log.warn("[get user info][token:{}][user id:{}]",token,userId);
 			user = new DataRow();
 			user.put("USER_ID", userId);
-			//详细信息
+			// 详细信息
 			try {
 				AlipayUserInfoShareRequest infoReq = new AlipayUserInfoShareRequest();
 				AlipayUserInfoShareResponse infoRes = client.execute(infoReq, token);

@@ -331,11 +331,11 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	private final Logger log = LoggerFactory.getLogger(SFTPProgressMonitor.class); 
 	private String remote = ""; 
 	private String local = ""; 
-	private long length;		//总长度 
-	private long transfered;	//已下载长度 
-	private double displayRate;		//最后显示下载比例 
+	private long length;		// 总长度 
+	private long transfered;	// 已下载长度 
+	private double displayRate;		// 最后显示下载比例 
 	private long startTime = 0; 
-	private long displayTime;		//最后显示下载时间 
+	private long displayTime;		// 最后显示下载时间 
  
 	public SFTPProgressMonitor(String remote, long length){ 
 		this.remote = remote; 

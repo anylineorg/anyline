@@ -227,7 +227,7 @@ public class MapUtil {
 		Map<String, Object> kvs = new HashMap<>();
 		int len = params.length;
 		int i = 0;
-		String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 		while (i < len) {
 			String p1 = params[i];
 			if (BasicUtil.isEmpty(p1)) {
@@ -343,7 +343,7 @@ public class MapUtil {
 	 */
 	public static  Collection<Map<String,Object>> pivot(Collection<Map<String,Object>> datas, List<String> pks, List<String> classKeys, List<String> valueKeys) {
 		Collection<Map<String,Object>> result = distinct(datas,pks);
-		Collection<Map<String,Object>> classValues =  distinct(datas,classKeys);  //[{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
+		Collection<Map<String,Object>> classValues =  distinct(datas,classKeys);  // [{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
 		for (Map<String,Object> row : result) {
 			for (Map<String,Object> classValue : classValues) {
 				Map<String,Object> params = new HashMap<>();
@@ -363,7 +363,7 @@ public class MapUtil {
 						}
 					}else {
 						for (String valueKey : valueKeys) {
-							//{2010-数学-分数:100;2010-数学-等级:A}
+							// {2010-数学-分数:100;2010-数学-等级:A}
 							if (null != valueRow) {
 								row.put(finalKey + "-" + valueKey, valueRow.get(valueKey));
 							} else {

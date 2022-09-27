@@ -30,7 +30,7 @@ public class TextUtil {
 
             Map<Integer, int[]> AlgorithmMap = new HashMap<Integer, int[]>();
 
-            //将两个字符串中的中文字符以及出现的总数封装到,AlgorithmMap中
+            // 将两个字符串中的中文字符以及出现的总数封装到,AlgorithmMap中
             for (int i = 0; i < doc1.length(); i++) {
                 char d1 = doc1.charAt(i);
                 if(isHanZi(d1)){//标点和数字不处理

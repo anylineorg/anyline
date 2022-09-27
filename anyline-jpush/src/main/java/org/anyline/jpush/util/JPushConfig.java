@@ -37,7 +37,7 @@ public class JPushConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件 
 		load(); 
 	} 
  
@@ -50,7 +50,7 @@ public class JPushConfig extends AnylineConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - JPushConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
-			//重新加载 
+			// 重新加载 
 			load(); 
 		} 
 		return (JPushConfig)instances.get(key); 

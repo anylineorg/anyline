@@ -9,20 +9,20 @@ import org.slf4j.LoggerFactory;
  
 public class DefaultProgress implements DownloadProgress{ 
 	private Logger log = LoggerFactory.getLogger(DefaultProgress.class); 
-	private String url			; //URL 
-	private File local			; //本地文件 
-	private long past			; //上次已下载长度 
-	private long length			; //本次需下载长度 
-	private long finish 		; //本次已下载长度 
-	private long start			; //开始时间 
-	private long expend			; //已耗时 
-	private long expect			; //预计剩余时间 
+	private String url			; // URL
+	private File local			; // 本地文件
+	private long past			; // 上次已下载长度
+	private long length			; // 本次需下载长度
+	private long finish 		; // 本次已下载长度
+	private long start			; // 开始时间
+	private long expend			; // 已耗时
+	private long expect			; // 预计剩余时间
 	 
-	private double lastLogRate	; //最后一次日志进度 
-	private long lastLogTime	; //量后一次日志时间 
-	private String message		; //进度提示 
-	private double rate			; //完成百分比rate% 
-	private int action = 1		; //1开始 0中断 
+	private double lastLogRate	; // 最后一次日志进度
+	private long lastLogTime	; // 量后一次日志时间
+	private String message		; // 进度提示
+	private double rate			; // 完成百分比rate%
+	private int action = 1		; // 1开始 0中断
 	public DefaultProgress(){ 
 		this.start = System.currentTimeMillis(); 
 	} 
@@ -50,7 +50,7 @@ public class DefaultProgress implements DownloadProgress{
     	} 
 		expend = System.currentTimeMillis() - start;//已耗时 
 		if(expend>0){ 
-			expect = (long)(this.length / (this.finish*1.0/expend) - expend);	//剩余时间=预计总耗时-已耗时 
+			expect = (long)(this.length / (this.finish*1.0/expend) - expend);	// 剩余时间=预计总耗时-已耗时
 			if(rate == 100){ 
 				expect = 0; 
 			} 

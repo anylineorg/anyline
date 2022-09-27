@@ -289,15 +289,15 @@ public class CodeUtil {
 			int length = src.length(); 
 			for (int i = 0; i < length; i++) { 
 				str = src.substring(i, i + 1); 
-				// 全角空格转换成半角空格 
+				// 全角空格转换成半角空格
 				if (str.equals("　")) { 
 					outStrBuf.append(" "); 
 					continue; 
 				} 
 				b = str.getBytes("unicode"); 
-				// 得到 unicode 字节数据 
+				// 得到 unicode 字节数据
 				if (b[2] == -1) { 
-					// 表示全角? 
+					// 表示全角?
 					b[3] = (byte) (b[3] + 32); 
 					b[2] = 0; 
 					outStrBuf.append(new String(b, "unicode")); 

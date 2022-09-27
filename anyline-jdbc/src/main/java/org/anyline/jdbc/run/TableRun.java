@@ -93,7 +93,7 @@ public class TableRun extends BasicRun implements Run {
 		builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 		List<String> columns = sql.getColumns(); 
 		if(null != columns && columns.size()>0){ 
-			//指定查询列 
+			// 指定查询列 
 			int size = columns.size(); 
 			for(int i=0; i<size; i++){ 
 				String column = columns.get(i);
@@ -118,7 +118,7 @@ public class TableRun extends BasicRun implements Run {
 			} 
 			builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
 		}else{ 
-			//全部查询 
+			// 全部查询 
 			builder.append("*"); 
 			builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
 		} 
@@ -129,7 +129,7 @@ public class TableRun extends BasicRun implements Run {
 		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(JDBCAdapter.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			//builder.append(" AS ").append(sql.getAlias());
+			// builder.append(" AS ").append(sql.getAlias());
 			builder.append("  ").append(sql.getAlias());
 		}
 		List<Join> joins = sql.getJoins();
@@ -138,7 +138,7 @@ public class TableRun extends BasicRun implements Run {
 				builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
 				SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
 				if(BasicUtil.isNotEmpty(join.getAlias())){
-					//builder.append(" AS ").append(join.getAlias());
+					// builder.append(" AS ").append(join.getAlias());
 					builder.append("  ").append(join.getAlias());
 				}
 				builder.append(" ON ").append(join.getCondition());
@@ -150,7 +150,7 @@ public class TableRun extends BasicRun implements Run {
  
  
 		*//*添加查询条件*//*
-		//appendConfigStore(); 
+		// appendConfigStore(); 
 		appendCondition();
 		appendGroup();
 		appendOrderStore();
@@ -167,7 +167,7 @@ public class TableRun extends BasicRun implements Run {
 		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			//builder.append(" AS ").append(sql.getAlias());
+			// builder.append(" AS ").append(sql.getAlias());
 			builder.append("  ").append(sql.getAlias());
 		}
 		List<Join> joins = sql.getJoins();
@@ -187,7 +187,7 @@ public class TableRun extends BasicRun implements Run {
 
 
 		*//*添加查询条件*//*
-		//appendConfigStore();
+		// appendConfigStore();
 		appendCondition();
 		appendGroup();
 		appendOrderStore();

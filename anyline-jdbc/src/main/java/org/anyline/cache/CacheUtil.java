@@ -34,7 +34,7 @@ import java.util.List;
  
 public class CacheUtil {
 	private static final Logger log = LoggerFactory.getLogger(CacheUtil.class);
-	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
+	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		// 缓存刷新标记
 
 
 	/*
@@ -53,7 +53,7 @@ public class CacheUtil {
     public static boolean start(String key, int sec){
     	boolean result = false;
     	Long fr = reflushFlag.get(key);
-    	long age = -1;			//已生存
+    	long age = -1;			// 已生存
     	if(null == fr){
     		result = true;
     	}else{
@@ -75,7 +75,7 @@ public class CacheUtil {
     	return result;
     }
     public static boolean start(String key){
-    	int period = ConfigTable.getInt(key, 120);		//两次刷新最小间隔
+    	int period = ConfigTable.getInt(key, 120);		// 两次刷新最小间隔
     	return start(key, period);
     }
     /**
@@ -91,7 +91,7 @@ public class CacheUtil {
     		}
     		return;
     	}
-    	long age = (System.currentTimeMillis() - fr)/1000;			//已生存
+    	long age = (System.currentTimeMillis() - fr)/1000;			// 已生存
     	
     	if(age > sec){
     		reflushFlag.remove(key);
@@ -101,7 +101,7 @@ public class CacheUtil {
 		}
     }
     public static void stop(String key){
-    	int period = ConfigTable.getInt(key, 120);					//两次刷新最小间隔
+    	int period = ConfigTable.getInt(key, 120);					// 两次刷新最小间隔
     	stop(key,period);
     }
     public static boolean isRun(String key){

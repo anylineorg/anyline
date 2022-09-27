@@ -108,7 +108,7 @@ public class WechatMPUtil extends WechatUtil {
 			if(json.containsKey("ticket")){
 				row.put("TICKET", json.getString("ticket"));
 				row.setExpires(json.getInt("expires_in", 0)*1000);
-				row.setExpires(1000*60*5); //5分钟内有效
+				row.setExpires(1000*60*5); // 5分钟内有效
 				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET"));
 				}
@@ -245,7 +245,7 @@ public class WechatMPUtil extends WechatUtil {
 		}
 		return sendTemplateMessage(msg);
 	}
-	//生成场景二维码
+	// 生成场景二维码
 	public DataRow createQrCode(String code){
 		String token = getAccessToken();
 		String url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token;

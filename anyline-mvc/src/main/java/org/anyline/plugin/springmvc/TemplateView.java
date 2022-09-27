@@ -81,11 +81,11 @@ public class TemplateView extends JstlView {
 
 		String template = null;
 		if(null != model){
-			//通过ModelAndView.add(TEMPLATE_NAME,"default");形式设置模板
+			// 通过ModelAndView.add(TEMPLATE_NAME,"default");形式设置模板
 			template = (String)model.get(ANYLINE_TEMPLATE_NAME);
 		}
 		if(null == template){
-			//通过 new TemplateView(url,template);设置模板
+			// 通过 new TemplateView(url,template);设置模板
 			template = getTemplate();
 		}
 		if(null != template){
@@ -107,7 +107,7 @@ public class TemplateView extends JstlView {
 			setContent(content_url);
 			File file = new File(ConfigTable.getWebRoot(), content_url);
 			if(!file.exists()){
-				//内容文件未指定  或 不存在 
+				// 内容文件未指定  或 不存在 
 				log.error("[文件不存在]:[url:{}]", content_url);
 				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH");
 			}

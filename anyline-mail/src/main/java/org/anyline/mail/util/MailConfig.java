@@ -22,8 +22,8 @@ public class MailConfig extends AnylineConfig{
 	public static String DEFAULT_PROTOCOL 					= "smtp";
 	public static String DEFAULT_HOST						= null	;
 	public static String DEFAULT_PORT						= null 	;
-	public static String DEFAULT_ATTACHMENT_DIR 			= ""	;	//附件下载地址
-	public static boolean DEFAULT_SSL_FLAG 					= false	;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
+	public static String DEFAULT_ATTACHMENT_DIR 			= ""	;	// 附件下载地址
+	public static boolean DEFAULT_SSL_FLAG 					= false	;  // 是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
 	public static boolean DEFAULT_AUTO_DOWNLOAD_ATTACHMENT 	= true	;
 
 
@@ -33,8 +33,8 @@ public class MailConfig extends AnylineConfig{
 	public String PROTOCOL 					= DEFAULT_PROTOCOL					;
 	public String HOST						= DEFAULT_HOST						;
 	public String PORT						= DEFAULT_PORT						;
-	public String ATTACHMENT_DIR 			= DEFAULT_ATTACHMENT_DIR			;	//附件下载地址
-	public boolean SSL_FLAG 				= DEFAULT_SSL_FLAG					;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
+	public String ATTACHMENT_DIR 			= DEFAULT_ATTACHMENT_DIR			;	// 附件下载地址
+	public boolean SSL_FLAG 				= DEFAULT_SSL_FLAG					;  // 是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
 	public boolean AUTO_DOWNLOAD_ATTACHMENT = DEFAULT_AUTO_DOWNLOAD_ATTACHMENT	;
 
 	public static Hashtable<String,AnylineConfig>getInstances(){
@@ -55,7 +55,7 @@ public class MailConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() {
-		//加载默认配置文件
+		// 加载默认配置文件
 		load();
 	}
 	public static void setConfigDir(File dir){
@@ -70,7 +70,7 @@ public class MailConfig extends AnylineConfig{
 			key = DEFAULT_INSTANCE_KEY;
 		}
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - MailConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
-			//重新加载
+			// 重新加载
 			load();
 		}
 		return (MailConfig)instances.get(key);

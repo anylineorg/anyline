@@ -56,7 +56,7 @@ public class BaiduMapUtil {
         coordinate.convert(Coordinate.TYPE.BD09LL);
         coordinate.setSuccess(false);
 
-        //换回原坐标系
+        // 换回原坐标系
         coordinate.setLng(_lng);
         coordinate.setLat(_lat);
         coordinate.setType(_type);

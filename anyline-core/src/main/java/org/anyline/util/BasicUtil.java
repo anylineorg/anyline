@@ -941,33 +941,33 @@ public class BasicUtil {
 			return false;
 		}
 		if(v1 instanceof String || v1 instanceof Number || v1 instanceof Boolean || v1 instanceof Date) {
-			//v1基础类型
+			// v1基础类型
 			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
-				//v2基础类型
+				// v2基础类型
 				result = v2.toString().equals(v1.toString());
 			}else{
-				//v2非基础类型
+				// v2非基础类型
 				if(null != propertys2 && propertys2.size()>0){
 					v2 = BeanUtil.getFieldValue(v2, propertys2.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}
 		}else{
-			//v1非基础类型
+			// v1非基础类型
 			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
-				//v2基础类型
+				// v2基础类型
 				if(null != propertys1 && propertys1.size()>0){
 					v1 = BeanUtil.getFieldValue(v1, propertys1.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}else{
-				//v2非基础类型
+				// v2非基础类型
 				boolean eq = true;
 				int psize = 0;
 				if(null == propertys1 || null == propertys2){
 					eq = false;
 				}else{
-					//取长度较短的一个长度
+					// 取长度较短的一个长度
 					psize = NumberUtil.min(propertys1.size(), propertys2.size());
 				}
 				if(psize > 0){
@@ -982,7 +982,7 @@ public class BasicUtil {
 						}
 					}
 				}else{
-					//没有设置property
+					// 没有设置property
 					eq = v1.equals(v2);
 				}
 				if(eq){
@@ -1035,7 +1035,7 @@ public class BasicUtil {
 		if(null != begin && begin < 0){
 			begin = 0;
 		}
-		if(null != end && end < 0){ //end<0,取最后-end个
+		if(null != end && end < 0){ // end<0,取最后-end个
 			begin = total + end;
 			end = total;
 		}

@@ -38,7 +38,7 @@ public class Head extends BaseBodyTag implements Cloneable{
 	private String title; 
 	private String keywords; 
 	private String description; 
-	private String var;		//变量 以,分开 titte keywords description中以{0}{1}引用 
+	private String var;		// 变量 以,分开 titte keywords description中以{0}{1}引用 
 	 
 	public int doAfterBody() throws JspException { 
 		return super.doAfterBody(); 

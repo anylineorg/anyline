@@ -134,9 +134,9 @@ public final class Perl5Debug {
 	  ++offset;
 	  buffer.append(" <");
 
-	//while(prog[offset] != '0')
+	// while(prog[offset] != '0')
 	while(prog[offset] != CharStringPointer._END_OF_STRING) {
-	  //while(prog[offset] != 0 &&
+	  // while(prog[offset] != 0 &&
 	  //  prog[offset] != CharStringPointer._END_OF_STRING) {
 	  buffer.append(prog[offset]);
 	  ++offset;

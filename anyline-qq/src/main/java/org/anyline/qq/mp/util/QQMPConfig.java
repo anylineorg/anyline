@@ -12,16 +12,16 @@ public class QQMPConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-qq-mp.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
-	public static String DEFAULT_APP_ID = ""				; //AppID(应用ID)
-	public static String DEFAULT_API_KEY = ""				; //APPKEY(应用密钥)
-	public static String DEFAULT_OAUTH_REDIRECT_URL		; //登录成功回调URL
+	public static String DEFAULT_APP_ID = ""				; // AppID(应用ID)
+	public static String DEFAULT_API_KEY = ""				; // APPKEY(应用密钥)
+	public static String DEFAULT_OAUTH_REDIRECT_URL		; // 登录成功回调URL
 
 	/** 
 	 * 服务号相关信息 
 	 */ 
-	public String APP_ID			 = DEFAULT_APP_ID				; //AppID(应用ID)
-	public String API_KEY 			 = DEFAULT_API_KEY				; //APPKEY(应用密钥)
-	public String OAUTH_REDIRECT_URL = DEFAULT_OAUTH_REDIRECT_URL	; //登录成功回调URL
+	public String APP_ID			 = DEFAULT_APP_ID				; // AppID(应用ID)
+	public String API_KEY 			 = DEFAULT_API_KEY				; // APPKEY(应用密钥)
+	public String OAUTH_REDIRECT_URL = DEFAULT_OAUTH_REDIRECT_URL	; // 登录成功回调URL
 
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
@@ -42,7 +42,7 @@ public class QQMPConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件
 		load(); 
 	} 
  
@@ -55,7 +55,7 @@ public class QQMPConfig extends AnylineConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
-			//重新加载 
+			// 重新加载
 			load(); 
 		} 
 		return (QQMPConfig)instances.get(key); 

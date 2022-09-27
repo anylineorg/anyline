@@ -31,13 +31,13 @@ public class SubString extends BaseBodyTag{
 	 
 	private Integer begin = null;
 	private Integer qty = null;
-	private Integer end = null; //负数表示取最后end个
+	private Integer end = null; // 负数表示取最后end个
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException { 
-		//输出 
+		// 输出 
 		JspWriter out = pageContext.getOut(); 
 		String text = body; 
 		if(null != text){

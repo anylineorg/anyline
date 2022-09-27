@@ -16,7 +16,7 @@ public class NacosConfig extends AnylineConfig{
 	public static String DEFAULT_ADDRESS			= null						;
 	public static int DEFAULT_PORT 					= 8848						;
 	public static int DEFAULT_TIMEOUT 				= 3000						;
-	public static String DEFAULT_NAMESPACE 			= ""						;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
+	public static String DEFAULT_NAMESPACE 			= ""						;   // 注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
 	public static String DEFAULT_GROUP 				= "DEFAULT_GROUP"			;
 	public static boolean DEFAULT_AUTO_SCAN 		= true						;
 	public static String DEFAULT_SCAN_PACKAGE		= "org.anyline,org.anyboot"	;
@@ -27,7 +27,7 @@ public class NacosConfig extends AnylineConfig{
 	public String ADDRESS		= DEFAULT_ADDRESS 		;
 	public int PORT 			= DEFAULT_PORT			;
 	public int TIMEOUT 			= DEFAULT_TIMEOUT		;
-	public String NAMESPACE 	= DEFAULT_NAMESPACE		;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
+	public String NAMESPACE 	= DEFAULT_NAMESPACE		;   // 注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
 	public String GROUP 		= DEFAULT_GROUP			;
 	public boolean AUTO_SCAN 	= DEFAULT_AUTO_SCAN		;
 	public String SCAN_PACKAGE	= DEFAULT_SCAN_PACKAGE	;
@@ -39,7 +39,7 @@ public class NacosConfig extends AnylineConfig{
 	@Value("${anyline.nacos.scan.types:}")
 	public String scanClass;
 
-	//boot
+	// boot
 	@Value("${nacos.config.server-addr:}")
 	public String bootAddress;
 
@@ -49,7 +49,7 @@ public class NacosConfig extends AnylineConfig{
 	@Value("${nacos.config.group:DEFAULT_GROUP}")
 	public String bootGroup;
 
-	//cloud
+	// cloud
 	@Value("${spring.cloud.nacos.config.server-addr:}")
 	public String cloudAddress;
 
@@ -89,7 +89,7 @@ public class NacosConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件 
 		load();
 	} 
  
@@ -102,7 +102,7 @@ public class NacosConfig extends AnylineConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - NacosConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
-			//重新加载 
+			// 重新加载 
 			load(); 
 		}
 		NacosConfig config = (NacosConfig)instances.get(key);

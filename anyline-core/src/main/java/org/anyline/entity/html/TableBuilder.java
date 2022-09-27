@@ -27,24 +27,24 @@ import java.util.*;
 public class TableBuilder {
     private Collection datas = null;
     private List<String> headers = new ArrayList<>();
-    private String header = null; //复杂的头表直接设置html
+    private String header = null; // 复杂的头表直接设置html
     private String footer = null;
     private String clazz = null;
     private List<String> fields = new ArrayList<>();
     private List<String> unions = new ArrayList<>();//需要合并字段,值相同的几行合并(如里相关列合并的情况下才会合并,如前一列学校合并时,后一列班级才有可能合并,班级列名(学校列名,其他列名))
     private Map<String,Map<String,String>> styles = new HashMap<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
-    private Map<String,Map<String,String>> options = new HashMap<>();   //外键对应关系
-    private List<String> ignoreUnionValues = new ArrayList<>();         //不参与合并的值(如一些空值)
-    private String width = "100%";                                      //整个表格宽度
-    private String widthUnit = "px";                                    //默认长度单位 px pt cm/厘米
-    private String replaceEmpty = "";                                   //遇到空值替换成
-    private String cellBorder = "";                                     //单元格边框
-    private String lineHeight = "";                                     //行高
-    private String mergeCellVerticalAlign = "";                         //合并单元格垂直对齐方式
-    private String mergeCellHorizontalAlign = "";                       //合并单元格水平对齐方式
-    private String emptyCellVerticalAlign = "";                         //空单元格垂直对齐方式
-    private String emptyCellHorizontalAlign = "";                       //空单元格水平对齐方式
+    private Map<String,Map<String,String>> options = new HashMap<>();   // 外键对应关系
+    private List<String> ignoreUnionValues = new ArrayList<>();         // 不参与合并的值(如一些空值)
+    private String width = "100%";                                      // 整个表格宽度
+    private String widthUnit = "px";                                    // 默认长度单位 px pt cm/厘米
+    private String replaceEmpty = "";                                   // 遇到空值替换成
+    private String cellBorder = "";                                     // 单元格边框
+    private String lineHeight = "";                                     // 行高
+    private String mergeCellVerticalAlign = "";                         // 合并单元格垂直对齐方式
+    private String mergeCellHorizontalAlign = "";                       // 合并单元格水平对齐方式
+    private String emptyCellVerticalAlign = "";                         // 空单元格垂直对齐方式
+    private String emptyCellHorizontalAlign = "";                       // 空单元格水平对齐方式
 
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
@@ -77,7 +77,7 @@ public class TableBuilder {
         Object data = list[r];
         if(null != refs){
             for (String ref:refs) {
-                if(field.equals(ref)){ //如果误加了 参考自己 忽略
+                if(field.equals(ref)){ // 如果误加了 参考自己 忽略
                     continue;
                 }
                 int refIndex = fields.indexOf(ref);
@@ -98,13 +98,13 @@ public class TableBuilder {
                     prevRefValue = replaceEmpty;
                 }
                 if(!curRefValue.equals(prevRefValue)){
-                    //当前行参考列值  与上一行参考列值比较
+                    // 当前行参考列值  与上一行参考列值比较
                     merge = false;
                     break;
                 }
 
                 if (null != refCell &&  !"1".equals(refCell.get("merge")) &&  !"1".equals(refCell.get("merged"))) {
-                    //依赖列未合并
+                    // 依赖列未合并
                     merge = false;
                     break;
                 }
@@ -119,7 +119,7 @@ public class TableBuilder {
         map.put("checked","1");
         int rowspan = 1;
         if(null != unions && unions.contains(field)) {
-            //向上查看相同值
+            // 向上查看相同值
             int rr = r+1;
             Object data = list[r];
             int rsize = list.length;
@@ -127,15 +127,15 @@ public class TableBuilder {
                 if (rr >= rsize) {
                     break;
                 }
-                //下一行
+                // 下一行
                 Map<String, String> next = cells[rr][c];
                 Object prevRow = list[rr];
                 String pvalue = next.get("value");
                 if (pvalue.equals(value) && ignoreUnionValues.indexOf(value) == -1) {
-                    boolean refMerge = checkRefMerge(field, r, prevRow);   //参考列是否已被合并
+                    boolean refMerge = checkRefMerge(field, r, prevRow);   // 参考列是否已被合并
                     if (refMerge) {//参考列已合并 或没有参考列
-                        map.put("merge", "1");  //合并
-                        next.put("merged", "1"); //被合并
+                        map.put("merge", "1");  // 合并
+                        next.put("merged", "1"); // 被合并
                         rowspan ++;
                     } else {
                         break;
@@ -162,23 +162,23 @@ public class TableBuilder {
                 if(null != refCell){
                     int rowspan = BasicUtil.parseInt(refCell.get("rowspan"),1);
                     if(rowspan > 1) {
-                        cell.put("merge", "1");  //合并
+                        cell.put("merge", "1");  // 合并
                         cell.put("rowspan", rowspan+"");
-                        //当前行以下rowspan-1行全部被合并
+                        // 当前行以下rowspan-1行全部被合并
                         for(int rr=r+1; rr<r+rowspan&&rr<rows; rr++){
                             Map<String, String> mergedCell = cells[rr][c];
-                            mergedCell.put("merged", "1"); //被合并
+                            mergedCell.put("merged", "1"); // 被合并
                         }
                         r += rowspan-1;
                     }
-                    //num -= rowspan;
+                    // num -= rowspan;
                 }
             }
             num ++;
         }
 
     }
-    //向下求相同值
+    // 向下求相同值
     Map<String,String>[][] cells = null;
     Object[] list = null;
     public Table build(){
@@ -225,8 +225,8 @@ public class TableBuilder {
         }
         if(null != datas && null != fields){
             list = datas.toArray();
-            int rsize = list.length;    //行数
-            int csize = fields.size();  //列数
+            int rsize = list.length;    // 行数
+            int csize = fields.size();  // 列数
             cells = new HashMap[rsize][csize];
             for(int r=0; r<rsize; r++){
                 Object data = list[r];
@@ -241,7 +241,7 @@ public class TableBuilder {
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
                     }
-                    //外键对应关系
+                    // 外键对应关系
                     Map<String,String> option = options.get(field);
                     if(null != option && null != value){
                         value = option.get(value);
@@ -254,14 +254,14 @@ public class TableBuilder {
                 }
 
             }
-            //检测合并单元格
+            // 检测合并单元格
             for(int r=0; r<rsize; r++){
                 for(int c=0; c<csize; c++){
                     String field = fields.get(c);
                     checkMerge(r, c, field);
                 }
             }
-            //检测序号 {num}(DEPT_CODE)
+            // 检测序号 {num}(DEPT_CODE)
             for(int c=0; c<csize; c++){
                 String field = fields.get(c);
                 if(field.contains("${num}")){
@@ -275,8 +275,8 @@ public class TableBuilder {
                 for(int c=0; c<csize; c++){
                     Map<String,String> map = cells[r][c];
                     String value = map.get("value");
-                    String merge = map.get("merge");    //合并其他行
-                    String merged = map.get("merged");  //被其他行合并
+                    String merge = map.get("merge");    // 合并其他行
+                    String merged = map.get("merged");  // 被其他行合并
                     int rowspan = BasicUtil.parseInt(map.get("rowspan"),1);
                     if(!"1".equals(merged)){
                         Td td = new Td();
@@ -311,7 +311,7 @@ public class TableBuilder {
                 table.addTr(tr);
             }
         }
-        //需要检测变量如合计
+        // 需要检测变量如合计
         table.setFooter(footer);
         if(null != footer){
             List<String> strs = RegularUtil.cuts(footer,"<tr",">","</tr>");

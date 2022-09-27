@@ -4,9 +4,9 @@ import org.anyline.net.HttpResponse;
 
 public class ThingsBoardResult extends HttpResponse {
     private String timestamp    ;
-    private  int pages          ; //总页数
-    private int rows            ; //总行数
-    private boolean last        ; //是否是最后一页
+    private  int pages          ; // 总页数
+    private int rows            ; // 总行数
+    private boolean last        ; // 是否是最后一页
 
     public String getTimestamp() {
         return timestamp;

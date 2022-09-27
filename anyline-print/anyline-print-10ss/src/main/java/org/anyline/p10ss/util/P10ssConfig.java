@@ -15,14 +15,14 @@ public class P10ssConfig  extends AnylineConfig {
 
     public static String DEFAULT_APP_ID                = "" ;
     public static String DEFAULT_APP_SECRET            = "" ;
-    public static String DEFAULT_TYPE                  = "0"; //0:自用 1:开放
+    public static String DEFAULT_TYPE                  = "0"; // 0:自用 1:开放
     public static String DEFAULT_ACCESS_TOKEN_SERVER   = "" ;
 
 
 
     public String APP_ID                = DEFAULT_APP_ID                ;
     public String APP_SECRET            = DEFAULT_APP_SECRET            ;
-    public String TYPE                  = DEFAULT_TYPE                  ; //0:自用 1:开放
+    public String TYPE                  = DEFAULT_TYPE                  ; // 0:自用 1:开放
     public String ACCESS_TOKEN_SERVER   = DEFAULT_ACCESS_TOKEN_SERVER   ;
 
 
@@ -55,7 +55,7 @@ public class P10ssConfig  extends AnylineConfig {
      * 初始化默认配置文件
      */
     public static void init() {
-        //加载配置文件
+        // 加载配置文件
         load();
     }
     public static P10ssConfig getInstance(){
@@ -67,7 +67,7 @@ public class P10ssConfig  extends AnylineConfig {
         }
 
         if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - P10ssConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
-            //重新加载
+            // 重新加载
             load();
         }
         return (P10ssConfig)instances.get(key);

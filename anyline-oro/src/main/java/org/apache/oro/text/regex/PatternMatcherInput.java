@@ -192,7 +192,7 @@ public final class PatternMatcherInput {
    */
   public int length()        {
     return (_endOffset - _beginOffset);
-    //return _originalBuffer.length;
+    // return _originalBuffer.length;
   }
 
 

@@ -54,7 +54,7 @@ public abstract class BasicRun implements Run {
 	protected List<String> keys;
 	protected List<RunValue> values;
 	protected PageNavi pageNavi;
-	protected ConditionChain conditionChain;			//查询条件
+	protected ConditionChain conditionChain;			// 查询条件
 	protected ConfigStore configStore; 
 	protected OrderStore orderStore; 
 	protected GroupStore groupStore;
@@ -506,7 +506,7 @@ public abstract class BasicRun implements Run {
 				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim();
 
 				if(up.startsWith("ORDER BY")){
-					//排序条件
+					// 排序条件
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
 					String orders[] = orderStr.split(",");
 					for(String item:orders){
@@ -520,7 +520,7 @@ public abstract class BasicRun implements Run {
 					}
 					continue;
 				}else if(up.startsWith("GROUP BY")){
-					//分组条件
+					// 分组条件
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
@@ -531,7 +531,7 @@ public abstract class BasicRun implements Run {
 					}
 					continue;
 				}else if(up.startsWith("HAVING")){
-					//分组过滤
+					// 分组过滤
 					String haveStr = condition.substring(up.indexOf("HAVING") + "HAVING".length()).trim();
 					this.having = haveStr;
 					continue;
@@ -542,22 +542,22 @@ public abstract class BasicRun implements Run {
 
 
 				if(condition.startsWith("${") && condition.endsWith("}")){
-					//原生SQL  不处理
+					// 原生SQL  不处理
 					Condition con = new SimpleAutoCondition(condition.substring(2, condition.length()-1));
 					addCondition(con);
 					continue;
 				}
 
 				if(condition.contains(":")){
-					//:符号是否表示时间
+					// :符号是否表示时间
 					boolean isTime = false;
 					int idx = condition.indexOf(":");
-					//''之内
+					// ''之内
 					if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){
 						isTime = true;
 					}
 					if(!isTime){
-						//需要解析的SQL
+						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition,false);
 						Object value = ConfigParser.getValues(parser);
 						addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(),parser.getVar(),value,parser.getCompare());

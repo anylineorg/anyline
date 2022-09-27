@@ -407,12 +407,12 @@ public class NumberUtil {
 		int hexlen = hex.length();
 		byte[] result;
 		if (hexlen % 2 == 1){
-			//奇数
+			// 奇数
 			hexlen++;
 			result = new byte[(hexlen/2)];
 			hex="0"+hex;
 		}else {
-			//偶数
+			// 偶数
 			result = new byte[(hexlen/2)];
 		}
 		int j=0;

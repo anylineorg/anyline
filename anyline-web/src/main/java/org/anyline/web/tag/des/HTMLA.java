@@ -47,7 +47,7 @@ public class HTMLA extends BaseBodyTag {
 	private String onmouseover; 
 	private String onmouseout; 
 	private String onclick; 
-	private boolean union = true;		//key value合并加密 
+	private boolean union = true;		// key value合并加密 
 	private boolean encryptKey = true; 
 	private boolean encryptValue = true; 
  

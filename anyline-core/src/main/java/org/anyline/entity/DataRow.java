@@ -64,7 +64,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * 在关系型数据库场景中 也相当于表名
      * 主要应用在在非关系型数据库场景中 如Neo4j中的Node名 MongonDB中的Document名
      */
-    private String category                     = null                  ; //分类
+    private String category                     = null                  ; // 分类
 
     private transient DataSet container         = null                  ; // 包含当前对象的容器
     private List<String> primaryKeys            = new ArrayList<>()     ; // 主键
@@ -2174,8 +2174,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } else if (keyCase == KEY_CASE.camel) {
             key = BeanUtil.camel(key);
         }
-        //else if(keyCase.getCode().contains("_")){
-//			//驼峰转下划线
+        // else if(keyCase.getCode().contains("_")){
+//			// 驼峰转下划线
 //			key = BeanUtil.camel_(key);
 //			if(keyCase == KEY_CASE.CAMEL_CONFIG){
 //					if(ConfigTable.IS_UPPER_KEY){
@@ -2223,7 +2223,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } else if (keyCase == KEY_CASE.camel) {
             key = BeanUtil.camel(key);
         } else if (keyCase.getCode().contains("_")) {
-            //驼峰转下划线
+            // 驼峰转下划线
             key = BeanUtil.camel_(key);
             if (keyCase == KEY_CASE.CAMEL_CONFIG) {
                 if (ConfigTable.IS_UPPER_KEY) {

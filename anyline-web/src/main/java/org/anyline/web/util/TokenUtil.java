@@ -51,7 +51,7 @@ public class TokenUtil {
 			value = BasicUtil.getRandomNumberString(20); 
 			token = "<input type=\"hidden\" name=\"" + key + "\" value=\"" + value + "\"></input>"; 
 			request.getSession().setAttribute(key, value); 
-			//setTokenRequiredRefer(request,key); 
+			// setTokenRequiredRefer(request,key);
 		} 
 		return token; 
 	} 
@@ -63,9 +63,9 @@ public class TokenUtil {
 	 */ 
 	public static boolean checkToken(HttpServletRequest request){ 
 		boolean result = false; 
-		String tokenKey = null;				//tokey key 
-		String requestValue = null;			//提交的token值 
-		String sessionValue = null;			//session中的token值 
+		String tokenKey = null;				// tokey key
+		String requestValue = null;			// 提交的token值
+		String sessionValue = null;			// session中的token值
 		boolean isRequired = false; 
 		if(null != request.getAttribute("IS_CHECK_TOKEN")){ 
 			return true; 
@@ -88,12 +88,12 @@ public class TokenUtil {
 			isRequired = checkRequired(request); 
 		} 
 		if(isRequired){ 
-			//必须 
+			// 必须
 			if(null != sessionValue && sessionValue.equals(requestValue)){ 
 				result = true; 
 			} 
 		}else{ 
-			//非必须 
+			// 非必须
 			if(null == sessionValue || null == requestValue || sessionValue.equals(requestValue)){ 
 				result = true; 
 			} 
@@ -140,7 +140,7 @@ public class TokenUtil {
 	 */ 
 	@SuppressWarnings("unchecked")
 	public static void setTokenRequiredRefer(HttpServletRequest request, String tokenKey){ 
-		//添加到servlet防止页面伪造 
+		// 添加到servlet防止页面伪造
 		Set<String> requiredTokenReferList = (Set<String>)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_REQUIRED_TOKEN_REFER); 
 		if(null == requiredTokenReferList){ 
 			requiredTokenReferList = new TreeSet<String>(); 
@@ -149,7 +149,7 @@ public class TokenUtil {
 	} 
 	@SuppressWarnings("unchecked")
 	public static void setTokenRequiredUri(HttpServletRequest request, String tokenKey){ 
-		//添加到servlet防止页面伪造 
+		// 添加到servlet防止页面伪造
 		Set<String> requiredTokenReferList = (Set<String>)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_REQUIRED_TOKEN_URI); 
 		if(null == requiredTokenReferList){ 
 			requiredTokenReferList = new TreeSet<String>(); 

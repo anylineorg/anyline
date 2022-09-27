@@ -79,7 +79,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			if(obj instanceof DataRow){
 				DataRow row = (DataRow)obj;
 				List<String> cols = confirmInsertColumns(dest, obj, columns);
-				//insert al, tag1=value1 qty=1,name=5
+				// insert al, tag1=value1 qty=1,name=5
 				builder.append("insert ").append(parseTable(dest)).append(" ");
 				Map<String,Object> tags = row.getTags();
 				for(String tag:tags.keySet()){

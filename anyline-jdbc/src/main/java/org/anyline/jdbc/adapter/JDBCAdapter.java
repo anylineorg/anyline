@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface JDBCAdapter {
-	//内置VALUE
+	// 内置VALUE
 	public static enum SQL_BUILD_IN_VALUE{
 		CURRENT_TIME  		{public String getCode(){return "CURRENT_TIME";}	public String getName(){return "当前时间";}};
 

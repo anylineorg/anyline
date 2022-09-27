@@ -119,7 +119,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		StringBuilder builder = new StringBuilder();
 
 		builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
-		//8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
+		// 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
 		if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
 		}
@@ -771,22 +771,22 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		name(builder, table);
 		Column update = column.getUpdate();
 		if(null == update){
-			//添加列
+			// 添加列
 			builder.append(" ADD COLUMN ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			//数据类型
+			// 数据类型
 			type(builder, column);
 			// 编码
 			charset(builder, column);
-			//默认值
+			// 默认值
 			defaultValue(builder, column);
-			//非空
+			// 非空
 			nullable(builder, column);
-			//更新事件
+			// 更新事件
 			onupdate(builder, column);
-			//备注
+			// 备注
 			comment(builder, column);
-			//位置
+			// 位置
 			position(builder, column);
 		}
 		return builder.toString();

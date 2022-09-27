@@ -12,7 +12,7 @@ public class Constraint {
     private String schema       ;
     private String table        ;
     private String name         ;
-    private boolean unique      ; //是否唯一
+    private boolean unique      ; // 是否唯一
     private Integer type        ; //
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
     private Index update;

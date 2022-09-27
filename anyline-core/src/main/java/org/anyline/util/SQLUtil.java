@@ -111,7 +111,7 @@ public class SQLUtil {
 			return src;
 		}
 
-		//未开启占位符
+		// 未开启占位符
 		if(!ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return src;
 		}
@@ -134,9 +134,9 @@ public class SQLUtil {
 				List<List<String>> lists = RegularUtil.fetchs(src, "("+regxFr+")" + "(.+?)" + "("+regxTo+")");
 				for(List<String> list: lists){
 					String full = list.get(0);
-					//String fr = list.get(1);
+					// String fr = list.get(1);
 					String key = list.get(2).trim();
-					//String to = list.get(3);
+					// String to = list.get(3);
 					String replace = delimiterFr + key + delimiterTo;
 					src = src.replace(full, replace);
 				}

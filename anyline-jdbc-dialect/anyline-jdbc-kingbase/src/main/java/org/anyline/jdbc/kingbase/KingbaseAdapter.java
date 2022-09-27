@@ -62,7 +62,7 @@ public class KingbaseAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		if(null == navi){ 
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
-			//分页 
+			// 分页 
 				builder.append("SELECT "+cols+" FROM( \n");
 				builder.append("SELECT TAB_I.* ,ROWNUM AS ROW_NUMBER \n"); 
 				builder.append("FROM( \n"); 

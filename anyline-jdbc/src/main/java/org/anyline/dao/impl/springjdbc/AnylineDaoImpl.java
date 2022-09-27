@@ -82,7 +82,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	protected BatchInsertStore batchInsertStore = new BatchInsertStore();
 
-	protected static boolean showSQL 				= true	;	//
+	protected static boolean showSQL 				= true	;	// 
 	protected static boolean showSQLParam 			= true	;
 	protected static boolean showSQLWhenError 		= true	;
 	protected static boolean showSQLParamWhenError 	= true	;
@@ -136,7 +136,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				maps = new ArrayList<Map<String,Object>>();
 			}
 		}finally {
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -174,10 +174,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 						listener.beforeTotal(this,run);
 					}
 					if (navi.getLastRow() == 0) {
-						//第一条
+						// 第一条
 						total = 1;
 					} else {
-						//未计数(总数 )
+						// 未计数(总数 )
 						if (navi.getTotalRow() == 0) {
 							total = getTotal(run.getTotalQuery(), run.getValues());
 							navi.setTotalRow(total);
@@ -213,7 +213,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
 			}
 		}finally {
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -244,10 +244,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 						listener.beforeTotal(this,run);
 					}
 					if (navi.getLastRow() == 0) {
-						//第一条
+						// 第一条
 						total = 1;
 					} else {
-						//未计数(总数 )
+						// 未计数(总数 )
 						if (navi.getTotalRow() == 0) {
 							total = getTotal(run.getTotalQuery(), run.getValues());
 							navi.setTotalRow(total);
@@ -280,7 +280,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
 			}
 		}finally {
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -314,7 +314,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				listener.afterCount(this,run, count);
 			}
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -368,7 +368,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				throw e;
 			}
 		}finally {
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -448,7 +448,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			throw e;
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -595,7 +595,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			e.printStackTrace();
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -896,7 +896,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			throw e;
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -918,7 +918,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String random = "";
 		String sql = " {";
 
-		//带有返回值
+		// 带有返回值
 		int returnIndex = 0;
 		if(procedure.hasReturn()){
 			sql += "? = ";
@@ -953,7 +953,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
 						final List<Object> result = new ArrayList<Object>();
 
-						//带有返回参数
+						// 带有返回参数
 						int returnIndex = 0;
 						if (procedure.hasReturn()) {
 							returnIndex = 1;
@@ -980,7 +980,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 							result.add(cs.getObject(1));
 						}
 						if (sizeOut > 0) {
-							//注册输出参数
+							// 注册输出参数
 							for (int i = 1; i <= sizeOut; i++) {
 								final Object output = cs.getObject(sizeIn + returnIndex + i);
 								result.add(output);
@@ -1010,7 +1010,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			e.printStackTrace();
 			throw e;
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -1109,7 +1109,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 							if(index > last){
 								break;
 							}
-							if(first ==0 && last==0){ //只取一行
+							if(first ==0 && last==0){ // 只取一行
 								break;
 							}
 						}
@@ -1140,7 +1140,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			throw e;
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -1215,7 +1215,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if (showSQL) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
-				//result = 1;
+				// result = 1;
 				if(null != listener){
 					listener.afterDelete(this,run, result);
 				}
@@ -1228,7 +1228,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = 0;
 			throw e;
 		}finally{
-			//自动切换回默认数据源
+			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
@@ -1299,7 +1299,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			if(null != pattern){
 				if(table_map.isEmpty()){
-					//如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
+					// 如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
 					LinkedHashMap<String,Table> all = tables(catalog, schema, null, types);
 					for(Table table:all.values()){
 						table_map.put(table.getName().toUpperCase(), table.getName());
@@ -1309,7 +1309,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					pattern = table_map.get(pattern.toUpperCase());
 				}
 			}
-			//根据系统表查询
+			// 根据系统表查询
 			try{
 				List<String> sqls = adapter.buildQueryTableRunSQL(catalog, schema, pattern, types);
 				if(null != sqls) {
@@ -1327,7 +1327,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 
-			//根据jdbc接口补充
+			// 根据jdbc接口补充
 			try {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
 				tables = adapter.tables(true, catalog, schema, tables, set);
@@ -1403,7 +1403,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			if(null != pattern){
 				if(table_map.isEmpty()){
-					//如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
+					// 如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
 					LinkedHashMap<String, MasterTable> all = mtables(catalog, schema, null, types);
 					for(Table table:all.values()){
 						table_map.put(table.getName().toUpperCase(), table.getName());
@@ -1414,7 +1414,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 
-			//根据系统表查询
+			// 根据系统表查询
 			try{
 				List<String> sqls = adapter.buildQueryMasterTableRunSQL(catalog, schema, pattern, types);
 				if(null != sqls) {
@@ -1432,7 +1432,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 
-			//根据jdbc接口补充
+			// 根据jdbc接口补充
 			try {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
 				tables = adapter.mtables(false, catalog, schema, tables, set);
@@ -1514,7 +1514,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			Long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			//根据系统表查询
+			// 根据系统表查询
 			try{
 				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master);
 				if(null != sqls) {
@@ -1581,7 +1581,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){}
 
-		//先根据metadata解析 SELECT * FROM T WHERE 1=0
+		// 先根据metadata解析 SELECT * FROM T WHERE 1=0
 		try {
 			List<String> sqls = adapter.buildQueryColumnRunSQL(table , true);
 			if(null != sqls){
@@ -1598,7 +1598,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		//再根据系统表查询
+		// 再根据系统表查询
 		try{
 			List<String> sqls = adapter.buildQueryColumnRunSQL(table, false);
 			if(null != sqls){
@@ -1617,9 +1617,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		//根据jdbc接口补充
+		// 根据jdbc接口补充
 		try {
-			//isAutoIncrement isGenerated remark default
+			// isAutoIncrement isGenerated remark default
 			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
 			columns = adapter.columns(true, table, columns, rs);
 		}catch (Exception e){
@@ -1630,7 +1630,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		//主键
+		// 主键
 		try {
 			ResultSet rs = metadata.getPrimaryKeys(catalog, schema, table.getName());
 			while (rs.next()) {
@@ -1697,7 +1697,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){}
 
-		//先根据metadata解析 SELECT * FROM T WHERE 1=0
+		// 先根据metadata解析 SELECT * FROM T WHERE 1=0
 		try {
 			List<String> sqls = adapter.buildQueryTagRunSQL(table , true);
 			if(null != sqls){
@@ -1714,7 +1714,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		//再根据系统表查询
+		// 再根据系统表查询
 		try{
 			List<String> sqls = adapter.buildQueryTagRunSQL(table, false);
 			if(null != sqls){
@@ -1733,11 +1733,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		//根据jdbc接口补充
+		// 根据jdbc接口补充
 		try {
-			//isAutoIncrement isGenerated remark default
+			// isAutoIncrement isGenerated remark default
 			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
-			//这一步会查出所有列(包括非tag列)
+			// 这一步会查出所有列(包括非tag列)
 			tags = adapter.tags(false, table, tags, rs);
 		}catch (Exception e){
 			e.printStackTrace();
@@ -1747,7 +1747,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		//主键
+		// 主键
 		try {
 			ResultSet rs = metadata.getPrimaryKeys(catalog, schema, table.getName());
 			while (rs.next()) {
@@ -1931,7 +1931,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		Long fr = System.currentTimeMillis();
 		check(table);
 		if(!name.equalsIgnoreCase(uname)){
-			//修改表名
+			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
 			String random = null;
 			if(showSQL){
@@ -1956,22 +1956,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				listener.afterRename(table, result);
 			}
 		}
-		//更新列
+		// 更新列
 		for(Column ucolumn : ucolumns.values()){
 			Column column = columns.get(ucolumn.getName().toUpperCase());
 			if(null != column){
-				//修改列
+				// 修改列
 				column.setTable(update);
 				column.setUpdate(ucolumn);
 				column.setService(table.getService());
 				alter(column);
 			}else{
-				//添加列
+				// 添加列
 				ucolumn.setTable(update);
 				add(ucolumn);
 			}
 		}
-		//删除列
+		// 删除列
 		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
@@ -2103,7 +2103,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String uname = update.getName();
 		Long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
-			//修改表名
+			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
 			String random = null;
 			if(showSQL){
@@ -2128,22 +2128,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				listener.afterRename(table, result);
 			}
 		}
-		//更新列
+		// 更新列
 		for(Column ucolumn : ucolumns.values()){
 			Column column = columns.get(ucolumn.getName().toUpperCase());
 			if(null != column){
-				//修改列
+				// 修改列
 				column.setTable(update);
 				column.setUpdate(ucolumn);
 				column.setService(table.getService());
 				alter(column);
 			}else{
-				//添加列
+				// 添加列
 				ucolumn.setTable(update);
 				add(ucolumn);
 			}
 		}
-		//删除列
+		// 删除列
 		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
@@ -2156,22 +2156,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}
-		//更新标签
+		// 更新标签
 		for(Tag utag : utags.values()){
 			Tag tag = tags.get(utag.getName().toUpperCase());
 			if(null != tag){
-				//修改列
+				// 修改列
 				tag.setTable(update);
 				tag.setUpdate(utag);
 				tag.setService(table.getService());
 				alter(tag);
 			}else{
-				//添加列
+				// 添加列
 				utag.setTable(update);
 				add(utag);
 			}
 		}
-		//删除标签
+		// 删除标签
 		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
 			for (Tag tag : tags.values()) {
 				Tag utag = utags.get(tag.getName().toUpperCase());
@@ -2262,7 +2262,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String uname = update.getName();
 		Long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
-			//修改表名
+			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
 			String random = null;
 			if(showSQL){
@@ -2287,22 +2287,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				listener.afterRename(table, result);
 			}
 		}
-		//更新列
+		// 更新列
 		for(Column ucolumn : ucolumns.values()){
 			Column column = columns.get(ucolumn.getName().toUpperCase());
 			if(null != column){
-				//修改列
+				// 修改列
 				column.setTable(update);
 				column.setUpdate(ucolumn);
 				column.setService(table.getService());
 				alter(column);
 			}else{
-				//添加列
+				// 添加列
 				ucolumn.setTable(update);
 				add(ucolumn);
 			}
 		}
-		//删除列
+		// 删除列
 		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
@@ -2463,7 +2463,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
+			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			log.warn("{}[{}][exception:{}]",random, LogUtil.format("修改Column执行异常", 33), e.getMessage());
 			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
 				boolean exe = false;
@@ -2605,7 +2605,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
+			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			log.warn("{}[{}][exception:{}]",random, LogUtil.format("修改tag执行异常", 33), e.getMessage());
 			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
 				boolean exe = false;

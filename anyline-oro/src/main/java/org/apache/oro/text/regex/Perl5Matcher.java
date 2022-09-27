@@ -248,7 +248,7 @@ public final class Perl5Matcher implements PatternMatcher {
   private void __setLastMatchResult() {
     int offs, maxEndOffs = 0;
 
-    //endOffset+=dontTry;
+    // endOffset+=dontTry;
 
     __lastMatchResult = new Perl5MatchResult(__numParentheses + 1);
 
@@ -1216,7 +1216,7 @@ public final class Perl5Matcher implements PatternMatcher {
 	      return true;
 
 	    for(arg = __lastParen; arg > lastParen; --arg)
-	      //__endMatchOffsets[arg] = 0;
+	      // __endMatchOffsets[arg] = 0;
 	      __endMatchOffsets[arg] = OpCode._NULL_OFFSET;
 	    __lastParen = arg;
 
@@ -1341,7 +1341,7 @@ public final class Perl5Matcher implements PatternMatcher {
 
       } // end switch
 
-      //scan = (next > 0 ? next : 0);
+      // scan = (next > 0 ? next : 0);
       scan = next;
     } // end while scan
 
@@ -1824,13 +1824,13 @@ public final class Perl5Matcher implements PatternMatcher {
     boolean matchFound;
 
 
-    //if(input.length() > 0) {
+    // if(input.length() > 0) {
     // We want to allow a null string to match at the end of the input
     // which is why we don't check endOfInput.  Not sure if this is a
     // safe thing to do or not.
     if(input._currentOffset > input._endOffset)
       return false;
-    //}
+    // }
     /* else 
       if(input._endOfInput())
 	return false;

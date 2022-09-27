@@ -119,7 +119,7 @@ public class DocxUtil {
         }
         if(null != pr){
             if(null == srcPr) {
-                //如果原来没有pr新创建一个
+                // 如果原来没有pr新创建一个
                 Element newPr = pr.createCopy();
                 src.elements().add(0, newPr);
             }else{
@@ -133,11 +133,11 @@ public class DocxUtil {
                         srcItem = null;
                     }
                     if(null == srcItem){
-                        //如果原来没有这个样式条目直接复制一个
+                        // 如果原来没有这个样式条目直接复制一个
                         Element newItem = item.createCopy();
                         newItems.add(newItem);
                     }else{
-                        //如果原来有这个样式条目,在原来基础上复制属性
+                        // 如果原来有这个样式条目,在原来基础上复制属性
                         List<Attribute> attributes = item.attributes();
                         for(Attribute attribute:attributes){
                             String attributeName = attribute.getName();
@@ -325,7 +325,7 @@ public class DocxUtil {
         if(null == ref || null == src){
             return;
         }
-        //同级
+        // 同级
         if(ref.getParent() == src.getParent()){
             List<Element> elements = ref.getParent().elements();
             int index = elements.indexOf(ref)+1;
@@ -336,7 +336,7 @@ public class DocxUtil {
                 elements.add(index, src);
             }
         }else{
-            //ref更下级
+            // ref更下级
             after(src, ref.getParent());
         }
 
@@ -492,20 +492,20 @@ public class DocxUtil {
                 addElement(pr, "sz","val", pt+"");
             }
         }
-        //加粗
+        // 加粗
         String fontWeight = styles.get("font-weight");
         if(null != fontWeight && fontWeight.length()>0){
             int weight = BasicUtil.parseInt(fontWeight,0);
             if(weight >=700){
-                //<w:b w:val="true"/>
+                // <w:b w:val="true"/>
                 addElement(pr, "b","val","true");
             }
         }
-        //下划线
+        // 下划线
         String underline = styles.get("underline");
         if(null != underline){
             if(underline.equalsIgnoreCase("true") || underline.equalsIgnoreCase("single")){
-                //<w:u w:val="single"/>
+                // <w:u w:val="single"/>
                 addElement(pr, "u","val","single");
             }else{
                 addElement(pr, "u","val",underline);
@@ -530,21 +530,21 @@ public class DocxUtil {
                 */
             }
         }
-        //删除线
+        // 删除线
         String strike = styles.get("strike");
         if(null != strike){
             if(strike.equalsIgnoreCase("true")){
-                //<w:dstrike w:val="true"/>
+                // <w:dstrike w:val="true"/>
                 addElement(pr, "dstrike","val","true");
             }else if("none".equalsIgnoreCase(strike) || "false".equalsIgnoreCase(strike)){
                 addElement(pr, "dstrike","val","false");
             }
         }
-        //斜体
+        // 斜体
         String italics = styles.get("italic");
         if(null != italics){
             if(italics.equalsIgnoreCase("true")){
-                //<w:dstrike w:val="true"/>
+                // <w:dstrike w:val="true"/>
                 addElement(pr, "i","val","true");
             }else if("none".equalsIgnoreCase(italics) || "false".equalsIgnoreCase(italics)){
                 addElement(pr, "i","val","false");
@@ -587,13 +587,13 @@ public class DocxUtil {
         if(null != fontFamilyHint){
             addElement(pr, "rFonts","hint",fontFamilyHint);
         }
-        //<w:rFonts w:ascii="Adobe Gothic Std B" w:eastAsia="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
+        // <w:rFonts w:ascii="Adobe Gothic Std B" w:eastAsia="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
     }
 
     public static void background(Element pr,Map<String,String> styles){
         String color = styles.get("background-color");
         if(null != color){
-            //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
+            // <w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
             DocxUtil.addElement(pr, "shd", "color","auto");
             DocxUtil.addElement(pr, "shd", "val","clear");
             DocxUtil.addElement(pr, "shd", "fill",color.replace("#",""));
@@ -772,16 +772,16 @@ public class DocxUtil {
                 }
             }
             if(styles.containsKey("list-style-num")){
-                //如果在样式里指定了样式
+                // 如果在样式里指定了样式
                 Element numPr = DocxUtil.addElement(pr,"numPr");
                 DocxUtil.addElement(numPr, "numId", "val",styles.get("list-style-num"));
             }else if(styles.containsKey("list-num")){
-                //运行时自动生成
+                // 运行时自动生成
                 Element numPr = DocxUtil.addElement(pr,"numPr");
                 DocxUtil.addElement(numPr, "numId", "val",styles.get("list-num"));
             }
 
-            //<div style="page-size-orient:landscape"/>
+            // <div style="page-size-orient:landscape"/>
             if(styles.containsKey("page-size-orient")){
                 String orient = styles.get("page-size-orient");
                 if(!"landscape".equalsIgnoreCase(orient)){
@@ -792,7 +792,7 @@ public class DocxUtil {
 
             Element border = DocxUtil.addElement(pr, "bdr");
             DocxUtil.border(border, styles);
-            //DocxUtil.background(pr, styles);
+            // DocxUtil.background(pr, styles);
 
         }else if("r".equalsIgnoreCase(name)){
             for (String sk : styles.keySet()) {
@@ -803,7 +803,7 @@ public class DocxUtil {
                 if(sk.equalsIgnoreCase("color")){
                     addElement(pr, "color", "val", sv.replace("#",""));
                 }else if(sk.equalsIgnoreCase("background-color")){
-                    //<w:highlight w:val="yellow"/>
+                    // <w:highlight w:val="yellow"/>
                     DocxUtil.addElement(pr, "highlight", "val",sv.replace("#",""));
                 }else if(sk.equalsIgnoreCase("vertical-align")){
                     DocxUtil.addElement(pr,"vertAlign", "val", sv );
@@ -814,15 +814,15 @@ public class DocxUtil {
             DocxUtil.font(pr, styles);
         }else if("tbl".equalsIgnoreCase(name)){
 
-            //DocxUtil.addElement(pr,"tblCellSpacing","w","0");
-            //DocxUtil.addElement(pr,"tblCellSpacing","type","nil");
+            // DocxUtil.addElement(pr,"tblCellSpacing","w","0");
+            // DocxUtil.addElement(pr,"tblCellSpacing","type","nil");
 
             Element mar = DocxUtil.addElement(pr,"tblCellMar");
             /*DocxUtil.addElement(mar,"top","w","0");
             DocxUtil.addElement(mar,"top","type","dxa");
             DocxUtil.addElement(mar,"bottom","w","0");
             DocxUtil.addElement(mar,"bottom","type","dxa");
-            DocxUtil.addElement(mar,"right","w","0"); //新版本end
+            DocxUtil.addElement(mar,"right","w","0"); // 新版本end
             DocxUtil.addElement(mar,"right","type","dxa");
             DocxUtil.addElement(mar,"end","w","0");
             DocxUtil.addElement(mar,"end","type","dxa");
@@ -841,10 +841,10 @@ public class DocxUtil {
                     DocxUtil.addElement(pr,"tblInd","w",DocxUtil.dxa(sv)+"");
                     DocxUtil.addElement(pr,"tblInd","type","dxa");
                 }else if(sk.equalsIgnoreCase("padding-left")){
-                    DocxUtil.addElement(mar,"left","w",DocxUtil.dxa(sv)+""); //新版本用start,但07版本用start会报错
+                    DocxUtil.addElement(mar,"left","w",DocxUtil.dxa(sv)+""); // 新版本用start,但07版本用start会报错
                     DocxUtil.addElement(mar,"left","type","dxa");
                 }else if(sk.equalsIgnoreCase("padding-right")){
-                    DocxUtil.addElement(mar,"right","w",DocxUtil.dxa(sv)+""); //新版本用end
+                    DocxUtil.addElement(mar,"right","w",DocxUtil.dxa(sv)+""); // 新版本用end
                     DocxUtil.addElement(mar,"right","type","dxa");
                     DocxUtil.addElement(mar,"end","w",DocxUtil.dxa(sv)+"");
                     DocxUtil.addElement(mar,"end","type","dxa");
@@ -888,7 +888,7 @@ public class DocxUtil {
                 DocxUtil.addElement(mar,"top","type","dxa");
                 DocxUtil.addElement(mar,"bottom","w","0");
                 DocxUtil.addElement(mar,"bottom","type","dxa");
-                DocxUtil.addElement(mar,"right","w","0"); //新版本end
+                DocxUtil.addElement(mar,"right","w","0"); // 新版本end
                 DocxUtil.addElement(mar,"right","type","dxa");
                 DocxUtil.addElement(mar,"end","w","0");
                 DocxUtil.addElement(mar,"end","type","dxa");
@@ -904,10 +904,10 @@ public class DocxUtil {
                     DocxUtil.addElement(pr,"tcW","w",DocxUtil.dxa(sv)+"");
                     DocxUtil.addElement(pr,"tcW","type",DocxUtil.widthType(sv));
                 }else if(sk.equalsIgnoreCase("padding-left")){
-                    DocxUtil.addElement(mar,"left","w",DocxUtil.dxa(sv)+""); //新版本用start,但07版本用start会报错
+                    DocxUtil.addElement(mar,"left","w",DocxUtil.dxa(sv)+""); // 新版本用start,但07版本用start会报错
                     DocxUtil.addElement(mar,"left","type","dxa");
                 }else if(sk.equalsIgnoreCase("padding-right")){
-                    DocxUtil.addElement(mar,"right","w",DocxUtil.dxa(sv)+""); //新版本用end
+                    DocxUtil.addElement(mar,"right","w",DocxUtil.dxa(sv)+""); // 新版本用end
                     DocxUtil.addElement(mar,"right","type","dxa");
                     DocxUtil.addElement(mar,"end","w",DocxUtil.dxa(sv)+"");
                     DocxUtil.addElement(mar,"end","type","dxa");
@@ -919,7 +919,7 @@ public class DocxUtil {
                     DocxUtil.addElement(mar,"bottom","type","dxa");
                 }
             }
-            //
+            // 
             Element padding = DocxUtil.addElement(pr,"tcMar");
             DocxUtil.padding(padding, styles);
             Element border = DocxUtil.addElement(pr,"tcBorders");
@@ -932,7 +932,7 @@ public class DocxUtil {
         return pr;
     }
 
-    //插入排版方向
+    // 插入排版方向
     public static void setOrient(Element pr, String orient, Map<String,String> styles){
         String w = styles.get("page-size-w");
         String h = styles.get("page-size-h");
@@ -946,7 +946,7 @@ public class DocxUtil {
         header = BasicUtil.evl(header, "851").toString();
         footer = BasicUtil.evl(footer, "992").toString();
         if("portrait".equalsIgnoreCase(orient)){
-            //竖板<w:pgMar w:top="1440" w:right="1134" w:bottom="1440" w:left="1531" w:header="851" w:footer="992" w:gutter="0"/>
+            // 竖板<w:pgMar w:top="1440" w:right="1134" w:bottom="1440" w:left="1531" w:header="851" w:footer="992" w:gutter="0"/>
             w = BasicUtil.evl(w, "11906").toString();
             h = BasicUtil.evl(h, "16838").toString();
             top = BasicUtil.evl(top, "1440").toString();
@@ -954,7 +954,7 @@ public class DocxUtil {
             bottom = BasicUtil.evl(bottom, "1440").toString();
             left = BasicUtil.evl(left, "1531").toString();
         }else {
-            //横板
+            // 横板
             // <w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>
             // <w:pgMar w:top="1531" w:right="1440" w:bottom="1134" w:left="1440" w:header="851" w:footer="992" w:gutter="0"/>
             w = BasicUtil.evl(w, "16838").toString();

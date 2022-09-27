@@ -623,14 +623,14 @@ public final class Perl5Compiler implements PatternCompiler {
 
 	throw new MalformedPatternException("Error in expression at " +
 				   __input._toString(__input._getOffset()));
-	//break tryAgain;
+	// break tryAgain;
 
       case '?':
       case '+':
       case '*':
 	throw new MalformedPatternException(
                  "?+* follows nothing in expression");
-	//break tryAgain;
+	// break tryAgain;
 
       case '\\':
 	value = __input._increment();
@@ -773,7 +773,7 @@ public final class Perl5Compiler implements PatternCompiler {
 
       offset = __emitNode(OpCode._EXACTLY);
       // Not sure that it's ok to use 0 to mark end.
-      //__emitCode((char)0);
+      // __emitCode((char)0);
       __emitCode((char)CharStringPointer._END_OF_STRING);
 
     forLoop:
@@ -937,7 +937,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	retFlags[0] |= __SIMPLE;
       if(__program!= null)
 	__program[OpCode._getOperand(offset)] = (char)length;
-      //__emitCode('\0'); // debug
+      // __emitCode('\0'); // debug
       __emitCode(CharStringPointer._END_OF_STRING);
     }
 

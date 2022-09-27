@@ -16,7 +16,7 @@ public class WechatTradeNotify {
     private Map<String,Object> combine_payer_info   ;//支付者			object 否  示例值:见请求示例
     private Map<String,Object> amount               ;//订单金额信息
     private Map<String,Object> scene_info           ;//场景信息
-    private Map<String,Object> promotion_detail     ; //优惠功能
+    private Map<String,Object> promotion_detail     ; // 优惠功能
 
     public String getAppid() {
         return appid;

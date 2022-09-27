@@ -53,7 +53,7 @@ public class HttpClient {
 	private RequestConfig requestConfig;
 	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	private PoolingHttpClientConnectionManager connManager;
-    private int connectTimeout = 72000; //毫秒
+    private int connectTimeout = 72000; // 毫秒
 	private int socketTimeout = 72000;
 	private Map<String, String> headers;
 	private String url;
@@ -230,7 +230,7 @@ public class HttpClient {
 		}
 
 		finalUrl = HttpUtil.mergeParam(finalUrl, task.getParams());
-		//DownloadProgress progress = task.getProgress();
+		// DownloadProgress progress = task.getProgress();
 		File dst = task.getLocal();
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
 			return result;
@@ -294,14 +294,14 @@ public class HttpClient {
 				log.warn("[http download][断点设置异常][url:{}]",url);
 			}
 			if(code != 200 && code !=206){
-				//progress.error(url, "", code, "状态异常");
+				// progress.error(url, "", code, "状态异常");
 				task.error(code, "状态异常");
 				return false;
 			}
 			HttpEntity entity = response.getEntity();
 			if(entity != null) {
 				long total = entity.getContentLength();
-				//progress.init(url, "", total, start);
+				// progress.init(url, "", total, start);
 				task.init(total, past);
 				int buf = 1024*1024*10;
 				if(buf > total){
@@ -320,13 +320,13 @@ public class HttpClient {
 					}
 					raf.write(buffer, 0, len);
 
-					//progress.step(url, "", len);
+					// progress.step(url, "", len);
 					task.step(len);
 				}
 			}
 			result = true;
 		} catch (Exception e) {
-			//progress.error(url, "", 0, e.getMessage());
+			// progress.error(url, "", 0, e.getMessage());
 			task.error(-1, e.getMessage());
 			log.warn("[http download][下载异常][url:{}]",url);
 			e.printStackTrace();
@@ -353,7 +353,7 @@ public class HttpClient {
 		}
 		if(result){
 			tmpFile.renameTo(dst);
-			//progress.finish(url, "");
+			// progress.finish(url, "");
 			task.finish();
 		}
 		return result;
@@ -366,13 +366,13 @@ public class HttpClient {
 		if(BasicUtil.isEmpty(encode)){
 			encode = "UTF-8";
 		}
-		String BOUNDARY="-----"+BasicUtil.getRandomLowerString(20);  //设置边界
+		String BOUNDARY="-----"+BasicUtil.getRandomLowerString(20);  // 设置边界
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 		HttpPost post = new HttpPost(url);
 		post.setConfig(requestConfig);
 		builder.setBoundary(BOUNDARY);
-		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  //浏览器兼容模式
-		builder.setCharset(Charset.forName(encode));  //设置字符编码集
+		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  // 浏览器兼容模式
+		builder.setCharset(Charset.forName(encode));  // 设置字符编码集
 		ContentType contentType = ContentType.create("text/plain",Charset.forName(encode));
 
 		HttpUtil.mergeParam(builder, params, contentType);
@@ -392,8 +392,8 @@ public class HttpClient {
 		}
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
-		post.setEntity(entity);   //post 实体.
-		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式.
+		post.setEntity(entity);   // post 实体.
+		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  // 表单形式.
 		HttpResponse source = post();
 		return source;
 	}
@@ -492,9 +492,9 @@ public class HttpClient {
 			}
 			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
-			//ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信                  
-			//BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
-			//STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
+			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信                  
+			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
+			// STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();

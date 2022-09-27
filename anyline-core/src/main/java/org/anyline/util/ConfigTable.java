@@ -37,38 +37,38 @@ import java.util.jar.JarFile;
 
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
-	private static Map<String,Long> listener_files = new Hashtable<>(); //监听文件更新<文件名,最后加载时间>
-	protected static String root;		//项目根目录 如果是jar文件运行表示jar文件所在目录
+	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
+	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
 	protected static Hashtable<String,Object> configs;
-	protected static long lastLoadTime = 0;	//最后一次加载时间
-	protected static int reload = 0;			//重新加载间隔
+	protected static long lastLoadTime = 0;	// 最后一次加载时间
+	protected static int reload = 0;			// 重新加载间隔
 	protected static boolean debug = false;
 	protected static boolean sqlDebug = false;
 	protected static final String version = "8.5.7-SNAPSHOT";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
-	private static boolean listener_running = false;	//监听是否启动
+	private static boolean listener_running = false;	// 监听是否启动
 
 	// 对应配置文件key
-	public static boolean IS_UPPER_KEY 									= true		;	//是否自动转换成大写
-	public static boolean IS_LOWER_KEY 									= false		;	//是否自动转换成小写
-	public static boolean IS_KEY_IGNORE_CASE 							= true		;	//是否忽略大小写
-	public static boolean IS_THROW_SQL_EXCEPTION 						= false		;	//SQL执行异常时是否抛出
-	public static boolean IS_UPDATE_NULL_COLUMN							= false		;	//是否更新nul值的列
-	public static boolean IS_UPDATE_EMPTY_COLUMN						= false		;	//是否更新空值的列
-	public static boolean IS_INSERT_NULL_COLUMN							= false		;	//是否更新nul值的列
-	public static boolean IS_INSERT_EMPTY_COLUMN						= false		;	//是否更新空值的列
-	public static boolean IS_SQL_DELIMITER_OPEN 						= false		;	//是否开启 界定符
-	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false		;	//是否开启 界定符的占位符
-	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	//service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
-	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	//insert update 时是否自动检测表结构(删除表中不存在的属性)
-	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   //DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
-	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   //DDL执行时是否自动删除定义中不存在的列
-	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	//http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
-	public static String TABLE_METADATA_CACHE_KEY						= ""		;	//表结构缓存key
-	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	//表析构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
+	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
+	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// 是否忽略大小写
+	public static boolean IS_THROW_SQL_EXCEPTION 						= false		;	// SQL执行异常时是否抛出
+	public static boolean IS_UPDATE_NULL_COLUMN							= false		;	// 是否更新nul值的列
+	public static boolean IS_UPDATE_EMPTY_COLUMN						= false		;	// 是否更新空值的列
+	public static boolean IS_INSERT_NULL_COLUMN							= false		;	// 是否更新nul值的列
+	public static boolean IS_INSERT_EMPTY_COLUMN						= false		;	// 是否更新空值的列
+	public static boolean IS_SQL_DELIMITER_OPEN 						= false		;	// 是否开启 界定符
+	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false		;	// 是否开启 界定符的占位符
+	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
+	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
+	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
+	public static String TABLE_METADATA_CACHE_KEY						= ""		;	// 表结构缓存key
+	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	// 表析构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;
 
 	public static String CONFIG_NAME = "anyline-config.xml";
@@ -164,12 +164,12 @@ public class ConfigTable {
 		isLoading = true;
 		String path =  "";
 		try{
-			//  path=file:/D:/develop/web/sso-0.0.2.jar!/BOOT-INF/classes!/		(windows jar)
-			//  path=/D:/develop/web/sso/WEB-INF/classes/ 									(windows tomcat)
-			//  path=/D:/develop/git/sso/target/classes/									(windows IDE)
-			//  path=/D:/develop/git/sso/bin/classes/										(windows IDE)
-			//  path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
-			//  path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
+			// path=file:/D:/develop/web/sso-0.0.2.jar!/BOOT-INF/classes!/		(windows jar)
+			// path=/D:/develop/web/sso/WEB-INF/classes/ 									(windows tomcat)
+			// path=/D:/develop/git/sso/target/classes/									(windows IDE)
+			// path=/D:/develop/git/sso/bin/classes/										(windows IDE)
+			// path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
+			// path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
 			path = ConfigTable.class.getResource("/").getPath();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -182,8 +182,8 @@ public class ConfigTable {
 			path =path.replace("file:/", "");
 		}
 		path = path.replace("file:", "");//jar项目
-		//file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
-		//log.warn("root={}",root);
+		// file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
+		// log.warn("root={}",root);
 		if(null == root && null != path){
 			root = path;
 			if(root.contains(".jar")){
@@ -197,7 +197,7 @@ public class ConfigTable {
 				root = path.substring(0,path.indexOf("target")-1);
 			}
 		}
-		//log.warn("root={}",root);
+		// log.warn("root={}",root);
 		if(null == webRoot && null != path){
 			webRoot = path;
 			if(path.indexOf("WEB-INF") > 0){
@@ -224,7 +224,7 @@ public class ConfigTable {
 			}
 		}
 
-		//加载配置文件
+		// 加载配置文件
 		loadConfig(flag);
 	}
 	/**
@@ -246,7 +246,7 @@ public class ConfigTable {
 				log.warn("[加载配置文件][type:jar][file:{}]",flag+"-config.xml");
 				InputStream in;
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
-					//遍历jar
+					// 遍历jar
 					List<JarEntry> list = new ArrayList<JarEntry>();
 					JarFile jFile = new JarFile(System.getProperty("java.class.path"));
 					Enumeration<JarEntry> jarEntrys = jFile.entries();
@@ -273,11 +273,11 @@ public class ConfigTable {
 					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
 					parse(txt);
 				}
-				//加载jar文件同目录的config
+				// 加载jar文件同目录的config
 				File dir = new File(FileUtil.merge(root,"config"));
 				loadConfigDir(dir,flag);
 			}else{
-				//classpath根目录
+				// classpath根目录
 				File dir = new File(classpath);
 				loadConfigDir(dir,flag);
 			}
@@ -372,7 +372,7 @@ public class ConfigTable {
 				}
 			}else {
 				parse(file);
-				//如果未设置重新加载时间,则实现监听文件更新
+				// 如果未设置重新加载时间,则实现监听文件更新
 				if(getInt("RELOAD",0) == 0){
 					listener();
 				}
@@ -389,7 +389,7 @@ public class ConfigTable {
 		}
 		String val = null;
 		if(reload > 0 && (System.currentTimeMillis() - lastLoadTime)/1000 > reload){
-			//重新加载
+			// 重新加载
 			isLoading = false;
 			init();
 		}
@@ -498,8 +498,8 @@ public class ConfigTable {
 				if(path.startsWith("file:")){
 					path = path.substring(path.indexOf(":")+1);
 				}
-				Properties props=System.getProperties(); //获得系统属性集
-				String osName = props.getProperty("os.name"); //操作系统名称
+				Properties props=System.getProperties(); // 获得系统属性集
+				String osName = props.getProperty("os.name"); // 操作系统名称
 				if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
 					path = path.substring(1);
 				}

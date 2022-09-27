@@ -23,8 +23,8 @@ import org.anyline.util.BasicUtil;
 
 public class OrderImpl implements Order{ 
 	private static final long serialVersionUID = -765229283714551699L;
-	private String column;									//排序列 
-	private TYPE type = TYPE.ASC;		//排序方式
+	private String column;									// 排序列 
+	private TYPE type = TYPE.ASC;		// 排序方式
 	 
 	public OrderImpl(){} 
 	public OrderImpl(String str){ 
@@ -34,9 +34,9 @@ public class OrderImpl implements Order{
 		str = str.trim();
 		String typ = "ASC";
 		String up = str.toUpperCase();
-		//ID
-		//ID ASC
-		//ORDER BY CONVERT(id USING gbk) COLLATE gbk_chinese_ci DESC
+		// ID
+		// ID ASC
+		// ORDER BY CONVERT(id USING gbk) COLLATE gbk_chinese_ci DESC
 		if(up.endsWith(" ASC")){
 			this.column = str.substring(0,str.length()-4);
 			typ = "ASC";

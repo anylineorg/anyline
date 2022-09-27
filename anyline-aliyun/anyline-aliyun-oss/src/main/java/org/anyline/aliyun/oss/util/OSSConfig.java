@@ -48,7 +48,7 @@ public class OSSConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件
 		load(); 
 	} 
 	public static void setConfigDir(File dir){ 
@@ -64,7 +64,7 @@ public class OSSConfig extends AnylineConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - OSSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
-			//重新加载 
+			// 重新加载
 			load(); 
 		}
 		OSSConfig instance = (OSSConfig)instances.get(key);

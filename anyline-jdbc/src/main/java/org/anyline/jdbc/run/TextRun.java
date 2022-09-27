@@ -57,7 +57,7 @@ public class TextRun extends BasicRun implements Run {
 	} 
 	public void init(){ 
 		super.init(); 
-		//复制 RunPrepare 查询条件 
+		// 复制 RunPrepare 查询条件 
 		if(null != conditionChain){ 
  
 			List<Condition> conditions = conditionChain.getConditions(); 
@@ -80,7 +80,7 @@ public class TextRun extends BasicRun implements Run {
 			for(Config conf:configStore.getConfigChain().getConfigs()){ 
 				Condition con = getCondition(conf.getVariable());
 				Variable var = this.getVariable(conf.getVariable());
-				//sql体中有对应的变量
+				// sql体中有对应的变量
 				if(null != con){
 					setConditionValue( 
 						conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
@@ -119,12 +119,12 @@ public class TextRun extends BasicRun implements Run {
 			COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
 			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			if(BasicUtil.isNotEmpty(true,keys)){ 
-				//AND CD = :CD 
+				// AND CD = :CD 
 				for(int i=0; i<keys.size();i++){ 
 					List<String> keyItem = keys.get(i); 
 					String prefix = keyItem.get(1).trim(); 
 					String fullKey = keyItem.get(2).trim();	// :CD ::CD 
-					String typeChar = keyItem.get(3);		//  null || "'" || ")" 
+					String typeChar = keyItem.get(3);		// null || "'" || ")" 
 					String key = fullKey.replace(":", ""); 
 					if(fullKey.startsWith("::")){ 
 						// AND CD = ::CD 
@@ -138,7 +138,7 @@ public class TextRun extends BasicRun implements Run {
 						// AND CD = :CD 
 						varType = Variable.VAR_TYPE_KEY;
 						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
-							//AND CD IN(:CD) 
+							// AND CD IN(:CD) 
 							compare = COMPARE_TYPE.IN;
 						} 
 					} 

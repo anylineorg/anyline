@@ -184,7 +184,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         if(BasicUtil.isEmpty(dest)){
             throw new SQLException("未指定表");
         }
-        //CREATE (emp:Employee{id:123,name:"zh"})
+        // CREATE (emp:Employee{id:123,name:"zh"})
         builder.append("CREATE ");
         insertValue("e0",run, dest, obj, columns);
         builder.append(" RETURN ID(e0) AS __ID0");
@@ -252,7 +252,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         /*确定需要插入的列*/
 
         List<String> keys = confirmInsertColumns(dest, obj, columns);
-        //CREATE (e:Employee{id:123,name:"zh"})
+        // CREATE (e:Employee{id:123,name:"zh"})
         builder.append("(");
         if(BasicUtil.isNotEmpty(alias)){
             builder.append(alias);
@@ -288,10 +288,10 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 builder.append("?");
                 insertColumns.add(key);
                 if("NULL".equals(value)){
-                    //values.add(null);
+                    // values.add(null);
                     run.addValues(key, null);
                 }else{
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }
             }
@@ -396,7 +396,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         builder.append(" RETURN ");
         List<String> columns = prepare.getColumns();
         if(null != columns && columns.size()>0){
-            //指定查询列
+            // 指定查询列
             int size = columns.size();
             for(int i=0; i<size; i++){
                 String column = columns.get(i);
@@ -421,7 +421,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             }
             builder.append(JDBCAdapter.BR);
         }else{
-            //全部查询
+            // 全部查询
             builder.append(alias);
             builder.append(JDBCAdapter.BR);
         }
@@ -554,7 +554,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                     continue;
                 }
                 if(var.getType() == Variable.VAR_TYPE_REPLACE){
-                    //CD = ::CD
+                    // CD = ::CD
                     Object varValue = var.getValues();
                     String value = null;
                     if(BasicUtil.isNotEmpty(varValue)){
@@ -572,7 +572,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                     continue;
                 }
                 if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-                    //CD = ':CD'
+                    // CD = ':CD'
                     List<Object> varValues = var.getValues();
                     String value = null;
                     if(BasicUtil.isNotEmpty(true,varValues)){
@@ -594,7 +594,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                     List<Object> varValues = var.getValues();
                     if(BasicUtil.isNotEmpty(true, varValues)){
                         if(var.getCompare() == RunPrepare.COMPARE_TYPE.IN){
-                            //多个值IN
+                            // 多个值IN
                             String replaceSrc = ":"+var.getKey();
                             String replaceDst = "";
                             for(Object tmp:varValues){
@@ -604,19 +604,19 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                             replaceDst = replaceDst.trim().replace(" ", ",");
                             result = result.replace(replaceSrc, replaceDst);
                         }else{
-                            //单个值
+                            // 单个值
                             result = result.replace(":"+var.getKey(), "?");
                             run.addValues(var.getKey(), varValues.get(0));
                         }
                     }
                 }
             }
-            //添加其他变量值
+            // 添加其他变量值
             for(Variable var:variables){
                 if(null == var){
                     continue;
                 }
-                //CD = ?
+                // CD = ?
                 if(var.getType() == Variable.VAR_TYPE_INDEX){
                     List<Object> varValues = var.getValues();
                     String value = null;
@@ -631,7 +631,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         builder.append(result);
         run.appendCondition();
         run.appendGroup();
-        //appendOrderStore();
+        // appendOrderStore();
         run.checkValid();
     }
     /**
@@ -659,7 +659,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
         /*
         List<String> columns = sql.getColumns();
         if(null != columns && columns.size()>0){
-            //指定查询列
+            // 指定查询列
             int size = columns.size();
             for(int i=0; i<size; i++){
                 String column = columns.get(i);
@@ -684,7 +684,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             }
             builder.append(JDBCAdapter.BR);
         }else{
-            //全部查询
+            // 全部查询
             builder.append("*");
             builder.append(JDBCAdapter.BR);
         }*/
@@ -694,7 +694,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
                 SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
                 if(BasicUtil.isNotEmpty(join.getAlias())){
-                    //builder.append(" AS ").append(join.getAlias());
+                    // builder.append(" AS ").append(join.getAlias());
                     builder.append("  ").append(join.getAlias());
                 }
                 builder.append(" ON ").append(join.getCondition());
@@ -704,7 +704,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
        */
         builder.append(" WHERE 1=1 ");
         /*添加查询条件*/
-        //appendConfigStore();
+        // appendConfigStore();
         run.appendCondition();
         run.appendGroup();
         run.appendOrderStore();
@@ -753,7 +753,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
-        //List<Object> values = new ArrayList<Object>();
+        // List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
         List<String> primaryKeys = null;
         if(null != columns && columns.size() >0 ){
@@ -769,7 +769,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             primaryKeys = new ArrayList<>();
             primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
         }
-        //不更新主键
+        // 不更新主键
         keys.removeAll(primaryKeys);
 
         List<String> updateColumns = new ArrayList<>();
@@ -798,7 +798,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                         value = null;
                     }
                     updateColumns.add(key);
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }
                 if(i<size-1){
@@ -813,14 +813,14 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 updateColumns.add(pk);
                 if(AdapterProxy.hasAdapter()){
                     Field field = AdapterProxy.field(obj.getClass(), pk);
-                    //values.add(BeanUtil.getFieldValue(obj, field));
+                    // values.add(BeanUtil.getFieldValue(obj, field));
                     run.addValues(pk, BeanUtil.getFieldValue(obj, field));
                 }else {
-                    //values.add(BeanUtil.getFieldValue(obj, pk));
+                    // values.add(BeanUtil.getFieldValue(obj, pk));
                     run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
                 }
             }
-            //run.addValues(values);
+            // run.addValues(values);
         }
         run.setUpdateColumns(updateColumns);
         run.setBuilder(builder);
@@ -830,15 +830,15 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
-        //List<Object> values = new ArrayList<Object>();
+        // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
-        List<String> keys = confirmUpdateColumns(dest, row, columns);
+        List<String> keys = confirmUpdateColumns(dest, row, configs, columns);
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
             throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
         }
 
-        //不更新主键
+        // 不更新主键
         keys.removeAll(primaryKeys);
 
         List<String> updateColumns = new ArrayList<>();
@@ -860,7 +860,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                         value = null;
                     }
                     updateColumns.add(key);
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }
                 if(i<size-1){
@@ -873,10 +873,10 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 builder.append(" AND ");
                 SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                 updateColumns.add(pk);
-                //values.add(row.get(pk));
+                // values.add(row.get(pk));
                 run.addValues(pk, row.get(pk));
             }
-            //run.addValues(values);
+            // run.addValues(values);
         }
         run.setUpdateColumns(updateColumns);
         run.setBuilder(builder);
@@ -914,7 +914,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
 
 
         /*添加查询条件*/
-        //appendConfigStore();
+        // appendConfigStore();
         run.appendCondition();
         run.appendGroup();
         run.appendOrderStore();
@@ -940,7 +940,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                     if(idx > 0){
                         builder.append(",");
                     }
-                    //builder.append("'").append(obj).append("'");
+                    // builder.append("'").append(obj).append("'");
                     builder.append("?");
                     idx ++;
                 }

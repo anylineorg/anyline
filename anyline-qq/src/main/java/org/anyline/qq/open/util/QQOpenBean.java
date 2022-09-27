@@ -12,26 +12,26 @@ import org.springframework.stereotype.Component;
 public class QQOpenBean implements InitializingBean {
 
     @Value("${anyline.qq.open.app:}")
-    public String APP_ID 					; //AppID(应用ID)
+    public String APP_ID 					; // AppID(应用ID)
     @Value("${anyline.qq.open.key:}")
-    public String APP_KEY 					; //APPKEY(应用密钥)
+    public String APP_KEY 					; // APPKEY(应用密钥)
     @Value("${anyline.qq.open.secret:}")
-    public String APP_SECRET 				; //AppSecret(应用密钥)
+    public String APP_SECRET 				; // AppSecret(应用密钥)
     @Value("${anyline.qq.open.signType:}")
-    public String SIGN_TYPE 				; //签名加密方式
+    public String SIGN_TYPE 				; // 签名加密方式
     @Value("${anyline.qq.open:token}")
-    public String SERVER_TOKEN 				; //服务号的配置token
+    public String SERVER_TOKEN 				; // 服务号的配置token
 
     @Value("${anyline.qq.open.pay.secret:}")
-    public String PAY_API_SECRET 			; //商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+    public String PAY_API_SECRET 			; // 商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
     @Value("${anyline.qq.open.pay.mch:}")
-    public String PAY_MCH_ID 				; //商家号
+    public String PAY_MCH_ID 				; // 商家号
     @Value("${anyline.qq.open.pay.notify:}")
-    public String PAY_NOTIFY_URL 			; //支付统一接口的回调action
+    public String PAY_NOTIFY_URL 			; // 支付统一接口的回调action
     @Value("${anyline.qq.open.pay.callback:}")
-    public String PAY_CALLBACK_URL 			; //支付成功支付后跳转的地址
+    public String PAY_CALLBACK_URL 			; // 支付成功支付后跳转的地址
     @Value("${anyline.qq.open.pay.key:}")
-    public String PAY_KEY_STORE_FILE 		; //支付证书存放路径地址
+    public String PAY_KEY_STORE_FILE 		; // 支付证书存放路径地址
 
     @Override
     public void afterPropertiesSet() throws Exception {

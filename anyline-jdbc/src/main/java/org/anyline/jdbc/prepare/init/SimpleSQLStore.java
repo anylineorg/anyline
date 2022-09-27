@@ -73,7 +73,7 @@ public class SimpleSQLStore extends SQLStore {
 			} else {
 			}
 			sqlDir = sqlDir.substring(sqlDir.indexOf("!/")).replaceAll("!/", "") + "/";
-			//遍历jar
+			// 遍历jar
 			List<JarEntry> list = new ArrayList<JarEntry>();
 			JarFile jFile = null;
 			try {
@@ -147,7 +147,7 @@ public class SimpleSQLStore extends SQLStore {
 			return result;
 		}
 		Element root = document.getRootElement();
-		//全局条件分组
+		// 全局条件分组
 		Map<String, List<Condition>> gloableConditions = new HashMap<String, List<Condition>>();
 		for (Iterator<?> itrCons = root.elementIterator("conditions"); itrCons.hasNext(); ) {
 			Element conditionGroupElement = (Element) itrCons.next();
@@ -160,9 +160,9 @@ public class SimpleSQLStore extends SQLStore {
 		}
 		for (Iterator<?> itrSql = root.elementIterator("sql"); itrSql.hasNext(); ) {
 			Element sqlElement = (Element) itrSql.next();
-			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        //RunPrepare 主键
-			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    //是否严格格式  true:java中不允许添加XML定义之外的临时条件
-			String sqlText = sqlElement.elementText("text");                                    //RunPrepare 文本
+			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        // RunPrepare 主键
+			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
+			String sqlText = sqlElement.elementText("text");                                    // RunPrepare 文本
 			RunPrepare prepare = new SimpleXMLPrepare();
 			prepare.setDataSource(fileName + ":" + sqlId);
 			prepare.setText(sqlText);
@@ -190,7 +190,7 @@ public class SimpleSQLStore extends SQLStore {
 			return result;
 		}
 		Element root = document.getRootElement();
-		//全局条件分组
+		// 全局条件分组
 		Map<String, List<Condition>> gloableConditions = new HashMap<String, List<Condition>>();
 		for (Iterator<?> itrCons = root.elementIterator("conditions"); itrCons.hasNext(); ) {
 			Element conditionGroupElement = (Element) itrCons.next();
@@ -203,9 +203,9 @@ public class SimpleSQLStore extends SQLStore {
 		}
 		for (Iterator<?> itrSql = root.elementIterator("sql"); itrSql.hasNext(); ) {
 			Element sqlElement = (Element) itrSql.next();
-			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        //RunPrepare 主键
-			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    //是否严格格式  true:java中不允许添加XML定义之外的临时条件
-			String sqlText = sqlElement.elementText("text");                                    //RunPrepare 文本
+			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        // RunPrepare 主键
+			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
+			String sqlText = sqlElement.elementText("text");                                    // RunPrepare 文本
 			RunPrepare prepare = new SimpleXMLPrepare();
 			prepare.setDataSource(fileName + ":" + sqlId);
 			prepare.setText(sqlText);
@@ -227,12 +227,12 @@ public class SimpleSQLStore extends SQLStore {
 
 	private static Condition parseCondition(RunPrepare prepare, Map<String, List<Condition>> map, Element element) {
 		Condition condition = null;
-		String id = element.attributeValue("id");    //查询条件id
+		String id = element.attributeValue("id");    // 查询条件id
 		boolean required = BasicUtil.parseBoolean(element.attributeValue("required"), false);
 		boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"), false);
 		if (null != id) {
-			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"), false);    //是否是静态文本
-			String text = element.getText().trim();            //查询条件文本
+			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"), false);    // 是否是静态文本
+			String text = element.getText().trim();            // 查询条件文本
 			if (!text.toUpperCase().startsWith("AND ")) {
 				text = "\nAND " + text;
 			}
@@ -296,7 +296,7 @@ public class SimpleSQLStore extends SQLStore {
 			if (ConfigTable.isSQLDebug()) {
 				log.warn("[提取SQL][id:{}]", id);
 			}
-			//log.info("sqls:{}", BeanUtil.object2json(sqls));
+			// log.info("sqls:{}", BeanUtil.object2json(sqls));
 			log.info("sqlId:{}", id);
 			prepare = sqls.get(id);
 			if (null == prepare) {

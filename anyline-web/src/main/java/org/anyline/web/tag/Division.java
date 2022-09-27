@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Division extends BodyTagSupport{ 
 	private static final long serialVersionUID = 1L; 
-	private String divisor;		//除数 
-	private String dividend;	//被除数 
+	private String divisor;		// 除数 
+	private String dividend;	// 被除数 
 	private String format; 
 	private String defaultValue = "";
 	private Integer scale = 10;

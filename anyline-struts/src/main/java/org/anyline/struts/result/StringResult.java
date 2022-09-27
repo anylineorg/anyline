@@ -41,7 +41,7 @@ public class StringResult extends StrutsResultSupport {
     	response.setCharacterEncoding("UTF-8"); 
         PrintWriter writer = response.getWriter(); 
         try { 
-        	//提取Action的传入值 
+        	// 提取Action的传入值
         	data = invocation.getStack().findValue("data"); 
         	if(null == data){ 
         		data = ""; 

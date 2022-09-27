@@ -53,16 +53,16 @@ public class JSONResult extends StrutsResultSupport {
     	response.setCharacterEncoding("UTF-8"); 
         PrintWriter writer = response.getWriter(); 
         try { 
-        	//提取Action的传入值 
+        	// 提取Action的传入值 
         	data = invocation.getStack().findValue("data"); 
         	result = BasicUtil.parseBoolean(invocation.getStack().findValue("result"),true);
         	message = invocation.getStack().findString("msg");
         	url = invocation.getStack().findString("url");
         	code = invocation.getStack().findString("code");
         	 
-        	//转换成JSON格式 
-        	//JsonConfig config = new JsonConfig(); 
-        	String dataType   = null; 	//数据类型
+        	// 转换成JSON格式 
+        	// JsonConfig config = new JsonConfig(); 
+        	String dataType   = null; 	// 数据类型
         	Map<String,Object> map = new HashMap<String,Object>(); 
         	if(null == data){ 
         		message = (String)BasicUtil.nvl(message, "没有返回数据"); 

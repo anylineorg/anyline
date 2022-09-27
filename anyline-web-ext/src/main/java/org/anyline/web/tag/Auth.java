@@ -40,7 +40,7 @@ public class Auth extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private String key = AnylineConfig.DEFAULT_INSTANCE_KEY;
 	private String appid;
-	private String type;	//wechat:微信 qq:QQ
+	private String type;	// wechat:微信 qq:QQ
 	private String redirect;
 	private String state;
 	private boolean encode;//是否将state编码后存储到servlet中
@@ -67,7 +67,7 @@ public class Auth extends BaseBodyTag {
 					states = new DataSet();
 					pageContext.getServletContext().setAttribute("auth_states", states);
 				}else{
-					//清空过期
+					// 清空过期
 					int size = states.size();
 					for(int i=size-1;i>=0; i--){
 						DataRow item = states.getRow(i);
@@ -141,9 +141,9 @@ public class Auth extends BaseBodyTag {
 				}
 				html += "</a>";
 				if(auto){
-					//((HttpServletResponse)pageContext.getResponse()).sendRedirect(url);
+					// ((HttpServletResponse)pageContext.getResponse()).sendRedirect(url);
 					html += "<script>location.href = \""+url+"\";</script>";
-					//return EVAL_PAGE;
+					// return EVAL_PAGE;
 
 				}
 			}else{

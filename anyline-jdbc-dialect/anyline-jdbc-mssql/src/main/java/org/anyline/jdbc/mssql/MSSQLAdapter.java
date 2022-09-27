@@ -98,7 +98,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			last = navi.getLastRow(); 
 		} 
 		if(first == 0 && null != navi){ 
-			//top 
+			// top
 			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n"); 
 			builder.append(sql).append("\n) AS _TAB_O \n"); 
 			builder.append(order); 
@@ -107,11 +107,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(null == navi){ 
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
-			//分页 
+			// 分页
 			if("2000".equals(getDbVersion())){ 
 				int rows = navi.getPageRows(); 
 				if(rows * navi.getCurPage() > navi.getTotalRow()){ 
-					//最后一页不足10条 
+					// 最后一页不足10条
 					rows = navi.getTotalRow() % navi.getPageRows(); 
 				} 
 				String asc = order; 
@@ -125,7 +125,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				builder.append(") AS T1 ").append(desc).append("\n"); 
 				builder.append(") AS T2").append(asc); 
 			}else{ 
-				//2005 及以上 
+				// 2005 及以上
 				if(BasicUtil.isEmpty(order)){ 
 					order = "ORDER BY "+ ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 				} 
@@ -588,10 +588,10 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
 		if(exists) {
-			//仅drop时支持
+			// 仅drop时支持
 			return super.checkTableExists(builder, exists);
 		}else {
-			//create时不支持
+			// create时不支持
 			return builder;
 		}
 	}

@@ -47,7 +47,7 @@ public class Text extends BaseBodyTag{
 		 if(null != var){
 			 pageContext.removeAttribute(var);
 		 }
-		//输出 
+		// 输出 
 		JspWriter out = pageContext.getOut();
 		try{
 			Object result = null; 

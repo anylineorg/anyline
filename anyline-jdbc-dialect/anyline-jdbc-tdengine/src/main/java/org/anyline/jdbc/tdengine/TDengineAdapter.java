@@ -134,7 +134,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			tables = new LinkedHashMap<>();
 		}
 		if(index == 0){
-			//SHOW TABLES 只返回一列stable_name
+			// SHOW TABLES 只返回一列stable_name
 			for(DataRow row:set){
 				String name = row.getString("stable_name");
 				if(BasicUtil.isEmpty(name)){
@@ -151,9 +151,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				}
 			}
 		}else if(index == 1){
-			//SELECT * FROM INFORMATION_SCHEMA.INS_TABLES
-			//table_name   | db_name|create_time            |columns |stable_name    |uid                |vgroup_id        |     ttl     |         table_comment          |         type          |
-			//a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
+			// SELECT * FROM INFORMATION_SCHEMA.INS_TABLES
+			// table_name   | db_name|create_time            |columns |stable_name    |uid                |vgroup_id        |     ttl     |         table_comment          |         type          |
+			// a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
 
 			for(DataRow row:set){
 				String name = row.getString("stable_name");
@@ -250,7 +250,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			tables = new LinkedHashMap<>();
 		}
 		if(index == 0){
-			//SHOW STABLES 只返回一列stable_name
+			// SHOW STABLES 只返回一列stable_name
 			for(DataRow row:set){
 				String name = row.getString("stable_name");
 				if(BasicUtil.isEmpty(name)){
@@ -267,9 +267,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				}
 			}
 		}else if(index == 1){
-			//SELECT * FROM INFORMATION_SCHEMA.INS_STABLES
-			//stable_name  |db_name|create_time            |columns|tags|last_update           |table_comment|watermark  |max_delay|rollup|
-			//meters       |simple |yyyy-MM-dd HH:mm:ss.SSS|4      |2   |yyyy-MM-dd HH:mm:ss.SS|NULL         |5000a,5000a|-1a,-1a  |      |
+			// SELECT * FROM INFORMATION_SCHEMA.INS_STABLES
+			// stable_name  |db_name|create_time            |columns|tags|last_update           |table_comment|watermark  |max_delay|rollup|
+			// meters       |simple |yyyy-MM-dd HH:mm:ss.SSS|4      |2   |yyyy-MM-dd HH:mm:ss.SS|NULL         |5000a,5000a|-1a,-1a  |      |
 			for(DataRow row:set){
 				String name = row.getString("stable_name");
 				if(BasicUtil.isEmpty(name)){
@@ -406,7 +406,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
-		//DESCRIBE
+		// DESCRIBE
 		for(DataRow row:set){
 			String name = row.getString("field");
 			String note = row.getString("note");
@@ -515,7 +515,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			tags = new LinkedHashMap<>();
 		}
 		if(index ==0){
-			//查询 INFORMATION_SCHEMA.INS_TAGS
+			// 查询 INFORMATION_SCHEMA.INS_TAGS
 			for(DataRow row:set) {
 				String name = row.getString("TAG_NAME");
 				if(BasicUtil.isEmpty(name)){
@@ -535,7 +535,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				tags.put(name.toUpperCase(), item);
 			}
 		}else if(index ==1){
-			//DESCRIBE
+			// DESCRIBE
 			for(DataRow row:set){
 				String note = row.getString("note");
 				if(!"TAG".equalsIgnoreCase(note)){
@@ -1059,7 +1059,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		builder.append(typeName);
 		if(typeName.equalsIgnoreCase("NCHAR")){
-			//精度
+			// 精度
 			Integer precision = column.getPrecision();
 			if(null != precision) {
 				if (precision > 0) {
@@ -1161,7 +1161,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			}
 			return builder;
 		}else{
-			//列不支持备注
+			// 列不支持备注
 			return null;
 		}
 	}

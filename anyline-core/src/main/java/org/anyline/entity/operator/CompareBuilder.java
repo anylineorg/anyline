@@ -2,7 +2,7 @@ package org.anyline.entity.operator;
 
 public class CompareBuilder {
 
-    //根据情况自动识别
+    // 根据情况自动识别
     public static Compare AUTO       = new Auto();
     public static Compare EQUAL      = new Equal();
     public static Compare BETWEEN    = new Between();

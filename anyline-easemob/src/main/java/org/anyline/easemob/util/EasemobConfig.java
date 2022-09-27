@@ -43,7 +43,7 @@ public class EasemobConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件 
 		load(); 
 	} 
 	public static EasemobConfig getInstance(){ 
@@ -55,7 +55,7 @@ public class EasemobConfig extends AnylineConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - EasemobConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
-			//重新加载 
+			// 重新加载 
 			load(); 
 		} 
 		return (EasemobConfig)instances.get(key); 

@@ -64,7 +64,7 @@ public class SimpleDDListener implements DDListener {
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == 1){
             exeAfterException(table, column, exception);
         }else{
-            //根据行数
+            // 根据行数
             int rows = service.count(table.getName());
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
                 result = afterAlterColumnException(table, column, rows, exception);
@@ -83,7 +83,7 @@ public class SimpleDDListener implements DDListener {
         Column update = column.getUpdate();
         boolean isNum = adapter.isNumberColumn(update);
         if(adapter.isCharColumn(column) && !adapter.isCharColumn(update)){
-            //原来是String类型 修改成 boolean或number类型 失败
+            // 原来是String类型 修改成 boolean或number类型 失败
             int page = 1;
             int vol = 100;
             PageNavi navi = new PageNaviImpl();
@@ -91,7 +91,7 @@ public class SimpleDDListener implements DDListener {
             List<Column> pks = table.primarys();
             if(pks.size() == 0){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
-                    //没有主键
+                    // 没有主键
                     return false;
                 }
             }

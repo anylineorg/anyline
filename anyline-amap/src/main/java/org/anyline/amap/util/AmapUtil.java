@@ -145,7 +145,7 @@ public class AmapUtil {
 		} 
 		String param = ""; 
 		int size = ids.size(); 
-		//一次删除最多50条 大于50打后拆分数据 
+		// 一次删除最多50条 大于50打后拆分数据
 		if(size > 50){ 
 			int navi = (size-1)/50 + 1; 
 			for(int i=0; i<navi; i++){			 
@@ -378,7 +378,7 @@ public class AmapUtil {
 		if(BasicUtil.isNotEmpty(keywords)){ 
 			params.put("keywords", keywords); 
 		} 
-		//过滤条件 
+		// 过滤条件
 		if(null != filters && !filters.isEmpty()){ 
 			String filter = ""; 
 			Iterator<String> keys = filters.keySet().iterator(); 
@@ -742,7 +742,7 @@ public class AmapUtil {
 		String sign = sign(params); 
 		params.put("sig", sign);
 
-		//换回原坐标系
+		// 换回原坐标系
 		coordinate.setLng(_lng);
 		coordinate.setLat(_lat);
 		coordinate.setType(_type);
@@ -752,7 +752,7 @@ public class AmapUtil {
 		if(null != row){
 			int status = row.getInt("STATUS",0);
 			if(status ==0){
-				//[逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
+				// [逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
 				log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
 				log.warn("[逆地理编码][response:{}]",txt);
 				if("10044".equals(row.getString("INFOCODE"))) {

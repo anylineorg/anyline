@@ -22,13 +22,13 @@ package org.anyline.util;
 public class Constant { 
 	public static final String SERVLET_ATTR_TOKEN_CONFIG			= "SERVLET_ATTR_TOKEN_CONFIG"			;//TOKEN配置 
 	public static final String SERVLET_ATTR_MESSAGE					= "SERVLET_ATTR_MESSAGE"				;//开发级消息 
-	public static final String SERVLET_ATTR_REQUIRED_TOKEN_URI		= "SERVLET_ATTR_REQUIRED_TOKEN_URI";	//必须验证token的URI 
-	public static final String SERVLET_ATTR_REQUIRED_TOKEN_REFER	= "SERVLET_ATTR_REQUIRED_TOKEN_REFER";	//必须验证token的REFFER 
-	//session变量 
+	public static final String SERVLET_ATTR_REQUIRED_TOKEN_URI		= "SERVLET_ATTR_REQUIRED_TOKEN_URI";	// 必须验证token的URI 
+	public static final String SERVLET_ATTR_REQUIRED_TOKEN_REFER	= "SERVLET_ATTR_REQUIRED_TOKEN_REFER";	// 必须验证token的REFFER 
+	// session变量 
  
 	public static final String SESSION_ATTR_MESSAGE					= "SESSION_ATTR_MESSAGE"				;//session信息 
 	public static final String SESSION_ATTR_ERROR_MESSAGE			= "SESSION_ATTR_ERROR_MESSAGE"; 
-	//request变量及参数 
+	// request变量及参数 
 	public static final String REQUEST_ATTR_CURRENT_ACTION			= "REQUEST_ATTR_CURRENT_ACTION"			;//当前请求的action(String) 
 	public static final String REQUEST_ATTR_CURRENT_POWER			= "REQUEST_ATTR_CURRENT_POWER"			;//当前请求的action(Power) 
 	public static final String REQUEST_ATTR_CURRENT_POWER_CD		= "REQUEST_ATTR_CURRENT_POWER_CD"		;//当前请求的action(String) 

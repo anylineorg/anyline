@@ -109,7 +109,7 @@ public class AbstractBasicController {
 
 					ParseResult parser = ConfigParser.parse(param,true);
 
-					//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+					// getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 					if(requestValues.containsKey(parser.getVar()) || requestValues.containsKey(parser.getKey())) {
 						Object value = ConfigParser.getValues(requestValues, parser);
 						BeanUtil.setFieldValue(entity, parser.getVar(), value);
@@ -201,7 +201,7 @@ public class AbstractBasicController {
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
@@ -209,7 +209,7 @@ public class AbstractBasicController {
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, BeanUtil.array2list(params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
@@ -217,23 +217,23 @@ public class AbstractBasicController {
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, String... params) {
 		return entity(request,keyCase, row, false, false, BeanUtil.array2list(params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
 		return entity(request, keyCase, row, false, false, BeanUtil.array2list(fixs, params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, DataRow row, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(params));
 	}
-	//
+	// 
 	public DataRow entity(HttpServletRequest request, DataRow row, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(fixs, params));
 	}
@@ -289,7 +289,7 @@ public class AbstractBasicController {
 		}
 
 		if (arrays.size() > 0) {
-			//raw [json]格式
+			// raw [json]格式
 			DataSet list = WebUtil.values(request);
 			if(list.size()>0){
 				for(DataRow item:list) {
@@ -302,7 +302,7 @@ public class AbstractBasicController {
 				}
 				return set;
 			}
-			//k=v格式
+			// k=v格式
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
 			int size = 0;
 
@@ -658,7 +658,7 @@ public class AbstractBasicController {
 		int pageVol = config.VAR_PAGE_DEFAULT_VOL; // 每页多少条 默认10
 		// 提取request中请求参数
 		pageVol = BasicUtil.parseInt(request.getAttribute(config.KEY_PAGE_ROWS),pageVol);
-		//是否启用前端设置显示行数
+		// 是否启用前端设置显示行数
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){
 			int httpVol = BasicUtil.parseInt(getParam(request,config.KEY_PAGE_ROWS),0);
 			if(httpVol > 0){
@@ -791,7 +791,7 @@ public class AbstractBasicController {
 //		client = (ClientTrace) request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
 //		if (null == client) {
 //			client = new ClientTrace(request);
-//			//service.save(ConfigTable.getString("CLIENT_TRACE_TABLE"), client);
+//			// service.save(ConfigTable.getString("CLIENT_TRACE_TABLE"), client);
 //		}
 //		return client;
 //	}

@@ -14,7 +14,7 @@ public class Tr {
     private List<Td> tds = new ArrayList<>();
     private Map<String,String> styles = new HashMap();
     private Element src;
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
 
     public Element getSrc() {
         return src;
@@ -158,7 +158,7 @@ public class Tr {
     public Tr createCopy(boolean style, boolean content){
         Tr copy = new Tr();
         copy.setWidthUnit(widthUnit);
-        int offset = 0; //已追加的偏移
+        int offset = 0; // 已追加的偏移
         for(Td td:tds){
             for(int i= offset; i<td.getOffset(); i++){
                 copy.addTd(new Td());

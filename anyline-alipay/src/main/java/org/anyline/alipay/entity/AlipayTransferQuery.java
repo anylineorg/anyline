@@ -4,8 +4,8 @@ package org.anyline.alipay.entity;
  * 
  */ 
 public class AlipayTransferQuery { 
-	private String out_biz_no	; //订单支付时传入的商户订单号,和支付宝交易号不能同时为空. trade_no,out_trade_no如果同时存在优先取trade_no	 
-	private String order_id		; //支付宝交易号,和商户订单号不能同时为空 
+	private String out_biz_no	; // 订单支付时传入的商户订单号,和支付宝交易号不能同时为空. trade_no,out_trade_no如果同时存在优先取trade_no
+	private String order_id		; // 支付宝交易号,和商户订单号不能同时为空
 	public String getOut_biz_no() { 
 		return out_biz_no; 
 	} 

@@ -48,10 +48,10 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected HttpSession session; 
 	protected ServletContext servlet;
  
-	protected Object data; // 返回数据 
-	protected boolean result = true; // 执行结果 
-	protected String msg; // 返回信息 
-	protected String url; // 动态跳转 
+	protected Object data; // 返回数据
+	protected boolean result = true; // 执行结果
+	protected String msg; // 返回信息
+	protected String url; // 动态跳转
 	protected int result_type = RESULT_TYPE_DEFAULT; 
 	protected String code = "200";
 
@@ -424,9 +424,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		try{ 
 			if(null != style){ 
 				if(style.startsWith("/")){ 
-					//从根目录开始 
+					// 从根目录开始 
 				}else{ 
-					//根据内容页相对目录 
+					// 根据内容页相对目录 
 					int idx = this.getDir().indexOf("/page/"); 
 					if(idx > 0){ 
 						String styleDir = this.getDir().replace("/page/", "/template/style/"); 

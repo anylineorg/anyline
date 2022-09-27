@@ -2,15 +2,15 @@ package org.anyline.sms.entity;
  
 public class SMSResult { 
 	private boolean result;
-	//1 等待回执
-	//2 发送失败
-	//3 发送成功
+	// 1 等待回执
+	// 2 发送失败
+	// 3 发送成功
 	private int status;
 	private String code;
 	private String msg;
-	private String biz;	//发送回执ID,即发送流水号,查询送达状态时用到
+	private String biz;	// 发送回执ID,即发送流水号,查询送达状态时用到
 	private String requestId;
-	//发送后查询状态
+	// 发送后查询状态
 	private String content;
 	private String out;
 	private String mobile;

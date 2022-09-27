@@ -198,7 +198,7 @@
                           "net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
                           properties="peerDiscovery=manual,
                           rmiUrls=//server2:40000/sampleCache1|//server3:40000/sampleCache1
-                          | //server2:40000/sampleCache2|//server3:40000/sampleCache2"
+                          | // server2:40000/sampleCache2|//server3:40000/sampleCache2"
                           propertySeparator="," />
 
     In server2's configuration:
@@ -206,7 +206,7 @@
                           "net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
                           properties="peerDiscovery=manual,
                           rmiUrls=//server1:40000/sampleCache1|//server3:40000/sampleCache1
-                          | //server1:40000/sampleCache2|//server3:40000/sampleCache2"
+                          | // server1:40000/sampleCache2|//server3:40000/sampleCache2"
                           propertySeparator="," />
 
     In server3's configuration:
@@ -214,14 +214,14 @@
                           "net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
                           properties="peerDiscovery=manual,
                           rmiUrls=//server1:40000/sampleCache1|//server2:40000/sampleCache1
-                          | //server1:40000/sampleCache2|//server2:40000/sampleCache2"
+                          | // server1:40000/sampleCache2|//server2:40000/sampleCache2"
                           propertySeparator="," />
 
 
     Valid properties are:
     * peerDiscovery (mandatory) - specify "manual"
     * rmiUrls (mandatory) - specify a pipe separated list of rmiUrls, in the form
-                            //hostname:port
+                            // hostname:port
     * hostname (optional) - the hostname is the hostname of the remote CacheManager peer. The port is the listening
       port of the RMICacheManagerPeerListener of the remote CacheManager peer.
 

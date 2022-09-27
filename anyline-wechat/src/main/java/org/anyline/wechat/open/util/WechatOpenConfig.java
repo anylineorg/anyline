@@ -35,7 +35,7 @@ public class WechatOpenConfig extends WechatConfig{
 		debug(); 
 	} 
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件 
 		load(); 
 	}
 
@@ -51,7 +51,7 @@ public class WechatOpenConfig extends WechatConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WechatOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
-			//重新加载 
+			// 重新加载 
 			load(); 
 		} 
 		return (WechatOpenConfig)instances.get(key);

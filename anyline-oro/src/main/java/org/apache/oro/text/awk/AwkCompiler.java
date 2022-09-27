@@ -181,7 +181,7 @@ public final class AwkCompiler implements PatternCompiler {
 
   // We do not currently need to initialize any state, but keep this
   // commented out as a reminder that we may have to at some point.
-  //public AwkCompiler() { }
+  // public AwkCompiler() { }
 
   private static boolean __isMetachar(char token) {
     return (token == '*' || token == '?' || token == '+' ||
@@ -542,7 +542,7 @@ public final class AwkCompiler implements PatternCompiler {
     } else if(__lookahead == 'b') {
       // Inside of a character class the \b means backspace, otherwise
       // it means a word boundary
-      //if(__inCharacterClass)
+      // if(__inCharacterClass)
       // \b always means backspace
       current = new TokenNode('\b', __position++);
       /*

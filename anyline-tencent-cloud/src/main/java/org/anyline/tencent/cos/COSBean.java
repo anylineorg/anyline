@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 public class COSBean implements InitializingBean {
 
     @Value("${anyline.tencent.cos.id:}")
-    public String ACCESS_ID					; //
+    public String ACCESS_ID					; // 
     @Value("${anyline.tencent.cos.secret :}")
-    public String ACCESS_SECRET 			; //
+    public String ACCESS_SECRET 			; // 
     @Value("${anyline.tencent.cos.endpoint:}")
-    public String ENDPOINT					; //
+    public String ENDPOINT					; // 
     @Value("${anyline.tencent.cos.bucket:}")
-    public String BUCKET					; //
+    public String BUCKET					; // 
     @Value("${anyline.tencent.cos.dir:}")
-    public String DIR						; //
+    public String DIR						; // 
     @Value("${anyline.tencent.cos.expire:3600}")
-    public int EXPIRE_SECOND 				; //
+    public int EXPIRE_SECOND 				; // 
 
     @Override
     public void afterPropertiesSet() throws Exception {

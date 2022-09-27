@@ -26,7 +26,7 @@ public class SQLAdapterUtil {
 		}
 	}
 
-	private static JDBCAdapter defaultAdapter = null;	//如果当前项目只有一个adapter则不需要多次识别
+	private static JDBCAdapter defaultAdapter = null;	// 如果当前项目只有一个adapter则不需要多次识别
 	public static JDBCAdapter getAdapter(JdbcTemplate jdbc){
 
 
@@ -40,7 +40,7 @@ public class SQLAdapterUtil {
 		JDBCAdapter adapter = null;
 		JDBCAdapter.DB_TYPE type = DataSourceHolder.dialect();
 		if(null != type){
-			//根据 别名
+			// 根据 别名
 			adapter = getAdapter(type.getName());
 			if(null != adapter){
 				return adapter;
@@ -55,7 +55,7 @@ public class SQLAdapterUtil {
 				con = DataSourceUtils.getConnection(ds);
 				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
 				name += con.getMetaData().getURL().toLowerCase();
-				//根据url中关键字
+				// 根据url中关键字
 				adapter = getAdapter(name);
 
 			}

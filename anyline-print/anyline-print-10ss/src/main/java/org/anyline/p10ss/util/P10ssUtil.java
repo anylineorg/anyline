@@ -82,8 +82,8 @@ public class P10ssUtil {
         }
         return result;
     }
-    //{'error':'0','error_description':'success','body':{'access_token':'xxxx','refresh_token':'xxxx','expires_in':2592000,'scope':'all'}}
-    //自用
+    // {'error':'0','error_description':'success','body':{'access_token':'xxxx','refresh_token':'xxxx','expires_in':2592000,'scope':'all'}}
+    // 自用
     public DataRow getAccessToken(){
         DataRow row = null;
         row = accessTokens.getRow("APP_ID", config.APP_ID);
@@ -95,13 +95,13 @@ public class P10ssUtil {
         return row;
 
     }
-    //开放平台
+    // 开放平台
     public DataRow getAccessToken(String code){
         DataRow row = null;
         row = newAccessToken(code);
         return row;
     }
-    //自用
+    // 自用
     public DataRow newAccessToken(){
         DataRow row = null;
         if(BasicUtil.isEmpty(config.ACCESS_TOKEN_SERVER)){
@@ -121,12 +121,12 @@ public class P10ssUtil {
         accessTokens.addRow(row);
         return row;
     }
-    //开放平台
+    // 开放平台
     public DataRow newAccessToken(String code){
         DataRow row = null;
-//        if(BasicUtil.isEmpty(config.ACCESS_TOKEN_SERVER)){
+//       if(BasicUtil.isEmpty(config.ACCESS_TOKEN_SERVER)){
         Map<String,Object> params = new HashMap<String,Object>();
-        params.put("grant_type", "authorization_code");			//开放平台
+        params.put("grant_type", "authorization_code");			// 开放平台
         params.put("code",code);
         params.put("scope","all");
         row = api(P10ssConfig.URL.ACCESS_TOKEN, params);

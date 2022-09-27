@@ -33,10 +33,10 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String format;
 	private String lang;
-	private int add;	//在原来基础上增加add单位
+	private int add;	// 在原来基础上增加add单位
 	private String part = "d"; // y M d h m s
-	private String function; //对应DateUtil函数
-	private Object def;		//默认值 value,body,nvl都未指定时取def
+	private String function; // 对应DateUtil函数
+	private Object def;		// 默认值 value,body,nvl都未指定时取def
 
  
 	public String getFormat() { 
@@ -119,7 +119,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.body = null;
 		this.format = null;
 		this.lang = null;
-		this.nvl = false; //如果value为空("",null) 是否显示当前时间,默认false
+		this.nvl = false; // 如果value为空("",null) 是否显示当前时间,默认false
 	}
 
 	public String getLang() {

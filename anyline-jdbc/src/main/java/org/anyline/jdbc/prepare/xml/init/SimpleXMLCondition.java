@@ -42,7 +42,7 @@ import java.util.List;
  */ 
 public class SimpleXMLCondition extends SimpleCondition implements Condition {
 	private String text; 
-	private List<Variable> variables;	//变量
+	private List<Variable> variables;	// 变量
 	 
 	 
 	public Object clone() throws CloneNotSupportedException{ 
@@ -112,10 +112,10 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 	 */ 
 	private void parseText(){ 
 		try{
-			//AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD 
+			// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD 
 			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			if(keys.size() ==0){
-				//AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD}
+				// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD}
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
@@ -127,7 +127,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 					String prefix = keyItem.get(1).trim();		// 前缀 
 					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} 8.5之后不用{CD}避免与json冲突
 					String typeChar = keyItem.get(3);	// null || "'" || ")" 
-					//String key = fullKey.replace(":", "").replace(" {", "").replace("}", "").replace("$", "");
+					// String key = fullKey.replace(":", "").replace(" {", "").replace("}", "").replace("$", "");
 					String key = fullKey.replace(":", "").replace("${", "").replace("}", "");
 					if(fullKey.startsWith("::")){ 
 						// AND CD = ::CD 
@@ -151,7 +151,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 			}else{ 
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
 				if(BasicUtil.isNotEmpty(true,idxKeys)){ 
-					//按下标区分变量 
+					// 按下标区分变量 
 					this.setVariableType(VARIABLE_FLAG_TYPE_INDEX); 
 					int varType = Variable.VAR_TYPE_INDEX;
 					for(int i=0; i<idxKeys.size(); i++){ 
@@ -200,7 +200,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 				continue;
 			} 
 			if(var.getType() == Variable.VAR_TYPE_REPLACE){
-				//CD = ::CD 
+				// CD = ::CD 
 				List<Object> values = var.getValues(); 
 				String value = null; 
 				if(BasicUtil.isNotEmpty(true,values)){ 
@@ -220,7 +220,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 				continue;
 			} 
 			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-				//CD = ':CD' 
+				// CD = ':CD' 
 				List<Object> values = var.getValues(); 
 				String value = null; 
 				if(BasicUtil.isNotEmpty(true,values)){ 
@@ -240,7 +240,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 				continue;
 			} 
 			if(var.getType() == Variable.VAR_TYPE_KEY){
-				//CD=:CD 
+				// CD=:CD 
 				List<Object> varValues = var.getValues(); 
 				if(COMPARE_TYPE.IN == var.getCompare()){
 					String inParam = ""; 

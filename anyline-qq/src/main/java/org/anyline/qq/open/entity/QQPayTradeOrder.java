@@ -2,25 +2,25 @@ package org.anyline.qq.open.entity;
  
 public class QQPayTradeOrder { 
  
-	private String mch_id			; //商户号		 
-	private String nonce_str		; //随机字符串 
-	private String sign				; //签名 
-	private String out_trade_no		; //商户订单号 
-	private String fee_type = "CNY"	; //货币类型定义 
-	private String total_fee		; //订单金额 
-	private String spbill_create_ip	; //用户终端IP 
-	private String limit_pay		; //支付方式限制 
-	private String trade_type		; //支付场景 
-	private String notify_url		; //回调 
-	private String device_info		; //调用接口提交的终端设备号 
+	private String mch_id			; // 商户号		 
+	private String nonce_str		; // 随机字符串 
+	private String sign				; // 签名 
+	private String out_trade_no		; // 商户订单号 
+	private String fee_type = "CNY"	; // 货币类型定义 
+	private String total_fee		; // 订单金额 
+	private String spbill_create_ip	; // 用户终端IP 
+	private String limit_pay		; // 支付方式限制 
+	private String trade_type		; // 支付场景 
+	private String notify_url		; // 回调 
+	private String device_info		; // 调用接口提交的终端设备号 
 	 
-	private String appid			; //应用ID 
-	private String body				; //商品描述 
-	private String attach			; //附加数据 
-	private String time_start		; //订单生成时间yyyyMMddHHmmss 
-	private String time_expire		; //订单超时时间yyyyMMddHHmmss 
+	private String appid			; // 应用ID 
+	private String body				; // 商品描述 
+	private String attach			; // 附加数据 
+	private String time_start		; // 订单生成时间yyyyMMddHHmmss 
+	private String time_expire		; // 订单超时时间yyyyMMddHHmmss 
 	private String contract_code	; // 代扣签约序列号 商户侧记录的用户代扣协议序列号,支付中开通代扣必传 
-	private String promotion_tag	; //QQ钱包活动标识 
+	private String promotion_tag	; // QQ钱包活动标识 
 	public String getMch_id() { 
 		return mch_id; 
 	} 

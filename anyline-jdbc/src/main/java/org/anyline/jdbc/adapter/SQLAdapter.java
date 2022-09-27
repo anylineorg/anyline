@@ -221,7 +221,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     @Override
     protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
-        //List<Object> values = new ArrayList<Object>();
+        // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
         if(BasicUtil.isEmpty(dest)){
             throw new SQLException("未指定表");
@@ -282,10 +282,10 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 String str = value.toString();
                 value = str.substring(2, str.length()-1);
                 if(value.toString().startsWith("${") && value.toString().endsWith("}")){
-                    //保存json时可以{json格式}最终会有两层:{{a:1}}8.5之前
+                    // 保存json时可以{json格式}最终会有两层:{{a:1}}8.5之前
                     param.append("?");
                     insertColumns.add(key);
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }else {
                     param.append(value);
@@ -294,10 +294,10 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 param.append("?");
                 insertColumns.add(key);
                 if("NULL".equals(value)){
-                    //values.add(null);
+                    // values.add(null);
                     run.addValues(key, null);
                 }else{
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }
             }
@@ -308,7 +308,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         }
         param.append(")");
         builder.append(param);
-        //run.addValues(values);
+        // run.addValues(values);
         run.setBuilder(builder);
         run.setInsertColumns(insertColumns);
 
@@ -441,7 +441,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
-        //List<Object> values = new ArrayList<Object>();
+        // List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
         List<String> primaryKeys = null;
         if(null != columns && columns.size() >0 ){
@@ -457,7 +457,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
             primaryKeys = new ArrayList<>();
             primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
         }
-        //不更新主键
+        // 不更新主键
         keys.removeAll(primaryKeys);
 
         List<String> updateColumns = new ArrayList<>();
@@ -486,7 +486,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                         value = null;
                     }
                     updateColumns.add(key);
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }
                 if(i<size-1){
@@ -501,14 +501,14 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 updateColumns.add(pk);
                 if(AdapterProxy.hasAdapter()){
                     Field field = AdapterProxy.field(obj.getClass(), pk);
-                    //values.add(BeanUtil.getFieldValue(obj, field));
+                    // values.add(BeanUtil.getFieldValue(obj, field));
                     run.addValues(pk, BeanUtil.getFieldValue(obj, field));
                 }else {
-                    //values.add(BeanUtil.getFieldValue(obj, pk));
+                    // values.add(BeanUtil.getFieldValue(obj, pk));
                     run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
                 }
             }
-            //run.addValues(values);
+            // run.addValues(values);
         }
         run.setUpdateColumns(updateColumns);
         run.setBuilder(builder);
@@ -518,15 +518,15 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
-        //List<Object> values = new ArrayList<Object>();
+        // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
-        List<String> keys = confirmUpdateColumns(dest, row, columns);
+        List<String> keys = confirmUpdateColumns(dest, row, configs, columns);
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
             throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
         }
 
-        //不更新主键
+        // 不更新主键
         keys.removeAll(primaryKeys);
 
         List<String> updateColumns = new ArrayList<>();
@@ -548,7 +548,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                         value = null;
                     }
                     updateColumns.add(key);
-                    //values.add(value);
+                    // values.add(value);
                     run.addValues(key, value);
                 }
                 if(i<size-1){
@@ -561,10 +561,10 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 builder.append(" AND ");
                 SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                 updateColumns.add(pk);
-                //values.add(row.get(pk));
+                // values.add(row.get(pk));
                 run.addValues(pk, row.get(pk));
             }
-            //run.addValues(values);
+            // run.addValues(values);
         }
         run.setUpdateColumns(updateColumns);
         run.setBuilder(builder);
@@ -644,7 +644,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                     continue;
                 }
                 if(var.getType() == Variable.VAR_TYPE_REPLACE){
-                    //CD = ::CD
+                    // CD = ::CD
                     Object varValue = var.getValues();
                     String value = null;
                     if(BasicUtil.isNotEmpty(varValue)){
@@ -662,7 +662,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                     continue;
                 }
                 if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-                    //CD = ':CD'
+                    // CD = ':CD'
                     List<Object> varValues = var.getValues();
                     String value = null;
                     if(BasicUtil.isNotEmpty(true,varValues)){
@@ -684,7 +684,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                     List<Object> varValues = var.getValues();
                     if(BasicUtil.isNotEmpty(true, varValues)){
                         if(var.getCompare() == RunPrepare.COMPARE_TYPE.IN){
-                            //多个值IN
+                            // 多个值IN
                             String replaceSrc = ":"+var.getKey();
                             String replaceDst = "";
                             for(Object tmp:varValues){
@@ -694,19 +694,19 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                             replaceDst = replaceDst.trim().replace(" ", ",");
                             result = result.replace(replaceSrc, replaceDst);
                         }else{
-                            //单个值
+                            // 单个值
                             result = result.replace(":"+var.getKey(), "?");
                             run.addValues(var.getKey(), varValues.get(0));
                         }
                     }
                 }
             }
-            //添加其他变量值
+            // 添加其他变量值
             for(Variable var:variables){
                 if(null == var){
                     continue;
                 }
-                //CD = ?
+                // CD = ?
                 if(var.getType() == Variable.VAR_TYPE_INDEX){
                     List<Object> varValues = var.getValues();
                     String value = null;
@@ -721,7 +721,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         builder.append(result);
         run.appendCondition();
         run.appendGroup();
-        //appendOrderStore();
+        // appendOrderStore();
         run.checkValid();
     }
     protected void buildQueryRunContent(TableRun run){
@@ -734,7 +734,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         builder.append(JDBCAdapter.BR_TAB);
         List<String> columns = sql.getColumns();
         if(null != columns && columns.size()>0){
-            //指定查询列
+            // 指定查询列
             int size = columns.size();
             for(int i=0; i<size; i++){
                 String column = columns.get(i);
@@ -759,7 +759,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
             }
             builder.append(JDBCAdapter.BR);
         }else{
-            //全部查询
+            // 全部查询
             builder.append("*");
             builder.append(JDBCAdapter.BR);
         }
@@ -770,7 +770,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
         builder.append(JDBCAdapter.BR);
         if(BasicUtil.isNotEmpty(sql.getAlias())){
-            //builder.append(" AS ").append(sql.getAlias());
+            // builder.append(" AS ").append(sql.getAlias());
             builder.append("  ").append(sql.getAlias());
         }
         List<Join> joins = sql.getJoins();
@@ -779,7 +779,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
                 SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
                 if(BasicUtil.isNotEmpty(join.getAlias())){
-                    //builder.append(" AS ").append(join.getAlias());
+                    // builder.append(" AS ").append(join.getAlias());
                     builder.append("  ").append(join.getAlias());
                 }
                 builder.append(" ON ").append(join.getCondition());
@@ -788,7 +788,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
 
         builder.append("\nWHERE 1=1\n\t");
         /*添加查询条件*/
-        //appendConfigStore();
+        // appendConfigStore();
         run.appendCondition();
         run.appendGroup();
         run.appendOrderStore();
@@ -847,7 +847,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
         SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
         builder.append(JDBCAdapter.BR);
         if(BasicUtil.isNotEmpty(prepare.getAlias())){
-            //builder.append(" AS ").append(sql.getAlias());
+            // builder.append(" AS ").append(sql.getAlias());
             builder.append("  ").append(prepare.getAlias());
         }
         List<Join> joins = prepare.getJoins();
@@ -867,7 +867,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
 
 
         /*添加查询条件*/
-        //appendConfigStore();
+        // appendConfigStore();
         run.appendCondition();
         run.appendGroup();
         run.appendOrderStore();
@@ -893,7 +893,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                     if(idx > 0){
                         builder.append(",");
                     }
-                    //builder.append("'").append(obj).append("'");
+                    // builder.append("'").append(obj).append("'");
                     builder.append("?");
                     idx ++;
                 }

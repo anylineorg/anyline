@@ -131,43 +131,43 @@ public class Result {
             }
             boolean simpleStruct = ConfigTable.getBoolean("SIMPLE_RESPONSE_STRUCT", false);
             if (null == data) {
-                //没有返回数据
+                // 没有返回数据
             }else if (null != navi) {
-                //有分页对象
+                // 有分页对象
                 Map<String, Object> navi_ = new HashMap<>();
-                navi_.put(response_key_navi_cur_page, navi.getCurPage());          //当前页
+                navi_.put(response_key_navi_cur_page, navi.getCurPage());          // 当前页
                 if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
                     map.put(response_key_navi_cur_page, navi.getCurPage());
                 }
-                navi_.put(response_key_navi_total_page, navi.getTotalPage());      //总页数
+                navi_.put(response_key_navi_total_page, navi.getTotalPage());      // 总页数
                 if(simpleStruct && !map.containsKey(response_key_navi_total_page)){
                     map.put(response_key_navi_total_page, navi.getTotalPage());
                 }
-                navi_.put(response_key_navi_total_row, navi.getTotalRow());        //总行数
+                navi_.put(response_key_navi_total_row, navi.getTotalRow());        // 总行数
                 if(simpleStruct && !map.containsKey(response_key_navi_total_row)){
                     map.put(response_key_navi_total_row, navi.getTotalRow());
                 }
-                navi_.put(response_key_navi_page_rows, navi.getPageRows());        //每页行籹
+                navi_.put(response_key_navi_page_rows, navi.getPageRows());        // 每页行籹
                 if(simpleStruct && !map.containsKey(response_key_navi_page_rows)){
                     map.put(response_key_navi_page_rows, navi.getPageRows());
                 }
                 map.put(response_key_navi, navi_);
             }else if(rows != -1){
-                //设置了总行数、每页行数
+                // 设置了总行数、每页行数
                 Map<String, Object> navi_ = new HashMap<>();
-                navi_.put(response_key_navi_cur_page, page);         //当前页
+                navi_.put(response_key_navi_cur_page, page);         // 当前页
                 if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
                     map.put(response_key_navi_cur_page, page);
                 }
-                navi_.put(response_key_navi_total_page, pages);      //总页数
+                navi_.put(response_key_navi_total_page, pages);      // 总页数
                 if(simpleStruct && !map.containsKey(response_key_navi_total_page)){
                     map.put(response_key_navi_total_page, pages);
                 }
-                navi_.put(response_key_navi_total_row, rows);        //总行数
+                navi_.put(response_key_navi_total_row, rows);        // 总行数
                 if(simpleStruct && !map.containsKey(response_key_navi_total_row)){
                     map.put(response_key_navi_total_row, rows);
                 }
-                navi_.put(response_key_navi_page_rows, vol);         //每页行籹
+                navi_.put(response_key_navi_page_rows, vol);         // 每页行籹
                 if(simpleStruct && !map.containsKey(response_key_navi_page_rows)){
                     map.put(response_key_navi_page_rows, vol);
                 }

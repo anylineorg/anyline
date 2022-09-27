@@ -56,7 +56,7 @@ public class ClassUtil {
 				return false;
 			}
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			return false;
 		}
 	}
@@ -186,7 +186,7 @@ public class ClassUtil {
 	 */
 	private static List<String> getClassNameListFromFile(String filePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> myClassName = new ArrayList<>();
-		//filePath = UrlDecode.getURLDecode(filePath);
+		// filePath = UrlDecode.getURLDecode(filePath);
 		File file = new File(filePath);
 		File[] childFiles = file.listFiles();
 		if (childFiles == null)
@@ -407,7 +407,7 @@ public class ClassUtil {
 
 			}
 		}
-		//递归父类
+		// 递归父类
 		if(null == method && recursion){
 			clazz = clazz.getSuperclass();
 			if(null != clazz){
@@ -432,7 +432,7 @@ public class ClassUtil {
 
 			}
 		}
-		//递归父类
+		// 递归父类
 		if(null == field && recursion){
 			clazz = clazz.getSuperclass();
 			if(null != clazz){

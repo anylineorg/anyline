@@ -38,19 +38,19 @@ import java.util.Map;
  * 
  */ 
 public abstract class SimpleCondition implements Condition{
-	protected boolean required = false;									//是否必须
-	protected boolean strictRequired = false;							//是否必须 
-	protected boolean active = false;									//是否活动(是否拼接到SQL中) 
-	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式 
-	protected List<RunValue> runValues = new ArrayList<>();				//运行时参数
-	protected List<RunValue> runOrValues = new ArrayList<>();				//运行时参数(or)
-	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();		//运行时参数
-	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>();		//运行时参数(or)
-	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			//连接方式 
-	protected ConditionChain container;									//当前条件所处容器 
+	protected boolean required = false;									// 是否必须
+	protected boolean strictRequired = false;							// 是否必须 
+	protected boolean active = false;									// 是否活动(是否拼接到SQL中) 
+	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				// 变量标记方式 
+	protected List<RunValue> runValues = new ArrayList<>();				// 运行时参数
+	protected List<RunValue> runOrValues = new ArrayList<>();				// 运行时参数(or)
+	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();		// 运行时参数
+	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>();		// 运行时参数(or)
+	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			// 连接方式 
+	protected ConditionChain container;									// 当前条件所处容器 
 	protected String id; 
-	protected String text;												//静态条件
-	protected String test;												//判断条件 
+	protected String text;												// 静态条件
+	protected String test;												// 判断条件 
 	public Object clone() throws CloneNotSupportedException{ 
 		SimpleCondition clone = (SimpleCondition)super.clone();
 		if(null != runValues){ 

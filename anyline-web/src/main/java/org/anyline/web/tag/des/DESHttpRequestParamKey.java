@@ -31,7 +31,7 @@ import org.anyline.web.tag.BaseBodyTag;
  */ 
 public class DESHttpRequestParamKey extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L; 
-	private String value;		//被加密数据 
+	private String value;		// 被加密数据 
  
 	public int doEndTag() throws JspException { 
 		try{ 

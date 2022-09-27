@@ -782,7 +782,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
 		if(column.isAutoIncrement() == 1){
-			//builder.append(" NOT NULL PRIMARY KEY KEYGENERATED ALWAYS AS IDENTITY (START WITH ").append(column.getIncrementSeed()).append(",INCREMENT BY ").append(column.getIncrementStep()).append(")");
+			// builder.append(" NOT NULL PRIMARY KEY KEYGENERATED ALWAYS AS IDENTITY (START WITH ").append(column.getIncrementSeed()).append(",INCREMENT BY ").append(column.getIncrementStep()).append(")");
 			builder.append(" GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)");
 		}
 		return builder;

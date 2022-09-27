@@ -50,7 +50,7 @@ public abstract class SimplePrepare implements RunPrepare{
 	protected String alias									;
 
 
-	//运行时参数值 
+	// 运行时参数值 
 	protected Vector<Object> runValues; 
 	public int getVersion(){ 
 		return 0; 

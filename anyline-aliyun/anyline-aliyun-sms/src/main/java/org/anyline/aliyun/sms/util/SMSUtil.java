@@ -30,9 +30,9 @@ public class SMSUtil {
 	public Template template= new SMSUtil.Template();
 	private SMSListener listener;
  
-    //产品名称:云通信短信API产品,开发者无需替换 
+    // 产品名称:云通信短信API产品,开发者无需替换 
     static final String product = "Dysmsapi"; 
-    //产品域名,开发者无需替换 
+    // 产品域名,开发者无需替换 
     static final String endpoint = "dysmsapi.aliyuncs.com";
 
 
@@ -493,10 +493,10 @@ public class SMSUtil {
 						template.setContent(body.getTemplateContent());
 						template.setCreateTime(body.getCreateDate());
 						int status = body.getTemplateStatus();
-						//0：审核中。
-						//1：审核通过。
-						//2：审核失败，请在返回参数Reason中查看审核失败原因。
-						//10:取消审核。
+						// 0：审核中。
+						// 1：审核通过。
+						// 2：审核失败，请在返回参数Reason中查看审核失败原因。
+						// 10:取消审核。
 						if (status == 0) {
 							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_INIT);
 						} else if (status == 1) {

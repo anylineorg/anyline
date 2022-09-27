@@ -8,15 +8,15 @@ import java.util.*;
 public class Table {
     private String clazz;
     private List<Tr> trs = new ArrayList<>();
-    private String header = null; //复杂的头表直接设置html
+    private String header = null; // 复杂的头表直接设置html
     private String footer = null;
     private boolean isOffset = false;//是否计算过偏移量(多次执行build, merge ,offset等只计算一次,)
     private Map<String,String> styles = new HashMap();
-    private List<Integer> mergeRows = new ArrayList<>(); //根据内容合并行依据
+    private List<Integer> mergeRows = new ArrayList<>(); // 根据内容合并行依据
     private Map<Integer, List<Integer>> refs = new HashMap<>(); //
     private List<Integer[]> mergeCols = new ArrayList<>();//根据内容合并列,开始列,合并数量
     private Element src;
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
     public Table(){}
 
     /**
@@ -272,13 +272,13 @@ public class Table {
      */
     private void exeMergeCol(){
         int rows = trs.size();
-        //根据内容合并
+        // 根据内容合并
         for(int r=0; r<rows; r++) {
             Tr tr = getTr(r);
             for(Integer[] mergeCol:mergeCols){
                 int mergeIndex = mergeCol[0];
                 int mergeQty = mergeCol[1];
-                //如果所有值相同则合并
+                // 如果所有值相同则合并
                 for(int i=mergeIndex; i<mergeIndex+mergeQty; i++){
                     Td td = getTd(r,mergeIndex);
                     int colspan =checkColspan(td, mergeQty);
@@ -289,7 +289,7 @@ public class Table {
                 }
             }
         }
-        //根据rowspan colspan
+        // 根据rowspan colspan
         for(Tr tr:trs){
             for(Td td:tr.getTds()){
                 td.merge();
@@ -314,10 +314,10 @@ public class Table {
                 String cvalue = cur.getText();
                 if (value.equals(cvalue)) {
                     List<Integer> curRefs = refs.get(c);
-                    boolean refMerge = true; //依赖列是否已合并
+                    boolean refMerge = true; // 依赖列是否已合并
                     if (null != curRefs) {
                         for (Integer refIndex : curRefs) {
-                            Td prev = getTd(i, refIndex); //同一行的 依赖列
+                            Td prev = getTd(i, refIndex); // 同一行的 依赖列
                             if(!prev.isRemove()){
                                 refMerge = false;
                                 break;
@@ -354,13 +354,13 @@ public class Table {
             }
         }
     }
-    //根据内容合并
+    // 根据内容合并
     private void merge(){
         exeMergeRow();
         exeMergeCol();
         offset();
     }
-    //根据 colspan rowspan 计算偏移量
+    // 根据 colspan rowspan 计算偏移量
     public Table offset(){
         if(isOffset){
             return this;
@@ -379,7 +379,7 @@ public class Table {
                     int rowspan = td.getRowspan();
                     int offset = colspan - 1;
                     if (offset > 0) {
-                        //当前行 往后所有列 偏移增加colspan-1
+                        // 当前行 往后所有列 偏移增加colspan-1
                         for (int cc = c + 1; cc < cols; cc++) {
                             Td after = tds.get(cc);
                             after.addOffset(offset);
@@ -387,7 +387,7 @@ public class Table {
                     }
                     if (rowspan > 1) {
                         offset++;
-                        //下rowspan-1行
+                        // 下rowspan-1行
                         for (int rr = r + 1; rr < r + rowspan; rr++) {
                             Tr afterTr = trs.get(rr);
                             int begin = td.getColIndex() + td.getOffset();

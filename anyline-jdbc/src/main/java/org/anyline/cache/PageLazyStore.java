@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
  
 public class PageLazyStore { 
 	private static final Logger log = LoggerFactory.getLogger(PageLazyStore.class); 
-	private static Hashtable<String, Integer> lazyTotal = new Hashtable<String,Integer>();		//总数 
-	private static Hashtable<String, Long> lazyTime = new Hashtable<String,Long>();		//总数创建时间 
+	private static Hashtable<String, Integer> lazyTotal = new Hashtable<String,Integer>();		// 总数 
+	private static Hashtable<String, Long> lazyTime = new Hashtable<String,Long>();		// 总数创建时间 
 	/** 
 	 * 缓存中的总条数 
 	 * @param key		  key
@@ -17,12 +17,12 @@ public class PageLazyStore {
 	 * @return int
 	 */ 
 	public static int getTotal(String key, long period) { 
-		Long fr = lazyTime.get(key);		//创建时间 
+		Long fr = lazyTime.get(key);		// 创建时间 
 		long age = -1; 
 		if(null != fr){ 
 			age = System.currentTimeMillis() - fr;  
 			if(age > period){ 
-				//过期 
+				// 过期 
 				lazyTotal.remove(key); 
 				lazyTime.remove(key); 
 				if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
@@ -43,7 +43,7 @@ public class PageLazyStore {
 	public static void setTotal(String key, int total) { 
 		Integer old = lazyTotal.get(key); 
 		if(null == old || old != total){ 
-			//新计数 或 更新计数 
+			// 新计数 或 更新计数 
 			lazyTime.put(key, System.currentTimeMillis()); 
 			lazyTotal.put(key, total); 
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 

@@ -758,13 +758,13 @@ public class ExcelUtil {
 	}
 
 	public static String value(Cell cell) {
-		//判断是否为null或空串
+		// 判断是否为null或空串
 		if (cell == null || cell.toString().trim().equals("")) {
 			return "";
 		}
 		String value = "";
-		//5.0.0 getCellType()
-		//3.x getCellTypeEnum
+		// 5.0.0 getCellType()
+		// 3.x getCellTypeEnum
 		switch (cell.getCellType()) {
 			case NUMERIC: // 数字
 				if (DateUtil.isCellDateFormatted(cell)) {
@@ -772,10 +772,10 @@ public class ExcelUtil {
 					DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					value = formater.format(date);
 				}else{
-					//如果查数字,修改成String
+					// 如果查数字,修改成String
 					cell.setCellType(CellType.STRING);
 					value = cell.getStringCellValue();
-					//value = cell.getNumericCellValue() + "";
+					// value = cell.getNumericCellValue() + "";
 				}
 				break;
 			case STRING: // 字符串
@@ -837,7 +837,7 @@ public class ExcelUtil {
 	}
 
 	private static void write(Sheet sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
-		//表头
+		// 表头
 		if(null != headers && headers.size()>0) {
 			Row row =sheet.createRow(insert++);
 			int c= 0 ;
@@ -1049,7 +1049,7 @@ public class ExcelUtil {
 						int lastCol = firstCol + colspan - 1;
 						CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
 						sheet.addMergedRegion(region);
-						//补齐其他单元格(否则边框设置不上)
+						// 补齐其他单元格(否则边框设置不上)
 						for(int rr=1; rr<rowspan; rr++){
 							Row mergeRow = row(sheet, insert+rr);
 							for(int cc=0; cc<colspan; cc++){
@@ -1116,13 +1116,13 @@ public class ExcelUtil {
 	 */
 	private static CellStyle parseStyle(CellStyle style, Map<String,String> styles){
 		if(null != styles) {
-			//边框
+			// 边框
 			style.setBorderTop(parseBorderStyle(styles, "top"));
 			style.setBorderBottom(parseBorderStyle(styles, "bottom"));
 			style.setBorderRight(parseBorderStyle(styles, "right"));
 			style.setBorderLeft(parseBorderStyle(styles, "left"));
 
-			//水平对齐
+			// 水平对齐
 			String textAlign = styles.get("text-align");
 			if(BasicUtil.isNotEmpty(textAlign)){
 				if("center".equals(textAlign)){
@@ -1133,7 +1133,7 @@ public class ExcelUtil {
 					style.setAlignment(HorizontalAlignment.RIGHT);
 				}
 			}
-			//垂直对齐
+			// 垂直对齐
 			String verticalAlign = styles.get("vertical-align");
 			if(BasicUtil.isNotEmpty(verticalAlign)){
 				if("center".equals(verticalAlign) || "middle".equals(verticalAlign)){
@@ -1169,21 +1169,21 @@ public class ExcelUtil {
 				font.setFontName(fontFamily);
 			}
 
-			//删除线
+			// 删除线
 			String strike = styles.get("strike");
 			if(null != strike){
 				if(strike.equalsIgnoreCase("true")){
 					font.setStrikeout(true);
 				}
 			}
-			//斜体
+			// 斜体
 			String italics = styles.get("italic");
 			if(null != italics){
 				if(italics.equalsIgnoreCase("true")){
 					font.setItalic(true);
 				}
 			}
-			//加粗
+			// 加粗
 			String fontWeight = styles.get("font-weight");
 			if(null != fontWeight && fontWeight.length()>0){
 				int weight = BasicUtil.parseInt(fontWeight,0);
@@ -1192,7 +1192,7 @@ public class ExcelUtil {
 				}
 			}
 
-			//下划线
+			// 下划线
 			String underline = styles.get("underline");
 			if(null != underline){
 				font.setUnderline((byte) 1);

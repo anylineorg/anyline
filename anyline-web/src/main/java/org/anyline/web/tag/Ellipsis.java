@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 public class Ellipsis extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
 	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() "; 
-	private int length;					//结果长度 
-	private String replace = "...";		//替换字符
+	private int length;					// 结果长度
+	private String replace = "...";		// 替换字符
 	private boolean toggle = false; 
  
 	public int doEndTag() { 
@@ -60,7 +60,7 @@ public class Ellipsis extends BaseBodyTag {
 			} 
 			if(result.length() < src.length()){
 				if(toggle){
-					//点击显示全部
+					// 点击显示全部
 					String random = BasicUtil.getRandomLowerString(10);
 					String all = "<span style='display:none;' id='tga_" + random + "'>" + src + "</span>";
 					String sub = "<span id='tgs_" + random + "'>"+result+"<span style='display:inline;' onclick=\"$('#tgs_"+random+"').hide();$('#tga_"+random+"').show();\">" + replace + "</span></span>";

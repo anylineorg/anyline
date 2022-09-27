@@ -15,7 +15,7 @@ public class P10sBean implements InitializingBean {
     @Value("${anyline.p100s.secret:}")
     public String APP_SECRET               ;
     @Value("${anyline.p100s.app:type:}")
-    public String TYPE                     ; //0:自用 1:开放
+    public String TYPE                     ; // 0:自用 1:开放
     @Value("${anyline.p100s.server:}")
     public String ACCESS_TOKEN_SERVER      ;
 

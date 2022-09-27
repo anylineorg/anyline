@@ -21,13 +21,13 @@ import org.anyline.web.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
  
 public class TemplateModelAndView extends ModelAndView{
-	public static final String DATA_URL 		= "anyline_template_data_url";			//加载数据URL 
-	public static final String STYLE_URL	 	= "anyline_template_style_url"; 	//加载数据模板文件URL
-	public static final String DATA_PARSER 		= "anyline_template_data_parser";  		//模板文件解析配置
-	public static final String CONTENT_URL 		= "anyline_template_content_url"; 		//内容页面加载URL
-	public static final String PAGE_TITLE		= "anyline_template_page_title";						//页面标题
+	public static final String DATA_URL 		= "anyline_template_data_url";			// 加载数据URL
+	public static final String STYLE_URL	 	= "anyline_template_style_url"; 	// 加载数据模板文件URL
+	public static final String DATA_PARSER 		= "anyline_template_data_parser";  		// 模板文件解析配置
+	public static final String CONTENT_URL 		= "anyline_template_content_url"; 		// 内容页面加载URL
+	public static final String PAGE_TITLE		= "anyline_template_page_title";						// 页面标题
 	
-	private String fromClass = "";	//创建视图的类
+	private String fromClass = "";	// 创建视图的类
 	
 	public TemplateModelAndView setTitle(String title){
 		addObject(PAGE_TITLE, title);

@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
  
 public interface Config {
-	//从request 取值方式 
-	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值 
-	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组 
+	// 从request 取值方式
+	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	// 单值
+	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	// 数组
 	public void setValue(Map<String,Object> values); 
 	public List<Object> getValues() ; 
 	public List<Object> getOrValues() ; 
@@ -43,7 +43,7 @@ public interface Config {
 	 */ 
 	public Condition createAutoCondition(ConditionChain chain);
 
-	public String getPrefix() ; 	//XML condition.id 或表名/表别名
+	public String getPrefix() ; 	// XML condition.id 或表名/表别名
  
 	public void setPrefix(String prefix) ;
 

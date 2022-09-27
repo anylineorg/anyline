@@ -113,7 +113,7 @@ public class WechatPayUtil {
             order.setNotify_url(config.NOTIFY_URL);
         }
         if(BasicUtil.isEmpty(order.getNotify_url())){
-            //	order.setNotify_url(WechatProgrameConfig.getInstance().NOTIFY_URL);
+            // 	order.setNotify_url(WechatProgrameConfig.getInstance().NOTIFY_URL);
         }
         if(BasicUtil.isEmpty(order.getOut_trade_no())){
             throw new Exception("未设置交易单号");
@@ -221,7 +221,7 @@ public class WechatPayUtil {
                     .setEncode("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
-            //String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
+            // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[退款申请调用][result:{}", txt);
             }
@@ -288,7 +288,7 @@ public class WechatPayUtil {
                     .setEncode("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
-            //String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
+            // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[发送红包调用][result:{}]", txt);
             }
@@ -354,7 +354,7 @@ public class WechatPayUtil {
                     .setEncode("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
-            //String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
+            // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[发送裂变红包调用][result:{}]", txt);
             }
@@ -414,7 +414,7 @@ public class WechatPayUtil {
                     .setEncode("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
-            //String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
+            // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[付款调用][result:{}]", txt);
             }
@@ -488,7 +488,7 @@ public class WechatPayUtil {
                     .setEncode("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
-            //String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
+            // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[付款调用][result:{}]", txt);
             }

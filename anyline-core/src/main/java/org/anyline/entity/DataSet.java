@@ -26,13 +26,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private List<String> primaryKeys            = null  ; // 主键
     private String datalink                     = null  ; // 数据连接
     private String dataSource                   = null  ; // 数据源(表|视图|XML定义SQL)
-    private String schema                       = null  ; //
-    private String table                        = null  ; //
+    private String schema                       = null  ; // 
+    private String table                        = null  ; // 
     private long createTime                     = 0     ; // 创建时间
     private long expires                        = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                 = false ; // 是否来自缓存
-    private boolean isAsc                       = false ; //
-    private boolean isDesc                      = false ; //
+    private boolean isAsc                       = false ; // 
+    private boolean isDesc                      = false ; // 
     private Map<String, Object> tags            = new HashMap<>()       ; // 标签
 
     /**
@@ -618,7 +618,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             int size = rows.size();
             for (int i = 0; i < size; i++) {
                 DataRow row = rows.get(i);
-                //查看result中是否已存在
+                // 查看result中是否已存在
                 String tag = row.getString(ks);
                 if(chks.containsKey(tag)){
                     continue;
@@ -641,7 +641,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         DataSet result = new DataSet();
         if (null != rows) {
             for (DataRow row:rows) {
-                //查看result中是否已存在
+                // 查看result中是否已存在
                 String[] params = packParam(row, keys);
                 DataRow chk = result.getRow(params);
                 if (chk == null || chk.isEmpty()) {
@@ -718,7 +718,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         Map<String, String> kvs = new HashMap<>();
         int len = params.length;
         int i = 0;
-        String srcFlagTag = "srcFlag"; //参数含有${}的 在kvs中根据key值+tag 放入一个新的键值对,如时间格式TIME:{10:10}
+        String srcFlagTag = "srcFlag"; // 参数含有${}的 在kvs中根据key值+tag 放入一个新的键值对,如时间格式TIME:{10:10}
 
         while (i < len) {
             String p1 = params[i];
@@ -797,7 +797,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if(rows.size() ==0){
             return set;
         }
-        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+        String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 
         Map<String,Compare> compares = new HashMap<>();
         if(null == compare || compare instanceof Auto) {
@@ -805,7 +805,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 // k(ID) , v(>=10)(%A%)
                 String v = kvs.get(k);
                 if (null != v) {
-                    //与SQL.TYPE保持一致
+                    // 与SQL.TYPE保持一致
                     Compare cmp = CompareBuilder.EQUAL;
                     if (v.startsWith("=")) {
                         v = v.substring(1);
@@ -856,7 +856,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 Object value = row.get(k);
                 String v = kvs.get(k);
                 if(!row.containsKey(k) && null == value){
-                    //注意这里有可能是个复合key
+                    // 注意这里有可能是个复合key
                     chk = false;
                     break;
                 }
@@ -3451,7 +3451,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         for (DataRow row : rows) {
             String[] kv = reverseKey(keys);
-            if (set.contains(row, kv)) { //符合交集
+            if (set.contains(row, kv)) { // 符合交集
                 if(!result.contains(row, kv)){//result中没有
                     result.add((DataRow) row.clone());
                 }else {
@@ -3855,15 +3855,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
             String str = (String)value;
             int idx = str.indexOf("${");
             if(idx != -1) {
-                if(str.startsWith("$") && str.endsWith("}")){  //${ID}
-                    regex = 1; //一个表达式
+                if(str.startsWith("$") && str.endsWith("}")){  // ${ID}
+                    regex = 1; // 一个表达式
                     if (str.indexOf("${", idx + 2) > 0) {
                         if(idx != -1){
-                            regex = 2; //多个表达式 ${CODE}-${NM}
+                            regex = 2; // 多个表达式 ${CODE}-${NM}
                         }
                     }
                 }else{
-                    regex = 2;  //123${ID}ABC
+                    regex = 2;  // 123${ID}ABC
                 }
             }
         }
@@ -3910,7 +3910,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataSet pivot(List<String> pks, List<String> classKeys, List<String> valueKeys) {
         DataSet result = distinct(pks);
-        DataSet classValues = distinct(classKeys);  //[{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
+        DataSet classValues = distinct(classKeys);  // [{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
         for (DataRow row : result) {
             for (DataRow classValue : classValues) {
                 DataRow params = new DataRow();
@@ -3929,7 +3929,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         }
                     }else {
                         for (String valueKey : valueKeys) {
-                            //{2010-数学-分数:100;2010-数学-等级:A}
+                            // {2010-数学-分数:100;2010-数学-等级:A}
                             if (null != valueRow) {
                                 row.put(finalKey + "-" + valueKey, valueRow.get(valueKey));
                             } else {
@@ -4343,7 +4343,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public class Select implements Serializable {
         private static final long serialVersionUID = 1L;
-        private boolean ignoreCase = true;    //是否忽略大小写
+        private boolean ignoreCase = true;    // 是否忽略大小写
         /**
          * 是否忽略NULL 如果设置成true 在执行equal notEqual like contains进 null与null比较返回false
          * 左右出现NULL时直接返回false

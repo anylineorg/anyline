@@ -159,7 +159,7 @@ public class ZipUtil {
 			}
 			ZipOutputStream zipout = null;
 			if (append && zip.exists()) {
-				//追加文件
+				// 追加文件
 				File tempFile = FileUtil.createTempFile(zip);
 				byte[] buf = new byte[1024];
 				ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));

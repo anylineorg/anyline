@@ -36,15 +36,15 @@ import java.io.OutputStream;
 
 public class WatermarkUtil {
 	protected static final Logger log = LoggerFactory.getLogger(WatermarkUtil.class); 
-	private int degree = 0;								//旋转角度 
-	private Color color = Color.LIGHT_GRAY;				//水印颜色 
-	private String fontName = "宋体";						//字体名称 
-	private int fontStyle = Font.BOLD + Font.ITALIC;	//字体样式 
-	private int fontSize = 30;							//字体大小 
-	private float alpha = 0.3f;							//透明度 
-	private float x = 0;								//坐标X如果x<0,x=width+x 
-	private float y = 0;								//坐标Y
-	//xy按百分比
+	private int degree = 0;								// 旋转角度 
+	private Color color = Color.LIGHT_GRAY;				// 水印颜色 
+	private String fontName = "宋体";						// 字体名称 
+	private int fontStyle = Font.BOLD + Font.ITALIC;	// 字体样式 
+	private int fontSize = 30;							// 字体大小 
+	private float alpha = 0.3f;							// 透明度 
+	private float x = 0;								// 坐标X如果x<0,x=width+x 
+	private float y = 0;								// 坐标Y
+	// xy按百分比
 	 
 	public WatermarkUtil(){ 
 		this.x = 0; 
@@ -75,7 +75,7 @@ public class WatermarkUtil {
     	if(null != dir && !dir.exists()){
     		dir.mkdirs();
     	}
-        // 主图片的路径 
+        // 主图片的路径
         InputStream is = null; 
         OutputStream os = null;
         BufferedImage buffImg = null;
@@ -85,18 +85,18 @@ public class WatermarkUtil {
             int width = buffImg.getWidth();
             int height = buffImg.getHeight();
             
-            // 得到画笔对象 
+            // 得到画笔对象
             Graphics2D g = buffImg.createGraphics(); 
-            // 设置对线段的锯齿状边缘处理 
+            // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR); 
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null); 
             if (degree != 0) { 
-                // 设置水印旋转 
+                // 设置水印旋转
                 g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2); 
             } 
-            // 设置颜色 
+            // 设置颜色
             g.setColor(color); 
-            // 设置 Font 
+            // 设置 Font
             g.setFont(new Font(fontName, fontStyle, fontSize)); 
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha));
             int[] offset = finalOffset(width,height); 
@@ -165,24 +165,24 @@ public class WatermarkUtil {
 
             int icon_width = iconWidth;
             int icon_height = iconHeight;
-            // 得到画笔对象 
+            // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
             buffImg = g.getDeviceConfiguration()
                     .createCompatibleImage(srcImg.getWidth(null), srcImg.getHeight(null), Transparency.TRANSLUCENT);
-            //g.dispose();
+            // g.dispose();
             g = buffImg.createGraphics();
-            // 设置对线段的锯齿状边缘处理 
+            // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR); 
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null); 
             if (degree !=0) { 
-                // 设置水印旋转 
+                // 设置水印旋转
                 g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2); 
             } 
-            // 水印图象的路径 水印一般为gif或者png的,这样可设置透明度 
+            // 水印图象的路径 水印一般为gif或者png的,这样可设置透明度
             ImageIcon imgIcon = new ImageIcon(icon.getAbsolutePath()); 
-            // 得到Image对象. 
+            // 得到Image对象.
             Image img = imgIcon.getImage(); 
-            float alpha = 0.5f; // 透明度 
+            float alpha = 0.5f; // 透明度
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha)); 
             int[] offset = finalOffset(width,height);
             _x = offset[0]-icon_width;
@@ -202,7 +202,7 @@ public class WatermarkUtil {
             if(target.getName().toLowerCase().endsWith("png")){
             	format = "png";
             }
-            if ("jpg".equals(format)) { //重画一下,要么会变色
+            if ("jpg".equals(format)) { // 重画一下,要么会变色
                 BufferedImage tag;
                 tag = new BufferedImage(buffImg.getWidth(), buffImg.getHeight(), BufferedImage.TYPE_INT_BGR);
                 Graphics gg = tag.getGraphics();

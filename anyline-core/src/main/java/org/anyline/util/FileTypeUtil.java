@@ -54,9 +54,9 @@ public class FileTypeUtil {
 		FILE_TYPE_MAP.put("rar", "52617221"); 
 		FILE_TYPE_MAP.put("psd", "38425053"); // Photoshop (psd) 
 		FILE_TYPE_MAP.put("eml", "44656C69766572792D646174653A"); // Email 
-																	// [thorough 
-																	// only] 
-																	// (eml) 
+																	// [thorough
+																	// only]
+																	// (eml)
 		FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F"); // Outlook Express (dbx) 
 		FILE_TYPE_MAP.put("pst", "2142444E"); // Outlook (pst) 
 		FILE_TYPE_MAP.put("xls", "D0CF11E0"); // MS Word 

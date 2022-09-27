@@ -41,7 +41,7 @@ public class EHCacheProvider implements CacheProvider {
 	private static final Logger log = LoggerFactory.getLogger(EHCacheProvider.class);
 	private CacheManager manager = null;
 	private HashSet<String> channels = new HashSet<>();
-	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
+	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		// 缓存刷新标记
 	public int getLvl(){
 		return 1;
 	}

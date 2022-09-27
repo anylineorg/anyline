@@ -37,9 +37,9 @@ import java.util.*;
 
 public class SimpleConfig implements Config{
 	protected static final Logger log = LoggerFactory.getLogger(SimpleConfig.class);
-	protected List<Object> values;	//VALUE
+	protected List<Object> values;	// VALUE
 	protected List<Object> orValues;
-	protected boolean empty;			//是否值为空
+	protected boolean empty;			// 是否值为空
 	protected ParseResult parser;
 	@Override
 	public Object clone(){

@@ -34,7 +34,7 @@ public class EHCacheConfig extends AnylineConfig {
 	 * 初始化默认配置文件
 	 */
 	public static void init() {
-		//加载配置文件 
+		// 加载配置文件
 		load();
 	}
 

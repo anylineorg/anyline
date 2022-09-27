@@ -73,10 +73,10 @@ public class BeanUtil {
 		JSON_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 		JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.ALWAYS);
 
-		//Include.Include.ALWAYS 默认
-		//Include.NON_DEFAULT 属性为默认值不序列化
-		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
-		//Include.NON_NULL 属性为NULL 不序列化
+		// Include.Include.ALWAYS 默认
+		// Include.NON_DEFAULT 属性为默认值不序列化
+		// Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
+		// Include.NON_NULL 属性为NULL 不序列化
 
 		JSON_MAPPER.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
 		JSON_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -150,10 +150,10 @@ public class BeanUtil {
 			}
 			if(compatible) {
 				if (field.isAccessible()) {
-					//可访问属性
+					// 可访问属性
 					field.set(obj, v);
 				} else {
-					//不可访问属性
+					// 不可访问属性
 					field.setAccessible(true);
 					field.set(obj, v);
 					field.setAccessible(false);
@@ -190,10 +190,10 @@ public class BeanUtil {
 		}
 		try{
 			if(field.isAccessible()){
-				//可访问属性
+				// 可访问属性
 				value = field.get(obj);
 			}else{
-				//不可访问属性
+				// 不可访问属性
 				field.setAccessible(true);
 				value = field.get(obj);
 				field.setAccessible(false);
@@ -1870,12 +1870,12 @@ public class BeanUtil {
 	 * {
 	 *     key1:{
 	 *         key11:{
-	 *             key111:111   //提取111 recursion(map,key1,key11,key111)
+	 *             key111:111   // 提取111 recursion(map,key1,key11,key111)
 	 *         },
 	 *         key12:{
 	 *             key121:{
 	 *                 key1211:1211,
-	 *                 key1212:1212 //提取1212 recursion(map,key1, key12, key121, key1212)
+	 *                 key1212:1212 // 提取1212 recursion(map,key1, key12, key121, key1212)
 	 *             }
 	 *         }
 	 *     }
@@ -1959,7 +1959,7 @@ public class BeanUtil {
 			if(null != value){
 				return value;
 			}
-			//以下划线分隔的key
+			// 以下划线分隔的key
 			String[] ks = key.split("_");
 			String sKey = null;
 			for(String k:ks){
@@ -1973,7 +1973,7 @@ public class BeanUtil {
 			if(null != value){
 				return value;
 			}
-			//以中划线分隔的key
+			// 以中划线分隔的key
 			ks = key.split("-");
 			sKey = null;
 			for(String k:ks){
@@ -2309,7 +2309,7 @@ public class BeanUtil {
 			}
 		}
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
-			//log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
+			// log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
 		}
 		return value;
 	}
@@ -2361,7 +2361,7 @@ public class BeanUtil {
 		Map<String, Object> kvs = new HashMap<>();
 		int len = params.length;
 		int i = 0;
-		String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 		while (i < len) {
 			String p1 = params[i];
 			if (BasicUtil.isEmpty(p1)) {
@@ -2402,7 +2402,7 @@ public class BeanUtil {
 
 	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
 		List<T> set = new ArrayList<>();
-		String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+		String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 		BigDecimal d1;
 		BigDecimal d2;
 		for (T row:datas) {
@@ -2492,7 +2492,7 @@ public class BeanUtil {
 	 */
 	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, List<String> pks, List<String> classKeys, List<String> valueKeys) {
 		List<Map<String,Object>> result = objects2maps(distinct(datas,pks),pks);
-		List<Map<String,Object>> classValues = objects2maps(distinct(datas,classKeys),classKeys);  //[{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
+		List<Map<String,Object>> classValues = objects2maps(distinct(datas,classKeys),classKeys);  // [{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
 		for (Map<String,Object> row : result) {
 			for (Map<String,Object> classValue : classValues) {
 				Map<String,Object> params = new HashMap<>();
@@ -2509,7 +2509,7 @@ public class BeanUtil {
 						}
 					}else {
 						for (String valueKey : valueKeys) {
-							//{2010-数学-分数:100;2010-数学-等级:A}
+							// {2010-数学-分数:100;2010-数学-等级:A}
 							if (null != valueRow) {
 								row.put(finalKey + "-" + valueKey, getFieldValue(valueRow, valueKey));
 							} else {

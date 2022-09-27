@@ -178,9 +178,9 @@ final class Perl5MatchResult implements MatchResult {
     if(group < _beginGroupOffset.length){
       begin  = _beginGroupOffset[group];
       end    = _endGroupOffset[group];
-      //length = _match.length();
+      // length = _match.length();
       if(begin >= 0 && end >= 0)// && begin < length && end <= length)
-	//return _beginGroupOffset[group];
+	// return _beginGroupOffset[group];
 	return begin;
     }
 
@@ -195,13 +195,13 @@ final class Perl5MatchResult implements MatchResult {
    *         string will return its start offset.
    */
   public int end(int group){
-    int begin, end; //, length;
+    int begin, end; // , length;
     if(group < _beginGroupOffset.length){
       begin  = _beginGroupOffset[group];
       end    = _endGroupOffset[group];
-      //length = _match.length();
+      // length = _match.length();
       if(begin >= 0 && end >= 0)// && begin < length && end <= length)
-	//return _endGroupOffset[group];
+	// return _endGroupOffset[group];
 	return end;
     }
     return -1;
@@ -221,9 +221,9 @@ final class Perl5MatchResult implements MatchResult {
     if(group < _beginGroupOffset.length){
       begin  = _beginGroupOffset[group];
       end    = _endGroupOffset[group];
-      //length = _match.length();
+      // length = _match.length();
       if(begin >= 0 && end >= 0)// && begin < length && end <= length)
-	//return _matchBeginOffset + _beginGroupOffset[group];
+	// return _matchBeginOffset + _beginGroupOffset[group];
 	return _matchBeginOffset + begin;
     }
     return -1;
@@ -244,9 +244,9 @@ final class Perl5MatchResult implements MatchResult {
     if(group < _endGroupOffset.length){
       begin  = _beginGroupOffset[group];
       end    = _endGroupOffset[group];
-      //length = _match.length();
+      // length = _match.length();
       if(begin >= 0 && end >= 0)// && begin < length && end <= length)
-	//return _matchBeginOffset + _endGroupOffset[group];
+	// return _matchBeginOffset + _endGroupOffset[group];
 	return _matchBeginOffset + end;
     }
     return -1;

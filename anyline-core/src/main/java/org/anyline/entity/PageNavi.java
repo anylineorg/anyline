@@ -72,13 +72,13 @@ public interface PageNavi extends Serializable{
 	public Object getParams(String key); 
 	public Object getParam(String key); 
 	public String getOrderText(boolean require); 
-	//public String getOrderText(boolean require, OrderStore store); 
+	// public String getOrderText(boolean require, OrderStore store); 
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
 	 * @return PageNavi
 	 */ 
-	//public PageNavi order(Order order); 
+	// public PageNavi order(Order order); 
 	/** 
 	 * 设置排序方式 
 	 * @param order  order

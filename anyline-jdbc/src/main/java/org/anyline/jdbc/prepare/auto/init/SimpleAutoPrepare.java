@@ -133,10 +133,10 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 			this.columns = new ArrayList<>();
 		}
 		if(columns.contains(",")){
-			//多列
+			// 多列
 			parseMultColumns(columns);
 		}else{
-			//单列
+			// 单列
 			this.columns.add(columns);
 		}
 	}
@@ -147,7 +147,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 	 */
 	protected void parseMultColumns(String src){
 		List<String> cols = new ArrayList<>();
-		//拆分转义字段(${}) CD, ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
+		// 拆分转义字段(${}) CD, ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 		while(src.contains("${")){
 			src = src.trim();
 			int fr = src.indexOf("${");
@@ -156,13 +156,13 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 				tmp = src.substring(0, src.indexOf("}")+1);
 				src = src.substring(src.indexOf("}")+1);
 			}else{
-				tmp = src.substring(0, fr);  //先把 ${ 之前的部分拆出: CD,
-				src = src.substring(fr);     //剩余部分: ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
+				tmp = src.substring(0, fr);  // 先把 ${ 之前的部分拆出: CD,
+				src = src.substring(fr);     // 剩余部分: ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 			}
 			cols.add(tmp);
 		}
 		cols.add(src);
-		//二次拆分
+		// 二次拆分
 		for(String c:cols){
 			if(c.contains("${")){
 				columns.add(c);
@@ -197,7 +197,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 			int tagIdx = lower.lastIndexOf(tag);
 			if(tagIdx > 0){
 				if(table.substring(tagIdx+tag.length()).contains(")")){
-					//列别名中的as
+					// 列别名中的as
 				}else{
 					alias = table.substring(tagIdx+tag.length()).trim();
 					table = table.substring(0,tagIdx).trim();
@@ -220,7 +220,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 			if(table.contains(" ")){
 				String[] tmps = table.split(" ");
 				if(tmps[0].contains("(")){
-					//列中的空格
+					// 列中的空格
 				}else {
 					table = tmps[0];
 					alias = tmps[1];

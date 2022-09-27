@@ -80,9 +80,9 @@ public class LdapUtil {
 			account = account + "@" + config.DOMAIN;
 		}
 		Hashtable<String, Object> env = new Hashtable<String, Object>();
-		env.put(Context.SECURITY_PRINCIPAL, account);		//用户名
-		env.put(Context.SECURITY_CREDENTIALS, password);	//密码
-		env.put(Context.PROVIDER_URL, config.URL);			//LDAP的地址:端口
+		env.put(Context.SECURITY_PRINCIPAL, account);		// 用户名
+		env.put(Context.SECURITY_CREDENTIALS, password);	// 密码
+		env.put(Context.PROVIDER_URL, config.URL);			// LDAP的地址:端口
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");//LDAP工厂类
 		env.put(Context.SECURITY_AUTHENTICATION, config.SECURITY_AUTHENTICATION);//认证类型
 		if(config.CONNECT_TIMEOUT > 0){

@@ -55,7 +55,7 @@ public class StyleParser {
                         if ("border".equalsIgnoreCase(k)) {
                             v = v.replace("solid", "single");
                             String[] vs = v.split(" ");
-                            //border:5px solid red;
+                            // border:5px solid red;
                             if (vs.length == 3) {
                                 styles.put("border-top-width", vs[0]);
                                 styles.put("border-top-style", vs[1]);

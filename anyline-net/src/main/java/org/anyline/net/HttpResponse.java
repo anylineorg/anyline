@@ -32,14 +32,14 @@ import java.util.Map;
 public class HttpResponse {
 	private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
 	private String url				;//URL 
-	private String backFileCd		; //备份文件CD
+	private String backFileCd		; // 备份文件CD
 	private int status				; 
-	private String text				; //文本 
-	private String fileType			; //文件类型 
-	private String encode			; //编码 
-	private String contentType		; // 
-	private long lastModified		; //最后修改时间毫秒 
-	private String parser			; //解析器CD 
+	private String text				; // 文本
+	private String fileType			; // 文件类型
+	private String encode			; // 编码
+	private String contentType		; //
+	private long lastModified		; // 最后修改时间毫秒
+	private String parser			; // 解析器CD
 	private String host				;
 	private Map<String,String> headers = new HashMap<String,String>();
 	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>();

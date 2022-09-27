@@ -16,21 +16,21 @@ public class Coordinate {
 		public abstract String getRemark();
 	}
 
-	private Double[] point = new Double[2]	; //坐标点[lng,lat][经度,纬度]
-	private TYPE type						; //坐标系
-	private String provinceCode				; //省编号
-	private String provinceName				; //省中文名
-	private String cityCode					; //市编号
-	private String cityName					; //市中文我
-	private String districtCode				; //区编号
-	private String districtName				; //区中文名
-	private String townCode					; //街道编号
-	private String townName					; //街道中文名
-	private String code						; //当前地区最小级别编号
-	private int level						; //级别(国家:0,省:1)
-	private String address					; //详细地址
-	private boolean success = true			; //执行结果
-	private String message = null			; //执行结果说明
+	private Double[] point = new Double[2]	; // 坐标点[lng,lat][经度,纬度]
+	private TYPE type						; // 坐标系
+	private String provinceCode				; // 省编号
+	private String provinceName				; // 省中文名
+	private String cityCode					; // 市编号
+	private String cityName					; // 市中文我
+	private String districtCode				; // 区编号
+	private String districtName				; // 区中文名
+	private String townCode					; // 街道编号
+	private String townName					; // 街道中文名
+	private String code						; // 当前地区最小级别编号
+	private int level						; // 级别(国家:0,省:1)
+	private String address					; // 详细地址
+	private boolean success = true			; // 执行结果
+	private String message = null			; // 执行结果说明
 
 
 	public Coordinate(String location){

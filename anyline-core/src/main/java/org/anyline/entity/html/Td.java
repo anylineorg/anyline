@@ -16,7 +16,7 @@ public class Td {
     private int rowspan = 1;
     private String clazz = null;
     private int merge = -1; // -1 不合并 1:合并 2:被合并
-    private int offset = 0; //向右偏移(前一列被上一行合并后,当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
+    private int offset = 0; // 向右偏移(前一列被上一行合并后,当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
     private boolean remove = false;
     private String width;
     private boolean isMerge = false;
@@ -24,7 +24,7 @@ public class Td {
     public Map<String, String> getStyles() {
         return styles;
     }
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
 
 
     public Td(){
@@ -88,7 +88,7 @@ public class Td {
         this.colspan = colspan;
         if(colspan > 1) {
             isMerge = true;
-            //后面的所有列偏移+(colspan-1)
+            // 后面的所有列偏移+(colspan-1)
            /* Tr tr = this.getTr();
             int max = tr.getTds().size();
             for(int i=this.getColIndex()+1; i<max; i++){
@@ -111,7 +111,7 @@ public class Td {
         }
         return this;
     }
-    //根据 rowspan colspan合并
+    // 根据 rowspan colspan合并
     public void merge(){
         if(isMerge){
             return;
@@ -371,8 +371,8 @@ public class Td {
         setRightBorder();
         setTopBorder();
         setBottomBorder();
-        //setTl2brBorder();
-        //setTr2blBorder();
+        // setTl2brBorder();
+        // setTr2blBorder();
         return this;
     }
     public Td setBorder(String weight, String color, String style){
@@ -380,8 +380,8 @@ public class Td {
         setRightBorder(weight, color, style);
         setTopBorder(weight, color, style);
         setBottomBorder(weight, color, style);
-        //setTl2brBorder(weight, color, style);
-        //setTr2blBorder(weight, color, style);
+        // setTl2brBorder(weight, color, style);
+        // setTr2blBorder(weight, color, style);
         return this;
     }
     public Td setLeftBorder(){

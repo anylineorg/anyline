@@ -33,7 +33,7 @@ public class SimpleProcedure implements Procedure{
 	private String name;
 	private List<ProcedureParam> inputs = new ArrayList<ProcedureParam>();
 	private List<ProcedureParam> outputs = new ArrayList<ProcedureParam>();//输出参数,输入输出参数
-	private List<Object> result;	//输出参数结果
+	private List<Object> result;	// 输出参数结果
 	private boolean hasReturn = false;
 	private PageNavi navi;
 	

@@ -18,15 +18,15 @@ import org.slf4j.LoggerFactory;
 public class Downloader { 
 	private static Logger log = LoggerFactory.getLogger(Downloader.class); 
 	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>(); 
-	private int maxParallel = 5		; //最大并行下载数量 
-	private int curParallel			; //当前并行下载数量	 
-	private double lastLogRate		; //最后一次日志进度 
-	private long lastLogTime		; //量后一次日志时间 
-	private long start				; //下载开始时间 
-	private long end				; //下载结束时间 
-	private String errorMsg = ""	; //异常信息 
-	private String errorCode = ""	; //异常编号 
-	private int status = 0			; //0初始 1下载中  2结束 
+	private int maxParallel = 5		; // 最大并行下载数量 
+	private int curParallel			; // 当前并行下载数量	 
+	private double lastLogRate		; // 最后一次日志进度 
+	private long lastLogTime		; // 量后一次日志时间 
+	private long start				; // 下载开始时间 
+	private long end				; // 下载结束时间 
+	private String errorMsg = ""	; // 异常信息 
+	private String errorCode = ""	; // 异常编号 
+	private int status = 0			; // 0初始 1下载中  2结束 
  
 	private static Hashtable<String,Downloader> instances = new Hashtable<String,Downloader>(); 
 	public static Downloader getInstance() { 
@@ -131,7 +131,7 @@ public class Downloader {
 			return; 
 		} 
 		double rate = getFinishRate(); 
-		//第一次进度或进度>0.5%或时间超过5秒或全部完成 
+		// 第一次进度或进度>0.5%或时间超过5秒或全部完成
 		if(lastLogTime==0 || rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){ 
 			log.warn("[文件下载]"+getMessage()); 
     		lastLogRate = rate; 
@@ -141,11 +141,11 @@ public class Downloader {
 	public void init(){ 
 		tasks.clear(); 
 		maxParallel = 5	; 
-		curParallel	= 0	; //当前并行下载数量	 
-		lastLogRate	= 0 ; //最后一次日志进度 
-		lastLogTime	= 0 ; //量后一次日志时间 
-		start = 0		; //下载开始时间 
-		end = 0			; //下载结束时间 
+		curParallel	= 0	; // 当前并行下载数量	 
+		lastLogRate	= 0 ; // 最后一次日志进度 
+		lastLogTime	= 0 ; // 量后一次日志时间 
+		start = 0		; // 下载开始时间 
+		end = 0			; // 下载结束时间 
 		errorCode = ""	; 
 		errorMsg = ""	; 
 	} 
@@ -357,9 +357,9 @@ public class Downloader {
 	 * @return double
 	 */ 
 	public double getFinishRate(){ 
-		long length = getSumLength()	; //本次需下载 
-		long past = getSumPast()		; //历史已下载 
-		long finish = getSumFinish()	; //本次已完成 
+		long length = getSumLength()	; // 本次需下载 
+		long past = getSumPast()		; // 历史已下载 
+		long finish = getSumFinish()	; // 本次已完成 
 		double rate = 0; 
 		if(length+past>0){ 
 			rate = (finish+past)*100.00/(length+past); 
@@ -435,7 +435,7 @@ public class Downloader {
 	public long getExpect(){ 
 		long expect = 0; 
 		long len = getSumLength()- getSumFinish(); 
-		long speed = getSpeed(); //秒速(不是毫秒) 
+		long speed = getSpeed(); // 秒速(不是毫秒) 
 		if(speed > 0){ 
 			expect = len*1000/speed; 
 		} 
@@ -483,7 +483,7 @@ public class Downloader {
 		} 
 		return this; 
 	} 
-	//线程池 
+	// 线程池
 	public void start(int threads){ 
 		status = 1; 
 		if(start ==0){ 
@@ -504,7 +504,7 @@ public class Downloader {
 			DownloaderThreadPool.execute(thread,threads); 
 		} 
 	} 
-	//线程池 
+	// 线程池
 	public void start(){ 
 		start(Math.max(4, Math.min(Runtime.getRuntime().availableProcessors() - 1, 5))); 
 	} 
@@ -550,12 +550,12 @@ class DownloaderThreadPool {
     private static ThreadPoolExecutor threadPoolExecutor; 
     static { 
         threadPoolExecutor = new ThreadPoolExecutor( 
-                CORE_POOL_SIZE,  //核心线程数 
-                MAXIMUM_POOL_SIZE, //线程池中最大的线程数 
-                30,  //线程的存活时间,没事干的时候,空闲的时间 
-                TimeUnit.SECONDS, //线程存活时间的单位 
-                workQueue, //线程缓存队列 
-                new ThreadFactory() {  //线程创建工厂,如果线程池需要创建线程会调用newThread来创建 
+                CORE_POOL_SIZE,  // 核心线程数 
+                MAXIMUM_POOL_SIZE, // 线程池中最大的线程数 
+                30,  // 线程的存活时间,没事干的时候,空闲的时间 
+                TimeUnit.SECONDS, // 线程存活时间的单位 
+                workQueue, // 线程缓存队列 
+                new ThreadFactory() {  // 线程创建工厂,如果线程池需要创建线程会调用newThread来创建 
                     public Thread newThread(Runnable r) { 
                         Thread thread = new Thread(r); 
                         thread.setDaemon(false); 

@@ -19,21 +19,21 @@ import org.springframework.stereotype.Component;
 public class WechatyBean implements InitializingBean {
 
     @Value("${anyline.wechat.app:}")
-    private String APP_ID 						 	; //AppID(应用ID)
+    private String APP_ID 						 	; // AppID(应用ID)
     @Value("${anyline.wechat.secret:}")
-    private String APP_SECRET 					 	; //AppSecret(应用密钥)
+    private String APP_SECRET 					 	; // AppSecret(应用密钥)
     @Value("${anyline.wechat.signType:}")
-    private String SIGN_TYPE 					 	; //签名加密方式
+    private String SIGN_TYPE 					 	; // 签名加密方式
     @Value("${anyline.wechat.token:}")
-    private String SERVER_TOKEN 					; //服务号的配置token
+    private String SERVER_TOKEN 					; // 服务号的配置token
     @Value("${anyline.wechat.redirect:}")
-    private String OAUTH_REDIRECT_URL 				; //oauth2授权时回调action
+    private String OAUTH_REDIRECT_URL 				; // oauth2授权时回调action
     @Value("${anyline.wechat.server:}")
     private String WEB_SERVER 					 	;
     @Value("${anyline.wechat.tokenServer:}")
     private String ACCESS_TOKEN_SERVER			 	;
     @Value("${anyline.wechat.whitelist:}")
-    private String SERVER_WHITELIST			   		; //白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
+    private String SERVER_WHITELIST			   		; // 白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
 
 
     @Override

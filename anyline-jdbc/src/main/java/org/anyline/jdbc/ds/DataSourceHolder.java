@@ -34,11 +34,11 @@ import java.util.*;
 
 public class DataSourceHolder { 
 	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class); 
-	//切换前数据源 
+	// 切换前数据源 
     private static final ThreadLocal<String> THREAD_RECALL_SOURCE = new ThreadLocal<String>(); 
-	//当前数据源 
+	// 当前数据源 
     private static final ThreadLocal<String> THREAD_CUR_SOURCE = new ThreadLocal<String>(); 
-    //是否还原默认数据源,执行一次操作后还原回默认数据源 
+    // 是否还原默认数据源,执行一次操作后还原回默认数据源 
     private static final ThreadLocal<Boolean> THREAD_AUTO_DEFAULT = new ThreadLocal<Boolean>(); 
     private static List<String> dataSources = new ArrayList<>();
 	private static Map<String, JDBCAdapter.DB_TYPE> types = new HashMap<>();
@@ -83,7 +83,7 @@ public class DataSourceHolder {
     	THREAD_CUR_SOURCE.set(dataSource); 
     	THREAD_AUTO_DEFAULT.set(auto); 
     } 
-    //恢复切换前数据源 
+    // 恢复切换前数据源 
     public static void recoverDataSource(){ 
     	THREAD_CUR_SOURCE.set(THREAD_RECALL_SOURCE.get()); 
     } 

@@ -13,28 +13,28 @@ import java.util.List;
  */
 public class ParseResult {
 	private static final long serialVersionUID = 1L; 
-	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值 
-	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组 
+	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	// 单值 
+	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	// 数组 
 	 
-	private boolean required				; //是否必须(空值拼接IS NULL) 
-	private boolean strictRequired			; //是否严格必须(空值不查询) 
-	private String prefix						; //xml定义中的id 或auto sql的表别名
-	private String var						; //实体属性或表列名
-	private String clazz					; //取值后处理类 
-	private String method					; //处理方法
-	private List<String> args = new ArrayList<>(); //参数
+	private boolean required				; // 是否必须(空值拼接IS NULL)
+	private boolean strictRequired			; // 是否严格必须(空值不查询)
+	private String prefix						; // xml定义中的id 或auto sql的表别名
+	private String var						; // 实体属性或表列名
+	private String clazz					; // 取值后处理类
+	private String method					; // 处理方法
+	private List<String> args = new ArrayList<>(); // 参数
 	 
-	private String key						; //http key 
-	private boolean isKeyEncrypt			; //key是否加密 
-	private boolean isValueEncrypt			; //value是否加密 
+	private String key						; // http key
+	private boolean isKeyEncrypt			; // key是否加密
+	private boolean isValueEncrypt			; // value是否加密
 	 
-	private boolean setEncrypt = false		; //是否已指定加密方式 
+	private boolean setEncrypt = false		; // 是否已指定加密方式
  
-	private List<ParseResult> defs = new ArrayList<ParseResult>();	//默认值 
-	private ParseResult or = null;	//or 只有value或defs有值时 ors才生效
-	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL			; //比较方式
-	private String join = Condition.CONDITION_JOIN_TYPE_AND			; //连接方式 
-	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; //request取值方式 
+	private List<ParseResult> defs = new ArrayList<ParseResult>();	// 默认值 
+	private ParseResult or = null;	// or 只有value或defs有值时 ors才生效
+	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL			; // 比较方式
+	private String join = Condition.CONDITION_JOIN_TYPE_AND			; // 连接方式
+	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; // request取值方式
 	 
 	public List<ParseResult> getDefs(){ 
 		return defs; 

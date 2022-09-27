@@ -18,7 +18,7 @@ import java.util.*;
 
 public class ConfigParser {
 	static final Logger log = LoggerFactory.getLogger(ConfigParser.class);
-	//	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密)
+	// 	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密)
 //	public static final String IS_PARAMS_DECRYPT = "IS_PARAMS_DECRYPT"; // 参数值是否已解密
 	private static Map<String, DESKey> deskeys = null;
 	private static DESKey defaultDesKey = null;
@@ -120,7 +120,7 @@ public class ConfigParser {
 			}
 		}
 		if(var.startsWith("+")){
-			//必须参数
+			// 必须参数
 			required = true;
 			var = var.substring(1,var.length());
 			if(ConfigTable.getBoolean("CONDITION_VALUE_STRICT")){
@@ -128,13 +128,13 @@ public class ConfigParser {
 			}
 		}
 		if(var.startsWith("+")){
-			//必须参数
+			// 必须参数
 			strictRequired = true;
 			var = var.substring(1,var.length());
 		}
 		if(var.contains(".")){
-			//XML中自定义参数时,同时指定param.id及变量名condition_id.param_id
-			//Table中同时指定表名(表别名).列名 table.column
+			// XML中自定义参数时,同时指定param.id及变量名condition_id.param_id
+			// Table中同时指定表名(表别名).列名 table.column
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1,var.length());
 			result.setPrefix(prefix);//其他不指定
@@ -157,16 +157,16 @@ public class ConfigParser {
 		String methodName = null;
 		String regx = "^([a-z]+[0-9a-zA-Z_]*(\\.[a-z]+[0-9a-zA-Z_]*)*\\.?[A-Z]+[0-9a-zA-Z_]*\\.?)?[a-z]+\\S+\\(\\S+\\)$";
 		if(RegularUtil.match(config, regx, Regular.MATCH_MODE.MATCH)){
-			//有预处理方法
+			// 有预处理方法
 
-			//解析class.method
+			// 解析class.method
 			String classMethod = config.substring(0,config.indexOf("("));
 			if(classMethod.contains(".")){
-				//有特定类
+				// 有特定类
 				className = classMethod.substring(0,classMethod.lastIndexOf("."));
 				methodName = classMethod.substring(classMethod.lastIndexOf(".")+1,classMethod.length());
 			}else{
-				//默认类
+				// 默认类
 				methodName = classMethod;
 			}
 			config = config.substring(config.indexOf("(")+1,config.indexOf(")"));
@@ -210,8 +210,8 @@ public class ConfigParser {
 			result.setCompare(RunPrepare.COMPARE_TYPE.LESS);
 			config = config.substring(1);
 		} else if (config.startsWith("[") && config.endsWith("]")) {
-			//[1,2,3]或[1,2,3]:[1,2,3]
-			//id:[id:cd:{[1,2,3]}]
+			// [1,2,3]或[1,2,3]:[1,2,3]
+			// id:[id:cd:{[1,2,3]}]
 			result.setCompare(RunPrepare.COMPARE_TYPE.IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
 			if(isKey){
@@ -317,10 +317,10 @@ public class ConfigParser {
 		}
 		try{
 			String key = parser.getKey();
-			//String def = parser.getDef();
+			// String def = parser.getDef();
 			String className = parser.getClazz();
 			String methodName = parser.getMethod();
-			//int fetchValueType = parser.getParamFetchType();
+			// int fetchValueType = parser.getParamFetchType();
 			int fetchValueType = Config.FETCH_REQUEST_VALUE_TYPE_MULIT;
 			boolean isKeyEncrypt = parser.isKeyEncrypt();
 			boolean isValueEncrypt = parser.isValueEncrypt();
@@ -422,7 +422,7 @@ public class ConfigParser {
 						result = getRuntimeValues(values, key,def.isKeyEncrypt(), def.isValueEncrypt());
 					}
 				}
-				//if(!result.isEmpty()){
+				// if(!result.isEmpty()){
 				if(!BasicUtil.isEmpty(true, result)){
 					break;
 				}
@@ -636,7 +636,7 @@ public class ConfigParser {
 			result = insertDESVersion(result);
 			String pre = defaultDesKey.getPrefix(type);
 			if(mix && ENCRYPT_TYPE_VALUE.equals(type)){
-				//随机URL 避免QQ等工具报警 每次生成不同URL 扰乱爬虫追溯
+				// 随机URL 避免QQ等工具报警 每次生成不同URL 扰乱爬虫追溯
 				String rand = "v"+BasicUtil.getRandomNumberString(5)+"v";
 				pre = rand+pre;
 			}
@@ -735,7 +735,7 @@ public class ConfigParser {
 		if (null == src) {
 			return null;
 		}
-		//删除随机URL混淆码
+		// 删除随机URL混淆码
 		if(ENCRYPT_TYPE_VALUE.equals(type)){
 			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)){
 				result = result.substring(7);
@@ -986,8 +986,8 @@ public class ConfigParser {
 									}
 								}
 								if (null != value) {
-									//这里有可能是个Map
-									//value = value.toString().trim();
+									// 这里有可能是个Map
+									// value = value.toString().trim();
 									value = filterIllegalChar(value);
 								}
 							}

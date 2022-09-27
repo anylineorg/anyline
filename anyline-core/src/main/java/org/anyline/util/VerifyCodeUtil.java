@@ -30,7 +30,7 @@ import java.util.Random;
  
 public class VerifyCodeUtil { 
  
-	// ,字体只显示大写,去掉了1,0,i,o,2,Z,L,C,G几个容易混淆的字符 
+	// ,字体只显示大写,去掉了1,0,i,o,2,Z,L,C,G几个容易混淆的字符
 	public static final String VERIFY_CODES = "3456789ABDEFHJKMNPQRSTUVWXY"; 
 	private static Random random = new Random(); 
  
@@ -208,11 +208,11 @@ public class VerifyCodeUtil {
 
 		
 		if(trouble){ 
-			// 绘制干扰线 
+			// 绘制干扰线
 			Random random = new Random(); 
 			g2.setColor(getRandColor(160, 200));// 设置线条的颜色 
 			for (int i = 0; i < 20; i++) {
-				//g2.setStroke(new BasicStroke(2)); 
+				// g2.setStroke(new BasicStroke(2));
 				int x = random.nextInt(w - 1); 
 				int y = random.nextInt(h - 1); 
 				int xl = random.nextInt(6) + 1; 
@@ -220,7 +220,7 @@ public class VerifyCodeUtil {
 				g2.drawLine(x, y, x + xl + 40, y + yl + 20); 
 			} 
 	 
-			// 添加噪点 
+			// 添加噪点
 			float yawpRate = 0.1f;// 噪声率 
 			int area = (int) (yawpRate * w * h); 
 			for (int i = 0; i < area; i++) { 
@@ -296,7 +296,7 @@ public class VerifyCodeUtil {
  
 	private static void shearY(Graphics g, int w1, int h1, Color color) { 
  
-		int period = random.nextInt(40) + 10; // 50; 
+		int period = random.nextInt(40) + 10; // 50;
  
 		boolean borderGap = true; 
 		int frames = 20; 

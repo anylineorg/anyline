@@ -666,13 +666,13 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
-		//Column update = column.getUpdate();
-		//if(null == update){
-		//添加列
+		// Column update = column.getUpdate();
+		// if(null == update){
+		// 添加列
 		builder.append(" ADD ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
-		//}
+		// }
 		return builder.toString();
 	}
 
@@ -780,7 +780,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				sqls.add(builder.toString());
 			}
 		}
-		//column.setName(name);
+		// column.setName(name);
 		return sqls;
 	}
 

@@ -10,9 +10,9 @@ import java.util.List;
 
 public class ExcelReader {
 	private File file = null;
-	private int head = -1;		//表头所在行
-	private int data = -1;		//数据开始行
-	private int foot = 0;		//表头行数
+	private int head = -1;		// 表头所在行
+	private int data = -1;		// 数据开始行
+	private int foot = 0;		// 表头行数
 	private int sheet = -1;
 	private String sheetName = null;
 	private InputStream is;
@@ -63,7 +63,7 @@ public class ExcelReader {
 		}
 		if(list.size()>0) {
 			if (head != -1) {
-				//取第一行作为表头
+				// 取第一行作为表头
 				List<String> headers = list.get(0);
 				int size = headers.size();
 				int rows = 0;

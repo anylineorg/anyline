@@ -57,10 +57,10 @@ public class FileResult extends StrutsResultSupport {
 			} else if (data instanceof DataRow) {
 				DataRow row = (DataRow) data;
 				String fileServer = row.getString("SERVER_HOST");
-				//转到到文件服务器(根据URL)
+				// 转到到文件服务器(根据URL)
 				if(BasicUtil.isNotEmpty(fileServer)){
 					String url = FileUtil.merge(row.getString("SUB_DIR"), row.getString("FILE_NAME"));
-					//注意http:\\中的\
+					// 注意http:\\中的\
 					url = url.replace("\\", "/").replace("//", "/");
 					url = FileUtil.merge(fileServer, url);
 					log.info("[文件请求已转发][id:{}][redirect:{}]",row.getPrimaryKey(),url);

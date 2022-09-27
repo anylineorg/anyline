@@ -24,7 +24,7 @@ import org.anyline.jdbc.prepare.Group;
  
 public class SimpleGroup implements Group{
 	private static final long serialVersionUID = 5820480420021701152L;
-	private String column;						//排序列 
+	private String column;						// 排序列
 	 
 	public SimpleGroup(){}
 	public SimpleGroup(String column){

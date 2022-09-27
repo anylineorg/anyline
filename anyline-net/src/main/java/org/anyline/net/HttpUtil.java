@@ -54,7 +54,7 @@ public class HttpUtil {
 	private static CloseableHttpClient default_client;
 	private static CloseableHttpClient default_ssl_client;
 	private static RequestConfig default_request_config;
-	private static int default_connect_timeout = 72000; //毫秒
+	private static int default_connect_timeout = 72000; // 毫秒
 	private static int default_socket_timeout = 72000;
 	private static String default_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	public static String PROTOCOL_TLSV1 = "TLSv1";
@@ -474,7 +474,7 @@ public class HttpUtil {
 			if(index1 < index2){			// 没有在/之前出现的 有可能是文件名中的.
 				return true;
 			}
-			if(index2 == -1){				//没有域名
+			if(index2 == -1){				// 没有域名
 				return true;
 			}
 		}
@@ -667,9 +667,9 @@ public class HttpUtil {
 			}
 			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
-			//ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信
-			//BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
-			//STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
+			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信
+			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
+			// STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();

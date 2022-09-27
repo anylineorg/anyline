@@ -20,7 +20,7 @@ package org.anyline.wechat.util;
 import org.anyline.util.AnylineConfig;
 
 public class WechatConfig extends AnylineConfig{
-	//登录获取身份信息类别
+	// 登录获取身份信息类别
 	public static enum SNSAPI_SCOPE{
 		BASE		{public String getCode(){return "snsapi_base";} 	public String getName(){return "基础信息";}},
 		USERINFO	{public String getCode(){return "snsapi_userinfo";} public String getName(){return "详细信息";}};
@@ -55,34 +55,34 @@ public class WechatConfig extends AnylineConfig{
 			,"PAY_NOTIFY_URL:PAY_NOTIFY"
 			,"PAY_KEY_STORE_FILE:KEY_STORE_FILE"
 			,"PAY_KEY_STORE_PASSWORD:KEY_STORE_PASSWORD"};
-	//获取RSA公钥
+	// 获取RSA公钥
 	public final static String API_URL_GET_PUBLIC_SECRET		= "https://fraud.mch.weixin.qq.com/risk/getpublickey";
-	//发送模板消息
+	// 发送模板消息
 	public final static String API_URL_SEND_TEMPLATE_MESSAGE	= "https://api.weixin.qq.com/cgi-bin/message/template/send";
-	//oauth2.0授权
+	// oauth2.0授权
 	public final static String API_URL_GET_AUTH_INFO			= "https://api.weixin.qq.com/sns/oauth2/access_token";
-	//用户基本信息
+	// 用户基本信息
 	public final static String API_URL_GET_USER_INFO			= "https://api.weixin.qq.com/cgi-bin/user/info";//?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 
 	public final static String URL_OAUTH						= "https://open.weixin.qq.com/connect/oauth2/authorize";
 
-	public static String DEFAULT_APP_ID 						= "" ; //AppID(应用ID)
-	public static String DEFAULT_APP_SECRET 					= "" ; //AppSecret(应用密钥)
-	public static String DEFAULT_SIGN_TYPE 						= "" ; //签名加密方式
-	public static String DEFAULT_SERVER_TOKEN 					= "" ; //服务号的配置token
-	public static String DEFAULT_OAUTH_REDIRECT_URL 			= "" ; //oauth2授权时回调action
+	public static String DEFAULT_APP_ID 						= "" ; // AppID(应用ID)
+	public static String DEFAULT_APP_SECRET 					= "" ; // AppSecret(应用密钥)
+	public static String DEFAULT_SIGN_TYPE 						= "" ; // 签名加密方式
+	public static String DEFAULT_SERVER_TOKEN 					= "" ; // 服务号的配置token
+	public static String DEFAULT_OAUTH_REDIRECT_URL 			= "" ; // oauth2授权时回调action
 	public static String DEFAULT_WEB_SERVER 					= "" ;
 	public static String DEFAULT_ACCESS_TOKEN_SERVER			= "" ;
-	public static String DEFAULT_SERVER_WHITELIST			    = null; //白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
+	public static String DEFAULT_SERVER_WHITELIST			    = null; // 白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
 
-	public String APP_ID 						= DEFAULT_APP_ID 				; //AppID(应用ID)
-	public String APP_SECRET 					= DEFAULT_APP_SECRET 			; //AppSecret(应用密钥)
-	public String SIGN_TYPE 					= DEFAULT_SIGN_TYPE 			; //签名加密方式
-	public String SERVER_TOKEN 					= DEFAULT_SERVER_TOKEN 			; //服务号的配置token
-	public String OAUTH_REDIRECT_URL 			= DEFAULT_OAUTH_REDIRECT_URL	; //oauth2授权时回调action
+	public String APP_ID 						= DEFAULT_APP_ID 				; // AppID(应用ID)
+	public String APP_SECRET 					= DEFAULT_APP_SECRET 			; // AppSecret(应用密钥)
+	public String SIGN_TYPE 					= DEFAULT_SIGN_TYPE 			; // 签名加密方式
+	public String SERVER_TOKEN 					= DEFAULT_SERVER_TOKEN 			; // 服务号的配置token
+	public String OAUTH_REDIRECT_URL 			= DEFAULT_OAUTH_REDIRECT_URL	; // oauth2授权时回调action
 	public String WEB_SERVER 					= DEFAULT_WEB_SERVER 			;
 	public String ACCESS_TOKEN_SERVER			= DEFAULT_ACCESS_TOKEN_SERVER 	;
-	public String SERVER_WHITELIST			    = DEFAULT_SERVER_WHITELIST		; //白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
+	public String SERVER_WHITELIST			    = DEFAULT_SERVER_WHITELIST		; // 白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
 
 
 } 

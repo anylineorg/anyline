@@ -75,7 +75,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		if(null == navi){ 
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
-			//分页 
+			// 分页 
 				builder.append("SELECT "+cols+" FROM( \n");
 				builder.append("SELECT TAB_I.* ,ROWNUM AS ROW_NUMBER \n"); 
 				builder.append("FROM( \n"); 
@@ -794,13 +794,13 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
-		//Column update = column.getUpdate();
-		//if(null == update){
-		//添加列
+		// Column update = column.getUpdate();
+		// if(null == update){
+		// 添加列
 		builder.append(" ADD ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
-		//}
+		// }
 		return builder.toString();
 	}
 
@@ -908,7 +908,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				sqls.add(builder.toString());
 			}
 		}
-		//column.setName(name);
+		// column.setName(name);
 		return sqls;
 	}
 

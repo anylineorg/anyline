@@ -20,12 +20,12 @@ import java.util.*;
 public class WDocument {
     private static Logger log = LoggerFactory.getLogger(WDocument.class);
     private File file;
-    private String xml = null;      //document.xml文本
-    //word/document.xml
+    private String xml = null;      // document.xml文本
+    // word/document.xml
     private org.dom4j.Document doc = null;
     private Element body = null;
 
-    //word/_rels/document.xml.rels
+    // word/_rels/document.xml.rels
     private String relsXml = null;
     private org.dom4j.Document relsDoc;
 
@@ -114,7 +114,7 @@ public class WDocument {
         Wtable table = new Wtable(this, src);
         return table;
     }
-    //插入排版方向
+    // 插入排版方向
     public void setOrient(Element prev, String orient, Map<String,String> styles){
         int index = index(body, prev);
         Element p = body.addElement("w:p");
@@ -131,7 +131,7 @@ public class WDocument {
     public void setOrient(Element prev, String orient){
         setOrient(prev, orient, null);
     }
-    //插入换页
+    // 插入换页
     public void insertPageBreak(Element prev){
         int index = index(body, prev);
         Element p = body.addElement("w:p");
@@ -174,8 +174,8 @@ public class WDocument {
         Element endParent = end.getParent();
         if(isblock){
             if(startParent == endParent){
-                //结束标签拆分到下一段落
-                //<start.p><content.p><end.p>
+                // 结束标签拆分到下一段落
+                // <start.p><content.p><end.p>
                 Element nEndP = startParent.getParent().addElement("w:p");
                 endParent.elements().remove(end);
                 nEndP.elements().add(end);
@@ -205,7 +205,7 @@ public class WDocument {
         if(null == html || html.trim().length()==0){
             return list;
         }
-        //抽取style
+        // 抽取style
         this.styles.clear();
         List<String> styles = RegularUtil.cuts(html,true,"<style",">","</style>");
         for(String style:styles){
@@ -219,7 +219,7 @@ public class WDocument {
             parseHtml(box, prev, root, null, true);
         }catch (Exception e){
             e.printStackTrace();
-            //log.error(html);
+            // log.error(html);
         }
         return list;
     }
@@ -282,7 +282,7 @@ public class WDocument {
         }
         return false;
     }
-    //当element位置开始把parent拆分(element不一定是parent直接子级)
+    // 当element位置开始把parent拆分(element不一定是parent直接子级)
     private void split(Element element){
         Element parent = parent(element,"p");
         int pindex = DocxUtil.index(parent);
@@ -412,9 +412,9 @@ public class WDocument {
     }
     public Element tc(Element parent, Td td){
         Element tc = null;
-        int merge = td.getMerge(); //0:不合并 1:向下合并(restart) 2:被合并(continue)
-        int colspan = td.getColspan(); //向右合并
-        boolean remove = td.isRemove(); //被左侧合并
+        int merge = td.getMerge(); // 0:不合并 1:向下合并(restart) 2:被合并(continue)
+        int colspan = td.getColspan(); // 向右合并
+        boolean remove = td.isRemove(); // 被左侧合并
         if(!remove){
             tc = parent.addElement("w:tc");
             Element tcPr = DocxUtil.addElement(tc, "tcPr");
@@ -429,7 +429,7 @@ public class WDocument {
                 span.addAttribute("w:val", colspan+"");
             }
             if(tcPr.elements().size()==0){
-                //tc.remove(tcPr);
+                // tc.remove(tcPr);
             }
 
             Map<String, String> styles = StyleParser.inherit(td.getStyles(), td.getTr().getStyles());
@@ -459,7 +459,7 @@ public class WDocument {
         }else if(pname.equalsIgnoreCase("p")){
             pr(parent, styles);
             r = parent.addElement("w:r");
-            //复制前一个w 的样式
+            // 复制前一个w 的样式
             if(copyPrevStyle && null != prev){
                 Element prevR = prevStyle(prev);
                 DocxUtil.copyStyle(r, prevR, true);
@@ -480,7 +480,7 @@ public class WDocument {
         t.setText(text.trim());
         return r;
     }
-    //前一个样式
+    // 前一个样式
     public Element prevStyle(Element prev){
         Element prevStyle = null;
         if(prev.getName().equals("r")){
@@ -519,7 +519,7 @@ public class WDocument {
             newPrev = parent.getParent();
             wp = newPrev;
         }else if(pname.equalsIgnoreCase("tc")){
-            //box = DocxUtil.addElement(parent,"p");
+            // box = DocxUtil.addElement(parent,"p");
             Element p = parent.element("p");
             if(null != p && DocxUtil.isEmpty(p)){
                 box = p;
@@ -536,14 +536,14 @@ public class WDocument {
             wp = box;
         }else{
             throw new RuntimeException("div.parent 异常:"+pname+":"+element.getName()+":"+element.getTextTrim());
-            //新建一个段落
+            // 新建一个段落
         }
 
         pr(box, styles);
         parseHtml(box, prev, element, styles, false);
 
         if(null != styles && null != styles.get("page-break-after")){
-            //分页
+            // 分页
             wp.addElement("w:r").addElement("w:br").addAttribute("w:type","page");
             wp.addElement("w:r").addElement("w:lastRenderedPageBreak");
         }
@@ -678,7 +678,7 @@ public class WDocument {
         }else if(pname.equalsIgnoreCase("p")){
             pr(parent, styles);
             r = parent.addElement("w:r");
-            //DocxUtil.after(r, prev);
+            // DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("body")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
@@ -722,12 +722,12 @@ public class WDocument {
         File tmpdir = new File(System.getProperty("java.io.tmpdir"));
         File img = null;
         try {
-            //下载文件
+            // 下载文件
             if(HttpUtil.isUrl(src)) {
                 img = new File(tmpdir,"image" + rdm + "." + subfix);
                 HttpUtil.download(src, img);
             }else{
-                //本地图片
+                // 本地图片
                 if(src.startsWith("file:")){
                     src = src.substring("file:".length());
                 }
@@ -737,10 +737,10 @@ public class WDocument {
             map.put("word/media/"+img.getName(),img);
             ZipUtil.append( map,file);
             if(HttpUtil.isUrl(src)) {
-                //删除临时文件
+                // 删除临时文件
                 img.delete();
             }
-            //创建文件资源引用
+            // 创建文件资源引用
             Element relRoot = relsDoc.getRootElement();
             Element imgRel = relRoot.addElement("Relationship");
             imgRel.addAttribute("Id",rId);
@@ -759,7 +759,7 @@ public class WDocument {
         */
         boolean isFloat = "relative".equalsIgnoreCase(positionType) || "fixed".equalsIgnoreCase(positionType);
         if(isFloat){
-            //浮动
+            // 浮动
             box = draw.addElement("wp:anchor");
             box.addAttribute("distT","0");
             box.addAttribute("distB","0");
@@ -774,20 +774,20 @@ public class WDocument {
             box.addAttribute("allowOverlap","1");
 
 
-            //水平偏移
+            // 水平偏移
             int offsetX = (int)DocxUtil.dxa2emu(DocxUtil.dxa(styles.get("offset-x")));
-            //垂直偏移
+            // 垂直偏移
             int offsetY = (int)DocxUtil.dxa2emu(DocxUtil.dxa(styles.get("offset-y")));
 
             Element simplePos= box.addElement("wp:simplePos");
             if("fixed".equals(positionType)){
-                //如果使用simplePos定位 这里设置成1
-                //相对于页面的左上角定位对象
+                // 如果使用simplePos定位 这里设置成1
+                // 相对于页面的左上角定位对象
                 box.addAttribute("simplePos","1");
                 simplePos.addAttribute("x",offsetX+"");
                 simplePos.addAttribute("y",offsetY+"");
             }else{
-                //relative相对位
+                // relative相对位
                 box.addAttribute("simplePos","0");
                 simplePos.addAttribute("x","0");
                 simplePos.addAttribute("y","0");
@@ -802,7 +802,7 @@ public class WDocument {
                 rightMargin - 相对于右边距
                 */
 
-                //水平参照
+                // 水平参照
                 String relativeX = styles.get("relative-x");
 
                 Element positionH = box.addElement("wp:positionH");
@@ -819,7 +819,7 @@ public class WDocument {
                 paragraph - 相对于包含锚的段落
                 topMargin - 相对于上边距
                 */
-                //垂直参照
+                // 垂直参照
                 String relativeY = styles.get("relative-y");
 
                 Element positionV = box.addElement("wp:positionV");
@@ -828,7 +828,7 @@ public class WDocument {
                 posOffsetV.setText(offsetY+"");
             }
         }else{
-            //不浮动
+            // 不浮动
             box = draw.addElement("wp:inline");
             box.addAttribute("distT","0");
             box.addAttribute("distB","0");
@@ -840,14 +840,14 @@ public class WDocument {
         extent.addAttribute("cx", width+"");
         extent.addAttribute("cy", height+"");
 
-        Element effectExtent = box.addElement("wp:effectExtent"); //边距
+        Element effectExtent = box.addElement("wp:effectExtent"); // 边距
         effectExtent.addAttribute("l","0");
         effectExtent.addAttribute("r","0");
         effectExtent.addAttribute("t","0");
         effectExtent.addAttribute("b","0");
         if(isFloat){
-            //浮动时才需要
-            //这个wrapNone位置不能变
+            // 浮动时才需要
+            // 这个wrapNone位置不能变
             box.addElement("wp:wrapNone");
         }
         Element docPr = box.addElement("wp:docPr");
@@ -872,7 +872,7 @@ public class WDocument {
         Element cNvPicPr = nvPicPr.addElement("pic:cNvPicPr");
         Element blipFill = pic.addElement("pic:blipFill");
         Element blip = blipFill.addElement("a:blip");
-        blip.addAttribute("r:embed", rId);     //图片资源编号
+        blip.addAttribute("r:embed", rId);     // 图片资源编号
         Element stretch = blipFill.addElement("a:stretch");
         Element fillRect = stretch.addElement("a:fillRect");
         Element spPr = pic.addElement("pic:spPr");
@@ -915,7 +915,7 @@ public class WDocument {
             Node node = nodes.next();
             String tag = node.getName();
             int type = node.getNodeType();
-            //Element:1 Attribute:2 Text:3 CDATA:4 Entity:5 Comment:8 Document:9
+            // Element:1 Attribute:2 Text:3 CDATA:4 Entity:5 Comment:8 Document:9
             if(type == 3){//text
                 String text = node.getText().trim();
                 if(text.length()>0) {
@@ -940,7 +940,7 @@ public class WDocument {
                         box = parent.addElement("w:r");
                     }else{
                         box = doc.getRootElement().element("body");
-                        //新建一个段落
+                        // 新建一个段落
                     }
                     Element tbl = table(box, prev, element);
                     prev = tbl;
@@ -1158,8 +1158,8 @@ public class WDocument {
                     }else{
                         content = replaces.get(flag);
                     }
-                    //boolean isblock = DocxUtil.isBlock(content);
-                    //Element p = t.getParent();
+                    // boolean isblock = DocxUtil.isBlock(content);
+                    // Element p = t.getParent();
                     /*if(null != key && DocxUtil.isEmpty(p, t) && !DocxUtil.hasParent(t,"tc")){
                         prev = DocxUtil.prev(body, p);
                         body.remove(p);

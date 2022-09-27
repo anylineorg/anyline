@@ -291,7 +291,7 @@ public interface AnylineService<E>{
 	public EntitySet<E> gets(ConfigStore configs, String ... conditions);
 	public EntitySet<E> gets(PageNavi navi, String ... conditions);
 
-	//与public DataSet querys(String src, String ... conditions);  签名冲突
+	// 与public DataSet querys(String src, String ... conditions);  签名冲突
 	public EntitySet<E> gets(String ... conditions);
 	public EntitySet<E> gets(int first, int last, String ... conditions);
 	public E get(ConfigStore configs, String ... conditions);

@@ -2,7 +2,7 @@ package org.anyline.jdbc.entity;
 
 public class Index extends Constraint{
 
-    private boolean cluster     ; //是否聚簇索引
+    private boolean cluster     ; // 是否聚簇索引
 
     public boolean isCluster() {
         return cluster;

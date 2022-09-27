@@ -3,20 +3,20 @@ package org.anyline.qq.open.entity;
  * 统一下单返回结果 
  */ 
 public class QQPayTradeResult { 
-	private String 	return_code		; //返回状态码 
-	private String 	return_msg		; //返回信息 
-	private String 	retcode			; //手Q CGI原始错误码 
-	private String 	retmsg			; //手Q CGI原始错误信息 
-	private String 	appid			; //应用ID 
-	private String 	mch_id			; //商户号 
-	private String 	sign			; //商户签名算法规则 
-	private String 	result_code		; //业务结果SUCCESS/FAIL 
-	private String 	err_code		; //错误代码 
-	private String 	err_code_desc	; //错误代码描述 
-	private String 	nonce_str		; //随机字符串 
-	private String 	trade_type		; //支付场景 
-	private String 	prepay_id		; //QQ钱包的预支付会话标识 
-	private String 	code_url		; //二维码链接 
+	private String 	return_code		; // 返回状态码
+	private String 	return_msg		; // 返回信息
+	private String 	retcode			; // 手Q CGI原始错误码
+	private String 	retmsg			; // 手Q CGI原始错误信息
+	private String 	appid			; // 应用ID
+	private String 	mch_id			; // 商户号
+	private String 	sign			; // 商户签名算法规则
+	private String 	result_code		; // 业务结果SUCCESS/FAIL
+	private String 	err_code		; // 错误代码
+	private String 	err_code_desc	; // 错误代码描述
+	private String 	nonce_str		; // 随机字符串
+	private String 	trade_type		; // 支付场景
+	private String 	prepay_id		; // QQ钱包的预支付会话标识
+	private String 	code_url		; // 二维码链接
 	 
 	public String getReturn_code() { 
 		return return_code; 

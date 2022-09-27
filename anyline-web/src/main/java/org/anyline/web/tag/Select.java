@@ -35,7 +35,7 @@ public class Select extends BaseBodyTag {
 	private String textKey = "NM"; 
 	private String head; 
 	private String headValue; 
-	private String type = "select"; // 如果type=text则只显示选中项的text而不生成<select> 
+	private String type = "select"; // 如果type=text则只显示选中项的text而不生成<select>
 	private String multiple = null;
 	private int size = 1;
  

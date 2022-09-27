@@ -47,12 +47,12 @@ public class WebConfigChain extends WebConfig implements org.anyline.web.config.
 			String confVar = conf.getVariable();
 			RunPrepare.COMPARE_TYPE confType = conf.getCompare();
 			if(BasicUtil.isEmpty(prefix)){
-				//只提供列名,不提供表名
+				// 只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){
 					return conf;
 				}
 			}else if(BasicUtil.isEmpty(var)){
-				//只提供查询条件id不提供变量名
+				// 只提供查询条件id不提供变量名
 				if(prefix.equalsIgnoreCase(confId) && type == confType){
 					return conf;
 				}

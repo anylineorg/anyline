@@ -11,7 +11,7 @@ public class Wtr {
     private Element src;
     private Wtable parent;
     private List<Wtc> wtcs = new ArrayList<>();
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
     public Wtr(WDocument doc, Wtable parent, Element src){
         this.doc = doc;
         this.src = src;

@@ -35,7 +35,7 @@ public class Message extends BodyTagSupport{
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private String key; 
-	private boolean clean = true;		//显示后清除 
+	private boolean clean = true;		// 显示后清除
  
 	 public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 

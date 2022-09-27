@@ -22,9 +22,9 @@ public class MailBean implements InitializingBean {
     @Value("${anyline.mail.port:}")
     public String PORT						    ;
     @Value("${anyline.mail.attachment:}")
-    public String ATTACHMENT_DIR 				;	//附件下载地址
+    public String ATTACHMENT_DIR 				;	// 附件下载地址
     @Value("${anyline.mail.ssl:false}")
-    public boolean SSL_FLAG 					;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
+    public boolean SSL_FLAG 					;  // 是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
     @Value("${anyline.mail.download:true}")
     public boolean AUTO_DOWNLOAD_ATTACHMENT 	;
 

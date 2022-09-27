@@ -124,7 +124,7 @@ public interface AnylineDao<E>{
 	 * @param procedure  procedure
 	 * @return DataSet
 	 */
-	//public DataSet querys(Procedure procedure);
+	// public DataSet querys(Procedure procedure);
 	public DataSet querys(Procedure procedure, PageNavi navi);
 	public int delete(String dest, Object obj, String ... columns);
 	public int delete(String table, ConfigStore configs, String ... conditions);

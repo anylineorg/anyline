@@ -36,27 +36,27 @@ public class PageNaviImpl implements PageNavi{
 	protected static final String TAB 					= "\t"; 
 	protected static final String BR_TAB 				= "\n\t"; 
 	 
-	protected int totalRow					= 0			; //记录总数 (rows)
-	protected int totalPage					= 0 		; //最大页数 (pages)
-	protected int curPage					= 1 		; //当前页数 
+	protected int totalRow					= 0			; // 记录总数 (rows)
+	protected int totalPage					= 0 		; // 最大页数 (pages)
+	protected int curPage					= 1 		; // 当前页数
 	 
-	protected int pageRange					= 10		; //显示多少个分页下标 
-	protected int pageRows					= 10		; //每页多少条 
-	protected int displayPageFirst 			= 0			; //显示的第一页标签 
-	protected int displayPageLast 			= 0			; //显示的最后页标签 
-	protected String baseLink				= null		; //基础URL 
-	protected OrderStore orders				= null 		; //排序依据(根据 orderCol 排序分页) 
-	protected int calType 					= 0			; //分页计算方式(0-按页数 1-按开始结束数) 
-	protected int firstRow 					= 0			; //第一行 
-	protected int lastRow 					= -1		; //最后一行 
-	protected boolean lazy 					= false		; //是否懒加载
-	protected String flag  					= ""		; //一个jsp中有多个分页时用来区分 
-	protected long lazyPeriod 				= 0			; //总条数懒加载时间间隔(秒) 
-	protected String lazyKey 				= null		; //懒加载 
-	protected int type 						= 0			; //分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1) 
-	protected Map<String,List<Object>> params= null		; //查询参数 
+	protected int pageRange					= 10		; // 显示多少个分页下标
+	protected int pageRows					= 10		; // 每页多少条
+	protected int displayPageFirst 			= 0			; // 显示的第一页标签
+	protected int displayPageLast 			= 0			; // 显示的最后页标签
+	protected String baseLink				= null		; // 基础URL
+	protected OrderStore orders				= null 		; // 排序依据(根据 orderCol 排序分页)
+	protected int calType 					= 0			; // 分页计算方式(0-按页数 1-按开始结束数)
+	protected int firstRow 					= 0			; // 第一行
+	protected int lastRow 					= -1		; // 最后一行
+	protected boolean lazy 					= false		; // 是否懒加载
+	protected String flag  					= ""		; // 一个jsp中有多个分页时用来区分
+	protected long lazyPeriod 				= 0			; // 总条数懒加载时间间隔(秒)
+	protected String lazyKey 				= null		; // 懒加载
+	protected int type 						= 0			; // 分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
+	protected Map<String,List<Object>> params= null		; // 查询参数
 	protected String method					= "post"	; 
-	protected String style					= ""		; //样式标记对应anyline-navi.xml中的config.key
+	protected String style					= ""		; // 样式标记对应anyline-navi.xml中的config.key
  
 	protected boolean showStat = false; 
 	protected boolean showJump = false; 
@@ -120,16 +120,16 @@ public class PageNaviImpl implements PageNavi{
 	 */ 
 	public void calculate() { 
 		int totalPage = (totalRow - 1) / pageRows + 1; 
-		//当前页是否超出总页数 
+		// 当前页是否超出总页数 
 		if(curPage > totalPage){
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
 			if(null != config &&  config.VAR_LIMIT_SCOPE){
-				curPage = totalPage; //超出范围 查最后一页
+				curPage = totalPage; // 超出范围 查最后一页
 			}
 		}
 
-		setTotalPage(totalPage);					//总页数 
-		setDisplayPageFirst(NumberUtil.min(curPage,totalPage) - pageRange/2);				//显示的第一页
+		setTotalPage(totalPage);					// 总页数 
+		setDisplayPageFirst(NumberUtil.min(curPage,totalPage) - pageRange/2);				// 显示的第一页
 		if(displayPageFirst > totalPage - pageRange){ 
 			setDisplayPageFirst(totalPage - pageRange + 1); 
 		} 
@@ -137,7 +137,7 @@ public class PageNaviImpl implements PageNavi{
 			setDisplayPageFirst(1); 
 		} 
 		 
-		setDisplayPageLast(displayPageFirst + pageRange - 1);		//显示的最后页 
+		setDisplayPageLast(displayPageFirst + pageRange - 1);		// 显示的最后页 
 		if (displayPageLast > totalPage){ 
 			setDisplayPageLast(totalPage); 
 		} 
@@ -240,7 +240,7 @@ public class PageNaviImpl implements PageNavi{
 		return result; 
 	} 
 	public String getOrderText(boolean require){ 
-		//return getOrderText(require, null); 
+		// return getOrderText(require, null); 
 		return null; 
 	} 
 	public String getOrderText(boolean require, OrderStore store, String delimiter){
@@ -467,7 +467,7 @@ public class PageNaviImpl implements PageNavi{
 		}
 		calculate(); 
 		StringBuilder navi = new StringBuilder(); 
-		//StringBuilder layout = new StringBuilder(); 
+		// StringBuilder layout = new StringBuilder(); 
 		StringBuilder index = new StringBuilder(); 
 		StringBuilder stat = new StringBuilder(); 
 		StringBuilder vol = new StringBuilder(); 
@@ -477,7 +477,7 @@ public class PageNaviImpl implements PageNavi{
 			flag = ""; 
 		} 
 		if("ajax".equals(adapter)){
-			configVarKey = config.KEY_ID_FLAG + flag;	//_anyline_navi_conf_0 
+			configVarKey = config.KEY_ID_FLAG + flag;	// _anyline_navi_conf_0 
 		} 
 		if("html".equals(adapter)){
 			navi.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n"); 
@@ -489,13 +489,13 @@ public class PageNaviImpl implements PageNavi{
 		if("ajax".equals(adapter)){
 			navi.append("<div class=\"form\">\n"); 
 		} 
-		//当前页 
+		// 当前页 
 		navi.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n"); 
-		//共多少页 
+		// 共多少页 
 		navi.append("<input type='hidden' id='hid_total_page_"+flag+"' name='"+config.KEY_TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n"); 
-		//共多少条 
+		// 共多少条 
 		navi.append("<input type='hidden' id='hid_total_row_"+flag+"' name='"+config.KEY_TOTAL_ROW+"' class='_anyline_navi_total_row' value='"+totalRow+"'/>\n"); 
-		//每页显示多少条 
+		// 每页显示多少条 
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){ 
 			navi.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='_anyline_navi_page_rows_key' value='"+config.KEY_PAGE_ROWS+"'/>\n"); 
 			navi.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n"); 
@@ -505,7 +505,7 @@ public class PageNaviImpl implements PageNavi{
 		} 
 		navi.append(createHidParams(config)); 
 		navi.append("<div class=\"anyline_navi\">\n"); 
-		//数据统计 
+		// 数据统计 
 		String statFormat = config.STYLE_STAT_FORMAT;  
 		statFormat = statFormat.replace("${totalRow}", totalRow+"").replace("${curPage}", curPage+"").replace("${totalPage}", totalPage+"");
 		statFormat = statFormat.replace("${total-row}", totalRow+"").replace("${cur-page}", curPage+"").replace("${total-page}", totalPage+"");
@@ -528,8 +528,8 @@ public class PageNaviImpl implements PageNavi{
 		fr = NumberUtil.max(fr, 1); 
 		to = NumberUtil.min(to, totalPage); 
 		 
-		if(type ==0){ //下标导航 
-			//每页多少条 
+		if(type ==0){ // 下标导航
+			// 每页多少条 
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[vol set][enable:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,pageRows,config.CONFIG_PAGE_VAL_SET_SORT); 
 			} 
@@ -555,13 +555,13 @@ public class PageNaviImpl implements PageNavi{
  
 			} 
 			 
-			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示��2页或倒数第2页时显示省略号) 
-			//1 .. 3 4 5 6 7 8 .. 10 
+			// config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示��2页或倒数第2页时显示省略号) 
+			// 1 .. 3 4 5 6 7 8 .. 10 
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){ 
 				if(config.VAR_SHOW_BUTTON){ 
 					createPageTag(index, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey); 
 				} 
-				//下标 
+				// 下标 
 				if(config.VAR_SHOW_INDEX){ 
 					if(fr<2){ 
 						fr = 2; 
@@ -585,17 +585,17 @@ public class PageNaviImpl implements PageNavi{
 					} 
 					index.append("</div>\n"); 
 				} 
-				//下一页 最后页 
+				// 下一页 最后页 
 				if(config.VAR_SHOW_BUTTON){ 
 					createPageTag(index, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey); 
 				} 
 			}else{ 
-				//上一页  第一页 
+				// 上一页  第一页 
 				if(config.VAR_SHOW_BUTTON){ 
 					createPageTag(index, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey); 
 					createPageTag(index, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey); 
 				} 
-				//下标 
+				// 下标 
 				if(config.VAR_SHOW_INDEX){ 
 					index.append("<div class='navi-num-border'>\n"); 
 					for(int i=fr; i<=to; i++){ 
@@ -603,17 +603,17 @@ public class PageNaviImpl implements PageNavi{
 					} 
 					index.append("</div>\n"); 
 				} 
-				//下一页 最后页 
+				// 下一页 最后页 
 				if(config.VAR_SHOW_BUTTON){ 
 					createPageTag(index, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey); 
 					createPageTag(index, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey); 
 				} 
 			} 
-			//VOL位置:下标之后 
+			// VOL位置:下标之后 
 //			if("page".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){ 
 //				builder.append(vol); 
 //			} 
-			//跳转到 
+			// 跳转到 
 			if(showJump){ 
 				jump.append(config.STYLE_LABEL_JUMP) 
 				.append("<input type='text' value='") 
@@ -623,12 +623,12 @@ public class PageNaviImpl implements PageNavi{
 				.append("<span class='navi-go-button' onclick='_navi_jump("+configVarKey+")'>") 
 				.append(config.STYLE_BUTTON_JUMP).append("</span>\n"); 
 			} 
-			//VOL位置:最后 
+			// VOL位置:最后 
 //			if("last".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){ 
 //				builder.append(vol); 
 //			} 
 		}else if(type == 1){ 
-			//加载更多
+			// 加载更多
 			if(curPage+1 <= totalPage){
 				createPageTag(index, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
 			}else{
@@ -691,7 +691,7 @@ public class PageNaviImpl implements PageNavi{
 		builder.append(">"); 
 		builder.append(tag).append("</span>\n"); 
 	} 
-	//创建隐藏参数 
+	// 创建隐藏参数 
 	private String createHidParams(PageNaviConfig config){ 
 		String html = ""; 
 		try{ 

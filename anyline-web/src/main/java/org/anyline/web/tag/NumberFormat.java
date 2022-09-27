@@ -33,11 +33,11 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private String format;
 	private Object min;
 	private Object max; 
-	private String def; //默认值
+	private String def; // 默认值
 	private Integer scale;//小数位
 	private Integer round; // 参考BigDecimal.ROUND_UP;
-	private String hide; //隐藏span.class
-	private String echo; //显示位置 span.class
+	private String hide; // 隐藏span.class
+	private String echo; // 显示位置 span.class
 
  
  

@@ -45,7 +45,7 @@ public class Checkbox extends BaseBodyTag {
 	private Object data; 
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
 	private String textKey = "NM"; 
-	//private Object checked;	// 
+	// private Object checked;	//
 	private String property;
 	private String rely;
 	private String head;
@@ -103,7 +103,7 @@ public class Checkbox extends BaseBodyTag {
 					} 
 					data = list; 
 				} 
-				//选中值 
+				// 选中值
 				if (null != this.value) {
 					if(!(this.value instanceof String || this.value instanceof Collection)){
 						this.value = this.value.toString();
@@ -131,7 +131,7 @@ public class Checkbox extends BaseBodyTag {
 				Collection<Map> items = (Collection<Map>) data; 
 				Collection<?> chks = (Collection<?>)this.value;
 				
-				//条目边框
+				// 条目边框
 				String itemBorderTagName ="";
 				String itemBorderStartTag = "";
 				String itemBorderEndTag = "";

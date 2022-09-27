@@ -92,7 +92,7 @@ public class WechatUtil {
 				.setEncode("UTF-8")
 				.setEntity(reqEntity)
 				.build().get().getText();
-		//String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
+		// String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[获取RSA公钥][\n{}\n]",txt);
 		}
@@ -157,7 +157,7 @@ public class WechatUtil {
 			row.put("APP_ID", appid);
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
 			row.setExpires(json.getInt("expires_in", 0)*800);
-			row.setExpires(1000*60*5); //5分钟内有效
+			row.setExpires(1000*60*5); // 5分钟内有效
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN"));
 			}

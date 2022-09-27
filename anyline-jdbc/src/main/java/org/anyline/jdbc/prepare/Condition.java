@@ -28,12 +28,12 @@ import java.util.Map;
  
  
 public interface Condition extends Cloneable{ 
-	public static String CONDITION_JOIN_TYPE_AND		= " AND "	;	//拼接方式 AND 
-	public static String CONDITION_JOIN_TYPE_OR			= " OR "	;	//拼接方式 OR
-	//参数变量类型 
-	public static final int VARIABLE_FLAG_TYPE_INDEX	= 0			;	//按下标区分 
-	public static final int VARIABLE_FLAG_TYPE_KEY		= 1			;	//按KEY区分 
-	public static final int VARIABLE_FLAG_TYPE_NONE		= 2			;	//没有变量 
+	public static String CONDITION_JOIN_TYPE_AND		= " AND "	;	// 拼接方式 AND
+	public static String CONDITION_JOIN_TYPE_OR			= " OR "	;	// 拼接方式 OR
+	// 参数变量类型
+	public static final int VARIABLE_FLAG_TYPE_INDEX	= 0			;	// 按下标区分
+	public static final int VARIABLE_FLAG_TYPE_KEY		= 1			;	// 按KEY区分
+	public static final int VARIABLE_FLAG_TYPE_NONE		= 2			;	// 没有变量
 	 
 	/** 
 	 * 运行时文本 

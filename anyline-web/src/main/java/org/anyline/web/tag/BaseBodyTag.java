@@ -53,7 +53,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected Object extraData;
 	protected String itemExtra;
 	protected String var;
-	protected boolean encrypt;	//是否加密 
+	protected boolean encrypt;	// 是否加密 
 	
 	 
 	public String getItemExtra() {
@@ -141,7 +141,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected void crateExtraData(StringBuffer builder){
 		if(BasicUtil.isNotEmpty(extra)){
 			if(extra.startsWith("{") && extra.endsWith("}")){
-				//{id:1,nm:2} > data-id=1,data-nm=2
+				// {id:1,nm:2} > data-id=1,data-nm=2
 				extra = extra.substring(1,extra.length()-1);
 				String[] list = extra.split(",");
 				for(String item:list){
@@ -151,7 +151,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 					}
 				}
 			}else{
-				//id:ID,name:{NM}-{CODE} > data-id=extraData.get("ID"),data-NAME=extraData.get("NM")-extraData.get("CODE")
+				// id:ID,name:{NM}-{CODE} > data-id=extraData.get("ID"),data-NAME=extraData.get("NM")-extraData.get("CODE")
 				String[] list = extra.split(",");
 				for(String item:list){
 					String[] tmps = item.split(":");
@@ -190,7 +190,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		id = null;
 		name = null;
 		value = null;
-		//evl = false;
+		// evl = false;
 		evl = null;
 		nvl = null;
 		clazz = null;

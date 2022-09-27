@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
  
 public class SerialNumber extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
-	private Object data;		//分页数据 DataSete 或PageNavi
-	private int index;	//当前页下标 varStatus.index 
+	private Object data;		// 分页数据 DataSete 或PageNavi
+	private int index;	// 当前页下标 varStatus.index 
  
  
 	public int doEndTag() throws JspException { 

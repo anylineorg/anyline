@@ -944,7 +944,7 @@ public class DateUtil {
 			try {
 				format = "yyyy-MM-dd'T'HH:mm:ss Z";
 				if(str.contains(".")){
-					//2020-12-19T16:22:50.101Z
+					// 2020-12-19T16:22:50.101Z
 					format = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 					SimpleDateFormat sdf = new SimpleDateFormat(format);
 					String tempTime = str.replace("Z", " UTC");
@@ -956,9 +956,9 @@ public class DateUtil {
 				str = str.replace("T", " ");
 				if (str.contains(".")) {
 					format = FORMAT_FULL;
-				} else if (str.length() == 16) { //2020-06-30 12:00
+				} else if (str.length() == 16) { // 2020-06-30 12:00
 					format = "yyyy-MM-dd HH:mm";
-				} else if (str.length() == 13) { //2020-06-30 12
+				} else if (str.length() == 13) { // 2020-06-30 12
 					format = "yyyy-MM-dd HH";
 				} else {
 					format = FORMAT_DATE_TIME;

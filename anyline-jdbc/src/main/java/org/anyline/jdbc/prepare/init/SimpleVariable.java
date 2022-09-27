@@ -30,10 +30,10 @@ import java.util.*;
 
 public class SimpleVariable implements Variable {
 	private static final long serialVersionUID = 6111859581787193807L;
-	public static final int VAR_TYPE_INDEX			= 0;		//根据下标区分 CD = ? 
-	public static final int VAR_TYPE_KEY			= 1;		//根据KEY区分  CD = :CD 
-	public static final int VAR_TYPE_KEY_REPLACE	= 2;		//字符替换 CD=':CD' 
-	public static final int VAR_TYPE_REPLACE		= 3;		//字符替换 CD=::CD 
+	public static final int VAR_TYPE_INDEX			= 0;		// 根据下标区分 CD = ? 
+	public static final int VAR_TYPE_KEY			= 1;		// 根据KEY区分  CD = :CD 
+	public static final int VAR_TYPE_KEY_REPLACE	= 2;		// 字符替换 CD=':CD' 
+	public static final int VAR_TYPE_REPLACE		= 3;		// 字符替换 CD=::CD 
 	 
 	public String toString(){
 		String str = "";
@@ -49,11 +49,11 @@ public class SimpleVariable implements Variable {
 		return str;
 	} 
  
-	private String key;				//变量KEY 
-	private List<Object> values;	//变量值 
-	private int type;				//变量替换方式
-	private int signType = 1;		//变量区分方式
-	private COMPARE_TYPE compare;	//比较方式
+	private String key;				// 变量KEY 
+	private List<Object> values;	// 变量值 
+	private int type;				// 变量替换方式
+	private int signType = 1;		// 变量区分方式
+	private COMPARE_TYPE compare;	// 比较方式
 	private boolean required;
 	private boolean strictRequired;
 	 

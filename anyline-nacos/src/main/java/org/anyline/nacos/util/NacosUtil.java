@@ -61,7 +61,7 @@ public class NacosUtil {
 			return;
 		}
 
-		//ConfigTable
+		// ConfigTable
 		Listener listener = new Listener() {
 			@Override
 			public void receiveConfigInfo(String content) {
@@ -79,7 +79,7 @@ public class NacosUtil {
 			log.warn("[nacos config][result:false][group:{}][namespace:{}][class:{}][msg:{}]", config.GROUP, config.NAMESPACE, ConfigTable.class.getSimpleName(),e.getMessage());
 		}
 
-		//AnylineConfig子类
+		// AnylineConfig子类
 		Map<String, Map<String,Object>> listenerFiles = AnylineConfig.getListeners();
 		for (Map.Entry<String, Map<String,Object>> item : listenerFiles.entrySet()) {
 			File file = new File(item.getKey());
@@ -93,7 +93,7 @@ public class NacosUtil {
 				log.warn("[nacos config][result:false][class:{}][msg:{}]",clazz.getSimpleName(),e.getMessage());
 			}
 		}
-		//自动扫描
+		// 自动扫描
 		if(config.AUTO_SCAN){
 			String packages = config.SCAN_PACKAGE;
 			if(BasicUtil.isNotEmpty(packages)){

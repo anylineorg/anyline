@@ -12,21 +12,21 @@ public class COSConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir;
 
-	public static String DEFAULT_ACCESS_ID		= ""	; //
-	public static String DEFAULT_ACCESS_SECRET 	= ""	; //
-	public static String DEFAULT_ENDPOINT		= ""	; //
-	public static String DEFAULT_BUCKET			= ""	; //
-	public static String DEFAULT_DIR			= ""	; //
-	public static int DEFAULT_EXPIRE_SECOND 	= 3600	; //
+	public static String DEFAULT_ACCESS_ID		= ""	; // 
+	public static String DEFAULT_ACCESS_SECRET 	= ""	; // 
+	public static String DEFAULT_ENDPOINT		= ""	; // 
+	public static String DEFAULT_BUCKET			= ""	; // 
+	public static String DEFAULT_DIR			= ""	; // 
+	public static int DEFAULT_EXPIRE_SECOND 	= 3600	; // 
 
 
-	public String ACCESS_ID		= DEFAULT_ACCESS_ID				; //
-	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET			; //
-	public String ENDPOINT		= DEFAULT_ENDPOINT				; //
-	public String BUCKET		= DEFAULT_BUCKET				; //
-	public String DIR			= DEFAULT_DIR					; //
-	public int EXPIRE_SECOND 	= DEFAULT_EXPIRE_SECOND			; //
-	public static String CONFIG_NAME = "anyline-tencent-cos.xml"; //
+	public String ACCESS_ID		= DEFAULT_ACCESS_ID				; // 
+	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET			; // 
+	public String ENDPOINT		= DEFAULT_ENDPOINT				; // 
+	public String BUCKET		= DEFAULT_BUCKET				; // 
+	public String DIR			= DEFAULT_DIR					; // 
+	public int EXPIRE_SECOND 	= DEFAULT_EXPIRE_SECOND			; // 
+	public static String CONFIG_NAME = "anyline-tencent-cos.xml"; // 
 
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
@@ -46,7 +46,7 @@ public class COSConfig extends AnylineConfig{
 	 * 初始化默认配置文件
 	 */
 	public static void init() { 
-		//加载配置文件 
+		// 加载配置文件 
 		load(); 
 	} 
 	public static void setConfigDir(File dir){ 
@@ -62,7 +62,7 @@ public class COSConfig extends AnylineConfig{
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - COSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
-			//重新加载 
+			// 重新加载 
 			load(); 
 		} 
 		return (COSConfig)instances.get(key); 

@@ -47,9 +47,9 @@ public class WebUtil {
 
 	protected static final Logger log = LoggerFactory.getLogger(WebUtil.class);
 
-	//	public static final String PARAMS_FULL_DECRYPT_MAP = "PARAMS_FULL_DECRYPT_MAP"; // 参数值解密后MAP(整体加密) 加密(k=v&k=v)
-	//	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密) 加密(k)=加密(v)&加密(k)=加密(v)
-	public static final String DECRYPT_PARAM_MAP = "DECRYPT_PARAM_MAP"; //解析后的值(只存整体加密)
+	// 	public static final String PARAMS_FULL_DECRYPT_MAP = "PARAMS_FULL_DECRYPT_MAP"; // 参数值解密后MAP(整体加密) 加密(k=v&k=v)
+	// 	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密) 加密(k)=加密(v)&加密(k)=加密(v)
+	public static final String DECRYPT_PARAM_MAP = "DECRYPT_PARAM_MAP"; // 解析后的值(只存整体加密)
 	private static final String PACK_REQUEST_PARAM = "PACK_REQUEST_PARAM";//所有request参数
 	/**
 	 * 提取远程ip
@@ -146,7 +146,7 @@ public class WebUtil {
 		return set;
 	}
 	private static String decode(String src, String encode){
-		//HTTP参数是否开启了ENCODE
+		// HTTP参数是否开启了ENCODE
 		if(ConfigTable.getBoolean("HTTP_PARAM_ENCODE", false)){
 			try{
 				return URLDecoder.decode(src, encode);
@@ -165,7 +165,7 @@ public class WebUtil {
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
 			map = new HashMap<String,Object>();
-			//body体json格式(ajax以raw提交)
+			// body体json格式(ajax以raw提交)
 			String body = WebUtil.read(request,encode,true);
 			if(BasicUtil.isNotEmpty(body)){
 				if(body.startsWith("{") && body.endsWith("}")) {
@@ -174,7 +174,7 @@ public class WebUtil {
 					map = BeanUtil.param2map(body,true);
 				}
 			}else {
-				//utl与form表单格式
+				// utl与form表单格式
 				Enumeration<String> keys = request.getParameterNames();
 				while (keys.hasMoreElements()) {
 					String key = keys.nextElement() + "";
@@ -292,7 +292,7 @@ public class WebUtil {
 					}
 					if (kv.length > 1) {
 						v = kv[1].trim();
-						//v = DESUtil.filterIllegalChar(v);
+						// v = DESUtil.filterIllegalChar(v);
 					}
 					if(null != v){
 						v = v.trim();
@@ -323,7 +323,7 @@ public class WebUtil {
 			if (null != vs) {
 				for (String v : vs) {
 					if (null != v && !"".equals(v)) {
-						//v = DESUtil.filterIllegalChar(v);
+						// v = DESUtil.filterIllegalChar(v);
 						list.add(decode(v.trim(),"UTF-8"));
 					}
 				}
@@ -355,7 +355,7 @@ public class WebUtil {
 		}
 		return value;
 	}
-	//	/**
+	// 	/**
 //	 * http request参数
 //	 *
 //	 * @param request  request
@@ -416,7 +416,7 @@ public class WebUtil {
 	public static List<Object> getHttpRequestParams(HttpServletRequest request, String param) {
 		return getHttpRequestParams(request, param, false, false);
 	}
-	//
+	// 
 //	/*
 //	 * HTTP参数
 //	 *
@@ -708,7 +708,7 @@ public class WebUtil {
 		}
 		List<String> list = BeanUtil.merge(fixs, keys);
 		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean || obj instanceof Date) {
-			//
+			// 
 			return DESUtil.encryptValue(obj.toString(),mix);
 		}
 		if (obj instanceof Map) {
@@ -716,7 +716,7 @@ public class WebUtil {
 		} else if (obj instanceof Collection) {
 			obj = encryptValue((Collection<Object>) obj, mix, fixs, keys);
 		} else {
-			//Object无法加密
+			// Object无法加密
 			List<String> ks = ClassUtil.getFieldsName(obj.getClass());
 			for (String k : ks) {
 				Object v = BeanUtil.getFieldValue(obj, k);
@@ -847,7 +847,7 @@ public class WebUtil {
 			}
 			@Override
 			public void write(int b) throws IOException {
-				//os.write(b);
+				// os.write(b);
 			}
 			@Override
 			public boolean isReady() {
@@ -1004,7 +1004,7 @@ public class WebUtil {
 		return true;
 	}
 	public static String encode(HttpServletRequest request, String value) throws IOException {
-		String agent = request.getHeader("User-Agent").toLowerCase(); //获取浏览器
+		String agent = request.getHeader("User-Agent").toLowerCase(); // 获取浏览器
 		if (agent.contains("firefox")) {
 			value = URLEncoder.encode(value, "utf-8");
 		} else if(agent.contains("msie")) {
@@ -1012,7 +1012,7 @@ public class WebUtil {
 		} else if(agent.contains ("chrome")) {
 			value = URLEncoder.encode(value, "utf-8");
 		} else if(agent.contains ("safari")) {
-			//value = new String (value.getBytes ("utf-8"),"ISO8859-1");
+			// value = new String (value.getBytes ("utf-8"),"ISO8859-1");
 			value = URLEncoder.encode(value, "utf-8");
 		} else {
 			value = URLEncoder.encode(value, "utf-8");
@@ -1146,7 +1146,7 @@ public class WebUtil {
 			if(null != value){
 				return value;
 			}
-			//以中划线分隔的配置文件
+			// 以中划线分隔的配置文件
 			String[] ks = key.split("-");
 			StringBuilder sKey = null;
 			for(String k:ks){
@@ -1161,7 +1161,7 @@ public class WebUtil {
 				return value;
 			}
 
-			//以下划线分隔的配置文件
+			// 以下划线分隔的配置文件
 			ks = key.split("_");
 			sKey = null;
 			for(String k:ks){

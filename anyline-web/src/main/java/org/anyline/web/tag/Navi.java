@@ -35,38 +35,38 @@ import org.anyline.web.util.WebUtil;
  */
 public class Navi extends BodyTagSupport{
 	private static final long serialVersionUID = 1L;
-	private String url				;	//数据来源
-	private String param			;	//参数收集函数
-	private String container		;	//返回内容显示容器
-	private String body				;	//返回内容显示容器class或id(如果body与page分开)
-	private String cur				;   //当前页
-	private String page				;	//返回内容显示容器class或id(如果body与page分开)
-	private String bodyContainer	;	//如果body与page分开(兼容上一版本)
-	private String naviContainer	;	//如果body与page分开(兼容上一版本)
-	private String adapter = "ajax"	;	//分页方式 ajax | html
-	private String scroll			;   //自动翻页时 监听的滚动事件源 默认window
+	private String url				;	// 数据来源
+	private String param			;	// 参数收集函数
+	private String container		;	// 返回内容显示容器
+	private String body				;	// 返回内容显示容器class或id(如果body与page分开)
+	private String cur				;   // 当前页
+	private String page				;	// 返回内容显示容器class或id(如果body与page分开)
+	private String bodyContainer	;	// 如果body与page分开(兼容上一版本)
+	private String naviContainer	;	// 如果body与page分开(兼容上一版本)
+	private String adapter = "ajax"	;	// 分页方式 ajax | html
+	private String scroll			;   // 自动翻页时 监听的滚动事件源 默认window
 	private String method = "post"	;
-	private String id				;	//一个页面内多个标签时需要id区分
-	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用function
-	private String refresh			; 	//刷新当前页的函数
-	private String before			;	//渲染之前调用
-	private String after			;	//渲染之后调用
-	private Boolean intime = false	;	//实时执行
-	private Boolean auto = null		;	//是否加载下一页内容(swap加载更多typ=1时 划屏到底部自动加载)
-	private String callback			;	//回调函数
-	private String guide			;   //加载更多文本提示
+	private String id				;	// 一个页面内多个标签时需要id区分
+	private String function			;	// 指定function后,需主动调用function后加载数据,查询条件发生变化时可调用function
+	private String refresh			; 	// 刷新当前页的函数
+	private String before			;	// 渲染之前调用
+	private String after			;	// 渲染之后调用
+	private Boolean intime = false	;	// 实时执行
+	private Boolean auto = null		;	// 是否加载下一页内容(swap加载更多typ=1时 划屏到底部自动加载)
+	private String callback			;	// 回调函数
+	private String guide			;   // 加载更多文本提示
 
-	private String empty			;	//查询无数据显示内容
-	private String over				;	//最后一页提示
-	private String style = AnylineConfig.DEFAULT_INSTANCE_KEY; 	//样式标记对应anyline-navi.xml中的config.key
-	private Boolean stat = false	;	//是否显示统计
-	private Boolean jump = false	;	//是否显示跳转
-	private Boolean vol = true		;   //是否显示每页多少条(配置文件开启的情况下有效)
-    private int delay = 0           ;   //延迟执行时间
+	private String empty			;	// 查询无数据显示内容
+	private String over				;	// 最后一页提示
+	private String style = AnylineConfig.DEFAULT_INSTANCE_KEY; 	// 样式标记对应anyline-navi.xml中的config.key
+	private Boolean stat = false	;	// 是否显示统计
+	private Boolean jump = false	;	// 是否显示跳转
+	private Boolean vol = true		;   // 是否显示每页多少条(配置文件开启的情况下有效)
+    private int delay = 0           ;   // 延迟执行时间
 
-	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
-	private Integer max = null		;   //最大显示到第几页(下标从1开始)
-	private Integer cache = null	;	//缓存夜间条件时间(秒)
+	private int type = 0			;	// 分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
+	private Integer max = null		;   // 最大显示到第几页(下标从1开始)
+	private Integer cache = null	;	// 缓存夜间条件时间(秒)
 
 
 	public int doStartTag() throws JspException {
@@ -83,7 +83,7 @@ public class Navi extends BodyTagSupport{
 			}
 			String confId = config.KEY_ID_FLAG + flag;
 			builder.append("<div id='_navi_border_"+flag+"'>");
-			//放到form里 实现后退时值不被重置
+			// 放到form里 实现后退时值不被重置
 			builder.append("<form><input type='text' style='display:none;'/><input type='text' style='display:none;' id='_navi_cache_page_"+flag+"'><input type='text' style='display:none;' id='_navi_cache_vol_"+flag+"'></form>");
 			if(idx == 0){
 				builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
@@ -107,7 +107,7 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(param)){
 				String sign = "'";
 				if(param.contains(")")){
-					//构成成String 每次运行时解析实时value
+					// 构成成String 每次运行时解析实时value
 					if(param.contains("'")){
 						sign = "\"";
 					}
@@ -179,12 +179,12 @@ public class Navi extends BodyTagSupport{
 				cur = pageContext.getRequest().getParameter(config.KEY_PAGE_NO);
 			}
 			int curPage = BasicUtil.parseInt(cur, 1);
-			//加载数据函数
+			// 加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
-				//clear:清空上一页内容  hold:保持当前页
+				// clear:清空上一页内容  hold:保持当前页
 				builder.append("function ").append(function).append("(clear,hold){\n");
 
-				//加载缓存
+				// 加载缓存
 				if(null != cache){
 					builder.append("\tif(typeof _navi_load_cache === \"function\") {\n");
 					builder.append("\t\t_navi_load_cache('").append(flag).append("',").append(confId).append(");\n");
@@ -197,20 +197,20 @@ public class Navi extends BodyTagSupport{
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
-				    //延时执行,先读取当前第几页,每页多少条
+				    // 延时执行,先读取当前第几页,每页多少条
 					builder.append("setTimeout(function(){").append(function).append("(true,true)},").append(delay).append(");\n");
 				}
 			}else{
 				builder.append("setTimeout(function(){_navi_init(").append(confId).append(")},").append(delay).append(");\n");
 			}
-			//刷新当前页函数
+			// 刷新当前页函数
 			refresh = BasicUtil.nvl(refresh, config.EVENT_REFRESH,"").toString();
 			if(BasicUtil.isNotEmpty(refresh)){
 				builder.append("function ").append(refresh).append("(){\n");
 				builder.append("_navi_refresh(").append(confId).append(");\n");
 				builder.append("}\n");
 			}
-			//自动加载
+			// 自动加载
 			String scrollEventSrc = "window";
 			if(BasicUtil.isNotEmpty(scroll)){
 				scrollEventSrc = "'" + scroll + "'";
@@ -236,14 +236,14 @@ public class Navi extends BodyTagSupport{
 	@Override
 	public void release() {
 		super.release();
-		param 			= null	;	//参数收集函数
-		container 		= null	;	//返回内容容器
-		callback 		= null	;	//回调函数
+		param 			= null	;	// 参数收集函数
+		container 		= null	;	// 返回内容容器
+		callback 		= null	;	// 回调函数
 		body			= null	;
 		page			= null	;
-		bodyContainer 	= null	;	//如果body与page分开
-		naviContainer 	= null	;	//如果body与page分开
-		empty 			= null	;	//空数据显示内容
+		bodyContainer 	= null	;	// 如果body与page分开
+		naviContainer 	= null	;	// 如果body与page分开
+		empty 			= null	;	// 空数据显示内容
 		intime 			= false	;
 		url 			= null	;
 		id 				= null	;

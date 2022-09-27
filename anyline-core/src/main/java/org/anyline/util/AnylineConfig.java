@@ -37,7 +37,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public abstract class AnylineConfig {
-	protected static long lastLoadTime = 0;    //最后一次加载时间
+	protected static long lastLoadTime = 0;    // 最后一次加载时间
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class);
 	protected Map<String, String> kvs = new HashMap<>();
 	protected static String[] compatibles = {};
@@ -67,7 +67,7 @@ public abstract class AnylineConfig {
 				InputStream in = null;
 				log.warn("[加载配置文件][type:jar][file:{}]", fileName);
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
-					//遍历jar
+					// 遍历jar
 					List<JarEntry> list = new ArrayList<JarEntry>();
 					JarFile jFile = new JarFile(System.getProperty("java.class.path"));
 					Enumeration<JarEntry> jarEntrys = jFile.entries();
@@ -88,7 +88,7 @@ public abstract class AnylineConfig {
 					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
 					parse(txt);
 				}
-				//加载同目录下config目录
+				// 加载同目录下config目录
 				File dir = new File(FileUtil.merge(ConfigTable.getRoot(),"config"));
 				if (null != dir && !dir.exists()) {
 					dir = new File(ConfigTable.getWebRoot());
@@ -101,7 +101,7 @@ public abstract class AnylineConfig {
 					}
 				}
 			} else {
-				//File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
+				// File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
 				File dir = new File(ConfigTable.getClassPath());
 				if (null != dir && !dir.exists()) {
 					dir = new File(ConfigTable.getWebRoot());
@@ -231,7 +231,7 @@ public abstract class AnylineConfig {
 						}
 					}
 				}
-				//加载时间
+				// 加载时间
 				config.kvs = kvs;
 				config.INSTANCE_KEY = configKey;
 				instances.put(configKey, config);
@@ -254,8 +254,8 @@ public abstract class AnylineConfig {
 		return instances;
 	}
 
-	private static boolean listener_running = false;	//监听是否启动
-	protected static Map<String,Map<String,Object>> listener_files = new Hashtable<>(); //监听文件更新<文件名,最后加载时间>
+	private static boolean listener_running = false;	// 监听是否启动
+	protected static Map<String,Map<String,Object>> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
 
 	private synchronized static void listener(){
 		if(listener_running){
@@ -298,7 +298,7 @@ public abstract class AnylineConfig {
 			}
 		}).start();
 	}
-	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
+	// 兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		log.warn("[解析配置文件][file:{}]", file);
 		if (null == file || !file.exists()) {

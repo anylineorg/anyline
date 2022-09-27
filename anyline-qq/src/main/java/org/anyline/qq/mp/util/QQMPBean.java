@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class QQMPBean implements InitializingBean {
 
     @Value("${anyline.qq.mp.app:}")
-    private String APP_ID			 	; //AppID(应用ID)
+    private String APP_ID			 	; // AppID(应用ID)
     @Value("${anyline.qq.mp.key:}")
-    private String API_KEY 			 	; //APPKEY(应用密钥)
+    private String API_KEY 			 	; // APPKEY(应用密钥)
     @Value("${anyline.qq.mp.redirect:}")
-    private String OAUTH_REDIRECT_URL 	; //登录成功回调URL
+    private String OAUTH_REDIRECT_URL 	; // 登录成功回调URL
     @Override
     public void afterPropertiesSet() throws Exception {
         APP_ID = BasicUtil.evl(APP_ID, QQMPConfig.DEFAULT_APP_ID);

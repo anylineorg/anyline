@@ -46,7 +46,7 @@ public class SimpleConfigStore implements ConfigStore {
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected ConfigChain chain;
 	protected PageNavi navi;
-	protected OrderStore orders;		//排序依据
+	protected OrderStore orders;		// 排序依据
 	protected GroupStore groups;
 
 	@Override
@@ -281,7 +281,7 @@ public class SimpleConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore or(COMPARE_TYPE compare, String var, Object value) {
 		List<Config> configs = chain.getConfigs();
-		//如果当前没有其他条件
+		// 如果当前没有其他条件
 		if(configs.size()==0){
 			and(compare, var, value);
 		}else{
@@ -572,7 +572,7 @@ public class SimpleConfigStore implements ConfigStore {
 		ConfigStore store = new SimpleConfigStore();
 //		private ConfigChain chain;
 //		private PageNavi navi;
-//		private OrderStore orders;		//排序依据
+//		private OrderStore orders;		// 排序依据
 //		private GroupStore groups;
 		return store;
 	}

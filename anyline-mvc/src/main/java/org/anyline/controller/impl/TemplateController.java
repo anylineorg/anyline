@@ -111,7 +111,7 @@ public class TemplateController extends AnylineController {
 	protected TemplateModelAndView template(boolean adapt, String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
 		if(null != name && !name.startsWith("/")){
-			//相对目录
+			// 相对目录
 			name = buildDir() + name;
 		}
 		String content_template = "";

@@ -39,18 +39,18 @@ import java.util.*;
  * 
  */ 
 public class SimpleAutoCondition extends SimpleCondition implements AutoCondition {
-	private String table;		//表或表别名
-	private String column;		//列 
-	private Object values;		//参数值 
-	private Object orValues;		//参数值 
+	private String table;		// 表或表别名
+	private String column;		// 列 
+	private Object values;		// 参数值 
+	private Object orValues;		// 参数值 
 	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
 	private COMPARE_TYPE orCompare = COMPARE_TYPE.EQUAL;
  
  
 	public SimpleAutoCondition(Config config){
 		setJoin(config.getJoin());
-		setTable(config.getPrefix());   	//表名或表别名
-		setColumn(config.getVariable());   //列名
+		setTable(config.getPrefix());   	// 表名或表别名
+		setColumn(config.getVariable());   // 列名
 		setValues(config.getValues()); 
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
@@ -152,13 +152,13 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 			// "> ?";
 			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.GREAT_EQUAL){
-			//">= ?";
+			// ">= ?";
 			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.LESS){
-			//"< ?";
+			// "< ?";
 			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.NOT_EQUAL){
-			//"<> ?";
+			// "<> ?";
 			builder.append(compare.getSql());
 		}else if(compare == COMPARE_TYPE.LESS_EQUAL){
 			// "<= ?";
@@ -171,7 +171,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 		}else if(compareCode >= 50 && compareCode <= 52){
 			adapter.buildConditionLike(builder, compare);
 		}
-		//runtime value
+		// runtime value
 		if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN || compare == COMPARE_TYPE.BETWEEN){
 			List<Object> list = getValues(val);
 			if(null != list){

@@ -73,8 +73,8 @@ public class SimpleAutoConditionChain extends SimpleConditionChain implements Co
 					|| !BasicUtil.isEmpty(true, values) 
 					|| condition.isActive()
 					|| condition.isRequired()){
-				//condition instanceof ConditionChain
-				//if(i>0 /*&& !condition.isContainer()*/){
+				// condition instanceof ConditionChain
+				// if(i>0 /*&& !condition.isContainer()*/){
 				if(joinSize>0){
 					String chk = txt.toLowerCase().trim();
 					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")){

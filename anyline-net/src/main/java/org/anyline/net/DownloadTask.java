@@ -17,30 +17,30 @@ import java.util.Map.Entry;
 public class DownloadTask { 
 	private Logger log = LoggerFactory.getLogger(DownloadTask.class); 
 	private boolean openLog = true; 
-	private String url	; //url 
-	private File local	; //本地文件 
-	private int threads	; //线程数量 
-	private long past	; //上次已下载长度 
-	private long length	; //本次需下载长度 
-	private long finish ; //本次已下载长度 
-	private long start	; //开始时间 
-	private long end	; //结束时间 
+	private String url	; // url
+	private File local	; // 本地文件
+	private int threads	; // 线程数量
+	private long past	; // 上次已下载长度
+	private long length	; // 本次需下载长度
+	private long finish ; // 本次已下载长度
+	private long start	; // 开始时间
+	private long end	; // 结束时间
 	private Map<String,String> headers; 
 	private Map<String,Object> params; 
-	private Map<String,Object> extras = new HashMap<String,Object>();	//扩展属性(回调时原样返回) 
-	private int index		; //任务下标从0开始 
-	private long expend		; //本次已耗时 
-	private long expect		; //本次预计剩余时间 
-	private double rate = 0 ; //完成比例 
+	private Map<String,Object> extras = new HashMap<String,Object>();	// 扩展属性(回调时原样返回) 
+	private int index		; // 任务下标从0开始
+	private long expend		; // 本次已耗时
+	private long expect		; // 本次预计剩余时间
+	private double rate = 0 ; // 完成比例
  
-	private double lastLogRate	; //最后一次日志进度 
-	private long lastLogTime	; //量后一次日志时间 
-	private String errorMsg = ""; //异常信息 
-	private int errorCode = 0	; //异常编号 
-	private int action =1		; //1正常执行 0中断 
-	private int status = 0		; //0初始 1执行中 2暂停 -1异常 9已完成 
+	private double lastLogRate	; // 最后一次日志进度
+	private long lastLogTime	; // 量后一次日志时间
+	private String errorMsg = ""; // 异常信息
+	private int errorCode = 0	; // 异常编号
+	private int action =1		; // 1正常执行 0中断
+	private int status = 0		; // 0初始 1执行中 2暂停 -1异常 9已完成
 	 
-	private Map<Long,Long> records = new LinkedHashMap<Long,Long>(); //下载记录 
+	private Map<Long,Long> records = new LinkedHashMap<Long,Long>(); // 下载记录
 	private DownloadProgress progress = new DefaultProgress(); 
 	private DownloadListener listener; 
 	private boolean override = false; 
@@ -70,7 +70,7 @@ public class DownloadTask {
 		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();   
 		while (entries.hasNext()) {   
 			Map.Entry<Long,Long> entry =  entries.next();    
-			Long key = entry.getKey(); //记录时间 
+			Long key = entry.getKey(); // 记录时间
 			Long value = entry.getValue();//记录值 
 			if(System.currentTimeMillis() - key> 1000*10){//10秒内的值 
 		    	entries.remove(); 
@@ -96,16 +96,16 @@ public class DownloadTask {
 		if(!this.isRunning()){ 
 			return 0L; 
 		} 
-		Long len = 0L;	//最后一次下载长度 
+		Long len = 0L;	// 最后一次下载长度 
 		Long time = 0L; 
 		Long curTime = 0L; 
 		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();   
 		while (entries.hasNext()) { 
 			Map.Entry<Long,Long> entry =  entries.next();    
-			Long key = entry.getKey(); //记录时间 
+			Long key = entry.getKey(); // 记录时间
 			Long value = entry.getValue();//记录值 
 			curTime = key; 
-			//最后一组 
+			// 最后一组 
 			if(!entries.hasNext()){ 
 				len = value; 
 				time = key - curTime; 
@@ -159,7 +159,7 @@ public class DownloadTask {
 	} 
 	public void step(long len){ 
 		this.finish +=  len; 
-		rate = new BigDecimal((this.finish+this.past)*100.0/(this.length+this.past)).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue(); //完成比例 
+		rate = new BigDecimal((this.finish+this.past)*100.0/(this.length+this.past)).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue(); // 完成比例
  
     	if(this.finish >= length){ 
     		this.finish = length; 
@@ -175,7 +175,7 @@ public class DownloadTask {
     		expend = end - start;//已耗时 
     	} 
 		if(expend>0){ 
-			expect = (long)(length / (this.finish*1.0/expend) - expend);	//剩余时间=预计总耗时-已耗时 
+			expect = (long)(length / (this.finish*1.0/expend) - expend);	// 剩余时间=预计总耗时-已耗时 
 			if(rate == 100){ 
 				expect = 0; 
 			} 
@@ -225,7 +225,7 @@ public class DownloadTask {
 			return; 
 		} 
 		double rate = getFinishRate(); 
-		//进度>0.5%或时间超过5秒或全部完成 
+		// 进度>0.5%或时间超过5秒或全部完成 
 		if(openLog){ 
 			if(lastLogTime==0 || rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){ 
 				log.warn("[文件下载]"+getMessage()); 
@@ -268,7 +268,7 @@ public class DownloadTask {
 		return this.rate; 
 	} 
 	public String getMessage(){ 
-		//"[进度:10.12mb/200.11mb(20%)][数量:1/5][耗时:1分3秒/12分2秒][网速:100kb/s]" 
+		// "[进度:10.12mb/200.11mb(20%)][数量:1/5][耗时:1分3秒/12分2秒][网速:100kb/s]" 
 		String msg = "[进度:"; 
 		if(this.past>0){ 
 			msg += getPastFormat(); 
@@ -391,12 +391,12 @@ public class DownloadTask {
 	 */ 
 	public long getExpect(long speed) { 
 		if(expend>0){ 
-			expect = (long)(length / (this.finish*1.0/expend) - expend);	//剩余时间=预计总耗时-已耗时 
+			expect = (long)(length / (this.finish*1.0/expend) - expend);	// 剩余时间=预计总耗时-已耗时 
 			if(rate == 100){ 
 				expect = 0; 
 			} 
 		}else if(speed>0){ 
-			expect = (long)(length*1.0 / speed - expend);	//剩余时间=预计总耗时-已耗时 
+			expect = (long)(length*1.0 / speed - expend);	// 剩余时间=预计总耗时-已耗时 
 		} 
 		return expect; 
 	}

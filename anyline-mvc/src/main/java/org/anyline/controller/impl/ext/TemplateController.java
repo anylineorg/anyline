@@ -125,7 +125,7 @@ public class TemplateController extends AnylineController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private String parseTemplate(HttpServletRequest request, HttpServletResponse response, String path){
 		String result = "";
-		 //构造填充数据的Map 
+		 // 构造填充数据的Map
 		if(null == path){
 			return result;
 		}
@@ -163,7 +163,7 @@ public class TemplateController extends AnylineController {
         	File dir = new File(ConfigTable.getWebRoot());
         	File file = new File(dir, path);
         	if(!file.exists()){
-        		//文件不存在
+        		// 文件不存在
         		return result;
         	}
         	result = WebUtil.parseJsp(request, response, path);

@@ -812,7 +812,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public StringBuilder define(StringBuilder builder, Column column){
-		//如果有递增列 通过数据类型实现
+		// 如果有递增列 通过数据类型实现
 		if(column.isAutoIncrement() == 1){
 			column.setType("SERIAL");
 		}
@@ -1286,8 +1286,8 @@ varbit:String
 		try {
 			String clazz = column.getClassName();
 			String typeName = column.getTypeName().toUpperCase();
-			//先解析特定数据库类型，注意不需要重复解析super中解析的类型
-			//
+			// 先解析特定数据库类型，注意不需要重复解析super中解析的类型
+			// 
 			if(typeName.equals("JSON")
 					|| typeName.equals("XML")
 					|| typeName.equals("BOX")
@@ -1301,7 +1301,7 @@ varbit:String
 				run.setValue(BasicUtil.parseBoolean(value, null));
 				return true;
 			}else{
-				//没有成功,super继续解析通用类型
+				// 没有成功,super继续解析通用类型
 				result = super.convert(column, run);
 			}
 		}catch (Exception e){

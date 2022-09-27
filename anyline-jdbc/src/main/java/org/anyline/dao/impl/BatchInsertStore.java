@@ -45,7 +45,7 @@ public class BatchInsertStore {
 	public synchronized DataSet getDatas(){ 
 		int max = ConfigTable.getInt("BATCH_INSERT_MAX_SIZE",100);//一次最多插入 
 		DataSet list = new DataSet(); 
-		//第一次循环查找数量>=100的数据 
+		// 第一次循环查找数量>=100的数据
 				for(ConcurrentLinkedDeque<DataRow> rows :map.values()){ 
 					int size = rows.size(); 
 					if(size >= max){ 
@@ -60,7 +60,7 @@ public class BatchInsertStore {
 						return list; 
 					} 
 				} 
-			//第一次失败后 补充第二次循环查找数量>=1的数据 
+			// 第一次失败后 补充第二次循环查找数量>=1的数据
 			for(ConcurrentLinkedDeque<DataRow> rows :map.values()){ 
 				int size = rows.size(); 
 				if(size > 0){ 

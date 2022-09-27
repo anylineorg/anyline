@@ -10,7 +10,7 @@ import java.util.Map;
  
 public class DynamicDataSource extends AbstractRoutingDataSource { 
 	private Logger log = LoggerFactory.getLogger(DynamicDataSource.class); 
-    // 保存动态创建的数据源 
+    // 保存动态创建的数据源
     private static final Map<String,DataSource> dataSources = new HashMap<String,DataSource>(); 
 	/** 
 	 * 获取当前线程数据源 

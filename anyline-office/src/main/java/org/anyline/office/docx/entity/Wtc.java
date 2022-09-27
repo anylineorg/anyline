@@ -17,7 +17,7 @@ public class Wtc {
     private Element src;
     private Wtr parent;
     private List<Wp> wps = new ArrayList<>();
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
     public Wtc(WDocument doc, Wtr parent, Element src){
         this.doc = doc;
         this.src = src;
@@ -663,7 +663,7 @@ public class Wtc {
         DocxUtil.addElement(pr, "shd", "val","clear");
         DocxUtil.addElement(pr, "shd", "fill",color.replace("#",""));
         for(Wp wp:wps){
-            //wp.setBackgroundColor(color);
+            // wp.setBackgroundColor(color);
         }
         return this;
     }
