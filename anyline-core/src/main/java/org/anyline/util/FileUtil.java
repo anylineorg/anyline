@@ -561,42 +561,42 @@ public class FileUtil {
 	}
 	/**
 	 * 复制文件  源文件  目标文件
-	 * @param src  src
-	 * @param dest  表
+	 * @param src  源文件
+	 * @param dest 目标文件(新文件)
 	 * @return boolean
 	 */
-	public static boolean copy(File src, File dst){
+	public static boolean copy(File src, File dest){
 		boolean result = true;
 		if (src.isDirectory()){
-			if (!dst.exists()){
-				result = dst.mkdirs();
+			if (!dest.exists()){
+				result = dest.mkdirs();
 			}
 			String[] files = src.list();
 			for(int i = 0; i < files.length; i++){
-				copy(new File(src, files[i]), new File(dst, files[i]));
+				copy(new File(src, files[i]), new File(dest, files[i]));
 			}
 		} else{
 			if(!src.exists()){
 				result = false;
 			}else{
-				File dir = dst.getParentFile();
+				File dir = dest.getParentFile();
 				if(null != dir && !dir.exists()){
 					dir.mkdirs();
 				}
 				InputStream in = null;
 				OutputStream out = null;
 				try{
-					if(!dst.isDirectory()){
-						File dirs = dst.getParentFile();
+					if(!dest.isDirectory()){
+						File dirs = dest.getParentFile();
 						if(null != dir &&!dirs.exists()){
 							dirs.mkdirs();
 						}
 					}else{
-						dst = new File(dst, src.getName());
+						dest = new File(dest, src.getName());
 					}
-					dst.createNewFile();
+					dest.createNewFile();
 					in = new FileInputStream(src);
-					out = new FileOutputStream(dst);
+					out = new FileOutputStream(dest);
 					byte[] buf = new byte[1024];
 					int len;
 					while ((len = in.read(buf)) > 0) {
@@ -1025,18 +1025,18 @@ public class FileUtil {
 	}
 	/**
 	 * 合并文件
-	 * @param dest dst
+	 * @param dest 目标文件(新文件)
 	 * @param items items
 	 */
-	public static void merge(File dst, List<File> items){
+	public static void merge(File dest, List<File> items){
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
-        	File dir = dst.getParentFile();
+        	File dir = dest.getParentFile();
         	if(null != dir && !dir.exists()){
         		dir.mkdirs();
         	}
-            os = new FileOutputStream(dst);
+            os = new FileOutputStream(dest);
             byte[] bytes = new byte[1024];
             int length = 0;
             for(File item:items){
@@ -1048,7 +1048,7 @@ public class FileUtil {
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
-                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e){
         	e.printStackTrace();
@@ -1070,15 +1070,15 @@ public class FileUtil {
 	 * @param dest dst
 	 * @param dir dir
 	 */
-	public static void merge(File dst, File dir){
+	public static void merge(File dest, File dir){
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
-        	File root = dst.getParentFile();
+        	File root = dest.getParentFile();
         	if(null != root && !root.exists()){
         		root.mkdirs();
         	}
-            os = new FileOutputStream(dst);
+            os = new FileOutputStream(dest);
             byte[] bytes = new byte[1024];
             int length = 0;
             List<File> items = getAllChildrenFile(dir);
@@ -1091,7 +1091,7 @@ public class FileUtil {
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
-                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e){
         	e.printStackTrace();

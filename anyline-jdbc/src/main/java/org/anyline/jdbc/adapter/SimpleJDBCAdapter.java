@@ -174,7 +174,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * 根据Collection创建批量INSERT RunPrepare
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
-	 * @param set 集合
+	 * @param list 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
@@ -560,7 +560,6 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 构造查询主体
 	 * @param run run
-	 * @return Run
 	 */
 	@Override
 	public void buildQueryRunContent(Run run){
@@ -1160,7 +1159,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * 获取ResultSet中的列
-	 * @param rs rs
+	 * @param set ResultSet
 	 * @return list
 	 * @throws Exception Exception
 	 */
@@ -1497,7 +1496,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	 * 创建或删除表时检测表是否存在
 	 * @param builder builder
 	 * @param exists exists
-	 * @return
+	 * @return StringBuilder
 	 */
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){

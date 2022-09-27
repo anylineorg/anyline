@@ -127,7 +127,7 @@ public interface JDBCAdapter {
 	 * 根据Collection创建批量插入SQL
 	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
-	 * @param set 数据集
+	 * @param list 数据集
 	 * @param keys keys 南非要插入的列
 	 */
 	public void createInserts(Run run, String dest, Collection list, List<String> keys);
@@ -143,7 +143,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 确认需要插入的列
-	 * @param obj  Entity或DataRow
+	 * @param data  Entity或DataRow
 	 * @param columns 提供额外的判断依据
 	 *                列可以加前缀
 	 *                +:表示必须插入
@@ -209,7 +209,6 @@ public interface JDBCAdapter {
 	/**
 	 * 构造查询主体
 	 * @param run run
-	 * @return Run
 	 */
 	public void buildQueryRunContent(Run run);
 
@@ -277,7 +276,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 创建执行SQL
-	 * @param sql sql
+	 * @param prepare prepare
 	 * @param configs configs
 	 * @param conditions conditions
 	 * @return Run
@@ -595,10 +594,8 @@ public interface JDBCAdapter {
 
 	/**
 	 * 解析JDBC getIndex结果
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table 表
-	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
 	 * @throws Exception

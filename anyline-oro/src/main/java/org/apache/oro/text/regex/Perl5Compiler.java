@@ -255,7 +255,7 @@ public final class Perl5Compiler implements PatternCompiler {
    * In effect, this method is the analog of the Perl5 quotemeta() builtin
    * method.
    * <p>
-   * @param pattern The pattern to convert.
+   * @param expression The pattern to convert.
    * @return A String containing a Perl5 regular expression corresponding to
    *         a literal interpretation of the pattern.
    */

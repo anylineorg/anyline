@@ -146,7 +146,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * 根据Collection创建批量INSERT RunPrepare
      * @param run run
      * @param dest 表 如果不指定则根据set解析
-     * @param set 集合
+     * @param list 集合
      * @param keys 需插入的列
      */
     @Override
