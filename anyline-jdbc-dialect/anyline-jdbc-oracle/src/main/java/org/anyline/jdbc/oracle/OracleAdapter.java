@@ -318,7 +318,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @throws Exception
 	 */
 	@Override
-	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
 		int cnt = 0;
 		if(data instanceof Collection) {
 			if (null == values || values.isEmpty()) {
@@ -334,7 +334,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}else{
 			//单行的可以返回序列号
 			pks = new String[]{getPrimayKey(data)};
-			cnt = super.insert(random, jdbc, data, sql, values, pks);
+			cnt = super.insert(random, data, sql, values, pks);
 		}
 		return cnt;
 	}

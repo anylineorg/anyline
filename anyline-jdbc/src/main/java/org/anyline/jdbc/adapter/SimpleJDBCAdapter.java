@@ -65,6 +65,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater;
 
+	@Autowired(required = false)
 	protected JdbcTemplate jdbc;
 
 	@Autowired(required = false)

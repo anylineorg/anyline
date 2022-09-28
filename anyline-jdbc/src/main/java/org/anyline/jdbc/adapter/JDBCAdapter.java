@@ -175,7 +175,7 @@ public interface JDBCAdapter {
 	 * @return int
 	 * @throws Exception
 	 */
-	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception;
+	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
 
 	/**
 	 * insert执行后 通过KeyHolder获取主键值赋值给data

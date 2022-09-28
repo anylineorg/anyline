@@ -28,13 +28,13 @@ public class SQLAdapterUtil {
 
 	private static JDBCAdapter defaultAdapter = null;	// 如果当前项目只有一个adapter则不需要多次识别
 	public static JDBCAdapter getAdapter(JdbcTemplate jdbc){
-
-
 		if(null != defaultAdapter){
+			defaultAdapter.setJdbc(jdbc);
 			return defaultAdapter;
 		}
 		if(adapters.size() ==1){
 			defaultAdapter = adapters.values().iterator().next();
+			defaultAdapter.setJdbc(jdbc);
 			return defaultAdapter;
 		}
 		JDBCAdapter adapter = null;
@@ -43,6 +43,7 @@ public class SQLAdapterUtil {
 			// 根据 别名
 			adapter = getAdapter(type.getName());
 			if(null != adapter){
+				adapter.setJdbc(jdbc);
 				return adapter;
 			}
 		}

@@ -580,7 +580,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, columns);
 			}
 			if(listenerResult) {
-				cnt = adapter.insert(random, jdbc, data, sql, values, null);
+				cnt = adapter.insert(random, data, sql, values, null);
 				if (null != listener) {
 					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
 				}

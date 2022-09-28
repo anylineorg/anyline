@@ -75,7 +75,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      *
      * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
-     *  public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception
+     *  public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception
      ******************************************************************************************************************/
 
     /**
@@ -312,7 +312,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * @return int
      */
     @Override
-    public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+    public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         DataSource ds = null;
         Connection con = null;

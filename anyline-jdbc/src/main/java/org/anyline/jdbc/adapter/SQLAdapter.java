@@ -78,7 +78,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
-     * public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception
+     * public int insert(String random, Object data, String sql, List<Object> values) throws Exception
      *
      * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
@@ -427,7 +427,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * @throws Exception
      */
     @Override
-    public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+    public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         KeyHolder keyholder = new GeneratedKeyHolder();
         cnt = jdbc.update(new PreparedStatementCreator() {
