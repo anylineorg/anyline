@@ -15,10 +15,16 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -28,7 +34,8 @@ import java.util.*;
 
 @Repository("anyline.jdbc.sql.adapter.oracle") 
 public class OracleAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-	 
+
+	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
@@ -95,57 +102,115 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return concatOr(args);
 	}
 
+	protected void creratePrimaryValue(Collection list, String seq){
+		if(!OracleAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT){
+			return;
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
+		int size = list.size();
+		for(int i=0; i<size; i++){
+			builder.append("SELECT NULL FROM DUAL\n");
+			if(i<size-1){
+				builder.append("UNION ALL\n");
+			}
+		}
+		builder.append(") M");
+		DataSet ids = service.querys(builder.toString());
+		int i=0;
+		for(Object obj:list){
+			Object value = ids.get(i++,"ID");
+			setPrimaryValue(obj, value);
+		}
+	}
+
 	/**
 	 * 批量插入
-	 * INSERT ALL
-	 * INTO T (ID, NAME) VALUES (1,'N1')
-	 * INTO T (ID, NAME) VALUES (2,'N2')
-	 * INTO T (ID, NAME) VALUES (3,'N3')
-	 * SELECT 1 FROM DUAL
+	 *
+	 * 有序列时 只支持插入同一张表
+	 * INSERT INTO CRM_USER(ID, NAME)
+	 *  SELECT gloable_seq.nextval  AS ID  , M.* FROM (
+	 * 		SELECT  'A1' AS NM FROM  DUAL
+	 * 		UNION ALL SELECT    'A2' FROM DUAL
+	 * 		UNION ALL SELECT    'A3' FROM DUAL
+	 * ) M
 	 * @param run run
 	 * @param dest dest
 	 * @param keys keys
 	 */
 	@Override
 	public void createInserts(Run run, String dest, DataSet set, List<String> keys){
-		StringBuilder builder = run.getBuilder();
-		if(null == builder){
-			builder = new StringBuilder();
-			run.setBuilder(builder);
+		if(null == set || set.size() ==0){
+			return;
 		}
-		builder.append("INSERT ALL \n");
-		String head = "INTO " + dest + " (";
+		StringBuilder builder = run.getBuilder();
+		DataRow first = set.getRow(0);
+		Map<String,String> seqs = new HashMap<>();
+		for(String key:keys){
+			Object value = first.getStringNvl(key);
+			if(null != value && value instanceof String) {
+				String str = (String)value;
+				if (str.toUpperCase().contains(".NEXTVAL")) {
+					if (str.startsWith("${") && str.endsWith("}")) {
+						str = str.substring(2, str.length() - 1);
+					}
+					creratePrimaryValue(set, str);
+					seqs.put(key, str);
+				}
+			}
+		}
+		builder.append("INSERT INTO ");
+		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			head += key;
+			builder.append(key);
 			if(i<keySize-1){
-				head += ", ";
+				builder.append(", ");
 			}
 		}
-		head += ") ";
-		int dataSize = set.size();
-		for(int i=0; i<dataSize; i++){
-			DataRow row = set.getRow(i);
-			if(null == row){
-				continue;
+		builder.append(") \n");
+		builder.append("SELECT ");
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			String seq = seqs.get(key);
+			if(null != seq){
+				builder.append(seq);
+			}else{
+				builder.append("M.").append(key);
 			}
+			builder.append(" AS ").append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append("\nFROM( ");
+		keys.removeAll(seqs.keySet());
+		int col = 0;
+		for(DataRow row:set) {
 			if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
 				String pk = row.getPrimaryKey();
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 				}
-				row.put(pk, primaryCreater.createPrimary(this.type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
+				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}
-			builder.append(head).append("VALUES ");
-			insertValue(run, row, false, keys);
-			builder.append(" \n");
-		}
-		builder.append("SELECT 1 FROM DUAL");
-	}
 
+			if(col > 0){
+				builder.append("\n\tUNION ALL");
+			}
+			builder.append("\n\tSELECT ");
+			insertValue(run, row, false, true,false, keys);
+			builder.append(" FROM DUAL ");
+			col ++;
+		}
+		builder.append(") M ");
+	}
 	@Override
 	public void createInserts(Run run, String dest, Collection list, List<String> keys){
+		if(null == list || list.isEmpty()){
+			return;
+		}
 		StringBuilder builder = run.getBuilder();
 		if(null == builder){
 			builder = new StringBuilder();
@@ -156,17 +221,50 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			createInserts(run, dest, set, keys);
 			return;
 		}
-		builder.append("INSERT ALL \n");
-		String head = "INTO " + dest + " (";
+
+		Object first = list.iterator().next();
+		Map<String,String> seqs = new HashMap<>();
+		for(String key:keys){
+			Object value = BeanUtil.getFieldValue(first, key);
+			if(null != value && value instanceof String) {
+				String str = (String)value;
+				if (str.toUpperCase().contains(".NEXTVAL")) {
+					if (str.startsWith("${") && str.endsWith("}")) {
+						str = str.substring(2, str.length() - 1);
+					}
+					creratePrimaryValue(list, str);
+					seqs.put(key, str);
+				}
+			}
+		}
+		builder.append("INSERT INTO ");
+		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			head += key;
+			builder.append(key);
 			if(i<keySize-1){
-				head += ", ";
+				builder.append(", ");
 			}
 		}
-		head += ") ";
+		builder.append(") \n");
+		builder.append("SELECT ");
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			String seq = seqs.get(key);
+			if(null != seq){
+				builder.append(seq);
+			}else{
+				builder.append("M.").append(key);
+			}
+			builder.append(" AS ").append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append("\nFROM( ");
+		keys.removeAll(seqs.keySet());
+		int col = 0;
 
 		for(Object obj:list){
 			if(obj instanceof DataRow) {
@@ -178,8 +276,6 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					}
 					row.put(pk, primaryCreater.createPrimary(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 				}
-				builder.append(head).append("VALUES ");
-				insertValue(run, row, false, keys);
 			}else{
 				String pk = null;
 				Object pv = null;
@@ -195,15 +291,59 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 						BeanUtil.setFieldValue(obj, pk, pv);
 					}
 				}
-				builder.append(head).append("VALUES ");
-				insertValue(run, obj, false, keys);
 			}
-			builder.append(" \n");
+
+			if(col > 0){
+				builder.append("\n\tUNION ALL");
+			}
+			builder.append("\n\tSELECT ");
+			insertValue(run, obj, false, true,false, keys);
+			builder.append(" FROM DUAL ");
+			col ++;
 		}
-		builder.append("SELECT 1 FROM DUAL");
+		builder.append(") M ");
 	}
 
+	/**
+	 * 执行 insert
+	 * @param random random
+	 * @param jdbc jdbc
+	 * @param data entity|DataRow|DataSet
+	 * @param sql sql
+	 * @param values 占位参数值
+	 * @return int 影响行数
+	 * @throws Exception
+	 */
+	@Override
+	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+		int cnt = 0;
+		if(data instanceof Collection) {
+			if (null == values || values.isEmpty()) {
+				cnt = jdbc.update(sql);
+			} else {
+				int size = values.size();
+				Object[] params = new Object[size];
+				for (int i = 0; i < size; i++) {
+					params[i] = values.get(i);
+				}
+				cnt = jdbc.update(sql, params);
+			}
+		}else{
+			//单行的可以返回序列号
+			pks = new String[]{getPrimayKey(data)};
+			cnt = super.insert(random, jdbc, data, sql, values, pks);
+		}
+		return cnt;
+	}
 
+	@Override
+	public boolean identity(String random, Object data, KeyHolder keyholder){
+		if(data instanceof Collection) {
+			return false;
+		}else{
+			return super.identity(random, data, keyholder);
+		}
+	}
 
 
 	/* *****************************************************************************************************************

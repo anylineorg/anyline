@@ -65,6 +65,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater;
 
+	private JdbcTemplate jdbc;
 
 	@Autowired(required = false)
 	@Qualifier("anyline.service")
@@ -99,6 +100,10 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		}
 	}
 
+	@Override
+	public void setJdbc(JdbcTemplate jdbc){
+		this.jdbc = jdbc;
+	}
 
 	/* *****************************************************************************************************************
 	 *
@@ -309,6 +314,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		keys = BeanUtil.distinct(keys);
 		return keys;
 	}
+
 
 
 	/**
@@ -2532,9 +2538,11 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	public void format(StringBuilder builder, Object value){
 		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
 			builder.append("null");
+		}else if(value instanceof SQL_BUILD_IN_VALUE){
+			builder.append(buildInValue((SQL_BUILD_IN_VALUE)value));
 		}else if(value instanceof String){
-			String str = value.toString();
-			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
+			String str = (String)value;
+			if(str.startsWith("${") && str.endsWith("}")){
 				str = str.substring(2, str.length()-1);
 			}else if(str.startsWith("'") && str.endsWith("'")){
 			}else{

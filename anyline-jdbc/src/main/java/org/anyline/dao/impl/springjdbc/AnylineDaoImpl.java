@@ -560,6 +560,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
 		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		Run run = adapter.buildInsertRun(dest, data, checkPrimary, columns);
+
 		if(null == run){
 			return 0;
 		}
@@ -574,13 +575,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			log.warn(random + "[参数:{}]",paramLogFormat(run.getInsertColumns(),values));
 		}
 		try{
-
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, columns);
 			}
 			if(listenerResult) {
-				cnt = adapter.insert(random, jdbc, data, sql, values);
+				cnt = adapter.insert(random, jdbc, data, sql, values, null);
 				if (null != listener) {
 					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
 				}

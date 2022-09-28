@@ -69,6 +69,7 @@ public class SQLAdapterUtil {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
+		adapter.setJdbc(jdbc);
 		return adapter;
 	}
 	private static JDBCAdapter getAdapter(String name){

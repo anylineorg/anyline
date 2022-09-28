@@ -92,6 +92,7 @@ public interface JDBCAdapter {
 	 */
 	public String getDelimiterFr();
 	public String getDelimiterTo();
+	public void setJdbc(JdbcTemplate jdbc);
 
 
 	/* *****************************************************************************************************************
@@ -174,8 +175,15 @@ public interface JDBCAdapter {
 	 * @return int
 	 * @throws Exception
 	 */
-	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception;
+	public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception;
 
+	/**
+	 * insert执行后 通过KeyHolder获取主键值赋值给data
+	 * @param random log标记
+	 * @param data data
+	 * @param keyholder  keyholder
+	 * @return boolean
+	 */
 	public boolean identity(String random, Object data, KeyHolder keyholder);
 	public String generatedKey();
 	/* *****************************************************************************************************************

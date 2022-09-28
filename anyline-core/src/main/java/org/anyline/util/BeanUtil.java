@@ -1232,6 +1232,13 @@ public class BeanUtil {
 		}
 		return map;
 	}
+
+	/**
+	 * 需要保证数据类型一致
+	 * @param list list
+	 * @return array
+	 * @param <T> T
+	 */
 	public static <T> T[] list2array(List<T> list){
 		if(null == list || list.isEmpty()){
 			return null;

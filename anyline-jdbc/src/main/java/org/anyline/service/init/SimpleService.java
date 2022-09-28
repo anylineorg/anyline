@@ -127,7 +127,7 @@ public class SimpleService<E> implements AnylineService<E> {
             log.warn("[解析SQL][src:{}]", src);
         }
         try {
-            RunPrepare prepare = createSQL(src);
+            RunPrepare prepare = createRunPrepare(src);
             configs = append(configs, obj);
             maps = dao.maps(prepare, configs, conditions);
         } catch (Exception e) {
@@ -685,7 +685,7 @@ public class SimpleService<E> implements AnylineService<E> {
         boolean result = false;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        RunPrepare prepare = createSQL(src);
+        RunPrepare prepare = createRunPrepare(src);
         result = dao.exists(prepare, append(configs, obj), conditions);
         return result;
     }
@@ -733,7 +733,7 @@ public class SimpleService<E> implements AnylineService<E> {
             // conditions = parseConditions(conditions);
             src = BasicUtil.compressionSpace(src);
             conditions = BasicUtil.compressionSpace(conditions);
-            RunPrepare prepare = createSQL(src);
+            RunPrepare prepare = createRunPrepare(src);
             count = dao.count(prepare, append(configs, obj), conditions);
         } catch (Exception e) {
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
@@ -1293,7 +1293,7 @@ public class SimpleService<E> implements AnylineService<E> {
         src = BasicUtil.compressionSpace(src);
         src = DataSourceHolder.parseDataSource(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        RunPrepare prepare = createSQL(src);
+        RunPrepare prepare = createRunPrepare(src);
         if (null == prepare) {
             return result;
         }
@@ -1419,7 +1419,7 @@ public class SimpleService<E> implements AnylineService<E> {
         }
         try {
             setPageLazy(src, configs, conditions);
-            RunPrepare prepare = createSQL(src);
+            RunPrepare prepare = createRunPrepare(src);
             set = dao.querys(prepare, configs, conditions);
          } catch (Exception e) {
             set = new DataSet();
@@ -1480,7 +1480,7 @@ public class SimpleService<E> implements AnylineService<E> {
         return src;
     }
 
-    protected synchronized RunPrepare createSQL(String src){
+    protected synchronized RunPrepare createRunPrepare(String src){
         RunPrepare prepare = null;
         src = src.trim();
         List<String> pks = new ArrayList<>();
@@ -1512,7 +1512,7 @@ public class SimpleService<E> implements AnylineService<E> {
                     || chk.startsWith("REMOVE ")
                     || chk.startsWith("SET ")
             )*/
-            if(src.trim().matches("^[a-zA-Z]+\\s+.+")){
+            if(src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")){
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
@@ -1556,7 +1556,7 @@ public class SimpleService<E> implements AnylineService<E> {
             key += ks[1]+":";
         }
         key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
-        RunPrepare prepare = createSQL(src);
+        RunPrepare prepare = createRunPrepare(src);
         if(null != cacheProvider) {
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {

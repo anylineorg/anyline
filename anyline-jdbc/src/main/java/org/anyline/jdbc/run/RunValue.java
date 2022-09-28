@@ -1,5 +1,7 @@
 package org.anyline.jdbc.run;
 
+import org.anyline.util.BeanUtil;
+
 public class RunValue {
     private String key;
     private Object value;
