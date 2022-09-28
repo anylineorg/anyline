@@ -75,7 +75,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      *
      * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
-     *  public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception
+     *  public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception
      ******************************************************************************************************************/
 
     /**
@@ -274,7 +274,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 }
             }
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(":");
-            if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+            if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
                 String str = value.toString();
                 value = str.substring(2, str.length()-1);
                 if(value.toString().startsWith("${") && value.toString().endsWith("}")){
@@ -312,7 +312,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * @return int
      */
     @Override
-    public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values) throws Exception{
+    public int insert(String random, JdbcTemplate jdbc, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         DataSource ds = null;
         Connection con = null;
@@ -356,6 +356,18 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             }
         }
         return cnt;
+    }
+
+    /**
+     * insert执行后 通过KeyHolder获取主键值赋值给data
+     * @param random log标记
+     * @param data data
+     * @param keyholder  keyholder
+     * @return boolean
+     */
+    @Override
+    public boolean identity(String random, Object data, KeyHolder keyholder) {
+        return false;
     }
 
 
@@ -796,7 +808,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
                 }
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
 
@@ -874,7 +886,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
                 Object value = row.get(key);
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                     SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
