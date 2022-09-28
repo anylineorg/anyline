@@ -65,7 +65,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater;
 
-	private JdbcTemplate jdbc;
+	protected JdbcTemplate jdbc;
 
 	@Autowired(required = false)
 	@Qualifier("anyline.service")
