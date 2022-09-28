@@ -113,10 +113,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			}
 		}
 		builder.append(") M");
-		DataSet ids = service.querys(builder.toString());
+		List<Map<String,Object>> ids = jdbc.queryForList(builder.toString());
 		int i=0;
 		for(Object obj:list){
-			Object value = ids.get(i++,"ID");
+			Object value = ids.get(i++).get("ID");
 			setPrimaryValue(obj, value);
 		}
 	}
