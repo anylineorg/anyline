@@ -103,9 +103,6 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	protected void creratePrimaryValue(Collection list, String seq){
-		if(!OracleAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT){
-			return;
-		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
 		int size = list.size();
@@ -154,8 +151,11 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					if (str.startsWith("${") && str.endsWith("}")) {
 						str = str.substring(2, str.length() - 1);
 					}
-					creratePrimaryValue(set, str);
-					seqs.put(key, str);
+					if(OracleAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
+						creratePrimaryValue(set, str);
+					}else {
+						seqs.put(key, str);
+					}
 				}
 			}
 		}
@@ -232,8 +232,11 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					if (str.startsWith("${") && str.endsWith("}")) {
 						str = str.substring(2, str.length() - 1);
 					}
-					creratePrimaryValue(list, str);
-					seqs.put(key, str);
+					if(OracleAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
+						creratePrimaryValue(list, str);
+					}else {
+						seqs.put(key, str);
+					}
 				}
 			}
 		}
