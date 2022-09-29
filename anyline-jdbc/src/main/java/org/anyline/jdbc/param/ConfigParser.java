@@ -195,10 +195,10 @@ public class ConfigParser {
 	private static ParseResult parseCompare(ParseResult result, boolean isKey){
 		String config = result.getKey();
 		if (config.startsWith(">=")) {
-			result.setCompare(Compare.GRATE_EQUAL);
+			result.setCompare(Compare.GREAT_EQUAL);
 			config = config.substring(2);
 		} else if (config.startsWith(">")) {
-			result.setCompare(Compare.GRATE);
+			result.setCompare(Compare.GREAT);
 			config = config.substring(1);
 		} else if (config.startsWith("<=")) {
 			result.setCompare(Compare.LESS_EQUAL);

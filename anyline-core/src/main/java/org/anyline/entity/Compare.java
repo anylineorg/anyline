@@ -43,7 +43,7 @@ public enum Compare {
             return target.toString().equalsIgnoreCase(value.toString());
         }
     },
-    GRATE			{
+    GREAT			{
         public int getCode(){return 20;}
         public String getSQL(){return " > ?";}
         public String getName(){return "大于";}
@@ -58,7 +58,7 @@ public enum Compare {
             }
         }
     },
-    GRATE_EQUAL		{
+    GREAT_EQUAL		{
         public int getCode(){return 21;}
         public String getSQL(){return " >= ?";}
         public String getName(){return "大于等于";}

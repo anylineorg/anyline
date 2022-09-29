@@ -811,10 +811,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         cmp = Compare.EQUAL;
                     } else if (v.startsWith(">")) {
                         v = v.substring(1);
-                        cmp = Compare.GRATE;
+                        cmp = Compare.GREAT;
                     } else if (v.startsWith(">=")) {
                         v = v.substring(2);
-                        cmp = Compare.GRATE_EQUAL;
+                        cmp = Compare.GREAT_EQUAL;
                     } else if (v.startsWith("<")) {
                         v = v.substring(1);
                         cmp = Compare.LESS;
