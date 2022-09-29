@@ -20,17 +20,16 @@
 package org.anyline.jdbc.adapter;
 
 import org.anyline.entity.DataSet;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
-import org.anyline.jdbc.run.TableRun;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -237,7 +236,7 @@ public interface JDBCAdapter {
 	 * @param compare compare
 	 * @return builder
 	 */
-	public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare);
+	public StringBuilder buildConditionLike(StringBuilder builder, Compare compare);
 
 	/**
 	 * 构造(NOT) IN 查询条件
@@ -246,7 +245,7 @@ public interface JDBCAdapter {
 	 * @param value value
 	 * @return builder
 	 */
-	public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value);
+	public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * JDBC执行完成后的结果处理

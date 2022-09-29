@@ -20,6 +20,7 @@
 package org.anyline.jdbc.prepare.auto;
 
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.RunPrepare;
 
 public interface AutoPrepare extends RunPrepare {
@@ -46,8 +47,8 @@ public interface AutoPrepare extends RunPrepare {
 	 * @param compare  比较方式 
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare);
-	public RunPrepare addCondition(boolean required, String column, Object value, COMPARE_TYPE compare);
+	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare);
+	public RunPrepare addCondition(boolean required, String column, Object value, Compare compare);
  
 	/** 
 	 * 添加静态文本查询条件 

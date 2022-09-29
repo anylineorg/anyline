@@ -1,8 +1,7 @@
 package org.anyline.jdbc.param;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class ParseResult {
  
 	private List<ParseResult> defs = new ArrayList<ParseResult>();	// 默认值 
 	private ParseResult or = null;	// or 只有value或defs有值时 ors才生效
-	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL			; // 比较方式
+	private Compare compare = Compare.EQUAL			; // 比较方式
 	private String join = Condition.CONDITION_JOIN_TYPE_AND			; // 连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; // request取值方式
 	 
@@ -55,10 +54,10 @@ public class ParseResult {
 	public void setRequired(boolean required) { 
 		this.required = required; 
 	} 
-	public COMPARE_TYPE getCompare() { 
+	public Compare getCompare() { 
 		return compare; 
 	} 
-	public void setCompare(RunPrepare.COMPARE_TYPE compare) {
+	public void setCompare(Compare compare) {
 		this.compare = compare; 
 	} 
 	public String getKey() { 

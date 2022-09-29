@@ -1,7 +1,6 @@
 package org.anyline.jdbc.prepare;
  
-import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.init.SimpleVariable;
 import org.anyline.util.BasicUtil; 
  
@@ -30,7 +29,7 @@ public class SyntaxHelper {
 	 */ 
 	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){
 		int varType = -1; 
-		COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
+		Compare compare = Compare.EQUAL;
 		if(null == afterChar){ 
 			afterChar = ""; 
 		} 
@@ -55,17 +54,17 @@ public class SyntaxHelper {
 			// AND CD LIKE '%:CD%' 
 			varType = Variable.VAR_TYPE_KEY;
 			if(prefix.endsWith("%") && afterChar.startsWith("%")){ 
-				compare = COMPARE_TYPE.LIKE;
+				compare = Compare.LIKE;
 			}else if(prefix.endsWith("%")){ 
-				compare = COMPARE_TYPE.LIKE_PREFIX;
+				compare = Compare.LIKE_PREFIX;
 			}else if(afterChar.startsWith("%")){ 
-				compare = COMPARE_TYPE.LIKE_SUBFIX;
+				compare = Compare.LIKE_SUFFIX;
 			} 
 		}else{ 
 			varType = Variable.VAR_TYPE_KEY;
 			if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
 				// AND CD IN({CD}) 
-				compare = COMPARE_TYPE.IN;
+				compare = Compare.IN;
 			} 
 		} 
 		var.setSignType(signType); 
@@ -74,19 +73,19 @@ public class SyntaxHelper {
 		var.setCompare(compare); 
 		return var; 
 	} 
-	public static COMPARE_TYPE parseCompare(int code){
-		for (COMPARE_TYPE type : COMPARE_TYPE.values()) { 
+	public static Compare parseCompare(int code){
+		for (Compare type : Compare.values()) { 
 			if(type.getCode() == code){ 
 				return type; 
 			} 
         } 
 		return null; 
 	} 
-	public static COMPARE_TYPE parseCompare(String code){
+	public static Compare parseCompare(String code){
 		if(BasicUtil.isEmpty(code)){ 
 			return null; 
 		} 
-		for (COMPARE_TYPE type : COMPARE_TYPE.values()) { 
+		for (Compare type : Compare.values()) { 
 			if(code.equals(type.getCode()+"")){ 
 				return type; 
 			} 

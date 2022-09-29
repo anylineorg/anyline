@@ -19,11 +19,11 @@
 
 package org.anyline.jdbc.param.init;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.param.Config;
 import org.anyline.jdbc.param.ConfigChain;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
@@ -116,14 +116,14 @@ public class SimpleConfigChain extends SimpleConfig implements ConfigChain {
 		}
 		return null;
 	}
-	public Config getConfig(String prefix, String var, RunPrepare.COMPARE_TYPE type){
+	public Config getConfig(String prefix, String var, Compare type){
 		if(BasicUtil.isEmpty(prefix, var)){
 			return null;
 		}
 		for(Config conf: configs){
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
-			RunPrepare.COMPARE_TYPE confType = conf.getCompare();
+			Compare confType = conf.getCompare();
 			if(BasicUtil.isEmpty(prefix)){
 				// 只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){
@@ -148,7 +148,7 @@ public class SimpleConfigChain extends SimpleConfig implements ConfigChain {
 		Config config = getConfig(key, var);
 		return removeConfig(config);
 	}
-	public ConfigChain removeConfig(String key, String var, RunPrepare.COMPARE_TYPE type){
+	public ConfigChain removeConfig(String key, String var, Compare type){
 		Config config = getConfig(key, var, type);
 		return removeConfig(config);
 	}

@@ -19,8 +19,8 @@
 
 package org.anyline.jdbc.prepare.auto;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 
 import java.util.List;
  
@@ -37,7 +37,7 @@ public interface AutoCondition extends Condition{
 	public String getColumn() ; 
 	public void setColumn(String column) ; 
 	public void setValues(Object values) ; 
-	public COMPARE_TYPE getCompare() ; 
-	public AutoCondition setCompare(COMPARE_TYPE compare) ; 
-	public AutoCondition setOrCompare(COMPARE_TYPE compare) ; 
+	public Compare getCompare() ;
+	public AutoCondition setCompare(Compare compare) ;
+	public AutoCondition setOrCompare(Compare compare) ;
 } 

@@ -20,6 +20,7 @@
 package org.anyline.jdbc.prepare.auto.init;
 
 import org.anyline.entity.Order;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.prepare.init.SimplePrepare;
 import org.anyline.jdbc.prepare.auto.AutoPrepare;
@@ -79,7 +80,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 	 * @param compare  比较方式
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
+	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare){
 		if(null == chain){
 			chain = new SimpleAutoConditionChain();
 		}
@@ -87,7 +88,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 		chain.addCondition(condition);
 		return this;
 	}
-	public RunPrepare addCondition(boolean required, String column, Object value, COMPARE_TYPE compare){
+	public RunPrepare addCondition(boolean required, String column, Object value, Compare compare){
 		return addCondition(required, false, column, value, compare);
 	}
 	/**

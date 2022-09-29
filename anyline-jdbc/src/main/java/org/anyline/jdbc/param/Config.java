@@ -19,9 +19,9 @@
 
 package org.anyline.jdbc.param;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 
 import java.util.List;
 import java.util.Map;
@@ -57,11 +57,11 @@ public interface Config {
 	public void setKey(String key) ;
 
 
-	public COMPARE_TYPE getCompare() ; 
-	public void setCompare(COMPARE_TYPE compare) ; 
+	public Compare getCompare() ; 
+	public void setCompare(Compare compare) ; 
 	
-	public COMPARE_TYPE getOrCompare() ; 
-	public void setOrCompare(COMPARE_TYPE compare) ; 
+	public Compare getOrCompare() ; 
+	public void setOrCompare(Compare compare) ; 
  
 	public boolean isEmpty() ; 
  

@@ -26,7 +26,7 @@ import org.anyline.jdbc.param.ConfigChain;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.Group;
 import org.anyline.jdbc.prepare.GroupStore;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.init.SimpleGroup;
 import org.anyline.jdbc.prepare.init.SimpleGroupStore;
 import org.anyline.util.BasicUtil;
@@ -146,12 +146,12 @@ public class SimpleConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore addConditions(String var, Object ... values){
-		return addCondition(COMPARE_TYPE.IN, var, values);
-//		Config conf = chain.getConfig(null,var,RunPrepare.COMPARE_TYPE.IN);
+		return addCondition(Compare.IN, var, values);
+//		Config conf = chain.getConfig(null,var,Compare.IN);
 //		if(null == conf){
 //			conf = new SimpleConfig();
 //			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-//			conf.setCompare(RunPrepare.COMPARE_TYPE.IN);
+//			conf.setCompare(Compare.IN);
 //		}
 //		conf.setVariable(var);
 //		if(null != values && !(values instanceof Collection)){
@@ -185,15 +185,15 @@ public class SimpleConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore addCondition(String prefix, String var, Object value, boolean overCondition, boolean overValue){
-		return addCondition(COMPARE_TYPE.EQUAL, prefix, var, value, overCondition, overValue);
+		return addCondition(Compare.EQUAL, prefix, var, value, overCondition, overValue);
 //		Config conf = null;
 //		if(overCondition){
-//			conf = chain.getConfig(prefix,var,RunPrepare.COMPARE_TYPE.EQUAL);
+//			conf = chain.getConfig(prefix,var,Compare.EQUAL);
 //		}
 //		if(null == conf){
 //			conf = new SimpleConfig();
 //			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-//			conf.setCompare(RunPrepare.COMPARE_TYPE.EQUAL);
+//			conf.setCompare(Compare.EQUAL);
 //			chain.addConfig(conf);
 //		}
 //		conf.setPrefix(prefix);
@@ -209,11 +209,11 @@ public class SimpleConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore addCondition(COMPARE_TYPE compare, String var, Object value) {
+	public ConfigStore addCondition(Compare compare, String var, Object value) {
 		return addCondition(compare, var, value, false, false);
 	}
 	@Override
-	public ConfigStore addCondition(COMPARE_TYPE compare, String id, String var, Object value) {
+	public ConfigStore addCondition(Compare compare, String id, String var, Object value) {
 		return addCondition(compare, id, var, value, false, false);
 	}
 	@Override
@@ -221,7 +221,7 @@ public class SimpleConfigStore implements ConfigStore {
 		return addCondition(id, var, value, false, false);
 	}
 	@Override
-	public ConfigStore addCondition(COMPARE_TYPE compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
+	public ConfigStore addCondition(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		Config conf = null;
 		boolean require = false;
 		boolean strictRequired = false;
@@ -260,7 +260,7 @@ public class SimpleConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore addCondition(COMPARE_TYPE compare, String var, Object value, boolean overCondition, boolean overValue) {
+	public ConfigStore addCondition(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return addCondition(compare, null, var, value, overCondition, overValue);
 	}
 	@Override
@@ -277,16 +277,16 @@ public class SimpleConfigStore implements ConfigStore {
 		return addCondition(var, value, false, false);
 	} 
 	@Override
-	public ConfigStore and(COMPARE_TYPE compare, String var, Object value) {
+	public ConfigStore and(Compare compare, String var, Object value) {
 		return addCondition(compare, var, value, false, false);
 	}
 
 	@Override
 	public ConfigStore or(String var, Object value){
-		return or(COMPARE_TYPE.EQUAL, var, value);
+		return or(Compare.EQUAL, var, value);
 	} 
 	@Override
-	public ConfigStore or(COMPARE_TYPE compare, String var, Object value) {
+	public ConfigStore or(Compare compare, String var, Object value) {
 		List<Config> configs = chain.getConfigs();
 		// 如果当前没有其他条件
 		if(configs.size()==0){
@@ -338,12 +338,12 @@ public class SimpleConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore condition(COMPARE_TYPE compare, String var, Object value) {
+	public ConfigStore condition(Compare compare, String var, Object value) {
 		return addCondition(compare, var, value);
 	}
 
 	@Override
-	public ConfigStore condition(COMPARE_TYPE compare, String var, Object value, boolean overCondition, boolean overValue) {
+	public ConfigStore condition(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return addCondition(compare, var, value, overCondition, overValue);
 	}
 
@@ -359,10 +359,10 @@ public class SimpleConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore ors(String var, Object value){
-		return ors(COMPARE_TYPE.EQUAL, var, value);
+		return ors(Compare.EQUAL, var, value);
 	} 
 	@Override
-	public ConfigStore ors(COMPARE_TYPE compare, String var, Object value) {
+	public ConfigStore ors(Compare compare, String var, Object value) {
 		ConfigChain newChain = new SimpleConfigChain();
 		newChain.addConfig(chain);
 		
@@ -519,16 +519,16 @@ public class SimpleConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public Config getConfig(String var, COMPARE_TYPE compare){
+	public Config getConfig(String var, Compare compare){
 		return chain.getConfig(null,var,compare);
 	}
 	@Override
-	public ConfigStore removeConfig(String var, COMPARE_TYPE compare){
+	public ConfigStore removeConfig(String var, Compare compare){
 		Config config = getConfig(var, compare);
 		return removeConfig(config);
 	}
 	@Override
-	public List<Object> getConfigValues(String var, COMPARE_TYPE compare){
+	public List<Object> getConfigValues(String var, Compare compare){
 		Config config = chain.getConfig(null, var,compare);
 		if(null != config){
 			return config.getValues();
@@ -536,7 +536,7 @@ public class SimpleConfigStore implements ConfigStore {
 		return null;
 	}
 	@Override
-	public Object getConfigValue(String var, COMPARE_TYPE compare){
+	public Object getConfigValue(String var, Compare compare){
 		Config config = chain.getConfig(null, var,compare);
 		if(null != config){
 			List<Object> values = config.getValues();

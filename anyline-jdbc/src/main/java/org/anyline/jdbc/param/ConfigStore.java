@@ -24,7 +24,7 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.prepare.Group;
 import org.anyline.jdbc.prepare.GroupStore;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 
 import java.util.List;
 import java.util.Map;
@@ -52,10 +52,10 @@ public interface ConfigStore {
 	public ConfigStore removeConfig(Config config);
 	public List<Object> getConfigValues(String var);
 	public Object getConfigValue(String var);
-	public Config getConfig(String key, COMPARE_TYPE compare);
-	public ConfigStore removeConfig(String var, COMPARE_TYPE compare);
-	public List<Object> getConfigValues(String var, COMPARE_TYPE compare);
-	public Object getConfigValue(String var, COMPARE_TYPE compare);
+	public Config getConfig(String key, Compare compare);
+	public ConfigStore removeConfig(String var, Compare compare);
+	public List<Object> getConfigValues(String var, Compare compare);
+	public Object getConfigValue(String var, Compare compare);
 	public ConfigStore addConditions(String var, Object ... values);
 	public ConfigStore addCondition(String var, Object value);
 	/**
@@ -79,10 +79,10 @@ public interface ConfigStore {
 	 */
 	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(String text);
-	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value);
-	public ConfigStore addCondition(COMPARE_TYPE compare, String id, String var, Object value);
-	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore addCondition(COMPARE_TYPE compare, String id, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore addCondition(Compare compare, String id, Object value);
+	public ConfigStore addCondition(Compare compare, String id, String var, Object value);
+	public ConfigStore addCondition(Compare compare, String id, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore addCondition(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 
 	/**
 	 * XML自定义SQL条件中指定变量赋值
@@ -98,14 +98,14 @@ public interface ConfigStore {
 	public ConfigStore condition(String var, Object value);
 	public ConfigStore condition(String id, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore condition(String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore condition(COMPARE_TYPE compare, String var, Object value);
-	public ConfigStore condition(COMPARE_TYPE compare, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore condition(Compare compare, String var, Object value);
+	public ConfigStore condition(Compare compare, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore condition(String id, String var, Object value);
 	public ConfigStore condition(Config config);
 	
 
 	public ConfigStore and(String var, Object value);
-	public ConfigStore and(COMPARE_TYPE compare, String var, Object value);
+	public ConfigStore and(Compare compare, String var, Object value);
 	/**
 	 * 与ConfigStore中前一个条件合成or
 	 * @param key key
@@ -113,7 +113,7 @@ public interface ConfigStore {
 	 * @return ConfigStore
 	 */
 	public ConfigStore or(String key, Object value);
-	public ConfigStore or(COMPARE_TYPE compare, String var, Object value);
+	public ConfigStore or(Compare compare, String var, Object value);
 	/**
 	 * 与ConfigStore中当前所有的条件合成or
 	 * @param var var
@@ -121,7 +121,7 @@ public interface ConfigStore {
 	 * @return ConfigStore
 	 */
 	public ConfigStore ors(String var, Object value);
-	public ConfigStore ors(COMPARE_TYPE compare, String var, Object value);
+	public ConfigStore ors(Compare compare, String var, Object value);
 	/** 
 	 * 添加排序 
 	 * @param order  order

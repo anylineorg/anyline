@@ -24,7 +24,7 @@ import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.init.SimpleCondition;
 import org.anyline.jdbc.prepare.init.SimpleVariable;
 import org.anyline.util.BasicUtil;
@@ -121,7 +121,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				setVariableType(VARIABLE_FLAG_TYPE_KEY); 
 				int varType = Variable.VAR_TYPE_INDEX;
-				COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
+				Compare compare = Compare.EQUAL;
 				for(int i=0; i<keys.size(); i++){ 
 					List<String> keyItem = keys.get(i); 
 					String prefix = keyItem.get(1).trim();		// 前缀 
@@ -139,7 +139,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 						// AND CD = :CD 
 						varType = Variable.VAR_TYPE_KEY;
 						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
-							compare = COMPARE_TYPE.IN;
+							compare = Compare.IN;
 						} 
 					} 
 					Variable var = new SimpleVariable();
@@ -242,7 +242,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 			if(var.getType() == Variable.VAR_TYPE_KEY){
 				// CD=:CD 
 				List<Object> varValues = var.getValues(); 
-				if(COMPARE_TYPE.IN == var.getCompare()){
+				if(Compare.IN == var.getCompare()){
 					String inParam = ""; 
 					for(int i=0; i<varValues.size(); i++){ 
 						inParam += "?"; 

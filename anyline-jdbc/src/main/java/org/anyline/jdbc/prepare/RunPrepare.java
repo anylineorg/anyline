@@ -29,8 +29,8 @@ import java.util.List;
 
  
 public interface RunPrepare extends Cloneable {
-
-	public static enum COMPARE_TYPE{
+/*
+	public static enum Compare{
 		EQUAL			{public int getCode(){return 10;} public String getSql(){return " = ?";} 				public String getName(){return "等于";}},
 		GREAT			{public int getCode(){return 20;} public String getSql(){return " > ?";} 				public String getName(){return "大于";}},
 		GREAT_EQUAL		{public int getCode(){return 21;} public String getSql(){return " >= ?";} 				public String getName(){return "大于等于";}},
@@ -39,26 +39,26 @@ public interface RunPrepare extends Cloneable {
 		IN				{public int getCode(){return 40;} public String getSql(){return " IN ";} 				public String getName(){return "in";}},
 		LIKE			{public int getCode(){return 50;} public String getSql(){return " LIKE ";} 				public String getName(){return "%like%";}},
 		LIKE_PREFIX		{public int getCode(){return 51;} public String getSql(){return " LIKE ";} 				public String getName(){return "%like";}},
-		LIKE_SUBFIX		{public int getCode(){return 52;} public String getSql(){return " LIKE ";} 				public String getName(){return "like%";}},
+		LIKE_SUFFIX		{public int getCode(){return 52;} public String getSql(){return " LIKE ";} 				public String getName(){return "like%";}},
 		BETWEEN			{public int getCode(){return 80;} public String getSql(){return " BETWEEN ? AND ? ";} 	public String getName(){return "区间";}},
 		NOT_EQUAL		{public int getCode(){return 110;} public String getSql(){return " != ?";} 				public String getName(){return "不等于";}},
 		NOT_IN			{public int getCode(){return 140;} public String getSql(){return " NOT IN ";} 			public String getName(){return "不包含";}};
 		public abstract String getName();
 		public abstract String getSql();
 		public abstract int getCode();
-	}
+	}*/
 
-	// public static int COMPARE_TYPE_EQUAL 			= 10;	// == 
-//	public static int COMPARE_TYPE_GREAT 			= 20;	// > 
-//	public static int COMPARE_TYPE_GREAT_EQUAL		= 21;	// >= 
-//	public static int COMPARE_TYPE_LITTLE 			= 30;	// < 
-//	public static int COMPARE_TYPE_LITTLE_EQUAL		= 31;	// <= 
-//	public static int COMPARE_TYPE_IN				= 40;	// IN 
-//	public static int COMPARE_TYPE_LIKE				= 50;	// LIKE '%张%' 
-//	public static int COMPARE_TYPE_LIKE_PREFIX		= 51;	// LIKE '张%' 
-//	public static int COMPARE_TYPE_LIKE_SUBFIX		= 52;	// LIKE '%张' 
-//	public static int COMPARE_TYPE_NOT_EQUAL		= 61;	// <> 
-//	public static int COMPARE_TYPE_NOT_IN			= 62;	// NOT IN 
+	// public static int Compare_EQUAL 			= 10;	// == 
+//	public static int Compare_GREAT 			= 20;	// > 
+//	public static int Compare_GREAT_EQUAL		= 21;	// >= 
+//	public static int Compare_LITTLE 			= 30;	// < 
+//	public static int Compare_LITTLE_EQUAL		= 31;	// <= 
+//	public static int Compare_IN				= 40;	// IN 
+//	public static int Compare_LIKE				= 50;	// LIKE '%张%' 
+//	public static int Compare_LIKE_PREFIX		= 51;	// LIKE '张%' 
+//	public static int Compare_LIKE_SUFFIX		= 52;	// LIKE '%张' 
+//	public static int Compare_NOT_EQUAL		= 61;	// <> 
+//	public static int Compare_NOT_IN			= 62;	// NOT IN 
 
 
 	public static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			// 存储过程输入参数类型 

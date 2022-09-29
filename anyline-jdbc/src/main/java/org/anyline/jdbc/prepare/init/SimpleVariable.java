@@ -22,7 +22,7 @@
  */ 
 package org.anyline.jdbc.prepare.init;
 
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.util.BeanUtil;
 
@@ -53,7 +53,7 @@ public class SimpleVariable implements Variable {
 	private List<Object> values;	// 变量值 
 	private int type;				// 变量替换方式
 	private int signType = 1;		// 变量区分方式
-	private COMPARE_TYPE compare;	// 比较方式
+	private Compare compare;	// 比较方式
 	private boolean required;
 	private boolean strictRequired;
 	 
@@ -75,10 +75,10 @@ public class SimpleVariable implements Variable {
 			values.clear(); 
 		} 
 	} 
-	public COMPARE_TYPE getCompare() { 
+	public Compare getCompare() { 
 		return compare; 
 	} 
-	public void setCompare(COMPARE_TYPE compare) { 
+	public void setCompare(Compare compare) { 
 		this.compare = compare; 
 	} 
 	public void addValue(Object value){ 

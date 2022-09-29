@@ -2,7 +2,6 @@ package org.anyline.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
-import org.anyline.entity.operator.*;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -555,7 +554,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return getRow(compare,0, params);
     }
     public DataRow getRow( DataRow params) {
-        return getRow(CompareBuilder.EQUAL, 0, params);
+        return getRow(Compare.EQUAL, 0, params);
     }
     public DataRow getRow(Compare compare, List<String> params) {
         String[] kvs = BeanUtil.list2array(params);
@@ -563,7 +562,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataRow getRow(List<String> params) {
-        return getRow(CompareBuilder.EQUAL, params);
+        return getRow(Compare.EQUAL, params);
     }
 
 
@@ -585,7 +584,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return getRows(compare, 0, -1, kvs);
     }
     public DataRow getRow(int begin, String... params) {
-        return getRow(CompareBuilder.EQUAL, begin, params);
+        return getRow(Compare.EQUAL, begin, params);
     }
     public DataRow getRow(Compare compare,int begin, DataRow params) {
         DataSet set = getRows(compare, begin, 1, params);
@@ -598,7 +597,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return null;
     }
     public DataRow getRow(int begin, DataRow params) {
-        return getRow(CompareBuilder.EQUAL, begin, params);
+        return getRow(Compare.EQUAL, begin, params);
     }
 
     /**
@@ -779,10 +778,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet getRows(int begin, int qty, DataRow kvs) {
-        return getRows(CompareBuilder.EQUAL, begin, qty, kvs);
+        return getRows(Compare.EQUAL, begin, qty, kvs);
     }
     public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
-        return getRows(CompareBuilder.EQUAL, begin, qty, kvs);
+        return getRows(Compare.EQUAL, begin, qty, kvs);
     }
     /**
      *
@@ -800,37 +799,37 @@ public class DataSet implements Collection<DataRow>, Serializable {
         String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 
         Map<String,Compare> compares = new HashMap<>();
-        if(null == compare || compare instanceof Auto) {
+        if(null == compare || compare == Compare.AUTO) {
             for (String k : kvs.keySet()) {
                 // k(ID) , v(>=10)(%A%)
                 String v = kvs.get(k);
                 if (null != v) {
                     // 与SQL.TYPE保持一致
-                    Compare cmp = CompareBuilder.EQUAL;
+                    Compare cmp = Compare.EQUAL;
                     if (v.startsWith("=")) {
                         v = v.substring(1);
-                        cmp = CompareBuilder.EQUAL;
+                        cmp = Compare.EQUAL;
                     } else if (v.startsWith(">")) {
                         v = v.substring(1);
-                        cmp = CompareBuilder.BIG;
+                        cmp = Compare.GRATE;
                     } else if (v.startsWith(">=")) {
                         v = v.substring(2);
-                        cmp = CompareBuilder.BIG_EQUAL;
+                        cmp = Compare.GRATE_EQUAL;
                     } else if (v.startsWith("<")) {
                         v = v.substring(1);
-                        cmp = CompareBuilder.LESS;
+                        cmp = Compare.LESS;
                     } else if (v.startsWith("<=")) {
                         v = v.substring(2);
-                        cmp = CompareBuilder.LESS_EQUAL;
+                        cmp = Compare.LESS_EQUAL;
                     } else if (v.startsWith("%") && v.endsWith("%")) {
                         v = v.substring(1, v.length() - 1);
-                        cmp = CompareBuilder.LIKE;
+                        cmp = Compare.LIKE;
                     } else if (v.endsWith("%")) {
                         v = v.substring(0, v.length() - 1);
-                        cmp = CompareBuilder.START_WITH;
+                        cmp = Compare.LIKE_PREFIX;
                     } else if (v.startsWith("%")) {
                         v = v.substring(1);
-                        cmp = CompareBuilder.END_WITH;
+                        cmp = Compare.LIKE_SUFFIX;
                     }
                     compares.put(k, cmp);
                 }
@@ -908,13 +907,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet getRows(int begin, String... params) {
-        return getRows(CompareBuilder.EQUAL, begin, -1, params);
+        return getRows(Compare.EQUAL, begin, -1, params);
     }
     public DataSet getRows(Compare compare, String... params) {
         return getRows(compare, 0, params);
     }
     public DataSet getRows(String... params) {
-        return getRows(CompareBuilder.EQUAL, 0, params);
+        return getRows(Compare.EQUAL, 0, params);
     }
 
     public DataSet getRows(Compare compare, DataSet set, String key) {
@@ -930,7 +929,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet getRows(DataSet set, String key) {
-        return getRows(CompareBuilder.EQUAL, set, key);
+        return getRows(Compare.EQUAL, set, key);
     }
     public DataSet getRows(Compare compare, DataRow row, String... keys) {
         List<String> list = new ArrayList<>();
@@ -946,7 +945,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet getRows(DataRow row, String... keys) {
-        return getRows(CompareBuilder.EQUAL, row, keys);
+        return getRows(Compare.EQUAL, row, keys);
     }
     /**
      * 数字格式化
@@ -1582,54 +1581,54 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
     public DataSet sum(String result, String items, String field, String ... conditions){
-        return sum(result, items, field, CompareBuilder.EQUAL, conditions);
+        return sum(result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet avg(String result, String items, String field, String ... conditions){
-        return avg(result, items, field, CompareBuilder.EQUAL, conditions);
+        return avg(result, items, field, Compare.EQUAL, conditions);
     }
 
 
     public DataSet var(String result, String items, String field, String ... conditions){
-        return var(result, items, field, CompareBuilder.EQUAL, conditions);
+        return var(result, items, field, Compare.EQUAL, conditions);
     }
     public DataSet min(String result, String items, String field, String ... conditions){
-        return min(result, items, field, CompareBuilder.EQUAL, conditions);
+        return min(result, items, field, Compare.EQUAL, conditions);
     }
     public DataSet max(String result, String items, String field, String ... conditions){
-        return max(result, items, field, CompareBuilder.EQUAL, conditions);
+        return max(result, items, field, Compare.EQUAL, conditions);
     }
     public DataSet count(String result, String items, String field, String ... conditions){
-        return count(result, items, field, CompareBuilder.EQUAL, conditions);
+        return count(result, items, field, Compare.EQUAL, conditions);
     }
     public DataSet vara(String result, String items, String field, String ... conditions){
-        return vara(result, items, field, CompareBuilder.EQUAL, conditions);
+        return vara(result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet varp(String result, String items, String field, String ... conditions){
-        return varp(result, items, field, CompareBuilder.EQUAL, conditions);
+        return varp(result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet varpa(String result, String items, String field, String ... conditions){
-        return varpa(result, items, field, CompareBuilder.EQUAL, conditions);
+        return varpa(result, items, field, Compare.EQUAL, conditions);
     }
     public DataSet stdev(String result, String items, String field, String ... conditions){
-        return stdev(result, items, field, CompareBuilder.EQUAL, conditions);
+        return stdev(result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet stdeva(String result, String items, String field, String ... conditions){
-        return stdeva(result, items, field, CompareBuilder.EQUAL, conditions);
+        return stdeva(result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet stdevp(String result, String items, String field, String ... conditions){
-        return stdevp(result, items, field, CompareBuilder.EQUAL, conditions);
+        return stdevp(result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet agg(Aggregation agg, String result, String items, String field, String ... conditions){
-        return agg(agg, result, items, field, CompareBuilder.EQUAL, conditions);
+        return agg(agg, result, items, field, Compare.EQUAL, conditions);
     }
     public DataSet agg(String agg, String result, String items, String field, String ... conditions) {
-        return agg(agg, result, items, field, CompareBuilder.EQUAL, conditions);
+        return agg(agg, result, items, field, Compare.EQUAL, conditions);
     }
 
     public DataSet addRow(DataRow row) {
@@ -3035,116 +3034,116 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 
     public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
-       return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, fixs, keys);
+       return dispatchs(Compare.EQUAL, field, unique, recursion, items, fixs, keys);
     }
 
     public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
+        return dispatchs(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
     }
 
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, items, keys);
+        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, items, keys);
     }
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
+        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
 
 
     public DataSet dispatchs(String field, DataSet items, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field,false, false, items, keys);
+        return dispatchs(Compare.EQUAL, field,false, false, items, keys);
     }
     public DataSet dispatchs(String field, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field,false, false, items, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, field,false, false, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatchs(String field, DataSet items, List<String> fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field,false, false, items, BeanUtil.merge(fixs, keys));
+        return dispatchs(Compare.EQUAL, field,false, false, items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatchs(DataSet items, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", items, keys);
+        return dispatchs(Compare.EQUAL, "ITEMS", items, keys);
     }
     public DataSet dispatchs(DataSet items, List<String> fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", items, BeanUtil.merge(fixs, keys));
+        return dispatchs(Compare.EQUAL, "ITEMS", items, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(DataSet items, String[] fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", items, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, "ITEMS", items, BeanUtil.array2list(fixs, keys));
     }
 
     public DataSet dispatchs(boolean unique, boolean recursion, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, this, keys);
+        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, this, keys);
     }
 
     public DataSet dispatchs(boolean unique, boolean recursion, List<String> fixs,  String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
+        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(boolean unique, boolean recursion, String[] fixs,  String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
 
     public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, this, keys);
+        return dispatchs(Compare.EQUAL, field, unique, recursion, this, keys);
     }
     public DataSet dispatchs(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+        return dispatchs(Compare.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, items, fixs, keys);
+        return dispatch(Compare.EQUAL, field, unique, recursion, items, fixs, keys);
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+        return dispatchs(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
+        return dispatchs(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
     }
     public DataSet dispatch(String field, DataSet items, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, false, false, items, keys);
+        return dispatch(Compare.EQUAL, field, false, false, items, keys);
     }
     public DataSet dispatch(String field, DataSet items, String[] fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, false, false, items, BeanUtil.array2list(fixs, keys));
+        return dispatch(Compare.EQUAL, field, false, false, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, DataSet items, List<String> fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, false, false, items, BeanUtil.merge(fixs, keys));
+        return dispatch(Compare.EQUAL, field, false, false, items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(DataSet items, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, "ITEM", items, BeanUtil.array2list(keys));
+        return dispatch(Compare.EQUAL, "ITEM", items, BeanUtil.array2list(keys));
     }
     public DataSet dispatch(DataSet items, String[] fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, "ITEM", items, BeanUtil.array2list(fixs, keys));
+        return dispatch(Compare.EQUAL, "ITEM", items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(DataSet items, List<String> fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, "ITEM", items, BeanUtil.merge(fixs, keys));
+        return dispatch(Compare.EQUAL, "ITEM", items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(boolean unique, boolean recursion, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, "ITEM", unique, recursion, this, keys);
+        return dispatch(Compare.EQUAL, "ITEM", unique, recursion, this, keys);
     }
     public DataSet dispatch(boolean unique, boolean recursion, String[] fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, "ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+        return dispatch(Compare.EQUAL, "ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(boolean unique, boolean recursion, List<String> fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, "ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
+        return dispatch(Compare.EQUAL, "ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, this, keys);
+        return dispatch(Compare.EQUAL, field, unique, recursion, this, keys);
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+        return dispatch(Compare.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
-        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+        return dispatch(Compare.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
     /**

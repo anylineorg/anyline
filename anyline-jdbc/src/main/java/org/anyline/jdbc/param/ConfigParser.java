@@ -1,8 +1,8 @@
 package org.anyline.jdbc.param;
 
+import org.anyline.entity.Compare;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -195,24 +195,24 @@ public class ConfigParser {
 	private static ParseResult parseCompare(ParseResult result, boolean isKey){
 		String config = result.getKey();
 		if (config.startsWith(">=")) {
-			result.setCompare(RunPrepare.COMPARE_TYPE.GREAT_EQUAL);
+			result.setCompare(Compare.GRATE_EQUAL);
 			config = config.substring(2);
 		} else if (config.startsWith(">")) {
-			result.setCompare(RunPrepare.COMPARE_TYPE.GREAT);
+			result.setCompare(Compare.GRATE);
 			config = config.substring(1);
 		} else if (config.startsWith("<=")) {
-			result.setCompare(RunPrepare.COMPARE_TYPE.LESS_EQUAL);
+			result.setCompare(Compare.LESS_EQUAL);
 			config = config.substring(2);
 		} else if (config.startsWith("<>") || config.startsWith("!=")) {
-			result.setCompare(RunPrepare.COMPARE_TYPE.NOT_EQUAL);
+			result.setCompare(Compare.NOT_EQUAL);
 			config = config.substring(2);
 		} else if (config.startsWith("<")) {
-			result.setCompare(RunPrepare.COMPARE_TYPE.LESS);
+			result.setCompare(Compare.LESS);
 			config = config.substring(1);
 		} else if (config.startsWith("[") && config.endsWith("]")) {
 			// [1,2,3]或[1,2,3]:[1,2,3]
 			// id:[id:cd:{[1,2,3]}]
-			result.setCompare(RunPrepare.COMPARE_TYPE.IN);
+			result.setCompare(Compare.IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
 			if(isKey){
 				config = config.substring(1,config.length()-1);
@@ -220,17 +220,17 @@ public class ConfigParser {
 
 		} else if (config.startsWith("%")) {
 			if (config.endsWith("%")) {
-				result.setCompare(RunPrepare.COMPARE_TYPE.LIKE);
+				result.setCompare(Compare.LIKE);
 				config = config.substring(1, config.length()-1);
 			} else {
-				result.setCompare(RunPrepare.COMPARE_TYPE.LIKE_SUBFIX);
+				result.setCompare(Compare.LIKE_SUFFIX);
 				config = config.substring(1, config.length());
 			}
 		} else if (config.endsWith("%")) {
-			result.setCompare(RunPrepare.COMPARE_TYPE.LIKE_PREFIX);
+			result.setCompare(Compare.LIKE_PREFIX);
 			config = config.substring(0, config.length()-1);
 		} else {
-			result.setCompare(RunPrepare.COMPARE_TYPE.EQUAL);
+			result.setCompare(Compare.EQUAL);
 		}
 		result.setKey(config);
 		return result;

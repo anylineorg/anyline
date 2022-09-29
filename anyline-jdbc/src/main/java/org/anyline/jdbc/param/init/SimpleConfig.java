@@ -19,16 +19,15 @@
 
 package org.anyline.jdbc.param.init;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.param.ParseResult;
 import org.anyline.jdbc.param.Config;
 import org.anyline.jdbc.param.ConfigChain;
 import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoCondition;
-import org.anyline.jdbc.prepare.init.SimpleCondition;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -193,11 +192,11 @@ public class SimpleConfig implements Config{
 		parser.setKey(key); 
 	} 
  
-	public COMPARE_TYPE getCompare() { 
+	public Compare getCompare() {
 		return parser.getCompare(); 
 	} 
  
-	public void setCompare(COMPARE_TYPE compare) { 
+	public void setCompare(Compare compare) {
 		parser.setCompare(compare); 
 	} 
  
@@ -238,7 +237,7 @@ public class SimpleConfig implements Config{
 		return parser.isValueEncrypt(); 
 	}
 	@Override
-	public COMPARE_TYPE getOrCompare() {
+	public Compare getOrCompare() {
 		ParseResult or = parser.getOr();
 		if(null != or){
 			return or.getCompare();
@@ -246,7 +245,7 @@ public class SimpleConfig implements Config{
 		return parser.getCompare();
 	}
 	@Override
-	public void setOrCompare(COMPARE_TYPE compare) {
+	public void setOrCompare(Compare compare) {
 		ParseResult or = parser.getOr();
 		if(null != or){
 			or.setCompare(compare);

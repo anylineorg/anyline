@@ -1,10 +1,10 @@
 package org.anyline.jdbc.neo4j;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.Compare;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.adapter.JDBCAdapter;
@@ -21,10 +21,7 @@ import org.anyline.jdbc.run.XMLRun;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
@@ -305,7 +302,6 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
     /**
      * 执行 insert
      * @param random random
-     * @param jdbc jdbc
      * @param data data
      * @param sql sql
      * @param values value
@@ -376,8 +372,8 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * public String parseFinalQuery(Run run)
-     * public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare)
-     * public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value)
+     * public StringBuilder buildConditionLike(StringBuilder builder, Compare compare)
+     * public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value)
      * public List<Map<String,Object>> process(List<Map<String,Object>> list)
      *
      * protected void buildQueryRunContent(XMLRun run)
@@ -460,12 +456,12 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare){
-        if(compare == RunPrepare.COMPARE_TYPE.LIKE){
+    public StringBuilder buildConditionLike(StringBuilder builder, Compare compare){
+        if(compare == Compare.LIKE){
             builder.append(" CONTAINS ?");
-        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){
+        }else if(compare == Compare.LIKE_PREFIX){
             builder.append(" START WITH ?");
-        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){
+        }else if(compare == Compare.LIKE_SUFFIX){
             builder.append(" END WITH ?");
         }
         return builder;
@@ -479,8 +475,8 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value){
-        if(compare == RunPrepare.COMPARE_TYPE.NOT_IN){
+    public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value){
+        if(compare== Compare.NOT_IN){
             builder.append(" NOT");
         }
         builder.append(" IN [");
@@ -605,7 +601,7 @@ public class Neo4jAdapter extends SimpleJDBCAdapter implements JDBCAdapter, Init
                     // CD = :CD
                     List<Object> varValues = var.getValues();
                     if(BasicUtil.isNotEmpty(true, varValues)){
-                        if(var.getCompare() == RunPrepare.COMPARE_TYPE.IN){
+                        if(var.getCompare()== Compare.IN){
                             // 多个值IN
                             String replaceSrc = ":"+var.getKey();
                             String replaceDst = "";

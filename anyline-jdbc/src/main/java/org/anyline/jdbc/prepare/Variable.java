@@ -22,7 +22,7 @@
  */ 
 package org.anyline.jdbc.prepare;
 
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,8 +39,8 @@ public interface Variable extends Cloneable,Serializable{
 	public int getSignType();
 	public void setSignType(int signType); 
 	public void init(); 
-	public COMPARE_TYPE getCompare() ; 
-	public void setCompare(COMPARE_TYPE compare) ; 
+	public Compare getCompare() ; 
+	public void setCompare(Compare compare) ; 
 	public void addValue(Object value); 
 	public String getKey() ; 
 	public void setKey(String key) ; 

@@ -19,8 +19,8 @@
 
 package org.anyline.jdbc.prepare.auto.init;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import org.anyline.jdbc.prepare.auto.AutoCondition;
 import org.anyline.jdbc.prepare.init.SimpleCondition;
 import org.anyline.jdbc.param.Config;
@@ -43,8 +43,8 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	private String column;		// 列 
 	private Object values;		// 参数值 
 	private Object orValues;		// 参数值 
-	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
-	private COMPARE_TYPE orCompare = COMPARE_TYPE.EQUAL;
+	private Compare compare = Compare.EQUAL;
+	private Compare orCompare = Compare.EQUAL;
  
  
 	public SimpleAutoCondition(Config config){
@@ -69,7 +69,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	 * @param values 值 
 	 * @param compare  比较方式 
 	 */ 
-	public SimpleAutoCondition(boolean required, boolean strictRequired, String prefix, String var, Object values, COMPARE_TYPE compare){
+	public SimpleAutoCondition(boolean required, boolean strictRequired, String prefix, String var, Object values, Compare compare){
 		setRequired(required);
 		setStrictRequired(strictRequired);
 		setTable(prefix);
@@ -123,7 +123,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	} 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public String getRunText(String prefix, JDBCAdapter adapter, Object val, COMPARE_TYPE compare){
+	public String getRunText(String prefix, JDBCAdapter adapter, Object val, Compare compare){
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
@@ -138,7 +138,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 		}
 		SQLUtil.delimiter(builder, column, delimiterFr, delimiterTo);
 		int compareCode = compare.getCode();
-		if(compare == COMPARE_TYPE.EQUAL){
+		if(compareCode == 10){
 			Object v = getValue(val);
 			if(null == v || "NULL".equals(v.toString())){
 				builder.append(" IS NULL");
@@ -146,33 +146,33 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
 				}
 			}else{
-				builder.append(compare.getSql());
+				builder.append(compare.getSQL());
 			}
-		}else if(compare == COMPARE_TYPE.GREAT){
+		}else if(compareCode == 20){
 			// "> ?";
-			builder.append(compare.getSql());
-		}else if(compare == COMPARE_TYPE.GREAT_EQUAL){
+			builder.append(compare.getSQL());
+		}else if(compareCode == 21){
 			// ">= ?";
-			builder.append(compare.getSql());
-		}else if(compare == COMPARE_TYPE.LESS){
+			builder.append(compare.getSQL());
+		}else if(compareCode == 30){
 			// "< ?";
-			builder.append(compare.getSql());
-		}else if(compare == COMPARE_TYPE.NOT_EQUAL){
+			builder.append(compare.getSQL());
+		}else if(compareCode == 110){
 			// "<> ?";
-			builder.append(compare.getSql());
-		}else if(compare == COMPARE_TYPE.LESS_EQUAL){
+			builder.append(compare.getSQL());
+		}else if(compareCode == 31){
 			// "<= ?";
-			builder.append(compare.getSql());
-		}else if(compare == COMPARE_TYPE.BETWEEN){
+			builder.append(compare.getSQL());
+		}else if(compareCode == 80){
 			// " BETWEEN ? AND ?";
-			builder.append(compare.getSql());
-		}else if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN){
+			builder.append(compare.getSQL());
+		}else if(compareCode == 40 || compareCode == 140){
 			adapter.buildConditionIn(builder, compare, val);
 		}else if(compareCode >= 50 && compareCode <= 52){
 			adapter.buildConditionLike(builder, compare);
 		}
 		// runtime value
-		if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN || compare == COMPARE_TYPE.BETWEEN){
+		if(compareCode == 40 || compareCode == 140 || compareCode == 80){
 			List<Object> list = getValues(val);
 			if(null != list){
 				for(Object obj:list){
@@ -181,7 +181,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 			}
 		}else{
 			Object value = getValue(val);
-			if((null == value || "NULL".equals(value)) && compare == COMPARE_TYPE.EQUAL){
+			if((null == value || "NULL".equals(value)) && compareCode == 10){
 			}else{
 				runValues.add(new RunValue(this.column,value));
 			}
@@ -245,18 +245,18 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	public void setOrValues(Object values) { 
 		this.orValues = values; 
 	} 
-	public COMPARE_TYPE getCompare() { 
+	public Compare getCompare() {
 		return compare; 
 	} 
-	public AutoCondition setCompare(COMPARE_TYPE compare) { 
+	public AutoCondition setCompare(Compare compare) {
 		this.compare = compare; 
 		return this;
 	} 
 	
-	public COMPARE_TYPE getOrCompare() {
+	public Compare getOrCompare() {
 		return orCompare;
 	}
-	public AutoCondition setOrCompare(COMPARE_TYPE orCompare) {
+	public AutoCondition setOrCompare(Compare orCompare) {
 		this.orCompare = orCompare;
 		return this;
 	}

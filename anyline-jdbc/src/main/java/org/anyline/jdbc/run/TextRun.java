@@ -28,7 +28,7 @@ import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.param.Config;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.init.SimpleVariable;
 import org.anyline.jdbc.prepare.auto.AutoCondition;
 import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
@@ -116,7 +116,7 @@ public class TextRun extends BasicRun implements Run {
 		} 
 		try{ 
 			int varType = -1; 
-			COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
+			Compare compare = Compare.EQUAL;
 			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				// AND CD = :CD 
@@ -139,7 +139,7 @@ public class TextRun extends BasicRun implements Run {
 						varType = Variable.VAR_TYPE_KEY;
 						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
 							// AND CD IN(:CD) 
-							compare = COMPARE_TYPE.IN;
+							compare = Compare.IN;
 						} 
 					} 
 					Variable var = new SimpleVariable();
@@ -204,7 +204,7 @@ public class TextRun extends BasicRun implements Run {
  
  
 	@Override 
-	public Run setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, COMPARE_TYPE compare) {
+	public Run setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, Compare compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables && BasicUtil.isEmpty(variable)){ 
 			for(Variable v:variables){
@@ -230,7 +230,7 @@ public class TextRun extends BasicRun implements Run {
 	} 
  
 	@Override
-	public Run setConditionValue(boolean required, String condition, String variable, Object value, COMPARE_TYPE compare) {
+	public Run setConditionValue(boolean required, String condition, String variable, Object value, Compare compare) {
 		return setConditionValue(required, false, condition, variable, value, compare);
 	}
 
@@ -334,7 +334,7 @@ public class TextRun extends BasicRun implements Run {
 	 * @param compare  比较方式
 	 * @return Run
 	 */ 
-	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare){
+	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
 		Condition condition = new SimpleAutoCondition(required,strictRequired,prefix, var, value, compare);
 		if(null == conditionChain){ 
 			conditionChain = new SimpleAutoConditionChain();

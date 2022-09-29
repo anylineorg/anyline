@@ -301,7 +301,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 //				// CD = :CD 
 //				List<Object> varValues = var.getValues(); 
 //				if(BasicUtil.isNotEmpty(true, varValues)){ 
-//					if(var.getCompare() == RunPrepare.COMPARE_TYPE_IN){
+//					if(var.getCompare() == Compare_IN){
 //						// 多个值IN 
 //						String replaceSrc = ":"+var.getKey(); 
 //						String replaceDst = "";  

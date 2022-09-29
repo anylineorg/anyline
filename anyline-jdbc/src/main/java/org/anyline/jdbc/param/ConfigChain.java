@@ -19,8 +19,8 @@
 
 package org.anyline.jdbc.param;
 
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.RunPrepare;
 
 import java.util.List;
 import java.util.Map;
@@ -28,11 +28,11 @@ import java.util.Map;
 public interface ConfigChain extends Config{
 	public void addConfig(Config config);
 	public Config getConfig(String prefix, String var);
-	public Config getConfig(String prefix, String var, RunPrepare.COMPARE_TYPE type);
+	public Config getConfig(String prefix, String var, Compare type);
 	
 	public ConfigChain removeConfig(Config config);
 	public ConfigChain removeConfig(String prefix, String  var);
-	public ConfigChain removeConfig(String prefix, String var, RunPrepare.COMPARE_TYPE type);
+	public ConfigChain removeConfig(String prefix, String var, Compare type);
 	public void setValue(Map<String,Object> values); 
 	public List<Config> getConfigs(); 
 	public ConditionChain createAutoConditionChain(); 

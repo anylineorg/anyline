@@ -23,6 +23,7 @@ import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ConfigStore;
@@ -287,7 +288,7 @@ public abstract class BasicRun implements Run {
 	} 
  
 	@Override 
-	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, RunPrepare.COMPARE_TYPE compare) {
+	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, Compare compare) {
 		return this; 
 	} 
 	@Override 
@@ -372,7 +373,7 @@ public abstract class BasicRun implements Run {
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, RunPrepare.COMPARE_TYPE compare){
+	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
 		Condition condition = new SimpleAutoCondition(required,strictRequired,prefix,var, value, compare);
 		if(null == conditionChain){
 			conditionChain = new SimpleAutoConditionChain();
@@ -383,7 +384,7 @@ public abstract class BasicRun implements Run {
 		return this;
 	}
 	@Override
-	public Run addCondition(boolean required, String prefix, String var, Object value, RunPrepare.COMPARE_TYPE compare){
+	public Run addCondition(boolean required, String prefix, String var, Object value, Compare compare){
 		return addCondition(required, false, prefix, var, value, compare);
 	}
 	@Override

@@ -26,6 +26,7 @@ import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.Compare;
 import org.anyline.jdbc.prepare.*;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.param.Config;
@@ -221,17 +222,17 @@ public class XMLRun extends BasicRun implements Run {
 						}else if(var.getSignType() ==2){ 
 							replaceKey = "${" + var.getKey() + "}";
 						} 
-						if(var.getCompare() == RunPrepare.COMPARE_TYPE.LIKE){ 
+						if(var.getCompare() == Compare.LIKE){ 
 							// CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
 							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
 							addValues(var.getKey(), varValues.get(0));
-						}else if(var.getCompare() == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){ 
+						}else if(var.getCompare() == Compare.LIKE_SUFFIX){ 
 							result = result.replace("'%"+replaceKey+"'", adapter.concat("'%'","?"));
 							addValues(var.getKey(), varValues.get(0));
-						}else if(var.getCompare() == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){ 
+						}else if(var.getCompare() == Compare.LIKE_PREFIX){ 
 							result = result.replace("'"+replaceKey+"%'", adapter.concat("?","'%'"));
 							addValues(var.getKey(), varValues.get(0));
-						}else if(var.getCompare() == RunPrepare.COMPARE_TYPE.IN){ 
+						}else if(var.getCompare() == Compare.IN){ 
 							// 多个值IN 
 							String replaceDst = "";  
 							for(Object tmp:varValues){ 
@@ -461,7 +462,7 @@ public class XMLRun extends BasicRun implements Run {
 	 * @return Run
 	 */
 	@Override
-	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, RunPrepare.COMPARE_TYPE compare) {
+	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, Compare compare) {
 		/*不指定condition.id或condition.id = variable 时,根据var为SQL主体变量赋值*/
 		// 只提供var 不提供condition
 		if(null != variables &&  
@@ -511,7 +512,7 @@ public class XMLRun extends BasicRun implements Run {
 		return this; 
 	} 
 	@Override 
-	public Run setConditionValue(boolean required, String condition, String variable, Object value, RunPrepare.COMPARE_TYPE compare) {
+	public Run setConditionValue(boolean required, String condition, String variable, Object value, Compare compare) {
 		return setConditionValue(required, false, condition, variable, value, compare); 
 	} 
 	 
@@ -657,11 +658,11 @@ public class XMLRun extends BasicRun implements Run {
 	public void setConfigStore(ConfigStore configStore) { 
 		this.configStore = configStore; 
 	} 
-	public Run addCondition(boolean required, boolean strictRequired, String column, Object value, RunPrepare.COMPARE_TYPE compare){
+	public Run addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare){
 		setConditionValue(required, strictRequired, column, null, value, compare); 
 		return this; 
 	} 
-	public Run addCondition(boolean required, String column, Object value, RunPrepare.COMPARE_TYPE compare){
+	public Run addCondition(boolean required, String column, Object value, Compare compare){
 		return addCondition(required, false, column, value,compare); 
 	} 
 	 

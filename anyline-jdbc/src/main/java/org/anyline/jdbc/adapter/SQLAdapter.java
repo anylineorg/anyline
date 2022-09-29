@@ -22,6 +22,7 @@ package org.anyline.jdbc.adapter;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.Compare;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.param.ConfigStore;
@@ -36,7 +37,6 @@ import org.anyline.jdbc.run.XMLRun;
 import org.anyline.jdbc.prepare.auto.TablePrepare;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.util.*;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -668,8 +668,8 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare)
-     * public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value)
+     * public StringBuilder buildConditionLike(StringBuilder builder, Compare compare)
+     * public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value)
      *
      * protected void buildQueryRunContent(XMLRun run)
      * protected void buildQueryRunContent(TextRun run)
@@ -683,12 +683,12 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionLike(StringBuilder builder, RunPrepare.COMPARE_TYPE compare){
-        if(compare == RunPrepare.COMPARE_TYPE.LIKE){
+    public StringBuilder buildConditionLike(StringBuilder builder, Compare compare){
+        if(compare == Compare.LIKE){
             builder.append(" LIKE ").append(concat("'%'", "?" , "'%'"));
-        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_PREFIX){
+        }else if(compare == Compare.LIKE_PREFIX){
             builder.append(" LIKE ").append(concat("?" , "'%'"));
-        }else if(compare == RunPrepare.COMPARE_TYPE.LIKE_SUBFIX){
+        }else if(compare == Compare.LIKE_SUFFIX){
             builder.append(" LIKE ").append(concat("'%'", "?"));
         }
         return builder;
@@ -702,8 +702,8 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionIn(StringBuilder builder, RunPrepare.COMPARE_TYPE compare, Object value){
-        if(compare == RunPrepare.COMPARE_TYPE.NOT_IN){
+    public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value){
+        if(compare == Compare.NOT_IN){
             builder.append(" NOT");
         }
         builder.append(" IN (");
@@ -775,7 +775,7 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                     // CD = :CD
                     List<Object> varValues = var.getValues();
                     if(BasicUtil.isNotEmpty(true, varValues)){
-                        if(var.getCompare() == RunPrepare.COMPARE_TYPE.IN){
+                        if(var.getCompare() == Compare.IN){
                             // 多个值IN
                             String replaceSrc = ":"+var.getKey();
                             String replaceDst = "";

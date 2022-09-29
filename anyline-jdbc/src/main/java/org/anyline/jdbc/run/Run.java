@@ -28,7 +28,7 @@ import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.GroupStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
+import org.anyline.entity.Compare;
 
 import java.util.List;
 
@@ -46,8 +46,8 @@ public interface Run {
 	 * @param compare 			比较方式
 	 * @return Run
 	 */
-	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, COMPARE_TYPE compare);
-	public Run setConditionValue(boolean required, String prefix, String variable, Object value, COMPARE_TYPE compare);
+	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, Compare compare);
+	public Run setConditionValue(boolean required, String prefix, String variable, Object value, Compare compare);
 	public void setGroupStore(GroupStore groups) ;
 	public GroupStore getGroupStore() ; 
 	public Run group(String group);
@@ -71,8 +71,8 @@ public interface Run {
 	 * @param compare 比较方式 
 	 * @return Run
 	 */
-	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, RunPrepare.COMPARE_TYPE compare);
-	public Run addCondition(boolean required, String prefix, String var, Object value, RunPrepare.COMPARE_TYPE compare);
+	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare);
+	public Run addCondition(boolean required, String prefix, String var, Object value, Compare compare);
 	public Run setConditionChain(ConditionChain chain);
 
 	/**
