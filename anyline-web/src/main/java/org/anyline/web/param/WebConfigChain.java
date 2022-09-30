@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.web.config.http.impl; 
+package org.anyline.web.param;
  
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +25,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.ConfigChain;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigChain;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
-public class WebConfigChain extends WebConfig implements org.anyline.web.config.http.ConfigChain{
+public class WebConfigChain extends WebConfig implements  ConfigChain{
 	private List<Config> configs = new ArrayList<Config>();
 
 	public Config getConfig(String prefix, String var){
