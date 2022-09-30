@@ -17,17 +17,18 @@
  */
 
 
-package org.anyline.jdbc.prepare.init;
+package org.anyline.data.prepare.init;
 
+import org.anyline.data.prepare.auto.init.Join;
+import org.anyline.data.prepare.auto.init.Join;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.GroupStore;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.init.Join;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.GroupStore;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
