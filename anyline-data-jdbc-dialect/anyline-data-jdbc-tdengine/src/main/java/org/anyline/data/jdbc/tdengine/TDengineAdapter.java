@@ -1,13 +1,14 @@
-package org.anyline.jdbc.tdengine;
+package org.anyline.data.jdbc.tdengine;
 
+import org.anyline.data.entity.*;
+import org.anyline.data.entity.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.entity.*;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.run.Run;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -659,7 +660,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(int index , boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
+	public LinkedHashMap<String, Constraint> constraints(int index , boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
 
 		return super.constraints(index, create, table, constraints, set);
 	}
