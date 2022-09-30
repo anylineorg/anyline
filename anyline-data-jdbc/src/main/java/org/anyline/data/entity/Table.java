@@ -2,7 +2,7 @@ package org.anyline.data.entity;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.listener.DDListener;
-import org.anyline.data.listener.init.SimpleDDListener;
+import org.anyline.data.listener.init.DefaultDDListener;
 import org.anyline.service.AnylineService;
 import org.anyline.exception.AnylineException;
 
@@ -36,7 +36,7 @@ public class Table implements org.anyline.entity.jdbc.Table{
 
 
     public Table(){
-        this.listener = new SimpleDDListener();
+        this.listener = new DefaultDDListener();
     }
     public Table(String name){
         this(null, name);
@@ -48,7 +48,7 @@ public class Table implements org.anyline.entity.jdbc.Table{
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
-        this.listener = new SimpleDDListener();
+        this.listener = new DefaultDDListener();
     }
 
     public List<Column> primarys(){

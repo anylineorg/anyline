@@ -22,8 +22,6 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.run.RunValue;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +32,7 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public abstract class SimpleConditionChain extends SimpleCondition implements ConditionChain {
+public abstract class DefaultConditionChain extends DefaultCondition implements ConditionChain {
 	protected List<Condition> conditions = new ArrayList<Condition>();
 	protected int joinSize; 
 	 

@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @Component("anyline.entity.adapter")
-public class SimpleAdapter implements EntityAdapter {
+public class DefaultAdapter implements EntityAdapter {
     private static Map<String,String> class2table    = new HashMap<>();  // class.name > table.name
     private static Map<String,String> field2column   = new HashMap<>();  // class.name:field.name > column.name
     private static Map<String,Field> column2field    = new HashMap<>();  // column.name > field
@@ -38,7 +38,7 @@ public class SimpleAdapter implements EntityAdapter {
 
     @Override
     public List<String> columns(Class clazz) {
-        List<String> columns = SimpleAdapter.columns.get(clazz.getName());
+        List<String> columns = DefaultAdapter.columns.get(clazz.getName());
         if(null == columns) {
             columns = new ArrayList<>();
             List<Field> fields = ClassUtil.getFields(clazz);
@@ -50,7 +50,7 @@ public class SimpleAdapter implements EntityAdapter {
                     columns.add(column);
                 }
             }
-            SimpleAdapter.columns.put(clazz.getName(),columns);
+            DefaultAdapter.columns.put(clazz.getName(),columns);
         }
         return columns;
     }

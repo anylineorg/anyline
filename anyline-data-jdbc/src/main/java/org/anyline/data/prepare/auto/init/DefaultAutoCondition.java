@@ -23,8 +23,7 @@ import org.anyline.data.param.Config;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.entity.Compare;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.prepare.auto.AutoCondition;
-import org.anyline.data.prepare.init.SimpleCondition;
+import org.anyline.data.prepare.init.DefaultCondition;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.run.RunValue;
 import org.anyline.util.BasicUtil;
@@ -39,7 +38,7 @@ import java.util.*;
  * @author zh 
  * 
  */ 
-public class SimpleAutoCondition extends SimpleCondition implements AutoCondition {
+public class DefaultAutoCondition extends DefaultCondition implements AutoCondition {
 	private String table;		// 表或表别名
 	private String column;		// 列 
 	private Object values;		// 参数值 
@@ -48,7 +47,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	private Compare orCompare = Compare.EQUAL;
  
  
-	public SimpleAutoCondition(Config config){
+	public DefaultAutoCondition(Config config){
 		setJoin(config.getJoin());
 		setTable(config.getPrefix());   	// 表名或表别名
 		setColumn(config.getVariable());   // 列名
@@ -70,7 +69,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 	 * @param values 值 
 	 * @param compare  比较方式 
 	 */ 
-	public SimpleAutoCondition(boolean required, boolean strictRequired, String prefix, String var, Object values, Compare compare){
+	public DefaultAutoCondition(boolean required, boolean strictRequired, String prefix, String var, Object values, Compare compare){
 		setRequired(required);
 		setStrictRequired(strictRequired);
 		setTable(prefix);
@@ -82,7 +81,7 @@ public class SimpleAutoCondition extends SimpleCondition implements AutoConditio
 			setActive(true); 
 		} 
 	} 
-	public SimpleAutoCondition(String text){
+	public DefaultAutoCondition(String text){
 		this.text = text; 
 		this.active = true; 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE); 

@@ -27,17 +27,16 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.auto.init.SimpleTablePrepare;
-import org.anyline.data.prepare.auto.init.SimpleTextPrepare;
-import org.anyline.data.prepare.init.SimpleProcedure;
-import org.anyline.data.prepare.init.SimpleSQLStore;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.prepare.init.DefaultProcedure;
+import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.service.AnylineService;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.param.init.SimpleConfigStore;
-import org.anyline.data.entity.*;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
@@ -52,7 +51,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 @Service("anyline.service")
-public class SimpleService<E> implements AnylineService<E> {
+public class DefaultService<E> implements AnylineService<E> {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired(required = false)
     @Qualifier("anyline.dao")
@@ -78,7 +77,7 @@ public class SimpleService<E> implements AnylineService<E> {
     }
     @Override
     public DataSet querys(String src, PageNavi navi, Object obj, String... conditions) {
-        ConfigStore configs = new SimpleConfigStore();
+        ConfigStore configs = new DefaultConfigStore();
         configs.setPageNavi(navi);
         return querys(src, configs, obj,conditions);
     }
@@ -90,7 +89,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public DataSet querys(String src, int fr, int to, Object obj, String... conditions) {
-        ConfigStore configs = new SimpleConfigStore(fr, to);
+        ConfigStore configs = new DefaultConfigStore(fr, to);
         return querys(src, configs, obj, conditions);
     }
 
@@ -150,7 +149,7 @@ public class SimpleService<E> implements AnylineService<E> {
     }
     @Override
     public List<Map<String,Object>> maps(String src, int fr, int to, Object obj, String... conditions) {
-        return maps(src, new SimpleConfigStore(fr, to), obj, conditions);
+        return maps(src, new DefaultConfigStore(fr, to), obj, conditions);
     }
 
     @Override
@@ -189,7 +188,7 @@ public class SimpleService<E> implements AnylineService<E> {
     }
     @Override
     public DataSet caches(String cache, String src, int fr, int to, Object obj, String ... conditions){
-        ConfigStore configs = new SimpleConfigStore(fr, to);
+        ConfigStore configs = new DefaultConfigStore(fr, to);
         return caches(cache, src, configs, obj, conditions);
     }
 
@@ -214,7 +213,7 @@ public class SimpleService<E> implements AnylineService<E> {
         navi.setLastRow(0);
         navi.setCalType(1);
         if (null == store) {
-            store = new SimpleConfigStore();
+            store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
         DataSet set = querys(src, store, obj, conditions);
@@ -256,7 +255,7 @@ public class SimpleService<E> implements AnylineService<E> {
         navi.setLastRow(0);
         navi.setCalType(1);
         if (null == configs) {
-            configs = new SimpleConfigStore();
+            configs = new DefaultConfigStore();
         }
         configs = append(configs, obj);
         configs.setPageNavi(navi);
@@ -314,7 +313,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String... conditions) {
-        ConfigStore configs = new SimpleConfigStore();
+        ConfigStore configs = new DefaultConfigStore();
         configs.setPageNavi(navi);
         return querys(clazz, configs, entity, conditions);
     }
@@ -326,7 +325,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, T entity, String... conditions) {
-        ConfigStore configs = new SimpleConfigStore(fr, to);
+        ConfigStore configs = new DefaultConfigStore(fr, to);
         return querys(clazz, configs, entity, conditions);
     }
 
@@ -337,7 +336,7 @@ public class SimpleService<E> implements AnylineService<E> {
         navi.setLastRow(0);
         navi.setCalType(1);
         if (null == configs) {
-            configs = new SimpleConfigStore();
+            configs = new DefaultConfigStore();
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = querys(clazz, configs, entity, conditions);
@@ -477,7 +476,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public DataSet querys(RunPrepare prepare, int fr, int to, Object obj, String... conditions) {
-        ConfigStore configs = new SimpleConfigStore(fr,to);
+        ConfigStore configs = new DefaultConfigStore(fr,to);
         return querys(prepare, configs, obj, conditions);
     }
     @Override
@@ -513,7 +512,7 @@ public class SimpleService<E> implements AnylineService<E> {
     }
     @Override
     public DataSet caches(String cache, RunPrepare table, int fr, int to, Object obj, String ... conditions){
-        ConfigStore configs = new SimpleConfigStore(fr, to);
+        ConfigStore configs = new DefaultConfigStore(fr, to);
         return caches(cache, table, configs, obj, conditions);
     }
     @Override
@@ -528,7 +527,7 @@ public class SimpleService<E> implements AnylineService<E> {
         navi.setLastRow(0);
         navi.setCalType(1);
         if (null == store) {
-            store = new SimpleConfigStore();
+            store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
         DataSet set = querys(table, store, obj, conditions);
@@ -568,7 +567,7 @@ public class SimpleService<E> implements AnylineService<E> {
         navi.setLastRow(0);
         navi.setCalType(1);
         if (null == configs) {
-            configs = new SimpleConfigStore();
+            configs = new DefaultConfigStore();
         }
         configs.setPageNavi(navi);
         configs = append(configs, obj);
@@ -640,7 +639,7 @@ public class SimpleService<E> implements AnylineService<E> {
             navi.setLastRow(0);
             navi.setCalType(1);
             if (null == configs) {
-                configs = new SimpleConfigStore();
+                configs = new DefaultConfigStore();
             }
             configs.setPageNavi(navi);
             key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
@@ -654,7 +653,7 @@ public class SimpleService<E> implements AnylineService<E> {
     }
     @Override
     public boolean removeCache(String channel, String src, int fr, int to, String ... conditions){
-        ConfigStore configs = new SimpleConfigStore(fr, to);
+        ConfigStore configs = new DefaultConfigStore(fr, to);
         return removeCache(channel, src, configs, conditions);
     }
     /**
@@ -1190,7 +1189,7 @@ public class SimpleService<E> implements AnylineService<E> {
     }
     @Override
     public boolean executeProcedure(String procedure, String... inputs) {
-        Procedure proc = new SimpleProcedure();
+        Procedure proc = new DefaultProcedure();
         proc.setName(procedure);
         for (String input : inputs) {
             proc.addInput(input);
@@ -1253,7 +1252,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     @Override
     public DataSet querysProcedure(String procedure, PageNavi navi, String... inputs) {
-        Procedure proc = new SimpleProcedure();
+        Procedure proc = new DefaultProcedure();
         proc.setName(procedure);
         if(null != inputs) {
             for (String input : inputs) {
@@ -1272,7 +1271,7 @@ public class SimpleService<E> implements AnylineService<E> {
         return querysProcedure(procedure, null, inputs);
     }
     public DataRow queryProcedure(String procedure, String... inputs) {
-        Procedure proc = new SimpleProcedure();
+        Procedure proc = new DefaultProcedure();
         proc.setName(procedure);
         return query(procedure, inputs);
     }
@@ -1493,7 +1492,7 @@ public class SimpleService<E> implements AnylineService<E> {
             src = src.substring(2,src.length()-1);
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
-            prepare = new SimpleTextPrepare(src);
+            prepare = new DefaultTextPrepare(src);
         } else {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
@@ -1517,13 +1516,13 @@ public class SimpleService<E> implements AnylineService<E> {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
-                prepare = new SimpleTextPrepare(src);
+                prepare = new DefaultTextPrepare(src);
             }else if (RegularUtil.match(src, RunPrepare.XML_SQL_ID_STYLE)) {
                 /* XML定义 */
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
                 }
-                prepare = SimpleSQLStore.parseSQL(src);
+                prepare = DefaultSQLStore.parseSQL(src);
                 if(null == prepare){
                     log.error("[解析SQL类型][XML解析失败][src:{}]",src);
                 }
@@ -1532,7 +1531,7 @@ public class SimpleService<E> implements AnylineService<E> {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
                 }
-                prepare = new SimpleTablePrepare();
+                prepare = new DefaultTablePrepare();
                 prepare.setDataSource(src);
             }
         }
@@ -1601,7 +1600,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
     private ConfigStore append(ConfigStore configs, Object entity){
         if(null == configs){
-            configs = new SimpleConfigStore();
+            configs = new DefaultConfigStore();
         }
         if(null != entity) {
             if(entity instanceof Map){
@@ -2209,14 +2208,14 @@ public class SimpleService<E> implements AnylineService<E> {
         }
         @Override
         public boolean create(Table table) throws Exception{
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
         @Override
         public boolean alter(Table table) throws Exception{
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2224,7 +2223,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(Table table) throws Exception{
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result = dao.drop(table);
 
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
@@ -2257,7 +2256,7 @@ public class SimpleService<E> implements AnylineService<E> {
         }
         @Override
         public boolean create(MasterTable table) throws Exception {
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2265,7 +2264,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean alter(MasterTable table) throws Exception {
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2273,7 +2272,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(MasterTable table) throws Exception {
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2304,7 +2303,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean create(PartitionTable table) throws Exception {
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2312,7 +2311,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean alter(PartitionTable table) throws Exception {
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2320,7 +2319,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(PartitionTable table) throws Exception {
-            table.setService(SimpleService.this);
+            table.setService(DefaultService.this);
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -2381,14 +2380,14 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(Column column) throws Exception{
-            column.setService(SimpleService.this);
+            column.setService(DefaultService.this);
             boolean result = dao.drop(column);
             clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
             return result;
         }
 
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
-            column.setService(SimpleService.this);
+            column.setService(DefaultService.this);
             boolean result =  dao.add(column);
             if(result) {
                 columns.put(column.getName(), column);
@@ -2416,7 +2415,7 @@ public class SimpleService<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            original.setService(SimpleService.this);
+            original.setService(DefaultService.this);
             String name = original.getName();
             try {
                 result = dao.alter(table, original);
@@ -2492,13 +2491,13 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(Tag tag) throws Exception{
-            tag.setService(SimpleService.this);
+            tag.setService(DefaultService.this);
             boolean result = dao.drop(tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
         }
         private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception{
-            tag.setService(SimpleService.this);
+            tag.setService(DefaultService.this);
             boolean result =  dao.add(tag);
             if(result) {
                 tags.put(tag.getName(), tag);
@@ -2526,7 +2525,7 @@ public class SimpleService<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            original.setService(SimpleService.this);
+            original.setService(DefaultService.this);
             result = dao.alter(table, original);
             if(result) {
                 tags.remove(original.getName());
@@ -2549,7 +2548,7 @@ public class SimpleService<E> implements AnylineService<E> {
 
         @Override
         public boolean add(Index index) throws Exception{
-            index.setService(SimpleService.this);
+            index.setService(DefaultService.this);
             return false;
         }
 

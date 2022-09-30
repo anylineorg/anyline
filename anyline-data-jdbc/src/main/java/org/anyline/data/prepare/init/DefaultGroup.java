@@ -17,20 +17,29 @@
  */
 
 
-package org.anyline.data.prepare.auto.init;
+package org.anyline.data.prepare.init;
  
-import org.anyline.data.prepare.auto.TextPrepare;
-import org.anyline.data.prepare.auto.TextPrepare;
-
-public class SimpleTextPrepare extends SimpleAutoPrepare implements TextPrepare {
-	private String text; 
-	public SimpleTextPrepare(String text){
-		super(); 
-		this.text = text; 
-		chain = new SimpleAutoConditionChain();
-	} 
-	public String getText(){ 
-		return this.text; 
-	} 
+import org.anyline.data.prepare.Group;
+ 
+ 
+public class DefaultGroup implements Group{
+	private static final long serialVersionUID = 5820480420021701152L;
+	private String column;						// 排序列
 	 
+	public DefaultGroup(){}
+	public DefaultGroup(String column){
+		setColumn(column); 
+	} 
+	public String getColumn() { 
+		return column; 
+	} 
+	public void setColumn(String column) { 
+		if(null != column){ 
+			this.column = column.trim(); 
+		} 
+	} 
+	public Object clone() throws CloneNotSupportedException{ 
+		DefaultGroup clone = (DefaultGroup)super.clone();
+		return clone; 
+	} 
 } 

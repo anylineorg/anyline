@@ -17,22 +17,22 @@
  */
 
 
-package org.anyline.jdbc.run;
+package org.anyline.data.run;
 
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.ParseResult;
+import org.anyline.data.prepare.*;
+import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
+import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.service.AnylineService;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.param.ConfigParser;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.param.ParseResult;
-import org.anyline.jdbc.prepare.*;
-import org.anyline.jdbc.prepare.init.SimpleGroupStore;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoCondition;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
-import org.anyline.service.AnylineService;
+import org.anyline.data.param.ConfigParser;
+import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
@@ -56,7 +56,7 @@ public abstract class BasicRun implements Run {
 	protected List<RunValue> values;
 	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			// 查询条件
-	protected ConfigStore configStore; 
+	protected ConfigStore configStore;
 	protected OrderStore orderStore; 
 	protected GroupStore groupStore;
 	protected String having;
@@ -143,7 +143,7 @@ public abstract class BasicRun implements Run {
 		} 
 		 
 		if(null == groupStore){ 
-			groupStore = new SimpleGroupStore();
+			groupStore = new DefaultGroupStore();
 		} 
  
 		group = group.trim().toUpperCase(); 
@@ -374,9 +374,9 @@ public abstract class BasicRun implements Run {
 	 */
 	@Override
 	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
-		Condition condition = new SimpleAutoCondition(required,strictRequired,prefix,var, value, compare);
+		Condition condition = new DefaultAutoCondition(required,strictRequired,prefix,var, value, compare);
 		if(null == conditionChain){
-			conditionChain = new SimpleAutoConditionChain();
+			conditionChain = new DefaultAutoConditionChain();
 		}
 		if(condition.isActive()){
 			conditionChain.addCondition(condition);
@@ -526,7 +526,7 @@ public abstract class BasicRun implements Run {
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						if(null == groupStore){
-							groupStore = new SimpleGroupStore();
+							groupStore = new DefaultGroupStore();
 						}
 						groupStore.group(item);
 					}
@@ -544,7 +544,7 @@ public abstract class BasicRun implements Run {
 
 				if(condition.startsWith("${") && condition.endsWith("}")){
 					// 原生SQL  不处理
-					Condition con = new SimpleAutoCondition(condition.substring(2, condition.length()-1));
+					Condition con = new DefaultAutoCondition(condition.substring(2, condition.length()-1));
 					addCondition(con);
 					continue;
 				}
@@ -565,7 +565,7 @@ public abstract class BasicRun implements Run {
 						continue;
 					}
 				}
-				Condition con = new SimpleAutoCondition(condition);
+				Condition con = new DefaultAutoCondition(condition);
 				addCondition(con);
 			}
 		}

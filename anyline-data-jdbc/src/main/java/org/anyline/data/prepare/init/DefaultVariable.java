@@ -24,12 +24,11 @@ package org.anyline.data.prepare.init;
 
 import org.anyline.data.prepare.Variable;
 import org.anyline.entity.Compare;
-import org.anyline.data.prepare.Variable;
 import org.anyline.util.BeanUtil;
 
 import java.util.*;
 
-public class SimpleVariable implements Variable {
+public class DefaultVariable implements Variable {
 	private static final long serialVersionUID = 6111859581787193807L;
 	public static final int VAR_TYPE_INDEX			= 0;		// 根据下标区分 CD = ? 
 	public static final int VAR_TYPE_KEY			= 1;		// 根据KEY区分  CD = :CD 
@@ -59,7 +58,7 @@ public class SimpleVariable implements Variable {
 	private boolean strictRequired;
 	 
 	public Object clone() throws CloneNotSupportedException{ 
-		SimpleVariable clone = (SimpleVariable) super.clone();
+		DefaultVariable clone = (DefaultVariable) super.clone();
 		if(null != values){ 
 			List<Object> cValues = new ArrayList<Object>(); 
 			for(Object value:values){ 

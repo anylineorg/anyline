@@ -24,7 +24,7 @@ import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.prepare.auto.init.Join;
+import org.anyline.data.entity.Join;
 import org.anyline.data.run.TableRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -52,7 +52,7 @@ import java.util.*;
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
 
-public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapter {
+public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter {
 
 
     /* *****************************************************************************************************************

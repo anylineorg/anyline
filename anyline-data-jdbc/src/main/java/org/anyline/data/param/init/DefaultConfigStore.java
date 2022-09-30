@@ -25,8 +25,8 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
-import org.anyline.data.prepare.init.SimpleGroup;
-import org.anyline.data.prepare.init.SimpleGroupStore;
+import org.anyline.data.prepare.init.DefaultGroup;
+import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
@@ -42,7 +42,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public class SimpleConfigStore implements ConfigStore {
+public class DefaultConfigStore implements ConfigStore {
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected ConfigChain chain;
 	protected PageNavi navi;
@@ -82,11 +82,11 @@ public class SimpleConfigStore implements ConfigStore {
 		if(null == config){ 
 			return null; 
 		} 
-		SimpleConfig conf = null;
+		DefaultConfig conf = null;
 		if(config.indexOf("|") != -1){ 
-			conf = new SimpleConfigChain(config);
+			conf = new DefaultConfigChain(config);
 		}else{ 
-			conf = new SimpleConfig(config);
+			conf = new DefaultConfig(config);
 		} 
 		return conf; 
 	}
@@ -114,9 +114,9 @@ public class SimpleConfigStore implements ConfigStore {
 		return this;
 	}
 
-	public SimpleConfigStore(String ... configs){
+	public DefaultConfigStore(String ... configs){
 		configs = BasicUtil.compressionSpace(configs);
-		chain = new SimpleConfigChain();
+		chain = new DefaultConfigChain();
 		for(String config:configs){
 			chain.addConfig(parseConfig(config));
 		}
@@ -127,8 +127,8 @@ public class SimpleConfigStore implements ConfigStore {
 	 * @param fr 起
 	 * @param to 止
 	 */
-	public SimpleConfigStore(int fr, int to){
-		chain = new SimpleConfigChain();
+	public DefaultConfigStore(int fr, int to){
+		chain = new DefaultConfigChain();
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -136,9 +136,9 @@ public class SimpleConfigStore implements ConfigStore {
 		navi.setTotalRow(to-fr+1);
 		this.setPageNavi(navi);
 	}
-	public SimpleConfigStore(List<String> configs){
+	public DefaultConfigStore(List<String> configs){
 		configs = BasicUtil.compressionSpace(configs);
-		chain = new SimpleConfigChain();
+		chain = new DefaultConfigChain();
 		for(String config:configs){
 			chain.addConfig(parseConfig(config));
 		}
@@ -149,7 +149,7 @@ public class SimpleConfigStore implements ConfigStore {
 		return addCondition(Compare.IN, var, values);
 //		Config conf = chain.getConfig(null,var,Compare.IN);
 //		if(null == conf){
-//			conf = new SimpleConfig();
+//			conf = new DefaultConfig();
 //			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 //			conf.setCompare(Compare.IN);
 //		}
@@ -178,7 +178,7 @@ public class SimpleConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore addCondition(String text){
-		Config conf = new SimpleConfig();
+		Config conf = new DefaultConfig();
 		conf.setText(text);
 		chain.addConfig(conf);
 		return this;
@@ -191,7 +191,7 @@ public class SimpleConfigStore implements ConfigStore {
 //			conf = chain.getConfig(prefix,var,Compare.EQUAL);
 //		}
 //		if(null == conf){
-//			conf = new SimpleConfig();
+//			conf = new DefaultConfig();
 //			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 //			conf.setCompare(Compare.EQUAL);
 //			chain.addConfig(conf);
@@ -242,7 +242,7 @@ public class SimpleConfigStore implements ConfigStore {
 			}
 		}
 		if(null == conf){
-			conf = new SimpleConfig();
+			conf = new DefaultConfig();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 			conf.setCompare(compare);
 			chain.addConfig(conf);
@@ -292,7 +292,7 @@ public class SimpleConfigStore implements ConfigStore {
 		if(configs.size()==0){
 			and(compare, var, value);
 		}else{
-			ConfigChain orChain = new SimpleConfigChain();
+			ConfigChain orChain = new DefaultConfigChain();
 			Config last = configs.get(configs.size()-1);
 			configs.remove(last);
 			
@@ -305,7 +305,7 @@ public class SimpleConfigStore implements ConfigStore {
 			}else{
 				orChain.addConfig(last);
 			}
-			Config conf = new SimpleConfig();
+			Config conf = new DefaultConfig();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 			conf.setCompare(compare);
 			conf.setVariable(var);
@@ -363,10 +363,10 @@ public class SimpleConfigStore implements ConfigStore {
 	} 
 	@Override
 	public ConfigStore ors(Compare compare, String var, Object value) {
-		ConfigChain newChain = new SimpleConfigChain();
+		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
 		
-		Config conf = new SimpleConfig();
+		Config conf = new DefaultConfig();
 		conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 		conf.setCompare(compare);
 		conf.setVariable(var);
@@ -463,7 +463,7 @@ public class SimpleConfigStore implements ConfigStore {
 	@Override 
 	public ConfigStore group(Group group){
 		if(null == groups){ 
-			groups = new SimpleGroupStore();
+			groups = new DefaultGroupStore();
 		} 
 		groups.group(group); 
 		return this; 
@@ -471,7 +471,7 @@ public class SimpleConfigStore implements ConfigStore {
 
 	@Override 
 	public ConfigStore group(String group){ 
-		return group(new SimpleGroup(group));
+		return group(new DefaultGroup(group));
 	} 
 	public GroupStore getGroups() { 
 		return groups; 
@@ -547,11 +547,11 @@ public class SimpleConfigStore implements ConfigStore {
 		return null;
 	}
 	public ConfigStore fetch(String ... keys){
-		SimpleConfigStore result = new SimpleConfigStore();
+		DefaultConfigStore result = new DefaultConfigStore();
 		result.setOrders(this.getOrders());
 		result.setGroups(this.getGroups());
 		result.setPageNavi(this.getPageNavi());
-		ConfigChain chain = new SimpleConfigChain();
+		ConfigChain chain = new DefaultConfigChain();
 		List<Config> configs = getConfigChain().getConfigs();
 		for(Config config:configs){
 			if(null == config){
@@ -576,7 +576,7 @@ public class SimpleConfigStore implements ConfigStore {
 		return this;
 	}
 	public ConfigStore clone(){
-		ConfigStore store = new SimpleConfigStore();
+		ConfigStore store = new DefaultConfigStore();
 //		private ConfigChain chain;
 //		private PageNavi navi;
 //		private OrderStore orders;		// 排序依据

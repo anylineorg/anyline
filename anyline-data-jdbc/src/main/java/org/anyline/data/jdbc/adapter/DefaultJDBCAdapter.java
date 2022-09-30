@@ -23,11 +23,10 @@ package org.anyline.data.jdbc.adapter;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
-import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
-import org.anyline.data.prepare.auto.init.SimpleTablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.service.AnylineService;
 import org.anyline.entity.DataRow;
@@ -57,8 +56,8 @@ import java.util.Date;
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
 
-public abstract class SimpleJDBCAdapter implements JDBCAdapter {
-	protected static final Logger log = LoggerFactory.getLogger(SimpleJDBCAdapter.class);
+public abstract class DefaultJDBCAdapter implements JDBCAdapter {
+	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
 
 	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater;
@@ -685,7 +684,7 @@ public abstract class SimpleJDBCAdapter implements JDBCAdapter {
 		}
 		if(obj instanceof ConfigStore){
 			run = new TableRun(this,dest);
-			RunPrepare prepare = new SimpleTablePrepare();
+			RunPrepare prepare = new DefaultTablePrepare();
 			prepare.setDataSource(dest);
 			run.setPrepare(prepare);
 			run.setConfigStore((ConfigStore)obj);

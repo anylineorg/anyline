@@ -20,14 +20,14 @@
 package org.anyline.data.param.init;
 
 import org.anyline.data.param.Config;
-import org.anyline.data.prepare.auto.init.SimpleAutoCondition;
+import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.entity.Compare;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class SimpleConfig implements Config {
-	protected static final Logger log = LoggerFactory.getLogger(SimpleConfig.class);
+public class DefaultConfig implements Config {
+	protected static final Logger log = LoggerFactory.getLogger(DefaultConfig.class);
 	protected String text				; // 静态条件(如原生SQL) 没有参数
 	protected List<Object> values		; // VALUE
 	protected List<Object> orValues		; // OR VALUE
@@ -44,7 +44,7 @@ public class SimpleConfig implements Config {
 	protected ParseResult parser;
 	@Override
 	public Object clone(){
-		SimpleConfig config = new SimpleConfig();
+		DefaultConfig config = new DefaultConfig();
 		config.parser = this.parser;
 		config.empty = this.empty;
 		List<Object> values = new ArrayList<Object>();
@@ -54,7 +54,7 @@ public class SimpleConfig implements Config {
 		config.values = values;
 		return config;
 	} 
-	public SimpleConfig(){
+	public DefaultConfig(){
 		this.parser = new ParseResult();
 	} 
 	public String toString(){ 
@@ -83,7 +83,7 @@ public class SimpleConfig implements Config {
 	 * 						 
 	 * @param config  config
 	 */ 
-	public SimpleConfig(String config){
+	public DefaultConfig(String config){
 		parser = ConfigParser.parse(config, true); 
 	}
 	public void setValue(Map<String,Object> values){ 
@@ -149,17 +149,17 @@ public class SimpleConfig implements Config {
 		Condition condition = null; 
 		if(isRequire() || !isEmpty()){
 			if(this instanceof ConfigChain){
-				condition = new SimpleAutoConditionChain((ConfigChain)this).setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				condition = new DefaultAutoConditionChain((ConfigChain)this).setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 				condition.setContainer(chain);
 			}else{
 				if(null != text){
-					condition = new SimpleAutoCondition(this);
+					condition = new DefaultAutoCondition(this);
 					condition.setRunText(text);
 					condition.setContainer(chain);
 					condition.setActive(true);
 					condition.setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
 				}else {
-					condition = new SimpleAutoCondition(this).setOrCompare(getOrCompare()).setJoin(parser.getJoin());
+					condition = new DefaultAutoCondition(this).setOrCompare(getOrCompare()).setJoin(parser.getJoin());
 					condition.setContainer(chain);
 				}
 			} 

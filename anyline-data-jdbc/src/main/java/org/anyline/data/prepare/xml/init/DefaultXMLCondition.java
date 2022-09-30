@@ -25,8 +25,8 @@ import org.anyline.data.run.RunValue;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.Compare;
-import org.anyline.data.prepare.init.SimpleCondition;
-import org.anyline.data.prepare.init.SimpleVariable;
+import org.anyline.data.prepare.init.DefaultCondition;
+import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -40,13 +40,13 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public class SimpleXMLCondition extends SimpleCondition implements Condition {
+public class DefaultXMLCondition extends DefaultCondition implements Condition {
 	private String text; 
 	private List<Variable> variables;	// 变量
 	 
 	 
 	public Object clone() throws CloneNotSupportedException{ 
-		SimpleXMLCondition clone = (SimpleXMLCondition)super.clone();
+		DefaultXMLCondition clone = (DefaultXMLCondition)super.clone();
 		if(null != variables){ 
 			List<Variable> cVariables = new ArrayList<Variable>();
 			for(Variable var:variables){
@@ -61,10 +61,10 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 		} 
 		return clone; 
 	} 
-	public SimpleXMLCondition(){
+	public DefaultXMLCondition(){
 		join = ""; 
 	} 
-	public SimpleXMLCondition(String id, String text, boolean isStatic){
+	public DefaultXMLCondition(String id, String text, boolean isStatic){
 		join = ""; 
 		this.id = id; 
 		this.text = text; 
@@ -142,7 +142,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 							compare = Compare.IN;
 						} 
 					} 
-					Variable var = new SimpleVariable();
+					Variable var = new DefaultVariable();
 					var.setKey(key); 
 					var.setType(varType); 
 					var.setCompare(compare); 
@@ -155,7 +155,7 @@ public class SimpleXMLCondition extends SimpleCondition implements Condition {
 					this.setVariableType(VARIABLE_FLAG_TYPE_INDEX); 
 					int varType = Variable.VAR_TYPE_INDEX;
 					for(int i=0; i<idxKeys.size(); i++){ 
-						Variable var = new SimpleVariable();
+						Variable var = new DefaultVariable();
 						var.setType(varType); 
 						var.setKey(id); 
 						addVariable(var); 

@@ -1,4 +1,4 @@
-package org.anyline.jdbc.prepare.auto.init;
+package org.anyline.data.entity;
 
 public class Join {
     public static enum TYPE{

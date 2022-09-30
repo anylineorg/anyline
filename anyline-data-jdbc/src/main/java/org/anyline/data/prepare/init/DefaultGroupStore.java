@@ -21,19 +21,17 @@ package org.anyline.data.prepare.init;
 
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
-import org.anyline.data.prepare.Group;
-import org.anyline.data.prepare.GroupStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.List;
  
-public class SimpleGroupStore implements GroupStore {
+public class DefaultGroupStore implements GroupStore {
 	private static final long serialVersionUID = 1257282062069295247L;
 	private List<Group> groups;
  
-	public SimpleGroupStore() {
+	public DefaultGroupStore() {
 		groups = new ArrayList<Group>(); 
 	} 
 	public List<Group> getGroups(){ 
@@ -64,7 +62,7 @@ public class SimpleGroupStore implements GroupStore {
 		} 
 		String[] tmps = str.split(","); // 多列排序 
 		for (String tmp : tmps) { 
-			group(new SimpleGroup(tmp));
+			group(new DefaultGroup(tmp));
 		} 
 	} 
  

@@ -23,9 +23,6 @@ import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.run.RunValue;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.Variable;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -40,7 +37,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public abstract class SimpleCondition implements Condition {
+public abstract class DefaultCondition implements Condition {
 	protected boolean required = false;									// 是否必须
 	protected boolean strictRequired = false;							// 是否必须 
 	protected boolean active = false;									// 是否活动(是否拼接到SQL中) 
@@ -55,7 +52,7 @@ public abstract class SimpleCondition implements Condition {
 	protected String text;												// 静态条件
 	protected String test;												// 判断条件 
 	public Object clone() throws CloneNotSupportedException{ 
-		SimpleCondition clone = (SimpleCondition)super.clone();
+		DefaultCondition clone = (DefaultCondition)super.clone();
 		if(null != runValues){ 
 			List<RunValue> cRunValues = new ArrayList<>();
 			for(RunValue obj:runValues){

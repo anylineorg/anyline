@@ -19,26 +19,23 @@
 
 package org.anyline.data.prepare.auto.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoPrepare;
-import org.anyline.data.prepare.init.SimplePrepare;
+import org.anyline.data.prepare.init.DefaultPrepare;
 import org.anyline.entity.Order;
 import org.anyline.entity.Compare;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.init.SimplePrepare;
-import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.Variable;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
+public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	protected String datasoruce;
 	protected String schema;
 	protected String table;
@@ -49,9 +46,9 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 
 
 
-	public SimpleAutoPrepare(){
+	public DefaultAutoPrepare(){
 		super();
-		chain = new SimpleAutoConditionChain();
+		chain = new DefaultAutoConditionChain();
 	}
 	public RunPrepare init(){
 		return this;
@@ -86,9 +83,9 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 	 */
 	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare){
 		if(null == chain){
-			chain = new SimpleAutoConditionChain();
+			chain = new DefaultAutoConditionChain();
 		}
-		Condition condition = new SimpleAutoCondition(required, strictRequired, null, column, value, compare);
+		Condition condition = new DefaultAutoCondition(required, strictRequired, null, column, value, compare);
 		chain.addCondition(condition);
 		return this;
 	}
@@ -107,7 +104,7 @@ public class SimpleAutoPrepare extends SimplePrepare implements AutoPrepare {
 			Object value = ConfigParser.getValues(parser);
 			addCondition(parser.isRequired(),parser.isStrictRequired(),parser.getVar(),value,parser.getCompare());
 		}else{
-			Condition con = new SimpleAutoCondition(condition);
+			Condition con = new DefaultAutoCondition(condition);
 			chain.addCondition(con);
 		}
 		return this;

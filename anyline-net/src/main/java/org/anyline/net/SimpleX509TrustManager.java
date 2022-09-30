@@ -16,12 +16,11 @@ public class SimpleX509TrustManager implements X509TrustManager {
 
     /**
      * Constructor for EasyX509TrustManager.
-     * @param keystore keystore
+     * @param keystore 密钥文件
      * @throws NoSuchAlgorithmException NoSuchAlgorithmException
      * @throws KeyStoreException KeyStoreException
      */
-    public SimpleX509TrustManager(KeyStore keystore)
-            throws NoSuchAlgorithmException, KeyStoreException {
+    public SimpleX509TrustManager(KeyStore keystore) throws NoSuchAlgorithmException, KeyStoreException {
         super();
         TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         factory.init(keystore);

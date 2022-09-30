@@ -22,15 +22,13 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.ProcedureParam;
 import org.anyline.entity.PageNavi;
-import org.anyline.data.prepare.Procedure;
-import org.anyline.data.prepare.ProcedureParam;
 
 import java.util.ArrayList;
 import java.util.List;
  
  
  
-public class SimpleProcedure implements Procedure {
+public class DefaultProcedure implements Procedure {
 	private static final long serialVersionUID = -1421673036222025241L;
 	private String name;
 	private List<ProcedureParam> inputs = new ArrayList<ProcedureParam>();
@@ -40,11 +38,11 @@ public class SimpleProcedure implements Procedure {
 	private PageNavi navi;
 	
 	
-	public SimpleProcedure(String name){
+	public DefaultProcedure(String name){
 		this();
 		this.name = name;
 	}
-	public SimpleProcedure(){}
+	public DefaultProcedure(){}
 	/**
 	 * 添加输入参数
 	 * @param value	值 value	值

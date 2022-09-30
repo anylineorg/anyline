@@ -19,8 +19,7 @@
 
 package org.anyline.data.prepare.init;
 
-import org.anyline.data.prepare.auto.init.Join;
-import org.anyline.data.prepare.auto.init.Join;
+import org.anyline.data.entity.Join;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
@@ -38,9 +37,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
  
-public abstract class SimplePrepare implements RunPrepare{
+public abstract class DefaultPrepare implements RunPrepare{
 
-	protected static final Logger log = LoggerFactory.getLogger(SimplePrepare.class);
+	protected static final Logger log = LoggerFactory.getLogger(DefaultPrepare.class);
 	protected ConditionChain chain							; // 查询条件
 	protected OrderStore orders								; // 排序
 	protected GroupStore groups								; // 分组条件
@@ -57,7 +56,7 @@ public abstract class SimplePrepare implements RunPrepare{
 		return 0; 
 	} 
  
-	public SimplePrepare(){
+	public DefaultPrepare(){
 	} 
 	protected void initRunValues(){ 
 		if(null == runValues){ 
@@ -114,7 +113,7 @@ public abstract class SimplePrepare implements RunPrepare{
 		} 
 		 
 		if(null == groups){ 
-			groups = new SimpleGroupStore();
+			groups = new DefaultGroupStore();
 		} 
 		group = group.trim().toUpperCase(); 
 		groups.group(group); 

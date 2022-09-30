@@ -19,16 +19,17 @@
 
 package org.anyline.data.prepare.auto.init;
 
+import org.anyline.data.entity.Join;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 
 import java.util.List;
  
-public class SimpleTablePrepare extends SimpleAutoPrepare implements TablePrepare {
+public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrepare {
 
-	public SimpleTablePrepare(){
+	public DefaultTablePrepare(){
 		super(); 
-		chain = new SimpleAutoConditionChain();
+		chain = new DefaultAutoConditionChain();
 	} 
  
  

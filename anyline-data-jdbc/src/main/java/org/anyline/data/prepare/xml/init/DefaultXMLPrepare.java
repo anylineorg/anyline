@@ -25,15 +25,9 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
-import org.anyline.data.prepare.init.SimplePrepare;
-import org.anyline.data.prepare.init.SimpleVariable;
+import org.anyline.data.prepare.init.DefaultPrepare;
+import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.SyntaxHelper;
-import org.anyline.data.prepare.xml.XMLPrepare;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SyntaxHelper;
-import org.anyline.data.prepare.Variable;
-import org.anyline.data.prepare.init.SimplePrepare;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
@@ -41,16 +35,16 @@ import org.anyline.util.regular.RegularUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
+public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 	/*解析XML*/ 
 	private String id; 
 	private String text;
 	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables;
 	 
-	public SimpleXMLPrepare(){
+	public DefaultXMLPrepare(){
 		super(); 
-		chain = new SimpleXMLConditionChain();
+		chain = new DefaultXMLConditionChain();
 	} 
 	public RunPrepare init() {
 		if(null == variables){ 
@@ -73,7 +67,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 		return this; 
 	} 
 	public Object clone() throws CloneNotSupportedException{ 
-		SimpleXMLPrepare clone = (SimpleXMLPrepare)super.clone();
+		DefaultXMLPrepare clone = (DefaultXMLPrepare)super.clone();
 		clone.chain = (ConditionChain)chain.clone();
 		if(null != variables){ 
 			List<Variable> cVariables = new ArrayList<Variable>();
@@ -153,7 +147,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
 				if(BasicUtil.isNotEmpty(true,idxKeys)){ 
 					for(int i=0; i<idxKeys.size(); i++){ 
-						Variable var = new SimpleVariable();
+						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setRequired(true); 
 						addVariable(var); 
@@ -203,7 +197,7 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 		if(null == condition){ 
 			return this; 
 		} 
-		SimpleXMLCondition con = getCondition(condition);
+		DefaultXMLCondition con = getCondition(condition);
 		if(null == con){ 
 			return this; 
 		} 
@@ -211,13 +205,13 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 		con.setValue(variable, value); 
 		return this; 
 	} 
-	private SimpleXMLCondition getCondition(String id){
+	private DefaultXMLCondition getCondition(String id){
 		if(null == chain){ 
 			return null; 
 		} 
 		for(Condition con:chain.getConditions()){ 
 			if(BasicUtil.equalsIgnoreCase(id, con.getId())){
-				return (SimpleXMLCondition)con;
+				return (DefaultXMLCondition)con;
 			} 
 		} 
 		return null; 

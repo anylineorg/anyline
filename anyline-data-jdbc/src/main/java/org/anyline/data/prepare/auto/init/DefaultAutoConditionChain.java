@@ -24,27 +24,24 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.init.SimpleConditionChain;
+import org.anyline.data.prepare.init.DefaultConditionChain;
 import org.anyline.data.run.RunValue;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.init.SimpleConditionChain;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
  
-public class SimpleAutoConditionChain extends SimpleConditionChain implements ConditionChain {
-	public SimpleAutoConditionChain(){}
-	public SimpleAutoConditionChain(ConfigChain chain){
+public class DefaultAutoConditionChain extends DefaultConditionChain implements ConditionChain {
+	public DefaultAutoConditionChain(){}
+	public DefaultAutoConditionChain(ConfigChain chain){
 		if(null == chain){
 			return;
 		}
 		for(Config config:chain.getConfigs()){
 			if(config instanceof ConfigChain){
-				conditions.add(new SimpleAutoConditionChain((ConfigChain)config));
+				conditions.add(new DefaultAutoConditionChain((ConfigChain)config));
 			}else{
-				conditions.add(new SimpleAutoCondition(config));
+				conditions.add(new DefaultAutoCondition(config));
 			}
 		}
 	}

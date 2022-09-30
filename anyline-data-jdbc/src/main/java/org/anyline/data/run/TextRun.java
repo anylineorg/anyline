@@ -22,8 +22,8 @@ package org.anyline.data.run;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.auto.AutoCondition;
-import org.anyline.data.prepare.auto.init.SimpleAutoCondition;
-import org.anyline.data.prepare.init.SimpleVariable;
+import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
+import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
@@ -32,7 +32,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.Condition;
 import org.anyline.entity.Compare;
-import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -44,7 +44,7 @@ import java.util.List;
 public class TextRun extends BasicRun implements Run {
 	public TextRun(){
 		this.builder = new StringBuilder();
-		this.conditionChain = new SimpleAutoConditionChain();
+		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new OrderStoreImpl();
 		setStrict(false); 
 	}
@@ -142,7 +142,7 @@ public class TextRun extends BasicRun implements Run {
 							compare = Compare.IN;
 						} 
 					} 
-					Variable var = new SimpleVariable();
+					Variable var = new DefaultVariable();
 					var.setKey(key); 
 					var.setType(varType); 
 					var.setCompare(compare); 
@@ -153,7 +153,7 @@ public class TextRun extends BasicRun implements Run {
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
 				if(BasicUtil.isNotEmpty(true,idxKeys)){ 
 					for(int i=0; i<idxKeys.size(); i++){ 
-						Variable var = new SimpleVariable();
+						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						addVariable(var); 
 					} 
@@ -335,9 +335,9 @@ public class TextRun extends BasicRun implements Run {
 	 * @return Run
 	 */ 
 	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
-		Condition condition = new SimpleAutoCondition(required,strictRequired,prefix, var, value, compare);
+		Condition condition = new DefaultAutoCondition(required,strictRequired,prefix, var, value, compare);
 		if(null == conditionChain){ 
-			conditionChain = new SimpleAutoConditionChain();
+			conditionChain = new DefaultAutoConditionChain();
 		} 
 		conditionChain.addCondition(condition); 
 		return this; 

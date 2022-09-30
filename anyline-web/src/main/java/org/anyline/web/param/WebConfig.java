@@ -22,10 +22,10 @@ package org.anyline.web.param;
 import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.data.param.Config;
-import org.anyline.data.param.init.SimpleConfig;
+import org.anyline.data.param.init.DefaultConfig;
 import org.anyline.web.util.WebUtil;
  
-public class WebConfig extends SimpleConfig implements Config {
+public class WebConfig extends DefaultConfig implements Config {
 
 	public void setValue(HttpServletRequest request) {
 		super.setValue(WebUtil.values(request));

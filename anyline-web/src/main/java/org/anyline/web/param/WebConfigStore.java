@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.init.SimpleConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 
 
 /**
@@ -33,7 +33,7 @@ import org.anyline.data.param.init.SimpleConfigStore;
  * @author zh 
  * 
  */ 
-public class WebConfigStore extends SimpleConfigStore implements ConfigStore {
+public class WebConfigStore extends DefaultConfigStore implements ConfigStore {
 	public ConfigStore setValue(HttpServletRequest request){
 		if(null == chain){ 
 			return this; 

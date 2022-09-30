@@ -1,6 +1,6 @@
 package org.anyline.data.prepare;
  
-import org.anyline.data.prepare.init.SimpleVariable;
+import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
  
@@ -33,7 +33,7 @@ public class SyntaxHelper {
 		if(null == afterChar){ 
 			afterChar = ""; 
 		} 
-		Variable var = new SimpleVariable();
+		Variable var = new DefaultVariable();
 		String key = null; 
 		if(signType ==1){ 
 			key = fullKey.replace(":", ""); 

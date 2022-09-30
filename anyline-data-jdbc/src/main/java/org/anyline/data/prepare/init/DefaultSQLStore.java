@@ -20,16 +20,11 @@
 package org.anyline.data.prepare.init;
 
 
-import org.anyline.data.prepare.xml.init.SimpleXMLCondition;
-import org.anyline.data.prepare.xml.init.SimpleXMLPrepare;
+import org.anyline.data.prepare.xml.init.DefaultXMLCondition;
+import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.SQLStore;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SQLStore;
-import org.anyline.data.prepare.xml.init.SimpleXMLCondition;
-import org.anyline.data.prepare.xml.init.SimpleXMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -48,13 +43,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 
-public class SimpleSQLStore extends SQLStore {
+public class DefaultSQLStore extends SQLStore {
 
-	private static SimpleSQLStore instance;
+	private static DefaultSQLStore instance;
 	private static Hashtable<String, RunPrepare> sqls = new Hashtable();
-	private static final Logger log = LoggerFactory.getLogger(SimpleSQLStore.class);
+	private static final Logger log = LoggerFactory.getLogger(DefaultSQLStore.class);
 
-	protected SimpleSQLStore() {
+	protected DefaultSQLStore() {
 	}
 
 	private static String sqlDir;
@@ -102,7 +97,7 @@ public class SimpleSQLStore extends SQLStore {
 
 			for (JarEntry jarEntry : list) {
 				String fileName = jarEntry.getName();
-				InputStream is = SimpleSQLStore.class.getClassLoader().getResourceAsStream(fileName);
+				InputStream is = DefaultSQLStore.class.getClassLoader().getResourceAsStream(fileName);
 				sqls.putAll(parseSQLFile(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf(".xml")), is));
 			}
 		} else {
@@ -168,7 +163,7 @@ public class SimpleSQLStore extends SQLStore {
 			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        // RunPrepare 主键
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text");                                    // RunPrepare 文本
-			RunPrepare prepare = new SimpleXMLPrepare();
+			RunPrepare prepare = new DefaultXMLPrepare();
 			prepare.setDataSource(fileName + ":" + sqlId);
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);
@@ -211,7 +206,7 @@ public class SimpleSQLStore extends SQLStore {
 			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        // RunPrepare 主键
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text");                                    // RunPrepare 文本
-			RunPrepare prepare = new SimpleXMLPrepare();
+			RunPrepare prepare = new DefaultXMLPrepare();
 			prepare.setDataSource(fileName + ":" + sqlId);
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);
@@ -241,7 +236,7 @@ public class SimpleSQLStore extends SQLStore {
 			if (!text.toUpperCase().startsWith("AND ")) {
 				text = "\nAND " + text;
 			}
-			condition = new SimpleXMLCondition(id, text, isStatic);
+			condition = new DefaultXMLCondition(id, text, isStatic);
 			condition.setRequired(required);
 			condition.setStrictRequired(strictRequired);
 			String test = element.attributeValue("test");
@@ -285,9 +280,9 @@ public class SimpleSQLStore extends SQLStore {
 		return document;
 	}
 
-	public static synchronized SimpleSQLStore getInstance() {
+	public static synchronized DefaultSQLStore getInstance() {
 		if (instance == null) {
-			instance = new SimpleSQLStore();
+			instance = new DefaultSQLStore();
 		}
 		return instance;
 	}

@@ -28,7 +28,7 @@ import org.anyline.entity.Compare;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class TableRun extends BasicRun implements Run {
 
 	public TableRun(JDBCAdapter adapter, String table){
 		this.builder = new StringBuilder();
-		this.conditionChain = new SimpleAutoConditionChain();
+		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new OrderStoreImpl();
 		this.table = table;
 		this.adapter = adapter;

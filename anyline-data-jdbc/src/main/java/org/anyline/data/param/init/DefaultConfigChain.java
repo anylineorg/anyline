@@ -24,17 +24,17 @@ import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SimpleConfigChain extends SimpleConfig implements ConfigChain {
+public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	private List<Config> configs = new ArrayList<Config>();
 	 
-	public SimpleConfigChain(){}
+	public DefaultConfigChain(){}
 	public String toString(){
 		String str = null;
 		if(null != configs){
@@ -67,7 +67,7 @@ public class SimpleConfigChain extends SimpleConfig implements ConfigChain {
 		}
 		return str;
 	} 
-	public SimpleConfigChain(String config){
+	public DefaultConfigChain(String config){
 		if(null == config){ 
 			return; 
 		} 
@@ -84,7 +84,7 @@ public class SimpleConfigChain extends SimpleConfig implements ConfigChain {
 				}
 			}
 			
-			SimpleConfig conf = new SimpleConfig(item);
+			DefaultConfig conf = new DefaultConfig(item);
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 			if(!conf.isEmpty()){ 
 				this.configs.add(conf);
@@ -175,7 +175,7 @@ public class SimpleConfigChain extends SimpleConfig implements ConfigChain {
 		return configs; 
 	} 
 	public ConditionChain createAutoConditionChain(){ 
-		ConditionChain chain = new SimpleAutoConditionChain();
+		ConditionChain chain = new DefaultAutoConditionChain();
 		for(Config config:configs){ 
 			Condition condition = config.createAutoCondition(chain); 
 			if(null != condition){ 

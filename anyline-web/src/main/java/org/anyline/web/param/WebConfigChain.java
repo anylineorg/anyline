@@ -29,7 +29,7 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
 public class WebConfigChain extends WebConfig implements  ConfigChain{
@@ -109,7 +109,7 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 		return configs;
 	}
 	public ConditionChain createAutoConditionChain(){
-		ConditionChain chain = new SimpleAutoConditionChain();
+		ConditionChain chain = new DefaultAutoConditionChain();
 		for(Config config:configs){
 			Condition condition = config.createAutoCondition(chain);
 			if(null != condition){

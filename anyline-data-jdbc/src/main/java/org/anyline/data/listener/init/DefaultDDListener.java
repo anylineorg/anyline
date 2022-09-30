@@ -21,9 +21,9 @@ import java.util.List;
 
 
 @Component("anyline.jdbc.listener.dd.default")
-public class SimpleDDListener implements DDListener {
+public class DefaultDDListener implements DDListener {
 
-    protected Logger log = LoggerFactory.getLogger(SimpleDDListener.class);
+    protected Logger log = LoggerFactory.getLogger(DefaultDDListener.class);
     protected AnylineService service;
     protected JDBCAdapter adapter;
 

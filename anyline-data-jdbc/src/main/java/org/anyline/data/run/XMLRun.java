@@ -26,10 +26,9 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
-import org.anyline.data.prepare.*;
-import org.anyline.data.prepare.auto.init.SimpleAutoCondition;
-import org.anyline.data.prepare.init.SimpleGroupStore;
-import org.anyline.data.prepare.xml.init.SimpleXMLConditionChain;
+import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
+import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.data.prepare.xml.init.DefaultXMLConditionChain;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
@@ -47,9 +46,9 @@ public class XMLRun extends BasicRun implements Run {
 	private List<String> staticConditions; 
 	public XMLRun(){
 		this.builder = new StringBuilder();
-		this.conditionChain = new SimpleXMLConditionChain();
+		this.conditionChain = new DefaultXMLConditionChain();
 		this.orderStore = new OrderStoreImpl(); 
-		this.groupStore = new SimpleGroupStore();
+		this.groupStore = new DefaultGroupStore();
 	} 
  
 	public Run setPrepare(RunPrepare prepare){
@@ -295,7 +294,7 @@ public class XMLRun extends BasicRun implements Run {
 		ConditionChain xmlConditionChain = prepare.getConditionChain();
 		if(null != xmlConditionChain){ 
 			if(null == this.conditionChain){ 
-				this.conditionChain = new SimpleXMLConditionChain();
+				this.conditionChain = new DefaultXMLConditionChain();
 			} 
 			List<Condition> conditions = xmlConditionChain.getConditions(); 
 			if(null != conditions){ 
@@ -495,7 +494,7 @@ public class XMLRun extends BasicRun implements Run {
 //				if(BasicUtil.isNotEmpty(prefix) && !prefix.equals(variable)){
 //					column = prefix + "." + variable;
 //				}
-				Condition newCon = new SimpleAutoCondition(required, strictRequired,prefix, variable, value, compare);
+				Condition newCon = new DefaultAutoCondition(required, strictRequired,prefix, variable, value, compare);
 				conditionChain.addCondition(newCon); 
 				if(newCon.isActive()){ 
 					conditionChain.setActive(true); 

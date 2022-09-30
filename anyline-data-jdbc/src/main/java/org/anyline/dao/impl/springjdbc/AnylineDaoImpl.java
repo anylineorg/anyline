@@ -23,7 +23,6 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.data.entity.*;
-import org.anyline.data.entity.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -39,7 +38,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.ProcedureParam;
 import org.anyline.data.run.Run;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.prepare.auto.init.SimpleTablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.util.SQLAdapterUtil;
 import org.anyline.data.listener.DDListener;
@@ -210,7 +209,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
-			RunPrepare prepare = new SimpleTablePrepare();
+			RunPrepare prepare = new DefaultTablePrepare();
 			if(AdapterProxy.hasAdapter()){
 				prepare.setDataSource(AdapterProxy.table(clazz));
 			}
