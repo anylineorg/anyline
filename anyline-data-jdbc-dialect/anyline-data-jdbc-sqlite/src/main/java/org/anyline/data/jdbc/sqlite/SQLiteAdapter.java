@@ -1,12 +1,13 @@
-package org.anyline.jdbc.sqlite;
+package org.anyline.data.jdbc.sqlite;
  
+import org.anyline.data.entity.*;
+import org.anyline.data.entity.*;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.entity.*;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.run.Run;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
