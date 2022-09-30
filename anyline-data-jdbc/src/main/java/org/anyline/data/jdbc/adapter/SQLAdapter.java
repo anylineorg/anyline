@@ -17,25 +17,25 @@
  */
 
 
-package org.anyline.jdbc.adapter;
+package org.anyline.data.jdbc.adapter;
 
 
+import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.auto.AutoPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.Join;
+import org.anyline.data.run.TableRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Compare;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.prepare.auto.AutoPrepare;
-import org.anyline.jdbc.prepare.auto.init.Join;
-import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.run.TableRun;
-import org.anyline.jdbc.run.TextRun;
-import org.anyline.jdbc.run.XMLRun;
-import org.anyline.jdbc.prepare.auto.TablePrepare;
-import org.anyline.jdbc.ds.DataSourceHolder;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.Variable;
+import org.anyline.data.run.Run;
+import org.anyline.data.run.TextRun;
+import org.anyline.data.run.XMLRun;
 import org.anyline.util.*;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -491,14 +491,20 @@ public abstract class SQLAdapter extends SimpleJDBCAdapter implements JDBCAdapte
                         }
                     }
                 }
-                log.warn("{}[exe insert][生成主键:{}]", random, ids);
+                if(ConfigTable.IS_SHOW_SQL) {
+                    log.warn("{}[exe insert][生成主键:{}]", random, ids);
+                }
             }else{
                 Object id = keys.get(0).get(id_key);
                 setPrimaryValue(data, id);
-                log.warn("{}[exe insert][生成主键:{}]", random, id);
+                if(ConfigTable.IS_SHOW_SQL) {
+                    log.warn("{}[exe insert][生成主键:{}]", random, id);
+                }
             }
         }catch (Exception e){
-            log.warn("{}[exe insert][返回主键失败]", random);
+            if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
+                log.warn("{}[exe insert][返回主键失败]", random);
+            }
             return false;
         }
         return true;
