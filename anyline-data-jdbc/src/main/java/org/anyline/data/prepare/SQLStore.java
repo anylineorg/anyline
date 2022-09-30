@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare;
+package org.anyline.data.prepare;
 
 
 public abstract class SQLStore{
