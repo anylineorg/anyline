@@ -17,25 +17,25 @@
  */ 
  
  
-package org.anyline.jdbc.run;
+package org.anyline.data.run;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.ParseResult;
+import org.anyline.data.prepare.*;
+import org.anyline.data.prepare.*;
+import org.anyline.data.prepare.auto.init.SimpleAutoCondition;
+import org.anyline.data.prepare.init.SimpleGroupStore;
+import org.anyline.data.prepare.xml.init.SimpleXMLConditionChain;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.*;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.ConfigParser;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.param.ParseResult;
-import org.anyline.jdbc.prepare.init.SimpleGroupStore;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoCondition;
-import org.anyline.jdbc.prepare.xml.init.SimpleXMLConditionChain;
+import org.anyline.data.param.ConfigParser;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DefaultMemberAccess;
@@ -62,7 +62,7 @@ public class XMLRun extends BasicRun implements Run {
 	public void init(){ 
 		super.init(); 
 		if(null != configStore){ 
-			for(Config conf:configStore.getConfigChain().getConfigs()){ 
+			for(Config conf:configStore.getConfigChain().getConfigs()){
 				setConditionValue(conf.isRequire(),  
 						conf.isStrictRequired(), conf.getPrefix(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			} 
@@ -84,7 +84,7 @@ public class XMLRun extends BasicRun implements Run {
 		// condition赋值 
 		if(null != conditions){ 
 			for(String condition:conditions){ 
-				ParseResult parser = ConfigParser.parse(condition,false); 
+				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){ 
 					 value = BeanUtil.array2list(value.toString().split(","));
@@ -415,7 +415,7 @@ public class XMLRun extends BasicRun implements Run {
 		} 
 	} 
 	 
-	public void setConfigs(ConfigStore configs) { 
+	public void setConfigs(ConfigStore configs) {
 		this.configStore = configs; 
 		if(null != configs){ 
 			this.pageNavi = configs.getPageNavi(); 

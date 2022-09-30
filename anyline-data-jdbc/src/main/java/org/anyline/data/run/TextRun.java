@@ -17,22 +17,22 @@
  */
 
 
-package org.anyline.jdbc.run;
+package org.anyline.data.run;
 
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.auto.AutoCondition;
+import org.anyline.data.prepare.auto.init.SimpleAutoCondition;
+import org.anyline.data.prepare.init.SimpleVariable;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.Condition;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.init.SimpleVariable;
-import org.anyline.jdbc.prepare.auto.AutoCondition;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoCondition;
+import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -66,7 +66,7 @@ public class TextRun extends BasicRun implements Run {
 					if(null == condition){
 						continue;
 					} 
-					AutoCondition con = (AutoCondition)condition; 
+					AutoCondition con = (AutoCondition)condition;
 					setConditionValue(
 							con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
 					Variable var = this.getVariable(con.getId());
@@ -77,7 +77,7 @@ public class TextRun extends BasicRun implements Run {
 			} 
 		} 
 		if(null != configStore){ 
-			for(Config conf:configStore.getConfigChain().getConfigs()){ 
+			for(Config conf:configStore.getConfigChain().getConfigs()){
 				Condition con = getCondition(conf.getVariable());
 				Variable var = this.getVariable(conf.getVariable());
 				// sql体中有对应的变量
@@ -193,7 +193,7 @@ public class TextRun extends BasicRun implements Run {
 		addValues(conditionChain.getRunValues());
 	}
 	 
-	public void setConfigs(ConfigStore configs) { 
+	public void setConfigs(ConfigStore configs) {
 		this.configStore = configs; 
 		if(null != configs){ 
 			this.pageNavi = configs.getPageNavi(); 
