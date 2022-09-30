@@ -17,18 +17,18 @@
  */
 
 
-package org.anyline.jdbc.run;
+package org.anyline.data.run;
 
+import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
 import java.util.List;
@@ -116,7 +116,7 @@ public class TableRun extends BasicRun implements Run {
 		addValues(values);
 	} 
 
-	public void setConfigs(ConfigStore configs) { 
+	public void setConfigs(ConfigStore configs) {
 		this.configStore = configs; 
 		if(null != configs){ 
 			this.pageNavi = configs.getPageNavi();
