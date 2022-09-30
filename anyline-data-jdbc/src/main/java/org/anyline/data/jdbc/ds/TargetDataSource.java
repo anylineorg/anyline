@@ -1,4 +1,4 @@
-package org.anyline.jdbc.ds;
+package org.anyline.data.jdbc.ds;
 
 import java.lang.annotation.*;
 
