@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto;
+package org.anyline.data.prepare.auto;
 
-import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.data.prepare.RunPrepare;
  
 public interface TextPrepare extends RunPrepare{
 }

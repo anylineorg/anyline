@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto;
+package org.anyline.data.prepare.auto;
  
  
 public interface TablePrepare extends AutoPrepare{
