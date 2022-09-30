@@ -169,7 +169,7 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 
 
 
-没有示例的看这个目录下有没有 [【anyline-jdbc-dialect】](https://gitee.com/anyline/anyline/tree/master/anyline-jdbc-dialect)还没有的请QQ群管理管理员
+没有示例的看这个目录下有没有 [【anyline-data-jdbc-dialect】](https://gitee.com/anyline/anyline/tree/master/anyline-data-jdbc-dialect)还没有的请QQ群管理管理员
 
 
 ## 如何使用
@@ -199,7 +199,7 @@ Anyline会自动生成,生成规则可以参考这里的[【约定规则】](htt
 ```
 <dependency>
     <groupId>org.anyline</groupId>
-    <artifactId>anyline-jdbc-mysql(oracle|clickhouse...)</artifactId>
+    <artifactId>anyline-data-jdbc-mysql(oracle|clickhouse...)</artifactId>
     <version>8.5.3-20220630</version>
 </dependency>
 ```
