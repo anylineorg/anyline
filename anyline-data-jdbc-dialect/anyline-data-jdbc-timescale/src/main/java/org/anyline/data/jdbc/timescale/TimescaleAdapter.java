@@ -1,6 +1,6 @@
-package org.anyline.jdbc.timescale;
+package org.anyline.data.jdbc.timescale;
 
-import org.anyline.jdbc.postgresql.PostgresqlAdapter;
+import org.anyline.data.jdbc.postgresql.PostgresqlAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
