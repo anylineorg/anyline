@@ -17,14 +17,19 @@
  */
 
 
-package org.anyline.jdbc.prepare.init;
+package org.anyline.data.prepare.init;
 
 
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.SQLStore;
-import org.anyline.jdbc.prepare.xml.init.SimpleXMLCondition;
-import org.anyline.jdbc.prepare.xml.init.SimpleXMLPrepare;
+import org.anyline.data.prepare.xml.init.SimpleXMLCondition;
+import org.anyline.data.prepare.xml.init.SimpleXMLPrepare;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.SQLStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.SQLStore;
+import org.anyline.data.prepare.xml.init.SimpleXMLCondition;
+import org.anyline.data.prepare.xml.init.SimpleXMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -140,7 +145,7 @@ public class SimpleSQLStore extends SQLStore {
 		} else {
 			dirName = new File(ConfigTable.getWebRoot(), sqlDir).getPath() + FileUtil.getFileSeparator();
 		}
-		fileName = fileName.substring(fileName.indexOf("sql") + 4, fileName.indexOf(".xml")).replace("/", ".").replace("\\", ".").replace("..", ".");
+		fileName = fileName.substring(fileName.indexOf("sql") + 4, fileName.indexOf(".xml")).replace("/", ".").replace("\\", ".").replace("src/main", ".");
 
 		Document document = createDocument(file);
 		if (null == document) {

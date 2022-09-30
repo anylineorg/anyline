@@ -17,10 +17,10 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto.init;
+package org.anyline.data.prepare.auto.init;
 
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 
 import java.util.List;
  

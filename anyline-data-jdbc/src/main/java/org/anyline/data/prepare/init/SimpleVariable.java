@@ -20,10 +20,11 @@
 /** 
  * V2.0 
  */ 
-package org.anyline.jdbc.prepare.init;
+package org.anyline.data.prepare.init;
 
+import org.anyline.data.prepare.Variable;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.Variable;
+import org.anyline.data.prepare.Variable;
 import org.anyline.util.BeanUtil;
 
 import java.util.*;

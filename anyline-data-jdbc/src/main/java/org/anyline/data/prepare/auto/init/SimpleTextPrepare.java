@@ -17,9 +17,10 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto.init;
+package org.anyline.data.prepare.auto.init;
  
-import org.anyline.jdbc.prepare.auto.TextPrepare;
+import org.anyline.data.prepare.auto.TextPrepare;
+import org.anyline.data.prepare.auto.TextPrepare;
 
 public class SimpleTextPrepare extends SimpleAutoPrepare implements TextPrepare {
 	private String text; 
