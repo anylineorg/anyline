@@ -1,4 +1,4 @@
-package org.anyline.jdbc.prepare;
+package org.anyline.data.prepare;
 
 public class ProcedureParam {
     private Object value;

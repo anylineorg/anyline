@@ -1,14 +1,15 @@
  
-package org.anyline.jdbc.postgresql;
+package org.anyline.data.jdbc.postgresql;
 
+import org.anyline.data.entity.*;
+import org.anyline.data.entity.*;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.run.RunValue;
-import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.entity.*;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.run.Run;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.postgresql.util.PGobject;
