@@ -17,12 +17,13 @@
  */
 
 
-package org.anyline.jdbc.prepare;
+package org.anyline.data.prepare;
 
+import org.anyline.data.prepare.auto.init.Join;
+import org.anyline.data.prepare.auto.init.Join;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.prepare.auto.init.Join;
 
 import java.util.Collection;
 import java.util.List;

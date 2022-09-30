@@ -17,17 +17,17 @@
  */
 
 
-package org.anyline.jdbc.run;
+package org.anyline.data.run;
 
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.GroupStore;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.GroupStore;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.Compare;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public interface Run {
 	public OrderStore getOrderStore() ; 
 	public Run order(String order);
 	 
-	public void setConfigStore(ConfigStore configs); 
+	public void setConfigStore(ConfigStore configs);
 	public ConfigStore getConfigStore() ; 
 	 
  
