@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.jdbc.prepare.init;
+package org.anyline.data.prepare.init;
  
-import org.anyline.jdbc.prepare.Group;
+import org.anyline.data.prepare.Group;
  
  
 public class SimpleGroup implements Group{

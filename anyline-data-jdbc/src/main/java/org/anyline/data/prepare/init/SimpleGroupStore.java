@@ -17,19 +17,21 @@
  */
 
 
-package org.anyline.jdbc.prepare.init;
+package org.anyline.data.prepare.init;
 
-import org.anyline.jdbc.prepare.Group;
-import org.anyline.jdbc.prepare.GroupStore;
+import org.anyline.data.prepare.Group;
+import org.anyline.data.prepare.GroupStore;
+import org.anyline.data.prepare.Group;
+import org.anyline.data.prepare.GroupStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.List;
  
-public class SimpleGroupStore implements GroupStore{
+public class SimpleGroupStore implements GroupStore {
 	private static final long serialVersionUID = 1257282062069295247L;
-	private List<Group> groups; 
+	private List<Group> groups;
  
 	public SimpleGroupStore() {
 		groups = new ArrayList<Group>(); 
