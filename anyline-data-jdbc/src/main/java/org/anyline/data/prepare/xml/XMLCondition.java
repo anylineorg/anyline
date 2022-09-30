@@ -17,10 +17,10 @@
  */
 
 
-package org.anyline.jdbc.prepare.xml;
+package org.anyline.data.prepare.xml;
  
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.Variable;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.Variable;
 
 
 /** 

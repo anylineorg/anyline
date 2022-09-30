@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.jdbc.prepare.xml;
+package org.anyline.data.prepare.xml;
  
-import org.anyline.jdbc.prepare.ConditionChain;
+import org.anyline.data.prepare.ConditionChain;
  
 public interface XMLConditionChain extends ConditionChain{ 
  
