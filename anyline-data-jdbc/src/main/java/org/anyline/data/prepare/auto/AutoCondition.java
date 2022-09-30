@@ -17,8 +17,27 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto;
+package org.anyline.data.prepare.auto;
+
+import org.anyline.entity.Compare;
+import org.anyline.data.prepare.Condition;
+
+import java.util.List;
  
  
-public interface AutoConditionChain extends AutoCondition{ 
+/** 
+ * 自动生成的参数 
+ * @author zh 
+ * 
+ */ 
+public interface AutoCondition extends Condition{ 
+	public Object getValue(); 
+	public List<Object> getValues(); 
+	public String getId();
+	public String getColumn() ; 
+	public void setColumn(String column) ; 
+	public void setValues(Object values) ; 
+	public Compare getCompare() ;
+	public AutoCondition setCompare(Compare compare) ;
+	public AutoCondition setOrCompare(Compare compare) ;
 } 
