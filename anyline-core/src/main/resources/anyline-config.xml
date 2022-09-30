@@ -29,10 +29,10 @@
 	<property key="IS_THROW_SQL_EXCEPTION">true</property>
 
 	<!-- 是否显示执行的SQL -->
-	<property key="SHOW_SQL">true</property>
-	<property key="SHOW_SQL_PARAM">true</property>
-	<property key="SHOW_SQL_WHEN_ERROR">false</property>
-	<property key="SHOW_SQL_PARAM_WHEN_ERROR">false</property>
+	<property key="IS_SHOW_SQL">true</property>
+	<property key="IS_SHOW_SQL_PARAM">true</property>
+	<property key="IS_SHOW_SQL_WHEN_ERROR">false</property>
+	<property key="IS_SHOW_SQL_PARAM_WHEN_ERROR">false</property>
 	<!-- 强制返回值以大写存储 -->
 	<property key="IS_UPPER_KEY">true</property>
 	<!-- 强制返回值以大写存储 -->
