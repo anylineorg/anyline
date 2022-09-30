@@ -1,10 +1,10 @@
-package org.anyline.jdbc.entity;
+package org.anyline.data.entity;
 
-import org.anyline.exception.AnylineException;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.listener.DDListener;
-import org.anyline.listener.init.SimpleDDListener;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.listener.DDListener;
+import org.anyline.data.listener.init.SimpleDDListener;
 import org.anyline.service.AnylineService;
+import org.anyline.exception.AnylineException;
 
 import java.util.*;
 

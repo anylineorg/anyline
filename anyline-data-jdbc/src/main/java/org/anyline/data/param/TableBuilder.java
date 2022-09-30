@@ -1,8 +1,8 @@
-package org.anyline.jdbc.param;
+package org.anyline.data.param;
 
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.auto.init.Join;
-import org.anyline.jdbc.prepare.auto.init.SimpleTablePrepare;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.init.Join;
+import org.anyline.data.prepare.auto.init.SimpleTablePrepare;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
