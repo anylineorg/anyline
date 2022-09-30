@@ -17,7 +17,7 @@
  */
 package org.anyline.interceptor;
  
-import org.anyline.jdbc.ds.DataSourceHolder;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

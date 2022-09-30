@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-start-jdbc</artifactId>
-        <version>8.5.7-SNAPSHOT</version>
+        <version>8.6.1-SNAPSHOT</version>
         <relativePath>../anyline-start-jdbc</relativePath>
     </parent>
     <artifactId>anyline-start-mysql</artifactId>
@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-jdbc-mysql</artifactId>
+            <artifactId>anyline-data-jdbc-mysql</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

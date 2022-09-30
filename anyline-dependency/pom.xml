@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.5.7-SNAPSHOT</version>
+	<version>8.6.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline-dependency</name>
 	<description>一个针对web环境的,基于spring-jdbc的,快捷数据库操作工具</description>
@@ -31,9 +31,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<anyline.version>8.5.7-SNAPSHOT</anyline.version>
+		<anyline.version>8.6.1-SNAPSHOT</anyline.version>
 
-		<spring.version>5.3.18</spring.version>
+		<spring.version>5.3.23</spring.version>
 		<jdbc-mssql.version>7.2.2.jre8</jdbc-mssql.version>
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
@@ -152,152 +152,152 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc</artifactId>
+				<artifactId>anyline-data-jdbc</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-cassandra</artifactId>
+				<artifactId>anyline-data-jdbc-cassandra</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-clickhouse</artifactId>
+				<artifactId>anyline-data-jdbc-clickhouse</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-cockroachdb</artifactId>
+				<artifactId>anyline-data-jdbc-cockroachdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-db2</artifactId>
+				<artifactId>anyline-data-jdbc-db2</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-derby</artifactId>
+				<artifactId>anyline-data-jdbc-derby</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-dm</artifactId>
+				<artifactId>anyline-data-jdbc-dm</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-gbasedbt</artifactId>
+				<artifactId>anyline-data-jdbc-gbasedbt</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-h2</artifactId>
+				<artifactId>anyline-data-jdbc-h2</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-hgdb</artifactId>
+				<artifactId>anyline-data-jdbc-hgdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-hsqldb</artifactId>
+				<artifactId>anyline-data-jdbc-hsqldb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-influxdb</artifactId>
+				<artifactId>anyline-data-jdbc-influxdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-kingbase</artifactId>
+				<artifactId>anyline-data-jdbc-kingbase</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-kingbase-postgresql</artifactId>
+				<artifactId>anyline-data-jdbc-kingbase-postgresql</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-mariadb</artifactId>
+				<artifactId>anyline-data-jdbc-mariadb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-mongodb</artifactId>
+				<artifactId>anyline-data-jdbc-mongodb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-mssql</artifactId>
+				<artifactId>anyline-data-jdbc-mssql</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-mysql</artifactId>
+				<artifactId>anyline-data-jdbc-mysql</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-neo4j</artifactId>
+				<artifactId>anyline-data-jdbc-neo4j</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-oceanbase</artifactId>
+				<artifactId>anyline-data-jdbc-oceanbase</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-oracle</artifactId>
+				<artifactId>anyline-data-jdbc-oracle</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-oscar</artifactId>
+				<artifactId>anyline-data-jdbc-oscar</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-polardb</artifactId>
+				<artifactId>anyline-data-jdbc-polardb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-postgresql</artifactId>
+				<artifactId>anyline-data-jdbc-postgresql</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-questdb</artifactId>
+				<artifactId>anyline-data-jdbc-questdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-redis</artifactId>
+				<artifactId>anyline-data-jdbc-redis</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-rethinkdb</artifactId>
+				<artifactId>anyline-data-jdbc-rethinkdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-sqlite</artifactId>
+				<artifactId>anyline-data-jdbc-sqlite</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-tdengine</artifactId>
+				<artifactId>anyline-data-jdbc-tdengine</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-timescale</artifactId>
+				<artifactId>anyline-data-jdbc-timescale</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
