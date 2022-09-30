@@ -19,14 +19,15 @@
 
 package org.anyline.service;
 
+import org.anyline.data.entity.*;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.prepare.Procedure;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.entity.*;
+import org.anyline.data.prepare.Procedure;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.entity.*;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -660,7 +661,7 @@ public interface AnylineService<E>{
 		 * 													tag
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String,Tag> tags(Table table);
+		public LinkedHashMap<String, Tag> tags(Table table);
 		public LinkedHashMap<String,Tag> tags(String table);
 		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
 
@@ -669,7 +670,7 @@ public interface AnylineService<E>{
 		 * 													index
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String,Index> indexs(Table table);
+		public LinkedHashMap<String, Index> indexs(Table table);
 		public LinkedHashMap<String,Index> indexs(String table);
 		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
 
@@ -678,7 +679,7 @@ public interface AnylineService<E>{
 		 * 													constraint
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String,Constraint> constraints(Table table);
+		public LinkedHashMap<String, Constraint> constraints(Table table);
 		public LinkedHashMap<String,Constraint> constraints(String table);
 		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
 
