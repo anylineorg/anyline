@@ -774,8 +774,8 @@ public class AmapUtil {
 						coordinate.setProvinceName(adr.getString("province"));
 						coordinate.setCityCode(cityCode);
 						coordinate.setCityName(adr.getString("city"));
-						coordinate.setDistrictCode(adcode);
-						coordinate.setDistrictName(adr.getString("district"));
+						coordinate.setCountyCode(adcode);
+						coordinate.setCountyName(adr.getString("district"));
 						coordinate.setTownCode(adr.getString("towncode"));
 						coordinate.setTownName(adr.getString("township"));
 					}
@@ -861,8 +861,8 @@ public class AmapUtil {
 					coordinate.setProvinceName(row.getString("PROVINCE"));
 					coordinate.setCityCode(row.getString("CITYCODE"));
 					coordinate.setCityName(row.getString("CITY"));
-					coordinate.setDistrictCode(row.getString("ADCODE"));
-					coordinate.setDistrictName(row.getString("DISTRICT"));
+					coordinate.setCountyCode(row.getString("ADCODE"));
+					coordinate.setCountyName(row.getString("DISTRICT"));
 					coordinate.setAddress(row.getString("FORMATTED_ADDRESS"));
 					coordinate.setLevel(row.getInt("LEVEL",0));
 				} 

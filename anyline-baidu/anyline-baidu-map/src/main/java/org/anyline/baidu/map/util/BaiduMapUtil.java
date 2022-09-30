@@ -86,8 +86,8 @@ public class BaiduMapUtil {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityCode(cityCode);
                     coordinate.setCityName(adr.getString("city"));
-                    coordinate.setDistrictName(adr.getString("district"));
-                    coordinate.setDistrictCode(adr.getString("adcode"));
+                    coordinate.setCountyName(adr.getString("district"));
+                    coordinate.setCountyCode(adr.getString("adcode"));
                     coordinate.setTownCode(adr.getString("town_code"));
                     coordinate.setTownName(adr.getString("town"));
                 }

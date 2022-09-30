@@ -103,8 +103,8 @@ public class QQMapUtil {
                     if(null != ad){
                         coordinate.setProvinceName(ad.getString("province"));
                         coordinate.setCityName(ad.getString("city"));
-                        coordinate.setDistrictName(ad.getString("district"));
-                        coordinate.setDistrictCode(ad.getString("adcode"));
+                        coordinate.setCountyName(ad.getString("district"));
+                        coordinate.setCountyCode(ad.getString("adcode"));
                     }
                 }
             }
@@ -159,7 +159,7 @@ public class QQMapUtil {
                 if(null != adr) {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityName(adr.getString("city"));
-                    coordinate.setDistrictName(adr.getString("district"));
+                    coordinate.setCountyName(adr.getString("district"));
                 }
                 adr = row.getRow("result","ad_info");
                 if(null != adr) {
@@ -168,7 +168,7 @@ public class QQMapUtil {
                     String cityCode = adcode.substring(0,4);
                     coordinate.setProvinceCode(provinceCode);
                     coordinate.setCityCode(cityCode);
-                    coordinate.setDistrictCode(adcode);
+                    coordinate.setCountyCode(adcode);
                 }
                 adr = row.getRow("result","address_reference","town");
                 if(null != adr){

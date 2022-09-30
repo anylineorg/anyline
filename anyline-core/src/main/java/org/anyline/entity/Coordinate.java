@@ -3,6 +3,8 @@ package org.anyline.entity;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.GISUtil;
 
+import java.util.List;
+
 public class Coordinate {
 
 
@@ -17,16 +19,20 @@ public class Coordinate {
 	}
 
 	private Double[] point = new Double[2]	; // 坐标点[lng,lat][经度,纬度]
+	private Double[] center= new Double[2]	; // 最小级别行政区中心坐标点[lng,lat][经度,纬度]
 	private TYPE type						; // 坐标系
 	private String provinceCode				; // 省编号
 	private String provinceName				; // 省中文名
 	private String cityCode					; // 市编号
 	private String cityName					; // 市中文我
-	private String districtCode				; // 区编号
-	private String districtName				; // 区中文名
+	private String countyCode				; // 区编号
+	private String countyName				; // 区中文名
 	private String townCode					; // 街道编号
 	private String townName					; // 街道中文名
-	private String code						; // 当前地区最小级别编号
+	private String villageCode				; // 社区(村)编号
+	private String villageName				; // 社区(村)中文名
+	private List<Double[]> border			; // 最小级别行政区边界点
+	private String code						; // 当前地区最小级别行政区编号
 	private int level						; // 级别(国家:0,省:1)
 	private String address					; // 详细地址
 	private boolean success = true			; // 执行结果
@@ -90,12 +96,12 @@ public class Coordinate {
 		this.cityName = cityName;
 	}
 
-	public String getDistrictName() {
-		return this.districtName;
+	public String getCountyName() {
+		return this.countyName;
 	}
 
-	public void setDistrictName(String districtName) {
-		this.districtName = districtName;
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
 	}
 
 	public String getTownCode() {
@@ -154,12 +160,12 @@ public class Coordinate {
 	}
 
 
-	public String getDistrictCode() {
-		return this.districtCode;
+	public String getCountyCode() {
+		return this.countyCode;
 	}
 
-	public void setDistrictCode(String districtCode) {
-		this.districtCode = districtCode;
+	public void setCountyCode(String countyCode) {
+		this.countyCode = countyCode;
 	}
 
 
@@ -220,5 +226,37 @@ public class Coordinate {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public Double[] getCenter() {
+		return center;
+	}
+
+	public void setCenter(Double[] center) {
+		this.center = center;
+	}
+
+	public String getVillageCode() {
+		return villageCode;
+	}
+
+	public void setVillageCode(String villageCode) {
+		this.villageCode = villageCode;
+	}
+
+	public String getVillageName() {
+		return villageName;
+	}
+
+	public void setVillageName(String villageName) {
+		this.villageName = villageName;
+	}
+
+	public List<Double[]> getBorder() {
+		return border;
+	}
+
+	public void setBorder(List<Double[]> border) {
+		this.border = border;
 	}
 }
