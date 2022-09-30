@@ -1,4 +1,4 @@
-package org.anyline.jdbc.entity;
+package org.anyline.data.entity;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
