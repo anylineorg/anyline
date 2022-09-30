@@ -17,17 +17,17 @@
  */
 
 
-package org.anyline.jdbc.param.init;
+package org.anyline.data.param.init;
 
+import org.anyline.data.param.Config;
+import org.anyline.data.prepare.auto.init.SimpleAutoCondition;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.param.ParseResult;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.ConfigChain;
-import org.anyline.jdbc.param.ConfigParser;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoConditionChain;
-import org.anyline.jdbc.prepare.auto.init.SimpleAutoCondition;
+import org.anyline.data.param.ParseResult;
+import org.anyline.data.param.ConfigChain;
+import org.anyline.data.param.ConfigParser;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class SimpleConfig implements Config{
+public class SimpleConfig implements Config {
 	protected static final Logger log = LoggerFactory.getLogger(SimpleConfig.class);
 	protected String text				; // 静态条件(如原生SQL) 没有参数
 	protected List<Object> values		; // VALUE

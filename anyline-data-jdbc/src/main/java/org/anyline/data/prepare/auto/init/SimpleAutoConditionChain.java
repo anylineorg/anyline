@@ -17,21 +17,24 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto.init;
+package org.anyline.data.prepare.auto.init;
 
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.ConfigChain;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.run.RunValue;
-import org.anyline.jdbc.prepare.init.SimpleConditionChain;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigChain;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.init.SimpleConditionChain;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.init.SimpleConditionChain;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
  
-public class SimpleAutoConditionChain extends SimpleConditionChain implements ConditionChain{
+public class SimpleAutoConditionChain extends SimpleConditionChain implements ConditionChain {
 	public SimpleAutoConditionChain(){}
 	public SimpleAutoConditionChain(ConfigChain chain){
 		if(null == chain){

@@ -17,18 +17,22 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto.init;
+package org.anyline.data.prepare.auto.init;
 
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.AutoPrepare;
+import org.anyline.data.prepare.init.SimplePrepare;
 import org.anyline.entity.Order;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.init.SimplePrepare;
-import org.anyline.jdbc.prepare.auto.AutoPrepare;
-import org.anyline.jdbc.param.ConfigParser;
-import org.anyline.jdbc.param.ParseResult;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.Variable;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.init.SimplePrepare;
+import org.anyline.data.prepare.auto.AutoPrepare;
+import org.anyline.data.param.ConfigParser;
+import org.anyline.data.param.ParseResult;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.Variable;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;

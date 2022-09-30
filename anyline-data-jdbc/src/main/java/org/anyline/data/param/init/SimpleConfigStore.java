@@ -17,18 +17,18 @@
  */
 
 
-package org.anyline.jdbc.param.init;
+package org.anyline.data.param.init;
 
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigChain;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.Group;
+import org.anyline.data.prepare.GroupStore;
+import org.anyline.data.prepare.init.SimpleGroup;
+import org.anyline.data.prepare.init.SimpleGroupStore;
 import org.anyline.entity.*;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.param.ConfigChain;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.Group;
-import org.anyline.jdbc.prepare.GroupStore;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.init.SimpleGroup;
-import org.anyline.jdbc.prepare.init.SimpleGroupStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DESUtil;
 
@@ -78,7 +78,7 @@ public class SimpleConfigStore implements ConfigStore {
 	 * @return Config
 	 */
 	@Override 
-	public Config parseConfig(String config){ 
+	public Config parseConfig(String config){
 		if(null == config){ 
 			return null; 
 		} 
@@ -461,7 +461,7 @@ public class SimpleConfigStore implements ConfigStore {
 	 * @return ConfigStore
 	 */
 	@Override 
-	public ConfigStore group(Group group){ 
+	public ConfigStore group(Group group){
 		if(null == groups){ 
 			groups = new SimpleGroupStore();
 		} 

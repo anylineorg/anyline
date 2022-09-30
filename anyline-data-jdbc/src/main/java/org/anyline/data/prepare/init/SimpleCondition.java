@@ -17,12 +17,15 @@
  */
 
 
-package org.anyline.jdbc.prepare.init;
+package org.anyline.data.prepare.init;
 
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.run.RunValue;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.Variable;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.Variable;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -37,7 +40,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public abstract class SimpleCondition implements Condition{
+public abstract class SimpleCondition implements Condition {
 	protected boolean required = false;									// 是否必须
 	protected boolean strictRequired = false;							// 是否必须 
 	protected boolean active = false;									// 是否活动(是否拼接到SQL中) 
@@ -47,7 +50,7 @@ public abstract class SimpleCondition implements Condition{
 	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();		// 运行时参数
 	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>();		// 运行时参数(or)
 	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			// 连接方式 
-	protected ConditionChain container;									// 当前条件所处容器 
+	protected ConditionChain container;									// 当前条件所处容器
 	protected String id; 
 	protected String text;												// 静态条件
 	protected String test;												// 判断条件 

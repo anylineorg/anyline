@@ -17,15 +17,16 @@
  */
 
 
-package org.anyline.jdbc.prepare.auto.init;
+package org.anyline.data.prepare.auto.init;
 
+import org.anyline.data.param.Config;
+import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.prepare.auto.AutoCondition;
-import org.anyline.jdbc.prepare.init.SimpleCondition;
-import org.anyline.jdbc.param.Config;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.run.RunValue; 
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.prepare.auto.AutoCondition;
+import org.anyline.data.prepare.init.SimpleCondition;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.run.RunValue;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
