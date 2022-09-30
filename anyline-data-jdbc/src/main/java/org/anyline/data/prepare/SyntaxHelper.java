@@ -1,8 +1,8 @@
-package org.anyline.jdbc.prepare;
+package org.anyline.data.prepare;
  
+import org.anyline.data.prepare.init.SimpleVariable;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.init.SimpleVariable;
-import org.anyline.util.BasicUtil; 
+import org.anyline.util.BasicUtil;
  
 public class SyntaxHelper {
  
