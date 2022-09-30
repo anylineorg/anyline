@@ -19,13 +19,13 @@
 
 package org.anyline.dao;
 
+import org.anyline.data.entity.*;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.param.ConfigStore;
-import org.anyline.jdbc.prepare.Procedure;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.entity.*;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.Procedure;
+import org.anyline.data.prepare.RunPrepare;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
