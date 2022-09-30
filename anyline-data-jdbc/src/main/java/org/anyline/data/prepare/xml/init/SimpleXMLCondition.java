@@ -17,16 +17,16 @@
  */
 
 
-package org.anyline.jdbc.prepare.xml.init;
+package org.anyline.data.prepare.xml.init;
 
-import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.run.RunValue;
-import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.Compare;
-import org.anyline.jdbc.prepare.init.SimpleCondition;
-import org.anyline.jdbc.prepare.init.SimpleVariable;
+import org.anyline.data.prepare.init.SimpleCondition;
+import org.anyline.data.prepare.init.SimpleVariable;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;

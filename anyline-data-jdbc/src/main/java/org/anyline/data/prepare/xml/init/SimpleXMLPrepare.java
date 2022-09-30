@@ -17,18 +17,24 @@
  */
 
 
-package org.anyline.jdbc.prepare.xml.init;
+package org.anyline.data.prepare.xml.init;
 
-import org.anyline.jdbc.prepare.Condition;
-import org.anyline.jdbc.prepare.ConditionChain;
-import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.Variable;
-import org.anyline.jdbc.param.ConfigParser;
-import org.anyline.jdbc.param.ParseResult;
-import org.anyline.jdbc.prepare.init.SimplePrepare;
-import org.anyline.jdbc.prepare.init.SimpleVariable;
-import org.anyline.jdbc.prepare.SyntaxHelper;
-import org.anyline.jdbc.prepare.xml.XMLPrepare;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.Variable;
+import org.anyline.data.param.ConfigParser;
+import org.anyline.data.param.ParseResult;
+import org.anyline.data.prepare.init.SimplePrepare;
+import org.anyline.data.prepare.init.SimpleVariable;
+import org.anyline.data.prepare.SyntaxHelper;
+import org.anyline.data.prepare.xml.XMLPrepare;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.SyntaxHelper;
+import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.init.SimplePrepare;
+import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -128,10 +134,10 @@ public class SimpleXMLPrepare extends SimplePrepare implements XMLPrepare {
 		} 
 		try{
 			 
-			List<List<String>> keys = RegularUtil.fetchs(text, SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			int type = 1 ;
 			if(keys.size() ==0){
-				keys = RegularUtil.fetchs(text, SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 				type = 2;
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
