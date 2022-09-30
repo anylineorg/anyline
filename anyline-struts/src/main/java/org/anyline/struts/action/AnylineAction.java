@@ -21,7 +21,7 @@ package org.anyline.struts.action;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.util.*;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.WebUtil;
