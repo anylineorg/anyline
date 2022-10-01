@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -299,7 +300,6 @@ public class ConfigTable {
 				IS_UPPER_KEY = false;
 			}
 		}
-		IS_THROW_SQL_EXCEPTION = getBoolean("IS_THROW_SQL_EXCEPTION");
 	}
 	protected synchronized static void loadConfigDir(File dir, String flag) {
 		log.warn("[加载配置文件][dir:{}]",dir.getAbsolutePath());
@@ -338,6 +338,7 @@ public class ConfigTable {
 					log.info("[解析配置文件][{}={}]", key, value);
 				}
 			}
+			map2field();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -356,8 +357,19 @@ public class ConfigTable {
 					log.info("[解析配置文件][{}={}]", key, value);
 				}
 			}
+			map2field();
 		}catch(Exception e){
 			e.printStackTrace();
+		}
+	}
+	//同步maps与静态属性值
+	protected static void map2field(){
+		Field[] fields = ConfigTable.class.getDeclaredFields();
+		for(Field field:fields){
+			String name = field.getName();
+			if(configs.containsKey(name)){
+				BeanUtil.setFieldValue(null, field, configs.get(name));
+			}
 		}
 	}
 	protected static void loadConfig(File file){

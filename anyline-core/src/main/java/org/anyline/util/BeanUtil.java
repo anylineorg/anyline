@@ -103,11 +103,24 @@ public class BeanUtil {
 		result.setSerializationInclusion(include);
 		return result;
 	}
+	public static Object puarseFieldValue(Object value){
+		Object v = value;
+		return v;
+	}
+
+	/**
+	 * 属性赋值
+	 * @param obj 对象 如果给类静态属性赋值，传null
+	 * @param field 属性
+	 * @param value 值
+	 * @return boolean
+	 */
 	public static boolean setFieldValue(Object obj, Field field, Object value){
-		if(null == obj || null == field){
+		if(null == field){
 			return false;
 		}
-		if(Modifier.isStatic(field.getModifiers())){
+		if(null != obj &&Modifier.isStatic(field.getModifiers())){
+			//对象不处理静态属性
 			return false;
 		}
 		try{
