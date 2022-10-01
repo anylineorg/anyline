@@ -491,13 +491,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         }
                     }
                 }
-                if(ConfigTable.IS_SHOW_SQL) {
+                if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
                     log.warn("{}[exe insert][生成主键:{}]", random, ids);
                 }
             }else{
                 Object id = keys.get(0).get(id_key);
                 setPrimaryValue(data, id);
-                if(ConfigTable.IS_SHOW_SQL) {
+                if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
                     log.warn("{}[exe insert][生成主键:{}]", random, id);
                 }
             }

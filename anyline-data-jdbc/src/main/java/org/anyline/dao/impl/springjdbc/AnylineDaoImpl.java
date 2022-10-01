@@ -94,7 +94,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		try {
 			JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
-			if (ConfigTable.IS_SHOW_SQL && !run.isValid()) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
 				if (prepare instanceof TablePrepare) {
@@ -139,7 +139,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		try {
 			JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
-			if (ConfigTable.IS_SHOW_SQL && !run.isValid()) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
 				if (prepare instanceof TablePrepare) {
@@ -173,7 +173,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 						listener.afterTotal(this, run, total);
 					}
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("[查询记录总数][行数:{}]", total);
 				}
 			}
@@ -215,7 +215,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
-			if (ConfigTable.IS_SHOW_SQL && !run.isValid()) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
 				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 				log.warn(tmp);
@@ -243,7 +243,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 						listener.afterTotal(this, run, total);
 					}
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("[查询记录总数][行数:{}]", total);
 				}
 			}
@@ -317,7 +317,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 			long fr = System.currentTimeMillis();
 			String random = "";
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				random = random();
 				log.warn("{}[txt:\n{}\n]", random, txt);
 				log.warn("{}[参数:{}]", random, paramLogFormat(values));
@@ -341,7 +341,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.afterExists(this,run, result);
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 			} catch (Exception e) {
@@ -404,7 +404,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(run.getUpdateColumns(),values));
@@ -420,7 +420,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterUpdate(this, run, result, dest, data, columns);
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 
@@ -553,7 +553,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(run.getInsertColumns(),values));
@@ -568,7 +568,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns);
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , System.currentTimeMillis() - fr, LogUtil.format(cnt, 34));
 				}
 			}
@@ -704,7 +704,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
@@ -716,13 +716,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				maps = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			if(null != adapter){
 				maps = adapter.process(maps);
 			}
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,maps.size() );
 			}
 		}catch(Exception e){
@@ -747,7 +747,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
@@ -761,7 +761,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			if(null != adapter) {
@@ -773,7 +773,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				set.add(row);
 			}
 			set.setDatalink(DataSourceHolder.getDataSource());
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,list.size() );
 			}
 		}catch(Exception e){
@@ -792,7 +792,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
@@ -806,7 +806,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			if(null != adapter) {
@@ -821,7 +821,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					set.add(row);
 				}
 			}
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,list.size() );
 			}
 		}catch(Exception e){
@@ -838,7 +838,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		int result = -1;
 		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRunSQL(prepare, configs, conditions);
 		if(!run.isValid()){
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false]");
 			}
 			return -1;
@@ -847,7 +847,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn(random + "[txt:\n{}\n]", txt);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
@@ -868,7 +868,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterExecute(this, run, result);
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 
@@ -920,7 +920,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		sql += ")}";
 
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random, sql );
 			log.warn("{}[输入参数:{}]",random,paramLogFormat(inputs));
@@ -979,7 +979,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterExecute(this, procedure, result);
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms]", random, System.currentTimeMillis() - fr);
 					log.warn("{}[输出参数:{}]", random, list);
 				}
@@ -1014,7 +1014,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		final List<ProcedureParam> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]", random, procedure.getName());
 			log.warn("{}[输入参数:{}]", random, paramLogFormat(inputs));
@@ -1104,13 +1104,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					}
 
 					set.setDatalink(DataSourceHolder.getDataSource());
-					if(ConfigTable.IS_SHOW_SQL){
+					if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 						log.warn("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());
 					}
 					return set;
 				}
 			});
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[执行耗时:{}ms]", random,System.currentTimeMillis() - fr);
 			}
 			if(null != listener){
@@ -1180,7 +1180,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 			log.warn("{}[参数:{}]",random,paramLogFormat(values));
@@ -1196,7 +1196,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}else{
 					result = getJdbc().update(sql, values.toArray());
 				}
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, LogUtil.format(result, 34));
 				}
 				// result = 1;
@@ -1306,7 +1306,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
 				}
 			}
@@ -1318,7 +1318,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}catch (Exception e){
 				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
@@ -1411,7 +1411,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
 				}
 			}
@@ -1423,7 +1423,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}catch (Exception e){
 				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
@@ -1511,12 +1511,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.getMessage());
 				}
 			}
 
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, master.getName(), tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
@@ -1544,7 +1544,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		Connection con = null;
 		String random = null;
 		DatabaseMetaData metadata = null;
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			random = random();
 		}
 
@@ -1577,7 +1577,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
@@ -1596,7 +1596,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
@@ -1629,7 +1629,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[columns][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
 		}
 		return columns;
@@ -1660,7 +1660,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		Connection con = null;
 		String random = null;
 		DatabaseMetaData metadata = null;
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			random = random();
 		}
 
@@ -1693,7 +1693,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
@@ -1712,7 +1712,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.getMessage());
 			}
 		}
@@ -1746,7 +1746,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
 		}
 		return tags;
@@ -1881,7 +1881,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -1895,7 +1895,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[create table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -1918,7 +1918,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
 			String random = null;
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				random = random();
 				log.warn("{}[txt:\n{}\n]",random,sql);
 			}
@@ -1933,7 +1933,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				result = true;
 			}
 
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[rename table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if(null != listener){
@@ -2014,7 +2014,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2028,7 +2028,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[drop table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2052,7 +2052,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2066,7 +2066,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2090,7 +2090,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
 			String random = null;
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				random = random();
 				log.warn("{}[txt:\n{}\n]",random,sql);
 			}
@@ -2105,7 +2105,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				result = true;
 			}
 
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[rename master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if(null != listener){
@@ -2174,7 +2174,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2188,7 +2188,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[drop master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2212,7 +2212,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2226,7 +2226,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2249,7 +2249,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
 			String random = null;
-			if(ConfigTable.IS_SHOW_SQL){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				random = random();
 				log.warn("{}[txt:\n{}\n]",random,sql);
 			}
@@ -2264,7 +2264,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				result = true;
 			}
 
-			if (ConfigTable.IS_SHOW_SQL) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[rename partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if(null != listener){
@@ -2309,7 +2309,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2323,7 +2323,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[drop partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2348,7 +2348,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		Long fr = System.currentTimeMillis();
 		String random = null;
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(column);
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2363,7 +2363,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
@@ -2393,7 +2393,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(column);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(column);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2406,7 +2406,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			getJdbc().update(sql);
 			result = true;
 		}
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2434,7 +2434,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		DDListener listener = column.getListener();
 		try{
 			for(String sql:sqls) {
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[txt:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
@@ -2465,7 +2465,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
 					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
@@ -2490,7 +2490,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String random = null;
 		check(tag);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(tag);
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2505,7 +2505,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[add tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
@@ -2535,7 +2535,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		check(tag);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(tag);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL){
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
@@ -2548,7 +2548,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			getJdbc().update(sql);
 			result = true;
 		}
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
@@ -2576,7 +2576,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		DDListener listener = tag.getListener();
 		try{
 			for(String sql:sqls) {
-				if (ConfigTable.IS_SHOW_SQL) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[txt:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
@@ -2607,7 +2607,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 
-		if (ConfigTable.IS_SHOW_SQL) {
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 			log.warn("{}[update tag][table:{}][tag:{}][qty:{}][result:{}][执行耗时:{}ms]"
 					, random, tag.getTableName(), tag.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
