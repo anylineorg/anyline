@@ -419,7 +419,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /**
      * 执行 insert
      * @param random random
-     * @param jdbc jdbc
      * @param data entity|DataRow|DataSet
      * @param sql sql
      * @param values 占位参数值

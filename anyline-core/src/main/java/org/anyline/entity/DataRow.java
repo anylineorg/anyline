@@ -1656,23 +1656,28 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Date getDate(String key, Date def) {
+        Date result = def;
         Object date = get(key);
         if (null == date) {
-            return def;
+            return result;
         }
+
         if (date instanceof Date) {
-            return (Date) date;
+            result = (Date) date;
         } else if (date instanceof Long) {
-            Date d = new Date();
-            d.setTime((Long) date);
-            return d;
+            result = new Date();
+            result.setTime((Long) date);
         } else if (date instanceof LocalDateTime) {
             ZoneId zoneId = ZoneId.systemDefault();
             ZonedDateTime zdt = ((LocalDateTime) date).atZone(zoneId);
-            return Date.from(zdt.toInstant());
+            result = Date.from(zdt.toInstant());
         } else {
-            return DateUtil.parse(date.toString());
+            result = DateUtil.parse(date.toString());
         }
+        if(null == result){
+            result = def;
+        }
+        return result;
     }
 
     public Date getDate(String key, String def) {

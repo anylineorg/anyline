@@ -168,7 +168,6 @@ public interface JDBCAdapter {
 	/**
 	 * 执行 insert
 	 * @param random random
-	 * @param jdbc jdbc
 	 * @param data data
 	 * @param sql sql
 	 * @param values value
@@ -592,7 +591,6 @@ public interface JDBCAdapter {
 
 	/**
 	 *
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
