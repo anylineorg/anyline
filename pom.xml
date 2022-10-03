@@ -44,14 +44,14 @@
 		<module>anyline-qq-map</module>
 		<module>anyline-map</module>
 		<module>anyline-easemob</module>
-		<module>anyline-data-cassandra</module>
 		<module>anyline-data-mongodb</module>
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cassandra</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cockroachdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-couchdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-db2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-derby</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-dm</module>						<!--达梦-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-dm</module>							<!--达梦-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbasedbt</module>					<!--南大通用-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hgdb</module>						<!--瀚高-->
@@ -66,7 +66,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-neo4j</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oceanbase</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oracle</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar</module>					<!--神舟通用-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar</module>						<!--神舟通用-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-polardb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-postgresql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-questdb</module>

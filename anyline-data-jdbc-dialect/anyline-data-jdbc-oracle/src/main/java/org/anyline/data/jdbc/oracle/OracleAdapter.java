@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-@Repository("anyline.jdbc.sql.adapter.oracle") 
+@Repository("anyline.data.jdbc.adapter.oracle") 
 public class OracleAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;

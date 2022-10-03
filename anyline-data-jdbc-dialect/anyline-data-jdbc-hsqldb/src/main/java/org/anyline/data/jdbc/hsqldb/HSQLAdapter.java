@@ -10,7 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.sql.adapter.hsqldb")
+@Repository("anyline.data.jdbc.adapter.hsqldb")
 public class HSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){

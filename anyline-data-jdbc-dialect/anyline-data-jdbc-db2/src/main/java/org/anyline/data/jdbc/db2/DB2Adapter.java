@@ -37,7 +37,7 @@ import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Repository("anyline.jdbc.sql.adapter.db2")
+@Repository("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	public DB_TYPE type(){
 		return DB_TYPE.DB2; 

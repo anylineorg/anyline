@@ -9,7 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.sql.adapter.oscar")
+@Repository("anyline.data.jdbc.adapter.oscar")
 public class OscarAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){

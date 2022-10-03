@@ -6,13 +6,13 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.6.1-SNAPSHOT</version>
-        <relativePath>../anyline-dependency/pom.xml</relativePath>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-data-cassandra</artifactId>
+    <artifactId>anyline-data-jdbc-cassandra</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-cassandra</name>
+    <name>anyline-data-jdbc-cassandra</name>
     <url>http://www.anyline.org/cassandra</url>
 
 

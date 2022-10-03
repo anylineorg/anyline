@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.jdbc.sql.adapter.influxdb")
+@Repository("anyline.data.jdbc.adapter.influxdb")
 public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){

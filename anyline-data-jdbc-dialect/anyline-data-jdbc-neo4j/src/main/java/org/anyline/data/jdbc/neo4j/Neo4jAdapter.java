@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
-@Repository("anyline.jdbc.sql.adapter.neo4j")
+@Repository("anyline.data.jdbc.adapter.neo4j")
 public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
     public DB_TYPE type(){
         return DB_TYPE.Neo4j;

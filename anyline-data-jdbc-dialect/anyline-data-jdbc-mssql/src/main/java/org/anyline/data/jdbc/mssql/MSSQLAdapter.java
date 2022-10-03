@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Repository("anyline.jdbc.sql.adapter.mssql") 
+@Repository("anyline.data.jdbc.adapter.mssql") 
 public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	 
 	@Autowired(required = false) 

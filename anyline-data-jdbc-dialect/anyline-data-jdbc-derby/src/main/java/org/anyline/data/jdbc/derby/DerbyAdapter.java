@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Repository("anyline.jdbc.sql.adapter.derby")
+@Repository("anyline.data.jdbc.adapter.derby")
 public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 
 	public DB_TYPE type(){

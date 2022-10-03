@@ -9,7 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.sql.adapter.gbasedb")
+@Repository("anyline.data.jdbc.adapter.gbasedb")
 public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){

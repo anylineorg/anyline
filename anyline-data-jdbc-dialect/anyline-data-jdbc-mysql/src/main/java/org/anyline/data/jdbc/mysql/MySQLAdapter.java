@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Repository("anyline.jdbc.sql.adapter.mysql")
+@Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){

@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Repository("anyline.jdbc.sql.adapter.h2")
+@Repository("anyline.data.jdbc.adapter.h2")
 public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.sql.adapter.kingbase")
+@Repository("anyline.data.jdbc.adapter.kingbase")
 public class KingbaseAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	 
 	@Autowired(required = false) 

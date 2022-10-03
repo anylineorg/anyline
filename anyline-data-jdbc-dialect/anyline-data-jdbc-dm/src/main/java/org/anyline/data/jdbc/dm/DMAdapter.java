@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-@Repository("anyline.jdbc.sql.adapter.dm")
+@Repository("anyline.data.jdbc.adapter.dm")
 public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DB_TYPE type(){
