@@ -171,8 +171,8 @@ public class HttpUtil {
  
 	public static HttpResponse get(String url, String encode, List<NameValuePair> pairs) {
 		return get(null, url, encode, pairs);
-	} 
- 
+	}
+
 	public static HttpResponse get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
@@ -180,10 +180,24 @@ public class HttpUtil {
 				.setEncode(encode)
 				.setPairs(pairs)
 				.build().get();
-	} 
+	}
+	public static HttpResponse get(Map<String, String> headers, String url, String encode) {
+		return HttpBuilder.init()
+				.setHeaders(headers)
+				.setUrl(url)
+				.setEncode(encode)
+				.build().get();
+	}
+	public static HttpResponse get(Map<String, String> headers, String url) {
+		return HttpBuilder.init()
+				.setHeaders(headers)
+				.setUrl(url)
+				.build().get();
+	}
 
 
-	 
+
+
 	public static HttpResponse delete(String url, String encode, Map<String, Object> params) {
 		return delete(null, url, encode, params);
 	} 
