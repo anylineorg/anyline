@@ -266,7 +266,14 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		}
 	}
 	public String getDataSource(){
-		return table;
+		String ds = table;
+		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
+			ds = schema + "." + ds;
+		}
+		if (BasicUtil.isEmpty(ds)) {
+			ds = schema;
+		}
+		return ds;
 	}
 	public String getSchema() {
 		return schema;

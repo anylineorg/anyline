@@ -1456,7 +1456,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return list;
     }
     /**
-     * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
+     * 解析SQL中指定的主键table(col1,col2)&lt;pk1,pk2&gt;
      * @param src  src
      * @param pks  pks
      * @return String
@@ -1496,22 +1496,6 @@ public class DefaultService<E> implements AnylineService<E> {
         } else {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
-            // String chk = src.toUpperCase().trim().replace("\t"," ");
-            /*if (chk.startsWith("SELECT ")
-                    || chk.startsWith("DELETE ")
-                    || chk.startsWith("INSERT ")
-                    || chk.startsWith("UPDATE ")
-                    || chk.startsWith("TRUNCATE ")
-                    || chk.startsWith("CREATE ")
-                    || chk.startsWith("ALTER ")
-                    || chk.startsWith("DROP ")
-                    || chk.startsWith("IF ")
-                    || chk.startsWith("CALL ")
-                    || chk.startsWith("MATCH ")
-                    || chk.startsWith("START ")
-                    || chk.startsWith("REMOVE ")
-                    || chk.startsWith("SET ")
-            )*/
             if(src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")){
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
