@@ -13,7 +13,6 @@
 anyline-jdbc-? > anyline-data-jdbc-?    
 ?Imp > Default?  
 AnylineServiceImpl > DefaultService  
-COMPARE_TYPE.? >  org.anyline.entity.Compare.?  
 SQL.COMPARE_TYPE > org.anyline.entity.Compare
 
 
