@@ -919,7 +919,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     public String parseTotalQuery(Run run){
-        String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
+        String sql = "SELECT COUNT(*) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
         sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
     }
