@@ -8,7 +8,7 @@ import org.anyline.exception.AnylineException;
 
 import java.util.*;
 
-public class Table implements org.anyline.entity.jdbc.Table{
+public class Table implements org.anyline.entity.data.Table{
     protected String keyword = "TABLE"            ;
     protected String catalog                      ;
     protected String schema                       ;

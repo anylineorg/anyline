@@ -1,4 +1,4 @@
-package org.anyline.entity.jdbc;
+package org.anyline.entity.data;
 
 public interface Label extends Table{
 }
