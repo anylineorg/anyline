@@ -783,7 +783,9 @@ public class AmapUtil {
 				}
 			}
 		}
-		coordinate.setSuccess(true);
+		if(null != coordinate) {
+			coordinate.setSuccess(true);
+		}
 		return coordinate;
 	}
 
@@ -872,7 +874,9 @@ public class AmapUtil {
 		}catch(Exception e){ 
 			log.warn("[坐标查询失败][error:{}]",e.getMessage()); 
 		}
-		coordinate.setType(Coordinate.TYPE.GCJ02LL);
+		if(null != coordinate) {
+			coordinate.setType(Coordinate.TYPE.GCJ02LL);
+		}
 		return coordinate;
 	} 
 	public Coordinate geo(String address){
