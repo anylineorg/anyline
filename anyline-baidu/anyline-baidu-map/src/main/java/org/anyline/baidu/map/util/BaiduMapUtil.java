@@ -94,7 +94,9 @@ public class BaiduMapUtil {
 
             }
         }
-        coordinate.setSuccess(true);
+        if(null != coordinate) {
+            coordinate.setSuccess(true);
+        }
         return coordinate;
     }
 
