@@ -109,7 +109,9 @@ public class QQMapUtil {
                 }
             }
         }
-        coordinate.setType(Coordinate.TYPE.GCJ02LL);
+        if(null != coordinate) {
+            coordinate.setType(Coordinate.TYPE.GCJ02LL);
+        }
         return coordinate;
     }
 
