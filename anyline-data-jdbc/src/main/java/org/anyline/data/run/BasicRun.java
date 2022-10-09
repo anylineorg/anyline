@@ -28,7 +28,7 @@ import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.service.AnylineService;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
+import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigParser;
@@ -159,7 +159,7 @@ public abstract class BasicRun implements Run {
 	@Override
 	public Run order(String order){
 		if(null == orderStore){ 
-			orderStore = new OrderStoreImpl(); 
+			orderStore = new DefaultOrderStore();
 		} 
 		orderStore.order(order); 
 		return this; 

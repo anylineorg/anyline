@@ -3,7 +3,7 @@ package org.anyline.data.listener.init;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.PageNaviImpl;
+import org.anyline.entity.DefaultPageNavi;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.entity.Column;
@@ -86,7 +86,7 @@ public class DefaultDDListener implements DDListener {
             // 原来是String类型 修改成 boolean或number类型 失败
             int page = 1;
             int vol = 100;
-            PageNavi navi = new PageNaviImpl();
+            PageNavi navi = new DefaultPageNavi();
             navi.setPageRows(vol);
             List<Column> pks = table.primarys();
             if(pks.size() == 0){

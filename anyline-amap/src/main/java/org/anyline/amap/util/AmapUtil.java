@@ -330,7 +330,7 @@ public class AmapUtil {
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		PageNavi navi = new PageNaviImpl();
+		PageNavi navi = new DefaultPageNavi();
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
@@ -408,7 +408,7 @@ public class AmapUtil {
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		PageNavi navi = new PageNaviImpl(); 
+		PageNavi navi = new DefaultPageNavi();
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
@@ -495,7 +495,7 @@ public class AmapUtil {
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		PageNavi navi = new PageNaviImpl(); 
+		PageNavi navi = new DefaultPageNavi();
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 

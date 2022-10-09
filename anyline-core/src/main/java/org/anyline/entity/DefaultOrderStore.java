@@ -25,11 +25,11 @@ import org.anyline.util.SQLUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderStoreImpl implements OrderStore{ 
+public class DefaultOrderStore implements OrderStore{
 	private static final long serialVersionUID = -2129393152486629564L;
 	private List<Order> orders = new ArrayList<Order>(); 
  
-	public OrderStoreImpl() { 
+	public DefaultOrderStore() {
 	} 
 	public void order(Order order) { 
 		if(null == order){ 
@@ -44,7 +44,7 @@ public class OrderStoreImpl implements OrderStore{
 	} 
  
 	public void order(String col, Order.TYPE type) { 
-		order(new OrderImpl(col, type));
+		order(new DefaultOrder(col, type));
 	} 
 	/** 
 	 * 排序多列以,分隔 
@@ -64,7 +64,7 @@ public class OrderStoreImpl implements OrderStore{
 		} 
 		String[] tmps = str.split(","); // 多列排序 
 		for (String tmp : tmps) { 
-			order(new OrderImpl(tmp)); 
+			order(new DefaultOrder(tmp));
 		} 
 	} 
 	public Order getOrder(String order){ 

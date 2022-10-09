@@ -21,13 +21,13 @@ package org.anyline.entity;
 
 import org.anyline.util.BasicUtil;
 
-public class OrderImpl implements Order{ 
+public class DefaultOrder implements Order{
 	private static final long serialVersionUID = -765229283714551699L;
 	private String column;									// 排序列 
 	private TYPE type = TYPE.ASC;		// 排序方式
 	 
-	public OrderImpl(){} 
-	public OrderImpl(String str){ 
+	public DefaultOrder(){}
+	public DefaultOrder(String str){
 		if(BasicUtil.isEmpty(str)){
 			return; 
 		} 
@@ -53,11 +53,11 @@ public class OrderImpl implements Order{
 			this.type = TYPE.DESC;
 		} 
 	}
-	public OrderImpl(String column, TYPE type){
+	public DefaultOrder(String column, TYPE type){
 		setColumn(column);
 		setType(type);
 	}
-	public OrderImpl(String column, String type){
+	public DefaultOrder(String column, String type){
 		setColumn(column);
 		setType(type);
 	} 
@@ -76,7 +76,7 @@ public class OrderImpl implements Order{
 		this.type = type; 
 	} 
 	public Object clone() throws CloneNotSupportedException{ 
-		OrderImpl clone = (OrderImpl)super.clone(); 
+		DefaultOrder clone = (DefaultOrder)super.clone();
 		return clone; 
 	}
 	@Override

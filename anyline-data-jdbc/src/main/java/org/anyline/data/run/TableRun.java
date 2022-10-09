@@ -22,7 +22,7 @@ package org.anyline.data.run;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
+import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -38,7 +38,7 @@ public class TableRun extends BasicRun implements Run {
 	public TableRun(JDBCAdapter adapter, String table){
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
-		this.orderStore = new OrderStoreImpl();
+		this.orderStore = new DefaultOrderStore();
 		this.table = table;
 		this.adapter = adapter;
 	}

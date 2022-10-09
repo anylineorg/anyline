@@ -26,7 +26,7 @@ import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
+import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
@@ -45,7 +45,7 @@ public class TextRun extends BasicRun implements Run {
 	public TextRun(){
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
-		this.orderStore = new OrderStoreImpl();
+		this.orderStore = new DefaultOrderStore();
 		setStrict(false); 
 	}
 

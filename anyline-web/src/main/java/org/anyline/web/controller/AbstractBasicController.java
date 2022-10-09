@@ -448,7 +448,7 @@ public class AbstractBasicController {
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int fr, int to, List<String> fixs, String... configs) {
 		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
-		PageNavi navi = new PageNaviImpl();
+		PageNavi navi = new DefaultPageNavi();
 		navi.setCalType(1);
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -674,7 +674,7 @@ public class AbstractBasicController {
 		if (null == uri) {
 			uri = request.getRequestURI();
 		}
-		PageNavi navi = new PageNaviImpl(pageNo, pageVol, uri);
+		PageNavi navi = new DefaultPageNavi(pageNo, pageVol, uri);
 		String flag = getParam(request,config.KEY_ID_FLAG);
 
 		if(null != flag){
@@ -767,7 +767,7 @@ public class AbstractBasicController {
 	private PageNavi saveParamToNavi(HttpServletRequest request, boolean single, boolean keyEncrypt, boolean valueEncrypt, String... keys) {
 		PageNavi navi = (PageNavi) request.getAttribute("navi");
 		if (null == navi) {
-			navi = new PageNaviImpl();
+			navi = new DefaultPageNavi();
 			request.setAttribute("navi", navi);
 		}
 		if (null != keys) {

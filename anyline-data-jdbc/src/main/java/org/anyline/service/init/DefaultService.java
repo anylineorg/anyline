@@ -208,7 +208,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DataRow query(String src, ConfigStore store, Object obj, String... conditions) {
-        PageNaviImpl navi = new PageNaviImpl();
+        DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
         navi.setCalType(1);
@@ -250,7 +250,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null == cache){
             return query(src, configs, obj, conditions);
         }
-        PageNaviImpl navi = new PageNaviImpl();
+        DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
         navi.setCalType(1);
@@ -331,7 +331,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
-        PageNaviImpl navi = new PageNaviImpl();
+        DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
         navi.setCalType(1);
@@ -522,7 +522,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DataRow query(RunPrepare table, ConfigStore store, Object obj, String... conditions) {
-        PageNaviImpl navi = new PageNaviImpl();
+        DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
         navi.setCalType(1);
@@ -562,7 +562,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null == cache){
             return query(table, configs, obj, conditions);
         }
-        PageNaviImpl navi = new PageNaviImpl();
+        DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
         navi.setCalType(1);
@@ -634,7 +634,7 @@ public class DefaultService<E> implements AnylineService<E> {
             cacheProvider.remove(channel, "SET:" + key);
             cacheProvider.remove(channel, "ROW:" + key);
 
-            PageNaviImpl navi = new PageNaviImpl();
+            DefaultPageNavi navi = new DefaultPageNavi();
             navi.setFirstRow(0);
             navi.setLastRow(0);
             navi.setCalType(1);
@@ -1244,7 +1244,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return querys(procedure, null, inputs);
     }
     public DataSet querys(Procedure procedure, int fr, int to, String ... inputs) {
-        PageNavi navi = new PageNaviImpl();
+        PageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(fr);
         navi.setLastRow(to);
         return querys(procedure, navi, inputs);
@@ -1262,7 +1262,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return querys(proc, navi);
     }
     public DataSet querysProcedure(String procedure, int fr, int to, String... inputs) {
-        PageNavi navi = new PageNaviImpl();
+        PageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(fr);
         navi.setLastRow(to);
         return querysProcedure(procedure, navi, inputs);

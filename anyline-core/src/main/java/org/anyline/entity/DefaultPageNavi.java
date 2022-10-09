@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public class PageNaviImpl implements PageNavi{
+public class DefaultPageNavi implements PageNavi{
 	protected static final long serialVersionUID = 3593100423479113410L; 
-	protected static final Logger log = LoggerFactory.getLogger(PageNaviImpl.class); 
+	protected static final Logger log = LoggerFactory.getLogger(DefaultPageNavi.class);
  
 	protected static final String BR 					= "\n"; 
 	protected static final String TAB 					= "\t"; 
@@ -63,13 +63,13 @@ public class PageNaviImpl implements PageNavi{
 	protected boolean showVol = true; 
 	protected String loadMoreFormat = "";
 
-	public PageNaviImpl(){}
+	public DefaultPageNavi(){}
 
 	/**
 	 * Page
 	 * @param page 当前第几页
 	 */
-	public PageNaviImpl(int page){
+	public DefaultPageNavi(int page){
 		this.curPage = page;
 	}
 
@@ -78,22 +78,22 @@ public class PageNaviImpl implements PageNavi{
 	 * @param page 当前第几页
 	 * @param vol 每页多少行
 	 */
-	public PageNaviImpl(int page, int vol){
+	public DefaultPageNavi(int page, int vol){
 		this.curPage = page;
 		this.pageRows = vol;
 	}
-	public PageNaviImpl(int totalRow, int curPage, int pageRows, String baseLink) { 
+	public DefaultPageNavi(int totalRow, int curPage, int pageRows, String baseLink) {
 		this.totalRow = totalRow; 
 		this.curPage = curPage; 
 		setPageRows(pageRows); 
 		this.baseLink = baseLink; 
 	} 
-	public PageNaviImpl(int curPage, int pageRows, String baseLink){
+	public DefaultPageNavi(int curPage, int pageRows, String baseLink){
 		this.curPage = curPage; 
 		setPageRows(pageRows); 
 		this.baseLink = baseLink; 
 	} 
-	public PageNaviImpl(String baseLink){ 
+	public DefaultPageNavi(String baseLink){
 		this.curPage = 1; 
 		this.baseLink = baseLink; 
 	} 
@@ -101,7 +101,7 @@ public class PageNaviImpl implements PageNavi{
 		if(null == row){ 
 			return null; 
 		} 
-		PageNavi navi = row.entity(PageNaviImpl.class); 
+		PageNavi navi = row.entity(DefaultPageNavi.class);
 		return navi; 
 	}
  
@@ -269,7 +269,7 @@ public class PageNaviImpl implements PageNavi{
 	 */ 
 	public PageNavi order(Order order){ 
 		if(null == orders){ 
-			orders = new OrderStoreImpl(); 
+			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
 		return this; 
@@ -282,11 +282,11 @@ public class PageNaviImpl implements PageNavi{
 	 */ 
 	@Override 
 	public PageNavi order(String order, String type){ 
-		return order(new OrderImpl(order, type)); 
+		return order(new DefaultOrder(order, type));
 	} 
 	@Override 
 	public PageNavi order(String order){ 
-		return order(new OrderImpl(order)); 
+		return order(new DefaultOrder(order));
 	} 
 	 
 	/** 

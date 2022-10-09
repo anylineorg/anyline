@@ -31,7 +31,7 @@ import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.prepare.xml.init.DefaultXMLConditionChain;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
+import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigParser;
@@ -47,7 +47,7 @@ public class XMLRun extends BasicRun implements Run {
 	public XMLRun(){
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultXMLConditionChain();
-		this.orderStore = new OrderStoreImpl(); 
+		this.orderStore = new DefaultOrderStore();
 		this.groupStore = new DefaultGroupStore();
 	} 
  

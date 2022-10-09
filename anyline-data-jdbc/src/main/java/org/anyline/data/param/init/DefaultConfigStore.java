@@ -129,7 +129,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	public DefaultConfigStore(int fr, int to){
 		chain = new DefaultConfigChain();
-		PageNaviImpl navi = new PageNaviImpl();
+		DefaultPageNavi navi = new DefaultPageNavi();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
 		navi.setCalType(1);
@@ -429,7 +429,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override 
 	public ConfigStore order(Order order){
 		if(null == orders){ 
-			orders = new OrderStoreImpl();
+			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
 		if(null != navi){ 
@@ -440,11 +440,11 @@ public class DefaultConfigStore implements ConfigStore {
  
 	@Override 
 	public ConfigStore order(String column, String type){ 
-		return order(new OrderImpl(column,type)); 
+		return order(new DefaultOrder(column,type));
 	} 
 	@Override 
 	public ConfigStore order(String order){ 
-		return order(new OrderImpl(order)); 
+		return order(new DefaultOrder(order));
 	} 
 	@Override 
 	public OrderStore getOrders() { 

@@ -22,7 +22,7 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.entity.Join;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
+import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
@@ -74,7 +74,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 */ 
 	public RunPrepare order(Order order){
 		if(null == orders){ 
-			orders = new OrderStoreImpl();
+			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
 		return this; 
@@ -82,14 +82,14 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 
 	public RunPrepare order(String order){
 		if(null == orders){ 
-			orders = new OrderStoreImpl(); 
+			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
 		return this; 
 	}
 	public RunPrepare order(String col, Order.TYPE type){
 		if(null == orders){
-			orders = new OrderStoreImpl();
+			orders = new DefaultOrderStore();
 		}
 		orders.order(col, type);
 		return this;
