@@ -9,6 +9,14 @@
 <img src="http://alcms.oss-cn-shanghai.aliyuncs.com/anyline/img/ab/rhodilywys.jpg" />
 ](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad) 
 
+8.5.x > 8.6.1作了部分调整  
+anyline-jdbc-? > anyline-data-jdbc-?    
+?Imp > Default?  
+AnylineServiceImpl > DefaultService  
+COMPARE_TYPE.? >  org.anyline.entity.Compare.?  
+SQL.COMPARE_TYPE > org.anyline.entity.Compare
+
+
 
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
 其重点是：  
