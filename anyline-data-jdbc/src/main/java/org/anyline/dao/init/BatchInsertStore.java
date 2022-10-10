@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.dao.impl;
+package org.anyline.dao.init;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;

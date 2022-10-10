@@ -17,11 +17,11 @@
  */
 
 
-package org.anyline.dao.impl.springjdbc;
+package org.anyline.dao.init.springjdbc;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.PageLazyStore;
-import org.anyline.dao.impl.BatchInsertStore;
+import org.anyline.dao.init.BatchInsertStore;
 import org.anyline.data.entity.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -60,8 +60,8 @@ import java.sql.*;
 import java.util.*;
 
 @Repository("anyline.dao")
-public class AnylineDaoImpl<E> implements AnylineDao<E> {
-	protected static final Logger log = LoggerFactory.getLogger(AnylineDaoImpl.class);
+public class DefaultDao<E> implements AnylineDao<E> {
+	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
 
 	@Autowired(required=false)
 	protected JdbcTemplate jdbc;
@@ -653,12 +653,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 									boolean listenerResult = true;
 									if(null != listener){
-										listenerResult = listener.beforeBatchInsert(AnylineDaoImpl.this,dest, list, checkPrimary, BeanUtil.array2list(columns));
+										listenerResult = listener.beforeBatchInsert(DefaultDao.this,dest, list, checkPrimary, BeanUtil.array2list(columns));
 									}
 									if(listenerResult) {
 										int cnt = insert(dest, list, checkPrimary, columns);
 										if (null != listener) {
-											listener.afterBatchInsert(AnylineDaoImpl.this, cnt, dest, list, checkPrimary, BeanUtil.array2list(columns));
+											listener.afterBatchInsert(DefaultDao.this, cnt, dest, list, checkPrimary, BeanUtil.array2list(columns));
 										}
 
 									}
