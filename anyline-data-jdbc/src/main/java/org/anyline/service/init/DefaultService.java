@@ -136,7 +136,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
-            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
             }
         }
@@ -740,7 +740,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 e.printStackTrace();
             }
             log.error("COUNT ERROR:"+e);
-            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
             }
         }
@@ -1233,7 +1233,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if(log.isWarnEnabled()){
                 e.printStackTrace();
             }
-            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
             }
         }
@@ -1406,7 +1406,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
-            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
             }
         }
@@ -1428,7 +1428,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
-            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
             }
         }
@@ -1449,7 +1449,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
-            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
             }
         }
