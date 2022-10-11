@@ -385,7 +385,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == data){
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				throw new SQLUpdateException("更新空数据");
 			}else{
 				log.error("更新空数据");
@@ -434,7 +434,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("[{}][txt:\n{}\n]", random, LogUtil.format("更新异常", 33), sql);
 				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getUpdateColumns(),values));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("insert异常",e);
 				ex.setSql(sql);
 				ex.setValues(values);
@@ -485,7 +485,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				throw new SQLUpdateException("save空数据");
 			}else {
 				log.error("save空数据");
@@ -592,7 +592,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("插入异常", 33), sql);
 				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getInsertColumns(),values));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("insert异常",e);
 				ex.setSql(sql);
 				ex.setValues(values);
@@ -751,7 +751,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
 				log.error("[{}][参数:{}]", random, paramLogFormat(values));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常");
 				ex.setSql(sql);
 				ex.setValues(values);
@@ -808,7 +808,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
 				log.error("[{}][参数:{}]", random, paramLogFormat(values));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常",e);
 				ex.setSql(sql);
 				ex.setValues(values);
@@ -862,7 +862,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[{}][txt:\n{}\n]",random, LogUtil.format("查询异常", 33), sql);
 				log.error("{}}[参数:{}]",random,paramLogFormat(values));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常",e);
 				ex.setSql(sql);
 				ex.setValues(values);
@@ -1030,7 +1030,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
 				log.error("{}[输出参数:{}]",random,paramLogFormat(outputs));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("execute异常",e);
 				ex.setSql(sql);
 			}else {
@@ -1165,7 +1165,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
 				log.error("{}[输出参数:{}]",random,paramLogFormat(inputs));
 			}
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常",e);
 			}else {
 				e.printStackTrace();
@@ -1257,7 +1257,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[参数:{}]",random, paramLogFormat(values));
 			}
 			result = 0;
-			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("delete异常",e);
 				ex.setSql(sql);
 				ex.setValues(values);
@@ -1316,7 +1316,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try{
-			Long fr = System.currentTimeMillis();
+			long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog){
@@ -1360,7 +1360,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
+					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
 				}
 			}
 
@@ -1369,7 +1369,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
 				tables = adapter.tables(true, catalog, schema, tables, set);
 			}catch (Exception e){
-				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
+				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
@@ -1420,7 +1420,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try{
-			Long fr = System.currentTimeMillis();
+			long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog){
@@ -1465,7 +1465,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
+					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
 				}
 			}
 
@@ -1474,7 +1474,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
 				tables = adapter.mtables(false, catalog, schema, tables, set);
 			}catch (Exception e){
-				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
+				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
@@ -1548,7 +1548,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try{
-			Long fr = System.currentTimeMillis();
+			long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
@@ -1565,7 +1565,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.getMessage());
+					log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.getMessage());
 				}
 			}
 
@@ -1592,7 +1592,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public LinkedHashMap<String, Column> columns(Table table){
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
 		String random = null;
@@ -1631,7 +1631,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1650,7 +1650,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.getMessage());
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1708,7 +1708,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public LinkedHashMap<String, Tag> tags(Table table) {
 
 		LinkedHashMap<String,Tag> tags = new LinkedHashMap<>();
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
 		String random = null;
@@ -1747,7 +1747,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1766,7 +1766,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.getMessage());
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1930,7 +1930,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(Table table) throws Exception {
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
@@ -1965,7 +1965,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
 		String name = table.getName();
 		String uname = update.getName();
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
@@ -2031,10 +2031,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	private void check(Table table){
 		DataSource ds = null;
 		Connection con = null;
-		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
-		String random = random();
 		try {
-			Long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			if (null == table.getCatalog()) {
@@ -2045,7 +2042,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 		}catch (Exception e){
-
+			log.warn("check table exception");
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2063,7 +2060,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Table table) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
@@ -2101,7 +2098,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(MasterTable table) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
@@ -2138,7 +2135,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String, Tag> utags = update.getTags();
 		String name = table.getName();
 		String uname = update.getName();
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
@@ -2223,7 +2220,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(MasterTable table) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
@@ -2261,7 +2258,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(PartitionTable table) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
@@ -2297,7 +2294,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
 		String name = table.getName();
 		String uname = update.getName();
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
@@ -2358,7 +2355,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(PartitionTable table) throws Exception{
 
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
@@ -2398,7 +2395,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Column column) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		String random = null;
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(column);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2442,7 +2439,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Column column) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(column);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(column);
 		String random = null;
@@ -2478,7 +2475,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
 
 		boolean result = true;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		String random = null;
 		check(column);
 		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
@@ -2539,7 +2536,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Tag tag) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		String random = null;
 		check(tag);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(tag);
@@ -2584,7 +2581,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Tag tag) throws Exception{
 		boolean result = false;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		check(tag);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(tag);
 		String random = null;
@@ -2620,7 +2617,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	private boolean alter(Table table, Tag tag, boolean trigger) throws Exception{
 
 		boolean result = true;
-		Long fr = System.currentTimeMillis();
+		long fr = System.currentTimeMillis();
 		String random = null;
 		check(tag);
 		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(tag);
