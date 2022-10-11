@@ -22,14 +22,15 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
 
 简单来说主要作了两方面的工作：    
 - 在运行时根据需求动态生成SQL(包括DDL和DML),特别是针对查询条件的封装  
-  拼接查询条件不再需要各种空判断、遍历、类型转换,机械繁琐的工作交给机器  
+  查询条件不再需要各种空判断、遍历、类型转换,机械繁琐的工作交给机器  
   这里说的动态是指:  
   不需要针对固定的表结构或具体的Entity,分别提供不同的Service/Dao/Mapper  
-  默认的Service应该可以操作一切数据  
+  一个默认的Service可以操作一切数据  
 
 
 - 为结果集定义了统一的数据结构,主要是DataSet&lt;DataRow&gt;结构类似于List&lt;Map&gt;  
-  不要以为List/Map结构比实体功能类弱,他将提供比实体类更全面的数据处理能力    
+  不要以为DataSet&lt;DataRow&gt;结构比实体类功能类弱   
+  他将提供比实体类更全面、更强大的数据处理能力    
   为前端或第三方应用提供数据时 不再需要各种遍历、判断、计算、格式转换    
   一切与业务无关的数学运算,DataSet&lt;DataRow&gt;尽量作到 一键 ... 一键 ...
 
@@ -46,7 +47,7 @@ Anyline一的切都是面向动态、面向运行时环境
 - 低代码后台  
 - 物联网数据处理  
 - 数据清洗、数据批量处理  
-- 报表输出，特别是自定义报表  
+- 报表输出，特别是用户自定义报表  
 - 运行时自定义表单/查询条件/数据结构  
 - 网络爬虫数据解析  
 - 还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成   
@@ -66,8 +67,16 @@ Anyline一的切都是面向动态、面向运行时环境
 但数据支持部门不可能针对每种场景每个视图、每个SQL 生成不同的Entity  
 更也不可能生成一个大而全的Entity以应万变  
 
-无论是Map还是Entity计算能力都非常有限,通过需要开发人员各种遍历、计算、格式化  
-而这种大量的机械的计算应该占用开发人员的时间  
+  
+- 与第三方系统交换数据时  
+  只在自己内部系统的小圈子里时,List/Entity还勉强可以  
+  遇到各种第三方系统呢，根本不知道会出现什么实体什么结果  
+  难道还要像EJB那样相互给对方生成一堆Bean么？
+
+
+
+无论是Map还是Entity计算能力都非常有限,通常需要开发人员各种遍历、计算、格式化  
+而这种大量的机械的计算不应该占用开发人员太多的时间  
 Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据二次处理功能,如:   
 排序、维度转换、截取、去重、方差、偏差、交集合集差集、分组、忽略大小写对比、行列转换、类SQL过滤筛选(like,eq,in,less,between...)、JSON、XML格式转换等
 
@@ -210,7 +219,7 @@ Anyline会自动生成,生成规则可以参考这里的[【约定规则】](htt
 <dependency>
     <groupId>org.anyline</groupId>
     <artifactId>anyline-data-jdbc-mysql(oracle|clickhouse...)</artifactId>
-    <version>8.5.3-20220630</version>
+    <version>8.6.1-20221010</version>
 </dependency>
 ```
 
@@ -261,7 +270,8 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
  
 + 如果非要说是一个新轮子，那只能说原来的轮子太难用，太消耗程序员体力了。  
   正事还没开始就先生成一堆的mapper,OOO，各种铺垫  
-  铺垫完了要操作数据实现业务了，依然啰嗦，各种 劳力 不劳心 的遍历及加减乘除
+  铺垫完了要操作数据实现业务了，依然啰嗦，各种 劳力 不劳心 的遍历及加减乘除  
+  不但操作数据库慢,查询出来的结果集更是一堆废柴,除了能遍历能get/set啥也不是
 
 ### &nbsp;所以重点说 优势
 ####  &nbsp;&nbsp;1. **关于查询条件**  
@@ -285,15 +295,17 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 </if>
 ```
 ```
-但这并不正常，这期间还有什么是必须程序员参的，程序员不参与就自动不了，就约定不了的吗？
+但这并不正常，这期间还有什么是必须程序员参与的，程序员不参与就自动不了，就约定不了的吗？
   
 换一种方式处理：  
 不要mapper.xml了，也更不要定位SQL的ID的
     
-直接在java中这样处理，其他的交给工具        
-condition("CODE:code","NAME:name%", "TYPE:[type]")   
+直接在java中这样处理          
+condition("CODE:code","NAME:name%", "TYPE:[type]")
+其他的交给机器处理，生成SQL     
+WHERE CODE = ? AND NAME LIKE '?%' AND TYPE IN(?,?...)
 ``` 
-&nbsp;&nbsp;&nbsp;&nbsp;这应该不需要注释了，更多的约定可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)
+&nbsp;&nbsp;&nbsp;&nbsp;更多的约定可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)
 
 
 ####  &nbsp;&nbsp;2. **结果集的二次操作**    
