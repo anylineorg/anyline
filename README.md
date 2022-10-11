@@ -1,5 +1,3 @@
-8.3.8之前提交历史记录查看[https://github.com/anylineorg/anyline-history.git](https://github.com/anylineorg/anyline-history.git)
-
 ***快速开始请参考示例代码:***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
@@ -18,17 +16,22 @@ SQL.COMPARE_TYPE > org.anyline.entity.Compare
 
 
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
-其重点是：  
-- 以最简单、快速的方式操作数据库  
-- 针对结果集的数据二次处理能力    
+其重点是:
+- 以最简单、快速、动态的方式操作数据库  
+- 针对结果集的 数据二次处理能力    
 
 简单来说主要作了两方面的工作：    
-- 对查询条件的封装  
-  拼接个查询条件不再需要各种空判断、遍历、类型转换了,机械繁琐的工作交给机器  
+- 在运行时根据需求动态生成SQL(包括DDL和DML),特别是针对查询条件的封装  
+  拼接查询条件不再需要各种空判断、遍历、类型转换,机械繁琐的工作交给机器  
+  这里说的动态是指:  
+  不需要针对固定的表结构或具体的Entity,分别提供不同的Service/Dao/Mapper  
+  默认的Service应该可以操作一切数据  
 
 
-- 返回的结果集中处理了开发中能遇到到的各种情况  
-  为前端或第三方应用提供数据不再需要各种遍历、各种判断、各种计算了,尽量作到一键...
+- 为结果集定义了统一的数据结构,主要是DataSet&lt;DataRow&gt;结构类似于List&lt;Map&gt;  
+  不要以为List/Map结构比实体功能类弱,他将提供比实体类更全面的数据处理能力    
+  为前端或第三方应用提供数据时 不再需要各种遍历、判断、计算、格式转换    
+  一切与业务无关的数学运算,DataSet&lt;DataRow&gt;尽量作到 一键 ... 一键 ...
 
 
 同时摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
@@ -37,7 +40,7 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
 
 ## 适用场景
 Anyline一的切都是面向动态、面向运行时环境  
-适合于抽象设计阶段(实体概念还不明确或者设计不限于某个特别的实体)   
+适合于抽象设计阶段(实体概念还不明确或者设计工作不局限于某个特别的实体)   
 常用于需要大量复杂动态的查询，以及查询的结果集需要经过深度处理的场景 如:  
 - 可视化数据源    
 - 低代码后台  
