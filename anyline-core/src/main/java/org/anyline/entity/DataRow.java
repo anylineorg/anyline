@@ -235,6 +235,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 
     public static DataRow parse(DataRow row, KEY_CASE keyCase, Object obj, String... keys) {
+        if(null != obj && obj instanceof String){
+            return parseJson(row, keyCase, (String)obj);
+        }
         if(null == row) {
             row = new DataRow(keyCase);
         }
