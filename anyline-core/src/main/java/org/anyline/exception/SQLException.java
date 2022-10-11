@@ -15,14 +15,42 @@
  *
  *          
  */
-package org.anyline.exception; 
- 
+package org.anyline.exception;
+
+import java.util.List;
+
 public class SQLException extends RuntimeException{
 	protected Exception src;
+	protected String sql;
+	protected List<Object> values;
 	public SQLException(){ 
 		super(); 
 	} 
 	public SQLException(String title){ 
 		super(title); 
 	}
-} 
+
+	public Exception getSrc() {
+		return src;
+	}
+
+	public void setSrc(Exception src) {
+		this.src = src;
+	}
+
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
+	public List<Object> getValues() {
+		return values;
+	}
+
+	public void setValues(List<Object> values) {
+		this.values = values;
+	}
+}

@@ -385,7 +385,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == data){
-			throw new SQLUpdateException("更新空数据");
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				throw new SQLUpdateException("更新空数据");
+			}else{
+				log.error("更新空数据");
+			}
 		}
 		int result = 0;
 		if(data instanceof DataSet){
@@ -430,7 +434,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("[{}][txt:\n{}\n]", random, LogUtil.format("更新异常", 33), sql);
 				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getUpdateColumns(),values));
 			}
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLUpdateException ex = new SQLUpdateException("insert异常",e);
+				ex.setSql(sql);
+				ex.setValues(values);
+			}else {
+				e.printStackTrace();
+			}
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -474,7 +484,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
-			throw new SQLUpdateException("保存空数据");
+
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				throw new SQLUpdateException("save空数据");
+			}else {
+				log.error("save空数据");
+			}
 		}
 		if(data instanceof Collection){
 			Collection<?> items = (Collection<?>)data;
@@ -577,7 +592,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("插入异常", 33), sql);
 				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getInsertColumns(),values));
 			}
-			e.printStackTrace();
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLUpdateException ex = new SQLUpdateException("insert异常",e);
+				ex.setSql(sql);
+				ex.setValues(values);
+			}else {
+				e.printStackTrace();
+			}
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -730,7 +751,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
 				log.error("[{}][参数:{}]", random, paramLogFormat(values));
 			}
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLQueryException ex = new SQLQueryException("query异常");
+				ex.setSql(sql);
+				ex.setValues(values);
+			}else {
+				e.printStackTrace();
+			}
 		}
 		return maps;
 	}
@@ -781,7 +808,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
 				log.error("[{}][参数:{}]", random, paramLogFormat(values));
 			}
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLQueryException ex = new SQLQueryException("query异常",e);
+				ex.setSql(sql);
+				ex.setValues(values);
+			}else {
+				e.printStackTrace();
+			}
 		}
 		return set;
 	}
@@ -829,7 +862,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[{}][txt:\n{}\n]",random, LogUtil.format("查询异常", 33), sql);
 				log.error("{}}[参数:{}]",random,paramLogFormat(values));
 			}
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLQueryException ex = new SQLQueryException("query异常",e);
+				ex.setSql(sql);
+				ex.setValues(values);
+			}else {
+				e.printStackTrace();
+			}
 		}
 		return set;
 	}
@@ -991,8 +1030,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
 				log.error("{}[输出参数:{}]",random,paramLogFormat(outputs));
 			}
-			e.printStackTrace();
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLUpdateException ex = new SQLUpdateException("execute异常",e);
+				ex.setSql(sql);
+			}else {
+				e.printStackTrace();
+			}
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1122,7 +1165,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
 				log.error("{}[输出参数:{}]",random,paramLogFormat(inputs));
 			}
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLQueryException ex = new SQLQueryException("query异常",e);
+			}else {
+				e.printStackTrace();
+			}
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1210,7 +1257,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.error("{}[参数:{}]",random, paramLogFormat(values));
 			}
 			result = 0;
-			throw e;
+			if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+				SQLUpdateException ex = new SQLUpdateException("delete异常",e);
+				ex.setSql(sql);
+				ex.setValues(values);
+			}else {
+				e.printStackTrace();
+			}
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
