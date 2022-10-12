@@ -31,6 +31,8 @@ public class Coordinate {
 	private String townName					; // 街道中文名
 	private String villageCode				; // 社区(村)编号
 	private String villageName				; // 社区(村)中文名
+	private String street					; // 道路
+	private String streetNumber				; // 门牌,号
 	private List<Double[]> border			; // 最小级别行政区边界点
 	private String code						; // 当前地区最小级别行政区编号
 	private int level						; // 级别(国家:0,省:1)
@@ -254,6 +256,22 @@ public class Coordinate {
 
 	public List<Double[]> getBorder() {
 		return border;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getStreetNumber() {
+		return streetNumber;
+	}
+
+	public void setStreetNumber(String streetNumber) {
+		this.streetNumber = streetNumber;
 	}
 
 	public void setBorder(List<Double[]> border) {
