@@ -39,16 +39,17 @@ public class Coordinate {
 	private String address					; // 详细地址
 	private boolean success = true			; // 执行结果
 	private String message = null			; // 执行结果说明
-
+	private int reliability					; // 可信度参考：值范围 1 <低可信> - 10 <高可信>
+	private int accuracy					; // 解析精度级别
 
 	public Coordinate(String location){
-		if(BasicUtil.isNotEmpty(location)){ 
-			String[] tmps = location.split(","); 
+		if(BasicUtil.isNotEmpty(location)){
+			String[] tmps = location.split(",");
 			if(tmps.length > 1){
 				point[0] = BasicUtil.parseDouble(tmps[0],null);
 				point[1] = BasicUtil.parseDouble(tmps[1],null);
-			} 
-		} 
+			}
+		}
 	}
 	public Coordinate(){
 	}
@@ -284,5 +285,21 @@ public class Coordinate {
 
 	public void setBorder(List<Double[]> border) {
 		this.border = border;
+	}
+
+	public int getReliability() {
+		return reliability;
+	}
+
+	public void setReliability(int reliability) {
+		this.reliability = reliability;
+	}
+
+	public int getAccuracy() {
+		return accuracy;
+	}
+
+	public void setAccuracy(int accuracy) {
+		this.accuracy = accuracy;
 	}
 }
