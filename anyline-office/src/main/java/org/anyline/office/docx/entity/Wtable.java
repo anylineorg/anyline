@@ -2,6 +2,9 @@ package org.anyline.office.docx.entity;
 
 import org.anyline.entity.html.TableBuilder;
 import org.anyline.office.docx.util.DocxUtil;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.NumberUtil;
 import org.anyline.util.StyleParser;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -140,6 +143,32 @@ public class Wtable {
         insert(index, template, html);
     }
 
+    /**
+     * 插入行
+     * @param index 插入位置 下标从0开始  负数表示倒数第index行
+     * @param tds 每列的文本 数量多于表格列的 条目无效
+     */
+    public void insert(int index, List<String> tds){
+        int size = NumberUtil.min(tds.size(), wtrs.get(0).getTcs().size());
+        StringBuilder builder = new StringBuilder();
+        builder.append("<tr>");
+        for(int i=0; i<size; i++){
+            builder.append("<td>");
+            builder.append(tds.get(i));
+            builder.append("</td>");
+        }
+        builder.append("</tr>");
+        insert(index, builder.toString());
+    }
+
+    /**
+     * 插入行
+     * @param index 插入位置 下标从0开始  负数表示倒数第index行
+     * @param tds 每列的文本 数量多于表格列的 条目无效
+     */
+    public void insert(int index, String ... tds){
+        insert(index, BeanUtil.array2list(tds));
+    }
     /**
      * 在index位置插入qty行，以template为模板
      * @param index 插入位置  下标从0开始  负数表示倒数第index行
