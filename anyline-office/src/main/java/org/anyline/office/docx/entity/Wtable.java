@@ -19,6 +19,8 @@ public class Wtable {
     private Element src;
     private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
     private List<Wtr> wtrs = new ArrayList<>();
+    //是否自动同步(根据word源码重新构造 wtable wtr wtc)
+    //在大批量操作时需要关掉自动同步,在操作完成后调用一次 reload()
     private boolean isAutoLoad = true;
     public Wtable(WDocument doc){
         this.doc = doc;
@@ -41,6 +43,11 @@ public class Wtable {
         }
     }
 
+    /**
+     * 根据书签获取行
+     * @param bookmark 书签
+     * @return wtr
+     */
     public Wtr getTr(String bookmark){
         Element src = getParent(bookmark, "tr");
         Wtr tr = new Wtr(doc,this, src);
@@ -86,13 +93,31 @@ public class Wtable {
         return wtr;
     }
 
+    /**
+     * 在最后位置插入一行
+     * @param html html.tr源码
+     */
     public void insert(String html){
         insert(-1, html);
     }
+
+    /**
+     * 在最后位置插入一行,半填充内容
+     * 内容从data中获取
+     * @param data DataRow/Map/Entity
+     * @param cols data的属性
+     */
     public void insert(Object data, String ... cols){
         Wtr template = getTemplate(-1);
         insert(-1, template, data, cols);
     }
+    /**
+     * 在index位置插入一行,半填充内容
+     * 内容从data中获取
+     * @param index 插入位置 下标从0开始  负数表示倒数第index行
+     * @param data DataRow/Map/Entity
+     * @param cols data的属性
+     */
     public void insert(int index, Object data, String ... cols){
         Wtr template = getTemplate(index);
         insert(index, template, data, cols);
@@ -118,19 +143,19 @@ public class Wtable {
      * 根据模版样式和数据 插入行
      * @param template 模版行
      * @param data 数据可以是一个实体也可以是一个集合
-     * @param cols 指定从数据中提取的数据的属性或key
+     * @param fields 指定从数据中提取的数据的属性或key
      */
-    public void insert(Wtr template, Object data, String ... cols){
-        insert(-1, template, data, cols);
+    public void insert(Wtr template, Object data, String ... fields){
+        insert(-1, template, data, fields);
     }
     /**
      * 根据模版样式和数据 插入行
      * @param index 插入位置 下标从0开始  负数表示倒数第index行
      * @param template 模版行
      * @param data 数据可以是一个实体也可以是一个集合
-     * @param cols 指定从数据中提取的数据的属性或key
+     * @param fields 指定从数据中提取的数据的属性或key
      */
-    public void insert(int index, Wtr template, Object data, String ... cols){
+    public void insert(int index, Wtr template, Object data, String ... fields){
         Collection datas = null;
         if(data instanceof Collection){
             datas = (Collection)data;
@@ -138,7 +163,7 @@ public class Wtable {
             datas = new ArrayList();
             datas.add(data);
         }
-        TableBuilder builder = TableBuilder.init().setFields(cols).setDatas(datas);
+        TableBuilder builder = TableBuilder.init().setFields(fields).setDatas(datas);
         String html = builder.build().build(false);
         insert(index, template, html);
     }
@@ -162,12 +187,26 @@ public class Wtable {
     }
 
     /**
+     * 追加行
+     * @param tds 每列的文本 数量多于表格列的 条目无效
+     */
+    public void insert(List<String> tds){
+        insert(-1, tds);
+    }
+    /**
      * 插入行
      * @param index 插入位置 下标从0开始  负数表示倒数第index行
      * @param tds 每列的文本 数量多于表格列的 条目无效
      */
     public void insert(int index, String ... tds){
         insert(index, BeanUtil.array2list(tds));
+    }
+    /**
+     * 追加行
+     * @param tds 每列的文本 数量多于表格列的 条目无效
+     */
+    public void insert(String ... tds){
+        insert(-1, tds);
     }
     /**
      * 在index位置插入qty行，以template为模板
@@ -187,6 +226,12 @@ public class Wtable {
         reload();
         return this;
     }
+    /**
+     * 在index位置插入qty行，以原来index位置行为模板
+     * @param index 插入位置  下标从0开始  负数表示倒数第index行
+     * @param qty 插入数量
+     * @return Wtable
+     */
     public Wtable insert(int index, int qty){
         int size = wtrs.size();
         if(size > 0){
@@ -194,6 +239,14 @@ public class Wtable {
             return insert(index, template, qty);
         }
         return this;
+    }
+    /**
+     * 在最后位置插入qty行，以最后一行为模板
+     * @param qty 插入数量
+     * @return Wtable
+     */
+    public Wtable insert(int qty){
+        return insert(-1, qty);
     }
 
     /**
@@ -206,6 +259,12 @@ public class Wtable {
         Wtr template = getTemplate(index); //取原来在当前位置的一行作模板
         insert(index, template, html);
     }
+
+    /**
+     * 插入行 如果模板位于当前表中则从当前模板位置往后插入，否则插入到最后一行
+     * @param template 模板
+     * @param html html.tr源码
+     */
     public void insert(Wtr template, String html){
         int index = -1;
         if(null != template) {
@@ -252,28 +311,6 @@ public class Wtable {
 
     }
 
-    /**
-     * 计算下标
-     * @param index 下标 从0开始 -1表示最后一行 -2表示倒数第2行
-     * @param size 总行数
-     * @return 最终下标
-     */
-    private int index(int index, int size){
-        if(size == 0){
-            return 0;
-        }
-        if(index >= size){
-            index = size -1;
-        }else if(index < 0){
-            //倒数
-            index = size + index;
-            if(index < 0){
-                //超出0按0算
-                index = 0;
-            }
-        }
-        return index;
-    }
 
     /**
      * 删除行
@@ -297,6 +334,13 @@ public class Wtable {
             reload();
         }
     }
+
+    /**
+     * 获取row行col列的文本
+     * @param row 行
+     * @param col 列
+     * @return String
+     */
     public String getText(int row, int col){
         String text = null;
         List<Element> trs = src.elements("tr");
@@ -306,12 +350,37 @@ public class Wtable {
         text = DocxUtil.text(tc);
         return text;
     }
+
+    /**
+     * 设置row行col列的文本
+     * @param row 行
+     * @param col 列
+     * @param text 内容 不支持html标签 如果需要html标签 调用setHtml()
+     * @return wtable
+     */
     public Wtable setText(int row, int col, String text){
         return setText(row, col, text, null);
     }
+    /**
+     * 在row行col列原有基础上追加文本
+     * @param row 行
+     * @param col 列
+     * @param text 内容 不支持html标签 如果需要html标签 调用setHtml()
+     * @return wtable
+     */
     public Wtc addText(int row, int col, String text){
         return getTc(row, col).addText(text);
     }
+
+    /**
+     *
+     * 设置row行col列的文本 并设置样式
+     * @param row 行
+     * @param col 列
+     * @param text 内容 不支持html标签 如果需要html标签 调用setHtml()
+     * @param styles css样式
+     * @return wtable
+     */
     public Wtable setText(int row, int col, String text, Map<String,String> styles){
         Wtc tc = getTc(row, col);
         if(null != tc){
@@ -319,6 +388,13 @@ public class Wtable {
         }
         return this;
     }
+    /**
+     * 设置row行col列的文本 支持html标签
+     * @param row 行
+     * @param col 列
+     * @param html 内容
+     * @return wtable
+     */
     public Wtable setHtml(int row, int col, String html){
         Wtc tc = getTc(row, col);
         if(null != tc) {
@@ -392,6 +468,14 @@ public class Wtable {
         }
         return this;
     }
+
+    /**
+     * 以template为模板 在index位置插入qty行
+     * @param template 模板
+     * @param index 插入位置
+     * @param qty 插入数量
+     * @return wtable
+     */
     public Wtable insertRows(Wtr template, int index, int qty){
         List<Element> trs = src.elements("tr");
         index = index(index, trs.size());
@@ -407,12 +491,31 @@ public class Wtable {
         }
         return this;
     }
+
+    /**
+     * 追加qty行
+     * @param qty 行数
+     * @return tables
+     */
     public Wtable addRows(int qty){
         return insertRows(-1, qty);
     }
-    public Wtable addRows(int col, int qty){
-        return insertRows(col, qty);
+
+
+    /**
+     * 追加行,追加的行将复制上一行的样式(背景色、字体等)
+     * @param index 位置  下标从0开始  负数表示倒数第index行
+     * @param qty 追加数量
+     * @return table table
+     */
+    public Wtable addRows(int index, int qty){
+        return insertRows(index, qty);
     }
+
+    /**
+     * 获取行数
+     * @return int
+     */
     public int getTrSize(){
         return src.elements("tr").size();
     }
@@ -423,13 +526,31 @@ public class Wtable {
         return this;
     }
 
+    /**
+     * 设置表格宽度 默认px
+     * @param width 宽度
+     * @return wtable
+     */
     public Wtable setWidth(int width){
         return setWidth(width+widthUnit);
     }
+    /**
+     * 设置表格宽度 默认px
+     * @param width 宽度
+     * @return wtable
+     */
     public Wtable setWidth(double width){
         return setWidth(width+widthUnit);
     }
 
+    /**
+     * 合并行列
+     * @param row 开始行
+     * @param col 开始列
+     * @param rowspan 合并行数量
+     * @param colspan 合并列数量
+     * @return wtable
+     */
     public Wtable merge(int row, int col, int rowspan, int colspan){
         reload();
         for(int r=row; r<row+rowspan; r++){
@@ -462,6 +583,13 @@ public class Wtable {
         index = index(index, wtrs.size());
         return wtrs.get(index);
     }
+
+    /**
+     * 获取row行col列位置的单元格
+     * @param row 行
+     * @param col 列
+     * @return wtc
+     */
     public Wtc getTc(int row, int col){
         Wtr wtr = getTr(row);
         if(null == wtr){
@@ -1622,5 +1750,15 @@ public class Wtable {
 
     public void setAutoLoad(boolean autoLoad) {
         isAutoLoad = autoLoad;
+    }
+
+    /**
+     * 计算下标
+     * @param index 下标 从0开始 -1表示最后一行 -2表示倒数第2行
+     * @param size 总行数
+     * @return 最终下标
+     */
+    private int index(int index, int size){
+        return BasicUtil.index(index, size);
     }
 }
