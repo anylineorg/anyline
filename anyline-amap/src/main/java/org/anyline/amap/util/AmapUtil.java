@@ -759,7 +759,7 @@ public class AmapUtil {
 				if("10044".equals(info_code)) {
 					throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
 				}else if("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)){
-					log.warn("QPS已达到上限,sleep 50 ...");
+					log.warn("并发量已达到上限,sleep 50 ...");
 					try {
 						Thread.sleep(50);
 					}catch (Exception e){
@@ -792,13 +792,11 @@ public class AmapUtil {
 							coordinate.setStreet(street.getString("street"));
 							coordinate.setStreetNumber(street.getString("number"));
 						}
+						coordinate.setSuccess(true);
 					}
 
 				}
 			}
-		}
-		if(null != coordinate) {
-			coordinate.setSuccess(true);
 		}
 		return coordinate;
 	}
@@ -877,7 +875,7 @@ public class AmapUtil {
 					if("10044".equals(info_code)) {
 						throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
 					}else if("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)){
-						log.warn("QPS已达到上限,sleep 50 ...");
+						log.warn("并发量已达到上限,sleep 50 ...");
 						try {
 							Thread.sleep(50);
 						}catch (Exception e){
@@ -906,6 +904,7 @@ public class AmapUtil {
 							coordinate.setLevel(first.getInt("LEVEL",0));
 							coordinate.setStreet(first.getString("STREET"));
 							coordinate.setStreetNumber(first.getString("NUMBER"));
+							coordinate.setType(Coordinate.TYPE.GCJ02LL);
 						}
 					}else{
 						log.warn("[坐标查询失败][info:{}][params:{}]",row.getString("info"),BeanUtil.map2string(params));
@@ -916,7 +915,6 @@ public class AmapUtil {
 			log.warn("[坐标查询失败][error:{}]",e.getMessage()); 
 		}
 		if(null != coordinate) {
-			coordinate.setType(Coordinate.TYPE.GCJ02LL);
 		}
 		return coordinate;
 	} 

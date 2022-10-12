@@ -49,6 +49,42 @@ public class BaiduMapUtil {
         return util;
     }
 
+    public Coordinate geo(String address) {
+        Coordinate coordinate = new Coordinate();
+        coordinate.setAddress(address);
+        String url = "https://api.map.baidu.com/geocoding/v3/?ak="+config.AK+"&address="+address+"&output=json";
+        String txt = HttpUtil.get(url).getText();
+        DataRow row = DataRow.parseJson(txt);
+        if(null != row){
+            int status = row.getInt("status",-1);
+            if(status != 0){
+                // [code:302][info:天配额超限，限制访问]
+                log.warn("[地理编码][执行失败][code:{}][info:{}]", status, row.getString("message"));
+                log.warn("[地理编码][response:{}]",txt);
+                if("302".equals(status)) {
+                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }else if("401".equals(status) || "402".equals(status)){
+                    try{
+                        log.warn("并发量已达到上限,sleep 50 ...");
+                        Thread.sleep(50);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    throw new AnylineException(status, row.getString("message"));
+                }
+            }else{
+                DataRow location = row.getRow("result","location");
+                if(null != location) {
+                    coordinate.setLng(location.getString("lng"));
+                    coordinate.setLat(location.getString("lat"));
+                    coordinate.setSuccess(true);
+                }
+
+            }
+        }
+        return coordinate;
+    }
     public Coordinate regeo(Coordinate coordinate) {
         Coordinate.TYPE _type = coordinate.getType();
         Double _lng = coordinate.getLng();
@@ -72,6 +108,13 @@ public class BaiduMapUtil {
                 log.warn("[逆地理编码][response:{}]",txt);
                 if("302".equals(status)) {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }else if("401".equals(status) || "402".equals(status)){
+                    try{
+                        log.warn("并发量已达到上限,sleep 50 ...");
+                        Thread.sleep(50);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }else{
                     throw new AnylineException(status, row.getString("message"));
                 }
@@ -90,12 +133,12 @@ public class BaiduMapUtil {
                     coordinate.setCountyCode(adr.getString("adcode"));
                     coordinate.setTownCode(adr.getString("town_code"));
                     coordinate.setTownName(adr.getString("town"));
+                    coordinate.setStreet(adr.getString("street"));
+                    coordinate.setStreetNumber(adr.getString("street_number"));
+                    coordinate.setSuccess(true);
                 }
 
             }
-        }
-        if(null != coordinate) {
-            coordinate.setSuccess(true);
         }
         return coordinate;
     }

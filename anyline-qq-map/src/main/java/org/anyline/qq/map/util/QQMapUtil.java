@@ -141,7 +141,7 @@ public class QQMapUtil {
                 if("121".equals(status)) {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }else if("120".equals(status)){
-                    log.warn("每秒请求量已达到上限,sleep 50 ...");
+                    log.warn("并发量已达到上限,sleep 50 ...");
                     try {
                         Thread.sleep(50);
                     }catch (Exception e){
@@ -175,9 +175,9 @@ public class QQMapUtil {
                     coordinate.setCityCode(cityCode);
                     coordinate.setCountyCode(adcode);
                 }
+                coordinate.setSuccess(true);
             }
         }
-        coordinate.setSuccess(true);
         return coordinate;
     }
     /**
@@ -216,7 +216,7 @@ public class QQMapUtil {
                 if("121".equals(status)) {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }else if("120".equals(status)){
-                    log.warn("每秒请求量已达到上限,sleep 50 ...");
+                    log.warn("并发量已达到上限,sleep 50 ...");
                     try {
                         Thread.sleep(50);
                     }catch (Exception e){
@@ -253,9 +253,9 @@ public class QQMapUtil {
                     coordinate.setTownCode(adr.getString("id"));
                     coordinate.setTownName(adr.getString("title"));
                 }
+                coordinate.setSuccess(true);
             }
         }
-        coordinate.setSuccess(true);
         return coordinate;
     }
     public Coordinate regeo(double lng, double lat){
