@@ -52,6 +52,12 @@ public class DomUtil {
         }
         return result;
     }
+    /**
+     * 根据标签name搜索element
+     * @param root 根节点
+     * @param tags 标签名(不含namespace)
+     * @return Element
+     */
     public static Element element(Element root, String tags){
         return element(root, BeanUtil.array2list(tags.split(",")));
     }

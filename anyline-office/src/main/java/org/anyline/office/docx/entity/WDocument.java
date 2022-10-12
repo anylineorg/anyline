@@ -97,38 +97,78 @@ public class WDocument {
      * @param element element
      * @param html html
      */
-    public void before(Element element, String html){
+    public Element before(Element element, String html){
         Element parent = element.getParent();
         List<Element> elements = parent.elements();
         int index = elements.indexOf(element)-1;
-        if(index < 0){
-            index = 0;
+        Element prev = null;
+        if(index >= 0){
+            prev = elements.get(index);
         }
-        Element prev = elements.get(index);
-        parseHtml(parent, prev, html);
+        List<Element> list = parseHtml(parent, prev, html);
+        if(list.isEmpty()){
+            return null;
+        }
+        return list.get(list.size()-1);
     }
 
+    public void before(Element point, Element element){
+        Element parent = point.getParent();
+        List<Element> elements = parent.elements();
+        int index = elements.indexOf(point);
+        elements.add(index ,element);
+    }
+    public void after(Element point, Element element){
+        Element parent = point.getParent();
+        List<Element> elements = parent.elements();
+        int index = elements.indexOf(point);
+        if(index >= elements.size()-1){
+            elements.add(element);
+        }else {
+            elements.add(index, element);
+        }
+    }
     /**
      * 在element之后 插入节点
      * @param element element
      * @param html html
      */
-    public void after(Element element, String html){
+    public Element after(Element element, String html){
         Element parent = element.getParent();
-        parseHtml(parent, element, html);
+        List<Element> list = parseHtml(parent, element, html);
+        if(list.isEmpty()){
+            return null;
+        }
+        return list.get(list.size()-1);
     }
-    public void insert(Element parent, String html){
-        parseHtml(parent, null, html);
+    public Element insert(Element parent, String html){
+        List<Element> elements = parseHtml(parent, null, html);
+        if(elements.isEmpty()){
+            return null;
+        }
+        return elements.get(elements.size()-1);
     }
-    public void insert(int index, Element parent, String html){
+    public Element insert(int index, Element parent, String html){
         List<Element> elements = parent.elements();
-        if(index <=1 ){
+        if(index <= 1){
             index = 1;
         }else if(index >= elements.size()){
             index = elements.size()-1;
         }
         Element prev = elements.get(index-1);
-        parseHtml(parent, prev, html);
+        List<Element> items = parseHtml(parent, prev, html);
+        if(items.isEmpty()){
+            return null;
+        }
+        return items.get(items.size()-1);
+    }
+
+    public void insert(Element parent, Element element){
+        parent.elements().add(element);
+    }
+    public void insert(int index, Element parent, Element element){
+        List<Element> elements = parent.elements();
+        elements.add(index, element);
     }
 
     /**
@@ -259,7 +299,8 @@ public class WDocument {
             html = "<root>" + html + "</root>";
             org.dom4j.Document doc = DocumentHelper.parseText(html);
             Element root = doc.getRootElement();
-            parseHtml(box, prev, root, null, true);
+            Element element = parseHtml(box, prev, root, null, true);
+            list.add(element);
         }catch (Exception e){
             e.printStackTrace();
             // log.error(html);
@@ -1143,7 +1184,8 @@ public class WDocument {
     public String listStyle(String key){
         return DocxUtil.listStyle(file, key);
     }
-    public void insert(Element prev, File file){
+    public Element insert(Element prev, File file){
+        Element last = null;
         WDocument idoc = new WDocument(file);
         idoc.load();
         Element body = idoc.getBody();
@@ -1153,7 +1195,9 @@ public class WDocument {
         for(Element insert:inserts){
             insert.getParent().remove(insert);
             elements.add(index++, insert);
+            last = insert;
         }
+        return last;
     }
 
     public List<String> listStyles(){

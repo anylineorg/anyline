@@ -1814,4 +1814,9 @@ public class Wtable {
         }
         return BasicUtil.index(index, size);
     }
+    public Wtable copy(){
+        Element src = this.src.createCopy();
+        Wtable wtable = new Wtable(doc, src);
+        return wtable;
+    }
 }
