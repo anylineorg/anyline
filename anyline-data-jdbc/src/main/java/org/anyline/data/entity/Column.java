@@ -546,9 +546,9 @@ public class Column implements org.anyline.entity.data.Column{
         }
         return this;
     }
-    public String toString(){
+    public String getFullType(){
         StringBuilder builder = new StringBuilder();
-        builder.append(name).append(" ").append(typeName);
+        builder.append(typeName);
         if(null != precision && precision > 0){
             builder.append("(").append(precision);
             if(null != scale && scale > 0){
@@ -556,6 +556,12 @@ public class Column implements org.anyline.entity.data.Column{
             }
             builder.append(")");
         }
+        return builder.toString();
+    }
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append(name).append(" ");
+        builder.append(getFullType());
         if(BasicUtil.isNotEmpty(defaultValue)){
             builder.append(" default ").append(defaultValue);
         }
