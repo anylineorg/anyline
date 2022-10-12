@@ -112,34 +112,42 @@ public class WDocument {
         return list.get(list.size()-1);
     }
 
-    public void before(Element point, Element element){
+    public Element before(Element point, Element element){
         Element parent = point.getParent();
         List<Element> elements = parent.elements();
         int index = elements.indexOf(point);
         elements.add(index ,element);
+        return element;
     }
 
-    public void before(Element point, Wtable table){
-        before(point, table.getSrc());
+    public Element before(Element point, Wtable table){
+        Element src = table.getSrc();
+        before(point, src);
+        return src;
     }
-    public void after(Element point, Element element){
+    public Element after(Element point, Element element){
         Element parent = point.getParent();
         List<Element> elements = parent.elements();
-        int index = elements.indexOf(point);
+        int index = elements.indexOf(point)+1;
         if(index >= elements.size()-1){
             elements.add(element);
         }else {
             elements.add(index, element);
         }
+        return element;
     }
 
-    public void after(Element point, Wtable table){
-        after(point, table.getSrc());
+    public Element after(Element point, Wtable table){
+        Element src = table.getSrc();
+        after(point, src);
+        return src;
     }
     /**
      * 在element之后 插入节点
+     * 解析html有可能解析出多个element这里会返回最外层的最后一个
      * @param element element
      * @param html html
+     * @return Element
      */
     public Element after(Element element, String html){
         Element parent = element.getParent();
@@ -150,11 +158,11 @@ public class WDocument {
         return list.get(list.size()-1);
     }
     public Element insert(Element parent, String html){
-        List<Element> elements = parseHtml(parent, null, html);
-        if(elements.isEmpty()){
+        List<Element> list = parseHtml(parent, null, html);
+        if(list.isEmpty()){
             return null;
         }
-        return elements.get(elements.size()-1);
+        return list.get(list.size()-1);
     }
     public Element insert(int index, Element parent, String html){
         List<Element> elements = parent.elements();
@@ -164,25 +172,31 @@ public class WDocument {
             index = elements.size()-1;
         }
         Element prev = elements.get(index-1);
-        List<Element> items = parseHtml(parent, prev, html);
-        if(items.isEmpty()){
+        List<Element> list = parseHtml(parent, prev, html);
+        if(list.isEmpty()){
             return null;
         }
-        return items.get(items.size()-1);
+        return list.get(list.size()-1);
     }
 
-    public void insert(Element parent, Element element){
+    public Element insert(Element parent, Element element){
         parent.elements().add(element);
+        return element;
     }
-    public void insert(Element parent, Wtable table){
-        insert(parent, table.getSrc());
+    public Element insert(Element parent, Wtable table){
+        Element src = table.getSrc();
+        insert(parent, src);
+        return src;
     }
-    public void insert(int index, Element parent, Element element){
+    public Element insert(int index, Element parent, Element element){
         List<Element> elements = parent.elements();
         elements.add(index, element);
+        return element;
     }
-    public void insert(int index, Element parent,  Wtable table){
-        insert(index, parent, table.getSrc());
+    public Element insert(int index, Element parent,  Wtable table){
+        Element src = table.getSrc();
+        insert(index, parent, src);
+        return src;
     }
 
     /**
@@ -313,8 +327,14 @@ public class WDocument {
             html = "<root>" + html + "</root>";
             org.dom4j.Document doc = DocumentHelper.parseText(html);
             Element root = doc.getRootElement();
-            Element element = parseHtml(box, prev, root, null, true);
-            list.add(element);
+            parseHtml(box, prev, root, null, true);
+            //提取出新添加的elements
+            int size = root.elements().size();
+            List<Element> elements = box.elements();
+            int index = elements.indexOf(prev);
+            for(int i=0; i<size; i++){
+                list.add(elements.get(index+i+1));
+            }
         }catch (Exception e){
             e.printStackTrace();
             // log.error(html);
