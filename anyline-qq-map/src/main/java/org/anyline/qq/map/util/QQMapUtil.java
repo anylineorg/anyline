@@ -118,31 +118,6 @@ public class QQMapUtil {
     /**
      * 根据地址解析 坐标
      * https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder
-     * {
-     *     "status": 0,
-     *     "message": "query ok",
-     *     "result": {
-     *         "title": "海淀西大街74号",
-     *         "location": {
-     *             "lng": 116.307015,
-     *             "lat": 39.982915
-     *         },
-     *         "ad_info": {
-     *             "adcode": "110108"
-     *         },
-     *         "address_components": {
-     *             "province": "北京市",
-     *             "city": "北京市",
-     *             "district": "海淀区",
-     *             "street": "海淀西大街",
-     *             "street_number": "74"
-     *         },
-     *         "similarity": 0.8,
-     *         "deviation": 1000,
-     *         "reliability": 7,
-     *         "level": 9
-     *     }
-     * }
      * @param address 地址
      * @return Coordinate
      */
@@ -183,7 +158,7 @@ public class QQMapUtil {
                     coordinate.setLng(location.getString("lng"));
                 }
 
-                DataRow adr = row.getRow("result","address_component");
+                DataRow adr = row.getRow("result","address_components");
                 if(null != adr) {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityName(adr.getString("city"));
