@@ -94,11 +94,32 @@ public class Wtable {
     }
 
     /**
+     * 获取模板行
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
+     * @return Wtr
+     */
+    public Wtr getTemplate(Integer index){
+        Wtr template = null;
+        int size = wtrs.size();
+        if(size>0){
+            if(null == index){
+                template = wtrs.get(size-1);
+            }else {
+                index = index(index, size);
+                template = wtrs.get(index);
+            }
+
+        }
+        return template;
+    }
+
+    /**
      * 在最后位置插入一行
      * @param html html.tr源码
      */
     public void insert(String html){
-        insert(-1, html);
+        Integer index = null;
+        insert(index, html);
     }
 
     /**
@@ -108,35 +129,26 @@ public class Wtable {
      * @param cols data的属性
      */
     public void insert(Object data, String ... cols){
-        Wtr template = getTemplate(-1);
-        insert(-1, template, data, cols);
+        Integer index = null;
+        Wtr template = getTemplate(index);
+        insert(index, template, data, cols);
     }
-    /**
-     * 在index位置插入一行,半填充内容
-     * 内容从data中获取
-     * @param index 插入位置 下标从0开始  负数表示倒数第index行
-     * @param data DataRow/Map/Entity
-     * @param cols data的属性
-     */
-    public void insert(int index, Object data, String ... cols){
+    public void append(Object data, String ... cols){
+        Integer index = null;
         Wtr template = getTemplate(index);
         insert(index, template, data, cols);
     }
 
     /**
-     * 获取模板行
-     * @param index 位置 下标从0开始 -1表示最后一行 -2表示倒数第2行
-     * @return Wtr
+     * 在index位置插入一行,原来index位置的行被挤到下一行,并填充内容
+     * 内容从data中获取
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
+     * @param data DataRow/Map/Entity
+     * @param cols data的属性
      */
-    public Wtr getTemplate(int index){
-        Wtr template = null;
-        int size = wtrs.size();
-        if(size>0){
-            index = index(index, size);
-            template = wtrs.get(index);
-
-        }
-        return template;
+    public void insert(Integer index, Object data, String ... cols){
+        Wtr template = getTemplate(index);
+        insert(index, template, data, cols);
     }
 
     /**
@@ -146,16 +158,19 @@ public class Wtable {
      * @param fields 指定从数据中提取的数据的属性或key
      */
     public void insert(Wtr template, Object data, String ... fields){
-        insert(-1, template, data, fields);
+        insert(null, template, data, fields);
+    }
+    public void append(Wtr template, Object data, String ... fields){
+        insert(null, template, data, fields);
     }
     /**
-     * 根据模版样式和数据 插入行
-     * @param index 插入位置 下标从0开始  负数表示倒数第index行
+     * 根据模版样式和数据 插入行,原来index位置的行被挤到下一行
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param template 模版行
      * @param data 数据可以是一个实体也可以是一个集合
      * @param fields 指定从数据中提取的数据的属性或key
      */
-    public void insert(int index, Wtr template, Object data, String ... fields){
+    public void insert(Integer index, Wtr template, Object data, String ... fields){
         Collection datas = null;
         if(data instanceof Collection){
             datas = (Collection)data;
@@ -169,11 +184,11 @@ public class Wtable {
     }
 
     /**
-     * 插入行
-     * @param index 插入位置 下标从0开始  负数表示倒数第index行
+     * 插入行,原来index位置的行被挤到下一行,并填充内容
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param tds 每列的文本 数量多于表格列的 条目无效
      */
-    public void insert(int index, List<String> tds){
+    public void insert(Integer index, List<String> tds){
         int size = NumberUtil.min(tds.size(), wtrs.get(0).getTcs().size());
         StringBuilder builder = new StringBuilder();
         builder.append("<tr>");
@@ -186,53 +201,69 @@ public class Wtable {
         insert(index, builder.toString());
     }
 
+    public void append(List<String> tds){
+        insert(null, tds);
+    }
     /**
      * 追加行
      * @param tds 每列的文本 数量多于表格列的 条目无效
      */
     public void insert(List<String> tds){
-        insert(-1, tds);
+        Integer index = null;
+        insert(index, tds);
     }
     /**
-     * 插入行
-     * @param index 插入位置 下标从0开始  负数表示倒数第index行
+     * 在index位置插入行,原来index位置的行被挤到下一行,并填充内容
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param tds 每列的文本 数量多于表格列的 条目无效
      */
-    public void insert(int index, String ... tds){
+    public void insert(Integer index, String ... tds){
         insert(index, BeanUtil.array2list(tds));
     }
     /**
-     * 追加行
+     * 追加行，并填充内容
      * @param tds 每列的文本 数量多于表格列的 条目无效
      */
     public void insert(String ... tds){
-        insert(-1, tds);
+        Integer index = null;
+        insert(index, tds);
+    }
+    public void append(String ... tds){
+        Integer index = null;
+        insert(index, tds);
     }
     /**
-     * 在index位置插入qty行，以template为模板
-     * @param index 插入位置  下标从0开始  负数表示倒数第index行
+     * 在index位置插入行,原来index位置的行被挤到下一行，以template为模板
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param template 模板
      * @param qty 插入数量
      * @return Wtable
      */
-    public Wtable insert(int index, Wtr template, int qty){
+    public Wtable insert(Integer index, Wtr template, int qty){
         List<Element> trs = src.elements("tr");
-        index = index(index, trs.size());
+        int idx = index(index, trs.size());
         for(int i=0; i<qty; i++) {
             Element newTr = template.getSrc().createCopy();
             DocxUtil.removeContent(newTr);
-            trs.add(index++, newTr);
+            if(null == index) {
+                trs.add(newTr);
+            }else{
+                trs.add(idx++, newTr);
+            }
         }
         reload();
         return this;
     }
+    public Wtable append(Wtr template, int qty){
+        return insert(null, template, qty);
+    }
     /**
-     * 在index位置插入qty行，以原来index位置行为模板
-     * @param index 插入位置  下标从0开始  负数表示倒数第index行
+     * 在index位置插入qty行，以原来index位置行为模板,原来index位置以下行的挤到下一行
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param qty 插入数量
      * @return Wtable
      */
-    public Wtable insert(int index, int qty){
+    public Wtable insert(Integer index, int qty){
         int size = wtrs.size();
         if(size > 0){
             Wtr template = getTemplate(index);
@@ -246,18 +277,25 @@ public class Wtable {
      * @return Wtable
      */
     public Wtable insert(int qty){
-        return insert(-1, qty);
+        return insert(null, qty);
+    }
+    public Wtable append(int qty){
+        return insert(null, qty);
     }
 
     /**
-     * 插入一行
-     * @param index 插入个位置  -1表示最后一行
+     * 在index位置插入1行，以原来index位置行为模板,原来index位置以下行的挤到下一行
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param html html内容
      */
-    public void insert(int index, String html){
+    public void insert(Integer index, String html){
         List<Element> trs = src.elements("tr");
         Wtr template = getTemplate(index); //取原来在当前位置的一行作模板
         insert(index, template, html);
+    }
+    public void append(String html){
+        Integer index = null;
+        insert(index, html);
     }
 
     /**
@@ -266,23 +304,27 @@ public class Wtable {
      * @param html html.tr源码
      */
     public void insert(Wtr template, String html){
-        int index = -1;
+        Integer index = null;
         if(null != template) {
             List<Element> trs = src.elements("tr");
             index = trs.indexOf(template.getSrc());
         }
         insert(index,template,  html);
     }
+    public void append(Wtr template, String html){
+        insert(template, html);
+    }
 
     /**
      * 根据模版样式 插入行
-     * @param index 插入位置下标 下标从0开始  -1表示最后一行 -2表示倒数第2行
+     * @param index 插入位置下标 负数表示倒数 插入 null表示从最后追加与append效果一致
      * @param template 模版行
      * @param html html片段 片段中应该有多个tr,不需要上级标签table
      */
-    public void insert(int index, Wtr template, String html){
+    public void insert(Integer index, Wtr template, String html){
         List<Element> trs = src.elements("tr");
-        index = index(index, trs.size());
+        int idx = index(index, trs.size());
+
         /*
         if(index == -1 && null != template){
             index = trs.indexOf(template.getSrc());
@@ -300,7 +342,11 @@ public class Wtable {
                     newTr = tr(row).getSrc();
                     trs.remove(newTr);
                 }
-                trs.add(index++, newTr);
+                if(null == index){
+                    trs.add(newTr);
+                }else {
+                    trs.add(idx++, newTr);
+                }
             }
             if(isAutoLoad) {
                 reload();
@@ -458,11 +504,11 @@ public class Wtable {
     }
     /**
      * 追加行,追加的行将复制上一行的样式(背景色、字体等)
-     * @param index 位置  下标从0开始  负数表示倒数第index行
+     * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param qty 追加数量
      * @return table table
      */
-    public Wtable insertRows(int index, int qty){
+    public Wtable insertRows(Integer index, int qty){
         if(wtrs.size()>0){
             insertRows(getTemplate(index), index, qty);
         }
@@ -470,20 +516,24 @@ public class Wtable {
     }
 
     /**
-     * 以template为模板 在index位置插入qty行
+     * 以template为模板 在index位置插入qty行，以原来index位置行为模板,原来index位置以下行的挤到下一行
      * @param template 模板
      * @param index 插入位置
      * @param qty 插入数量
      * @return wtable
      */
-    public Wtable insertRows(Wtr template, int index, int qty){
+    public Wtable insertRows(Wtr template, Integer index, int qty){
         List<Element> trs = src.elements("tr");
-        index = index(index, trs.size());
+        int idx = index(index, trs.size());
         if(trs.size()>0){
             for(int i=0; i<qty; i++) {
                 Element newTr = template.getSrc().createCopy();
                 DocxUtil.removeContent(newTr);
-                trs.add(index++, newTr);
+                if(null == index){
+                    trs.add(newTr);
+                }else {
+                    trs.add(index++, newTr);
+                }
             }
         }
         if(isAutoLoad) {
@@ -498,7 +548,7 @@ public class Wtable {
      * @return tables
      */
     public Wtable addRows(int qty){
-        return insertRows(-1, qty);
+        return insertRows(null, qty);
     }
 
 
@@ -1758,7 +1808,10 @@ public class Wtable {
      * @param size 总行数
      * @return 最终下标
      */
-    private int index(int index, int size){
+    private int index(Integer index, int size){
+        if(null == index){
+            return 0;
+        }
         return BasicUtil.index(index, size);
     }
 }
