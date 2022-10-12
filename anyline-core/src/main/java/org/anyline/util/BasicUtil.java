@@ -1023,6 +1023,28 @@ public class BasicUtil {
 	}
 
 	/**
+	 * 计算下标
+	 * @param index 下标 从0开始 -1表示最后一行 -2表示倒数第2行
+	 * @param size 总行数
+	 * @return 最终下标
+	 */
+	public static int index(int index, int size){
+		if(size == 0){
+			return 0;
+		}
+		if(index >= size){
+			index = size -1;
+		}else if(index < 0){
+			//倒数
+			index = size + index;
+			if(index < 0){
+				//超出0按0算
+				index = 0;
+			}
+		}
+		return index;
+	}
+	/**
 	 * 确认边界
 	 * @param begin 开始
 	 * @param end 结束
