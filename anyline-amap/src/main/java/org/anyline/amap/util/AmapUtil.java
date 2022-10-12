@@ -755,8 +755,17 @@ public class AmapUtil {
 				// [逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
 				log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
 				log.warn("[逆地理编码][response:{}]",txt);
-				if("10044".equals(row.getString("INFOCODE"))) {
+				String info_code = row.getString("INFOCODE");
+				if("10044".equals(info_code)) {
 					throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+				}else if("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)){
+					log.warn("QPS已达到上限,sleep 50 ...");
+					try {
+						Thread.sleep(50);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+					return regeo(coordinate);
 				}else{
 					throw new AnylineException(status, row.getString("INFO"));
 				}
@@ -778,6 +787,11 @@ public class AmapUtil {
 						coordinate.setCountyName(adr.getString("district"));
 						coordinate.setTownCode(adr.getString("towncode"));
 						coordinate.setTownName(adr.getString("township"));
+						DataRow street = adr.getRow("streetNumber");
+						if(null != street){
+							coordinate.setStreet(street.getString("street"));
+							coordinate.setStreetNumber(street.getString("number"));
+						}
 					}
 
 				}
@@ -851,26 +865,53 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
 		try{ 
-			DataRow json = DataRow.parseJson(txt); 
-			DataSet set = null; 
-			if(json.containsKey("geocodes")){ 
-				set = json.getSet("geocodes"); 
-				if(set.size()>0){ 
-					DataRow row = set.getRow(0); 
-					coordinate = new Coordinate(row.getString("LOCATION"));
-					coordinate.setCode(row.getString("ADCODE"));
-					coordinate.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4));
-					coordinate.setProvinceName(row.getString("PROVINCE"));
-					coordinate.setCityCode(row.getString("CITYCODE"));
-					coordinate.setCityName(row.getString("CITY"));
-					coordinate.setCountyCode(row.getString("ADCODE"));
-					coordinate.setCountyName(row.getString("DISTRICT"));
-					coordinate.setAddress(row.getString("FORMATTED_ADDRESS"));
-					coordinate.setLevel(row.getInt("LEVEL",0));
-				} 
-			}else{ 
-				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),BeanUtil.map2string(params)); 
-			} 
+			DataRow row = DataRow.parseJson(txt);
+			if(null != row){
+
+				int status = row.getInt("STATUS",0);
+				if(status ==0){
+					// [逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
+					log.warn("[地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
+					log.warn("[地理编码][response:{}]",txt);
+					String info_code = row.getString("INFOCODE");
+					if("10044".equals(info_code)) {
+						throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+					}else if("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)){
+						log.warn("QPS已达到上限,sleep 50 ...");
+						try {
+							Thread.sleep(50);
+						}catch (Exception e){
+							e.printStackTrace();
+						}
+						return regeo(coordinate);
+					}else{
+						throw new AnylineException(status, row.getString("INFO"));
+					}
+				}else {
+					DataSet set = null;
+					if(row.containsKey("geocodes")){
+						set = row.getSet("geocodes");
+						if(set.size()>0){
+							DataRow first = set.getRow(0);
+							coordinate = new Coordinate(first.getString("LOCATION"));
+							String adcode = first.getString("ADCODE");
+							coordinate.setCode(adcode);
+							coordinate.setProvinceCode(BasicUtil.cut(adcode,0,2));
+							coordinate.setProvinceName(first.getString("PROVINCE"));
+							coordinate.setCityCode(BasicUtil.cut(adcode,0,4));
+							coordinate.setCityName(first.getString("CITY"));
+							coordinate.setCountyCode(first.getString("ADCODE"));
+							coordinate.setCountyName(first.getString("DISTRICT"));
+							coordinate.setAddress(first.getString("FORMATTED_ADDRESS"));
+							coordinate.setLevel(first.getInt("LEVEL",0));
+							coordinate.setStreet(first.getString("STREET"));
+							coordinate.setStreetNumber(first.getString("NUMBER"));
+						}
+					}else{
+						log.warn("[坐标查询失败][info:{}][params:{}]",row.getString("info"),BeanUtil.map2string(params));
+					}
+				}
+			}
 		}catch(Exception e){ 
 			log.warn("[坐标查询失败][error:{}]",e.getMessage()); 
 		}
