@@ -116,7 +116,73 @@ public class QQMapUtil {
     }
 
     /**
+     * 根据地址解析 坐标
+     * https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder
+     * @param address 地址
+     * @return Coordinate
+     */
+    public Coordinate geo(String address){
+        Coordinate coordinate = null;
+        String api = "/ws/geocoder/v1";
+        Map<String,Object> params = new HashMap<>();
+        params.put("key", config.KEY);
+        params.put("address", address);
+        String sign = sign(api, params);
+        String url = QQMapConfig.HOST + api + "?" + BeanUtil.map2string(params, false,true) + "&sig=" + sign;
+
+        String txt = HttpUtil.get(url).getText();
+        DataRow row = DataRow.parseJson(txt);
+        if(null != row){
+            int status = row.getInt("status",-1);
+            if(status != 0){
+                log.warn("[地址解析][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
+                log.warn("[地址解析][response:{}]",txt);
+                if("121".equals(status)) {
+                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }else if("120".equals(status)){
+                    log.warn("每秒请求量已达到上限,sleep 50 ...");
+                    try {
+                        Thread.sleep(50);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    return geo(address);
+                }else{
+                    throw new AnylineException(status, row.getString("message"));
+                }
+            }else{
+                DataRow result = row.getRow("result");
+                if(null != result) {
+                    coordinate.setAddress(result.getString("address"));
+                }
+                DataRow adr = row.getRow("result","address_component");
+                if(null != adr) {
+                    coordinate.setProvinceName(adr.getString("province"));
+                    coordinate.setCityName(adr.getString("city"));
+                    coordinate.setCountyName(adr.getString("district"));
+                }
+                adr = row.getRow("result","ad_info");
+                if(null != adr) {
+                    String adcode = adr.getString("adcode");
+                    String provinceCode = adcode.substring(0,2);
+                    String cityCode = adcode.substring(0,4);
+                    coordinate.setProvinceCode(provinceCode);
+                    coordinate.setCityCode(cityCode);
+                    coordinate.setCountyCode(adcode);
+                }
+                adr = row.getRow("result","address_reference","town");
+                if(null != adr){
+                    coordinate.setTownCode(adr.getString("id"));
+                    coordinate.setTownName(adr.getString("title"));
+                }
+            }
+        }
+        coordinate.setSuccess(true);
+        return coordinate;
+    }
+    /**
      * 逆地址解析 根据坐标返回详细地址及各级地区编号
+     * https://lbs.qq.com/service/webService/webServiceGuide/webServiceGcoder
      * @param coordinate 坐标
      * @return Coordinate
      */
@@ -133,7 +199,7 @@ public class QQMapUtil {
         params.put("location", coordinate.getLat()+","+coordinate.getLng());        // 这里是纬度在前
         params.put("key", config.KEY);
         String sign = sign(api, params);
-        String url = QQMapConfig.HOST + api+"?"+BeanUtil.map2string(params, false,true)+"&sig="+sign;
+        String url = QQMapConfig.HOST + api + "?" + BeanUtil.map2string(params, false,true) + "&sig=" + sign;
 
         // 换回原坐标系
         coordinate.setLng(_lng);
@@ -149,6 +215,14 @@ public class QQMapUtil {
                 log.warn("[逆地理编码][response:{}]",txt);
                 if("121".equals(status)) {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }else if("120".equals(status)){
+                    log.warn("每秒请求量已达到上限,sleep 50 ...");
+                    try {
+                        Thread.sleep(50);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    return regeo(coordinate);
                 }else{
                     throw new AnylineException(status, row.getString("message"));
                 }
