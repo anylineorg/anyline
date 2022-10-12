@@ -1814,6 +1814,15 @@ public class Wtable {
         }
         return BasicUtil.index(index, size);
     }
+
+    public Element getSrc() {
+        return src;
+    }
+
+    public void setSrc(Element src) {
+        this.src = src;
+    }
+
     public Wtable copy(){
         Element src = this.src.createCopy();
         Wtable wtable = new Wtable(doc, src);

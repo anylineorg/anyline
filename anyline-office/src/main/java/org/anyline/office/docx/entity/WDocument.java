@@ -118,6 +118,10 @@ public class WDocument {
         int index = elements.indexOf(point);
         elements.add(index ,element);
     }
+
+    public void before(Element point, Wtable table){
+        before(point, table.getSrc());
+    }
     public void after(Element point, Element element){
         Element parent = point.getParent();
         List<Element> elements = parent.elements();
@@ -127,6 +131,10 @@ public class WDocument {
         }else {
             elements.add(index, element);
         }
+    }
+
+    public void after(Element point, Wtable table){
+        after(point, table.getSrc());
     }
     /**
      * 在element之后 插入节点
@@ -166,9 +174,15 @@ public class WDocument {
     public void insert(Element parent, Element element){
         parent.elements().add(element);
     }
+    public void insert(Element parent, Wtable table){
+        insert(parent, table.getSrc());
+    }
     public void insert(int index, Element parent, Element element){
         List<Element> elements = parent.elements();
         elements.add(index, element);
+    }
+    public void insert(int index, Element parent,  Wtable table){
+        insert(index, parent, table.getSrc());
     }
 
     /**
