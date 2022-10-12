@@ -118,11 +118,37 @@ public class QQMapUtil {
     /**
      * 根据地址解析 坐标
      * https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder
+     * {
+     *     "status": 0,
+     *     "message": "query ok",
+     *     "result": {
+     *         "title": "海淀西大街74号",
+     *         "location": {
+     *             "lng": 116.307015,
+     *             "lat": 39.982915
+     *         },
+     *         "ad_info": {
+     *             "adcode": "110108"
+     *         },
+     *         "address_components": {
+     *             "province": "北京市",
+     *             "city": "北京市",
+     *             "district": "海淀区",
+     *             "street": "海淀西大街",
+     *             "street_number": "74"
+     *         },
+     *         "similarity": 0.8,
+     *         "deviation": 1000,
+     *         "reliability": 7,
+     *         "level": 9
+     *     }
+     * }
      * @param address 地址
      * @return Coordinate
      */
     public Coordinate geo(String address){
-        Coordinate coordinate = null;
+        Coordinate coordinate = new Coordinate();
+        coordinate.setAddress(address);
         String api = "/ws/geocoder/v1";
         Map<String,Object> params = new HashMap<>();
         params.put("key", config.KEY);
@@ -151,15 +177,19 @@ public class QQMapUtil {
                     throw new AnylineException(status, row.getString("message"));
                 }
             }else{
-                DataRow result = row.getRow("result");
-                if(null != result) {
-                    coordinate.setAddress(result.getString("address"));
+                DataRow location = row.getRow("result","location");
+                if(null != location){
+                    coordinate.setLat(location.getString("lat"));
+                    coordinate.setLng(location.getString("lng"));
                 }
+
                 DataRow adr = row.getRow("result","address_component");
                 if(null != adr) {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityName(adr.getString("city"));
                     coordinate.setCountyName(adr.getString("district"));
+                    coordinate.setStreet(adr.getString("street"));
+                    coordinate.setStreetNumber(adr.getString("street_number"));
                 }
                 adr = row.getRow("result","ad_info");
                 if(null != adr) {
@@ -169,11 +199,6 @@ public class QQMapUtil {
                     coordinate.setProvinceCode(provinceCode);
                     coordinate.setCityCode(cityCode);
                     coordinate.setCountyCode(adcode);
-                }
-                adr = row.getRow("result","address_reference","town");
-                if(null != adr){
-                    coordinate.setTownCode(adr.getString("id"));
-                    coordinate.setTownName(adr.getString("title"));
                 }
             }
         }
@@ -236,6 +261,8 @@ public class QQMapUtil {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityName(adr.getString("city"));
                     coordinate.setCountyName(adr.getString("district"));
+                    coordinate.setStreet(adr.getString("street"));
+                    coordinate.setStreetNumber(adr.getString("street_number"));
                 }
                 adr = row.getRow("result","ad_info");
                 if(null != adr) {
