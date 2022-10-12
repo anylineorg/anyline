@@ -91,6 +91,32 @@ public class WDocument {
         }
         replaces.put(key, content);
     }
+
+    /**
+     * 在element之前插入节点
+     * @param element element
+     * @param html html
+     */
+    public void before(Element element, String html){
+        Element parent = element.getParent();
+        List<Element> elements = parent.elements();
+        int index = elements.indexOf(element)-1;
+        if(index < 0){
+            index = 0;
+        }
+        Element prev = elements.get(index);
+        parseHtml(parent, prev, html);
+    }
+
+    /**
+     * 在element之后 插入节点
+     * @param element element
+     * @param html html
+     */
+    public void after(Element element, String html){
+        Element parent = element.getParent();
+        parseHtml(parent, element, html);
+    }
     public void insert(Element parent, String html){
         parseHtml(parent, null, html);
     }
@@ -102,7 +128,7 @@ public class WDocument {
             index = elements.size()-1;
         }
         Element prev = elements.get(index-1);
-        parseHtml(parent, null, html);
+        parseHtml(parent, prev, html);
     }
 
     /**
@@ -210,6 +236,13 @@ public class WDocument {
         return DocxUtil.pr(element, styles);
     }
 
+    /**
+     * 在prev之后插入节点
+     * @param box box
+     * @param prev 放在prev之后
+     * @param html html
+     * @return list
+     */
     private List<Element> parseHtml(Element box, Element prev, String html){
         List<Element> list = new ArrayList<Element>();
         if(null == html || html.trim().length()==0){
