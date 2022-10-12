@@ -94,20 +94,19 @@ public class Wtable {
         Wtr template = getTemplate(index);
         insert(index, template, data, cols);
     }
+
+    /**
+     * 获取模板行
+     * @param index 位置 下标从0开始 -1表示最后一行 -2表示倒数第2行
+     * @return Wtr
+     */
     public Wtr getTemplate(int index){
         Wtr template = null;
         int size = wtrs.size();
         if(size>0){
-            if(index >= size){
-                index = size -1;
-            }
-            if(index == 0){
-                template = wtrs.get(0);
-            }else if(index == -1){
-                template = wtrs.get(size-1);
-            }else {
-                template = wtrs.get(index - 1);
-            }
+            index = index(index, size);
+            template = wtrs.get(index);
+
         }
         return template;
     }
@@ -123,7 +122,7 @@ public class Wtable {
     }
     /**
      * 根据模版样式和数据 插入行
-     * @param index 插入位置
+     * @param index 插入位置 下标从0开始  负数表示倒数第index行
      * @param template 模版行
      * @param data 数据可以是一个实体也可以是一个集合
      * @param cols 指定从数据中提取的数据的属性或key
@@ -141,16 +140,20 @@ public class Wtable {
         insert(index, template, html);
     }
 
+    /**
+     * 在index位置插入qty行，以template为模板
+     * @param index 插入位置  下标从0开始  负数表示倒数第index行
+     * @param template 模板
+     * @param qty 插入数量
+     * @return Wtable
+     */
     public Wtable insert(int index, Wtr template, int qty){
         List<Element> trs = src.elements("tr");
+        index = index(index, trs.size());
         for(int i=0; i<qty; i++) {
             Element newTr = template.getSrc().createCopy();
             DocxUtil.removeContent(newTr);
-            if(index != -1){
-                trs.add(index++, newTr);
-            }else {
-                trs.add(newTr);
-            }
+            trs.add(index++, newTr);
         }
         reload();
         return this;
@@ -163,15 +166,16 @@ public class Wtable {
         }
         return this;
     }
+
+    /**
+     * 插入一行
+     * @param index 插入个位置  -1表示最后一行
+     * @param html html内容
+     */
     public void insert(int index, String html){
         List<Element> trs = src.elements("tr");
-        Wtr template = getTemplate(index);//以最后一行作模板
-        if(trs.size() > 1){
-            if(index == -1){
-                index = trs.size()-1;
-            }
-        }
-        insert(-1, template, html);
+        Wtr template = getTemplate(index); //取原来在当前位置的一行作模板
+        insert(index, template, html);
     }
     public void insert(Wtr template, String html){
         int index = -1;
@@ -184,15 +188,18 @@ public class Wtable {
 
     /**
      * 根据模版样式 插入行
-     * @param index 插入位置下标
+     * @param index 插入位置下标 下标从0开始  -1表示最后一行 -2表示倒数第2行
      * @param template 模版行
      * @param html html片段 片段中应该有多个tr,不需要上级标签table
      */
     public void insert(int index, Wtr template, String html){
         List<Element> trs = src.elements("tr");
+        index = index(index, trs.size());
+        /*
         if(index == -1 && null != template){
             index = trs.indexOf(template.getSrc());
         }
+        */
         try {
             org.dom4j.Document doc = DocumentHelper.parseText("<root>"+html+"</root>");
             Element root = doc.getRootElement();
@@ -205,11 +212,7 @@ public class Wtable {
                     newTr = tr(row).getSrc();
                     trs.remove(newTr);
                 }
-                if(index >= 0) {
-                    trs.add(index++, newTr);
-                }else{
-                    trs.add(newTr);
-                }
+                trs.add(index++, newTr);
             }
             if(isAutoLoad) {
                 reload();
@@ -219,11 +222,41 @@ public class Wtable {
         }
 
     }
+
+    /**
+     * 计算下标
+     * @param index 下标 从0开始 -1表示最后一行 -2表示倒数第2行
+     * @param size 总行数
+     * @return 最终下标
+     */
+    private int index(int index, int size){
+        if(size == 0){
+            return 0;
+        }
+        if(index >= size){
+            index = size -1;
+        }else if(index < 0){
+            //倒数
+            index = size + index;
+            if(index < 0){
+                //超出0按0算
+                index = 0;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 删除行
+     * @param index  下标从0开始  负数表示倒数第index行
+     */
     public void remove(int index){
         List<Element> trs = src.elements("tr");
-        if(index < trs.size() && index >=0){
-            trs.remove(index);
+        if(trs.size() == 0){
+            return;
         }
+        index = index(index, trs.size());
+        trs.remove(index);
         if(isAutoLoad) {
             reload();
         }
@@ -320,7 +353,7 @@ public class Wtable {
     }
     /**
      * 追加行,追加的行将复制上一行的样式(背景色、字体等)
-     * @param index 位置
+     * @param index 位置  下标从0开始  负数表示倒数第index行
      * @param qty 追加数量
      * @return table table
      */
@@ -332,15 +365,12 @@ public class Wtable {
     }
     public Wtable insertRows(Wtr template, int index, int qty){
         List<Element> trs = src.elements("tr");
+        index = index(index, trs.size());
         if(trs.size()>0){
             for(int i=0; i<qty; i++) {
                 Element newTr = template.getSrc().createCopy();
                 DocxUtil.removeContent(newTr);
-                if(index != -1){
-                    trs.add(index++, newTr);
-                }else {
-                    trs.add(newTr);
-                }
+                trs.add(index++, newTr);
             }
         }
         if(isAutoLoad) {
@@ -400,6 +430,7 @@ public class Wtable {
         return wtrs;
     }
     public Wtr getTr(int index){
+        index = index(index, wtrs.size());
         return wtrs.get(index);
     }
     public Wtc getTc(int row, int col){
