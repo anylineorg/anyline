@@ -104,10 +104,20 @@ public class WDocument {
         Element prev = elements.get(index-1);
         parseHtml(parent, null, html);
     }
+
+    /**
+     * 获取书签所在的标签 通常用来定位
+     * @param bookmark 书签
+     * @param tag 上一级标签名 如tbl
+     * @return Element
+     */
     public Element getParent(String bookmark, String tag){
         load();
         Element bk = DocxUtil.bookmark(doc.getRootElement(), bookmark);
         return DocxUtil.getParent(bk, tag);
+    }
+    public Element getParent(String bookmark){
+        return getParent(bookmark, null);
     }
     public Wtable getTable(String bookmark){
         Element src = getParent(bookmark, "tbl");
