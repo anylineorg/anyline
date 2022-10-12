@@ -26,7 +26,6 @@ import org.anyline.entity.Compare;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.run.Run;
-import org.anyline.data.entity.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -362,7 +361,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws exception
+	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
@@ -537,7 +536,7 @@ public interface JDBCAdapter {
 	 * @param tags 上一步查询结果
 	 * @param set set
 	 * @return tags
-	 * @throws exception
+	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
 
@@ -585,7 +584,7 @@ public interface JDBCAdapter {
 	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
-	 * @throws exception
+	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
 
@@ -631,7 +630,7 @@ public interface JDBCAdapter {
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
-	 * @throws exception
+	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;

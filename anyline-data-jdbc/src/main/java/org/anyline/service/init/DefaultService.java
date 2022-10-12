@@ -1639,7 +1639,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return tables(null, null, null, types);
     }
     public List<String> tables(){
-        return tables("TABLE");
+        return tables(null);
     }
 
     @Override
@@ -1820,7 +1820,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public LinkedHashMap<String, Table> tables() {
-            return tables("TABLE");
+            return tables(null);
         }
 
 
@@ -1832,7 +1832,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Table table(String catalog, String schema,String name) {
             Table table = null;
-            LinkedHashMap<String, Table> tables = tables(catalog, schema, name,"TABLE");
+            LinkedHashMap<String, Table> tables = tables(catalog, schema, name,null);
             if(tables.size()>0){
                 table = tables.values().iterator().next();
                 table.setColumns(columns(table));
