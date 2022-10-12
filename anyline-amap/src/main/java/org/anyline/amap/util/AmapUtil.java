@@ -787,10 +787,16 @@ public class AmapUtil {
 						coordinate.setCountyName(adr.getString("district"));
 						coordinate.setTownCode(adr.getString("towncode"));
 						coordinate.setTownName(adr.getString("township"));
-						DataRow street = adr.getRow("streetNumber");
-						if(null != street){
-							coordinate.setStreet(street.getString("street"));
-							coordinate.setStreetNumber(street.getString("number"));
+						DataRow st = adr.getRow("streetNumber");
+						if(null != st){
+							String street = st.getString("street");
+							String number = st.getString("number");
+							if(null != number && null != street){
+								number = number.replace(street,"");
+							}
+							coordinate.setStreet(street);
+							coordinate.setStreetNumber(number);
+
 						}
 						coordinate.setSuccess(true);
 					}
@@ -906,8 +912,13 @@ public class AmapUtil {
 							coordinate.setCountyName(first.getString("DISTRICT"));
 							coordinate.setAddress(first.getString("FORMATTED_ADDRESS"));
 							coordinate.setLevel(first.getInt("LEVEL",0));
-							coordinate.setStreet(first.getString("STREET"));
-							coordinate.setStreetNumber(first.getString("NUMBER"));
+							String street = first.getString("STREET");
+							String number = first.getString("NUMBER");
+							if(null != number && null != street){
+								number = number.replace(street,"");
+							}
+							coordinate.setStreet(street);
+							coordinate.setStreetNumber(number);
 							coordinate.setType(Coordinate.TYPE.GCJ02LL);
 						}
 					}else{

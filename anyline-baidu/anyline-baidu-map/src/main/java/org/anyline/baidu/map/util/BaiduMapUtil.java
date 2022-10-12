@@ -136,8 +136,15 @@ public class BaiduMapUtil {
                     coordinate.setCountyCode(adr.getString("adcode"));
                     coordinate.setTownCode(adr.getString("town_code"));
                     coordinate.setTownName(adr.getString("town"));
-                    coordinate.setStreet(adr.getString("street"));
-                    coordinate.setStreetNumber(adr.getString("street_number"));
+
+                    String street = adr.getString("street");
+                    coordinate.setStreet(street);
+                    String number = adr.getString("street_number");
+                    if(null != number && null != street){
+                        number = number.replace(street,"");
+                    }
+                    coordinate.setStreet(street);
+                    coordinate.setStreetNumber(number);
                     coordinate.setSuccess(true);
                 }
 

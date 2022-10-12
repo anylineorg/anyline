@@ -155,6 +155,7 @@ public class QQMapUtil {
                     throw new AnylineException(status, row.getString("message"));
                 }
             }else{
+                DataRow result = row.getRow("result");
                 DataRow location = row.getRow("result","location");
                 if(null != location){
                     coordinate.setLat(location.getString("lat"));
@@ -166,8 +167,13 @@ public class QQMapUtil {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityName(adr.getString("city"));
                     coordinate.setCountyName(adr.getString("district"));
-                    coordinate.setStreet(adr.getString("street"));
-                    coordinate.setStreetNumber(adr.getString("street_number"));
+                    String street = adr.getString("street");
+                    coordinate.setStreet(street);
+                    String number = adr.getString("street_number");
+                    if(null != number && null != street){
+                        number = number.replace(street,"");
+                    }
+                    coordinate.setStreetNumber(number);
                 }
                 adr = row.getRow("result","ad_info");
                 if(null != adr) {
@@ -178,6 +184,8 @@ public class QQMapUtil {
                     coordinate.setCityCode(cityCode);
                     coordinate.setCountyCode(adcode);
                 }
+                coordinate.setReliability(result.getInt("reliability",0));
+                coordinate.setAccuracy(result.getInt("level",0));
                 coordinate.setSuccess(true);
             }
         }
@@ -239,8 +247,13 @@ public class QQMapUtil {
                     coordinate.setProvinceName(adr.getString("province"));
                     coordinate.setCityName(adr.getString("city"));
                     coordinate.setCountyName(adr.getString("district"));
-                    coordinate.setStreet(adr.getString("street"));
-                    coordinate.setStreetNumber(adr.getString("street_number"));
+
+                    String street = adr.getString("street");
+                    coordinate.setStreet(street);
+                    String number = adr.getString("street_number");
+                    if(null != number && null != street){
+                        number = number.replace(street,"");
+                    }
                 }
                 adr = row.getRow("result","ad_info");
                 if(null != adr) {
