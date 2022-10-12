@@ -124,6 +124,9 @@ public class QQMapUtil {
     public Coordinate geo(String address){
         Coordinate coordinate = new Coordinate();
         coordinate.setAddress(address);
+        if(null != address){
+            address = address.replace(" ","");
+        }
         String api = "/ws/geocoder/v1";
         Map<String,Object> params = new HashMap<>();
         params.put("key", config.KEY);

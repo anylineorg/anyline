@@ -81,7 +81,15 @@ public class Coordinate {
 		} 
 		return false; 
 	}
-
+	public void setLocation(String location){
+		if(BasicUtil.isNotEmpty(location)){
+			String[] tmps = location.split(",");
+			if(tmps.length > 1){
+				point[0] = BasicUtil.parseDouble(tmps[0],null);
+				point[1] = BasicUtil.parseDouble(tmps[1],null);
+			}
+		}
+	}
 	public String getProvinceName() {
 		return this.provinceName;
 	}

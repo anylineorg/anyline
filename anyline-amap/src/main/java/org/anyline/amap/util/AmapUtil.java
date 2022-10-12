@@ -851,7 +851,11 @@ public class AmapUtil {
 	 * @return Coordinate
 	 */ 
 	public Coordinate geo(String address, String city){
-		Coordinate coordinate = null;
+		Coordinate coordinate = new Coordinate();
+		coordinate.setAddress(address);
+		if(null != address){
+			address = address.replace(" ","");
+		}
 		String url = "http://restapi.amap.com/v3/geocode/geo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
@@ -881,7 +885,7 @@ public class AmapUtil {
 						}catch (Exception e){
 							e.printStackTrace();
 						}
-						return regeo(coordinate);
+						return geo(address);
 					}else{
 						throw new AnylineException(status, row.getString("INFO"));
 					}
@@ -891,8 +895,8 @@ public class AmapUtil {
 						set = row.getSet("geocodes");
 						if(set.size()>0){
 							DataRow first = set.getRow(0);
-							coordinate = new Coordinate(first.getString("LOCATION"));
 							String adcode = first.getString("ADCODE");
+							coordinate.setLocation(first.getString("LOCATION"));
 							coordinate.setCode(adcode);
 							coordinate.setProvinceCode(BasicUtil.cut(adcode,0,2));
 							coordinate.setProvinceName(first.getString("PROVINCE"));

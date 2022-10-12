@@ -52,6 +52,9 @@ public class BaiduMapUtil {
     public Coordinate geo(String address) {
         Coordinate coordinate = new Coordinate();
         coordinate.setAddress(address);
+        if(null != address){
+            address = address.replace(" ","");
+        }
         String url = "https://api.map.baidu.com/geocoding/v3/?ak="+config.AK+"&address="+address+"&output=json";
         String txt = HttpUtil.get(url).getText();
         DataRow row = DataRow.parseJson(txt);
