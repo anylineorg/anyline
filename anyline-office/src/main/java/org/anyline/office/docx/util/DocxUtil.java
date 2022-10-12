@@ -302,13 +302,22 @@ public class DocxUtil {
         return false;
     }
 
-    public static Element getParent(Element element, String parent){
+    /**
+     * 获取element的上一级中第一个标签名=tag的上级
+     * @param element 当前节点
+     * @param tag 上级标签名 如tbl
+     * @return Element
+     */
+    public static Element getParent(Element element, String tag){
         Element p = element.getParent();
+        if(null == tag){
+            return p;
+        }
         while(true){
             if(null == p){
                 break;
             }
-            if(p.getName().equalsIgnoreCase(parent)) {
+            if(p.getName().equalsIgnoreCase(tag)) {
                 return p;
             }
             p = p.getParent();
