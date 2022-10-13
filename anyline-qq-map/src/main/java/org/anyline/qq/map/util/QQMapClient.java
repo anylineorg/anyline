@@ -4,6 +4,7 @@ import org.anyline.client.map.AbstractMapClient;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
+import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
 import org.anyline.client.map.MapClient;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class QQMapClient extends AbstractMapClient implements MapClient {
@@ -54,19 +56,6 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
 
 
     /**
-     * 参数签名
-     * @param api 接口
-     * @param params 参数
-     * @return String
-     */
-    private String sign(String api, Map<String, Object> params){
-        String sign = null;
-        String src = api + "?" + BeanUtil.map2string(params, true, true)+config.SECRET;
-        sign = MD5Util.crypto(src);
-        return sign;
-    }
-
-    /**
      * 通过IP地址获取其当前所在地理位置
      * @param ip ip
      * @return 坐标
@@ -78,35 +67,22 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
         Map<String, Object> params = new HashMap<>();
         params.put("ip", ip);
         params.put("key", config.KEY);
-        String sign = sign(api, params);
-        String url = QQMapConfig.HOST + api+"?"+BeanUtil.map2string(params, false,true)+"&sig="+sign;
-        String txt = HttpUtil.get(url).getText();
-        DataRow row = DataRow.parseJson(txt);
+        DataRow row = api(api, params);
         if(null != row){
-            int status = row.getInt("status",-1);
-            if(status != 0){
-                // [code:121][info:此key每日调用量已达到上限]
-                log.warn("[IP地址解析][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
-                log.warn("[IP地址解析][response:{}]",txt);
-                if("121".equals(status)) {
-                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+            coordinate = new Coordinate();
+            DataRow result = row.getRow("result");
+            if(null != result) {
+                DataRow point = result.getRow("location");
+                if(null != point){
+                    coordinate.setLng(point.getDouble("lng", -1.0));
+                    coordinate.setLat(point.getDouble("lat", -1.d));
                 }
-            }else{
-                coordinate = new Coordinate();
-                DataRow result = row.getRow("result");
-                if(null != result) {
-                    DataRow point = result.getRow("location");
-                    if(null != point){
-                        coordinate.setLng(point.getDouble("lng", -1.0));
-                        coordinate.setLat(point.getDouble("lat", -1.d));
-                    }
-                    DataRow ad = result.getRow("ad_info");
-                    if(null != ad){
-                        coordinate.setProvinceName(ad.getString("province"));
-                        coordinate.setCityName(ad.getString("city"));
-                        coordinate.setCountyName(ad.getString("district"));
-                        coordinate.setCountyCode(ad.getString("adcode"));
-                    }
+                DataRow ad = result.getRow("ad_info");
+                if(null != ad){
+                    coordinate.setProvinceName(ad.getString("province"));
+                    coordinate.setCityName(ad.getString("city"));
+                    coordinate.setCountyName(ad.getString("district"));
+                    coordinate.setCountyCode(ad.getString("adcode"));
                 }
             }
         }
@@ -132,70 +108,42 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
         }
         String api = "/ws/geocoder/v1";
         Map<String,Object> params = new HashMap<>();
-        params.put("key", config.KEY);
         params.put("address", address);
-        String sign = sign(api, params);
-        try {
-            params.put("address", URLEncoder.encode(address, "UTF-8"));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        String url = QQMapConfig.HOST + api + "?" + BeanUtil.map2string(params, false,true) + "&sig=" + sign;
-
-        String txt = HttpUtil.get(url).getText();
-        DataRow row = DataRow.parseJson(txt);
+        DataRow row = api(api, params);
         if(null != row){
-            int status = row.getInt("status",-1);
-            if(status != 0){
-                log.warn("[地址解析][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
-                log.warn("[地址解析][response:{}]",txt);
-                if("121".equals(status)) {
-                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
-                }else if("120".equals(status)){
-                    log.warn("并发量已达到上限,sleep 50 ...");
-                    try {
-                        Thread.sleep(50);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    return geo(address);
-                }else{
-                    throw new AnylineException(status, row.getString("message"));
-                }
-            }else{
-                DataRow result = row.getRow("result");
-                DataRow location = row.getRow("result","location");
-                if(null != location){
-                    coordinate.setLat(location.getString("lat"));
-                    coordinate.setLng(location.getString("lng"));
-                }
-
-                DataRow adr = row.getRow("result","address_components");
-                if(null != adr) {
-                    coordinate.setProvinceName(adr.getString("province"));
-                    coordinate.setCityName(adr.getString("city"));
-                    coordinate.setCountyName(adr.getString("district"));
-                    String street = adr.getString("street");
-                    coordinate.setStreet(street);
-                    String number = adr.getString("street_number");
-                    if(null != number && null != street){
-                        number = number.replace(street,"");
-                    }
-                    coordinate.setStreetNumber(number);
-                }
-                adr = row.getRow("result","ad_info");
-                if(null != adr) {
-                    String adcode = adr.getString("adcode");
-                    String provinceCode = adcode.substring(0,2);
-                    String cityCode = adcode.substring(0,4);
-                    coordinate.setProvinceCode(provinceCode);
-                    coordinate.setCityCode(cityCode);
-                    coordinate.setCountyCode(adcode);
-                }
-                coordinate.setReliability(result.getInt("reliability",0));
-                coordinate.setAccuracy(result.getInt("level",0));
-                coordinate.setSuccess(true);
+            DataRow result = row.getRow("result");
+            DataRow location = row.getRow("result","location");
+            if(null != location){
+                coordinate.setLat(location.getString("lat"));
+                coordinate.setLng(location.getString("lng"));
             }
+
+            DataRow adr = row.getRow("result","address_components");
+            if(null != adr) {
+                coordinate.setProvinceName(adr.getString("province"));
+                coordinate.setCityName(adr.getString("city"));
+                coordinate.setCountyName(adr.getString("district"));
+                String street = adr.getString("street");
+                coordinate.setStreet(street);
+                String number = adr.getString("street_number");
+                if(null != number && null != street){
+                    number = number.replace(street,"");
+                }
+                coordinate.setStreetNumber(number);
+            }
+            adr = row.getRow("result","ad_info");
+            if(null != adr) {
+                String adcode = adr.getString("adcode");
+                String provinceCode = adcode.substring(0,2);
+                String cityCode = adcode.substring(0,4);
+                coordinate.setProvinceCode(provinceCode);
+                coordinate.setCityCode(cityCode);
+                coordinate.setCountyCode(adcode);
+            }
+            coordinate.setReliability(result.getInt("reliability",0));
+            coordinate.setAccuracy(result.getInt("level",0));
+            coordinate.setSuccess(true);
+
         }
         return coordinate;
     }
@@ -207,6 +155,8 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
      */
     @Override
     public Coordinate regeo(Coordinate coordinate){
+        String api = "/ws/geocoder/v1";
+
         Coordinate.TYPE _type = coordinate.getType();
         Double _lng = coordinate.getLng();
         Double _lat = coordinate.getLat();
@@ -214,75 +164,98 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
         coordinate.convert(Coordinate.TYPE.GCJ02LL);
         coordinate.setSuccess(false);
 
-        String api = "/ws/geocoder/v1";
         Map<String, Object> params = new HashMap<>();
         params.put("location", coordinate.getLat()+","+coordinate.getLng());        // 这里是纬度在前
-        params.put("key", config.KEY);
-        String sign = sign(api, params);
-        String url = QQMapConfig.HOST + api + "?" + BeanUtil.map2string(params, false,true) + "&sig=" + sign;
 
         // 换回原坐标系
         coordinate.setLng(_lng);
         coordinate.setLat(_lat);
         coordinate.setType(_type);
 
-        String txt = HttpUtil.get(url).getText();
-        DataRow row = DataRow.parseJson(txt);
+        DataRow row = api(api, params);
         if(null != row){
-            int status = row.getInt("status",-1);
-            if(status != 0){
-                log.warn("[逆地理编码][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
-                log.warn("[逆地理编码][response:{}]",txt);
-                if("121".equals(status)) {
-                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
-                }else if("120".equals(status)){
-                    log.warn("并发量已达到上限,sleep 50 ...");
-                    try {
-                        Thread.sleep(50);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    return regeo(coordinate);
-                }else{
-                    throw new AnylineException(status, row.getString("message"));
-                }
-            }else{
-                DataRow result = row.getRow("result");
-                if(null != result) {
-                    coordinate.setAddress(result.getString("address"));
-                }
-                DataRow adr = row.getRow("result","address_component");
-                if(null != adr) {
-                    coordinate.setProvinceName(adr.getString("province"));
-                    coordinate.setCityName(adr.getString("city"));
-                    coordinate.setCountyName(adr.getString("district"));
-
-                    String street = adr.getString("street");
-                    coordinate.setStreet(street);
-                    String number = adr.getString("street_number");
-                    if(null != number && null != street){
-                        number = number.replace(street,"");
-                    }
-                }
-                adr = row.getRow("result","ad_info");
-                if(null != adr) {
-                    String adcode = adr.getString("adcode");
-                    String provinceCode = adcode.substring(0,2);
-                    String cityCode = adcode.substring(0,4);
-                    coordinate.setProvinceCode(provinceCode);
-                    coordinate.setCityCode(cityCode);
-                    coordinate.setCountyCode(adcode);
-                }
-                adr = row.getRow("result","address_reference","town");
-                if(null != adr){
-                    coordinate.setTownCode(adr.getString("id"));
-                    coordinate.setTownName(adr.getString("title"));
-                }
-                coordinate.setSuccess(true);
+            DataRow result = row.getRow("result");
+            if(null != result) {
+                coordinate.setAddress(result.getString("address"));
             }
+            DataRow adr = row.getRow("result","address_component");
+            if(null != adr) {
+                coordinate.setProvinceName(adr.getString("province"));
+                coordinate.setCityName(adr.getString("city"));
+                coordinate.setCountyName(adr.getString("district"));
+
+                String street = adr.getString("street");
+                coordinate.setStreet(street);
+                String number = adr.getString("street_number");
+                if(null != number && null != street){
+                    number = number.replace(street,"");
+                }
+            }
+            adr = row.getRow("result","ad_info");
+            if(null != adr) {
+                String adcode = adr.getString("adcode");
+                String provinceCode = adcode.substring(0,2);
+                String cityCode = adcode.substring(0,4);
+                coordinate.setProvinceCode(provinceCode);
+                coordinate.setCityCode(cityCode);
+                coordinate.setCountyCode(adcode);
+            }
+            adr = row.getRow("result","address_reference","town");
+            if(null != adr){
+                coordinate.setTownCode(adr.getString("id"));
+                coordinate.setTownName(adr.getString("title"));
+            }
+            coordinate.setSuccess(true);
+
         }
         return coordinate;
     }
 
+
+
+    /**
+     * 参数签名
+     * @param api 接口
+     * @param params 参数
+     * @return String
+     */
+    private String sign(String api, Map<String, Object> params){
+        params.put("key", config.KEY);
+        String sign = null;
+        String src = api + "?" + BeanUtil.map2string(params) + config.SECRET;
+        sign = MD5Util.crypto(src);
+        params.put("sig", sign);
+        return sign;
+    }
+    private DataRow api(String api, Map<String,Object> params){
+        DataRow row = null;
+        sign(api, params);
+        HttpResponse response = HttpUtil.get(QQMapConfig.HOST + api,"UTF-8", params);
+        int status = response.getStatus();
+        if(status == 200){
+            String txt = response.getText();
+            row = DataRow.parseJson(txt);
+            if(null == row){
+                status = row.getInt("status",-1);
+                if(status != 0) {
+                    log.warn("[{}][执行失败][status:{}][info:{}]", api , status, row.getString("message"));
+                    log.warn("[{}][response:{}]", api, txt);
+                    if ("302".equals(status)) {
+                        throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                    } else if ("401".equals(status) || "402".equals(status)) {
+                        try {
+                            log.warn("并发量已达到上限,sleep 50 ...");
+                            Thread.sleep(50);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        throw new AnylineException(status, row.getString("message"));
+                    }
+                }
+            }
+        }
+        return row;
+    }
 
 }
