@@ -159,6 +159,7 @@ public class BaiduMapClient extends AbstractMapClient implements MapClient {
                         try {
                             log.warn("并发量已达到上限,sleep 50 ...");
                             Thread.sleep(50);
+                            api(api, params);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

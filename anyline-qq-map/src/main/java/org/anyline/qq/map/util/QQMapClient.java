@@ -249,6 +249,7 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        api(api, params);
                     } else {
                         throw new AnylineException(status, row.getString("message"));
                     }

@@ -2,6 +2,7 @@ package org.anyline.amap.util;
 
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
+import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
 import org.anyline.client.map.AbstractMapClient;
@@ -60,7 +61,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 * @return String
 	 */ 
 	public String create(String name, int loctype, String lng, String lat, String address, Map<String, Object> extras){ 
-		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/create"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/create"; 
 		Map<String,Object> params = new HashMap<>();
 		params.put("key", config.KEY);
 		params.put("tableid", config.TABLE);
@@ -174,7 +175,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		params.put("tableid", config.TABLE); 
 		params.put("ids", param); 
 		params.put("sig", sign(params)); 
-		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/delete"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[删除标注][param:{}]",BeanUtil.map2string(params)); 
@@ -209,7 +210,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public int update(String id, String name, int loctype, String lng, String lat, String address, Map<String,Object> extras){ 
 		int cnt = 0; 
-		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/update"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/update"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -285,7 +286,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public String createTable(String name){ 
 		String tableId = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datamanage/table/create"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/table/create"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("name", name); 
@@ -314,7 +315,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/local"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/local"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -371,7 +372,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet around(String center, int radius, String keywords, Map<String,String> filters, String sortrule, int limit, int page){ 
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/around"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/around"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -482,7 +483,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet list(String filter, String sortrule, int limit, int page){ 
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/list"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/list"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -534,7 +535,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataRow info(String id){ 
 		DataRow row = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/id"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/id"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -569,7 +570,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet statByProvince(String keywords, String country, String filter){ 
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/province"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -608,7 +609,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet statByCity(String keywords, String province, String filter){ 
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/city"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/city"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -648,7 +649,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet statByDistrict(String keywords, String province, String city, String filter){ 
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/province"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -686,7 +687,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 */ 
 	public DataSet nearby(String center, String radius, int limit, int timerange ){ 
 		DataSet set = null; 
-		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/province"; 
+		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("center", center); 
@@ -738,73 +739,46 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		coordinate.convert(Coordinate.TYPE.GCJ02LL);
 		coordinate.setSuccess(false);
 		DataRow row = null; 
-		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
+		String api = "/v3/geocode/regeo";
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("location", coordinate.getLng()+","+coordinate.getLat());
-		String sign = sign(params); 
-		params.put("sig", sign);
 
 		// 换回原坐标系
 		coordinate.setLng(_lng);
 		coordinate.setLat(_lat);
 		coordinate.setType(_type);
 
-		String txt = HttpUtil.get(url, "UTF-8", params).getText();
-		row = DataRow.parseJson(txt);
-		if(null != row){
-			int status = row.getInt("STATUS",0);
-			if(status ==0){
-				// [逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
-				log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
-				log.warn("[逆地理编码][response:{}]",txt);
-				String info_code = row.getString("INFOCODE");
-				if("10044".equals(info_code)) {
-					throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
-				}else if("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)){
-					log.warn("并发量已达到上限,sleep 50 ...");
-					try {
-						Thread.sleep(50);
-					}catch (Exception e){
-						e.printStackTrace();
-					}
-					return regeo(coordinate);
-				}else{
-					throw new AnylineException(status, row.getString("INFO"));
-				}
-			}else {
-				row = row.getRow("regeocode");
-				if (null != row) {
-					coordinate.setAddress(row.getString("formatted_address"));
+		row = get(AmapConfig.DEFAULT_HOST, api, params);
+		row = row.getRow("regeocode");
+		if (null != row) {
+			coordinate.setAddress(row.getString("formatted_address"));
 
-					DataRow adr = row.getRow("addressComponent");
-					if (null != adr) {
-						String adcode = adr.getString("adcode");
-						String provinceCode = adcode.substring(0,2);
-						String cityCode = adcode.substring(0,4);
-						coordinate.setProvinceCode(provinceCode);
-						coordinate.setProvinceName(adr.getString("province"));
-						coordinate.setCityCode(cityCode);
-						coordinate.setCityName(adr.getString("city"));
-						coordinate.setCountyCode(adcode);
-						coordinate.setCountyName(adr.getString("district"));
-						coordinate.setTownCode(adr.getString("towncode"));
-						coordinate.setTownName(adr.getString("township"));
-						DataRow st = adr.getRow("streetNumber");
-						if(null != st){
-							String street = st.getString("street");
-							String number = st.getString("number");
-							if(null != number && null != street){
-								number = number.replace(street,"");
-							}
-							coordinate.setStreet(street);
-							coordinate.setStreetNumber(number);
-
-						}
-						coordinate.setSuccess(true);
+			DataRow adr = row.getRow("addressComponent");
+			if (null != adr) {
+				String adcode = adr.getString("adcode");
+				String provinceCode = adcode.substring(0, 2);
+				String cityCode = adcode.substring(0, 4);
+				coordinate.setProvinceCode(provinceCode);
+				coordinate.setProvinceName(adr.getString("province"));
+				coordinate.setCityCode(cityCode);
+				coordinate.setCityName(adr.getString("city"));
+				coordinate.setCountyCode(adcode);
+				coordinate.setCountyName(adr.getString("district"));
+				coordinate.setTownCode(adr.getString("towncode"));
+				coordinate.setTownName(adr.getString("township"));
+				DataRow st = adr.getRow("streetNumber");
+				if (null != st) {
+					String street = st.getString("street");
+					String number = st.getString("number");
+					if (null != number && null != street) {
+						number = number.replace(street, "");
 					}
+					coordinate.setStreet(street);
+					coordinate.setStreetNumber(number);
 
 				}
+				coordinate.setSuccess(true);
 			}
 		}
 		return coordinate;
@@ -822,73 +796,43 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		if(null != address){
 			address = address.replace(" ","");
 		}
-		String url = "http://restapi.amap.com/v3/geocode/geo"; 
+		String api = "/v3/geocode/geo";
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("address", address); 
 		if(BasicUtil.isNotEmpty(city)){ 
 			params.put("city", city); 
-		} 
-		String sign = sign(params); 
-		params.put("sig", sign); 
-		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
-		try{ 
-			DataRow row = DataRow.parseJson(txt);
-			if(null != row){
-
-				int status = row.getInt("STATUS",0);
-				if(status ==0){
-					// [逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
-					log.warn("[地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
-					log.warn("[地理编码][response:{}]",txt);
-					String info_code = row.getString("INFOCODE");
-					if("10044".equals(info_code)) {
-						throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
-					}else if("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)){
-						log.warn("并发量已达到上限,sleep 50 ...");
-						try {
-							Thread.sleep(50);
-						}catch (Exception e){
-							e.printStackTrace();
-						}
-						return geo(address);
-					}else{
-						throw new AnylineException(status, row.getString("INFO"));
-					}
-				}else {
-					DataSet set = null;
-					if(row.containsKey("geocodes")){
-						set = row.getSet("geocodes");
-						if(set.size()>0){
-							DataRow first = set.getRow(0);
-							String adcode = first.getString("ADCODE");
-							coordinate.setLocation(first.getString("LOCATION"));
-							coordinate.setCode(adcode);
-							coordinate.setProvinceCode(BasicUtil.cut(adcode,0,2));
-							coordinate.setProvinceName(first.getString("PROVINCE"));
-							coordinate.setCityCode(BasicUtil.cut(adcode,0,4));
-							coordinate.setCityName(first.getString("CITY"));
-							coordinate.setCountyCode(first.getString("ADCODE"));
-							coordinate.setCountyName(first.getString("DISTRICT"));
-							coordinate.setAddress(first.getString("FORMATTED_ADDRESS"));
-							coordinate.setLevel(first.getInt("LEVEL",0));
-							String street = first.getString("STREET");
-							String number = first.getString("NUMBER");
-							if(null != number && null != street){
-								number = number.replace(street,"");
-							}
-							coordinate.setStreet(street);
-							coordinate.setStreetNumber(number);
-							coordinate.setType(Coordinate.TYPE.GCJ02LL);
-						}
-					}else{
-						log.warn("[坐标查询失败][info:{}][params:{}]",row.getString("info"),BeanUtil.map2string(params));
-					}
-				}
-			}
-		}catch(Exception e){ 
-			log.warn("[坐标查询失败][error:{}]",e.getMessage()); 
 		}
+		DataRow row = get(AmapConfig.DEFAULT_HOST, api,params);
+		DataSet set = null;
+		if(row.containsKey("geocodes")){
+			set = row.getSet("geocodes");
+			if(set.size()>0){
+				DataRow first = set.getRow(0);
+				String adcode = first.getString("ADCODE");
+				coordinate.setLocation(first.getString("LOCATION"));
+				coordinate.setCode(adcode);
+				coordinate.setProvinceCode(BasicUtil.cut(adcode,0,2));
+				coordinate.setProvinceName(first.getString("PROVINCE"));
+				coordinate.setCityCode(BasicUtil.cut(adcode,0,4));
+				coordinate.setCityName(first.getString("CITY"));
+				coordinate.setCountyCode(first.getString("ADCODE"));
+				coordinate.setCountyName(first.getString("DISTRICT"));
+				coordinate.setAddress(first.getString("FORMATTED_ADDRESS"));
+				coordinate.setLevel(first.getInt("LEVEL",0));
+				String street = first.getString("STREET");
+				String number = first.getString("NUMBER");
+				if(null != number && null != street){
+					number = number.replace(street,"");
+				}
+				coordinate.setStreet(street);
+				coordinate.setStreetNumber(number);
+				coordinate.setType(Coordinate.TYPE.GCJ02LL);
+			}
+		}else{
+			log.warn("[坐标查询失败][info:{}][params:{}]",row.getString("info"),BeanUtil.map2string(params));
+		}
+
 		if(null != coordinate) {
 		}
 		return coordinate;
@@ -963,30 +907,49 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		params.put("keywords", keywords);
 		params.put("page","1");
 		params.put("offset","20");
-		DataRow row = api(url,params);
+		DataRow row = get(AmapConfig.DEFAULT_HOST, url,params);
 		if(row.getInt("status",0)==1){
 			List<DataRow> items = (List<DataRow>)row.get("POIS");
 			for(DataRow item:items){
 				set.add(item);
 			}
-
 		}
 		return set;
 	}
 
-	public DataRow api(String url, Map<String,Object> params){
-		params.put("key", config.KEY);
-		String sign = sign(params);
-		params.put("sig", sign);
-		String txt = HttpUtil.get(url, "UTF-8", params).getText();
+	public DataRow get(String host, String api, Map<String,Object> params){
 		DataRow row = null;
-		try {
+		sign(params);
+		HttpResponse response = HttpUtil.get(host + api,"UTF-8", params);
+		int status = response.getStatus();
+		if(status == 200) {
+			String txt = response.getText();
 			row = DataRow.parseJson(txt);
-		}catch (Exception e){
-			row = new DataRow();
-			row.put("status",0);
-			row.put("info", e.getMessage());
-			e.printStackTrace();
+			if(null == row){
+				throw new AnylineException(status, row.getString("INFO"));
+			}
+			status = row.getInt("STATUS", 0);
+			if (status == 0) {
+				// [逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
+				log.warn("[{}][执行失败][code:{}][info:{}]", api, row.getString("INFOCODE"), row.getString("INFO"));
+				log.warn("[{}}][response:{}]", txt);
+				String info_code = row.getString("INFOCODE");
+				if ("10044".equals(info_code)) {
+					throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+				} else if ("10019".equals(info_code) || "10020".equals(info_code) || "10021".equals(info_code)) {
+					log.warn("并发量已达到上限,sleep 50 ...");
+					try {
+						Thread.sleep(50);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return get(host, api, params);
+				} else {
+					throw new AnylineException(status, row.getString("INFO"));
+				}
+			}
+		}else{
+			throw new AnylineException(status, "api执行异常");
 		}
 		return row;
 	}
@@ -999,6 +962,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String sign = ""; 
 		sign = BeanUtil.map2string(params) + config.SECRET;
 		sign = MD5Util.sign(sign,"UTF-8");
+		params.put("sig", sign);
 		return sign; 
 	}
 
