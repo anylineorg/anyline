@@ -66,7 +66,7 @@ public class QQMapConfig extends AnylineConfig {
     }
     public static QQMapConfig register(String instance, DataRow row){
         QQMapConfig config = parse(QQMapConfig.class, instance, row, instances, compatibles);
-        QQMapUtil.getInstance(instance);
+        QQMapClient.getInstance(instance);
         return config;
     }
     public static QQMapConfig register(DataRow row){

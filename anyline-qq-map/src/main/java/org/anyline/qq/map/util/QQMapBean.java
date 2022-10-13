@@ -23,8 +23,8 @@ public class QQMapBean implements InitializingBean {
         }
         QQMapConfig.register(KEY, BasicUtil.evl(SECRET, QQMapConfig.DEFAULT_SECRET));
     }
-    @Bean("anyline.qq.map.init.util")
-    public QQMapUtil instance(){
-        return QQMapUtil.getInstance();
+    @Bean("anyline.qq.map.init.client")
+    public QQMapClient instance(){
+        return QQMapClient.getInstance();
     }
 }

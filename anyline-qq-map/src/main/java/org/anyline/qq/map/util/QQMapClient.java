@@ -4,21 +4,19 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.AnylineConfig;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.MD5Util;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class QQMapUtil {
-    private static Logger log = LoggerFactory.getLogger(QQMapUtil.class);
+public class QQMapClient implements MapClient {
+    private static Logger log = LoggerFactory.getLogger(QQMapClient.class);
     public QQMapConfig config = null;
-    private static Hashtable<String, QQMapUtil> instances = new Hashtable<>();
+    private static Hashtable<String, QQMapClient> instances = new Hashtable<>();
 
     static {
         Hashtable<String, AnylineConfig> configs = QQMapConfig.getInstances();
@@ -26,30 +24,30 @@ public class QQMapUtil {
             instances.put(key, getInstance(key));
         }
     }
-    public static Hashtable<String, QQMapUtil> getInstances(){
+    public static Hashtable<String, QQMapClient> getInstances(){
         return instances;
     }
     public QQMapConfig getConfig(){
         return config;
     }
-    public static QQMapUtil getInstance() {
+    public static QQMapClient getInstance() {
         return getInstance("default");
     }
 
-    public static QQMapUtil getInstance(String key) {
+    public static QQMapClient getInstance(String key) {
         if (BasicUtil.isEmpty(key)) {
             key = "default";
         }
-        QQMapUtil util = instances.get(key);
-        if (null == util) {
+        QQMapClient client = instances.get(key);
+        if (null == client) {
             QQMapConfig config = QQMapConfig.getInstance(key);
             if(null != config) {
-                util = new QQMapUtil();
-                util.config = config;
-                instances.put(key, util);
+                client = new QQMapClient();
+                client.config = config;
+                instances.put(key, client);
             }
         }
-        return util;
+        return client;
     }
 
 
@@ -71,6 +69,7 @@ public class QQMapUtil {
      * @param ip ip
      * @return 坐标
      */
+    @Override
     public Coordinate ip(String ip) {
         Coordinate coordinate = null;
         String api = "/ws/location/v1/ip";
@@ -118,9 +117,10 @@ public class QQMapUtil {
     /**
      * 根据地址解析 坐标
      * https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder
-     * @param address 地址
+     * @param address 地址 用原文签名 用url encode后提交
      * @return Coordinate
      */
+    @Override
     public Coordinate geo(String address){
         Coordinate coordinate = new Coordinate();
         coordinate.setAddress(address);
@@ -132,6 +132,11 @@ public class QQMapUtil {
         params.put("key", config.KEY);
         params.put("address", address);
         String sign = sign(api, params);
+        try {
+            params.put("address", URLEncoder.encode(address, "UTF-8"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         String url = QQMapConfig.HOST + api + "?" + BeanUtil.map2string(params, false,true) + "&sig=" + sign;
 
         String txt = HttpUtil.get(url).getText();
@@ -197,6 +202,7 @@ public class QQMapUtil {
      * @param coordinate 坐标
      * @return Coordinate
      */
+    @Override
     public Coordinate regeo(Coordinate coordinate){
         Coordinate.TYPE _type = coordinate.getType();
         Double _lng = coordinate.getLng();
@@ -274,12 +280,15 @@ public class QQMapUtil {
         }
         return coordinate;
     }
+    @Override
     public Coordinate regeo(double lng, double lat){
         return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
     }
+    @Override
     public Coordinate regeo(String[] point){
         return regeo(point[0], point[1]);
     }
+    @Override
     public Coordinate regeo(double[] point){
         return regeo(point[0], point[1]);
     }
@@ -289,14 +298,17 @@ public class QQMapUtil {
      * @param lat 纬度
      * @return Coordinate
      */
+    @Override
     public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
         Coordinate coordinate = new Coordinate(type, lng, lat);
         return regeo(coordinate);
     }
 
+    @Override
     public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
         return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
+    @Override
     public Coordinate regeo(String lng, String lat){
         return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
     }
