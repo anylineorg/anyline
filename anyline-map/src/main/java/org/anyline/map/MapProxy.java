@@ -1,13 +1,12 @@
 package org.anyline.map;
 
-import org.anyline.amap.util.AmapUtil;
-import org.anyline.baidu.map.util.BaiduMapUtil;
+import org.anyline.amap.util.AmapClient;
+import org.anyline.baidu.map.util.BaiduMapClient;
 import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
-import org.anyline.qq.map.util.QQMapUtil;
+import org.anyline.qq.map.util.QQMapClient;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
-import org.anyline.util.GISUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -17,9 +16,9 @@ import java.util.Map;
 
 @Component("anyline.map.proxy")
 public class MapProxy {
-    private static AmapUtil amap;
-    private static QQMapUtil qmap;
-    private static BaiduMapUtil bmap;
+    private static AmapClient amap;
+    private static QQMapClient qmap;
+    private static BaiduMapClient bmap;
     public static Map<String,String> over_limits = new HashMap<>();
     public MapProxy(){}
     private static boolean enable(String api, String platform){
@@ -93,43 +92,43 @@ public class MapProxy {
         return regeo(coordinate.getType(), coordinate.getLng(), coordinate.getLat());
     }
 
-    public static AmapUtil getAmap() {
+    public static AmapClient getAmap() {
         return MapProxy.amap;
     }
-    public  static void setAmap(AmapUtil amap) {
+    public  static void setAmap(AmapClient amap) {
         MapProxy.amap = amap;
     }
 
-    public static QQMapUtil getQmap() {
+    public static QQMapClient getQmap() {
         return MapProxy.qmap;
     }
 
-    public static void setQmap(QQMapUtil qmap) {
+    public static void setQmap(QQMapClient qmap) {
         MapProxy.qmap = qmap;
     }
 
-    public static BaiduMapUtil getBmap() {
+    public static BaiduMapClient getBmap() {
         return MapProxy.bmap;
     }
 
-    public static void setBmap(BaiduMapUtil bmap) {
+    public static void setBmap(BaiduMapClient bmap) {
         MapProxy.bmap = bmap;
     }
 
 
     @Autowired(required = false)
-    @Qualifier("anyline.amap.init.util")
-    public void init(AmapUtil amap){
+    @Qualifier("anyline.amap.init.client")
+    public void init(AmapClient amap){
         MapProxy.amap = amap;
     }
     @Autowired(required = false)
-    @Qualifier("anyline.qq.map.init.util")
-    public void init(QQMapUtil qmap){
+    @Qualifier("anyline.qq.map.init.client")
+    public void init(QQMapClient qmap){
         MapProxy.qmap = qmap;
     }
     @Autowired(required = false)
-    @Qualifier("anyline.baidu.map.init.util")
-    public void init(BaiduMapUtil bmap){
+    @Qualifier("anyline.baidu.map.init.client")
+    public void init(BaiduMapClient bmap){
         MapProxy.bmap = bmap;
     }
 
