@@ -10,6 +10,7 @@ import org.anyline.client.map.MapClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -920,6 +921,14 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	public DataRow get(String host, String api, Map<String,Object> params){
 		DataRow row = null;
 		sign(params);
+		try {
+			for (String key : params.keySet()) {
+				String value = (String) params.get(key);
+				params.put(key, URLEncoder.encode(value, "UTF-8"));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		HttpResponse response = HttpUtil.get(host + api,"UTF-8", params);
 		int status = response.getStatus();
 		if(status == 200) {
