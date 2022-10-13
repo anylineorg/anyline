@@ -6,15 +6,16 @@ import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.MapClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Hashtable;
 import java.util.Map;
-public class BaiduMapUtil {
-    private static Logger log = LoggerFactory.getLogger(BaiduMapUtil.class);
+public class BaiduMapClient implements MapClient {
+    private static Logger log = LoggerFactory.getLogger(BaiduMapClient.class);
     public BaiduMapConfig config = null;
-    private static Hashtable<String, BaiduMapUtil> instances = new Hashtable<>();
+    private static Hashtable<String, BaiduMapClient> instances = new Hashtable<>();
 
     static {
         Hashtable<String, AnylineConfig> configs = BaiduMapConfig.getInstances();
@@ -22,33 +23,44 @@ public class BaiduMapUtil {
             instances.put(key, getInstance(key));
         }
     }
-    public static Hashtable<String, BaiduMapUtil> getInstances(){
+    public static Hashtable<String, BaiduMapClient> getInstances(){
         return instances;
     }
 
     public BaiduMapConfig getConfig(){
         return config;
     }
-    public static BaiduMapUtil getInstance() {
+    public static BaiduMapClient getInstance() {
         return getInstance("default");
     }
 
-    public static BaiduMapUtil getInstance(String key) {
+    public static BaiduMapClient getInstance(String key) {
         if (BasicUtil.isEmpty(key)) {
             key = "default";
         }
-        BaiduMapUtil util = instances.get(key);
-        if (null == util) {
+        BaiduMapClient client = instances.get(key);
+        if (null == client) {
             BaiduMapConfig config = BaiduMapConfig.getInstance(key);
             if(null != config) {
-                util = new BaiduMapUtil();
-                util.config = config;
-                instances.put(key, util);
+                client = new BaiduMapClient();
+                client.config = config;
+                instances.put(key, client);
             }
         }
-        return util;
+        return client;
     }
 
+    /**
+     * 通过IP地址获取其当前所在地理位置
+     * @param ip ip
+     * @return 坐标
+     */
+    @Override
+    public Coordinate ip(String ip) {
+        return null;
+    }
+
+    @Override
     public Coordinate geo(String address) {
         Coordinate coordinate = new Coordinate();
         coordinate.setAddress(address);
@@ -88,6 +100,7 @@ public class BaiduMapUtil {
         }
         return coordinate;
     }
+    @Override
     public Coordinate regeo(Coordinate coordinate) {
         Coordinate.TYPE _type = coordinate.getType();
         Double _lng = coordinate.getLng();
@@ -153,22 +166,28 @@ public class BaiduMapUtil {
         return coordinate;
     }
 
+    @Override
     public Coordinate regeo(double lng, double lat) {
         return regeo(Coordinate.TYPE.BD09LL,lng, lat);
     }
+    @Override
     public Coordinate regeo(double[] point) {
         return regeo(point[0], point[1]);
     }
+    @Override
     public Coordinate regeo(String[] point) {
         return regeo(point[0], point[1]);
     }
+    @Override
     public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat) {
         Coordinate coordinate = new Coordinate(type, lng, lat);
         return regeo(coordinate);
     }
+    @Override
     public Coordinate regeo(String lng, String lat) {
         return regeo(Coordinate.TYPE.BD09LL, lng, lat);
     }
+    @Override
     public Coordinate regeo(Coordinate.TYPE type, String lng, String lat) {
         return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }

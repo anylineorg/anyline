@@ -66,7 +66,7 @@ public class BaiduMapConfig extends AnylineConfig {
     }
     public static BaiduMapConfig register(String instance, DataRow row){
         BaiduMapConfig config = parse(BaiduMapConfig.class, instance, row, instances, compatibles);
-        BaiduMapUtil.getInstance(instance);
+        BaiduMapClient.getInstance(instance);
         return config;
     }
     public static BaiduMapConfig register(DataRow row){

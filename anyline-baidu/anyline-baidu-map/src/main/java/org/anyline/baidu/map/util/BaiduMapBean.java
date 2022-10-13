@@ -23,8 +23,8 @@ public class BaiduMapBean implements InitializingBean {
         }
         BaiduMapConfig.register(AK, BasicUtil.evl(SK, BaiduMapConfig.DEFAULT_SK));
     }
-    @Bean("anyline.baidu.map.init.util")
-    public BaiduMapUtil instance(){
-        return BaiduMapUtil.getInstance();
+    @Bean("anyline.baidu.map.init.client")
+    public BaiduMapClient instance(){
+        return BaiduMapClient.getInstance();
     }
 }
