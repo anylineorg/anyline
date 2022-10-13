@@ -6,13 +6,14 @@ import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.MapClient;
+import org.anyline.client.map.AbstractMapClient;
+import org.anyline.client.map.MapClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Hashtable;
 import java.util.Map;
-public class BaiduMapClient implements MapClient {
+public class BaiduMapClient extends AbstractMapClient implements MapClient {
     private static Logger log = LoggerFactory.getLogger(BaiduMapClient.class);
     public BaiduMapConfig config = null;
     private static Hashtable<String, BaiduMapClient> instances = new Hashtable<>();
@@ -61,7 +62,7 @@ public class BaiduMapClient implements MapClient {
     }
 
     @Override
-    public Coordinate geo(String address) {
+    public Coordinate geo(String address, String city) {
         Coordinate coordinate = new Coordinate();
         coordinate.setAddress(address);
         if(null != address){
@@ -166,31 +167,7 @@ public class BaiduMapClient implements MapClient {
         return coordinate;
     }
 
-    @Override
-    public Coordinate regeo(double lng, double lat) {
-        return regeo(Coordinate.TYPE.BD09LL,lng, lat);
-    }
-    @Override
-    public Coordinate regeo(double[] point) {
-        return regeo(point[0], point[1]);
-    }
-    @Override
-    public Coordinate regeo(String[] point) {
-        return regeo(point[0], point[1]);
-    }
-    @Override
-    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat) {
-        Coordinate coordinate = new Coordinate(type, lng, lat);
-        return regeo(coordinate);
-    }
-    @Override
-    public Coordinate regeo(String lng, String lat) {
-        return regeo(Coordinate.TYPE.BD09LL, lng, lat);
-    }
-    @Override
-    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat) {
-        return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
-    }
+
     public String sign(String api, Map<?,?> params){
         return null;
     }
