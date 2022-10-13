@@ -4,6 +4,8 @@ import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
+import org.anyline.client.map.AbstractMapClient;
+import org.anyline.client.map.MapClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,31 +16,31 @@ import java.util.*;
  * @author zh 
  * 
  */ 
-public class AmapUtil {
-	private static Logger log = LoggerFactory.getLogger(AmapUtil.class);
+public class AmapClient extends AbstractMapClient implements MapClient {
+	private static Logger log = LoggerFactory.getLogger(AmapClient.class);
 	public AmapConfig config = null;
-	private static Hashtable<String, AmapUtil> instances = new Hashtable<>();
+	private static Hashtable<String, AmapClient> instances = new Hashtable<>();
 
-	public static Hashtable<String, AmapUtil> getInstances(){
+	public static Hashtable<String, AmapClient> getInstances(){
 		return instances;
 	}
 
 	public AmapConfig getConfig(){
 		return config;
 	}
-	public static AmapUtil getInstance() {
+	public static AmapClient getInstance() {
 		return getInstance("default");
 	}
 
-	public static AmapUtil getInstance(String key) {
+	public static AmapClient getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
 			key = "default";
 		}
-		AmapUtil util = instances.get(key);
+		AmapClient util = instances.get(key);
 		if (null == util) {
 			AmapConfig config = AmapConfig.getInstance(key);
 			if(null != config) {
-				util = new AmapUtil();
+				util = new AmapClient();
 				util.config = config;
 				instances.put(key, util);
 			}
@@ -467,7 +469,7 @@ public class AmapUtil {
 	/** 
 	 * 按条件检索数据（可遍历整表数据） 根据筛选条件检索指定tableid数据表中的数据 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t5
-	 * AmapUtil.getInstance(TABLE_TENANT).list("tenant_id:1","shop_id:1", 10, 1);  
+	 * AmapClient.getInstance(TABLE_TENANT).list("tenant_id:1","shop_id:1", 10, 1);
 	 * @param filter 查询条件 
 	 * filter=key1:value1+key2:[value2,value3]   
 	 * filter=type:酒店+star:[3,5]  等同于SQL语句的: WHERE type = "酒店" AND star BETWEEN 3 AND 5  
@@ -726,6 +728,7 @@ public class AmapUtil {
 	 * @param coordinate  坐标
 	 * @return Coordinate
 	 */
+	@Override
 	public Coordinate regeo(Coordinate coordinate)  {
 
 		Coordinate.TYPE _type = coordinate.getType();
@@ -806,56 +809,13 @@ public class AmapUtil {
 		}
 		return coordinate;
 	}
-
-	/**
-	 * 逆地址解析
-	 * @param lng 经度
-	 * @param lat 纬度
-	 * @return Coordinate
-	 */
-	public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
-		Coordinate coordinate = new Coordinate(type, lng, lat);
-		return regeo(coordinate);
-	}
-
-	public Coordinate regeo(Coordinate.TYPE type, String lng, String lat)  {
-		return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
-	}
-	public Coordinate regeo(Coordinate.TYPE type, String point)  {
-		String[] points = point.split(",");
-		return regeo(type, BasicUtil.parseDouble(points[0], null), BasicUtil.parseDouble(points[1], null));
-	}
-	public Coordinate regeo(String point)  {
-		return regeo(Coordinate.TYPE.GCJ02LL, point);
-	}
-	public Coordinate regeo(String lng, String lat){
-		return regeo(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
-	}
-	public Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
-		return regeo(type,lng+","+lat);
-	}
-	public Coordinate regeo(double lng, double lat){
-		return regeo(Coordinate.TYPE.GCJ02LL,lng, lat);
-	}
-	public Coordinate regeo(Coordinate.TYPE type, String[] point){
-		return regeo(type, point[0],point[1]);
-	}
-	public Coordinate regeo(String[] point){
-		return regeo(point[0],point[1]);
-	}
-	public Coordinate regeo(Coordinate.TYPE type, double[] point){
-		return regeo(type, point[0],point[1]);
-	}
-	public Coordinate regeo(double[] point){
-		return regeo(point[0],point[1]);
-	}
-
 	/** 
 	 * 根据地址查坐标 
 	 * @param address  address
 	 * @param city  city
 	 * @return Coordinate
-	 */ 
+	 */
+	@Override
 	public Coordinate geo(String address, String city){
 		Coordinate coordinate = new Coordinate();
 		coordinate.setAddress(address);
@@ -932,11 +892,12 @@ public class AmapUtil {
 		if(null != coordinate) {
 		}
 		return coordinate;
-	} 
-	public Coordinate geo(String address){
-		return geo(address, null); 
-		 
-	} 
+	}
+
+	@Override
+	public Coordinate ip(String ip) {
+		return null;
+	}
 	/** 
 	 * 驾车路线规划 
 	 * http://lbs.amap.com/api/webservice/guide/api/direction#driving			

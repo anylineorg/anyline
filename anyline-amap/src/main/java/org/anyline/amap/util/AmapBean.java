@@ -26,7 +26,7 @@ public class AmapBean implements InitializingBean {
                 , BasicUtil.evl(TABLE, AmapConfig.DEFAULT_TABLE));
     }
     @Bean("anyline.amap.init.util")
-    public AmapUtil instance(){
-        return AmapUtil.getInstance();
+    public AmapClient instance(){
+        return AmapClient.getInstance();
     }
 }
