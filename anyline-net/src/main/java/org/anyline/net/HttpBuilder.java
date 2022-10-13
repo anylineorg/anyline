@@ -31,11 +31,15 @@ public class HttpBuilder {
     public HttpClient build(){
         HttpClient client = new HttpClient();
         client.setClient(this.client);
-        client.setHeaders(headers);
+        if(null != headers && !headers.isEmpty()){
+            client.setHeaders(headers);
+        }
         client.setEntity(entity);
         client.setParams(params);
         client.setPairs(pairs);
-        client.setUserAgent(userAgent);
+        if(null != userAgent) {
+            client.setUserAgent(userAgent);
+        }
         client.setUrl(url);
         client.setEncode(encode);
         client.setTask(task);
