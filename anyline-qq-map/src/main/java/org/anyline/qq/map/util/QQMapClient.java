@@ -1,10 +1,12 @@
 package org.anyline.qq.map.util;
 
+import org.anyline.client.map.AbstractMapClient;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
+import org.anyline.client.map.MapClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class QQMapClient implements MapClient {
+public class QQMapClient extends AbstractMapClient implements MapClient {
     private static Logger log = LoggerFactory.getLogger(QQMapClient.class);
     public QQMapConfig config = null;
     private static Hashtable<String, QQMapClient> instances = new Hashtable<>();
@@ -118,10 +120,11 @@ public class QQMapClient implements MapClient {
      * 根据地址解析 坐标
      * https://lbs.qq.com/service/webService/webServiceGuide/webServiceGeocoder
      * @param address 地址 用原文签名 用url encode后提交
+     * @param city 城市(没有用到可以不传)
      * @return Coordinate
      */
     @Override
-    public Coordinate geo(String address){
+    public Coordinate geo(String address, String city){
         Coordinate coordinate = new Coordinate();
         coordinate.setAddress(address);
         if(null != address){
@@ -280,37 +283,6 @@ public class QQMapClient implements MapClient {
         }
         return coordinate;
     }
-    @Override
-    public Coordinate regeo(double lng, double lat){
-        return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
-    }
-    @Override
-    public Coordinate regeo(String[] point){
-        return regeo(point[0], point[1]);
-    }
-    @Override
-    public Coordinate regeo(double[] point){
-        return regeo(point[0], point[1]);
-    }
-    /**
-     * 逆地址解析 根据坐标返回详细地址及各级地区编号
-     * @param lng 经度
-     * @param lat 纬度
-     * @return Coordinate
-     */
-    @Override
-    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
-        Coordinate coordinate = new Coordinate(type, lng, lat);
-        return regeo(coordinate);
-    }
 
-    @Override
-    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
-        return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
-    }
-    @Override
-    public Coordinate regeo(String lng, String lat){
-        return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
-    }
 
 }
