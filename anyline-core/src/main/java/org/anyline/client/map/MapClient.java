@@ -1,4 +1,4 @@
-package org.anyline.util;
+package org.anyline.client.map;
 
 import org.anyline.entity.Coordinate;
 
@@ -10,6 +10,8 @@ public interface MapClient {
      * @return 坐标
      */
     public Coordinate ip(String ip);
+
+    Coordinate geo(String address, String city);
 
     /**
      * 根据地址解析 坐标
@@ -25,18 +27,44 @@ public interface MapClient {
      */
     public Coordinate regeo(Coordinate coordinate);
 
-    public Coordinate regeo(double lng, double lat);
+    public Coordinate regeo(Double lng, Double lat);
+
+    Coordinate regeo(Coordinate.TYPE type, String[] point);
+
     public Coordinate regeo(String[] point);
-    public Coordinate regeo(double[] point);
+
+    Coordinate regeo(Coordinate.TYPE type, Double[] point);
+
+    public Coordinate regeo(Double[] point);
 
     /**
      * 逆地址解析 根据坐标返回详细地址及各级地区编号
+     * @param type 坐标系
      * @param lng 经度
      * @param lat 纬度
      * @return Coordinate
      */
     public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat);
+
+    /**
+     * 逆地址解析 根据坐标返回详细地址及各级地区编号
+     * @param type 坐标系
+     * @param lng 经度
+     * @param lat 纬度
+     * @return Coordinate
+     */
     public Coordinate regeo(Coordinate.TYPE type, String lng, String lat);
+
+    /**
+     * 逆地址解析 根据坐标返回详细地址及各级地区编号
+     * @param type 坐标系
+     * @param point lng,lat 经度,纬度
+     * @return Coordinate
+     */
+    Coordinate regeo(Coordinate.TYPE type, String point);
+
+    Coordinate regeo(String point);
+
     public Coordinate regeo(String lng, String lat);
 
 }

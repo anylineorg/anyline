@@ -58,7 +58,7 @@ public class Coordinate {
 		point[0] = BasicUtil.parseDouble(lng, null);
 		point[1] = BasicUtil.parseDouble(lat, null);
 	}
-	public Coordinate(TYPE type, double lng, double lat){
+	public Coordinate(TYPE type, Double lng, Double lat){
 		this.type = type;
 		point[0] = lng;
 		point[1] = lat;
@@ -67,7 +67,7 @@ public class Coordinate {
 		point[0] = BasicUtil.parseDouble(lng,null);
 		point[1] = BasicUtil.parseDouble(lat,null);
 	}
-	public Coordinate(double lng, double lat){
+	public Coordinate(Double lng, Double lat){
 		point[0] = lng;
 		point[1] = lat;
 	}
