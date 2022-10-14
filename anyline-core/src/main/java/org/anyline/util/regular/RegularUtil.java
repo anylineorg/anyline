@@ -251,6 +251,23 @@ public class RegularUtil {
 	}
 
 	/**
+	 * 根据属性名与属性值 删除标签(只删除标签，保留标签体)
+	 * @param src src
+	 * @param attribute 属性名
+	 * @param value 属性值
+	 * @return String
+	 */
+	public static String removeTagWithAttributeValue(String src, String attribute, String value) throws Exception{
+		//[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
+		List<List<String>> lists = getTagAndBodyWithAttributeValue(src, attribute, value);
+		for(List<String> list:lists){
+			String all = list.get(0);
+			String body = list.get(3);
+			src = src.replace(all, body);
+		}
+		return src;
+	}
+	/**
 	 * 根据属性名 删除标签(只删除标签，保留标签体)
 	 * @param src src
 	 * @param attribute 属性名
