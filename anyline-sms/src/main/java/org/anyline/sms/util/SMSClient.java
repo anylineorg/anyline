@@ -67,7 +67,7 @@ public class SMSClient {
 
 			String txt = HttpUtil.post(config.SERVER_HOST, "UTF-8", map).getText();
 			result = BeanUtil.json2oject(txt, SMSResult.class); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				log.warn("[SMS SEND][mobile:{}][result:{}]",mobile,txt); 
 			} 
 		}catch(Exception e){ 

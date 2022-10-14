@@ -178,7 +178,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		params.put("sig", sign(params)); 
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[删除标注][param:{}]",BeanUtil.map2string(params)); 
 		} 
 		try{ 
@@ -237,7 +237,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		params.put("data", BeanUtil.map2json(data)); 
 		params.put("sig", sign(params)); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 			log.warn("[更新标注][param:{}]",BeanUtil.map2string(params)); 
 		} 
 		try{ 
@@ -509,7 +509,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 			} 
 			if(json.containsKey("datas")){ 
 				set = json.getSet("datas"); 
-				if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 					log.warn("[条件搜索][结果数量:{}]",set.size());	 
 				} 
 			}else{ 

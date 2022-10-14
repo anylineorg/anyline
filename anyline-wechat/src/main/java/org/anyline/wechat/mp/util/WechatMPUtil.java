@@ -96,7 +96,7 @@ public class WechatMPUtil extends WechatUtil {
 	} 
 	public DataRow newJsapiTicket(String accessToken){
 		DataRow row = new DataRow();
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 			log.warn("[CREATE NEW JSAPI TICKET][token:{}]",accessToken); 
 		}
 		if(BasicUtil.isNotEmpty(accessToken)){
@@ -109,7 +109,7 @@ public class WechatMPUtil extends WechatUtil {
 				row.put("TICKET", json.getString("ticket"));
 				row.setExpires(json.getInt("expires_in", 0)*1000);
 				row.setExpires(1000*60*5); // 5分钟内有效
-				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 					log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET"));
 				}
 			}else{

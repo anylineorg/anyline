@@ -66,7 +66,7 @@ public class TemplateController extends AnylineController {
 		}
 		String html = "";
 		try{
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				log.warn("加载模板文件开始:"+path);
 			}
 			html = WebUtil.parseJsp(request, response, path);
@@ -95,7 +95,7 @@ public class TemplateController extends AnylineController {
 			template_path = template_path+"default.jsp";
 		}
 		String content = parseTemplate(request, response,template_path);
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("样式模板:"+template_path);
 		}
 		try{

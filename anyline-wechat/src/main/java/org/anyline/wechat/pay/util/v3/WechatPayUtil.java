@@ -152,7 +152,7 @@ public class WechatPayUtil {
             e.printStackTrace();
         }
         DataRow row = new DataRow(params);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[jsapi调起微信支付][参数:{}]", row.toJSON());
         }
         return row;

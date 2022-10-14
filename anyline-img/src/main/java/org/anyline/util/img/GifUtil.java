@@ -102,7 +102,7 @@ public class GifUtil {
                 e.setDelay(delay); // 设置播放的延迟时间   
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件   
                 e.addFrame(src[i]);  // 添加到帧中   
-                if(ConfigTable.isDebug() && log.isWarnEnabled()){
+                if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsolutePath(), item.getAbsoluteFile(),System.currentTimeMillis()-fr); 
                 } 
             }   
@@ -138,7 +138,7 @@ public class GifUtil {
                 e.setDelay(delay); // 设置播放的延迟时间   
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件   
                 e.addFrame(src[i]);  // 添加到帧中   
-                if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+                if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
                 	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsoluteFile(),item.getAbsoluteFile(),System.currentTimeMillis()-fr); 
                 } 
             }   

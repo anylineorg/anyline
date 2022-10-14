@@ -625,7 +625,7 @@ public class AnylineController extends AbstractBasicController {
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
 		}
 		Result rtn = Result.init(result, code,data,message);
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[controller return][result:{}][message:{}][request:{}][response:{}][finish:{}]"
 					,result,message, rtn.getRequest_time(), rtn.getResponse_time(), rtn.getFinish_time());
 		}

@@ -611,7 +611,7 @@ public class HttpUtil {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val));
-						if(ConfigTable.isDebug() && log.isWarnEnabled()){
+						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 							log.warn("[request param][{}={}]", key, BasicUtil.cut(val,0,20));
 						}
 					}
@@ -622,13 +622,13 @@ public class HttpUtil {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
-						if(ConfigTable.isDebug() && log.isWarnEnabled()){
+						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 							log.warn("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
 						}
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
-					if(ConfigTable.isDebug() && log.isWarnEnabled()){
+					if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 						log.warn("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
 					}
 				}

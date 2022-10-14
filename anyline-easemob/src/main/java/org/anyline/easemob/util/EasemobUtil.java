@@ -95,7 +95,7 @@ public class EasemobUtil {
 					result = set.getRow(0); 
 				} 
 			} 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[reg user][result:{}]",txt); 
 			} 
 		} catch (Exception e) { 
@@ -141,7 +141,7 @@ public class EasemobUtil {
 			if(null != row && row.containsKey("entities")){ 
 				result = row.getSet("entities"); 
 			} 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[reg users][result:{}]",txt); 
 			} 
 		}catch(Exception e){ 
@@ -166,7 +166,7 @@ public class EasemobUtil {
 			Map<String,String> headers = new HashMap<String,String>(); 
 			headers.put("Authorization", "Bearer " + getAccessToken()); 
 			String txt = HttpUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText(); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[reset passworod][json:{}][result:{}]",json,txt); 
 			} 
 		} catch (Exception e) { 
@@ -189,7 +189,7 @@ public class EasemobUtil {
 		try { 
 			String txt = HttpUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText(); 
 			result = parseUser(txt); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[reset nickname][result:{}]",txt); 
 			} 
 		} catch (Exception e) { 
@@ -208,7 +208,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/" + user; 
 		try { 
 			String txt = HttpUtil.delete(defaultHeader(),url, "UTF-8").getText(); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[delete user][result:{}]",txt); 
 			} 
 		} catch (Exception e) { 
@@ -230,7 +230,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get user][result:{}]",txt); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -264,7 +264,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get user list][result:{}]",txt); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -290,7 +290,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/" + user + "/contacts/users/" + friend; 
 		try { 
 			String txt = HttpUtil.post(defaultHeader(), url).getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[add friend][result:{}]",txt); 
 			} 
 			result = parseUser(txt); 
@@ -312,7 +312,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get friend list][result:{}]",txt); 
 			} 
 			DataRow json = DataRow.parseJson(txt); 
@@ -321,7 +321,7 @@ public class EasemobUtil {
 				for(Object data:datas){ 
 					DataRow row = new DataRow(); 
 					row.put("username", data); 
-					if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+					if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 						log.warn("[get friend][friend username:{}]",data); 
 					} 
 					result.add(row); 
@@ -345,7 +345,7 @@ public class EasemobUtil {
 		try { 
 			String txt = HttpUtil.delete(defaultHeader(), url,"UTF-8").getText(); 
 			result = parseUser(txt); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[delete friend][result:{}]",txt); 
 			} 
 		} catch (Exception e) { 
@@ -368,7 +368,7 @@ public class EasemobUtil {
 		try { 
 			String params = "{\"usernames\":[\""+block+"\"]} "; 
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params, "UTF-8")).getText(); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[add blocks][result:{}]",txt); 
 			} 
 			// 封装添加成功的用户username
@@ -389,7 +389,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get block list][result:{}]",txt); 
 			} 
 			DataRow json = DataRow.parseJson(txt); 
@@ -398,7 +398,7 @@ public class EasemobUtil {
 				for(Object data:datas){ 
 					DataRow row = new DataRow(); 
 					row.put("username", data); 
-					if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+					if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 						log.warn("[get block][block username:{}]",data); 
 					} 
 					result.add(row); 
@@ -422,7 +422,7 @@ public class EasemobUtil {
 		try { 
 			String txt = HttpUtil.delete(defaultHeader(), url,"UTF-8").getText(); 
 			result = parseUser(txt); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[delete block][result:{}]",txt); 
 			} 
 		} catch (Exception e) { 
@@ -443,7 +443,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get user status][result:{}]",txt); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -473,7 +473,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get user status][result:{}]",txt); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -502,7 +502,7 @@ public class EasemobUtil {
 					.setHeaders(defaultHeader())
 					.setUrl(url)
 					.build().get().getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[get user status][result:{}]",txt); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -525,7 +525,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/" + user + "/deactivate"; 
 		try { 
 			String txt = HttpUtil.post(defaultHeader(), url).getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[deactivate user][result:{}]",txt); 
 			} 
 			result = parseUser(txt); 
@@ -545,7 +545,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/" + user + "/activate"; 
 		try { 
 			String txt = HttpUtil.post(defaultHeader(), url).getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[activate user][result:{}]",txt); 
 			} 
 		} catch (Exception e) { 
@@ -562,7 +562,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/" + user + "/disconnect"; 
 		try { 
 			String txt = HttpUtil.post(defaultHeader(), url).getText();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[disconnect user][result:{}]",txt); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -593,7 +593,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/messages"; 
 		try { 
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json, "UTF-8")).getText(); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[send message][result:" + txt + "]"); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 
@@ -631,7 +631,7 @@ public class EasemobUtil {
 			params.put("approval", ""+approve); 
 			params.put("owner", owner); 
 			String txt = HttpUtil.post(defaultHeader(), url, "UTF-8", params).getText(); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[create group][result:" + txt + "]"); 
 			} 
 			DataRow row = DataRow.parseJson(txt); 

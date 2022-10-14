@@ -2328,7 +2328,7 @@ public class BeanUtil {
 				}
 			}
 		}
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			// log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
 		}
 		return value;

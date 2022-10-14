@@ -45,8 +45,6 @@ public class ConfigTable {
 	protected static Hashtable<String,Object> configs;
 	protected static long lastLoadTime = 0;	// 最后一次加载时间
 	protected static int reload = 0;			// 重新加载间隔
-	protected static boolean debug = false;
-	protected static boolean sqlDebug = false;
 	protected static final String version = "8.6.1-SNAPSHOT";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
@@ -54,6 +52,9 @@ public class ConfigTable {
 
 	// 对应配置文件key
 	public static boolean IS_SHOW_SQL									= true		;
+	public static boolean IS_DEBUG 										= false		;
+	public static boolean IS_SQL_DEBUG	 								= false		;
+	public static boolean IS_HTTP_LOG 									= true		;
 	public static boolean IS_SHOW_SQL_PARAM								= true		;
 	public static boolean IS_SHOW_SQL_WHEN_ERROR						= true		;
 	public static boolean IS_SHOW_SQL_PARAM_WHEN_ERROR					= true		;
@@ -293,8 +294,6 @@ public class ConfigTable {
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
-		debug = getBoolean("DEBUG");
-		sqlDebug = getBoolean("SQL_DEBUG");
 		String isUpper = getString("IS_UPPER_KEY");
 		if(null != isUpper){
 			if("false".equals(isUpper.toLowerCase()) || "0".equals(isUpper)){
@@ -335,7 +334,7 @@ public class ConfigTable {
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
 				configs.put(key.toUpperCase().trim(), value);
-				if (isDebug()) {
+				if (IS_DEBUG) {
 					log.info("[解析配置文件][{}={}]", key, value);
 				}
 			}
@@ -354,7 +353,7 @@ public class ConfigTable {
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
 				configs.put(key.toUpperCase().trim(), value);
-				if (isDebug()) {
+				if (IS_DEBUG) {
 					log.info("[解析配置文件][{}={}]", key, value);
 				}
 			}
@@ -375,7 +374,7 @@ public class ConfigTable {
 	}
 	protected static void loadConfig(File file){
 		try{
-			if(isDebug()){
+			if(IS_DEBUG){
 				log.info("[加载配置文件] [file:{}]",file);
 			}
 			if(null != file && !file.exists()){
@@ -451,13 +450,13 @@ public class ConfigTable {
 	}
 	public static void put(String key, String value){
 		configs.put(key, value);
-		if(isDebug()){
+		if(IS_DEBUG){
 			log.warn("[ConfigTable动态更新][{}={}]",key,value);
 		}
 	}
 	public static void put(String key, Object value){
 		configs.put(key, value);
-		if(isDebug()){
+		if(IS_DEBUG){
 			log.warn("[ConfigTable动态更新][{}={}]",key,value);
 		}
 	}
@@ -471,14 +470,11 @@ public class ConfigTable {
 	public static int getReload() {
 		return reload;
 	}
-	public static void setDebug(boolean bol){
-		debug = bol;
-	}
 	public static boolean isDebug() {
-		return debug;
+		return IS_DEBUG;
 	}
 	public static boolean isSQLDebug() {
-		return sqlDebug;
+		return IS_SQL_DEBUG;
 	}
 
 
@@ -502,7 +498,7 @@ public class ConfigTable {
 	}
 
 	protected static void debug(){
-		if(!isDebug()){
+		if(!IS_DEBUG){
 			return;
 		}
 		try{

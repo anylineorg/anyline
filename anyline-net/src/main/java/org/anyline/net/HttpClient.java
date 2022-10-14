@@ -178,7 +178,7 @@ public class HttpClient {
 		HttpResponse result = null;
 		try {
 			long fr = System.currentTimeMillis();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
 				log.warn("[http request][method:{}][url:{}]",method.getMethod(),method.getURI());
 			}
 			if("stream".equals(returnType)) {
@@ -191,7 +191,7 @@ public class HttpClient {
 				response = client.execute(method);
 				result = parseResult(result, response, encode);
 			}
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
 				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]",method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
@@ -387,7 +387,7 @@ public class HttpClient {
 			builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
 			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 		}
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
 			log.warn("[http upload][url:{}]"+fileLog,url);
 		}
 

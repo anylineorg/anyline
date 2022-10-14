@@ -98,7 +98,7 @@ public class SFTPUtil {
             os = new FileOutputStream(localFile);   
             List<String> list = FTPUtil.formatPath(remote); 
             long fr = System.currentTimeMillis(); 
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
             	log.warn("[文件下载][file:{}]",list.get(0) + list.get(1)); 
             } 
             String remotePath = list.get(0) + list.get(1); 
@@ -106,7 +106,7 @@ public class SFTPUtil {
             long length = attr.getSize(); 
             SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath,local, length); 
             client.get(remotePath, os, process);   
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
             	log.warn("[文件下载完成][耗时:{}][file:{}]",System.currentTimeMillis()-fr,list.get(0) + list.get(1)); 
             } 
         } catch (Exception e) {   
@@ -139,7 +139,7 @@ public class SFTPUtil {
 			Vector<?> files = client.ls(remoteDir); 
 			size = files.size(); 
 		} catch (Exception e) {
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
             	log.warn("[检测文件数量][result:fail][msg:{}]", e.getMessage()); 
             } 
 		} 
@@ -199,7 +199,7 @@ public class SFTPUtil {
         mkdir(remoteDir);   
         client.cd(remoteDir);   
         client.put(localFile, remoteFile);   
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
         	log.warn("[文件上传][耗时:{}][local:{}][remote:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),localFile,remoteDir+"/"+remoteFile); 
         } 
     }   
@@ -298,14 +298,14 @@ public class SFTPUtil {
 		} catch (Exception e) { 
 			log.warn("[scan dir error][dir:{}][error:{}]",dir,e.getMessage()); 
 		} 
-    	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[scan dir][dir:{}][file size:{}]",dir,list.size()); 
     	} 
     	return list; 
     } 
     public boolean fileExists(String dir, String file){ 
     	List<String> files = files(dir); 
-    	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[check file exists][dir:{}][file:{}]",dir,file); 
     	} 
     	for(String item:files){ 
@@ -319,7 +319,7 @@ public class SFTPUtil {
     	List<String> list = FTPUtil.formatPath(path); 
     	String dir = list.get(0); 
     	String file = list.get(1); 
-    	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[check file exists][path:"+path+"]"); 
     	} 
     	return fileExists(dir, file); 

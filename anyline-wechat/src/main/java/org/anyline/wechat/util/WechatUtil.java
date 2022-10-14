@@ -93,7 +93,7 @@ public class WechatUtil {
 				.setEntity(reqEntity)
 				.build().get().getText();
 		// String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[获取RSA公钥][\n{}\n]",txt);
 		}
 		return txt;
@@ -135,7 +135,7 @@ public class WechatUtil {
 	 * @return DataRow
 	 */
 	private static DataRow newAccessToken(WechatConfig config){
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][appid:{}][secret:{}]",config.APP_ID, config.APP_SECRET);
 		}
 		String appid = config.APP_ID;
@@ -148,7 +148,7 @@ public class WechatUtil {
 			url = config.ACCESS_TOKEN_SERVER+ "?grant_type=client_credential&appid="+appid+"&secret="+secret;
 		}
 		String text = HttpUtil.post(url).getText();
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][result:{}]",text);
 		}
 		DataRow json = DataRow.parseJson(text);
@@ -158,12 +158,12 @@ public class WechatUtil {
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
 			row.setExpires(json.getInt("expires_in", 0)*800);
 			row.setExpires(1000*60*5); // 5分钟内有效
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN"));
 			}
 			accessTokens.addRow(row);
 		}else{
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				log.warn("[CREATE NEW ACCESS TOKEN][FAIL]");
 			}
 			return null;

@@ -736,7 +736,7 @@ public class DefaultService<E> implements AnylineService<E> {
             RunPrepare prepare = createRunPrepare(src);
             count = dao.count(prepare, append(configs, obj), conditions);
         } catch (Exception e) {
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 e.printStackTrace();
             }
             log.error("COUNT ERROR:"+e);
@@ -1525,7 +1525,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return prepare;
     }
     protected DataSet queryFromCache(String cache, String src, ConfigStore configs, String ... conditions){
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[cache from][cache:{}][src:{}]", cache, src);
         }
         DataSet set = null;
@@ -1555,7 +1555,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
                 final int _max = cacheElement.getExpires();
                 if (age > _max * 0.9) {
-                    if (ConfigTable.isDebug() && log.isWarnEnabled()) {
+                    if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
                         log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]", src, age, _max);
                     }
                     final String _key = key;

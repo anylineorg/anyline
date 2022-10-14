@@ -53,7 +53,7 @@ public class COSConfig extends BaseBodyTag {
             out.println(script);
         } catch (Exception e) {
             e.printStackTrace();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 e.printStackTrace();
             }
         } finally {
@@ -61,7 +61,7 @@ public class COSConfig extends BaseBodyTag {
         }
         return EVAL_PAGE;
     }
-    public boolean isDebug() {
+    public boolean IS_DEBUG {
         return debug;
     }
     public void setDebug(boolean debug) {

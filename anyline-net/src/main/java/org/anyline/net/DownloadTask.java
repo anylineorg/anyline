@@ -179,7 +179,7 @@ public class DownloadTask {
 			if(rate == 100){ 
 				expect = 0; 
 			} 
-			if(ConfigTable.isDebug() && openLog){ 
+			if(ConfigTable.IS_DEBUG && openLog){ 
 				log(); 
 			} 
 		} 
@@ -207,7 +207,7 @@ public class DownloadTask {
 			this.rate = 100.00; 
 			this.end = System.currentTimeMillis(); 
 			log(); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.info("[文件下载]"+"[下载完成][耗时:{}][url:{}][local:{}]",getExpendFormat(),url, getLocal().getAbsolutePath()); 
 			} 
 			if(null != listener){ 
@@ -218,7 +218,7 @@ public class DownloadTask {
 		} 
 	} 
 	private void log(){ 
-		if(!ConfigTable.isDebug() && !openLog){ 
+		if(!ConfigTable.IS_DEBUG && !openLog){ 
 			return; 
 		} 
 		if(getExpend() ==0){ 

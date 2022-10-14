@@ -50,13 +50,13 @@ public class Param extends BaseBodyTag implements Cloneable{
 					Method method = parent.getClass().getMethod("addParam",String.class, Object.class); 
 					if(null != method){ 
 						method.invoke(parent, key, value);
-						if(ConfigTable.isDebug() && log.isWarnEnabled()){
+						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 							log.warn("[set parent param map][key:"+key+"][value:"+value+"]");
 						} 
 					}
 				}else{
 					BeanUtil.setFieldValue(parent, property, value);
-					if(ConfigTable.isDebug() && log.isWarnEnabled()){
+					if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 						log.warn("[set parent property][property:"+property+"][value:"+value+"]");
 					}
 				} 

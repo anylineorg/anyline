@@ -147,7 +147,7 @@ public class ZipUtil {
 	public static boolean zip(Map<String,File> files, File zip, String dir, String comment, boolean append) {
 		boolean result = true;
 		long fr = System.currentTimeMillis();
-		if (ConfigTable.isDebug()) {
+		if (ConfigTable.IS_DEBUG) {
 			log.warn("[压缩文件][file:{}][size:{}]", zip.getAbsolutePath(), files.size());
 		}
 		try {
@@ -202,7 +202,7 @@ public class ZipUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (ConfigTable.isDebug()) {
+		if (ConfigTable.IS_DEBUG) {
 			log.warn("[压缩完成][time:{}][size:{}]",(System.currentTimeMillis() - fr), files.size());
 		}
 		return result;
@@ -351,7 +351,7 @@ public class ZipUtil {
 				in.close(); 
 				zipout.flush(); 
 				zipout.closeEntry(); 
-				if (ConfigTable.isDebug()) { 
+				if (ConfigTable.IS_DEBUG) { 
 					log.warn("[压缩文件][添加文件][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()- fr), item.getAbsolutePath());
 				} 
 			} 
@@ -383,7 +383,7 @@ public class ZipUtil {
 	public static List<File> unZip(File zip, File dir) { 
 		List<File> files = new ArrayList<File>(); 
 		long fr = System.currentTimeMillis(); 
-		if (ConfigTable.isDebug()) { 
+		if (ConfigTable.IS_DEBUG) { 
 			log.warn("[解压文件][file:{}][dir:{}]", zip.getAbsolutePath(), dir.getAbsolutePath()); 
 		} 
 		int size = 0; 
@@ -417,7 +417,7 @@ public class ZipUtil {
 				} 
 				in.close(); 
 				out.close(); 
-				if (ConfigTable.isDebug()) { 
+				if (ConfigTable.IS_DEBUG) { 
 					log.warn("[解压完成][进度:{}/{}][耗时:{}][file:{}]", size,total,DateUtil.conversion(System.currentTimeMillis()- fr),desFile.getAbsolutePath()); 
 				} 
 			} 
@@ -425,7 +425,7 @@ public class ZipUtil {
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
-		if (ConfigTable.isDebug()) { 
+		if (ConfigTable.IS_DEBUG) { 
 			log.warn("[解压完成][共耗时:{}][dir:{}][size:{}]",DateUtil.conversion(System.currentTimeMillis() - fr), dir.getAbsolutePath(), size); 
 		} 
 		return files; 

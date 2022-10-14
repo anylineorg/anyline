@@ -953,7 +953,7 @@ public class AbstractBasicController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("BODY", BasicUtil.escape(html));
 		if(null != navi){
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				log.warn("[load jsp navi][rows:{}][page:{}]",navi.getTotalRow(),navi.getTotalPage());
 			}
 			int type = 0;

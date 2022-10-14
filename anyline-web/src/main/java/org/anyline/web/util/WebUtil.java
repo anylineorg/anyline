@@ -815,7 +815,7 @@ public class WebUtil {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		render(request, response, jsp, os, false);
 		String result = os.toString();
-		if(ConfigTable.isDebug() && ConfigTable.getBoolean("PARSE_JSP_LOG")){
+		if(ConfigTable.IS_DEBUG && ConfigTable.getBoolean("PARSE_JSP_LOG")){
 			log.warn("[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", jsp, result);
 		}
 		return result;

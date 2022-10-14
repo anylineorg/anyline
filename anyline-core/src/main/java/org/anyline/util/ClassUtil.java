@@ -532,7 +532,7 @@ public class ClassUtil {
 		for(File file:files){
 			try{
 				String path = file.getAbsolutePath();
-				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 					log.warn("[检索类][file:{}]",path);
 				}
 				if(path.contains(File.separator+"classes"+File.separator)){
@@ -540,7 +540,7 @@ public class ClassUtil {
 				}
 				path = path.replace(File.separator, ".");
 				path = path.replace(".classes.", "").replace(".class", "");
-				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 					log.warn("[检索类][class:{}]",path);
 				}
 				Class clazz = Class.forName(path);

@@ -43,7 +43,7 @@ public class WechatCheck extends BaseBodyTag {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
 			} 
 		} finally { 

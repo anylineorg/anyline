@@ -95,7 +95,7 @@ public class Pay extends BaseBodyTag {
 			out.println(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
 			} 
 		} finally { 
@@ -112,9 +112,6 @@ public class Pay extends BaseBodyTag {
 		this.appid = appid;
 	}
 
-	public boolean isDebug() {
-		return debug;
-	}
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}

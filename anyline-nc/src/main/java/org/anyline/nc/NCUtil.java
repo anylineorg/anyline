@@ -58,7 +58,7 @@ public class NCUtil {
 		try{ 
 			long fr = System.currentTimeMillis(); 
 			nc = NetcdfFile.open(file); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
 				log.warn("[open file][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),file); 
 			} 
 			return true; 

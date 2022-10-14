@@ -77,7 +77,7 @@ public class RegularMatchPrefix implements Regular{
 				list.add(item); 
 			} 
 		}catch(Exception e){ 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
 			} 
 		} 
@@ -102,7 +102,7 @@ public class RegularMatchPrefix implements Regular{
 				list.add(matchResult.group(idx)); 
 			} 
 		}catch(Exception e){ 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
 			} 
 		} 

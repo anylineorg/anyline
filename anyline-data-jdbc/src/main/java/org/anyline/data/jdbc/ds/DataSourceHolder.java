@@ -62,7 +62,7 @@ public class DataSourceHolder {
 	 * @param dataSource 数据源在spring context中注册的名称
 	 */
 	public static void setDataSource(String dataSource) {
-    	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[切换数据源][thread:{}][数据源:{}]",Thread.currentThread().getId(),dataSource); 
     	} 
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
@@ -76,7 +76,7 @@ public class DataSourceHolder {
 	 * @param auto 执行完后切换回原来的数据库
 	 */
     public static void setDataSource(String dataSource, boolean auto) { 
-    	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[切换数据源][thread:{}][数据源:{}][auto default:{}]",Thread.currentThread().getId(),dataSource,auto); 
     	} 
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
@@ -190,7 +190,7 @@ public class DataSourceHolder {
 		if(!over && dataSources.contains(key)){
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 		}
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
 		}
 		DynamicDataSource.addDataSource(key, ds);

@@ -94,7 +94,7 @@ public class EHCacheProvider implements CacheProvider {
 				}else{
 					manager = CacheManager.create();
 				}
-				if (ConfigTable.isDebug() && log.isWarnEnabled()) {
+				if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 					log.warn("[加载ehcache配置文件][耗时:{}", System.currentTimeMillis() - fr);
 					for (String name : manager.getCacheNames()) {
 						log.warn("[解析ehcache配置文件] [name:{}]", name);
@@ -149,18 +149,18 @@ public class EHCacheProvider implements CacheProvider {
 		if(null != cache){
 			result = cache.get(key);
 			if(null == result){
-		    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 		    		log.warn("[缓存不存在][cnannel:{}][key:{}][生存:-1/{}]",channel, key,cache.getCacheConfiguration().getTimeToLiveSeconds());
 		    	}
 				return null;
 			}
 			if(result.isExpired()){
-		    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
+		    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 		    		log.warn("[缓存数据提取成功但已过期][耗时:{}][cnannel:{}][key:{}][命中:{}][生存:{}/{}]",System.currentTimeMillis()-fr,channel,key,result.getHitCount(),(System.currentTimeMillis() - result.getCreationTime())/1000,result.getTimeToLive());
 		    	}
 		    	result = null;
 			}else{
-				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 		    		log.warn("[缓存数据提取成功并有效][耗时:{}][cnannel:{}][key:{}][命中:{}][生存:{}/{}]",System.currentTimeMillis()-fr,channel,key,result.getHitCount(),(System.currentTimeMillis() - result.getCreationTime())/1000,result.getTimeToLive());
 		    	}
 			}
@@ -177,7 +177,7 @@ public class EHCacheProvider implements CacheProvider {
 		Cache cache = getCache(channel);
 		if(null != cache){
 			cache.put(element);
-	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
+	    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 	    		log.warn("[存储缓存数据][channel:{}][key:{}][生存:0/{}]",channel,element.getObjectKey(),cache.getCacheConfiguration().getTimeToLiveSeconds());
 	    	}
 		}
@@ -190,7 +190,7 @@ public class EHCacheProvider implements CacheProvider {
 			if(null != cache){
 				cache.remove(key);
 			}
-	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
+	    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 	    		log.warn("[删除缓存数据] [channel:{}][key:{}]",channel, key);
 	    	}
 		}catch(Exception e){
@@ -203,7 +203,7 @@ public class EHCacheProvider implements CacheProvider {
 		try{
 			CacheManager manager = createManager();
 			manager.removeCache(channel);
-	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
+	    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 	    		log.warn("[清空缓存数据] [channel:{}]",channel);
 	    	}
 		}catch(Exception e){

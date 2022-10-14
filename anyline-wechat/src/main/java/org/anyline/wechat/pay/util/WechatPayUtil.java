@@ -121,17 +121,17 @@ public class WechatPayUtil {
         Map<String, Object> map = BeanUtil.toMap(order);
         String sign = WechatUtil.sign(config.API_SECRET,map);
         map.put("sign", sign);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[统一下单][sign:{}}", sign);
         }
         String xml = BeanUtil.map2xml(map);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[统一下单][xml:{}]", xml);
         }
         String rtn = SimpleHttpUtil.post(WechatPayConfig.API_URL_UNIFIED_ORDER, xml);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[统一下单][return:{}]", rtn);
         }
         result = BeanUtil.xml2object(rtn, WechatPrePayResult.class);
@@ -139,7 +139,7 @@ public class WechatPayUtil {
             result.setResult(true);
         }
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
         }
         return result;
@@ -166,7 +166,7 @@ public class WechatPayUtil {
         params.put("paySign", sign);
 
         DataRow row = new DataRow(params);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[jsapi调起微信支付][参数:{}]", row.toJSON());
         }
         return row;
@@ -192,12 +192,12 @@ public class WechatPayUtil {
 
         map.put("sign", sign);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[退款申请][sign:{}]", sign);
         }
         String xml = BeanUtil.map2xml(map);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[退款申请][xml:{}]", xml);
             log.warn("[退款申请][证书:{}]", config.KEY_STORE_FILE);
         }
@@ -222,7 +222,7 @@ public class WechatPayUtil {
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 log.warn("[退款申请调用][result:{}", txt);
             }
             result = BeanUtil.xml2object(txt, WechatRefundResult.class);
@@ -259,11 +259,11 @@ public class WechatPayUtil {
 
         map.put("sign", sign);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[发送红包[sign:{}]", sign);
         }
         String xml = BeanUtil.map2xml(map);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[发送红包][xml:{}]", xml);
             log.warn("[发送红包][证书:{}]", config.KEY_STORE_FILE);
         }
@@ -289,7 +289,7 @@ public class WechatPayUtil {
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 log.warn("[发送红包调用][result:{}]", txt);
             }
             result = BeanUtil.xml2object(txt, WechatRedpackResult.class);
@@ -325,11 +325,11 @@ public class WechatPayUtil {
 
         map.put("sign", sign);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[发送裂变红包][sign:{}]", sign);
         }
         String xml = BeanUtil.map2xml(map);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[发送裂变红包][xml:{}]", xml);
             log.warn("[发送裂变红包][证书:{}]", config.KEY_STORE_FILE);
         }
@@ -355,7 +355,7 @@ public class WechatPayUtil {
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 log.warn("[发送裂变红包调用][result:{}]", txt);
             }
             result = BeanUtil.xml2object(txt, WechatFissionRedpackResult.class);
@@ -385,11 +385,11 @@ public class WechatPayUtil {
 
         map.put("sign", sign);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[付款][sign:{}]", sign);
         }
         String xml = BeanUtil.map2xml(map);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[付款][xml:{}]", xml);
             log.warn("[付款][证书:{}]", config.KEY_STORE_FILE);
         }
@@ -415,7 +415,7 @@ public class WechatPayUtil {
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 log.warn("[付款调用][result:{}]", txt);
             }
             result = BeanUtil.xml2object(txt, WechatEnterpriseTransferResult.class);
@@ -459,11 +459,11 @@ public class WechatPayUtil {
 
         map.put("sign", sign);
 
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[付款][sign:{}]", sign);
         }
         String xml = BeanUtil.map2xml(map);
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
             log.warn("[付款][xml:{}]", xml);
             log.warn("[付款][证书:{}]", config.KEY_STORE_FILE);
         }
@@ -489,7 +489,7 @@ public class WechatPayUtil {
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 log.warn("[付款调用][result:{}]", txt);
             }
             result = BeanUtil.xml2object(txt, WechatEnterpriseTransferBankResult.class);
