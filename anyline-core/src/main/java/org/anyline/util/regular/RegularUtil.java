@@ -219,7 +219,7 @@ public class RegularUtil {
 	 * @param attribute attribute
 	 * @return String
 	 */
-	public static String removeAllTagAndBodyWithAttribute(String src, String attribute){
+	public static String removeTagAndBodyWithAttribute(String src, String attribute){
 		String reg = "";
 		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>";//双标签
 		src = src.replaceAll(reg, "");
@@ -241,7 +241,7 @@ public class RegularUtil {
 	 * @param value value
 	 * @return String
 	 */
-	public static String removeAllTagAndBodyWithAttributeValue(String src, String attribute, String value){
+	public static String removeTagAndBodyWithAttributeValue(String src, String attribute, String value){
 		String reg ="";
 		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";//双标签
 		src = src.replaceAll(reg, "");
@@ -249,6 +249,24 @@ public class RegularUtil {
 		src = src.replaceAll(reg, "");
 		return src;
 	}
+
+	/**
+	 * 根据属性名 删除标签(只删除标签，保留标签体)
+	 * @param src src
+	 * @param attribute 属性名
+	 * @return String
+	 */
+	public static String removeTagWithAttribute(String src, String attribute) throws Exception{
+		List<List<String>> lists = getTagAndBodyWithAttribute(src, attribute);
+		//[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
+		for(List<String> list:lists){
+			String all = list.get(0);
+			String body = list.get(3);
+			src = src.replace(all, body);
+		}
+		return src;
+	}
+
 
 	/**
 	 * 获取所有 包含attribute属性 的标签与标签体,不支持相同标签嵌套
@@ -261,7 +279,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception Exception
 	 */
-	public static List<List<String>> getAllTagAndBodyWithAttribute(String src, String attribute) throws Exception{
+	public static List<List<String>> getTagAndBodyWithAttribute(String src, String attribute) throws Exception{
 		List<List<String>> result = new ArrayList<>();
 		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	// 双标签
 				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			// 单标签
@@ -320,7 +338,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception Exception
 	 */
-	public static List<List<String>> getAllTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
+	public static List<List<String>> getTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
 		List<List<String>> result = new ArrayList<>();
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	// 双标签
@@ -586,7 +604,7 @@ public class RegularUtil {
 		return result;
 	}
 	/**
-	 * 取出d属性值
+	 * 取出属性及属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
 	 * fetchAttributeValues(txt,"id","name");
 	 * @param txt txt
@@ -601,6 +619,13 @@ public class RegularUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * 取出所有的属性值
+	 * @param txt txt
+	 * @param attribute 属性名
+	 * @return List
+	 */
 	public static List<String> fetchAttributeValues(String txt, String attribute){
 		List<String> result = new ArrayList<>();
 		List<List<String>> list = fetchAttributeList(txt, attribute);
@@ -612,6 +637,12 @@ public class RegularUtil {
 		return result;
 	}
 
+	/**
+	 * 取出的属性值(有多个的取第一个)
+	 * @param txt txt
+	 * @param attribute 属性名
+	 * @return String
+	 */
 	public static String fetchAttributeValue(String txt, String attribute){
 		List<String> values = fetchAttributeValues(txt, attribute);
 		if(values.size()>0){
