@@ -58,8 +58,8 @@ public class DefaultPageNavi implements PageNavi{
 	protected String method					= "post"	; 
 	protected String style					= ""		; // 样式标记对应anyline-navi.xml中的config.key
  
-	protected boolean showStat = false; 
-	protected boolean showJump = false; 
+	protected boolean showStat = true;
+	protected boolean showJump = true;
 	protected boolean showVol = true; 
 	protected String loadMoreFormat = "";
 
