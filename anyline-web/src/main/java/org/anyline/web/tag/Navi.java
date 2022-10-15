@@ -254,8 +254,8 @@ public class Navi extends BodyTagSupport{
 		refresh			= null	;
 		type			= 0		;
 		adapter = "ajax";
-		stat			= false	;
-		jump			= false	;
+		stat			= true	;
+		jump			= true	;
 		auto			= null	;
 		style			=  AnylineConfig.DEFAULT_INSTANCE_KEY	;
 		scroll 			= null	;
