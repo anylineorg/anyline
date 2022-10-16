@@ -174,7 +174,8 @@ public class WebUtil {
 				if(body.startsWith("{") && body.endsWith("}")) {
 					map = DataRow.parseJson(KEY_CASE.SRC, body);
 				}else{
-					map = BeanUtil.param2map(body,true);
+					//先拆分 再解码，否则解出来 & = 会混淆
+					map = BeanUtil.param2map(body,true, true);
 				}
 			}else {
 				// utl与form表单格式
@@ -1192,7 +1193,7 @@ public class WebUtil {
 	public static String read(HttpServletRequest request, String encode, boolean cache){
 		try {
 			String str = new String(read(request,cache), encode);
-			str = decode(str,encode);
+			//str = decode(str,encode);
 			return str;
 		}catch (Exception e){
 			e.printStackTrace();

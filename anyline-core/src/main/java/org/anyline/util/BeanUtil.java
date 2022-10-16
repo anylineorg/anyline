@@ -49,6 +49,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -820,9 +821,11 @@ public class BeanUtil {
 	 * 如果是url将根据问号分割
 	 * @param url 参数或url
 	 * @param empty 结果中是否包含空值,所有空值以""形式保存
+	 * @param decode 是否需要解码
+	 * @param charset 解码编码
 	 * @return Map
 	 */
-	public static Map<String,Object> param2map(String url, boolean empty){
+	public static Map<String,Object> param2map(String url, boolean empty, boolean decode, String charset){
 		Map<String,Object> params = new HashMap<String,Object>();
 		if(null != url){
 			int index = url.indexOf("?");
@@ -846,6 +849,9 @@ public class BeanUtil {
 				if(BasicUtil.isEmpty(v) && !empty){
 					continue;
 				}
+				if(decode){
+					v = urlDecode(v,charset);
+				}
 				if(params.containsKey(k)){
 					Object olds = params.get(k);
 					List<String> vals = new ArrayList<>();
@@ -864,6 +870,28 @@ public class BeanUtil {
 			}
 		}
 		return params;
+	}
+
+	public static String urlDecode(String src, String charset){
+		String result = null;
+		if(null != src){
+			try{
+				if(null == charset){
+					result = URLDecoder.decode(src);
+				}else {
+					result = URLDecoder.decode(src, charset);
+				}
+			}catch (Exception e){
+				result = src;
+			}
+		}
+		return result;
+	}
+	public static Map<String,Object> param2map(String url, boolean empty){
+		return param2map(url, empty, false, "UTF-8");
+	}
+	public static Map<String,Object> param2map(String url, boolean empty, boolean decode){
+		return param2map(url, empty, decode, "UTF-8");
 	}
 	/**
 	 * 提取集合中每个条目的key属性的值
