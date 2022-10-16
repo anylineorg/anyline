@@ -292,7 +292,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 						continue;
 					}
 					if(!isInsertNullColumn){
-						keys.remove(i);
+						keys.remove(i);	
 						continue;
 					}
 				}else if("".equals(value.toString().trim())){
@@ -1366,7 +1366,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
-	 * @throws exception
+	 * @throws Exception
 	 */
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
