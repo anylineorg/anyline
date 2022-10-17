@@ -854,15 +854,16 @@ public class BeanUtil {
 				}
 				if(params.containsKey(k)){
 					Object olds = params.get(k);
-					List<String> vals = new ArrayList<>();
+					List<String> vs = new ArrayList<>();
 					if(null == olds){
-						vals.add(null);
+						vs.add(null);
 					}else if(olds instanceof String){
-						vals.add(olds.toString());
+						vs.add(olds.toString());
 					}else if(olds instanceof ArrayList){
-						vals = (ArrayList)olds;
+						vs = (ArrayList)olds;
 					}
-					vals.add(v);
+					vs.add(v);
+					params.put(k,vs);
 				}else{
 					params.put(k,v);
 				}

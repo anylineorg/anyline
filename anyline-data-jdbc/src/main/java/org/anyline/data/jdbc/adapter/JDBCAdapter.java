@@ -171,7 +171,7 @@ public interface JDBCAdapter {
 	 * @param sql sql
 	 * @param values value
 	 * @return int
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
 
@@ -361,7 +361,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
@@ -373,7 +373,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
 
@@ -401,7 +401,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
 
@@ -413,7 +413,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
 
@@ -436,7 +436,7 @@ public interface JDBCAdapter {
 	 * 根据主表查询分区有
 	 * @param master 主表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception;
 
@@ -450,7 +450,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 
@@ -463,7 +463,7 @@ public interface JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 
@@ -488,7 +488,7 @@ public interface JDBCAdapter {
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return tags tags
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
 
@@ -499,7 +499,7 @@ public interface JDBCAdapter {
 	 * @param columns columns
 	 * @param set set
 	 * @return columns columns
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
 
@@ -510,7 +510,7 @@ public interface JDBCAdapter {
 	 * @param columns columns
 	 * @param set set
 	 * @return columns columns
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
 
@@ -536,7 +536,7 @@ public interface JDBCAdapter {
 	 * @param tags 上一步查询结果
 	 * @param set set
 	 * @return tags
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
 
@@ -547,7 +547,7 @@ public interface JDBCAdapter {
 	 * @param tags 上一步查询结果
 	 * @param set 查询结果
 	 * @return tags
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
 
@@ -559,7 +559,7 @@ public interface JDBCAdapter {
 	 * @param tags 上一步查询结果
 	 * @param set 查询结果
 	 * @return tags
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
 
@@ -584,7 +584,7 @@ public interface JDBCAdapter {
 	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
 
@@ -595,7 +595,7 @@ public interface JDBCAdapter {
 	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
 
@@ -605,7 +605,7 @@ public interface JDBCAdapter {
 	 * @param table 表
 	 * @param set set
 	 * @return indexs indexs
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
@@ -630,7 +630,7 @@ public interface JDBCAdapter {
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
@@ -663,7 +663,7 @@ public interface JDBCAdapter {
 	 * 创建表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildCreateRunSQL(Table table) throws Exception;
 
@@ -671,7 +671,7 @@ public interface JDBCAdapter {
 	 * 修改表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildAlterRunSQL(Table table) throws Exception;
 
@@ -679,7 +679,7 @@ public interface JDBCAdapter {
 	 * 重命名
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildRenameRunSQL(Table table) throws Exception;
 
@@ -687,7 +687,7 @@ public interface JDBCAdapter {
 	 * 修改备注
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildChangeCommentRunSQL(Table table) throws Exception;
 
@@ -695,7 +695,7 @@ public interface JDBCAdapter {
 	 * 删除表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildDropRunSQL(Table table) throws Exception;
 
@@ -742,7 +742,7 @@ public interface JDBCAdapter {
 	 * 创建主有
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildCreateRunSQL(MasterTable table) throws Exception;
 
@@ -750,7 +750,7 @@ public interface JDBCAdapter {
 	 * 修改主表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildAlterRunSQL(MasterTable table) throws Exception;
 
@@ -758,7 +758,7 @@ public interface JDBCAdapter {
 	 * 主表重命名
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildRenameRunSQL(MasterTable table) throws Exception;
 
@@ -766,7 +766,7 @@ public interface JDBCAdapter {
 	 * 修改主表备注
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildChangeCommentRunSQL(MasterTable table) throws Exception;
 
@@ -774,7 +774,7 @@ public interface JDBCAdapter {
 	 * 删除主表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildDropRunSQL(MasterTable table) throws Exception;
 
@@ -787,7 +787,7 @@ public interface JDBCAdapter {
 	 * 创建分区表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildCreateRunSQL(PartitionTable table) throws Exception;
 
@@ -795,7 +795,7 @@ public interface JDBCAdapter {
 	 * 修改分区表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildAlterRunSQL(PartitionTable table) throws Exception;
 
@@ -803,7 +803,7 @@ public interface JDBCAdapter {
 	 * 分区表重命名
 	 * @param table
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildRenameRunSQL(PartitionTable table) throws Exception;
 
@@ -811,7 +811,7 @@ public interface JDBCAdapter {
 	 * 修改分区有备注
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception;
 
@@ -819,7 +819,7 @@ public interface JDBCAdapter {
 	 * 删除分区表
 	 * @param table 表
 	 * @return sql
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	public String buildDropRunSQL(PartitionTable table) throws Exception;
 

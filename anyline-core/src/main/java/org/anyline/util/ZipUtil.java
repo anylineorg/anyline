@@ -97,7 +97,7 @@ public class ZipUtil {
 	 * @param zip 源文件
 	 * @param content 替换内容
 	 * @param item 被替换条目(含目录)
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static void replace(File zip, String item, File content) throws Exception {
 		replace(zip, item, new FileInputStream(content));

@@ -182,7 +182,7 @@ public class P10ssUtil {
      * @param secret 打印机密钥
      * @param phone phone
      * @param name name
-     * @throws Exception 添加失败时异常
+     * @throws Exception 异常 添加失败时异常
      */
     public void addPrinter(String code, String secret, String phone, String name) throws Exception{
         Map<String,Object> params = new HashMap<String,Object>();
@@ -210,7 +210,7 @@ public class P10ssUtil {
      * @param machine machine
      * @param order order
      * @param text text
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      * @return DataRow
      */
     public DataRow print(String machine, String order, String text) throws Exception{

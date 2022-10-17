@@ -1782,7 +1782,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param index 索引
      * @param key   key
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String getString(int index, String key) throws Exception {
         return getRow(index).getString(key);
@@ -2121,7 +2121,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param index 索引
      * @param key   key
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String getHtmlString(int index, String key) throws Exception {
         return getString(index, key);
@@ -2143,7 +2143,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param index 索引
      * @param key   key
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String getEscapeString(int index, String key) throws Exception {
         return EscapeUtil.escape(getString(index, key)).toString();
@@ -2184,7 +2184,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param index 索引
      * @param key   key
      * @return int
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public int getInt(int index, String key) throws Exception {
         return getRow(index).getInt(key);
@@ -2212,7 +2212,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param index 索引
      * @param key   key
      * @return double
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public double getDouble(int index, String key) throws Exception {
         return getRow(index).getDouble(key);

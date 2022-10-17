@@ -1526,7 +1526,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * boolean类型true 解析成 1
      * @param key key
      * @return int
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public Integer getInt(String key) throws Exception {
         Object val = get(key);

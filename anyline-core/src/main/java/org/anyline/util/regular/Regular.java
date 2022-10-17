@@ -242,7 +242,7 @@ public interface Regular {
 	* @param src	输入字符串  src	输入字符串
 	* @param regx	表达式  regx	表达式
 	* @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	*/ 
 	public List<List<String>> fetchs(String src, String regx) throws Exception; 
 	/** 
@@ -251,7 +251,7 @@ public interface Regular {
 	* @param regx		表达式  regx		表达式
 	* @param idx		指定提取位置  idx		指定提取位置
 	* @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	*/ 
 	public List<String> fetch(String src, String regx, int idx) throws Exception;
 	/**
@@ -259,7 +259,7 @@ public interface Regular {
 	 * @param src 输入字符
 	 * @param regx 表达式
 	 * @return 返回整串
-	 * @throws Exception 异常
+	 * @throws Exception 异常 异常
 	 */
 	public List<String> fetch(String src, String regx) throws Exception; 
 	/** 

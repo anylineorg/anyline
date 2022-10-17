@@ -82,7 +82,7 @@ public class SFTPUtil {
      * 下载文件-sftp协议.  
      * @param remote 下载的文件  
      * @param local 存在本地的路径  
-     * @throws Exception 异常  
+     * @throws Exception 异常 异常  
      */   
     public void download(String remote, String local) throws Exception {   
         FileOutputStream os = null;   

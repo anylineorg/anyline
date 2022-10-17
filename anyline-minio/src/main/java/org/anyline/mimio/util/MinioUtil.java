@@ -92,7 +92,7 @@ public class MinioUtil {
      * 创建bucket
      *
      * @param bucket bucket名称
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public void createBucket(String bucket) throws Exception {
         if (!client.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
@@ -104,7 +104,7 @@ public class MinioUtil {
      * 获取全部bucket
      * @return List
      * https://docs.minio.io/cn/java-client-api-reference.html#listBuckets
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public List<Bucket> getAllBuckets() throws Exception {
         return client.listBuckets();
@@ -114,7 +114,7 @@ public class MinioUtil {
      * 根据bucket获取信息
      * @param bucket bucket名称
      * @return Optional
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public Optional<Bucket> getBucket(String bucket) throws Exception {
         return client.listBuckets().stream().filter(b -> b.name().equals(bucket)).findFirst();
@@ -123,7 +123,7 @@ public class MinioUtil {
     /**
      * 根据bucket删除信息
      * @param bucket bucket名称
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public void removeBucket(String bucket) throws Exception {
         client.removeBucket(RemoveBucketArgs.builder().bucket(bucket).build());
@@ -136,7 +136,7 @@ public class MinioUtil {
      * @param stream 文件流
      * @param size 文件大小
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String putObject(String bucket, String obj, InputStream stream, Long size) throws Exception{
         PutObjectArgs putObjectArgs = PutObjectArgs.builder()
@@ -159,7 +159,7 @@ public class MinioUtil {
      * @param prefix     前缀
      * @param recursive  是否递归查询
      * @return MinioItem 列表
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public List<Item> getAllObjectsByPrefix(String bucket, String prefix, boolean recursive) throws Exception {
         List<Item> objectList = new ArrayList<>();
@@ -188,7 +188,7 @@ public class MinioUtil {
      * @param bucket bucket名称
      * @param obj 文件名称
      * @return url
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String getObjectURL(String bucket, String obj) throws Exception {
         GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
@@ -210,7 +210,7 @@ public class MinioUtil {
      * @param bucket bucket名称
      * @param obj 文件名称
      * @return InputStream
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public InputStream getObject(String bucket, String obj) throws Exception {
         GetObjectArgs getObjectArgs = GetObjectArgs.builder()
@@ -231,7 +231,7 @@ public class MinioUtil {
      * @param obj 文件名称
      * @param base64 文件base64
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String putObject(String bucket, String obj, String base64) throws Exception{
         InputStream inputStream = new ByteArrayInputStream(base64.getBytes());
@@ -257,7 +257,7 @@ public class MinioUtil {
      * @param obj 文件名称
      * @param file 文件
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String putObject(String bucket,String obj, File file) throws Exception{
         this.putObject(bucket, obj, new FileInputStream(file), file.length());
@@ -274,7 +274,7 @@ public class MinioUtil {
      * @param bucket bucket名称
      * @param obj 文件名称
      * @return StatObjectResponse
-     * @throws Exception https://docs.minio.io/cn/java-client-api-reference.html#statObject
+     * @throws Exception 异常 https://docs.minio.io/cn/java-client-api-reference.html#statObject
      */
     public StatObjectResponse getObjectInfo(String bucket, String obj) throws Exception {
         StatObjectArgs statObjectArgs = StatObjectArgs.builder()
@@ -293,7 +293,7 @@ public class MinioUtil {
      *
      * @param bucket bucket名称
      * @param obj 文件名称
-     * @throws Exception https://docs.minio.io/cn/java-client-api-reference.html#removeObject
+     * @throws Exception 异常 https://docs.minio.io/cn/java-client-api-reference.html#removeObject
      */
     public void removeObject(String bucket, String obj) throws Exception {
         client.removeObject(RemoveObjectArgs.builder()
@@ -310,9 +310,9 @@ public class MinioUtil {
      * 获取直传链接
      * @param bucket bucket名称
      * @param obj 文件名称
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String presignedUrl(String bucket,String obj) throws Exception{
         GetPresignedObjectUrlArgs getPresignedObjectUrlArgs = GetPresignedObjectUrlArgs.builder()
@@ -334,7 +334,7 @@ public class MinioUtil {
      * @param chunks chunks
      * @param target target
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String composeObject(String bucket, List<String> chunks, String target) throws Exception{
 

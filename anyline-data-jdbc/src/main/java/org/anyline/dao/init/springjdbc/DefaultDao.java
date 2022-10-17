@@ -2470,7 +2470,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param column 列
 	 * @param trigger 是否触发异常事件
 	 * @return boolean
-	 * @throws Exception SQL异常
+	 * @throws Exception 异常 SQL异常
 	 */
 	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
 
@@ -2612,7 +2612,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param tag 标签
 	 * @param trigger 是否触发异常事件
 	 * @return boolean
-	 * @throws Exception SQL异常
+	 * @throws Exception 异常 SQL异常
 	 */
 	private boolean alter(Table table, Tag tag, boolean trigger) throws Exception{
 

@@ -100,7 +100,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param publicKey  publicKey
 	 * @return String
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */ 
 	public static String publicEncrypt(String data, RSAPublicKey publicKey) throws Exception{
 		try { 
@@ -118,7 +118,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param privateKey  privateKey
 	 * @return String
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */ 
  
 	public static String privateDecrypt(String data, RSAPrivateKey privateKey) throws Exception{
@@ -137,7 +137,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param privateKey  privateKey
 	 * @return String
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */ 
  
 	public static String privateEncrypt(String data, RSAPrivateKey privateKey) throws Exception{
@@ -156,7 +156,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param publicKey  publicKey
 	 * @return String
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */ 
  
 	public static String publicDecrypt(String data, RSAPublicKey publicKey) throws Exception{
@@ -207,7 +207,7 @@ public class RSAUtil {
      * @param privateKey 私钥(BASE64编码) 
      *  
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */ 
     public static String sign(byte[] data, String privateKey) throws Exception { 
         PrivateKey privateK = getPrivateKey(privateKey); 
@@ -231,7 +231,7 @@ public class RSAUtil {
      * @param publicKey 公钥(BASE64编码) 
      * @param sign 数字签名 
      * @return boolean
-     * @throws Exception  Exception
+     * @throws Exception 异常  Exception
      *  
      */ 
     public static boolean verify(byte[] data, String publicKey, String sign) throws Exception { 

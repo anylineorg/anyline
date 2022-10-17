@@ -742,7 +742,7 @@ public interface AnylineService<E>{
 		 * 执行save前先调用column.update()设置修改后的属性
 		 * column.update().setName().setDefaultValue().setAfter()....
 		 * @param column 列
-		 * @throws Exception SQL异常
+		 * @throws Exception 异常 SQL异常
 		 */
 		public boolean save(Column column) throws Exception;
 		public boolean add(Column column) throws Exception;
@@ -776,7 +776,7 @@ public interface AnylineService<E>{
 		 * 修改约束
 		 * @param constraint 约束
 		 * @return boolean
-		 * @throws Exception Exception
+		 * @throws Exception 异常 Exception
 		 */
 		public boolean add(Constraint constraint) throws Exception;
 		public boolean alter(Constraint constraint) throws Exception;

@@ -84,7 +84,7 @@ public class SpiderClient {
      * @param function function
      * @param params params
      * @return Object
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public Object invoke(String function, Object ... params) throws Exception{
         Invocable jsInvoke = (Invocable)engine;

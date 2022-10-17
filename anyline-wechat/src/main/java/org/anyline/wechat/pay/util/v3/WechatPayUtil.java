@@ -162,7 +162,7 @@ public class WechatPayUtil {
      * 退款申请
      * @param refund  refund
      * @return WechatRefundResult
-     * @throws Exception  Exception
+     * @throws Exception 异常  Exception
      */
     public WechatRefundResult refund(WechatRefund refund) throws Exception{
         return null;
@@ -218,7 +218,7 @@ public class WechatPayUtil {
      * 签名
      * @param message message
      * @return String
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public String sign(byte[] message) throws Exception {
         String result = null;

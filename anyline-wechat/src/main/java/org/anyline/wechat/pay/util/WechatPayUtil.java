@@ -95,7 +95,7 @@ public class WechatPayUtil {
      * 统一下单
      * @param order  order
      * @return WechatPrePayResult WechatPrePayResult
-     * @throws Exception Exception
+     * @throws Exception 异常 Exception
      */
     public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
         WechatPrePayResult result = null;
@@ -176,7 +176,7 @@ public class WechatPayUtil {
      * 退款申请
      * @param refund  refund
      * @return WechatRefundResult
-     * @throws Exception  Exception
+     * @throws Exception 异常  Exception
      */
     public WechatRefundResult refund(WechatRefund refund) throws Exception{
         WechatRefundResult result = null;
@@ -236,7 +236,7 @@ public class WechatPayUtil {
      * 发送红包
      * @param pack  pack
      * @return WechatRedpackResult
-     * @throws Exception  Exception
+     * @throws Exception 异常  Exception
      */
     public WechatRedpackResult sendRedpack(WechatRedpack pack) throws Exception{
         WechatRedpackResult result = new WechatRedpackResult();
@@ -303,7 +303,7 @@ public class WechatPayUtil {
      * 发送裂变红包
      * @param pack  pack
      * @return WechatFissionRedpackResult
-     * @throws Exception  Exception
+     * @throws Exception 异常  Exception
      */
     public WechatFissionRedpackResult sendRedpack(WechatFissionRedpack pack) throws Exception{
         if(null == pack.getWxappid()){

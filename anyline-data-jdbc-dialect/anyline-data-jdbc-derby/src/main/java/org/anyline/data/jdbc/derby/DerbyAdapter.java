@@ -159,7 +159,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
@@ -203,7 +203,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
@@ -219,7 +219,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
@@ -254,7 +254,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return columns columns
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
@@ -297,7 +297,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param tags 上一步查询结果
 	 * @param set set
 	 * @return tags
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
@@ -339,7 +339,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
@@ -382,7 +382,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(int index , boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{

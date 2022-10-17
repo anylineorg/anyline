@@ -1712,7 +1712,7 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 修改表结构
      * @param table 表
-     * @throws Exception SQL异常
+     * @throws Exception 异常 SQL异常
      */
     public boolean save(Table table) throws Exception{
         return ddl.save(table);
@@ -1722,7 +1722,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * 执行save前先调用column.update()设置修改后的属性
      * column.update().setName().setDefaultValue().setAfter()....
      * @param column 列
-     * @throws Exception SQL异常
+     * @throws Exception 异常 SQL异常
      */
     public boolean save(Column column) throws Exception{
         return ddl.save(column);
@@ -2326,7 +2326,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * 执行save前先调用column.update()设置修改后的属性
          * column.update().setName().setDefaultValue().setAfter()....
          * @param column 列
-         * @throws Exception SQL异常
+         * @throws Exception 异常 SQL异常
          */
 
         @Override
@@ -2383,7 +2383,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * @param table 表
          * @param column 修改目标
          * @return boolean
-         * @throws Exception sql异常
+         * @throws Exception 异常 sql异常
          */
         private boolean alter(Table table, Column column) throws Exception{
             boolean result = false;
@@ -2435,7 +2435,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * 执行save前先调用tag.update()设置修改后的属性
          * tag.update().setName()
          * @param tag 标签
-         * @throws Exception SQL异常
+         * @throws Exception 异常 SQL异常
          */
 
         @Override
@@ -2493,7 +2493,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * @param table 表
          * @param tag 修改目标
          * @return boolean
-         * @throws Exception sql异常
+         * @throws Exception 异常 sql异常
          */
         private boolean alter(Table table, Tag tag) throws Exception{
             boolean result = false;

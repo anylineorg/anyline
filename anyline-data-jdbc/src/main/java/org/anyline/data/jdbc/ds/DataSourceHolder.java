@@ -172,7 +172,7 @@ public class DataSourceHolder {
 	 * @param key 数据源名称
 	 * @param ds 数据源
 	 * @return DataSource
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static DataSource addDataSource(String key, DataSource ds) throws Exception{
 		return addDataSource(key, ds,true);
@@ -184,7 +184,7 @@ public class DataSourceHolder {
 	 * @param ds 数据源
 	 * @param over 是否允许覆盖已有的数据源
 	 * @return DataSource
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static DataSource addDataSource(String key, DataSource ds, boolean over) throws Exception{
 		if(!over && dataSources.contains(key)){
@@ -209,7 +209,7 @@ public class DataSourceHolder {
 	 * @param user 用户名
 	 * @param password 密码
 	 * @return DataSource
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static DataSource reg(String key, String type, String driver, String url, String user, String password) throws Exception{
 		Map<String,String> param = new HashMap<String,String>();
@@ -244,7 +244,7 @@ public class DataSourceHolder {
 	 * 	  user 用户名
 	 * 	  password 密码
 	 * @return DataSource
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{

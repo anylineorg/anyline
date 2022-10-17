@@ -78,7 +78,7 @@ public class RegularUtil {
 	 * @param regx	表达式  regx	表达式
 	 * @param mode	mode
 	 * @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */ 
 	public static synchronized List<List<String>> fetchs(String src, String regx, Regular.MATCH_MODE mode) throws Exception{ 
 		List<List<String>> result = null; 
@@ -294,7 +294,7 @@ public class RegularUtil {
 	 * @param src src
 	 * @param attribute attribute
 	 * @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static List<List<String>> getTagAndBodyWithAttribute(String src, String attribute) throws Exception{
 		List<List<String>> result = new ArrayList<>();
@@ -353,7 +353,7 @@ public class RegularUtil {
 	 * @param attribute attribute
 	 * @param value value
 	 * @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static List<List<String>> getTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
 		List<List<String>> result = new ArrayList<>();
@@ -508,7 +508,7 @@ public class RegularUtil {
 	 * @param txt text
 	 * @param tags 标签名,如div,span tags标签名,如div,span
 	 * @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static List<List<String>> fetchPairedTag(String txt,String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
@@ -537,7 +537,7 @@ public class RegularUtil {
 	 * @param txt text
 	 * @param tags 标签名,如img br
 	 * @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static List<List<String>> fetchSingleTag(String txt,String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
@@ -563,7 +563,7 @@ public class RegularUtil {
 	 * @param txt txt
 	 * @param tags 标签名 tags标签名
 	 * @return List
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	public static List<List<String>> fetchAllTag(String txt,String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();

@@ -423,7 +423,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param sql sql
      * @param values 占位参数值
      * @return int 影响行数
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{

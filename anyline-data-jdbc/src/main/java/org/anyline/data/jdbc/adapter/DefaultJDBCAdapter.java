@@ -337,10 +337,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	/**
 	 * 根据entity创建 INSERT RunPrepare
-	 * @param dest
-	 * @param obj
+	 * @param dest 表
+	 * @param obj 数据
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
-	 * @param columns
+	 * @param columns 列
 	 * @return Run
 	 */
 	protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
@@ -460,15 +460,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					continue;
 				}
 				if(column.startsWith("+")){
-					column = column.substring(1, column.length());
+					column = column.substring(1);
 					masters.add(column);
 					each = true;
 				}else if(column.startsWith("-")){
-					column = column.substring(1, column.length());
+					column = column.substring(1);
 					ignores.add(column);
 					each = true;
 				}else if(column.startsWith("?")){
-					column = column.substring(1, column.length());
+					column = column.substring(1);
 					factKeys.add(column);
 					each = true;
 				}
@@ -716,8 +716,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected Run buildDeleteRunContent(TableRun run){
 		return null;
 	}
-
-	@SuppressWarnings("rawtypes")
+ 
 	protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
 		return null;
 	}
@@ -891,7 +890,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
@@ -941,7 +940,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
@@ -961,7 +960,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
@@ -1036,7 +1035,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return columns columns
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
@@ -1169,7 +1168,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 获取ResultSet中的列
 	 * @param set ResultSet
 	 * @return list
-	 * @throws Exception Exception
+	 * @throws Exception 异常 Exception
 	 */
 	protected Map<String, Integer> keys(ResultSet set) throws Exception{
 		ResultSetMetaData rsmd = set.getMetaData();
@@ -1210,7 +1209,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param tags 上一步查询结果
 	 * @param set set
 	 * @return tags tags
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
@@ -1265,7 +1264,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
@@ -1366,7 +1365,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
@@ -2471,7 +2470,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param key key
 	 * @param set ResultSet
 	 * @return String
-	 * @throws Exception
+	 * @throws Exception 异常
 	 */
 	protected String string(Map<String, Integer> keys, String key, ResultSet set, String def) throws Exception{
 		Object value = value(keys, key, set);
@@ -2509,7 +2508,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected Object value(Map<String, Integer> keys, String key, ResultSet set, Object def) throws Exception{
 		Integer index = keys.get(key);
 		if(null != index){
-			// db2 直接用 set.getObject(String) 可能发行 参数无效：未知列名 String
+			// db2 直接用 set.getObject(String) 可能发生 参数无效：未知列名 String
 			return set.getObject(index);
 		}
 		return def;
@@ -2548,21 +2547,21 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			builder.append(str);
 		}else if(value instanceof Timestamp){
-			builder.append("'").append(value.toString()).append("'");
+			builder.append("'").append(value).append("'");
 		}else if(value instanceof java.sql.Date){
-			builder.append("'").append(value.toString()).append("'");
+			builder.append("'").append(value).append("'");
 		}else if(value instanceof LocalDate){
-			builder.append("'").append(value.toString()).append("'");
+			builder.append("'").append(value).append("'");
 		}else if(value instanceof LocalTime){
-			builder.append("'").append(value.toString()).append("'");
+			builder.append("'").append(value).append("'");
 		}else if(value instanceof LocalDateTime){
-			builder.append("'").append(value.toString()).append("'");
+			builder.append("'").append(value).append("'");
 		}else if(value instanceof Date){
 			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
 		}else if(value instanceof Number || value instanceof Boolean){
-			builder.append(value.toString());
+			builder.append(value);
 		}else{
-			builder.append(value.toString());
+			builder.append(value);
 		}
 	}
 
@@ -2649,16 +2648,38 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			String typeName = column.getTypeName().toUpperCase();
 			if(null != typeName){
 				// 根据数据库类型
-				if(typeName.equals("UUID")){
+				if(typeName.contains("INT")){
+					if(value instanceof Integer){
+					}else{
+						run.setValue(BasicUtil.parseInt(value, null));
+					}
+				}else if(typeName.contains("DECIMAL") || typeName.contains("NUMERIC")){
+					if(value instanceof BigDecimal){
+					}else {
+						run.setValue(BasicUtil.parseDecimal(value, null));
+					}
+				}else if(typeName.equals("LONG")){
+					if(value instanceof Long){
+					}else{
+						run.setValue(BasicUtil.parseLong(value, null));
+					}
+				}else if(typeName.equals("DOUBLE")){
+					if(value instanceof Double){
+					}else{
+						run.setValue(BasicUtil.parseDouble(value, null));
+					}
+				}else if(typeName.equals("FLOAT")){
+					if(value instanceof Float){
+					}else{
+						run.setValue(BasicUtil.parseFloat(value, null));
+					}
+				}else if(typeName.equals("UUID")){
 					if(value instanceof UUID) {
 					}else{
 						run.setValue(UUID.fromString(value.toString()));
 					}
 					return true;
-				}else if(
-						typeName.contains("CHAR")
-								|| typeName.contains("TEXT")
-				){
+				}else if(typeName.contains("CHAR") || typeName.contains("TEXT")){
 					if(value instanceof String){
 					}else if(value instanceof Date){
 						run.setValue(DateUtil.format((Date)value));
