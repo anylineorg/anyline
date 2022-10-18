@@ -797,12 +797,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
 			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
 			table.setName(tableName);
-			table.setType(string(keys, "TABLE_TYPE", set));
-			table.setComment(string(keys, "REMARKS", set));
-			table.setTypeCat(string(keys, "TYPE_CAT", set));
-			table.setTypeName(string(keys, "TYPE_NAME", set));
-			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
-			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
 			tables.put(tableName.toUpperCase(), table);
 
 			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
@@ -867,12 +867,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
 			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
-			table.setType(string(keys, "TABLE_TYPE", set));
-			table.setComment(string(keys, "REMARKS", set));
-			table.setTypeCat(string(keys, "TYPE_CAT", set));
-			table.setTypeName(string(keys, "TYPE_NAME", set));
-			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
-			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
 			tables.put(tableName.toUpperCase(), table);
 
 			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
@@ -989,12 +989,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
 			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
-			table.setType(string(keys, "TABLE_TYPE", set));
-			table.setComment(string(keys, "REMARKS", set));
-			table.setTypeCat(string(keys, "TYPE_CAT", set));
-			table.setTypeName(string(keys, "TYPE_NAME", set));
-			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
-			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
 			tables.put(tableName.toUpperCase(), table);
 
 			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
@@ -1094,9 +1094,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			column.setName(name);
 			column.setComment(remark);
-			column.setCatalog(string(keys,"TABLE_CAT", set, table.getCatalog()));
-			column.setSchema(string(keys,"TABLE_SCHEM", set, table.getSchema()));
-			column.setTableName(string(keys,"TABLE_NAME", set, table.getName()));
+			column.setCatalog(BasicUtil.evl(string(keys,"TABLE_CAT", set, table.getCatalog())));
+			column.setSchema(BasicUtil.evl(string(keys,"TABLE_SCHEM", set, table.getSchema())));
+			column.setTableName(BasicUtil.evl(string(keys,"TABLE_NAME", set, table.getName()), column.getTableName()));
 			column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
 			column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));
 			column.setTypeName(string(keys, "TYPE_NAME", set, column.getTypeName()));
