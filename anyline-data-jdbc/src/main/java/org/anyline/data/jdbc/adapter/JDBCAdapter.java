@@ -327,6 +327,7 @@ public interface JDBCAdapter {
 	 * 													metadata
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
 	 * partition table	: 分区有
@@ -337,6 +338,27 @@ public interface JDBCAdapter {
 	 *
 	 ******************************************************************************************************************/
 
+	/* *****************************************************************************************************************
+	 * 													database
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询所有数据库
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	public List<String> buildQueryDatabaseRunSQL() throws Exception;
+
+	/**
+	 *  根据查询结果集构造 Database
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param databases 上一步查询结果
+	 * @param set set
+	 * @return databases
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													table

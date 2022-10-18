@@ -731,6 +731,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													metadata
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
 	 * partition table	: 分区有
@@ -740,6 +741,23 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * constraint		: 约束
 	 *
 	 ******************************************************************************************************************/
+
+
+	/* *****************************************************************************************************************
+	 * 													database
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryDatabaseRunSQL() throws Exception
+	 *
+	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+	public List<String> buildQueryDatabaseRunSQL() throws Exception{
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryDatabaseRunSQL()",37));
+		return null;
+	}
+	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)",37));
+		return null;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													table

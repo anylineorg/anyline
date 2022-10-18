@@ -10,6 +10,7 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,6 +87,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													metadata
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
 	 * partition table	: 分区有
@@ -97,6 +99,38 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
+	 * 													database
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryDatabaseRunSQL() throws Exception
+	 * public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+	public List<String> buildQueryDatabaseRunSQL() throws Exception{
+		List<String> sqls = new ArrayList<>();
+		sqls.add("SHOW DATABASES");
+		return sqls;
+	}
+
+	/**
+	 * 根据查询结果集构造 Database
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param databases 上一步查询结果
+	 * @param set set
+	 * @return databases
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
+		if(null == databases){
+			databases = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			Database database = new Database();
+			database.setName(row.getString("DATABASE"));
+			databases.put(database.getName().toUpperCase(), database);
+		}
+		return databases;
+	}
+	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
@@ -105,15 +139,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern pattern
-	 * @param types types
-	 * @return String
-	 */
-
-	/**
-	 * 查询主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern

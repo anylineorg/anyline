@@ -1280,6 +1280,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													metadata
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
 	 * partition table	: 分区有
@@ -1289,7 +1290,60 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * constraint		: 约束
 	 *
 	 ******************************************************************************************************************/
-	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
+
+
+	/* *****************************************************************************************************************
+	 * 													database
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Database> databases()
+	 ******************************************************************************************************************/
+
+	@Override
+	public LinkedHashMap<String, Database> databases(){
+		LinkedHashMap<String,Database> databases = new LinkedHashMap<>();
+
+		DataSource ds = null;
+		Connection con = null;
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		String random = random();
+		try{
+			long fr = System.currentTimeMillis();
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			Map<String,String> table_map = table_maps.get(DataSourceHolder.getDataSource()+"");
+			if(null == table_map){
+				table_map = new HashMap<>();
+				table_maps.put(DataSourceHolder.getDataSource()+"", table_map);
+			}
+			// 根据系统表查询
+			try{
+				List<String> sqls = adapter.buildQueryDatabaseRunSQL();
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(adapter, sql, null).toUpperKey();
+							databases = adapter.databases(idx++, true, databases, set);
+						}
+					}
+				}
+			}catch (Exception e){
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.getMessage());
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[databases][result:{}][执行耗时:{}ms]", random, databases.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return databases;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													table
@@ -1300,6 +1354,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Table> tables(String types)
 	 * public LinkedHashMap<String, Table> tables()
 	 ******************************************************************************************************************/
+
+	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
 	/**
 	 * tables
 	 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -1353,7 +1409,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null);
+							DataSet set = select(adapter, sql, null).toUpperKey();
 							tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1458,7 +1514,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null);
+							DataSet set = select(adapter, sql, null).toUpperKey();
 							tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1558,7 +1614,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null);
+							DataSet set = select(adapter, sql, null).toUpperKey();
 							tables = adapter.ptables(idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 						}
 					}
@@ -1758,7 +1814,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(adapter, sql, null);
+						DataSet set = select(adapter, sql, null).toUpperKey();
 						tags = adapter.tags(idx, true, table, tags, set);
 					}
 					idx ++;
