@@ -260,10 +260,24 @@ public class HtmlUtil {
         public abstract String getName();
         public abstract String getRemark();
     }
-    public static String decode(String src){
+    public static String display(String src){
         String result = src;
         for (ESCAPE item : ESCAPE.values()) {
             src = src.replace(item.getName(),item.getDisplay()).replace(item.getCode(),item.getDisplay());
+        }
+        return result;
+    }
+    public static String name2code(String src){
+        String result = src;
+        for (ESCAPE item : ESCAPE.values()) {
+            src = src.replace(item.getName(), item.getCode());
+        }
+        return result;
+    }
+    public static String code2display(String src){
+        String result = src;
+        for (ESCAPE item : ESCAPE.values()) {
+            src = src.replace(item.getCode(), item.getDisplay());
         }
         return result;
     }

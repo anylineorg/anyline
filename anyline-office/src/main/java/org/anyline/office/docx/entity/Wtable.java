@@ -328,6 +328,9 @@ public class Wtable {
         }
         */
         try {
+            if(doc.IS_HTML_ESCAPE){
+                html = HtmlUtil.name2code(html);
+            }
             org.dom4j.Document doc = DocumentHelper.parseText("<root>"+html+"</root>");
             Element root = doc.getRootElement();
             List<Element> rows = root.elements("tr");
@@ -428,7 +431,7 @@ public class Wtable {
         Wtc tc = getTc(row, col);
         if(null != tc){
             if(doc.IS_HTML_ESCAPE) {
-                text = HtmlUtil.decode(text);
+                text = HtmlUtil.display(text);
             }
             tc.setText(text, styles);
         }

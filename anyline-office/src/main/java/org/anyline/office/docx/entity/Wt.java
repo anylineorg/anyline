@@ -12,7 +12,7 @@ public class Wt {
     }
     public Wt setText(String text){
         if(doc.IS_HTML_ESCAPE) {
-            text = HtmlUtil.decode(text);
+            text = HtmlUtil.display(text);
         }
         src.setText(text);
         return this;

@@ -365,6 +365,9 @@ public class WDocument {
             html = html.replace(style,"");
         }
         try {
+            if(IS_HTML_ESCAPE){
+                html = HtmlUtil.name2code(html);
+            }
             html = "<root>" + html + "</root>";
             org.dom4j.Document doc = DocumentHelper.parseText(html);
             Element root = doc.getRootElement();
@@ -511,7 +514,7 @@ public class WDocument {
                 }
                 tc.setSrc(html_col);
                 if(IS_HTML_ESCAPE) {
-                    text = HtmlUtil.decode(text);
+                    text = HtmlUtil.display(text);
                 }
                 tc.setText(text);
                 Map<String,String> tdStyles = StyleParser.join(tc.getStyles(),style(html_col));
@@ -640,7 +643,7 @@ public class WDocument {
         pr(r, styles);
         Element t = r.addElement("w:t");
         if(IS_HTML_ESCAPE) {
-            text = HtmlUtil.decode(text);
+            text = HtmlUtil.display(text);
         }
         t.setText(text.trim());
         return r;
@@ -1193,7 +1196,7 @@ public class WDocument {
             pr(r, styles);
             Element t = r.addElement("w:t");
             if(IS_HTML_ESCAPE) {
-                text = HtmlUtil.decode(text);
+                text = HtmlUtil.display(text);
             }
             t.setText(text);
         }

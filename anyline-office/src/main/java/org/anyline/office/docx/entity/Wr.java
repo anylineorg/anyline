@@ -232,7 +232,7 @@ public class Wr {
             String text = wt.getText();
             text = text.replace(src, tar);
             if(this.doc.IS_HTML_ESCAPE) {
-                text = HtmlUtil.decode(text);
+                text = HtmlUtil.display(text);
             }
             wt.setText(text);
         }

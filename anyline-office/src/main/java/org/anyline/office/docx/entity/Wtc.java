@@ -770,6 +770,9 @@ public class Wtc {
 
         DocxUtil.removeContent(src);
         try {
+            if(doc.IS_HTML_ESCAPE){
+                html = HtmlUtil.name2code(html);
+            }
             Document doc = DocumentHelper.parseText("<root>"+html+"</root>");
             Element root = doc.getRootElement();
             this.doc.parseHtml(src, null, root, null, false);
