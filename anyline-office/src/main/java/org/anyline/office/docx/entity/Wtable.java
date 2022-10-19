@@ -48,15 +48,15 @@ public class Wtable {
      * @param bookmark 书签
      * @return wtr
      */
-    public Wtr getTr(String bookmark){
-        Element src = getParent(bookmark, "tr");
+    public Wtr tr(String bookmark){
+        Element src = parent(bookmark, "tr");
         Wtr tr = new Wtr(doc,this, src);
         return tr;
     }
 
 
-    public Element getParent(String bookmark, String tag){
-        return doc.getParent(bookmark, tag);
+    public Element parent(String bookmark, String tag){
+        return doc.parent(bookmark, tag);
     }
 
 
@@ -98,7 +98,7 @@ public class Wtable {
      * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @return Wtr
      */
-    public Wtr getTemplate(Integer index){
+    public Wtr template(Integer index){
         Wtr template = null;
         int size = wtrs.size();
         if(size>0){
@@ -130,12 +130,12 @@ public class Wtable {
      */
     public void insert(Object data, String ... cols){
         Integer index = null;
-        Wtr template = getTemplate(index);
+        Wtr template = template(index);
         insert(index, template, data, cols);
     }
     public void append(Object data, String ... cols){
         Integer index = null;
-        Wtr template = getTemplate(index);
+        Wtr template = template(index);
         insert(index, template, data, cols);
     }
 
@@ -147,7 +147,7 @@ public class Wtable {
      * @param cols data的属性
      */
     public void insert(Integer index, Object data, String ... cols){
-        Wtr template = getTemplate(index);
+        Wtr template = template(index);
         insert(index, template, data, cols);
     }
 
@@ -266,7 +266,7 @@ public class Wtable {
     public Wtable insert(Integer index, int qty){
         int size = wtrs.size();
         if(size > 0){
-            Wtr template = getTemplate(index);
+            Wtr template = template(index);
             return insert(index, template, qty);
         }
         return this;
@@ -290,7 +290,7 @@ public class Wtable {
      */
     public void insert(Integer index, String html){
         List<Element> trs = src.elements("tr");
-        Wtr template = getTemplate(index); //取原来在当前位置的一行作模板
+        Wtr template = template(index); //取原来在当前位置的一行作模板
         insert(index, template, html);
     }
     public void append(String html){
@@ -510,7 +510,7 @@ public class Wtable {
      */
     public Wtable insertRows(Integer index, int qty){
         if(wtrs.size()>0){
-            insertRows(getTemplate(index), index, qty);
+            insertRows(template(index), index, qty);
         }
         return this;
     }
@@ -629,7 +629,7 @@ public class Wtable {
     public List<Wtr> getTrs(){
         return wtrs;
     }
-    public Wtr getTr(int index){
+    public Wtr tr(int index){
         index = index(index, wtrs.size());
         return wtrs.get(index);
     }
@@ -641,7 +641,7 @@ public class Wtable {
      * @return wtc
      */
     public Wtc getTc(int row, int col){
-        Wtr wtr = getTr(row);
+        Wtr wtr = tr(row);
         if(null == wtr){
             return null;
         }
@@ -777,7 +777,7 @@ public class Wtable {
      * @return Wtr
      */
     public Wtr removeTopBorder(int row){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         List<Wtc> tcs = tr.getTcs();
         for(Wtc tc:tcs){
             tc.removeTopBorder();
@@ -791,7 +791,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr removeBottomBorder(int row){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.removeBottomBorder();
         return tr;
     }
@@ -899,7 +899,7 @@ public class Wtable {
     }
 
     public Wtr setBorder(int row){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.setBorder();
         return tr;
     }
@@ -1016,7 +1016,7 @@ public class Wtable {
      * @return tr
      */
     public Wtr setTopBorder(int rows, int size, String color, String style){
-        return getTr(rows).setTopBorder(size, color, style);
+        return tr(rows).setTopBorder(size, color, style);
     }
     /**
      * 设置整行所有单元格下边框
@@ -1027,7 +1027,7 @@ public class Wtable {
      * @return tr
      */
     public Wtr setBottomBorder(int rows,int size, String color, String style){
-        return getTr(rows).setBottomBorder(size, color, style);
+        return tr(rows).setBottomBorder(size, color, style);
     }
 
 
@@ -1045,7 +1045,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setColor(int rows, String color){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setColor(color);
         return tr;
     }
@@ -1073,7 +1073,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setFont(int row, String size, String eastAsia, String ascii, String hint){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.setFont(size, eastAsia, ascii, hint);
         return tr;
     }
@@ -1095,7 +1095,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setFontSize(int rows, String size){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setFontSize(size);
         return tr;
     }
@@ -1118,7 +1118,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setFontFamily(int rows, String font){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setFontFamily(font);
         return tr;
     }
@@ -1158,7 +1158,7 @@ public class Wtable {
         return this;
     }
     public Wtr setHeight(int rows, String height){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setHeight(height);
         return tr;
     }
@@ -1187,7 +1187,7 @@ public class Wtable {
      * @return wtcr
      */
     public Wtr setAlign(int rows, String align){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setAlign(align);
         return tr;
     }
@@ -1221,7 +1221,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setVerticalAlign(int rows, String align){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setVerticalAlign(align);
         return tr;
     }
@@ -1269,17 +1269,17 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setBottomPadding(int rows, String padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setBottomPadding(padding);
         return tr;
     }
     public Wtr setBottomPadding(int rows, int padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setBottomPadding(padding);
         return tr;
     }
     public Wtr setBottomPadding(int rows, double padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setBottomPadding(padding);
         return tr;
     }
@@ -1318,17 +1318,17 @@ public class Wtable {
     }
 
     public Wtr setTopPadding(int rows, String padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setTopPadding(padding);
         return tr;
     }
     public Wtr setTopPadding(int rows, int padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setTopPadding(padding);
         return tr;
     }
     public Wtr setTopPadding(int rows, double padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setTopPadding(padding);
         return tr;
     }
@@ -1361,17 +1361,17 @@ public class Wtable {
     }
 
     public Wtr setRightPadding(int rows, String padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setRightPadding(padding);
         return tr;
     }
     public Wtr setRightPadding(int rows, int padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setRightPadding(padding);
         return tr;
     }
     public Wtr setRightPadding(int rows, double padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setRightPadding(padding);
         return tr;
     }
@@ -1406,17 +1406,17 @@ public class Wtable {
     }
 
     public Wtr setLeftPadding(int rows, String padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setLeftPadding(padding);
         return tr;
     }
     public Wtr setLeftPadding(int rows, int padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setLeftPadding(padding);
         return tr;
     }
     public Wtr setLeftPadding(int rows, double padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setLeftPadding(padding);
         return tr;
     }
@@ -1452,17 +1452,17 @@ public class Wtable {
         return getTc(row, col).setPadding(side, padding);
     }
     public Wtr setPadding(int rows, String side, String padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setPadding(side, padding);
         return tr;
     }
     public Wtr setPadding(int rows, String side, int padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setPadding(side, padding);
         return tr;
     }
     public Wtr setPadding(int rows, String side, double padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setPadding(side, padding);
         return tr;
     }
@@ -1499,17 +1499,17 @@ public class Wtable {
         return getTc(row, col).setPadding(padding);
     }
     public Wtr setPadding(int rows, String padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setPadding(padding);
         return tr;
     }
     public Wtr setPadding(int rows, int padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setPadding(padding);
         return tr;
     }
     public Wtr setPadding(int rows, double padding){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setPadding(padding);
         return tr;
     }
@@ -1553,7 +1553,7 @@ public class Wtable {
      * @return Wtr
      */
     public Wtr setBackgroundColor(int row, String color){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.setBackgroundColor(color);
         return tr;
     }
@@ -1580,7 +1580,7 @@ public class Wtable {
      * @return Wtr
      */
     public Wtr removeStyle(int row){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.removeContent();
         return tr;
     }
@@ -1606,7 +1606,7 @@ public class Wtable {
      * @return Wtr
      */
     public Wtr removeBackgroundColor(int row){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.removeBackgroundColor();
         return tr;
     }
@@ -1632,7 +1632,7 @@ public class Wtable {
      * @return Wtr
      */
     public Wtr removeColor(int row){
-        Wtr tr = getTr(row);
+        Wtr tr = tr(row);
         tr.removeColor();
         return tr;
     }
@@ -1659,7 +1659,7 @@ public class Wtable {
         return setBold(rows, true);
     }
     public Wtr setBold(int rows, boolean bold){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setBold(bold);
         return tr;
     }
@@ -1701,7 +1701,7 @@ public class Wtable {
         return setStrike(row, col, true);
     }
     public Wtr setStrike(int rows, boolean strike){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setStrike(strike);
         return tr;
     }
@@ -1737,7 +1737,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr setItalic(int rows,  boolean italic){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.setItalic(italic);
         return tr;
     }
@@ -1771,7 +1771,7 @@ public class Wtable {
      * @return wtr
      */
     public Wtr replace(int rows, String src, String tar){
-        Wtr tr = getTr(rows);
+        Wtr tr = tr(rows);
         tr.replace(src, tar);
         return tr;
     }

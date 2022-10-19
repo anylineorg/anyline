@@ -205,18 +205,58 @@ public class WDocument {
      * @param tag 上一级标签名 如tbl
      * @return Element
      */
-    public Element getParent(String bookmark, String tag){
+    public Element parent(String bookmark, String tag){
         load();
         Element bk = DocxUtil.bookmark(doc.getRootElement(), bookmark);
         return DocxUtil.getParent(bk, tag);
     }
-    public Element getParent(String bookmark){
-        return getParent(bookmark, null);
+    public Element parent(String bookmark){
+        return parent(bookmark, null);
     }
-    public Wtable getTable(String bookmark){
-        Element src = getParent(bookmark, "tbl");
+    public Wtable table(String bookmark){
+        Element src = parent(bookmark, "tbl");
         Wtable table = new Wtable(this, src);
         return table;
+    }
+
+    /**
+     * 获取doby下的table
+     * @param recursion 是否递归获取所有级别的table,正常情况下不需要，word中的tbl一般在body下的最顶级,除非有表格嵌套
+     * @return tables
+     */
+    public List<Wtable> tables(boolean recursion){
+        if(!recursion){
+            return tables();
+        }
+        load();
+        List<Wtable> tables = new ArrayList<>();
+        List<Element> elements = children(body);
+        for(Element element:elements){
+            if(element.getName().equals("tbl")){
+                Wtable table = new Wtable(this, element);
+                tables.add(table);
+            }
+        }
+        return tables;
+    }
+    private List<Element> children(Element parent){
+        List<Element> result = new ArrayList<>();
+        List<Element> items = parent.elements();
+        for(Element item:items){
+            result.add(item);
+            result.addAll(children(item));
+        }
+        return result;
+    }
+    public List<Wtable> tables(){
+        load();
+        List<Wtable> tables = new ArrayList<>();
+        List<Element> elements = body.elements("tbl");
+        for(Element element:elements){
+            Wtable table = new Wtable(this, element);
+            tables.add(table);
+        }
+        return tables;
     }
     // 插入排版方向
     public void setOrient(Element prev, String orient, Map<String,String> styles){
@@ -1114,7 +1154,17 @@ public class WDocument {
         }
         return prev;
     }
-
+    public WDocument remove(Element element){
+        element.getParent().remove(element);
+        reload();
+        return this;
+    }
+    public WDocument remove(Wtable table){
+        Element element = table.getSrc();
+        element.getParent().remove(element);
+        reload();
+        return this;
+    }
     public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles){
         return parseHtml(parent, prev, html, styles, false);
     }
