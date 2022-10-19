@@ -806,7 +806,7 @@ public class Wtc {
         Element r = DocxUtil.addElement(p, "r");
         Element t = DocxUtil.addElement(r, "t");
         if(doc.IS_HTML_ESCAPE) {
-            text = HtmlUtil.decode(text);
+            text = HtmlUtil.display(text);
         }
         t.setText(text);
         DocxUtil.pr(r, styles);
@@ -817,7 +817,7 @@ public class Wtc {
         Element r = DocxUtil.addElement(p, "r");
         Element t = r.addElement("w:t");
         if(doc.IS_HTML_ESCAPE) {
-            text = HtmlUtil.decode(text);
+            text = HtmlUtil.display(text);
         }
         t.setText(text);
         return this;
