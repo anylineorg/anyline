@@ -277,7 +277,7 @@ public class HtmlUtil {
     public static String code2display(String src){
         String result = src;
         for (ESCAPE item : ESCAPE.values()) {
-            src = src.replace(item.getCode(), item.getDisplay());
+            result = result.replace(item.getCode(), item.getDisplay());
         }
         return result;
     }
