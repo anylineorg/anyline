@@ -24,6 +24,7 @@ public class WDocument {
     // word/document.xml
     private org.dom4j.Document doc = null;
     private Element body = null;
+    public boolean IS_HTML_ESCAPE = false;  //设置文本时是否解析转义符
 
     // word/_rels/document.xml.rels
     private String relsXml = null;
@@ -509,6 +510,9 @@ public class WDocument {
                     tc = cells[r][tcIndex+merge_qty];
                 }
                 tc.setSrc(html_col);
+                if(IS_HTML_ESCAPE) {
+                    text = HtmlUtil.decode(text);
+                }
                 tc.setText(text);
                 Map<String,String> tdStyles = StyleParser.join(tc.getStyles(),style(html_col));
                 tdStyles = StyleParser.parse(tdStyles, html_col.attributeValue("style"), true);
@@ -635,6 +639,9 @@ public class WDocument {
 
         pr(r, styles);
         Element t = r.addElement("w:t");
+        if(IS_HTML_ESCAPE) {
+            text = HtmlUtil.decode(text);
+        }
         t.setText(text.trim());
         return r;
     }
@@ -1185,6 +1192,9 @@ public class WDocument {
             r = parent.addElement("w:r");
             pr(r, styles);
             Element t = r.addElement("w:t");
+            if(IS_HTML_ESCAPE) {
+                text = HtmlUtil.decode(text);
+            }
             t.setText(text);
         }
         return r;

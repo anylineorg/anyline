@@ -260,7 +260,7 @@ public class HtmlUtil {
         public abstract String getName();
         public abstract String getRemark();
     }
-    public String decode(String src){
+    public static String decode(String src){
         String result = src;
         for (ESCAPE item : ESCAPE.values()) {
             src = src.replace(item.getName(),item.getDisplay()).replace(item.getCode(),item.getDisplay());

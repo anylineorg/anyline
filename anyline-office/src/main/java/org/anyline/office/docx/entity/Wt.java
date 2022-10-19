@@ -1,5 +1,6 @@
 package org.anyline.office.docx.entity;
 
+import org.anyline.util.HtmlUtil;
 import org.dom4j.Element;
 
 public class Wt {
@@ -10,6 +11,9 @@ public class Wt {
         this.src = src;
     }
     public Wt setText(String text){
+        if(doc.IS_HTML_ESCAPE) {
+            text = HtmlUtil.decode(text);
+        }
         src.setText(text);
         return this;
     }

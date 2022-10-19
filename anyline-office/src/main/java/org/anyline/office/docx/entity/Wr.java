@@ -1,6 +1,7 @@
 package org.anyline.office.docx.entity;
 
 import org.anyline.office.docx.util.DocxUtil;
+import org.anyline.util.HtmlUtil;
 import org.dom4j.Element;
 
 import java.util.ArrayList;
@@ -230,6 +231,9 @@ public class Wr {
         for(Wt wt:wts){
             String text = wt.getText();
             text = text.replace(src, tar);
+            if(this.doc.IS_HTML_ESCAPE) {
+                text = HtmlUtil.decode(text);
+            }
             wt.setText(text);
         }
         return this;

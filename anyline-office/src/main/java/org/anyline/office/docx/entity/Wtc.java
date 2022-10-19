@@ -3,6 +3,7 @@ package org.anyline.office.docx.entity;
 import org.anyline.office.docx.util.DocxUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DomUtil;
+import org.anyline.util.HtmlUtil;
 import org.anyline.util.StyleParser;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -801,6 +802,9 @@ public class Wtc {
         Element p = DocxUtil.addElement(src, "p");
         Element r = DocxUtil.addElement(p, "r");
         Element t = DocxUtil.addElement(r, "t");
+        if(doc.IS_HTML_ESCAPE) {
+            text = HtmlUtil.decode(text);
+        }
         t.setText(text);
         DocxUtil.pr(r, styles);
         return this;
@@ -809,6 +813,9 @@ public class Wtc {
         Element p = DocxUtil.addElement(src, "p");
         Element r = DocxUtil.addElement(p, "r");
         Element t = r.addElement("w:t");
+        if(doc.IS_HTML_ESCAPE) {
+            text = HtmlUtil.decode(text);
+        }
         t.setText(text);
         return this;
     }

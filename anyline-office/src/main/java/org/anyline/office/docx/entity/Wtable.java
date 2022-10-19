@@ -2,10 +2,7 @@ package org.anyline.office.docx.entity;
 
 import org.anyline.entity.html.TableBuilder;
 import org.anyline.office.docx.util.DocxUtil;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.NumberUtil;
-import org.anyline.util.StyleParser;
+import org.anyline.util.*;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
@@ -430,6 +427,9 @@ public class Wtable {
     public Wtable setText(int row, int col, String text, Map<String,String> styles){
         Wtc tc = getTc(row, col);
         if(null != tc){
+            if(doc.IS_HTML_ESCAPE) {
+                text = HtmlUtil.decode(text);
+            }
             tc.setText(text, styles);
         }
         return this;
