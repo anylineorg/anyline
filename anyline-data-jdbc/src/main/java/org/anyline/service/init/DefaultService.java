@@ -1789,7 +1789,7 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
         @Override
         public LinkedHashMap<String,Database> databases(){
-            return dao.tables();
+            return dao.databases();
         }
 
         /* *****************************************************************************************************************
