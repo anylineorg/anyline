@@ -55,7 +55,7 @@ public class Wtable {
     }
 
 
-    public Element parent(String bookmark, String tag){
+    public Element  parent(String bookmark, String tag){
         return doc.parent(bookmark, tag);
     }
 
