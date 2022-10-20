@@ -1348,8 +1348,48 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(null, key, value, false, true);
         return this;
     }
+    public DataRow putWithoutNull(String key, Object value){
+        if(null != value){
+            this.put(key, value);
+        }
+        return this;
+    }
+    public DataRow putWithoutEmpty(String key, Object value){
+        if(BasicUtil.isNotEmpty(value)){
+            this.put(key, value);
+        }
+        return this;
+    }
+
+    /**
+     * 原来的值为空时执行
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    public DataRow putIfEmpty(String key, Object value){
+        if(isEmpty(key)){
+            this.put(key, value);
+        }
+        return this;
+    }
+    /**
+     * 原来的值为null时执行
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    public DataRow putIfNull(String key, Object value){
+        if(isNull(key)){
+            this.put(key, value);
+        }
+        return this;
+    }
 
     public DataRow set(String key, Object value) {
+        if(BasicUtil.isEmpty(value)){
+            return this;
+        }
         put(null, key, value, false, true);
         return this;
     }

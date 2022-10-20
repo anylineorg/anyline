@@ -3835,7 +3835,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-
+    public DataSet putWithoutNull(String key, Object value){
+        if(null != value){
+            put(key, value);
+        }
+        return this;
+    }
+    public DataSet putWithoutEmpty(String key, Object value){
+        if(BasicUtil.isNotEmpty(value)){
+            put(key, value);
+        }
+        return this;
+    }
+    public DataSet putIfNull(String key, Object value){
+        for (DataRow row : rows) {
+            row.putIfNull(key, value);
+        }
+        return this;
+    }
+    public DataSet putIfEmpty(String key, Object value){
+        for (DataRow row : rows) {
+            row.putIfEmpty(key, value);
+        }
+        return this;
+    }
     public DataSet put(String key, Object value, boolean pk) {
         for (DataRow row : rows) {
             row.put(key, value, pk);
