@@ -25,7 +25,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.OrderStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.MD5Util;
+import org.anyline.util.encrypt.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

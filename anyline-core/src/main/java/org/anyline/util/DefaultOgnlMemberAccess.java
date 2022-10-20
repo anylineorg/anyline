@@ -7,17 +7,17 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-public class DefaultMemberAccess implements MemberAccess {
+public class DefaultOgnlMemberAccess implements MemberAccess {
 	public boolean allowPrivateAccess = false;
 	public boolean allowProtectedAccess = false;
 	public boolean allowPackageProtectedAccess = false;
 
-	public DefaultMemberAccess(boolean allowAllAccess) {
+	public DefaultOgnlMemberAccess(boolean allowAllAccess) {
 		this(allowAllAccess, allowAllAccess, allowAllAccess);
 	}
 
-	public DefaultMemberAccess(boolean allowPrivateAccess,
-                               boolean allowProtectedAccess, boolean allowPackageProtectedAccess) {
+	public DefaultOgnlMemberAccess(boolean allowPrivateAccess,
+								   boolean allowProtectedAccess, boolean allowPackageProtectedAccess) {
 		super();
 		this.allowPrivateAccess = allowPrivateAccess;
 		this.allowProtectedAccess = allowProtectedAccess;

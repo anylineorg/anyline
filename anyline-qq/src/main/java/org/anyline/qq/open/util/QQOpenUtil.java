@@ -6,6 +6,7 @@ import org.anyline.net.SimpleHttpUtil;
 import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.*;
+import org.anyline.util.encrypt.MD5Util;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,7 @@ public class QQOpenUtil{
 		String sign = ""; 
 		sign = BeanUtil.map2string(params);
 		sign += "&key=" + config.PAY_API_SECRET; 
-		sign = MD5Util.crypto(sign).toUpperCase(); 
+		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign; 
 	} 
  

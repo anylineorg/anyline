@@ -37,7 +37,7 @@ import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.DefaultMemberAccess;
+import org.anyline.util.DefaultOgnlMemberAccess;
 
 import java.util.*;
 
@@ -362,7 +362,7 @@ public class XMLRun extends BasicRun implements Run {
 					    }
 					}
 					try { 
-						OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
+						OgnlContext context = new OgnlContext(null, null, new DefaultOgnlMemberAccess(true));
 						Boolean result = (Boolean) Ognl.getValue(test,context, runtimeValues); 
 						if(!result){ 
 							con.setActive(false); 

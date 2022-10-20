@@ -28,10 +28,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.DESUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
- 
+import org.anyline.util.encrypt.DESUtil;
+
 public abstract class ComponentTag extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L;
 	 

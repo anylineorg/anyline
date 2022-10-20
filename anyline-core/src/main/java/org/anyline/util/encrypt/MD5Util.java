@@ -18,8 +18,10 @@
 
  
  
-package org.anyline.util; 
+package org.anyline.util.encrypt;
  
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ public class MD5Util {
 	} 
 	 
 	public static String sign(String src, String encode){ 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[MD5 SIGN][src:{}]", src); 
 		} 
 		if(null == src) return ""; 

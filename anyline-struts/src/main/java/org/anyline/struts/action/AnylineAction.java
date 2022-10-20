@@ -23,6 +23,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.util.*;
+import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.WebUtil;
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -345,7 +346,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 */ 
 	protected String success(Object data, boolean encrypt) { 
 		if(encrypt && null != data){ 
-			return result(true,DESUtil.encryptParamValue(data.toString()),null); 
+			return result(true, DESUtil.encryptParamValue(data.toString()),null);
 		} 
 		return success(request, data); 
 	} 

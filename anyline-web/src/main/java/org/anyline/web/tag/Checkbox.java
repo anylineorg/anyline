@@ -22,7 +22,7 @@ package org.anyline.web.tag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DESUtil;
+import org.anyline.util.encrypt.DESUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;

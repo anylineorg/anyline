@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
-import org.anyline.util.MD5Util;
+import org.anyline.util.encrypt.MD5Util;
  
 public class TokenUtil { 
 	/** 
@@ -103,7 +103,7 @@ public class TokenUtil {
 	} 
  
 	public static String createTokenKey(String key){ 
-		String result = Constant.HTML_NAME_TOKEN_KEY_PREFIX + MD5Util.crypto2(key); 
+		String result = Constant.HTML_NAME_TOKEN_KEY_PREFIX + MD5Util.crypto2(key);
 		return result; 
 	} 
 	/** 

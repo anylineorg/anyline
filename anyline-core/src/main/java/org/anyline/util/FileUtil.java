@@ -37,6 +37,7 @@
 package org.anyline.util;
 
 
+import org.anyline.util.encrypt.MD5Util;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;

@@ -8,13 +8,12 @@ import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
 import org.anyline.client.map.MapClient;
+import org.anyline.util.encrypt.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class QQMapClient extends AbstractMapClient implements MapClient {

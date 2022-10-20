@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.util;
+package org.anyline.util.encrypt;
 
 public class DESKey {
 	private String version; 

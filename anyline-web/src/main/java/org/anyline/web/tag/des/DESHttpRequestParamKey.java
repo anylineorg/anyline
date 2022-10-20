@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.DESUtil;
+import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;
 /** 
  * http request 请求参数名加密 

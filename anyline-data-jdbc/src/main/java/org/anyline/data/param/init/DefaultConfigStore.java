@@ -30,7 +30,7 @@ import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.DESUtil;
+import org.anyline.util.encrypt.DESUtil;
 
 import java.util.ArrayList;
 import java.util.List;

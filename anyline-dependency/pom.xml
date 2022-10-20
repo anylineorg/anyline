@@ -82,6 +82,8 @@
 		<rxtx.version>2.2</rxtx.version>
 		<pdfbox.version>2.0.25</pdfbox.version>
 		<poi.version>5.2.0</poi.version>
+		<bcprov.version>1.62</bcprov.version>
+
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -415,7 +417,11 @@
 				<artifactId>anyline-pdf</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>${bcprov.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>

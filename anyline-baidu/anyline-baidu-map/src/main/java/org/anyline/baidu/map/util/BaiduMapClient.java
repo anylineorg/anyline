@@ -10,12 +10,11 @@ import org.anyline.util.BasicUtil;
 import org.anyline.client.map.AbstractMapClient;
 import org.anyline.client.map.MapClient;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.MD5Util;
+import org.anyline.util.encrypt.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;

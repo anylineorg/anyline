@@ -594,7 +594,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             values = this;
         }
         formula = BeanUtil.parseRuntimeValue(values, formula);
-        OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
+        OgnlContext context = new OgnlContext(null, null, new DefaultOgnlMemberAccess(true));
         Object value = Ognl.getValue(formula, context, values);
         return value;
     }

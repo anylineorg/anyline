@@ -5,7 +5,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.net.HttpUtil;
 import org.anyline.p10ss.util.P10ssConfig.URL;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.MD5Util;
+import org.anyline.util.encrypt.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

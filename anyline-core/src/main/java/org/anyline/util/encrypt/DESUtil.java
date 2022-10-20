@@ -17,9 +17,13 @@
  */
 
 
-package org.anyline.util; 
+package org.anyline.util.encrypt;
  
 import com.sun.crypto.provider.SunJCE;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.XssUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.Document;
@@ -189,7 +193,7 @@ public class DESUtil {
 			return str;
 		}
 		String result = "";
-		result = new String(decrypt(hexStr2ByteArr(str)),ConfigTable.getString("DES_ENCODE","UTF-8"));
+		result = new String(decrypt(hexStr2ByteArr(str)), ConfigTable.getString("DES_ENCODE","UTF-8"));
 		result = result.substring(salt.length());
 		return result;
 	}
@@ -229,7 +233,7 @@ public class DESUtil {
 					map.put(key, DESUtil.getInstance().encrypt(value.toString())); 
 				} 
 			}else{ 
-				Object value = BeanUtil.getFieldValue(obj, key); 
+				Object value = BeanUtil.getFieldValue(obj, key);
 				if(null != value){ 
 					value = DESUtil.getInstance().encrypt(value.toString()); 
 					BeanUtil.setFieldValue(obj, key, value); 

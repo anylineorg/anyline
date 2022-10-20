@@ -21,7 +21,7 @@ package org.anyline.web.tag.des;
  
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.DESUtil;
+import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.tag.ComponentTag;
 /** 
  * 加密 

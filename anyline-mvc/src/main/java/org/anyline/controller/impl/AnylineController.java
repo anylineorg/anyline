@@ -25,6 +25,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.TableBuilder;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.util.*;
+import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.Result;
 import org.anyline.web.util.WebUtil;
@@ -639,7 +640,7 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	protected String fail(String msg, boolean encrypt) { 
 		if(encrypt){ 
-			msg = DESUtil.encryptParamValue(msg); 
+			msg = DESUtil.encryptParamValue(msg);
 		}
 		Object code = ConfigTable.get("HTTP_FAIL_CODE", new Integer(-1));
 		return result(code,false, null, msg);

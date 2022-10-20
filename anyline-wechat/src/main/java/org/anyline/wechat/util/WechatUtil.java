@@ -24,7 +24,7 @@ import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.MD5Util;
+import org.anyline.util.encrypt.MD5Util;
 import org.anyline.wechat.entity.WechatAuthInfo;
 import org.anyline.wechat.entity.WechatUserInfo;
 import org.apache.http.entity.StringEntity;

@@ -15,8 +15,9 @@
  *
  *          
  */
-package org.anyline.util; 
+package org.anyline.util.encrypt;
  
+import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class SHA1Util {
 	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class); 
 	private static MessageDigest digest = null; 
 	public static String sign(String src){ 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[SHA1 SIGN][src:{}]", src); 
 		} 
 		String result = ""; 

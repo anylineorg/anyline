@@ -28,5 +28,10 @@
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.62</version>
+        </dependency>
     </dependencies>
 </project>

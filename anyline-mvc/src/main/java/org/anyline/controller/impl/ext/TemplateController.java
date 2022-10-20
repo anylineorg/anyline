@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.anyline.controller.impl.AnylineController;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DESUtil;
+import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.anyline.web.util.WebUtil;
 import org.springframework.context.ApplicationContext;

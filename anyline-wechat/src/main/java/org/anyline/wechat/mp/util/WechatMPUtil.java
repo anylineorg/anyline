@@ -4,6 +4,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
+import org.anyline.util.encrypt.SHA1Util;
 import org.anyline.wechat.entity.WechatAuthInfo;
 import org.anyline.wechat.entity.WechatTemplateMessage;
 import org.anyline.wechat.entity.WechatTemplateMessageResult;
@@ -134,7 +135,7 @@ public class WechatMPUtil extends WechatUtil {
 	public String jsapiSign(Map<String,Object> params){ 
 		String sign = ""; 
 		sign = BeanUtil.map2string(params);
-		sign = SHA1Util.sign(sign); 
+		sign = SHA1Util.sign(sign);
 		return sign; 
 	} 
 	 

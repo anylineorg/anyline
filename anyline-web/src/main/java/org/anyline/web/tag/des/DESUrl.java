@@ -22,11 +22,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.DESUtil;
+import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-/** 
+
+/**
  * 整体加密url 
  * @author zh 
  * 
