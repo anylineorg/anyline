@@ -385,7 +385,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /**
      * MATCH (n)  WHERE n.name='u1' RETURN n  ORDER BY n.age DESC SKIP 0 LIMIT 200
      * @param run  run
-     * @return
+     * @return String
      */
     @Override
     public String parseFinalQuery(Run run) {
