@@ -82,7 +82,7 @@
 		<rxtx.version>2.2</rxtx.version>
 		<pdfbox.version>2.0.25</pdfbox.version>
 		<poi.version>5.2.0</poi.version>
-		<bcprov.version>1.62</bcprov.version>
+		<bcprov.version>1.67</bcprov.version>
 
 	</properties>
 	<dependencyManagement>
