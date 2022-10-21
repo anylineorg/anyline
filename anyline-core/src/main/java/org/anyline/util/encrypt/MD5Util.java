@@ -22,6 +22,7 @@ package org.anyline.util.encrypt;
  
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,7 @@ import java.util.Map;
  
 public class MD5Util { 
 	private static final Logger log = LoggerFactory.getLogger(MD5Util.class);  
-	private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}; 
- 
+
 	public static String sign(String src){ 
 		return sign(src, "UTF-8"); 
 	} 
@@ -52,9 +52,9 @@ public class MD5Util {
 
         		MessageDigest md = MessageDigest.getInstance("MD5");
         		if (BasicUtil.isEmpty(encode))
-        			result = byteArrayToHexString(md.digest(src.getBytes()));
+        			result = NumberUtil.bytes2hex(md.digest(src.getBytes()));
         		else
-        			result = byteArrayToHexString(md.digest(src.getBytes(encode)));
+        			result = NumberUtil.bytes2hex(md.digest(src.getBytes(encode)));
         		 
             } catch(Exception ex){      
                 ex.printStackTrace();   
@@ -82,7 +82,7 @@ public class MD5Util {
 	public static String crypto2(String str, String encode){ 
 		return crypto(crypto(str, encode), encode); 
 	} 
-///////////////////////////////////////////////////////////////////// 
+
     /** 
     * 获取单个文件的MD5值！ 
     * @param file  file
@@ -136,29 +136,6 @@ public class MD5Util {
 	    	} 
 	    } 
 	    return map; 
-    } 
- 
-    private static String byteArrayToHexString(byte[] b){ 
-    StringBuilder resultSb = new StringBuilder(); 
-    for (byte aB : b) { 
-        resultSb.append(byteToHexString(aB)); 
-    } 
-    return resultSb.toString(); 
-} 
- 
-    /** 
-     * 将一个字节转化成十六进制形式的字符串 
-     * @param b  b
-     * @return String
-     */ 
-    private static String byteToHexString(byte b) { 
-        int n = b; 
-        if (n < 0) { 
-            n = 256 + n; 
-        } 
-        int d1 = n / 16; 
-        int d2 = n % 16; 
-        return hexDigits[d1] + hexDigits[d2]; 
     }
- 
+
 } 
