@@ -27,10 +27,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.Constant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
- 
+import org.anyline.web.util.Constant;
+
 public class Message extends BodyTagSupport{ 
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
@@ -43,7 +41,7 @@ public class Message extends BodyTagSupport{
 		String message = ""; 
 		try{ 
 			if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){ 
-				messages = (DataSet)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_MESSAGE); 
+				messages = (DataSet)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_MESSAGE);
 			}else if("session".equals(scope)){ 
 				messages = (DataSet)request.getSession().getAttribute(Constant.SESSION_ATTR_MESSAGE); 
 			}else{ 
