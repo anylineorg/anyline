@@ -384,11 +384,11 @@ public class NumberUtil {
 		return Integer.toHexString(number);
 	}
 
-	public static String byte2hex(byte[] bytes) {
-		 return byte2hex(bytes,"");
+	public static String bytes2hex(byte[] bytes) {
+		 return bytes2hex(bytes,"");
 	}
 
-	public static String byte2hex(byte[] bytes, String split) {
+	public static String bytes2hex(byte[] bytes, String split) {
 		StringBuffer sb = new StringBuffer();
 		int len = bytes.length;
 		for(int i = 0; i < len; i++) {
@@ -422,8 +422,8 @@ public class NumberUtil {
 		}
 		return result;
 	}
-	public static byte hex2byte(String inHex){
-		return (byte)Integer.parseInt(inHex,16);
+	public static byte hex2byte(String hex){
+		return (byte)Integer.parseInt(hex,16);
 	}
 
     public static byte[] decimal2bcd(long num) {
@@ -433,8 +433,8 @@ public class NumberUtil {
             digits++;
             temp /= 10;
         }
-        int byteLen = digits % 2 == 0 ? digits / 2 : (digits + 1) / 2;
-        byte bcd[] = new byte[byteLen];
+        int len = digits % 2 == 0 ? digits / 2 : (digits + 1) / 2;
+        byte bcd[] = new byte[len];
         for (int i = 0; i < digits; i++) {
             byte tmp = (byte) (num % 10);
             if (i % 2 == 0) {
@@ -444,19 +444,19 @@ public class NumberUtil {
             }
             num /= 10;
         }
-        for (int i = 0; i < byteLen / 2; i++) {
+        for (int i = 0; i < len / 2; i++) {
             byte tmp = bcd[i];
-            bcd[i] = bcd[byteLen - i - 1];
-            bcd[byteLen - i - 1] = tmp;
+            bcd[i] = bcd[len - i - 1];
+            bcd[len - i - 1] = tmp;
         }
         return bcd;
     }
 
-	public static long bcd2decimal(byte[] bcd) {
-		return Long.valueOf(bcd2string(bcd));
+	public static long bytes2decimal(byte[] bytes) {
+		return Long.valueOf(bytes2string(bytes));
 	}
 
-	public static String bcd2string(byte bcd) {
+	public static String bytes2string(byte bcd) {
 		StringBuffer sb = new StringBuffer();
 
 		byte high = (byte) (bcd & 0xf0);
@@ -470,11 +470,11 @@ public class NumberUtil {
 		return sb.toString();
 	}
 
-	public static String bcd2string(byte[] bcd) {
+	public static String bytes2string(byte[] bcd) {
 		StringBuffer sb = new StringBuffer();
 
 		for (int i = 0; i < bcd.length; i++) {
-			sb.append(bcd2string(bcd[i]));
+			sb.append(bytes2string(bcd[i]));
 		}
 
 		return sb.toString();
