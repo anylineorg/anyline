@@ -20,10 +20,7 @@
 package org.anyline.util.encrypt;
  
 import com.sun.crypto.provider.SunJCE;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.XssUtil;
+import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.Document;
@@ -48,9 +45,9 @@ import java.util.*;
 public class DESUtil {
 	private static final Logger log = LoggerFactory.getLogger(DESUtil.class); 
 	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	// 默认密钥
-	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	// 盐值
-	private Cipher encryptCipher = null;					// 加密
-	private Cipher decryptCipher = null;					// 解密
+	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";		// 盐值
+	private Cipher encryptCipher = null;							// 加密
+	private Cipher decryptCipher = null;							// 解密
 	private String salt = DEFAULT_SALT;
 	 
 	private static Map<String,DESUtil> instances = new Hashtable<String,DESUtil>(); 
@@ -96,83 +93,51 @@ public class DESUtil {
 		 
 		decryptCipher = Cipher.getInstance("DES"); 
 		decryptCipher.init(Cipher.DECRYPT_MODE, _key);//解密 
-	} 
-	private static String byteArr2HexStr(byte[] arrB){ 
-		int iLen = arrB.length; 
-		/* 每个byte用两个字符才能表示,所以字符串的长度是数组长度的两倍 */ 
-		StringBuffer sb = new StringBuffer(iLen * 2); 
-		for (int i = 0; i < iLen; i++) { 
-			int intTmp = arrB[i]; 
-			/* 把负数转换为正数 */ 
-			while (intTmp < 0) { 
-				intTmp = intTmp + 256; 
-			} 
-			/* 小于0F的数需要在前面补0 */ 
-			if (intTmp < 16) { 
-				sb.append("0"); 
-			} 
-			sb.append(Integer.toString(intTmp, 16)); 
-		} 
-		return sb.toString(); 
-	} 
-	 
-	 
-	private static byte[] hexStr2ByteArr(String strIn){ 
-		byte[] arrB = strIn.getBytes(); 
-		int iLen = arrB.length; 
-		 
-		/* 两个字符表示一个字节,所以字节数组长度是字符串长度除以2 */ 
-		byte[] arrOut = new byte[iLen / 2]; 
-		for (int i = 0; i < iLen; i = i + 2) { 
-			String strTmp = new String(arrB, i, 2); 
-			arrOut[i / 2] = (byte) Integer.parseInt(strTmp, 16); 
-		} 
-		return arrOut; 
-	} 
+	}
 	 
 	 
 	 
 	/** 
 	 * 加密 
-	 * @param arrB  arrB
-	 * @return byte
+	 * @param bytes  bytes
+	 * @return bytes
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  BadPaddingException
 	 */ 
-	private byte[] encrypt(byte[] arrB) throws BadPaddingException,IllegalBlockSizeException{ 
-		return encryptCipher.doFinal(arrB); 
+	private byte[] encrypt(byte[] bytes) throws BadPaddingException,IllegalBlockSizeException{
+		return encryptCipher.doFinal(bytes);
 	} 
 	public String encrypt(String str) throws BadPaddingException,IllegalBlockSizeException{
 		if(null == str || ignores.contains(str)){
 			return str;
 		}
 		str = salt + str; 
-		return byteArr2HexStr(encrypt(str.getBytes())); 
+		return NumberUtil.bytes2hex(encrypt(str.getBytes()));
 	} 
 	 
 	/** 
 	 * 解密 
-	 * @param arrB  arrB
-	 * @return byte
+	 * @param bytes  bytes
+	 * @return bytes
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
-	private byte[] decrypt(byte[] arrB) throws BadPaddingException, IllegalBlockSizeException{ 
-		return decryptCipher.doFinal(arrB); 
+	private byte[] decrypt(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException{
+		return decryptCipher.doFinal(bytes);
 	}
 
 
 	 
 	/**
 	 * 
-	 * @param arrBTmp arrBTmp
+	 * @param bytes bytes
 	 * @return Key
 	 */
-	private Key getKey(byte[] arrBTmp) { 
+	private Key getKey(byte[] bytes) {
 		byte[] arrB = new byte[8];	// 创建一个空的8位字节数组（默认值为0）
 		/* 将原始字节数组转换为8位 */ 
-		for (int i = 0; i < arrBTmp.length && i < arrB.length; i++) { 
-			arrB[i] = arrBTmp[i]; 
+		for (int i = 0; i < bytes.length && i < arrB.length; i++) {
+			arrB[i] = bytes[i];
 		} 
 		/* 生成密钥 */ 
 		Key key = new SecretKeySpec(arrB, "DES"); 
@@ -182,8 +147,8 @@ public class DESUtil {
 
 	/**
 	 * 加密String
-	 * @param str str
-	 * @return  String
+	 * @param str 明文
+	 * @return  密文
 	 * @throws IllegalBlockSizeException IllegalBlockSizeException
 	 * @throws BadPaddingException BadPaddingException
 	 * @throws UnsupportedEncodingException UnsupportedEncodingException
@@ -193,7 +158,7 @@ public class DESUtil {
 			return str;
 		}
 		String result = "";
-		result = new String(decrypt(hexStr2ByteArr(str)), ConfigTable.getString("DES_ENCODE","UTF-8"));
+		result = new String(decrypt(NumberUtil.hex2bytes(str)), ConfigTable.getString("DES_ENCODE","UTF-8"));
 		result = result.substring(salt.length());
 		return result;
 	}
