@@ -51,13 +51,13 @@ public class ConfigTable {
 	private static boolean listener_running = false;	// 监听是否启动
 
 	// 对应配置文件key
-	public static boolean IS_SHOW_SQL									= true		;
 	public static boolean IS_DEBUG 										= false		;
-	public static boolean IS_SQL_DEBUG	 								= false		;
-	public static boolean IS_HTTP_LOG 									= true		;
+	public static boolean IS_SHOW_SQL									= true		;
 	public static boolean IS_SHOW_SQL_PARAM								= true		;
 	public static boolean IS_SHOW_SQL_WHEN_ERROR						= true		;
 	public static boolean IS_SHOW_SQL_PARAM_WHEN_ERROR					= true		;
+	public static boolean IS_SQL_DEBUG	 								= false		;
+	public static boolean IS_HTTP_LOG 									= true		;
 	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// 是否忽略大小写
