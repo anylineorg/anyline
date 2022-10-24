@@ -2804,5 +2804,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return round(key, key, scale, mode);
     }
 
-
+    public String toString(){
+        return toJSON();
+    }
 }
