@@ -19,12 +19,12 @@ package org.anyline.wechat.programe;
 
 
 import org.anyline.entity.DataRow;
-import org.anyline.net.AESUtil;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
+import org.anyline.util.encrypt.AESUtil;
 import org.anyline.wechat.util.WechatUtil;
 import org.apache.http.entity.StringEntity;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

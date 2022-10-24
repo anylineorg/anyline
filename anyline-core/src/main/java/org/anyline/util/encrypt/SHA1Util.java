@@ -27,10 +27,7 @@ import java.security.NoSuchAlgorithmException;
 public class SHA1Util { 
 	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class); 
 	private static MessageDigest digest = null; 
-	public static String sign(String src){ 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[SHA1 SIGN][src:{}]", src); 
-		} 
+	public static String sign(String src){
 		String result = ""; 
 		try { 
 			if(null == digest){ 
