@@ -25,7 +25,6 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest; 
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.Constant;
 import org.anyline.util.encrypt.MD5Util;
  
 public class TokenUtil { 

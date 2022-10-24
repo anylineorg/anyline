@@ -27,6 +27,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
+import org.anyline.web.util.Constant;
 import org.anyline.web.util.Result;
 import org.anyline.web.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -614,7 +615,7 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	public String result(Object code, boolean result, Object data, String message) {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
-		message = BasicUtil.nvl(message, "").toString();
+		message = BasicUtil.nvl(message, "");
 		if (null != messages) { 
 			for (int i = 0; i < messages.size(); i++) { 
 				DataRow msg = messages.getRow(i);
@@ -623,7 +624,7 @@ public class AnylineController extends AbstractBasicController {
 					message += "\n" + tmp;
 				}
 			} 
-			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
+			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		}
 		Result rtn = Result.init(result, code,data,message);
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){

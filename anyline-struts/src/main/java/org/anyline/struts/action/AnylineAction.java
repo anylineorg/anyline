@@ -25,6 +25,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
+import org.anyline.web.util.Constant;
 import org.anyline.web.util.WebUtil;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
@@ -393,7 +394,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			} 
 		} 
 		String html = ""; 
-		DataSet messages = (DataSet) request.getAttribute(Constant.REQUEST_ATTR_MESSAGE); 
+		DataSet messages = (DataSet) request.getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null != messages) { 
 			for (int i = 0; i < messages.size(); i++) { 
 				DataRow msg = messages.getRow(i); 

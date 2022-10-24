@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.anyline.util.ConfigTable;
-import org.anyline.util.Constant;
+import org.anyline.web.util.Constant;
 import org.anyline.web.util.WebUtil;
 import org.apache.struts2.ServletActionContext;
 
@@ -58,7 +58,7 @@ public class TemplateResult extends StrutsResultSupport {
 		} 
 		 
 		HttpServletRequest request = ServletActionContext.getRequest(); 
-		String template = (String)request.getAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH); 
+		String template = (String)request.getAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH);
 		// action中设置模板 
 		if(null != template){ 
 			if(template.startsWith("/")){ 
