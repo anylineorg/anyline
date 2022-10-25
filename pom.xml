@@ -41,6 +41,7 @@
 		<module>anyline-aliyun/anyline-aliyun-sms</module>
 		<module>anyline-amap</module>
 		<module>anyline-baidu/anyline-baidu-map</module>
+		<module>anyline-baidu/anyline-baidu-site</module>
 		<module>anyline-qq-map</module>
 		<module>anyline-map</module>
 		<module>anyline-easemob</module>
