@@ -444,7 +444,7 @@ public class WechatPayUtil {
             return new WechatEnterpriseTransferBankResult(false,"未提供收款人姓名");
         }
         try {
-            enc_bank_no = RSAUtil.publicEncrypt(enc_bank_no, RSAUtil.getPublicKey(new File(config.BANK_RSA_PUBLIC_KEY_FILE)));
+            enc_bank_no = RSAUtil.encrypt(enc_bank_no, RSAUtil.createPublicKey(new File(config.BANK_RSA_PUBLIC_KEY_FILE)));
         }catch(Exception e){
             e.printStackTrace();
         }
