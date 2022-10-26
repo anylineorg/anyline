@@ -21,13 +21,12 @@ package org.anyline.service;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.Procedure;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.data.prepare.Procedure;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.entity.*;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -643,6 +642,14 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String, PartitionTable> ptables(String types);
 		public LinkedHashMap<String, PartitionTable> ptables();
 		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
+
+		/**
+		 * 根据主表与标签值查询分区表(子表)
+		 * @param master 主表
+		 * @param tags 标签值
+		 * @return PartitionTables
+		 */
+		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
 
 		public PartitionTable ptable(String catalog, String schema, String name);
 		public PartitionTable ptable(String schema, String name);

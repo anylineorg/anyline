@@ -36,6 +36,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBean {

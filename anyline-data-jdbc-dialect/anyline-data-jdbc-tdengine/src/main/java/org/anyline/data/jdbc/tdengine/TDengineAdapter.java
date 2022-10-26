@@ -1,18 +1,15 @@
 package org.anyline.data.jdbc.tdengine;
 
 import org.anyline.data.entity.*;
-import org.anyline.data.entity.*;
-import org.anyline.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
@@ -402,7 +399,18 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		if(null != tags && tags.size()>0){
 			for(String key:tags.keySet()){
 				Object value = tags.get(key);
-				builder.append(" AND table_name IN(SELECT table_name INFORMATION_SCHEMA.INS_TAGS WHERE stable_name = '").append(stable).append("'").append(" AND ").append(key).append("='").append(value).append("'").append(")");
+				builder.append(" AND table_name IN(SELECT table_name FROM INFORMATION_SCHEMA.INS_TAGS WHERE stable_name = '").append(stable).append("'")
+						.append(" AND TAG_NAME ='").append(key.toLowerCase()).append("'");
+						if(null == value){
+							builder.append(" AND TAG_VALUE IS NULL");
+						}else{
+							if(BasicUtil.isNumber(value)){
+								builder.append(" AND TAG_VALUE = ").append(value);
+							}else{
+								builder.append(" AND TAG_VALUE = '").append(value).append("'");
+							}
+						}
+						builder.append(")");
 			}
 		}
 		sqls.add(builder.toString());

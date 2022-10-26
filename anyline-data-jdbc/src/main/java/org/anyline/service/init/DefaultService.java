@@ -1979,6 +1979,10 @@ public class DefaultService<E> implements AnylineService<E> {
         public LinkedHashMap<String, PartitionTable> ptables(MasterTable master) {
             return dao.ptables(master);
         }
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags) {
+            return dao.ptables(master, tags);
+        }
 
         @Override
         public PartitionTable ptable(String catalog, String schema, String name) {

@@ -2,14 +2,13 @@
 package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.data.entity.*;
-import org.anyline.data.entity.*;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.OrderStore;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.run.RunValue;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.RunValue;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.postgresql.util.PGobject;
@@ -23,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.postgresql")
 public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
