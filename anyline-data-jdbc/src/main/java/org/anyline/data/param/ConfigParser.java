@@ -329,10 +329,12 @@ public class ConfigParser {
 			boolean isValueEncrypt = parser.isValueEncrypt();
 
 			if(null != methodName){
+				Class clazz = null;
 				if(null == className){
-					className = "org.anyline.data.param.DefaultPrepare";
+					clazz = DefaultPrepare.class;
+				}else{
+					clazz = Class.forName(className);
 				}
-				Class clazz = Class.forName(className);
 				Method method = clazz.getMethod(methodName, String.class);
 				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
 					Object v = getRuntimeValue(values,key,isKeyEncrypt, isValueEncrypt);
