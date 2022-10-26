@@ -406,8 +406,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 
 	/**
-	 *  根据查询结果集构造Table
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 *  根据查询结果集构造分区表
+	 * @param index 第几条SQL 对照 buildQueryPartitionTableRunSQL(MasterTable master) 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -419,7 +419,28 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
-		return super.ptables(index, create, master, catalog, schema, tables, set);
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("table_name");
+			if(BasicUtil.isEmpty(name)){
+				continue;
+			}
+			PartitionTable table = tables.get(name.toUpperCase());
+			if(null == table){
+				if(create) {
+					table = new PartitionTable(name);
+					tables.put(name.toUpperCase(), table);
+				}else{
+					continue;
+				}
+			}
+			table.setCatalog(row.getString("db_name"));
+			table.setComment(row.getString("table_comment"));
+			table.setMaster(master);
+		}
+		return tables;
 	}
 
 	/**
