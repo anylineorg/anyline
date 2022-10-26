@@ -1326,7 +1326,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public String buildDropRunSQL(Tag tag) throws Exception{
-		return buildDropRunSQL(tag);
+		return super.buildDropRunSQL(tag);
 	}
 
 
