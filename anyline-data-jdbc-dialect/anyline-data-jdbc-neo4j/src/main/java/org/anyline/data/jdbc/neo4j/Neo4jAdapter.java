@@ -453,10 +453,11 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      *
      * @param builder builder
      * @param compare compare
+     * @param value value
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionLike(StringBuilder builder, Compare compare){
+    public Object buildConditionLike(StringBuilder builder, Compare compare, Object value){
         if(compare == Compare.LIKE){
             builder.append(" CONTAINS ?");
         }else if(compare == Compare.LIKE_PREFIX){
@@ -464,7 +465,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }else if(compare == Compare.LIKE_SUFFIX){
             builder.append(" END WITH ?");
         }
-        return builder;
+        return value;
     }
 
     /**

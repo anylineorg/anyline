@@ -169,21 +169,23 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}else if(compareCode == 40 || compareCode == 140){
 			adapter.buildConditionIn(builder, compare, val);
 		}else if(compareCode >= 50 && compareCode <= 52){
-			adapter.buildConditionLike(builder, compare);
+			val = adapter.buildConditionLike(builder, compare, val) ;
 		}
 		// runtime value
-		if(compareCode == 40 || compareCode == 140 || compareCode == 80){
-			List<Object> list = getValues(val);
-			if(null != list){
-				for(Object obj:list){
-					runValues.add(new RunValue(this.column, obj));
+		if(null != val) {
+			if (compareCode == 40 || compareCode == 140 || compareCode == 80) {
+				List<Object> list = getValues(val);
+				if (null != list) {
+					for (Object obj : list) {
+						runValues.add(new RunValue(this.column, obj));
+					}
 				}
-			}
-		}else{
-			Object value = getValue(val);
-			if((null == value || "NULL".equals(value)) && compareCode == 10){
-			}else{
-				runValues.add(new RunValue(this.column,value));
+			} else {
+				Object value = getValue(val);
+				if ((null == value || "NULL".equals(value)) && compareCode == 10) {
+				} else {
+					runValues.add(new RunValue(this.column, value));
+				}
 			}
 		}
 		return builder.toString();
