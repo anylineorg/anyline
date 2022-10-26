@@ -2,10 +2,7 @@ package org.anyline.data.jdbc.tdengine;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.entity.*;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
@@ -13,11 +10,13 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -50,6 +49,76 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 *
 	 ******************************************************************************************************************/
 
+	/**
+	 * 构造 LIKE 查询条件
+	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param builder builder
+	 * @param compare compare
+	 * @param value value
+	 * @return value
+	 */
+	@Override
+	public Object buildConditionLike(StringBuilder builder, Compare compare, Object value){
+		if(null != value){
+			if(value instanceof Collection){
+				value = ((Collection)value).iterator().next();
+			}
+			if(compare == Compare.LIKE){
+				builder.append(" LIKE '%"+value+"%'");
+			}else if(compare == Compare.LIKE_PREFIX){
+				builder.append(" LIKE'"+value+"%'");
+			}else if(compare == Compare.LIKE_SUFFIX){
+				builder.append(" LIKE '%"+value+"'");
+			}
+		}
+		return null;
+	}
+	/**
+	 * 批量插入数据时，多行数据之间分隔符
+	 * @return String
+	 */
+	public String batchInsertSeparator (){
+		return " ";
+	}
+
+	/**
+	 * 执行 insert
+	 * @param random random
+	 * @param data entity|DataRow|DataSet
+	 * @param sql sql
+	 * @param values 占位参数值
+	 * @return int 影响行数
+	 * @throws Exception 异常
+	 */
+	@Override
+	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+		int cnt = 0;
+		if(null == values || values.size() ==0) {
+			cnt = jdbc.update(sql);
+		}else{
+			cnt = jdbc.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
+					PreparedStatement ps = null;
+					if(null != pks && pks.length>0){
+						ps = con.prepareStatement(sql, pks);
+					}else {
+						ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+					}
+					int idx = 0;
+					if (null != values) {
+						for (Object obj : values) {
+							ps.setObject(++idx, obj);
+						}
+					}
+					return ps;
+				}
+			});
+			return cnt;
+		}
+
+		return cnt;
+	}
 	@Override 
 	public String parseFinalQuery(Run run){
 		String sql = run.getBaseQuery(); 
@@ -778,7 +847,11 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Table table){
-		log.warn("主表不支持comment");
+		//log.warn("主表不支持comment");
+		/*String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			builder.append(" comment '").append(comment).append("'");
+		}*/
 		return builder;
 	}
 
@@ -1079,13 +1152,13 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public StringBuilder nullable(StringBuilder builder, Column column){
-		int nullable = column.isNullable();
+		/*int nullable = column.isNullable();
 		if(nullable != -1) {
 			if (nullable == 0) {
 				builder.append(" NOT");
 			}
 			builder.append(" NULL");
-		}
+		}*/
 		return builder;
 	}
 	/**
