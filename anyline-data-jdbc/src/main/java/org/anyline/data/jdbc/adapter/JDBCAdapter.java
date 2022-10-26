@@ -165,6 +165,12 @@ public interface JDBCAdapter {
 	public List<String> confirmInsertColumns(String dest, Object data, List<String> columns);
 
 	/**
+	 * 批量插入数据时，多行数据之间分隔符
+	 * @return String
+	 */
+	public String batchInsertSeparator ();
+
+	/**
 	 * 执行 insert
 	 * @param random random
 	 * @param data data
@@ -231,11 +237,13 @@ public interface JDBCAdapter {
 
 	/**
 	 * 构造 LIKE 查询条件
+	 * 如果不需要占位符 返回null  否则原样返回value
 	 * @param builder builder
 	 * @param compare compare
-	 * @return builder
+	 * @param value value
+	 * @return value
 	 */
-	public StringBuilder buildConditionLike(StringBuilder builder, Compare compare);
+	public Object buildConditionLike(StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * 构造(NOT) IN 查询条件
