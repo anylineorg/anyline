@@ -79,7 +79,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -172,7 +172,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table)
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags)
 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
@@ -190,8 +190,8 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable table) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(table);
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags) throws Exception{
+		return super.buildQueryPartitionTableRunSQL(table, tags);
 	}
 
 	/**
@@ -411,7 +411,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引

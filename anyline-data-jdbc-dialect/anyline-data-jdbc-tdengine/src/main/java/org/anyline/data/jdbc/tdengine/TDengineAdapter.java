@@ -17,10 +17,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
@@ -165,7 +162,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -374,7 +371,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master);
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags);
 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
@@ -397,17 +394,25 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return List
 	 */
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception{
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		String sql = "SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '"+master.getName()+"' AND TYPE='CHILD_TABLE'";
-		sqls.add(sql);
+		StringBuilder builder = new StringBuilder();
+		String stable = master.getName();
+		builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("' AND TYPE='CHILD_TABLE'");
+		if(null != tags && tags.size()>0){
+			for(String key:tags.keySet()){
+				Object value = tags.get(key);
+				builder.append(" AND table_name IN(SELECT table_name INFORMATION_SCHEMA.INS_TAGS WHERE stable_name = '").append(stable).append("'").append(" AND ").append(key).append("='").append(value).append("'").append(")");
+			}
+		}
+		sqls.add(builder.toString());
 		return sqls;
 	}
 
 
 	/**
 	 *  根据查询结果集构造分区表
-	 * @param index 第几条SQL 对照 buildQueryPartitionTableRunSQL(MasterTable master) 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -784,7 +789,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引

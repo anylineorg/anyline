@@ -1283,7 +1283,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -1968,7 +1968,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引

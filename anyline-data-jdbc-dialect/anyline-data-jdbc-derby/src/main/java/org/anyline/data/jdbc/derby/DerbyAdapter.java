@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.derby")
 public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
@@ -78,7 +79,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -171,7 +172,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master)
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
@@ -189,8 +190,8 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(master);
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
+		return super.buildQueryPartitionTableRunSQL(master, tags);
 	}
 
 	/**
@@ -410,7 +411,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引

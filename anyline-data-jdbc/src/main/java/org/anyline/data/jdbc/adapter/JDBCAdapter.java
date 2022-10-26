@@ -343,7 +343,7 @@ public interface JDBCAdapter {
 	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -468,12 +468,13 @@ public interface JDBCAdapter {
 	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
-	 * 根据主表查询分区有
+	 * 根据主表查询分区表
 	 * @param master 主表
+	 * @param tags 标签名+标签值
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception;
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -681,7 +682,7 @@ public interface JDBCAdapter {
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -843,7 +844,7 @@ public interface JDBCAdapter {
 	public String buildRenameRunSQL(PartitionTable table) throws Exception;
 
 	/**
-	 * 修改分区有备注
+	 * 修改分区表备注
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常

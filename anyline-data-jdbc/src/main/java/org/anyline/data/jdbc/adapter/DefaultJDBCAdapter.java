@@ -751,7 +751,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
@@ -941,7 +941,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
- 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master)
+ 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
  	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
@@ -960,8 +960,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master)",37));
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)",37));
 		return null;
 	}
 
@@ -1439,7 +1439,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * =================================================================================================================
 	 * table			: 表
 	 * master table		: 主表
-	 * partition table	: 分区有
+	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
 	 * index			: 索引
