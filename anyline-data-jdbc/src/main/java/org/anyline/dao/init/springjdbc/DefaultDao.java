@@ -1598,6 +1598,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master){
+		return ptables(master, null);
+	}
+	@Override
+	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master, Map<String, Object> tags){
 		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
@@ -1609,7 +1613,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
 			try{
-				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master);
+				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master, tags);
 				if(null != sqls) {
 					int idx = 0;
 					for(String sql:sqls) {

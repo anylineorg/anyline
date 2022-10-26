@@ -189,6 +189,7 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, PartitionTable> ptables(String types);
 	public LinkedHashMap<String, PartitionTable> ptables();
 	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
+	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
 
 	/* *****************************************************************************************************************
 	 * 													column
