@@ -270,7 +270,7 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 ####  &nbsp;&nbsp;1. **关于查询条件**  
 &nbsp;&nbsp;&nbsp;&nbsp;这是开发人员最繁重的体力劳动<font color="red">之一</font>  
 &nbsp;&nbsp;&nbsp;&nbsp;接收参数、验证、格式化、层层封装传递到mapper.xml，再各种判断、遍历就为生成一条SQL    
-&nbsp;&nbsp;&nbsp;&nbsp;下面的这些标签许多人可能感觉习以为常了
+&nbsp;&nbsp;&nbsp;&nbsp;下面的这些标签许多人可能感觉习以为常了,以下是<font color="red">反例 反例 反例</font>
 ```
  <if test="code != null and code != '' ">
     AND CODE = #{code}
