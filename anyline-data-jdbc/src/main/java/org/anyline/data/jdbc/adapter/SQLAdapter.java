@@ -138,7 +138,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
             insertValue(run, row, false, false,true, keys);
             if(i<dataSize-1){
-                builder.append(",");
+                //多行数据之间的分隔符
+                builder.append(batchInsertSeparator());
             }
         }
     }
@@ -205,7 +206,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 insertValue(run, obj, false, false, true, keys);
             }
             if(idx<dataSize-1){
-                builder.append(",");
+                //多行数据之间的分隔符
+                builder.append(batchInsertSeparator());
             }
             idx ++;
         }
@@ -213,10 +215,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param dest
-     * @param obj
+     * @param dest 表
+     * @param obj 数据
      * @param checkPrimary 是否需要检查重复主键,默认不检查
-     * @param columns
+     * @param columns 列
      * @return Run
      */
     @Override
@@ -429,6 +431,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         KeyHolder keyholder = new GeneratedKeyHolder();
+
         cnt = jdbc.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
@@ -683,12 +686,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 构造 LIKE 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
      * @param builder builder
      * @param compare compare
-     * @return StringBuilder
+     * @param value value
+     * @return value
      */
     @Override
-    public StringBuilder buildConditionLike(StringBuilder builder, Compare compare){
+    public Object buildConditionLike(StringBuilder builder, Compare compare, Object value){
         if(compare == Compare.LIKE){
             builder.append(" LIKE ").append(concat("'%'", "?" , "'%'"));
         }else if(compare == Compare.LIKE_PREFIX){
@@ -696,7 +701,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }else if(compare == Compare.LIKE_SUFFIX){
             builder.append(" LIKE ").append(concat("'%'", "?"));
         }
-        return builder;
+        return value;
     }
 
     /**
