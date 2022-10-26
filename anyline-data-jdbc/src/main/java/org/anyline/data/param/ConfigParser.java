@@ -330,7 +330,7 @@ public class ConfigParser {
 
 			if(null != methodName){
 				if(null == className){
-					className = "org.anyline.data.prepare.param.DefaultPrepare";
+					className = "org.anyline.data.param.DefaultPrepare";
 				}
 				Class clazz = Class.forName(className);
 				Method method = clazz.getMethod(methodName, String.class);
