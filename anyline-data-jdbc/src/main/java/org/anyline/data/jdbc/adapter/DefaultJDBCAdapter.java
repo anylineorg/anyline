@@ -127,6 +127,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
 	 * public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns)
 	 * public String batchInsertSeparator ()
+	 * public boolean supportInsertPlaceholder ()
 	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
 	 *
 	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
@@ -318,10 +319,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 批量插入数据时，多行数据之间分隔符
 	 * @return String
 	 */
+	@Override
 	public String batchInsertSeparator (){
 		return ",";
 	}
 
+	/**
+	 * 插入数据时是否支持占位符
+	 * @return boolean
+	 */
+	@Override
+	public boolean supportInsertPlaceholder (){
+		return true;
+	}
 	/**
 	 * 设置主键值
 	 * @param obj obj

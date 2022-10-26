@@ -77,8 +77,17 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 批量插入数据时，多行数据之间分隔符
 	 * @return String
 	 */
+	@Override
 	public String batchInsertSeparator (){
 		return " ";
+	}
+	/**
+	 * 插入数据时是否支持占位符
+	 * @return boolean
+	 */
+	@Override
+	public boolean supportInsertPlaceholder (){
+		return false;
 	}
 
 	/**

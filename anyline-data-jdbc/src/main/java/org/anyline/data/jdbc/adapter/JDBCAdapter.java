@@ -169,6 +169,11 @@ public interface JDBCAdapter {
 	 * @return String
 	 */
 	public String batchInsertSeparator ();
+	/**
+	 * 插入数据时是否支持占位符
+	 * @return boolean
+	 */
+	public boolean supportInsertPlaceholder ();
 
 	/**
 	 * 执行 insert

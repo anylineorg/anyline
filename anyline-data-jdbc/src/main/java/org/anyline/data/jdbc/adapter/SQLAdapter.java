@@ -292,12 +292,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 value = buildInValue((SQL_BUILD_IN_VALUE)value);
                 valuesBuilder.append(value);
             }else{
-                valuesBuilder.append("?");
                 insertColumns.add(key);
-                if("NULL".equals(value)){
-                    addRunValue(run, key, null);
+                if(supportInsertPlaceholder()) {
+                    valuesBuilder.append("?");
+                    if ("NULL".equals(value)) {
+                        addRunValue(run, key, null);
+                    } else {
+                        addRunValue(run, key, value);
+                    }
                 }else{
-                    addRunValue(run, key, value);
+                    format(valuesBuilder, value);
                 }
             }
             if(i<size-1){
