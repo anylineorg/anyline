@@ -563,7 +563,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			Map<String,Object> tags = set.getTags();
 			if(null != tags && tags.size()>0){
 				LinkedHashMap<String,PartitionTable> ptables = ptables(new MasterTable(dest), tags);
-				if(ptables.size()  != 0){
+				if(ptables.size() != 1){
 					throw new SQLUpdateException("子表定位异常,主表:"+dest+",标签:"+BeanUtil.map2json(tags)+",子表:"+BeanUtil.object2json(ptables.keySet()));
 				}
 				dest = ptables.values().iterator().next().getName();
