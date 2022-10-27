@@ -478,6 +478,7 @@ public interface JDBCAdapter {
 
 	/**
 	 *  根据查询结果集构造Table
+	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param master 主表
@@ -488,7 +489,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC

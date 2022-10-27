@@ -369,7 +369,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags);
-	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 
@@ -387,6 +387,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 	/**
 	 * 根据主表查询分区表
+	 *   先根据INS_TAGS查出表名(标签值交集) 再根据INS_TABLES补充其他信息
 	 * @param master 主表
 	 * @return List
 	 */
@@ -395,7 +396,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		String stable = master.getName();
-		builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("' AND TYPE='CHILD_TABLE'");
+		//where 不支持子查询
+		/*builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("' AND TYPE='CHILD_TABLE'");
 		if(null != tags && tags.size()>0){
 			for(String key:tags.keySet()){
 				Object value = tags.get(key);
@@ -412,7 +414,31 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 						}
 						builder.append(")");
 			}
+		}*/
+		//根据tag查询出表名
+
+		if(null != tags && tags.size()>0){
+			for(String key:tags.keySet()){
+				builder = new StringBuilder();
+				Object value = tags.get(key);
+				builder.append("SELECT table_name FROM INFORMATION_SCHEMA.INS_TAGS WHERE stable_name = '").append(stable).append("'")
+						.append(" AND TAG_NAME ='").append(key.toLowerCase()).append("'")
+						.append(" AND TAG_VALUE ");
+
+				if(null == value){
+					builder.append("IS NULL");
+				}else{
+					if(BasicUtil.isNumber(value)){
+						builder.append("= ").append(value);
+					}else{
+						builder.append("= '").append(value).append("'");
+					}
+				}
+				sqls.add(builder.toString());
+			}
 		}
+		builder = new StringBuilder();
+		builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("'");
 		sqls.add(builder.toString());
 		return sqls;
 	}
@@ -420,6 +446,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 *  根据查询结果集构造分区表
+	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param master 主表
@@ -431,27 +458,36 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
-		if(null == tables){
+	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+		if(index == 0){
 			tables = new LinkedHashMap<>();
-		}
-		for(DataRow row:set){
-			String name = row.getString("table_name");
-			if(BasicUtil.isEmpty(name)){
-				continue;
+			for(DataRow row:set){
+				String name = row.getString("table_name");
+				PartitionTable table = new PartitionTable(name);
+				tables.put(name, table); //不要转大写 下一步需要交集
 			}
-			PartitionTable table = tables.get(name.toUpperCase());
-			if(null == table){
-				if(create) {
-					table = new PartitionTable(name);
-					tables.put(name.toUpperCase(), table);
-				}else{
+		}else if(index < total -1){
+			//与此之前的集合求交集
+			tables.keySet().retainAll(set.getStrings("table_name"));
+		}else{
+			//最后一步 补充详细信息
+			LinkedHashMap<String, PartitionTable> result = new LinkedHashMap<>();
+			for (DataRow row:set){
+				String name = row.getString("table_name");
+				if(!tables.containsKey(name)){
 					continue;
 				}
+				PartitionTable table = new PartitionTable(name);
+				result.put(name.toUpperCase(), table);
+				table.setCatalog(row.getString("db_name"));
+				table.setComment(row.getString("table_comment"));
+				table.setMaster(master);
+				result.put(name, table);
 			}
-			table.setCatalog(row.getString("db_name"));
-			table.setComment(row.getString("table_comment"));
-			table.setMaster(master);
+			tables.clear();
+			for(String key:result.keySet()){
+				tables.put(key.toUpperCase(), result.get(key));
+			}
 		}
 		return tables;
 	}

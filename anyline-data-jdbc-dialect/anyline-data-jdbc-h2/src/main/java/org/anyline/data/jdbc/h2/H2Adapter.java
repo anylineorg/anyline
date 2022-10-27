@@ -2,13 +2,12 @@
 package org.anyline.data.jdbc.h2;
 
 import org.anyline.data.entity.*;
-import org.anyline.data.entity.*;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -174,7 +173,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags)
-	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -197,6 +196,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 	/**
 	 *  根据查询结果集构造Table
+	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param master 主表
@@ -208,8 +208,8 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
-		return super.ptables(index, create, master, catalog, schema, tables, set);
+	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+		return super.ptables(total, index, create, master, catalog, schema, tables, set);
 	}
 
 	/**

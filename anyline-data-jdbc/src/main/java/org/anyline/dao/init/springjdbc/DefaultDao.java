@@ -1616,10 +1616,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master, tags);
 				if(null != sqls) {
 					int idx = 0;
+					int total = sqls.size();
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
 							DataSet set = select(adapter, sql, null).toUpperKey();
-							tables = adapter.ptables(idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
+							tables = adapter.ptables(total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 						}
 					}
 				}
