@@ -558,6 +558,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
 		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		if(null != data && data instanceof DataSet){
+			DataSet set = (DataSet)data;
+			Map<String,Object> tags = set.getTags();
+			if(null != tags && tags.size()>0){
+				LinkedHashMap<String,PartitionTable> ptables = ptables(new MasterTable(dest), tags);
+				if(ptables.size()  != 0){
+					throw new SQLUpdateException("子表定准异常,主表:"+dest+",标签:"+BeanUtil.map2json(tags)+",子表:"+BeanUtil.object2json(ptables.keySet()));
+				}
+				dest = ptables.values().iterator().next().getName();
+			}
+		}
 		Run run = adapter.buildInsertRun(dest, data, checkPrimary, columns);
 
 		if(null == run){
