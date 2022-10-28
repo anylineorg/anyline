@@ -51,7 +51,7 @@ public class ConfigTable {
 	private static boolean listener_running = false;	// 监听是否启动
 
 	// 对应配置文件key
-	public static boolean IS_DEBUG 										= false		;
+	public static boolean IS_DEBUG 										= true		;
 	public static boolean IS_SHOW_SQL									= true		;
 	public static boolean IS_SHOW_SQL_PARAM								= true		;
 	public static boolean IS_SHOW_SQL_WHEN_ERROR						= true		;
