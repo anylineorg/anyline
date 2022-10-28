@@ -19,11 +19,11 @@
 
 package org.anyline.web.util;
 
+import org.anyline.data.param.ConfigParser;
+import org.anyline.data.param.ParseResult;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
-import org.anyline.data.param.ConfigParser;
-import org.anyline.data.param.ParseResult;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.DESUtil;
 import org.slf4j.Logger;
@@ -168,15 +168,21 @@ public class WebUtil {
 		String encode = "UTF-8";
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
-			map = new HashMap<String,Object>();
+			//通过ur形式提交的参数
+			String params = request.getQueryString();
+			if(BasicUtil.isNotEmpty(params)){
+				map = BeanUtil.param2map(params, true, true);
+			}else {
+				map = new HashMap<String, Object>();
+			}
 			// body体json格式(ajax以raw提交)
 			String body = WebUtil.read(request,encode,true);
 			if(BasicUtil.isNotEmpty(body)){
 				if(body.startsWith("{") && body.endsWith("}")) {
-					map = DataRow.parseJson(KEY_CASE.SRC, body);
+					map.putAll(DataRow.parseJson(KEY_CASE.SRC, body));
 				}else{
 					//先拆分 再解码，否则解出来 & = 会混淆
-					map = BeanUtil.param2map(body,true, true);
+					map.putAll(BeanUtil.param2map(body,true, true));
 				}
 			}else {
 				// utl与form表单格式
