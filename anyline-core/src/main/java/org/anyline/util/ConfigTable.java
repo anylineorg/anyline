@@ -43,21 +43,21 @@ public class ConfigTable {
 	protected static String webRoot;
 	protected static String classpath;
 	protected static Hashtable<String,Object> configs;
-	protected static long lastLoadTime = 0;	// 最后一次加载时间
-	protected static int reload = 0;			// 重新加载间隔
-	protected static final String version = "8.6.1-SNAPSHOT";
-	protected static final String minVersion = "0007";
-	protected static boolean isLoading = false;
-	private static boolean listener_running = false;	// 监听是否启动
+	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
+	protected static int reload 						= 0					;	// 重新加载间隔
+	protected static final String version 				= "8.6.1-SNAPSHOT"	;	// 版本号
+	protected static final String minVersion 			= "0007"			;	// 版本号
+	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
+	private static boolean listener_running 			= false				;	// 监听是否启动
 
 	// 对应配置文件key
-	public static boolean IS_DEBUG 										= true		;
-	public static boolean IS_SHOW_SQL									= true		;
-	public static boolean IS_SHOW_SQL_PARAM								= true		;
-	public static boolean IS_SHOW_SQL_WHEN_ERROR						= true		;
-	public static boolean IS_SHOW_SQL_PARAM_WHEN_ERROR					= true		;
-	public static boolean IS_SQL_DEBUG	 								= false		;
-	public static boolean IS_HTTP_LOG 									= true		;
+	public static boolean IS_DEBUG 										= true		;	// DEBUG状态会输出更多日志
+	public static boolean IS_SHOW_SQL									= true		;	// 执行SQL时是否输出日志
+	public static boolean IS_SHOW_SQL_PARAM								= true		;	// 执行SQL时是否输出日志
+	public static boolean IS_SHOW_SQL_WHEN_ERROR						= true		;	// 执行SQL异常时是否输出日志
+	public static boolean IS_SHOW_SQL_PARAM_WHEN_ERROR					= true		;	// 执行SQL异常时是否输出日志
+	public static boolean IS_SQL_DEBUG	 								= false		;	// 加载自定义SQL时是否输出日志
+	public static boolean IS_HTTP_LOG 									= true		;	// 调用HTTP接口时是否出输出日志
 	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// 是否忽略大小写
@@ -75,7 +75,7 @@ public class ConfigTable {
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
 	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
 	public static String TABLE_METADATA_CACHE_KEY						= ""		;	// 表结构缓存key
-	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	// 表析构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;
 
 	public static String CONFIG_NAME = "anyline-config.xml";
