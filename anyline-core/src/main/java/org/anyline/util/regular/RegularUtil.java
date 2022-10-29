@@ -448,7 +448,7 @@ public class RegularUtil {
 			src = removeAllHtmlTag(src);
 		}else{
 			for(String tag:tags){
-				String reg = "(?i)<"+tag+"[^>]*>.*?</"+tag+">";
+				String reg = "(?i)<"+tag+"[^>]*>[\\s\\S]*?</"+tag+">";
 				src = src.replaceAll(reg, "");
 			}
 		}
