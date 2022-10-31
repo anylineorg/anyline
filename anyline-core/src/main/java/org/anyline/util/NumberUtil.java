@@ -19,6 +19,7 @@
 
 package org.anyline.util;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -478,5 +479,20 @@ public class NumberUtil {
 		}
 
 		return sb.toString();
+	}
+
+	public static String hex2string(String hex, String charset) {
+		byte[] bytes = new byte[hex.length() / 2];
+		for (int i = 0; i < bytes.length; i++) {
+			int start = i * 2;
+			bytes[i] = (byte) (0xff & Integer.parseInt(
+					hex.substring(start, start + 2), 16));
+		}
+		try {
+			return new String(bytes, charset);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 } 
