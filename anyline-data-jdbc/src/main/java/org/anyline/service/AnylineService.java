@@ -666,6 +666,9 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		public boolean exists(Column column);
+		public boolean exists(Table table, String name);
+		public boolean exists(String table, String name);
+		public boolean exists(String catalog, String schema, String table, String name);
 		/**
 		 * 查询表中所有的表，注意这里的map.KEY全部转大写
 		 * @param table 表
@@ -674,6 +677,9 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String,Column> columns(Table table);
 		public LinkedHashMap<String,Column> columns(String table);
 		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
+		public Column column(Table table, String name);
+		public Column column(String table, String name);
+		public Column column(String catalog, String schema, String table, String name);
 
 
 		/* *****************************************************************************************************************

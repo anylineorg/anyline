@@ -2010,19 +2010,63 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													column
          * -----------------------------------------------------------------------------------------------------------------
-         * public boolean exists(Column column)
+		 * public boolean exists(Column column);
+		 * public boolean exists(Table table, String name);
+		 * public boolean exists(String table, String name);
+         * public boolean exists(String catalog, String schema, String table, String name);
          * public LinkedHashMap<String,Column> columns(Table table)
          * public LinkedHashMap<String,Column> columns(String table)
          * public LinkedHashMap<String,Column> columns(String catalog, String schema, String table)
+		 * public LinkedHashMap<String,Column> column(Table table, String name);
+		 * public LinkedHashMap<String,Column> column(String table, String name);
+         * public LinkedHashMap<String,Column> column(String catalog, String schema, String table, String name);
          ******************************************************************************************************************/
         @Override
         public boolean exists(Column column) {
             try {
                 Table table = table(column.getCatalog(), column.getSchema(), column.getTableName());
                 if(null != table){
-                    if(table.getColumns().containsKey(column.getName())){
+                    if(table.getColumns().containsKey(column.getName().toUpperCase())){
                         return true;
                     }
+                }
+            }catch (Exception e){
+
+            }
+            return false;
+        }
+        @Override
+        public boolean exists(Table table, String name) {
+            try {
+                LinkedHashMap<String,Column> columns = table.getColumns();
+                if(null == columns && columns.isEmpty()){
+                    columns = columns(table);
+                }
+                if(columns.containsKey(name.toUpperCase())){
+                    return true;
+                }
+            }catch (Exception e){
+
+            }
+            return false;
+        }
+        @Override
+        public boolean exists(String table, String name) {
+            try {
+                LinkedHashMap<String,Column> columns = columns(table);
+                if(columns.containsKey(name.toUpperCase())){
+                    return true;
+                }
+            }catch (Exception e){
+
+            }
+            return false;
+        }
+        public boolean exists(String catalog, String schema, String table, String name){
+            try {
+                LinkedHashMap<String,Column> columns = columns(catalog, schema, table);
+                if(columns.containsKey(name.toUpperCase())){
+                    return true;
                 }
             }catch (Exception e){
 
@@ -2069,6 +2113,29 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public LinkedHashMap<String,Column> columns(String catalog, String schema, String table){
             return columns(new Table(catalog, schema, table));
+        }
+
+        public Column column(Table table, String name){
+            Column column = null;
+            LinkedHashMap<String,Column> columns = table.getColumns();
+            if(null == columns && columns.isEmpty()){
+                columns = columns(table);
+            }
+            column = columns.get(name.toUpperCase());
+            return column;
+        }
+        public Column column(String table, String name){
+            Column column = null;
+            LinkedHashMap<String,Column> columns =  columns(table);
+            column = columns.get(name.toUpperCase());
+            return column;
+
+        }
+        public Column column(String catalog, String schema, String table, String name){
+            Column column = null;
+            LinkedHashMap<String,Column> columns =  columns(catalog, schema, table);
+            column = columns.get(name.toUpperCase());
+            return column;
         }
 
 
