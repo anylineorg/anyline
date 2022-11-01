@@ -506,4 +506,20 @@ public class NumberUtil {
 		byte[] bytes = NumberUtil.hex2bytes(hex);
 		return new String(bytes);
 	}
+
+	/**
+	 * 16进制string拆分
+	 * @param hex
+	 * @return strings
+	 */
+	public static String[] hex2array(String hex) {
+		String[] array = new String[hex.length() / 2];
+		int k = 2;
+		for (int i = 0; i < array.length; i++) {
+			array[i] = hex.substring(i * 2, k);
+			k += 2;
+		}
+		return array;
+	}
+
 } 
