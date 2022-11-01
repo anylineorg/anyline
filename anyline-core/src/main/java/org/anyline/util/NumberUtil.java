@@ -386,7 +386,11 @@ public class NumberUtil {
 	}
 
 	public static String bytes2hex(byte[] bytes) {
-		 return bytes2hex(bytes,"");
+		return bytes2hex(bytes,"");
+	}
+	public static String byte2hex(byte bit) {
+		String hex = Integer.toHexString(bit & 0xFF);
+		return hex;
 	}
 
 	public static String bytes2hex(byte[] bytes, String split) {
@@ -484,7 +488,7 @@ public class NumberUtil {
 
 	/**
 	 * String转16进制
-	 * 中文abc123_# gt;e4b8ade696876162633132335f23
+	 * 中文abc123_# &gt;e4b8ade696876162633132335f23
 	 *
 	 * @param origin 原文
 	 * @return hex
@@ -498,7 +502,7 @@ public class NumberUtil {
 
 	/**
 	 * 16进制转String
-	 * e4b8ade696876162633132335f23 gt; 中文abc123_#
+	 * e4b8ade696876162633132335f23 &gt; 中文abc123_#
 	 * @param hex hex
 	 * @return String
 	 */
