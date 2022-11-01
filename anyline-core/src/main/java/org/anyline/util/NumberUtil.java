@@ -19,7 +19,6 @@
 
 package org.anyline.util;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import java.util.Random;
  
  
 public class NumberUtil {
+	private static final char[] chars16 = "0123456789ABCDEF".toCharArray();
 	/**
 	 * 数据格式化
 	 * 
@@ -390,19 +390,19 @@ public class NumberUtil {
 	}
 
 	public static String bytes2hex(byte[] bytes, String split) {
-		StringBuffer sb = new StringBuffer();
+		StringBuffer builder = new StringBuffer();
 		int len = bytes.length;
 		for(int i = 0; i < len; i++) {
 			String hex = Integer.toHexString(bytes[i] & 0xFF);
 			if(hex.length() < 2){
-				sb.append(0);
+				builder.append(0);
 			}
-			sb.append(hex);
+			builder.append(hex);
 			if(i<len-1){
-				sb.append(split);
+				builder.append(split);
 			}
 		}
-		return sb.toString();
+		return builder.toString();
 	}
 	public static byte[] hex2bytes(String hex){
 		int hexlen = hex.length();
@@ -423,6 +423,7 @@ public class NumberUtil {
 		}
 		return result;
 	}
+
 	public static byte hex2byte(String hex){
 		return (byte)Integer.parseInt(hex,16);
 	}
@@ -457,13 +458,13 @@ public class NumberUtil {
 		return Long.valueOf(bytes2string(bytes));
 	}
 
-	public static String bytes2string(byte bcd) {
+	public static String bytes2string(byte bit) {
 		StringBuffer sb = new StringBuffer();
 
-		byte high = (byte) (bcd & 0xf0);
+		byte high = (byte) (bit & 0xf0);
 		high >>>= (byte) 4;
 		high = (byte) (high & 0x0f);
-		byte low = (byte) (bcd & 0x0f);
+		byte low = (byte) (bit & 0x0f);
 
 		sb.append(high);
 		sb.append(low);
@@ -471,28 +472,38 @@ public class NumberUtil {
 		return sb.toString();
 	}
 
-	public static String bytes2string(byte[] bcd) {
+	public static String bytes2string(byte[] bytes) {
 		StringBuffer sb = new StringBuffer();
 
-		for (int i = 0; i < bcd.length; i++) {
-			sb.append(bytes2string(bcd[i]));
+		for (int i = 0; i < bytes.length; i++) {
+			sb.append(bytes2string(bytes[i]));
 		}
 
 		return sb.toString();
 	}
 
-	public static String hex2string(String hex, String charset) {
-		byte[] bytes = new byte[hex.length() / 2];
-		for (int i = 0; i < bytes.length; i++) {
-			int start = i * 2;
-			bytes[i] = (byte) (0xff & Integer.parseInt(
-					hex.substring(start, start + 2), 16));
-		}
-		try {
-			return new String(bytes, charset);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return null;
-		}
+	/**
+	 * String转16进制
+	 * 中文abc123_# gt;e4b8ade696876162633132335f23
+	 *
+	 * @param origin 原文
+	 * @return hex
+	 */
+
+	public static String string2hex(String origin) {
+		byte[] bytes = origin.getBytes();
+		String hex = bytes2hex(bytes);
+		return hex;
+	}
+
+	/**
+	 * 16进制转String
+	 * e4b8ade696876162633132335f23 gt; 中文abc123_#
+	 * @param hex hex
+	 * @return String
+	 */
+	public static String hex2string(String hex) {
+		byte[] bytes = NumberUtil.hex2bytes(hex);
+		return new String(bytes);
 	}
 } 
