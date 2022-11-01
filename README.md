@@ -21,8 +21,8 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
   一个默认的Service可以操作一切数据  
 
 
-    操作数据库很简单，但数据库并不是终点  
-    灵活的处理数据、快速的生成符合业务逻辑需求的结构才是重点      
+**操作数据库很简单，但AnyLine要实例的不仅仅是操作数据库**   
+**灵活的处理结果集数据、快速的生成符合业务逻辑的数据结构才是重点**      
 
 
 - 2）为结果集定义了统一的数据结构,主要是DataSet&lt;DataRow&gt;结构类似于List&lt;Map&gt;  
@@ -30,7 +30,7 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
   他将提供比实体类更全面、更强大的数据处理能力    
   为前端或第三方应用提供数据时 不再需要各种遍历、判断、计算、格式转换    
   一切与业务无关的数学运算,DataSet&lt;DataRow&gt;尽量作到 一键 ... 一键 ...
-
+  [示例](https://gitee.com/anyline/service)
 
 同时摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
 没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)
@@ -43,50 +43,50 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **可视化数据源**  
     主要用来处理动态属性，以及适配前端的多维度多结构的数据转换   
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - **低代码后台**    
     主要用来处理动态属性、动态数据源(下拉列表)以及用户自定义的一些属性    
     灵活的DDL也可以快速统一的操作各种表结构(包括各种时序、列式数据库)   
-    [栗子](https://gitee.com/anyline/service)  
+    [示例](https://gitee.com/anyline/service)  
 
 
 - **物联网车联网数据处理**    
     如车载终端、交通信号灯、数字化工厂传感器、环境检测设备数据等   
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - **数据清洗、数据批量处理**  
     各种结构的数据、更多的是不符合标准甚至是错误的结构  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - **报表输出，特别是用户自定义报表**  
     类似于可视化环境,只是样式简单一点  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - **运行时自定义表单/查询条件/数据结构**  
     各个阶段都要自定义，比低代码要求更高的是:操作用户不懂编程
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - **网络爬虫数据解析**    
     不固定的结构、html解析(当然不是用正则或dom那太费脑子了)  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 
 - **异构数据库迁移同步**  
     动态的数据结构可以灵活的适配多种不同的表,需不需要反复的get/set    
     兼容多种数据库的DDL也可以方便的在不同类型的数据库中执行  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - **还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成**  
     别说设计了，需求都有可能还没结束就催交付了,Entity哪里找  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 
@@ -96,7 +96,7 @@ Anyline一的切都是面向动态、面向运行时环境
 这一般都是些hello world 或 练习作业  
 这样的直接利用默认的service查出数据返回给前端就可以收工了  
 不要再生成一堆重复的模板，简单改个属性也要层层修改，从头改个遍。    
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - 代码中出现了大量的List,Map结构 或者 针对查询结果集需要大量的二次计算  
@@ -106,14 +106,14 @@ Anyline一的切都是面向动态、面向运行时环境
 这时经常是为每类场景订制视图或SQL  
 但数据支持部门不可能针对每种场景每个视图、每个SQL 生成不同的Entity  
 更也不可能生成一个大而全的Entity以应万变  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 - 与第三方系统交换数据时  
   只在自己内部系统的小圈子里时,List/Entity还勉强可以  
   遇到各种第三方系统呢，根本不知道会出现什么实体什么结果  
   难道还要像EJB那样相互给对方生成一堆Bean么？  
-  [栗子](https://gitee.com/anyline/service)
+  [示例](https://gitee.com/anyline/service)
 
 
 
@@ -121,14 +121,14 @@ Anyline一的切都是面向动态、面向运行时环境
 而这种大量的机械的计算不应该占用开发人员太多的时间  
 Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据二次处理功能,如:   
 排序、维度转换、截取、去重、方差、偏差、交集合集差集、分组、忽略大小写对比、行列转换、类SQL过滤筛选(like,eq,in,less,between...)、JSON、XML格式转换等  
-[栗子](https://gitee.com/anyline/service)
+[示例](https://gitee.com/anyline/service)
 
 
 
 ## 不适用场景
 对已经非常明确的实体执行增删改查操作  
 不要跨过设计人员或者架构师/技术经理等直接拿给业务开发人员用  
-[栗子](https://gitee.com/anyline/service)
+[示例](https://gitee.com/anyline/service)
 
 ##  关于数据库的适配
 直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)
