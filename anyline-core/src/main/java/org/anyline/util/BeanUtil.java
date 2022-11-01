@@ -1211,6 +1211,25 @@ public class BeanUtil {
 		return concat(list,",");
 	}
 
+	public static String concat(byte[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(byte[] list) {
+		return concat(list,",");
+	}
+
 	public static List<String> toUpperCase(List<String> list){
 		if(null != list){
 			int size = list.size();
