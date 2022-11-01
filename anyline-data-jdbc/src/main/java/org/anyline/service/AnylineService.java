@@ -677,6 +677,13 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String,Column> columns(Table table);
 		public LinkedHashMap<String,Column> columns(String table);
 		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
+
+		/**
+		 * 查询table中的column列
+		 * @param table 表
+		 * @param name 列名(不区分大小写)
+		 * @return Column
+		 */
 		public Column column(Table table, String name);
 		public Column column(String table, String name);
 		public Column column(String catalog, String schema, String table, String name);
