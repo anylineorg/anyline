@@ -20,12 +20,13 @@
 package org.anyline.util;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
- 
- 
+
+
 public class NumberUtil {
 	private static final char[] chars16 = "0123456789ABCDEF".toCharArray();
 	/**
@@ -457,64 +458,79 @@ public class NumberUtil {
         }
         return bcd;
     }
-
-	public static long bytes2decimal(byte[] bytes) {
-		return Long.valueOf(bytes2string(bytes));
+	/**
+	 * 将byte转成二进制
+	 * @param b byte
+	 * @returnString
+	 */
+	public static String byte2binary(byte  b){
+		String value = Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
+		return value;
+	}public static int byte2int(byte res) {
+		return res & 0xff;
+	}
+	/**
+	 * ascii码
+	 * @param b byte
+	 * @return String
+	 */
+	public static String byte2ascii(byte b) {
+		StringBuilder sb = new StringBuilder();
+		int value = byte2int(b);
+		sb.append((char) value);
+		return sb.toString();
 	}
 
-	public static String bytes2string(byte bit) {
-		StringBuffer sb = new StringBuffer();
 
+	public static String byte2bcd(byte bit) {
+		StringBuffer sb = new StringBuffer();
 		byte high = (byte) (bit & 0xf0);
 		high >>>= (byte) 4;
 		high = (byte) (high & 0x0f);
 		byte low = (byte) (bit & 0x0f);
-
 		sb.append(high);
 		sb.append(low);
-
 		return sb.toString();
 	}
 
-	public static String bytes2string(byte[] bytes) {
+	public static String bytes2bcd(byte[] bytes) {
 		StringBuffer sb = new StringBuffer();
-
 		for (int i = 0; i < bytes.length; i++) {
-			sb.append(bytes2string(bytes[i]));
+			sb.append(byte2bcd(bytes[i]));
 		}
-
 		return sb.toString();
 	}
 
 	/**
-	 * String转16进制
+     * String转16进制
 	 * 中文abc123_# &gt;e4b8ade696876162633132335f23
 	 *
 	 * @param origin 原文
 	 * @return hex
 	 */
 
-	public static String string2hex(String origin) {
-		byte[] bytes = origin.getBytes();
+	public static String string2hex(String origin, String charset) {
+		byte[] bytes = origin.getBytes(Charset.forName(charset));
 		String hex = bytes2hex(bytes);
 		return hex;
 	}
 
 	/**
-	 * 16进制转String
+     * 16进制转String<br/>
 	 * e4b8ade696876162633132335f23 &gt; 中文abc123_#
 	 * @param hex hex
 	 * @return String
 	 */
-	public static String hex2string(String hex) {
+	public static String hex2string(String hex, String charset) {
 		byte[] bytes = NumberUtil.hex2bytes(hex);
-		return new String(bytes);
+		return new String(bytes, Charset.forName(charset));
 	}
 
-	/**
-	 * 16进制string拆分
-	 * @param hex
-	 * @return strings
+    /**
+     * 16进制string拆分<br/>
+	 * 0102 &gt; ["01","02"]
+	 * @param hex hex
+     * @return strings
 	 */
 	public static String[] hex2array(String hex) {
 		String[] array = new String[hex.length() / 2];
@@ -524,6 +540,12 @@ public class NumberUtil {
 			k += 2;
 		}
 		return array;
+	}
+	public static byte[] string2bytes(String src, String charset){
+		return src.getBytes(Charset.forName(charset));
+	}
+	public static byte[] string2bytes(String src){
+		return src.getBytes(Charset.forName("UTF-8"));
 	}
 
 } 
