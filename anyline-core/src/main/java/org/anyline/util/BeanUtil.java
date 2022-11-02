@@ -1312,6 +1312,15 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * 截取数组
+	 * @param array 原数组
+	 * @param fr 开始位置
+	 * @param to 结束位置
+	 * @return 新数组
+	 * @param <T> 数据类型
+	 */
 	public static <T> T[] cut(T[] array, int fr, int to){
 		if(null != array || array.length == 0){
 			return array;
