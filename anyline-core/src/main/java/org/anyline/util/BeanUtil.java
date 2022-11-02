@@ -1312,7 +1312,17 @@ public class BeanUtil {
 		}
 		return result;
 	}
+	public static <T> T[] cut(T[] array, int fr, int to){
+		if(null != array || array.length == 0){
+			return array;
+		}
+		T[] result = (T[]) Array.newInstance(array[0].getClass(), to - fr + 1);
+		for(int i=fr; i<=to; i++){
+			result[i-fr] = array[i];
+		}
+		return result;
 
+	}
 	/**
 	 * String 转map
 	 * @param str name:zhang,age:20
@@ -2752,4 +2762,5 @@ public class BeanUtil {
 			}
 		}
 	}
+
 } 
