@@ -382,12 +382,19 @@ public class NumberUtil {
 	public static int  hex2decimal(String hex){
 		return Integer.parseInt(hex,16);
 	}
+	public static int hex2decimal(String[] hex, int fr, int to){
+		StringBuilder builder = new StringBuilder();
+		for(int i=fr; i<=to; i++){
+			builder.append(hex[i]);
+		}
+		return Integer.valueOf(builder.toString(), 16);
+	}
 	public static String  decimal2hex(int number){
 		return Integer.toHexString(number);
 	}
 
 	public static String bytes2hex(byte[] bytes) {
-		return bytes2hex(bytes,"");
+		return byte2hex(bytes,"");
 	}
 	public static String byte2hex(byte bit) {
 		String hex = Integer.toHexString(bit & 0xFF);
@@ -396,6 +403,15 @@ public class NumberUtil {
 		}
 		return hex;
 	}
+
+	/**
+	 * 从byte数组中截取fr到to转换成String 按charset编码格式
+	 * @param bytes bytes
+	 * @param fr fr
+	 * @param to to
+	 * @param charset 编码
+	 * @return String
+	 */
 	public static String bytes2string(byte[] bytes, int fr, int to, String charset){
 		byte[] bts = new byte[to-fr+1];
 		for(int i=fr; i<=to; i++){
@@ -404,7 +420,7 @@ public class NumberUtil {
 		return new String(bts, Charset.forName(charset));
 	}
 
-	public static String bytes2hex(byte[] bytes, String split) {
+	public static String byte2hex(byte[] bytes, String split) {
 		StringBuffer builder = new StringBuffer();
 		int len = bytes.length;
 		for(int i = 0; i < len; i++) {
@@ -476,7 +492,7 @@ public class NumberUtil {
 	public static String byte2binary(byte  b){
 		String value = Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
 		return value;
-	}public static int byte2int(byte res) {
+	}public static int byte2decimal(byte res) {
 		return res & 0xff;
 	}
 	/**
@@ -486,7 +502,7 @@ public class NumberUtil {
 	 */
 	public static String byte2ascii(byte b) {
 		StringBuilder sb = new StringBuilder();
-		int value = byte2int(b);
+		int value = byte2decimal(b);
 		sb.append((char) value);
 		return sb.toString();
 	}
