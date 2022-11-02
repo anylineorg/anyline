@@ -28,7 +28,6 @@ import java.util.Random;
 
 
 public class NumberUtil {
-	private static final char[] chars16 = "0123456789ABCDEF".toCharArray();
 	/**
 	 * 数据格式化
 	 *
@@ -379,45 +378,28 @@ public class NumberUtil {
 		return Integer.toBinaryString((number & 0xFF) + 0x100).substring(1);
 	}
 
-	public static int  hex2decimal(String hex){
+	/**
+	 * 16进制转10进制
+	 * @param hex hex
+	 * @return int
+	 */
+	public static int hex2decimal(String hex){
 		return Integer.parseInt(hex,16);
 	}
+
+	/**
+	 * 截取hex中fr到to部分转成10进制
+	 * @param hex hex数组
+	 * @param fr 开始位置
+	 * @param to 结束位置
+	 * @return int
+	 */
 	public static int hex2decimal(String[] hex, int fr, int to){
 		StringBuilder builder = new StringBuilder();
 		for(int i=fr; i<=to; i++){
 			builder.append(hex[i]);
 		}
 		return Integer.valueOf(builder.toString(), 16);
-	}
-	public static String  decimal2hex(int number){
-		return Integer.toHexString(number);
-	}
-
-	public static String bytes2hex(byte[] bytes) {
-		return byte2hex(bytes,"");
-	}
-	public static String byte2hex(byte bit) {
-		String hex = Integer.toHexString(bit & 0xFF);
-		if(hex.length() < 2){
-			hex = "0" + hex;
-		}
-		return hex;
-	}
-
-	/**
-	 * 从byte数组中截取fr到to转换成String 按charset编码格式
-	 * @param bytes bytes
-	 * @param fr fr
-	 * @param to to
-	 * @param charset 编码
-	 * @return String
-	 */
-	public static String bytes2string(byte[] bytes, int fr, int to, String charset){
-		byte[] bts = new byte[to-fr+1];
-		for(int i=fr; i<=to; i++){
-			bts[i-fr] = bytes[i];
-		}
-		return new String(bts, Charset.forName(charset));
 	}
 
 	public static String byte2hex(byte[] bytes, String split) {
@@ -435,6 +417,54 @@ public class NumberUtil {
 		}
 		return builder.toString();
 	}
+	public static String byte2hex(byte[] bytes) {
+		return byte2hex(bytes,"");
+	}
+	public static String[] byte2hexs(byte[] bytes) {
+		String[] hexs = new String[bytes.length];
+		for(int i=0; i<hexs.length; i++){
+			hexs[i] = byte2hex(bytes[i]);
+		}
+		return hexs;
+	}
+	public static String byte2hex(byte b) {
+		String hex = Integer.toHexString(b & 0xFF);
+		if(hex.length() < 2){
+			hex = "0" + hex;
+		}
+		return hex;
+	}
+
+	public static String decimal2hex(int number){
+		String hex = Integer.toHexString(number & 0xFF);
+		if(hex.length() < 2){
+			hex = "0" + hex;
+		}
+		return hex;
+	}
+	public static String[] decimal2hex(int[] numbers){
+		String[] hex = new String[numbers.length];
+		for(int i=0; i<hex.length; i++){
+			hex[i] = Integer.toHexString(numbers[i]);
+		}
+		return hex;
+	}
+	/**
+	 * 从byte数组中截取fr到to转换成String 按charset编码格式
+	 * @param bytes bytes
+	 * @param fr fr
+	 * @param to to
+	 * @param charset 编码
+	 * @return String
+	 */
+	public static String byte2string(byte[] bytes, int fr, int to, String charset){
+		byte[] bts = new byte[to-fr+1];
+		for(int i=fr; i<=to; i++){
+			bts[i-fr] = bytes[i];
+		}
+		return new String(bts, Charset.forName(charset));
+	}
+
 	public static byte[] hex2bytes(String hex){
 		int hexlen = hex.length();
 		byte[] result;
@@ -537,7 +567,7 @@ public class NumberUtil {
 
 	public static String string2hex(String origin, String charset) {
 		byte[] bytes = origin.getBytes(Charset.forName(charset));
-		String hex = bytes2hex(bytes);
+		String hex = byte2hex(bytes);
 		return hex;
 	}
 
