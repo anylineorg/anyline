@@ -281,4 +281,59 @@ public class HtmlUtil {
         }
         return result;
     }
+
+    /**
+     * 根据单元格内容生成表格<br/>
+     * 什么情况下需要，通过OCR识别内容时，如果原文是表格形式，识别出来的结果排列会乱<br/>
+     * <pre>
+     * 如：原文是这样
+     * ---------------
+     * | A | B | C |
+     * ---------------
+     * | 1 | 2 | 3 |
+     * ---------------
+     * 识别结果可能会是这样
+     * A
+     * B
+     * C
+     * 1
+     * 2
+     * 3
+     * 这时需要HtmlUtil.table(String 识别结果, int 每行几列, String 分隔符)
+     * 把识别出来的内容还原成表格形式
+     * <pre/>
+     * @param cells 单元格内容
+     * @param split 分隔符号
+     * @param cols 每行cols列
+     * @return table
+     */
+    public static String table(String cells, int cols, String split){
+        StringBuilder table = new StringBuilder();
+        String[] tds = cells.split(split);
+        table.append("<table>");
+        for(int i=0; i<tds.length; i++){
+            if(i%cols == 0){
+                table.append("<tr>");
+            }
+            table.append("<td>").append(tds[i]).append("</td>");
+            if((i+1)%cols == 0){
+                table.append("</tr>");
+            }
+        }
+        table.append("</table>");
+        return table.toString();
+    }
+
+    /**
+     * <pre>
+     * 单元格内容生成表格
+     * 默认换行分隔 \n
+     * </pre>
+     * @param cells 单元格内容
+     * @param cols 每行cols列
+     * @return table
+     */
+    public static String table(String cells, int cols){
+        return table(cells, cols,"\n");
+    }
 }
