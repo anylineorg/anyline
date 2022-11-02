@@ -391,6 +391,9 @@ public class NumberUtil {
 	}
 	public static String byte2hex(byte bit) {
 		String hex = Integer.toHexString(bit & 0xFF);
+		if(hex.length() < 2){
+			hex = "0" + hex;
+		}
 		return hex;
 	}
 	public static String bytes2string(byte[] bytes, int fr, int to, String charset){
