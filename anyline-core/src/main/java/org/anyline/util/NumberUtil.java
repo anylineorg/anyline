@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 
 
@@ -31,7 +31,7 @@ public class NumberUtil {
 	private static final char[] chars16 = "0123456789ABCDEF".toCharArray();
 	/**
 	 * 数据格式化
-	 * 
+	 *
 	 * @param src src
 	 * @param pattern pattern
 	 * @return String
@@ -52,7 +52,7 @@ public class NumberUtil {
 
 	/**
 	 * 数字格式化
-	 * 
+	 *
 	 * @param src src
 	 * @param pattern pattern
 	 * @return String
@@ -68,7 +68,7 @@ public class NumberUtil {
 	 * 中文大写(简体)
 	 * @param num num
 	 * @return String
-	 */ 
+	 */
 	public static String upper(long num){
 		return NumberTextUtil.getInstance(NumberTextUtil.Lang.ChineseSimplified).getText(num);
 	}
@@ -110,7 +110,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最大数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return double
 	 */
@@ -125,7 +125,7 @@ public class NumberUtil {
 	}
 	/**
 	 * 选取最小数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return double
 	 */
@@ -140,7 +140,7 @@ public class NumberUtil {
 	}
 	/**
 	 * 选取最大数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return int
 	 */
@@ -156,7 +156,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最小数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return int
 	 */
@@ -172,7 +172,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最大数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return long
 	 */
@@ -189,7 +189,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最小数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return long
 	 */
@@ -205,7 +205,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最大数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return float
 	 */
@@ -221,7 +221,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最小数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return float
 	 */
@@ -237,7 +237,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最大数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return short
 	 */
@@ -253,7 +253,7 @@ public class NumberUtil {
 
 	/**
 	 * 选取最小数
-	 * 
+	 *
 	 * @param nums nums
 	 * @return short
 	 */
@@ -351,7 +351,7 @@ public class NumberUtil {
 		}
 		return list;
 	}
-	
+
 	public static boolean isInt(double src){
 		return src == (int)src;
 	}
@@ -433,31 +433,31 @@ public class NumberUtil {
 		return (byte)Integer.parseInt(hex,16);
 	}
 
-    public static byte[] decimal2bcd(long num) {
-        int digits = 0;
-        long temp = num;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        int len = digits % 2 == 0 ? digits / 2 : (digits + 1) / 2;
-        byte bcd[] = new byte[len];
-        for (int i = 0; i < digits; i++) {
-            byte tmp = (byte) (num % 10);
-            if (i % 2 == 0) {
-                bcd[i / 2] = tmp;
-            } else {
-                bcd[i / 2] |= (byte) (tmp << 4);
-            }
-            num /= 10;
-        }
-        for (int i = 0; i < len / 2; i++) {
-            byte tmp = bcd[i];
-            bcd[i] = bcd[len - i - 1];
-            bcd[len - i - 1] = tmp;
-        }
-        return bcd;
-    }
+	public static byte[] decimal2bcd(long num) {
+		int digits = 0;
+		long temp = num;
+		while (temp != 0) {
+			digits++;
+			temp /= 10;
+		}
+		int len = digits % 2 == 0 ? digits / 2 : (digits + 1) / 2;
+		byte bcd[] = new byte[len];
+		for (int i = 0; i < digits; i++) {
+			byte tmp = (byte) (num % 10);
+			if (i % 2 == 0) {
+				bcd[i / 2] = tmp;
+			} else {
+				bcd[i / 2] |= (byte) (tmp << 4);
+			}
+			num /= 10;
+		}
+		for (int i = 0; i < len / 2; i++) {
+			byte tmp = bcd[i];
+			bcd[i] = bcd[len - i - 1];
+			bcd[len - i - 1] = tmp;
+		}
+		return bcd;
+	}
 	/**
 	 * 将byte转成二进制
 	 * @param b byte
@@ -502,7 +502,7 @@ public class NumberUtil {
 	}
 
 	/**
-     * String转16进制
+	 * String转16进制
 	 * 中文abc123_# &gt;e4b8ade696876162633132335f23
 	 *
 	 * @param origin 原文
@@ -516,7 +516,7 @@ public class NumberUtil {
 	}
 
 	/**
-     * 16进制转String<br/>
+	 * 16进制转String<br/>
 	 * e4b8ade696876162633132335f23 &gt; 中文abc123_#
 	 * @param hex hex
 	 * @return String
@@ -526,11 +526,11 @@ public class NumberUtil {
 		return new String(bytes, Charset.forName(charset));
 	}
 
-    /**
-     * 16进制string拆分<br/>
+	/**
+	 * 16进制string拆分<br/>
 	 * 0102 &gt; ["01","02"]
 	 * @param hex hex
-     * @return strings
+	 * @return strings
 	 */
 	public static String[] hex2array(String hex) {
 		String[] array = new String[hex.length() / 2];
