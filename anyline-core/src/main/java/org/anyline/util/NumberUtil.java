@@ -393,6 +393,13 @@ public class NumberUtil {
 		String hex = Integer.toHexString(bit & 0xFF);
 		return hex;
 	}
+	public static String bytes2string(byte[] bytes, int fr, int to, String charset){
+		byte[] bts = new byte[to-fr+1];
+		for(int i=fr; i<=to; i++){
+			bts[i-fr] = bytes[i];
+		}
+		return new String(bts, Charset.forName(charset));
+	}
 
 	public static String bytes2hex(byte[] bytes, String split) {
 		StringBuffer builder = new StringBuffer();
