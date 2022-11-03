@@ -1322,7 +1322,7 @@ public class BeanUtil {
 	 * @param <T> 数据类型
 	 */
 	public static <T> T[] cut(T[] array, int fr, int to){
-		if(null != array || array.length == 0){
+		if(null == array || array.length == 0){
 			return array;
 		}
 		T[] result = (T[]) Array.newInstance(array[0].getClass(), to - fr + 1);
@@ -1330,7 +1330,36 @@ public class BeanUtil {
 			result[i-fr] = array[i];
 		}
 		return result;
-
+	}
+	public static byte[] cut(byte[] array, int fr, int to){
+		if(null == array || array.length == 0){
+			return array;
+		}
+		byte[] result = new byte[to - fr + 1];
+		for(int i=fr; i<=to; i++){
+			result[i-fr] = array[i];
+		}
+		return result;
+	}
+	public static short[] cut(short[] array, int fr, int to){
+		if(null == array || array.length == 0){
+			return array;
+		}
+		short[] result = new short[to - fr + 1];
+		for(int i=fr; i<=to; i++){
+			result[i-fr] = array[i];
+		}
+		return result;
+	}
+	public static int[] cut(int[] array, int fr, int to){
+		if(null == array || array.length == 0){
+			return array;
+		}
+		int[] result = new int[to - fr + 1];
+		for(int i=fr; i<=to; i++){
+			result[i-fr] = array[i];
+		}
+		return result;
 	}
 	/**
 	 * String 转map

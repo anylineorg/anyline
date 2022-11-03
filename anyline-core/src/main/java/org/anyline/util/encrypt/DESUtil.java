@@ -112,7 +112,7 @@ public class DESUtil {
 			return str;
 		}
 		str = salt + str; 
-		return NumberUtil.bytes2hex(encrypt(str.getBytes()));
+		return NumberUtil.byte2hex(encrypt(str.getBytes()));
 	} 
 	 
 	/** 

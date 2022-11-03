@@ -52,9 +52,9 @@ public class MD5Util {
 
         		MessageDigest md = MessageDigest.getInstance("MD5");
         		if (BasicUtil.isEmpty(encode))
-        			result = NumberUtil.bytes2hex(md.digest(src.getBytes()));
+        			result = NumberUtil.byte2hex(md.digest(src.getBytes()));
         		else
-        			result = NumberUtil.bytes2hex(md.digest(src.getBytes(encode)));
+        			result = NumberUtil.byte2hex(md.digest(src.getBytes(encode)));
         		 
             } catch(Exception ex){      
                 ex.printStackTrace();   
