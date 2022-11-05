@@ -403,22 +403,27 @@ public class NumberUtil {
 	}
 
 	public static String byte2hex(byte[] bytes, String split) {
+		return byte2hex(bytes, bytes.length, split);
+	}
+	public static String byte2hex(byte[] bytes,int len) {
+		return byte2hex(bytes, len, null);
+	}
+	public static String byte2hex(byte[] bytes, int len, String split) {
 		StringBuffer builder = new StringBuffer();
-		int len = bytes.length;
 		for(int i = 0; i < len; i++) {
 			String hex = Integer.toHexString(bytes[i] & 0xFF);
 			if(hex.length() < 2){
 				builder.append(0);
 			}
 			builder.append(hex);
-			if(i<len-1){
+			if(i<len-1 && null != split){
 				builder.append(split);
 			}
 		}
 		return builder.toString();
 	}
 	public static String byte2hex(byte[] bytes) {
-		return byte2hex(bytes,"");
+		return byte2hex(bytes,null);
 	}
 	public static String[] byte2hexs(byte[] bytes) {
 		String[] hexs = new String[bytes.length];
