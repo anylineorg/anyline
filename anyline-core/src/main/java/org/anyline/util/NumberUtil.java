@@ -20,6 +20,7 @@
 package org.anyline.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -377,7 +378,94 @@ public class NumberUtil {
 	public static String decimal2binary(int number) {
 		return Integer.toBinaryString((number & 0xFF) + 0x100).substring(1);
 	}
+	/**
+	 * 整形转换成网络传输的字节流（字节数组）型数据
+	 * @param i 一个整型数据
+	 * @return 4个字节的自己数组
+	 */
+	public byte[] int2bytes(int i){
+		byte[] bytes = new byte[4];
+		bytes[0] = (byte) (0xff & (i >> 0));
+		bytes[1] = (byte) (0xff & (i >> 8));
+		bytes[2] = (byte) (0xff & (i >> 16));
+		bytes[3] = (byte) (0xff & (i >> 24));
+		return bytes;
+	}
 
+	/**
+	 * 四个字节的字节数据转换成一个整形数据
+	 * @param bytes 4个字节的字节数组
+	 * @return 一个整型数据
+	 */
+	public static int byte2int(byte[] bytes) {
+		int num = 0;
+		int temp;
+		temp = (0x000000ff & (bytes[0])) << 0;
+		num = num | temp;
+		temp = (0x000000ff & (bytes[1])) << 8;
+		num = num | temp;
+		temp = (0x000000ff & (bytes[2])) << 16;
+		num = num | temp;
+		temp = (0x000000ff & (bytes[3])) << 24;
+		num = num | temp;
+		return num;
+	}
+
+	/**
+	 * 长整形转换成网络传输的字节流（字节数组）型数据
+	 *
+	 * @param l 一个长整型数据
+	 * @return 4个字节的byte数组
+	 */
+	public static byte[] long2bytes(long l) {
+		byte[] bytes = new byte[8];
+		for (int i = 0; i < 8; i++) {
+			bytes[i] = (byte) (0xff & (l >> (i * 8)));
+		}
+		return bytes;
+	}
+
+	/**
+	 * 大数字转换字节流（字节数组）型数据
+	 *
+	 * @param n
+	 * @return
+	 */
+	public static byte[] int32bytes(BigInteger n) {
+		byte tmpd[] = (byte[]) null;
+		if (n == null) {
+			return null;
+		}
+
+		if (n.toByteArray().length == 33) {
+			tmpd = new byte[32];
+			System.arraycopy(n.toByteArray(), 1, tmpd, 0, 32);
+		} else if (n.toByteArray().length == 32) {
+			tmpd = n.toByteArray();
+		} else {
+			tmpd = new byte[32];
+			for (int i = 0; i < 32 - n.toByteArray().length; i++) {
+				tmpd[i] = 0;
+			}
+			System.arraycopy(n.toByteArray(), 0, tmpd, 32 - n.toByteArray().length, n.toByteArray().length);
+		}
+		return tmpd;
+	}
+
+	/**
+	 * 换字节流（字节数组）型数据转大数字
+	 * @param bytes bytes
+	 * @return
+	 */
+	public static BigInteger byte2big(byte[] bytes) {
+		if (bytes[0] < 0) {
+			byte[] temp = new byte[bytes.length + 1];
+			temp[0] = 0;
+			System.arraycopy(bytes, 0, temp, 1, bytes.length);
+			return new BigInteger(temp);
+		}
+		return new BigInteger(bytes);
+	}
 	/**
 	 * 16进制转10进制
 	 * @param hex hex
