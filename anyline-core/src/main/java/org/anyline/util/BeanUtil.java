@@ -51,6 +51,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1361,6 +1362,21 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * 左补齐
+	 * @param bytes bytes
+	 * @param len len
+	 * @return bytes
+	 */
+	public static byte[] fill(byte[] bytes, int len){
+		byte[] result = new byte[len];
+		for(int i=0; i<bytes.length && i<len; i++){
+			result[len + i - bytes.length] = bytes[i];
+		}
+		return result;
+	}
+
 	/**
 	 * String 转map
 	 * @param str name:zhang,age:20
