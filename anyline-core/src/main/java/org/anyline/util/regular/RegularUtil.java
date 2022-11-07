@@ -473,12 +473,45 @@ public class RegularUtil {
 	 */ 
 	public static String removeHtmlTagExceptSimple(String src){ 
 		return removeHtmlTagExcept(src,"br","b","strong","u","i","pre","ul","li","p"); 
-	} 
+	}
+
+	/**
+	 * 删除所有标签的属性
+	 * @param src html
+	 * @param attributes 属性 如果不传则删除所有属性
+	 * @return String
+	 */
+	public static String removeAttribute(String src, String ... attributes){
+		String reg = null;
+		if(null != attributes && attributes.length > 0){
+			for(String attribute:attributes){
+				reg = attribute + "\\s*=\\s*\"[\\s\\S]*\"";
+				src = src.replaceAll(reg,"");
+				reg = attribute + "\\s*=\\s*\'[\\s\\S]*\'";
+				src = src.replaceAll(reg,"");
+				src = src.replaceAll("\\s+>",">");
+			}
+		}else{
+			reg = "\\S+?\\s*?=\\s*?\"[\\s\\S]*?\"";
+			src = src.replaceAll(reg,"");
+			reg = "\\S+?\\s*?=\\s*?\'[\\s\\S]*?\'";
+			src = src.replaceAll(reg,"");
+			src = src.replaceAll("\\s+?>",">");
+		}
+		return src;
+	}
+	/**
+	 * 提取所有a棱中的url
+	 * @param src html
+	 * @return list
+	 * @throws Exception 异常
+	 */
 	public static List<String> fetchUrls(String src) throws Exception{ 
 		List<String> urls = null; 
 		urls = fetch(src, Regular.PATTERN.HTML_TAG_A.getCode(), Regular.MATCH_MODE.CONTAIN, 4); 
 		return urls; 
-	} 
+	}
+
 	public static String fetchUrl(String src) throws Exception{ 
 		List<String> urls = fetchUrls(src); 
 		if(null != urls && urls.size()>0){ 
