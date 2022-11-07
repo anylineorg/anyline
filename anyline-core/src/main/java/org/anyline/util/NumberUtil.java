@@ -697,4 +697,20 @@ public class NumberUtil {
 		return src.getBytes(Charset.forName("UTF-8"));
 	}
 
+	/**
+	 * 数字字符串转ASCII码字符串
+	 *
+	 * @param str 字符串
+	 * @return ASCII字符串
+	 */
+	public static String string2ascii(String str) {
+		String result = "";
+		int max = str.length();
+		for (int i = 0; i < max; i++) {
+			char c = str.charAt(i);
+			String b = Integer.toHexString(c);
+			result = result + b;
+		}
+		return result;
+	}
 } 
