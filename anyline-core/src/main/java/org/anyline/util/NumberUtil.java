@@ -713,4 +713,23 @@ public class NumberUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * ASCII码字符串转数字字符串
+	 *
+	 * @param content ASCII字符串
+	 * @return 字符串
+	 */
+	public static String ascii2string(String content) {
+		String result = "";
+		int length = content.length() / 2;
+		for (int i = 0; i < length; i++) {
+			String c = content.substring(i * 2, i * 2 + 2);
+			int a = hex2decimal(c);
+			char b = (char) a;
+			String d = String.valueOf(b);
+			result += d;
+		}
+		return result;
+	}
 } 
