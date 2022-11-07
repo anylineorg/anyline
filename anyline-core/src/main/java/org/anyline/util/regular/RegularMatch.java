@@ -33,9 +33,8 @@ import java.util.List;
  * 
  */ 
 public class RegularMatch implements Regular{
-	private static final Logger log = LoggerFactory.getLogger(RegularMatch.class); 
-	protected RegularMatch(){ 
-	} 
+	private static final Logger log = LoggerFactory.getLogger(RegularMatch.class);
+
 	private PatternCompiler patternCompiler = new Perl5Compiler(); 
 	/** 
 	 * 匹配状态 

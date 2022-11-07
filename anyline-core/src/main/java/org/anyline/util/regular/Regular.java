@@ -17,11 +17,9 @@
  */
 
 
-package org.anyline.util.regular; 
- 
-import org.omg.CORBA.PUBLIC_MEMBER;
+package org.anyline.util.regular;
 
-import java.util.List; 
+import java.util.List;
  
 public interface Regular { 
 	public static enum FILTER_TYPE{WIPE,PICK};//过滤方式 WIPE:删除匹配项|PICK:保留匹配项
@@ -144,11 +142,21 @@ public interface Regular {
 			public String getCode(){return "^\\d+$";}
 		}
 		/**
-		 * html标签
+		 * html标签<br/>
+		 * 只匹配标签，不匹配标签体<br/>
+		 * 匹配所有开始与闭合标签，不要求开始标签与闭合标签一致<br/>
 		 */
 		,HTML_TAG{
 			public String getName(){return "html tag";}
 			public String getCode(){return "<(.*?)[^>]*>.*?|<.*?/>";}
+		}
+		/**
+		 * html标签与标签体
+		 * 开始标签与闭合标签需要一致
+		 */
+		,HTML_TAG_WITH_BODY{
+			public String getName(){return "html tag";}
+			public String getCode(){return "(?i)<(.+?)[^>]*>[\\s\\S]*?</\\1>";}
 		}
 		/**
 		 * img标签 图片地址取下标2

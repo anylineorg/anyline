@@ -41,7 +41,7 @@ public class Clear extends BaseBodyTag implements Cloneable{
 			 pageContext.getRequest().removeAttribute(var);
 		 }
 		try {
-			String result = RegularUtil.removeAllTag(src);
+			String result = RegularUtil.removeTag(src);
 			result = result.replaceAll("[^\u2E80-\uFE4F0-9]","")
 					.replaceAll("[　、％（〈）〉《》＋，。／【０１】２３〔４—〕５６７８９“＜”＞？•\"#%'()+,-./［］>]", "")
 					.replace(" ", "")
