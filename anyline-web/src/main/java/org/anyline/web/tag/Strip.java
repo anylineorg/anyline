@@ -17,15 +17,13 @@
  */
 
 
-package org.anyline.web.tag; 
- 
- 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+package org.anyline.web.tag;
+
 
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 /** 
  * 清除html标签 
  * @author zh 
@@ -49,7 +47,7 @@ public class Strip extends BaseBodyTag implements Cloneable{
 			}else if(null != body){ 
 				result = body; 
 			} 
-			result = RegularUtil.removeAllHtmlTag(result);
+			result = RegularUtil.removeTag(result);
 			if(sign && null != result){
 				result = result.replaceAll("&\\w{2,8};","");
 			}
