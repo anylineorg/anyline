@@ -31,8 +31,10 @@ import java.security.SecureRandom;
  * 输入参数是byte[]或String<br/>
  * 如果要输入hex的String格式 先转换成byte[]<br/>
  * <br/>
- * 注意1:<br/>
+ * 注意2:<br/>
  * 公钥和密文中有04前缀 根据情况去留 补上02的钥就是65位了
+ * 注意3:<br/>
+ * 解密后的返回结果是hex格式的String如果有需要可以通过NumberUtil.hex2string转换<br/>
  * <br/>
  * 返回结果一般与输入参数对应，输入bytes[]也返回bytes 输入hex也返回hex<br/>
  * string byte hex之间转换可以调用NumberUtil.hex2byte,byte2hex等<br/>
@@ -66,7 +68,7 @@ public class SMUtil {
         ECPoint ecPoint = publicKeyParameters.getQ();
         // 把公钥放入map中,默认压缩公钥
         // 公钥前面的02或者03表示是压缩公钥,04表示未压缩公钥,04的时候,可以去掉前面的04
-        String publicKey = Hex.toHexString(ecPoint.getEncoded(compress));
+        String publicKey = NumberUtil.byte2hex(ecPoint.getEncoded(compress));
         ECPrivateKeyParameters privateKeyParameters = (ECPrivateKeyParameters) asymmetricCipherKeyPair.getPrivate();
         BigInteger intPrivateKey = privateKeyParameters.getD();
         // 把私钥放入map中
@@ -196,14 +198,14 @@ public class SMUtil {
             // 设置sm2为加密模式
             sm2Engine.init(true, mode, new ParametersWithRandom(publicKeyParameters, new SecureRandom()));
 
-            byte[] arrayOfBytes = null;
+            byte[] result = null;
             try {
                 //byte[] in = data.getBytes();
-                arrayOfBytes = sm2Engine.processBlock(bytes, 0, bytes.length);
+                result = sm2Engine.processBlock(bytes, 0, bytes.length);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return arrayOfBytes;
+            return result;
         }
         public static byte[] encrypt(String publicKey, byte[] bytes, int mode) {
             return encrypt(NumberUtil.hex2bytes(publicKey), bytes, mode);
@@ -215,15 +217,31 @@ public class SMUtil {
 
         public static String encrypt(String publicKey, String data, int mode) {
             byte[] bytes = encrypt(publicKey, data.getBytes(), mode);
-            return Hex.toHexString(bytes);
+            return NumberUtil.byte2hex(bytes);
         }
         public static String encrypt(byte[] publicKey, String data, int mode) {
             byte[] bytes = encrypt(publicKey, data.getBytes(), mode);
-            return Hex.toHexString(bytes);
+            return NumberUtil.byte2hex(bytes);
         }
 
         public String encrypt(String data, int mode) {
             return encrypt(publicKey, data, mode);
+        }
+
+
+
+        public static String encryptHex(String publicKey, String hex, int mode) {
+            byte[] bytes = encrypt(publicKey, NumberUtil.hex2bytes(hex), mode);
+            return NumberUtil.byte2hex(bytes);
+        }
+        public static String encryptHex(byte[] publicKey, String hex, int mode) {
+            byte[] bytes = encrypt(publicKey, NumberUtil.hex2bytes(hex), mode);
+            return NumberUtil.byte2hex(bytes);
+        }
+
+        public String encryptHex(String hex, int mode) {
+            byte[] bytes = encrypt(NumberUtil.hex2bytes(hex), mode);
+            return NumberUtil.byte2hex(bytes);
         }
 
         /**
@@ -231,7 +249,7 @@ public class SMUtil {
          *
          * @param privateKey 私钥
          * @param data       密文数据
-         * @return
+         * @return 解析密码hex
          */
         public static String decrypt(String privateKey, String data) {
             //按国密排序标准解密
@@ -255,7 +273,7 @@ public class SMUtil {
          * @param privateKey 私钥
          * @param data 密文数据
          * @param mode 密文排列方式0-C1C2C3；1-C1C3C2；
-         * @return
+         * @return 解密后bytes
          */
         public static byte[] decrypt(String privateKey, String data, int mode) {
             // 使用BC库加解密时密文以04开头，传入的密文前面没有04则补上
