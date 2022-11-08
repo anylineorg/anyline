@@ -557,6 +557,15 @@ public class NumberUtil {
 		}
 		return new String(bts, Charset.forName(charset));
 	}
+	public static String byte2string(byte[] bytes, int fr, int to){
+		return byte2string(bytes, fr, to, "UTF-8");
+	}
+	public static String byte2string(byte[] bytes){
+		return byte2string(bytes, 0, bytes.length-1, "UTF-8");
+	}
+	public static String byte2string(byte[] bytes, String charset){
+		return byte2string(bytes, 0, bytes.length-1, charset);
+	}
 
 	public static byte[] hex2bytes(String hex){
 		int hexlen = hex.length();
@@ -620,7 +629,7 @@ public class NumberUtil {
 	}
 	/**
 	 * ascii码
-	 * @param b byte
+	 * @param b byte<br/>
 	 * @return String
 	 */
 	public static String byte2ascii(byte b) {
@@ -651,8 +660,8 @@ public class NumberUtil {
 	}
 
 	/**
-	 * String转16进制
-	 * 中文abc123_# &gt;e4b8ade696876162633132335f23
+	 * String转16进制<br/>
+	 * 中文abc123_# &gt;e4b8ade696876162633132335f23<br/>
 	 *
 	 * @param origin 原文
 	 * @return hex
@@ -662,6 +671,9 @@ public class NumberUtil {
 		byte[] bytes = origin.getBytes(Charset.forName(charset));
 		String hex = byte2hex(bytes);
 		return hex;
+	}
+	public static String string2hex(String origin) {
+		return string2hex(origin, "UTF-8");
 	}
 
 	/**
@@ -673,6 +685,9 @@ public class NumberUtil {
 	public static String hex2string(String hex, String charset) {
 		byte[] bytes = NumberUtil.hex2bytes(hex);
 		return new String(bytes, Charset.forName(charset));
+	}
+	public static String hex2string(String hex) {
+		return hex2string(hex, "UTF-8");
 	}
 
 	/**
