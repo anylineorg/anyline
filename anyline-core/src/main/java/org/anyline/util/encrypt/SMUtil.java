@@ -14,27 +14,30 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 /**
- * 如果外部提供了公钥一般直接调用内部类SM2的静态方法加密解密
- * SMUtil.SM2.encrypt(publicKey, data);
- *
- * 如果外部提供了密钥对
- * SM2 sm2 = SMUtil.sm2(publicKey, privateKey);
- * 等同于 new SM2(publicKey, privateKey);
- *
- * 如果需要生成密钥对
- * SM2 sm2 = SMUtil.sm2();
- * sm2.encrypt(data);   //因为sm2本身有公钥 方法中就不需要提供了
- *
- * 注意:密钥是可以是byte[] 也可以是hex格式的String
- * 输入参数是byte[]或String
- * 如果要输入hex的String格式 先转换成byte[]
- *
- * 返回结果一般与输入参数对应，输入bytes[]也返回bytes 输入hex也返回hex
- * string byte hex之间转换可以调用NumberUtil.hex2byte,byte2hex等
+ * 如果外部提供了公钥一般直接调用内部类SM2的静态方法加密解密<br/>
+ * SMUtil.SM2.encrypt(publicKey, data);<br/>
+ *<br/>
+ * 如果外部提供了密钥对或者需要频繁加密解密一般先构造一个SM2<br/>
+ * SM2 sm2 = SMUtil.sm2(publicKey, privateKey);<br/>
+ * 等同于 new SM2(publicKey, privateKey);<br/>
+ *<br/>
+ * 如果需要生成密钥对<br/>
+ * SM2 sm2 = SMUtil.sm2();<br/>
+ * sm2.encrypt(data);   //因为sm2本身有公钥 方法中就不需要提供了<br/>
+ * sm2.decrypt(data);<br/>
+ * <br/>
+ * 注意1:<br/>
+ * 密钥是可以是byte[] 也可以是hex格式的String<br/>
+ * 输入参数是byte[]或String<br/>
+ * 如果要输入hex的String格式 先转换成byte[]<br/>
+ * <br/>
+ * 注意1:<br/>
+ * 公钥和密文中有04前缀 根据情况去留 补上02的钥就是65位了
+ * <br/>
+ * 返回结果一般与输入参数对应，输入bytes[]也返回bytes 输入hex也返回hex<br/>
+ * string byte hex之间转换可以调用NumberUtil.hex2byte,byte2hex等<br/>
  */
 public class SMUtil {
-
-
     /**
      * 获取sm2密钥对
      * BC库使用的公钥=64个字节+1个字节（04标志位），BC库使用的私钥=32个字节
