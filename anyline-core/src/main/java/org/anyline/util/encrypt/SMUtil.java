@@ -87,6 +87,13 @@ public class SMUtil {
         return new SM2(publicKey, privateKey);
     }
 
+    public static SM2 sm2(String publicKey) {
+        return new SM2(publicKey, null);
+    }
+    public static SM2 sm2(byte[] publicKey) {
+        return new SM2(publicKey, null);
+    }
+
 
     public static class SM2 {
         /**
@@ -116,6 +123,12 @@ public class SMUtil {
             this.privateKey = NumberUtil.byte2hex(privateKey);
         }
 
+        public SM2(String publicKey) {
+            this.publicKey = publicKey;
+        }
+        public SM2(byte[] publicKey) {
+            this.publicKey = NumberUtil.byte2hex(publicKey);
+        }
         public String getPublicKey() {
             return publicKey;
         }
