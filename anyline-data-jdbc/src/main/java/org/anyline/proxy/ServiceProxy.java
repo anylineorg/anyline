@@ -1,4 +1,4 @@
-package org.anyline.service;
+package org.anyline.proxy;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
@@ -9,6 +9,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.service.AnylineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,17 +19,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-public class AnylineProxy {
+@Component("anyline.service.proxy")
+public class ServiceProxy {
     public static AnylineService service;
     public static AnylineService.DDLService ddl;
     public static AnylineService.MetaDataService metadata;
-    @Autowired(required = false)
+    public ServiceProxy(){}
+    @Autowired(required = true)
     @Qualifier("anyline.service")
-    public static void setService(AnylineService service) {
-        AnylineProxy.service = service;
-        AnylineProxy.ddl = service.ddl();
-        AnylineProxy.metadata = service.metadata();
+    public void init(AnylineService service) {
+        ServiceProxy.service = service;
+        ServiceProxy.ddl = service.ddl();
+        ServiceProxy.metadata = service.metadata();
     }
 
     /**
