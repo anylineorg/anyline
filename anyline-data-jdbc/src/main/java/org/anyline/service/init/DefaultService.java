@@ -61,6 +61,10 @@ public class DefaultService<E> implements AnylineService<E> {
     @Qualifier("anyline.cache.provider")
     protected CacheProvider cacheProvider;
 
+    public AnylineService datasource(String datasource){
+        DataSourceHolder.setDataSource(datasource);
+        return this;
+    }
     /**
      * 按条件查询
      * @param src 			数据源(表｜视图｜函数｜自定义SQL | SELECT语句)
