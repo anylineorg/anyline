@@ -20,6 +20,7 @@
 package org.anyline.service;
 
 import org.anyline.data.entity.*;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
@@ -35,6 +36,12 @@ import java.util.Map;
 
 public interface AnylineService<E>{
 
+
+	/**
+	 * 切换数据源
+	 * @param datasource 数据源
+	 */
+	public AnylineService datasource(String datasource);
 
 	/* *****************************************************************************************************************
 	 *
