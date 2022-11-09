@@ -52,7 +52,9 @@ public class DefaultAdapter implements EntityAdapter {
             }
             DefaultAdapter.columns.put(clazz.getName(),columns);
         }
-        return columns;
+        List<String> list = new ArrayList<>();
+        list.addAll(columns);
+        return list;
     }
 
     @Override
