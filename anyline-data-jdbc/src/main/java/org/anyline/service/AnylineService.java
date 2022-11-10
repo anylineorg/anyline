@@ -318,7 +318,7 @@ public interface AnylineService<E>{
 	 * @param clazz 返回类型
 	 * @param configs 根据http等上下文构造查询条件
 	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 固定查询条件 其中第一个条件可以是一个自定义SQL的ID 如: crm.user:USER_LIST
+	 * @param conditions 固定查询条件
 	 * @return EntitySet
 	 * @param <T> T
 	 */
@@ -343,7 +343,7 @@ public interface AnylineService<E>{
 	 * @param clazz 返回类型
 	 * @param configs 根据http等上下文构造查询条件
 	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 固定查询条件 其中第一个条件可以是一个自定义SQL的ID 如: crm.user:USER_LIST
+	 * @param conditions 固定查询条件
 	 * @return EntitySet
 	 * @param <T> T
 	 */
