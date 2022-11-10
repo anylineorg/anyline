@@ -71,9 +71,11 @@ public class ConfigTable {
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false		;	// 是否开启 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+	public static String DEFAULT_PRIMARY_KEY							= "ID"		;	// 默认主键
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
 	public static String ENTITY_TABLE_ANNOTATION						= null		;   // 表名注解
+	public static String ENTITY_COLUMN_ANNOTATION						= null		;	// 列名注解
 	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null		;   // 主键注解(逗号分隔，不区分大小写，支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
 	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
 	public static String TABLE_METADATA_CACHE_KEY						= ""		;	// 表结构缓存key

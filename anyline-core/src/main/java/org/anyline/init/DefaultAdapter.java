@@ -68,7 +68,11 @@ public class DefaultAdapter implements EntityAdapter {
 
         // 2.注解
         if(null == annotations && annotations.length ==0 ){
-            annotations = "column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value".split(",");
+            if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
+                annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
+            }else {
+                annotations = "column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value".split(",");
+            }
         }
         name = ClassUtil.parseAnnotationFieldValue(field, annotations);
         if(BasicUtil.isNotEmpty(name)){
