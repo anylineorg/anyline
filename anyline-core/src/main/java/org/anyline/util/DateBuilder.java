@@ -74,6 +74,12 @@ public class DateBuilder{
 		date = DateUtil.addMinute(date, qty);
 		return this;
 	}
+
+	/**
+	 * 是否在date之前
+	 * @param date date
+	 * @return boolean
+	 */
 	public boolean before(String date){
 		return before(DateUtil.parse(date));
 	}
@@ -98,6 +104,14 @@ public class DateBuilder{
 	}
 	public boolean between(String min, String max){
 		return between(DateUtil.parse(min), DateUtil.parse(max));
+	}
+
+	/**
+	 * 是否过期(在当前时间之前)
+	 * @return boolean
+	 */
+	public boolean expire(){
+		return before();
 	}
 	public String format(String format){
 		return DateUtil.format(date, format);
