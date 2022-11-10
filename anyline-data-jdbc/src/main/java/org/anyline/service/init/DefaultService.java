@@ -1445,8 +1445,16 @@ public class DefaultService<E> implements AnylineService<E> {
             log.warn("[解析SQL][src:{}]", clazz);
         }
         try {
+            RunPrepare prepare = null;
             setPageLazy(clazz.getName(), configs, conditions);
-            list = dao.querys(clazz, configs, conditions);
+            if(null != conditions && conditions.length > 0) {
+                String first = conditions[0];
+                if(RegularUtil.match(first, RunPrepare.XML_SQL_ID_STYLE)){
+                    prepare = createRunPrepare(first);
+                    conditions = BeanUtil.cut(conditions, 1, conditions.length-1);
+                }
+            }
+            list = dao.querys(prepare, clazz, configs, conditions);
         } catch (Exception e) {
             list = new EntitySet<>();
             if(log.isWarnEnabled()){

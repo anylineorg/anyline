@@ -41,6 +41,7 @@ public interface AnylineDao<E>{
 	 ******************************************************************************************************************/
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
 	public DataSet querys(RunPrepare prepare, String ... conditions);
 	public DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	public DataSet selects(RunPrepare prepare, String ... conditions);

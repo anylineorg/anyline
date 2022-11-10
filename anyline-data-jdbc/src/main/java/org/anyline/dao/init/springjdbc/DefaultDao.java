@@ -207,9 +207,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
+		RunPrepare prepare = new DefaultTablePrepare();
+		return querys(prepare, clazz, configs, conditions);
+	}
+	@Override
+	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
-			RunPrepare prepare = new DefaultTablePrepare();
 			if(AdapterProxy.hasAdapter()){
 				prepare.setDataSource(AdapterProxy.table(clazz));
 			}

@@ -454,42 +454,42 @@ public class ServiceProxy {
      * @return EntitySet
      * @param <T> T
      */
-    public static <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
-        return service.querys(clazz, configs, entity, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+        return service.selects(clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions){
-        return service.querys(clazz, navi, entity, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+        return service.selects(clazz, navi, entity, conditions);
     }
-    public static <T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions){
-        return service.querys(clazz, entity, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions){
+        return service.selects(clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions){
-        return service.querys(clazz, first, last, entity, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, int first, int last, T entity, String ... conditions){
+        return service.selects(clazz, first, last, entity, conditions);
     }
-    public static <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
-        return (T)service.query(clazz, configs, entity, conditions);
+    public static <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+        return (T)service.select(clazz, configs, entity, conditions);
     }
-    public static <T> T query(Class<T> clazz, T entity, String ... conditions){
-        return (T)service.querys(clazz, entity, conditions);
+    public static <T> T select(Class<T> clazz, T entity, String ... conditions){
+        return (T)service.select(clazz, entity, conditions);
     }
 
-    public static <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions){
-        return service.querys(clazz, configs, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions){
+        return service.selects(clazz, configs, conditions);
     }
-    public static <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions){
-        return service.querys(clazz, navi, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions){
+        return service.selects(clazz, navi, conditions);
     }
-    public static <T> EntitySet<T> querys(Class<T> clazz, String ... conditions){
-        return service.querys(clazz, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, String ... conditions){
+        return service.selects(clazz, conditions);
     }
-    public static <T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions){
-        return service.querys(clazz, first, last, conditions);
+    public static <T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions){
+        return service.selects(clazz, first, last, conditions);
     }
-    public static <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions){
-        return (T)service.query(clazz, configs, conditions);
+    public static <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions){
+        return (T)service.select(clazz, configs, conditions);
     }
-    public static <T> T query(Class<T> clazz, String ... conditions){
-        return (T)service.query(clazz, conditions);
+    public static <T> T select(Class<T> clazz, String ... conditions){
+        return (T)service.select(clazz, conditions);
     }
 
 
