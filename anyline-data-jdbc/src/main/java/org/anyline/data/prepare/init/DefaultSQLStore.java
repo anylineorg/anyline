@@ -60,9 +60,9 @@ public class DefaultSQLStore extends SQLStore {
 	}
 
 	public static synchronized void loadSQL() {
-		sqlDir = ConfigTable.getString("SQL_STORE_DIR");
+		sqlDir = ConfigTable.SQL_STORE_DIR;
 		if (null == sqlDir) {
-			return;
+			sqlDir = "${classpath}/sql";
 		}
 		List<File> files;
 		if (FileUtil.getPathType(ConfigTable.getClassPath()) == 0) {

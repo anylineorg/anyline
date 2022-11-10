@@ -219,6 +219,16 @@ public class DefaultDDListener implements DDListener {
     }
 
     @Override
+    public boolean beforeDrop(Index index) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(Index index, boolean result) {
+
+    }
+
+    @Override
     public boolean beforeAdd(Constraint constraint) {
         return true;
     }
@@ -235,6 +245,16 @@ public class DefaultDDListener implements DDListener {
 
     @Override
     public void afterAlter(Constraint constraint, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(Constraint constraint) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(Constraint constraint, boolean result) {
 
     }
 
