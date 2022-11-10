@@ -2129,6 +2129,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			column.setSchema(table.getSchema());
 		}
 	}
+	private void check(Index index){
+		Table table = index.getTable();
+		if(null != table){
+			check(table);
+			index.setCatalog(table.getCatalog());
+			index.setSchema(table.getSchema());
+		}
+	}
+	private void check(Constraint constraint){
+		Table table = constraint.getTable();
+		if(null != table){
+			check(table);
+			constraint.setCatalog(table.getCatalog());
+			constraint.setSchema(table.getSchema());
+		}
+	}
 	@Override
 	public boolean drop(Table table) throws Exception{
 		boolean result = false;
@@ -2745,17 +2761,102 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Index index) throws Exception {
-		return false;
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+		String random = null;
+		check(index);
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(index);
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = index.getListener();
+
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeAdd(index);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[add index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
 	}
 
 	@Override
 	public boolean alter(Index index) throws Exception {
-		return false;
+		Table table = index.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(index.getCatalog(), index.getSchema(), index.getTableName(), "TABLE");
+			if(tables.size() ==0){
+				throw new AnylineException("表不存在:"+index.getTableName());
+			}else {
+				table = tables.values().iterator().next();
+			}
+		}
+		return alter(table, index);
 	}
+	@Override
+	public boolean alter(Table table, Index index) throws Exception{
+		boolean result = true;
+		long fr = System.currentTimeMillis();
+		String random = null;
+		check(index);
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(index);
 
+		random = random();
+		DDListener listener = index.getListener();
+		for(String sql:sqls) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[txt:\n{}\n]", random, sql);
+			}
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeAlter(index);
+			}
+			if (exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[update index][table:{}][index:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, index.getTableName(), index.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
 	@Override
 	public boolean drop(Index index) throws Exception {
-		return false;
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+		check(index);
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(index);
+		String random = null;
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = index.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(index);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(index, result);
+		}
+		return result;
 	}
 
 	/* *****************************************************************************************************************
@@ -2767,17 +2868,102 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Constraint constraint) throws Exception {
-		return false;
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+		String random = null;
+		check(constraint);
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(constraint);
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = constraint.getListener();
+
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeAdd(constraint);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[add constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
 	}
 
 	@Override
 	public boolean alter(Constraint constraint) throws Exception {
-		return false;
+		Table table = constraint.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(), "TABLE");
+			if(tables.size() ==0){
+				throw new AnylineException("表不存在:"+constraint.getTableName());
+			}else {
+				table = tables.values().iterator().next();
+			}
+		}
+		return alter(table, constraint);
 	}
+	@Override
+	public boolean alter(Table table, Constraint constraint) throws Exception{
+		boolean result = true;
+		long fr = System.currentTimeMillis();
+		String random = null;
+		check(constraint);
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(constraint);
 
+		random = random();
+		DDListener listener = constraint.getListener();
+		for(String sql:sqls) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[txt:\n{}\n]", random, sql);
+			}
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeAlter(constraint);
+			}
+			if (exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[update constraint][table:{}][constraint:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, constraint.getTableName(), constraint.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
 	@Override
 	public boolean drop(Constraint constraint) throws Exception {
-		return false;
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+		check(constraint);
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(constraint);
+		String random = null;
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = constraint.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(constraint);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[drop constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(constraint, result);
+		}
+		return result;
 	}
 
 	/* *****************************************************************************************************************

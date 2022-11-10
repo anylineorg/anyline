@@ -1,5 +1,7 @@
 package org.anyline.data.listener;
 
+import org.anyline.data.entity.Constraint;
+import org.anyline.data.entity.Index;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.entity.Column;
 import org.anyline.data.entity.Table;
@@ -53,7 +55,38 @@ public interface DDListener {
     public boolean beforeRename(Table table);
     public void afterRename(Table table, boolean result);
 
+
+
+    public boolean beforeAdd(Index index);
+    public void afterAdd(Index index, boolean result);
+
+    /**
+     * 修改index之前触发
+     * @param index index
+     * @return boolean  如果返回false则中断执行
+     */
+    public boolean beforeAlter(Index index);
+    public void afterAlter(Index index, boolean result);
+
+    public boolean beforeDrop(Index index);
+    public void afterDrop(Index index, boolean result);
+
+    public boolean beforeAdd(Constraint constraint);
+    public void afterAdd(Constraint constraint, boolean result);
+
+    /**
+     * 修改index之前触发
+     * @param constraint constraint
+     * @return boolean  如果返回false则中断执行
+     */
+    public boolean beforeAlter(Constraint constraint);
+    public void afterAlter(Constraint constraint, boolean result);
+
+    public boolean beforeDrop(Constraint constraint);
+    public void afterDrop(Constraint constraint, boolean result);
+
     public void setService(AnylineService srvice);
     public AnylineService getService();
     public void setAdapter(JDBCAdapter adapter);
+
 }

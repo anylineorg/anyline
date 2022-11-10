@@ -311,30 +311,30 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+    public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         return queryFromDao(clazz, append(configs, entity), conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String... conditions) {
+    public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String... conditions) {
         ConfigStore configs = new DefaultConfigStore();
         configs.setPageNavi(navi);
-        return querys(clazz, configs, entity, conditions);
+        return selects(clazz, configs, entity, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, T entity, String... conditions) {
-        return querys(clazz, (ConfigStore)null, entity, conditions);
+    public <T> EntitySet<T> selects(Class<T> clazz, T entity, String... conditions) {
+        return selects(clazz, (ConfigStore)null, entity, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, T entity, String... conditions) {
+    public <T> EntitySet<T> selects(Class<T> clazz, int fr, int to, T entity, String... conditions) {
         ConfigStore configs = new DefaultConfigStore(fr, to);
-        return querys(clazz, configs, entity, conditions);
+        return selects(clazz, configs, entity, conditions);
     }
 
     @Override
-    public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+    public <T> T select(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -343,7 +343,7 @@ public class DefaultService<E> implements AnylineService<E> {
             configs = new DefaultConfigStore();
         }
         configs.setPageNavi(navi);
-        EntitySet<T> list = querys(clazz, configs, entity, conditions);
+        EntitySet<T> list = selects(clazz, configs, entity, conditions);
         if (null != list && list.size() > 0) {
             return list.get(0);
         }
@@ -358,38 +358,38 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public <T> T query(Class<T> clazz, T entity, String... conditions) {
-        return query(clazz, (ConfigStore)null, entity, conditions);
+    public <T> T select(Class<T> clazz, T entity, String... conditions) {
+        return select(clazz, (ConfigStore)null, entity, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return querys(clazz, configs, (T)null, conditions);
+    public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String... conditions) {
+        return selects(clazz, configs, (T)null, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
-        return querys(clazz, navi, (T)null, conditions);
+    public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String... conditions) {
+        return selects(clazz, navi, (T)null, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, String... conditions) {
-        return querys(clazz, (T)null, conditions);
+    public <T> EntitySet<T> selects(Class<T> clazz, String... conditions) {
+        return selects(clazz, (T)null, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, String... conditions) {
-        return querys(clazz, fr, to, (T)null, conditions);
+    public <T> EntitySet<T> selects(Class<T> clazz, int fr, int to, String... conditions) {
+        return selects(clazz, fr, to, (T)null, conditions);
     }
 
     @Override
-    public <T> T query(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return query(clazz, configs, (T)null, conditions);
+    public <T> T select(Class<T> clazz, ConfigStore configs, String... conditions) {
+        return select(clazz, configs, (T)null, conditions);
     }
 
     @Override
-    public <T> T query(Class<T> clazz, String... conditions) {
-        return query(clazz, (T)null, conditions);
+    public <T> T select(Class<T> clazz, String... conditions) {
+        return select(clazz, (T)null, conditions);
     }
 
     /**
@@ -414,36 +414,36 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public EntitySet<E> gets(ConfigStore configs, String... conditions) {
         Class<E> clazz = parseGenericClass();
-        return querys(clazz, configs, conditions);
+        return selects(clazz, configs, conditions);
     }
     @Override
     public EntitySet<E> gets(PageNavi navi, String... conditions) {
         Class<E> clazz = parseGenericClass();
-        return querys(clazz, navi, conditions);
+        return selects(clazz, navi, conditions);
     }
 
     @Override
     public EntitySet<E> gets(String... conditions) {
         Class<E> clazz = parseGenericClass();
-        return querys(clazz, conditions);
+        return selects(clazz, conditions);
     }
 
     @Override
     public EntitySet<E> gets(int fr, int to, String... conditions) {
         Class<E> clazz = parseGenericClass();
-        return querys(clazz, fr, to, conditions);
+        return selects(clazz, fr, to, conditions);
     }
 
     @Override
     public E get(ConfigStore configs, String... conditions) {
         Class<E> clazz = parseGenericClass();
-        return query(clazz, configs, conditions);
+        return select(clazz, configs, conditions);
     }
 
     @Override
     public E get(String... conditions) {
         Class<E> clazz = parseGenericClass();
-        return query(clazz, conditions);
+        return select(clazz, conditions);
     }
 
 
@@ -2618,7 +2618,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Index index) throws Exception{
             index.setService(DefaultService.this);
-            return false;
+            return dao.add(index);
         }
 
         @Override

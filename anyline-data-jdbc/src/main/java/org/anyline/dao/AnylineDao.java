@@ -275,6 +275,7 @@ public interface AnylineDao<E>{
 	 ******************************************************************************************************************/
 	public boolean add(Index index) throws Exception;
 	public boolean alter(Index index) throws Exception;
+	public boolean alter(Table table, Index index) throws Exception;
 	public boolean drop(Index index) throws Exception;
 
 	/* *****************************************************************************************************************
@@ -282,6 +283,7 @@ public interface AnylineDao<E>{
 	 ******************************************************************************************************************/
 	public boolean add(Constraint constraint) throws Exception;
 	public boolean alter(Constraint constraint) throws Exception;
+	public boolean alter(Table table, Constraint constraint) throws Exception;
 	public boolean drop(Constraint constraint) throws Exception;
 
 

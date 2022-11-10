@@ -10,7 +10,8 @@ public class Constraint {
 
     private String catalog      ;
     private String schema       ;
-    private String table        ;
+    private String tableName    ;
+    private Table table         ;
     private String name         ;
     private boolean unique      ; // 是否唯一
     private Integer type        ; //
@@ -35,12 +36,20 @@ public class Constraint {
         this.schema = schema;
     }
 
-    public String getTable() {
+    public String getTableName() {
+        return tableName;
+    }
+
+    public Table getTable() {
         return table;
     }
 
-    public void setTable(String table) {
+    public void setTable(Table table) {
         this.table = table;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public String getName() {

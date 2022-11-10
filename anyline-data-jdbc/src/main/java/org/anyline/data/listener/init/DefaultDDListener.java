@@ -1,5 +1,7 @@
 package org.anyline.data.listener.init;
 
+import org.anyline.data.entity.Constraint;
+import org.anyline.data.entity.Index;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -194,6 +196,46 @@ public class DefaultDDListener implements DDListener {
 
     public void setAdapter(JDBCAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    @Override
+    public boolean beforeAdd(Index index) {
+        return true;
+    }
+
+    @Override
+    public void afterAdd(Index index, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(Index index) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(Index index, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAdd(Constraint constraint) {
+        return true;
+    }
+
+    @Override
+    public void afterAdd(Constraint constraint, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(Constraint constraint) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(Constraint constraint, boolean result) {
+
     }
 
     public void setService(AnylineService service){

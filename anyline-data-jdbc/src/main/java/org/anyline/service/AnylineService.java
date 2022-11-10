@@ -287,19 +287,19 @@ public interface AnylineService<E>{
 	 * @return EntitySet
 	 * @param <T> T
 	 */
-	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions);
-	public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	public <T> T query(Class<T> clazz, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, int first, int last, T entity, String ... conditions);
+	public <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	public <T> T select(Class<T> clazz, T entity, String ... conditions);
 
-	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions);
-	public <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> T query(Class<T> clazz, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, String ... conditions);
+	public <T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions);
+	public <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> T select(Class<T> clazz, String ... conditions);
 
 
 
