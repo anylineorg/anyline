@@ -312,6 +312,30 @@ public interface AnylineService<E>{
 	public <T> T query(Class<T> clazz, String ... conditions);
 
 
+	/**
+	 * 根据SQL或自定义SQL返回实体
+	 * @param src SQL或自定义SQL
+	 * @param clazz 返回类型
+	 * @param configs 根据http等上下文构造查询条件
+	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions 固定查询条件 其中第一个条件可以是一个自定义SQL的ID 如: crm.user:USER_LIST
+	 * @return EntitySet
+	 * @param <T> T
+	 */
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions);
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, T entity, String ... conditions);
+	public <T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	public <T> T select(String src, Class<T> clazz, T entity, String ... conditions);
+
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions);
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions);
+	public <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, String ... conditions);
+	public <T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> T select(String src, Class<T> clazz, String ... conditions);
+
 
 
 	/**
@@ -336,7 +360,6 @@ public interface AnylineService<E>{
 	public <T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions);
 	public <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T select(Class<T> clazz, String ... conditions);
-
 
 
 
