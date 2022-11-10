@@ -275,6 +275,42 @@ public interface AnylineService<E>{
 	public DataRow query(String src, String ... conditions);
 
 
+	/**
+	 * 根据calzz返回实体集合
+	 * 为了更容易记忆和区分,往后的版本中删除，所有返回实体类的方法换成selects/select
+	 * @param clazz clazz
+	 * @param configs configs
+	 * @param entity entity
+	 * @param conditions conditions
+	 * @return EntitySet
+	 * @param <T>  entity
+	 */
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions);
+	@Deprecated
+	public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	@Deprecated
+	public <T> T query(Class<T> clazz, T entity, String ... conditions);
+
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
+	@Deprecated
+	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions);
+	@Deprecated
+	public <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
+	@Deprecated
+	public <T> T query(Class<T> clazz, String ... conditions);
+
 
 
 
@@ -300,6 +336,8 @@ public interface AnylineService<E>{
 	public <T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions);
 	public <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T select(Class<T> clazz, String ... conditions);
+
+
 
 
 
