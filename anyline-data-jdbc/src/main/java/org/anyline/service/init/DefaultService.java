@@ -435,6 +435,87 @@ public class DefaultService<E> implements AnylineService<E> {
         return select(clazz, (T)null, conditions);
     }
 
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        return queryFromDao(src, clazz, append(configs, entity), conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String... conditions) {
+        ConfigStore configs = new DefaultConfigStore();
+        configs.setPageNavi(navi);
+        return selects(src, clazz, configs, entity, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String... conditions) {
+        return selects(src, clazz, (ConfigStore)null, entity, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, int fr, int to, T entity, String... conditions) {
+        ConfigStore configs = new DefaultConfigStore(fr, to);
+        return selects(src, clazz, configs, entity, conditions);
+    }
+
+    @Override
+    public <T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        DefaultPageNavi navi = new DefaultPageNavi();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == configs) {
+            configs = new DefaultConfigStore();
+        }
+        configs.setPageNavi(navi);
+        EntitySet<T> list = selects(src, clazz, configs, entity, conditions);
+        if (null != list && list.size() > 0) {
+            return list.get(0);
+        }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            try {
+                return (T) clazz.newInstance();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T select(String src, Class<T> clazz, T entity, String... conditions) {
+        return select(src, clazz, (ConfigStore)null, entity, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String... conditions) {
+        return selects(src, clazz, configs, (T)null, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String... conditions) {
+        return selects(src, clazz, navi, (T)null, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, String... conditions) {
+        return selects(src, clazz, (T)null, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(String src, Class<T> clazz, int fr, int to, String... conditions) {
+        return selects(src, clazz, fr, to, (T)null, conditions);
+    }
+
+    @Override
+    public <T> T select(String src, Class<T> clazz, ConfigStore configs, String... conditions) {
+        return select(src, clazz, configs, (T)null, conditions);
+    }
+
+    @Override
+    public <T> T select(String src, Class<T> clazz, String... conditions) {
+        return select(src, clazz, (T)null, conditions);
+    }
     /**
      * 解析泛型class
      * @return class
@@ -1481,23 +1562,35 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return set;
     }
-
+    protected <T> EntitySet<T> queryFromDao(String src, Class<T> clazz, ConfigStore configs, String... conditions){
+        EntitySet<T> list = null;
+        if(ConfigTable.isSQLDebug()){
+            log.warn("[解析SQL][src:{}]", clazz);
+        }
+        try {
+            setPageLazy(src, configs, conditions);
+            RunPrepare prepare = createRunPrepare(src);
+            list = dao.querys(prepare, clazz, configs, conditions);
+        } catch (Exception e) {
+            list = new EntitySet<>();
+            if(log.isWarnEnabled()){
+                e.printStackTrace();
+            }
+            log.error("QUERY ERROR:"+e);
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+                throw e;
+            }
+        }
+        return list;
+    }
     protected <T> EntitySet<T> queryFromDao(Class<T> clazz, ConfigStore configs, String... conditions){
         EntitySet<T> list = null;
         if(ConfigTable.isSQLDebug()){
             log.warn("[解析SQL][src:{}]", clazz);
         }
         try {
-            RunPrepare prepare = null;
             setPageLazy(clazz.getName(), configs, conditions);
-            if(null != conditions && conditions.length > 0) {
-                String first = conditions[0];
-                if(RegularUtil.match(first, RunPrepare.XML_SQL_ID_STYLE)){
-                    prepare = createRunPrepare(first);
-                    conditions = BeanUtil.cut(conditions, 1, conditions.length-1);
-                }
-            }
-            list = dao.querys(prepare, clazz, configs, conditions);
+            list = dao.querys(clazz, configs, conditions);
         } catch (Exception e) {
             list = new EntitySet<>();
             if(log.isWarnEnabled()){
