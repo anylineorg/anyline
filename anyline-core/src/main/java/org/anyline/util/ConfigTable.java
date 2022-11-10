@@ -543,7 +543,7 @@ public class ConfigTable {
 			System.out.println();
 			line("","*", 0,true);
 			line("Anyline Core [" + version + "]", " ",0, true);
-			line("anyline.org ", " ", 0, true);
+			line("doc.anyline.org ", " ", 0, true);
 			line(""," ", 0, true);
 			if(null != time && time.startsWith("2")){
 				line("Last Modified " + "[" + time +"] ", " ", 0, true);
