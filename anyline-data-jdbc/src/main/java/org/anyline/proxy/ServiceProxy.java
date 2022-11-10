@@ -442,8 +442,43 @@ public class ServiceProxy {
     }
 
 
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+        return service.selects(src, clazz, configs, entity, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+        return service.selects(src, clazz, navi, entity, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
+        return service.selects(src, clazz, entity, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, T entity, String ... conditions){
+        return service.selects(src, clazz, first, last, entity, conditions);
+    }
+    public static <T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+        return (T)service.select(src, clazz, configs, entity, conditions);
+    }
+    public static <T> T select(String src, Class<T> clazz, T entity, String ... conditions){
+        return (T)service.selects(src, clazz, entity, conditions);
+    }
 
-
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
+        return service.selects(src, clazz, configs, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions){
+        return service.selects(src, clazz, navi, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions){
+        return service.selects(src, clazz, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, String ... conditions){
+        return service.selects(src, clazz, first, last, conditions);
+    }
+    public static <T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
+        return (T)service.select(src, clazz, configs, conditions);
+    }
+    public static <T> T select(String src, Class<T> clazz, String ... conditions){
+        return (T)service.select(src, clazz, conditions);
+    }
 
     /**
      *
