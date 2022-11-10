@@ -313,7 +313,7 @@ public class ClassUtil {
 	 * *表示任意字符
 	 * @param target 属性
 	 * @param annotation 注解类名 支持模糊匹配 如: *, Table*
-	 * @param field 属性名 如: *, value, name, *package*
+	 * @param field 注解的属性名 如: *, value, name, *package*
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
@@ -442,6 +442,14 @@ public class ClassUtil {
 		return field;
 	}
 
+	/**
+	 * 根据名称过滤属性
+	 * @param fields 属性s
+	 * @param name 名称
+	 * @param ignoreCase 是否忽略大小写
+	 * @param ignoreSplit 是否忽略分隔符号
+	 * @return Field
+	 */
 	public static Field getField(List<Field> fields, String name, boolean ignoreCase, boolean ignoreSplit){
 		if(null == name){
 			return null;
@@ -590,17 +598,26 @@ public class ClassUtil {
 	 * 根据注解名与注解类属性 获取指定属性上的注解值
 	 * @param field field上的注解
 	 * @param configs 注册名.注解属性名,不区分大小写 支持模糊匹配 如 *Table.ID*
+	 *                可以只提供注解名如Column则依次按Column.name,Column.value解析
 	 * @return String
 	 */
 	public static String parseAnnotationFieldValue(Field field, String ... configs){
 		for(String config:configs){
 			String[] tmps = config.split("\\.");
-			if(tmps.length <2){
-				continue;
-			}
-			Object name = parseAnnotationFieldValue(field, tmps[0], tmps[1]);
-			if(BasicUtil.isNotEmpty(name)){
-				return name.toString();
+			if(tmps.length >= 2){
+				Object value = parseAnnotationFieldValue(field, tmps[0], tmps[1]);
+				if(BasicUtil.isNotEmpty(value)){
+					return value.toString();
+				}
+			}else {
+				Object value = parseAnnotationFieldValue(field, config, "name");
+				if(BasicUtil.isNotEmpty(value)){
+					return value.toString();
+				}
+				value = parseAnnotationFieldValue(field, config, "value");
+				if(BasicUtil.isNotEmpty(value)){
+					return value.toString();
+				}
 			}
 		}
 		return null;

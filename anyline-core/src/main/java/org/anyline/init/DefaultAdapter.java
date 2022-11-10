@@ -58,15 +58,19 @@ public class DefaultAdapter implements EntityAdapter {
     }
 
     @Override
-    public String column(Class clazz, Field field) {
+    public String column(Class clazz, Field field, String ... annotations) {
         String key = clazz.getName()+":"+field.getName().toUpperCase();
         // 1.缓存
         String name = field2column.get(key);
         if(BasicUtil.isNotEmpty(name)){
             return name;
         }
+
         // 2.注解
-        name = ClassUtil.parseAnnotationFieldValue(field, "column.name", "column.value", "TableField.name","TableField.value","TableId.value");
+        if(null == annotations && annotations.length ==0 ){
+            annotations = "column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value".split(",");
+        }
+        name = ClassUtil.parseAnnotationFieldValue(field, annotations);
         if(BasicUtil.isNotEmpty(name)){
             field2column.put(key, name);
             column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
@@ -106,30 +110,48 @@ public class DefaultAdapter implements EntityAdapter {
        return DataRow.DEFAULT_PRIMARY_KEY;
     }
 
+    /**
+     * 检测主键(是主键名不是值)<br/>
+     * 先检测注解中带TableId或Id的属性名<br/>
+     * 如果没有检测到按默认主键DataRow.DEFAULT_PRIMARY_KEY<br/>
+     * @param clazz 类
+     * @return List
+     */
     @Override
     public List<String> primaryKeys(Class clazz) {
         List<String> list = primarys.get(clazz.getName());
         if(null == list) {
             list = new ArrayList<>();
-            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "TableId", "Id");
+            String annotations = ConfigTable.ENTITY_PRIMARY_KEY_ANNOTATION;
+            if(BasicUtil.isEmpty(annotations)){
+                //如果配置文件中没有指定
+                annotations = "TableId,Id";
+            }
+            //根据注解提取属性s
+            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(","));
             for (Field field : fields) {
-                String name = column(clazz, field);
+                //根据属性获取相应的列名
+                String name = column(clazz, field, annotations.split(","));
                 if (BasicUtil.isNotEmpty(name)) {
                     list.add(name);
                 }
             }
-            fields = ClassUtil.getFields(clazz);
-            Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
-            if(null != field){
-                String name = column(clazz, field);
-                if (BasicUtil.isNotEmpty(name)) {
-                    list.add(name);
+            if(list.isEmpty()) {
+                //从所有属性中 过滤出名称与DataRow.DEFAULT_PRIMARY_KEY相同的属性
+                fields = ClassUtil.getFields(clazz);
+                Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
+                if (null != field) {
+                    String name = column(clazz, field);
+                    if (BasicUtil.isNotEmpty(name)) {
+                        list.add(name);
+                    }
                 }
             }
             if (list.size() == 0) {
                 list.add(DataRow.DEFAULT_PRIMARY_KEY);
             }
             primarys.put(clazz.getName(), list);
+
         }
         return list;
     }
