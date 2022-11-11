@@ -1,15 +1,14 @@
-package org.anyline.entity; 
- 
+package org.anyline.entity;
+
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
-import java.io.Serializable;
 import java.util.Hashtable;
  
 public class PageNaviConfig extends AnylineConfig  {
 
-	public static String CONFIG_NAME = "anyline-navi.xml";
+	public static String CONFIG_NAME 					= "anyline-navi.xml"			; // 配置文件名称
 	public static String DEFAULT_KEY_PAGE_ROWS			= "_anyline_page_rows"			; // 设置每页显示多少条的key
 	public static String DEFAULT_KEY_PAGE_NO			= "_anyline_page"				; // 设置当前第几页的key
 	public static String DEFAULT_KEY_TOTAL_PAGE			= "_anyline_total_page"			; // 显示一共多少页的key
@@ -41,10 +40,10 @@ public class PageNaviConfig extends AnylineConfig  {
 
 
 	// 变量 
-	public int VAR_PAGE_RANGE					= 5								; // 下标数量
-	public int VAR_PAGE_DEFAULT_VOL				= DEFAULT_VAR_PAGE_DEFAULT_VOL	; // 每页多少条
-	public int VAR_PAGE_MAX_VOL					= DEFAULT_VAR_PAGE_MAX_VOL		; // 每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
-	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= DEFAULT_VAR_CLIENT_SET_VOL_ENABLE					; // 前端是否可设置每页多少条
+	public int VAR_PAGE_RANGE					= 5										; // 下标数量
+	public int VAR_PAGE_DEFAULT_VOL				= DEFAULT_VAR_PAGE_DEFAULT_VOL			; // 每页多少条
+	public int VAR_PAGE_MAX_VOL					= DEFAULT_VAR_PAGE_MAX_VOL				; // 每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
+	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= DEFAULT_VAR_CLIENT_SET_VOL_ENABLE		; // 前端是否可设置每页多少条
 	public boolean VAR_SHOW_STAT				= false					; // 是否显示分布统计 
 	public boolean VAR_SHOW_JUMP				= false					; // 是否显示跳转 
 	public boolean VAR_SHOW_VOL					= true					; // 是否显示每页条数设置 

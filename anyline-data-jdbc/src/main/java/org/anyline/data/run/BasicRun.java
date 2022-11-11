@@ -84,16 +84,16 @@ public abstract class BasicRun implements Run {
  
 		if(null != configStore){ 
 			setPageNavi(configStore.getPageNavi()); 
-			OrderStore orderStore = configStore.getOrders(); 
-			List<Order> orders = null; 
-			if(null != orderStore){ 
-				orders = orderStore.getOrders(); 
-			} 
-			if(null != orders){ 
-				for(Order order:orders){ 
-					orderStore.order(order); 
-				} 
-			} 
+			/*OrderStore orderStore = configStore.getOrders();
+			List<Order> orders = null;
+			if (null != orderStore) {
+				orders = orderStore.getOrders();
+			}
+			if (null != orders) {
+				for (Order order : orders) {
+					orderStore.order(order);
+				}
+			}*/
 		} 
 		 
 	}
