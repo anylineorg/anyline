@@ -1,4 +1,8 @@
-***快速开始请参考示例代码:***  
+***详细说明请参考:***  
+[http://doc.anyline.org/](http://doc.anyline.org/)
+
+
+***快速开始请参考示例源码:***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
 
