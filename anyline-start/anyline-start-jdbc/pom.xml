@@ -8,7 +8,7 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-start</artifactId>
         <version>8.6.1-SNAPSHOT</version>
-        <relativePath>../anyline-start</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>anyline-start-jdbc</artifactId>
     <packaging>pom</packaging>

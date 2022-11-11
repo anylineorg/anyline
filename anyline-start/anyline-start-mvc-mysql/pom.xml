@@ -6,19 +6,27 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-start</artifactId>
+		<artifactId>anyline-start-mvc</artifactId>
 		<version>8.6.1-SNAPSHOT</version>
-		<relativePath>../anyline-start</relativePath>
+		<relativePath>../anyline-start-mvc/pom.xml</relativePath>
 	</parent>
-	<artifactId>anyline-start-mvc</artifactId>
+	<artifactId>anyline-start-mvc-mysql</artifactId>
 	<packaging>pom</packaging>
-	<name>anyline-start-mvc</name>
+	<name>anyline-start-mvc-mysql</name>
 	<url>http://www.anyline.org</url>
 
 	<dependencies>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-mvc</artifactId>
+			<artifactId>anyline-data-jdbc-mysql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 	</dependencies>
 </project>
