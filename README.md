@@ -19,7 +19,8 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
 
 简单来说主要作了两方面的工作：    
 - 1）在运行时根据需求动态生成SQL(包括DDL和DML),特别是针对查询条件的封装  
-  查询条件不再需要各种空判断、遍历、类型转换,机械繁琐的工作交给机器  
+  查询条件不再需要各种空判断、遍历、类型转换,及各种配置、各种VO PO DTO
+  机械繁琐的工作交给机器  [示例](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-condition)  
   这里说的动态是指:  
   不需要针对固定的表结构或具体的Entity,分别提供不同的Service/Dao/Mapper  
   一个默认的Service可以操作一切数据  
