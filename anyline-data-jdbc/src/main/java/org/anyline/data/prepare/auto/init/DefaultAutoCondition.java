@@ -232,8 +232,9 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
  
 	public String getId(){ 
 		return column; 
-	} 
-	 
+	}
+
+
 	public String getColumn() { 
 		return column; 
 	} 

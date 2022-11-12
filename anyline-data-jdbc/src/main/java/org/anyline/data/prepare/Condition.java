@@ -107,4 +107,12 @@ public interface Condition extends Cloneable{
 	public String getTest();
 	public Map<String,Object> getRunValuesMap();
 	public List<Variable> getVariables();
+
+	/**
+	 * 是否只是用来给变量赋值的
+	 * 用来给java/xml定义SQL中变量赋值，本身并不拼接到最终SQL
+	 * @return boolean
+	 */
+	public boolean isVariableSlave();
+	public void setVariableSlave(boolean bol);
 } 

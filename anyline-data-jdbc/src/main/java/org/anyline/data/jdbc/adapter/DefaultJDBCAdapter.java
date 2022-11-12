@@ -573,10 +573,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null != run){
 			run.setStrict(prepare.isStrict());
 			run.setAdapter(this);
+			//如果是text类型 将解析文本并抽取出变量
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
 			run.addConditions(conditions);
+			//为变量赋值
 			run.init();
+			//构造最终的查询SQL
 			buildQueryRunContent(run);
 		}
 		return run;

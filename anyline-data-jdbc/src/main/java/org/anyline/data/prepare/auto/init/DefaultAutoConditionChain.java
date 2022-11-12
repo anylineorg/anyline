@@ -61,7 +61,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 //			}else{
 //				txt = condition.getRunText(adapter);
 //			}
-			if(null == condition){
+			if(null == condition || condition.isVariableSlave()){
 				continue;
 			}
 			txt = condition.getRunText(prefix, adapter);

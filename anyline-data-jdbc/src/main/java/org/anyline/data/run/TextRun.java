@@ -67,10 +67,11 @@ public class TextRun extends BasicRun implements Run {
 						continue;
 					} 
 					AutoCondition con = (AutoCondition)condition;
-					setConditionValue(
-							con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
+					setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
 					Variable var = this.getVariable(con.getId());
 					if(null != var){
+						con.setVariableSlave(true);
+						con.setVariableSlave(true);
 						var.setValue(false, con.getValues());
 					} 
 				}
