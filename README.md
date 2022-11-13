@@ -48,7 +48,7 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **可视化数据源**  
     主要用来处理动态属性，以及适配前端的多维度多结构的数据转换   
-  [示例](https://gitee.com/anyline/service)
+  [参考](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f93f9eb865d5cc60b9b)
 
 
 - **低代码后台**    
