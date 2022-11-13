@@ -79,14 +79,14 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **网络爬虫数据解析**    
     不固定的结构、html解析(当然不是用正则或dom那太费脑子了)  
-  [示例](https://gitee.com/anyline/service)
+  [参考](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f935a8657bb0ff2d784)
 
 
 
 - **异构数据库迁移同步**  
     动态的数据结构可以灵活的适配多种不同的表,需不需要反复的get/set    
     兼容多种数据库的DDL也可以方便的在不同类型的数据库中执行  
-  [示例](https://gitee.com/anyline/service)
+  [参考](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f9382274223893eaf06)
 
 
 - **还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成**  
