@@ -19,9 +19,8 @@
  
  
 package org.anyline.util.encrypt;
- 
+
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +40,9 @@ public class MD5Util {
 	} 
 	 
 	public static String sign(String src, String encode){ 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[MD5 SIGN][src:{}]", src); 
-		} 
+		//if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+			//log.warn("[MD5 SIGN][src:{}]", src);
+		//}
 		if(null == src) return ""; 
 		String result = null;
 		 
@@ -60,9 +59,9 @@ public class MD5Util {
                 ex.printStackTrace();   
             }      
         } 
-        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-			log.warn("[MD5 SIGN][sign:{}]", result); 
-		} 
+       // if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+		//	log.warn("[MD5 SIGN][sign:{}]", result);
+		//}
         return result;      
 	}
 	/** 
@@ -85,8 +84,8 @@ public class MD5Util {
 
     /** 
     * 获取单个文件的MD5值！ 
-    * @param file  file
-    * @return String
+    * @param file  文件
+    * @return D5
     */ 
     public static String getFileMD5(File file) { 
 	    if (null == file || !file.isFile() || !file.exists()){ 
