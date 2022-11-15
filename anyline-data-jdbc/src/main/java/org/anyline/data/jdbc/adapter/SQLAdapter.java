@@ -533,7 +533,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             keys = columns;
         }else{
             if(AdapterProxy.hasAdapter()){
-                keys = AdapterProxy.columns(obj.getClass());
+                keys = AdapterProxy.columns(obj.getClass(), false, true);
             }
         }
         if(AdapterProxy.hasAdapter()){

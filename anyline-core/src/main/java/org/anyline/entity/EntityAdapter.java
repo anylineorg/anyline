@@ -23,6 +23,15 @@ public interface EntityAdapter {
     public List<String> columns(Class clazz);
 
     /**
+     * 获取指定类的列名s
+     * @param clazz 类
+     * @param insert 是否insert环境
+     * @param update 是否update环境
+     * @return List
+     */
+    public List<String> columns(Class clazz, boolean insert, boolean update);
+
+    /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
      * @param field 属性

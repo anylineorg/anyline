@@ -751,7 +751,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     }
 
     /* *****************************************************************************************************************
-     * 													DELETE
+     * 													UPDATE
      * -----------------------------------------------------------------------------------------------------------------
      * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
@@ -769,7 +769,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             keys = columns;
         }else{
             if(AdapterProxy.hasAdapter()){
-                keys = AdapterProxy.columns(obj.getClass());
+                keys = AdapterProxy.columns(obj.getClass(), false, true);
             }
         }
         if(AdapterProxy.hasAdapter()){

@@ -38,6 +38,10 @@ public class DefaultAdapter implements EntityAdapter {
 
     @Override
     public List<String> columns(Class clazz) {
+        return columns(clazz, false, false);
+    }
+    @Override
+    public List<String> columns(Class clazz, boolean insert, boolean update) {
         List<String> columns = DefaultAdapter.columns.get(clazz.getName());
         if(null == columns) {
             columns = new ArrayList<>();
@@ -46,6 +50,20 @@ public class DefaultAdapter implements EntityAdapter {
             fields.removeAll(ignores);
             for (Field field : fields) {
                 String column = column(clazz, field);
+                if(insert){
+                    //检测是否需要insert
+                    String insertable = ClassUtil.parseAnnotationFieldValue(field, "column.insertable");
+                    if("false".equalsIgnoreCase(insertable)){
+                        continue;
+                    }
+                }
+                if(update){
+                    //检测是否需要update
+                    String updatable = ClassUtil.parseAnnotationFieldValue(field, "column.updatable");
+                    if("false".equalsIgnoreCase(updatable)){
+                        continue;
+                    }
+                }
                 if(BasicUtil.isNotEmpty(column)) {
                     columns.add(column);
                 }

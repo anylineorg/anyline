@@ -6,11 +6,9 @@ import org.anyline.entity.EntityAdapter;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.adapter.KeyAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,17 +79,26 @@ public class AdapterProxy {
      * 获取指定类的列名s
      * @param adapter adapter
      * @param clazz 类
+     * @param insert 是否insert环境
+     * @param update 是否update环境
      * @return List
      */
-    public static List<String> columns(EntityAdapter adapter, Class clazz){
+    public static List<String> columns(EntityAdapter adapter, Class clazz, boolean insert, boolean update){
         if(null != adapter){
-            return adapter.columns(clazz);
+            return adapter.columns(clazz, insert, update);
         }
         return null;
     }
 
-    public static List<String> columns(Class clazz){
-        return columns(adapter, clazz);
+    /**
+     * 获取指定类.属性关联的列名
+     * @param clazz 类
+     * @param insert 是否insert环境
+     * @param update 是否update环境
+     * @return List
+     */
+    public static List<String> columns(Class clazz, boolean insert, boolean update){
+        return columns(adapter, clazz, insert, update);
     }
     /**
      * 获取指定类.属性关联的列名

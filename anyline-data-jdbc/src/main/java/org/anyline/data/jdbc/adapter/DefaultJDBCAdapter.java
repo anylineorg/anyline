@@ -257,7 +257,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_COLUMN;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_COLUMN;
 				if(AdapterProxy.hasAdapter()){
-					keys = AdapterProxy.columns(obj.getClass());
+					keys = AdapterProxy.columns(obj.getClass(), true, false);
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass());
