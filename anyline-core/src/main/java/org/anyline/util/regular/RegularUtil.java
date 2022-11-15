@@ -205,6 +205,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagWithBodyByAttribute(String src, String attribute){
+		if(null == src || null == attribute){
+			return src;
+		}
 		String reg = "";
 		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>";//双标签
 		src = src.replaceAll(reg, "");
@@ -227,6 +230,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagWithBodyByAttributeValue(String src, String attribute, String value){
+		if(null == src || null == attribute || null == value){
+			return src;
+		}
 		String reg ="";
 		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";//双标签
 		src = src.replaceAll(reg, "");
@@ -243,6 +249,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagByAttributeValue(String src, String attribute, String value) throws Exception{
+		if(null == src || null == attribute || null == value){
+			return src;
+		}
 		//[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
 		List<List<String>> lists = getTagWithBodyByAttributeValue(src, attribute, value);
 		for(List<String> list:lists){
@@ -259,6 +268,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagByAttribute(String src, String attribute) throws Exception{
+		if(null == src || null == attribute){
+			return src;
+		}
 		List<List<String>> lists = getTagWithBodyByAttribute(src, attribute);
 		//[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
 		for(List<String> list:lists){
@@ -411,6 +423,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTag(String src, String ...tags){
+		if(null == src || null == tags || tags.length == 0){
+			return src;
+		}
 		if(null == tags || tags.length==0){
 			src = src.replaceAll(Regular.PATTERN.HTML_TAG.getCode(), "");
 		}else{
@@ -431,6 +446,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagWithBody(String src, String ...tags){
+		if(null == src || null == tags || tags.length == 0){
+			return src;
+		}
 		if(null == tags || tags.length==0){
 			src = src.replaceAll(Regular.PATTERN.HTML_TAG_WITH_BODY.getCode(), "");
 		}else{
@@ -451,6 +469,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeEmptyTag(String src){
+		if(null == src){
+			return src;
+		}
 		String reg = "(?i)(<(\\w+)[^<]*?>)\\s*(</\\2>)";
 		src = src.replaceAll(reg, "");
 		return src;
@@ -475,6 +496,9 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeAttribute(String src, String ... attributes){
+		if(null == src || null == attributes || attributes.length == 0){
+			return src;
+		}
 		String reg = null;
 		if(null != attributes && attributes.length > 0){
 			for(String attribute:attributes){
