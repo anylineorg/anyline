@@ -6,8 +6,6 @@ import java.util.Map;
 
 public interface EntityAdapter {
 
-
-
     /**
      * 获取指定类关联的表名
      * @param clazz 类

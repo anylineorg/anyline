@@ -15,7 +15,20 @@ public class DefaultAdapter implements EntityAdapter {
     private static Map<String,String> field2column   = new HashMap<>();  // class.name:field.name > column.name
     private static Map<String,Field> column2field    = new HashMap<>();  // column.name > field
     private static Map<String,List<String>> primarys = new HashMap<>();  // 主键
-    private static Map<String,List<String>> columns  = new HashMap<>();
+    private static Map<String,List<String>> insert_columns  = new HashMap<>();
+    private static Map<String,List<String>> update_columns  = new HashMap<>();
+
+    /**
+     * 清空缓存
+     */
+    public static void clear(){
+        class2table    = new HashMap<>();
+        field2column   = new HashMap<>();
+        column2field    = new HashMap<>();
+        primarys = new HashMap<>();
+        insert_columns  = new HashMap<>();
+        update_columns  = new HashMap<>();
+    }
     @Override
     public String table(Class clazz) {
         String key = clazz.getName();
@@ -42,7 +55,12 @@ public class DefaultAdapter implements EntityAdapter {
     }
     @Override
     public List<String> columns(Class clazz, boolean insert, boolean update) {
-        List<String> columns = DefaultAdapter.columns.get(clazz.getName());
+        List<String> columns = null;
+        if(insert) {
+            columns = DefaultAdapter.insert_columns.get(clazz.getName());
+        }else if(update){
+            columns = DefaultAdapter.update_columns.get(clazz.getName());
+        }
         if(null == columns) {
             columns = new ArrayList<>();
             List<Field> fields = ClassUtil.getFields(clazz);
@@ -68,7 +86,11 @@ public class DefaultAdapter implements EntityAdapter {
                     columns.add(column);
                 }
             }
-            DefaultAdapter.columns.put(clazz.getName(),columns);
+            if(insert) {
+                DefaultAdapter.insert_columns.put(clazz.getName(),columns);
+            }else if(update){
+                DefaultAdapter.update_columns.put(clazz.getName(),columns);
+            }
         }
         List<String> list = new ArrayList<>();
         list.addAll(columns);
@@ -85,7 +107,7 @@ public class DefaultAdapter implements EntityAdapter {
         }
 
         // 2.注解
-        if(null == annotations && annotations.length ==0 ){
+        if(null == annotations || annotations.length ==0 ){
             if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
                 annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
             }else {
