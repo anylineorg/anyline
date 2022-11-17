@@ -20,7 +20,7 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
 简单来说主要作了两方面的工作：    
 - 1）在运行时根据需求动态生成SQL(包括DDL和DML),特别是针对查询条件的封装  
   查询条件不再需要各种空判断、遍历、类型转换,及各种配置、各种VO PO DTO
-  机械繁琐的工作交给机器  [示例](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-condition)  
+  机械繁琐的工作交给机器  [【示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-condition)  
   这里说的动态是指:  
   不需要针对固定的表结构或具体的Entity,分别提供不同的Service/Dao/Mapper  
   一个默认的Service可以操作一切数据  
@@ -35,7 +35,7 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
   他将提供比实体类更全面、更强大的数据处理能力    
   为前端或第三方应用提供数据时 不再需要各种遍历、判断、计算、格式转换    
   一切与业务无关的数学运算,DataSet&lt;DataRow&gt;尽量作到 一键 ... 一键 ...
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 同时摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
 没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)
@@ -54,27 +54,28 @@ Anyline一的切都是面向动态、面向运行时环境
 - **低代码后台**    
     主要用来处理动态属性、动态数据源(下拉列表)以及用户自定义的一些属性    
     灵活的DDL也可以快速统一的操作各种表结构(包括各种时序、列式数据库)   
-    [示例](https://gitee.com/anyline/service)  
+    [【示例】](https://gitee.com/anyline/service)  
 
 
 - **物联网车联网数据处理**    
     如车载终端、交通信号灯、数字化工厂传感器、环境检测设备数据等   
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 - **数据清洗、数据批量处理**  
     各种结构的数据、更多的是不符合标准甚至是错误的结构  
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 - **报表输出，特别是用户自定义报表**  
-    类似于可视化环境,只是样式简单一点  
-  [示例](https://gitee.com/anyline/service)
+    类似于可视化环境,样式相对简单一点，但精度要求极高，需要控制到像素、字体等  
+    如检验检测报告、资质证书等，当然这需要配合 anyline-office
+  [【示例】](https://gitee.com/anyline/service)
 
 
 - **运行时自定义表单/查询条件/数据结构**  
     各个阶段都要自定义，比低代码要求更高的是:操作用户不懂编程
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 - **网络爬虫数据解析**    
@@ -92,7 +93,7 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成**  
     别说设计了，需求都有可能还没结束就催交付了,Entity哪里找  
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 
@@ -102,7 +103,7 @@ Anyline一的切都是面向动态、面向运行时环境
 这一般都是些hello world 或 练习作业  
 这样的直接利用默认的service查出数据返回给前端就可以收工了  
 不要再生成一堆重复的模板，简单改个属性也要层层修改，从头改个遍。    
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 - 代码中出现了大量的List,Map结构 或者 针对查询结果集需要大量的二次计算  
@@ -112,14 +113,14 @@ Anyline一的切都是面向动态、面向运行时环境
 这时经常是为每类场景订制视图或SQL  
 但数据支持部门不可能针对每种场景每个视图、每个SQL 生成不同的Entity  
 更也不可能生成一个大而全的Entity以应万变  
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 - 与第三方系统交换数据时  
   只在自己内部系统的小圈子里时,List/Entity还勉强可以  
   遇到各种第三方系统呢，根本不知道会出现什么实体什么结果  
   难道还要像EJB那样相互给对方生成一堆Bean么？  
-  [示例](https://gitee.com/anyline/service)
+  [【示例】](https://gitee.com/anyline/service)
 
 
 
@@ -127,14 +128,14 @@ Anyline一的切都是面向动态、面向运行时环境
 而这种大量的机械的计算不应该占用开发人员太多的时间  
 Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据二次处理功能,如:   
 排序、维度转换、截取、去重、方差、偏差、交集合集差集、分组、忽略大小写对比、行列转换、类SQL过滤筛选(like,eq,in,less,between...)、JSON、XML格式转换等  
-[示例](https://gitee.com/anyline/service)
+[【示例】](https://gitee.com/anyline/service)
 
 
 
 ## 不适用场景
 对已经非常明确的实体执行增删改查操作  
 不要跨过设计人员或者架构师/技术经理等直接拿给业务开发人员用  
-[示例](https://gitee.com/anyline/service)
+[【示例】](https://gitee.com/anyline/service)
 
 ##  关于数据库的适配
 直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)
