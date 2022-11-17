@@ -1,4 +1,4 @@
-***详细说明请参考:***  
+***详细说明请【参考】:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)
 
 
@@ -48,7 +48,7 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **可视化数据源**  
     主要用来处理动态属性，以及适配前端的多维度多结构的数据转换   
-  [参考](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f93f9eb865d5cc60b9b)
+  [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f93f9eb865d5cc60b9b)
 
 
 - **低代码后台**    
@@ -79,14 +79,15 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **网络爬虫数据解析**    
     不固定的结构、html解析(当然不是用正则或dom那太费脑子了)  
-  [参考](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f935a8657bb0ff2d784)
+  [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f935a8657bb0ff2d784)
 
 
 
 - **异构数据库迁移同步**  
     动态的数据结构可以灵活的适配多种不同的表,需不需要反复的get/set    
     兼容多种数据库的DDL也可以方便的在不同类型的数据库中执行  
-  [参考](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f9382274223893eaf06)
+  [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f9382274223893eaf06) 
+  [【源码】](https://gitee.com/anyline/service/tree/master/anyline-service-sync)
 
 
 - **还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成**  
@@ -249,14 +250,14 @@ DataSet set = service.querys("HR_USER(ID,NM)",
     condition(true,"anyline根据约定自动生成的=,in,like等查询条件"));  
 ```
 这里的查询条件不再需要各种配置,各种if else foreach标签  
-Anyline会自动生成,生成规则可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
+Anyline会自动生成,生成规则可以【参考】这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
 分页也不需要另外的插件，更不需要繁琐的计算和配置，指定true或false即可
 
 
 ## 如何集成
 只需要一个依赖、一个注解即可实现与springboot,netty等框架项目完美整合  
 直接看代码[【anyline-simple-hello】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-hello)  
-生产环境可以参考这几个[pom](https://gitee.com/anyline/anyboot/tree/master)    
+生产环境可以【参考】这几个[pom](https://gitee.com/anyline/anyboot/tree/master)    
 [【anyboot-start】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start/pom.xml) 没有web环境,如定时任务,爬虫等    
 [【anyboot-start-mvc】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start-mv/pom.xml) 基于spring-mvc  
 [【anyboot-start-mvc-mysql】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start-mvc-mysql/pom.xml) 基于spring-mvc MySQL数据库    
@@ -277,7 +278,7 @@ Anyline会自动生成,生成规则可以参考这里的[【约定规则】](htt
 @Qualifier("anyline.service")
 protected AnylineService service;
 ```
-接下来service就可以完成大部分的数据库操作了。常用示例可以参考[【示例代码】](https://gitee.com/anyline/anyline-simple)
+接下来service就可以完成大部分的数据库操作了。常用示例可以【参考】[【示例代码】](https://gitee.com/anyline/anyline-simple)
 
 ## 兼容
 如果实现放不下那些已存在的各种XOOO  
@@ -354,7 +355,7 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 其他的交给机器处理，生成SQL     
 WHERE CODE = ? AND NAME LIKE '?%' AND TYPE IN(?,?...)
 ``` 
-&nbsp;&nbsp;&nbsp;&nbsp;更多的约定可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)
+&nbsp;&nbsp;&nbsp;&nbsp;更多的约定可以【参考】这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)
 
 
 ####  &nbsp;&nbsp;2. **结果集的二次操作**    
@@ -462,7 +463,7 @@ WHERE CODE = ? AND NAME LIKE '?%' AND TYPE IN(?,?...)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;而一个有思想的程序员应该会把以上问题抽象成简单的行列转换的问题     
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;并在项目之前甚至没有项目的时候就已经解决之。  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;各种维度的转换可以参考DataSet.pivot()的几个重载 或示例代码 anyline-simple-result  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;各种维度的转换可以【参考】DataSet.pivot()的几个重载 或示例代码 anyline-simple-result  
 
  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
