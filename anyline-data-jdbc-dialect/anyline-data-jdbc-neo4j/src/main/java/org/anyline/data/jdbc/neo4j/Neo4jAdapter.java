@@ -297,6 +297,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             }
         }
         builder.append("})");
+        run.setInsertColumns(insertColumns);
     }
 
     /**
