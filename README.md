@@ -14,13 +14,14 @@
 
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
 其重点是:
-- 以最简单、快速、动态的方式操作数据库  
-- 针对结果集的 数据二次处理能力    
+- 以最简单、快速、动态、统一的方式操作数据库(结构化与非结构化)  
+- 针对结果集的 数据二次处理能力  
+
 
 简单来说主要作了两方面的工作：    
-- 1）在运行时根据需求动态生成SQL(包括DDL和DML),特别是针对查询条件的封装  
-  查询条件不再需要各种空判断、遍历、类型转换,及各种配置、各种VO PO DTO
-  机械繁琐的工作交给机器  [【示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-condition)  
+- 1）在运行时根据需求动态生成SQL(包括DDL和DML),特别是针对查询条件的支持    
+  查询条件不再需要各种空判断、遍历、类型转换,及各种配置、各种VO PO DTO  
+  机械繁琐的工作应该交给机器  [【示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-condition)  
   这里说的动态是指:  
   不需要针对固定的表结构或具体的Entity,分别提供不同的Service/Dao/Mapper  
   一个默认的Service可以操作一切数据  
@@ -34,11 +35,15 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
   不要以为DataSet&lt;DataRow&gt;结构比实体类功能类弱   
   他将提供比实体类更全面、更强大的数据处理能力    
   为前端或第三方应用提供数据时 不再需要各种遍历、判断、计算、格式转换    
-  一切与业务无关的数学运算,DataSet&lt;DataRow&gt;尽量作到 一键 ... 一键 ...
+  一切与业务无关的数学运算,DataSet&lt;DataRow&gt;尽量作到 一键 ... 一键 ...  
   [【示例】](https://gitee.com/anyline/service)
 
 同时摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
-没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)
+没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)  
+熟悉了Anyline之后你可能不再需要Hibernate,MyBatis
+## 误解
+当然我们并不是要抛弃Entity，相反的AnyLine源码中也使用了多达几十个Entity   
+在一些 **可预知的 固定的** 场景下，Entity的优势还是不可替代的。  
 
 
 ## 适用场景
@@ -69,8 +74,8 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **报表输出，特别是用户自定义报表**  
     类似于可视化环境,样式相对简单一点，但精度要求极高，需要控制到像素、字体等  
-    如检验检测报告、资质证书等，当然这需要配合 anyline-office
-  [【示例】](https://gitee.com/anyline/service)
+    如检验检测报告、资质证书等，当然这需要配合 anyline-office  
+  [【office示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-office-word)
 
 
 - **运行时自定义表单/查询条件/数据结构**  
@@ -135,11 +140,11 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 ## 不适用场景
 对已经非常明确的实体执行增删改查操作  
 不要跨过设计人员或者架构师/技术经理等直接拿给业务开发人员用  
-[【示例】](https://gitee.com/anyline/service)
+
 
 ##  关于数据库的适配
-直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)
-[https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect)
+直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)  
+[【源码】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect)
 
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-mysql">
