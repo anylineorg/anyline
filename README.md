@@ -39,9 +39,9 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
   [【示例】](https://gitee.com/anyline/service)
 
 同时摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper   
-没有mybatis hibernate 没有各种配置 各种O  
+没有Hibernate,MyBatis 没有各种配置 各种O  
 没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)  
-熟悉了Anyline之后你可能不再需要Hibernate,MyBatis
+熟悉了Anyline之后你就可以告别Hibernate,MyBatis了
 
 ## 误解
 当然我们并不是要抛弃Entity或ORM，相反的 AnyLine源码中也使用了多达几十个Entity   
