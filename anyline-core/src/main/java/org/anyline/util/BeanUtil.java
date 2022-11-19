@@ -838,10 +838,11 @@ public class BeanUtil {
 			for(String kv:kvs){
 				String k = null;
 				String v = null;
-				String[] tmps = kv.split("=");
-				k = tmps[0];
-				if(tmps.length>1){
-					v = tmps[1];
+
+				int idx = kv.indexOf("=");
+				if(idx != -1){
+					k = kv.substring(0, idx);
+					v = kv.substring(idx+1);
 				}
 				if("null".equals(v)){
 					v = "";

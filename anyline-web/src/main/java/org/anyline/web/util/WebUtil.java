@@ -165,24 +165,30 @@ public class WebUtil {
 		if(null == request){
 			return new HashMap<String,Object>();
 		}
-		String encode = "UTF-8";
+		String charset = "UTF-8";
+		boolean isEncode = true;
+		if(ConfigTable.HTTP_PARAM_ENCODE == -1){
+			isEncode = false;
+		}else if(ConfigTable.HTTP_PARAM_ENCODE == 0){
+			//TODO 自动识别
+		}
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
 			//通过ur形式提交的参数
 			String params = request.getQueryString();
 			if(BasicUtil.isNotEmpty(params)){
-				map = BeanUtil.param2map(params, true, true);
+				map = BeanUtil.param2map(params, true, isEncode);
 			}else {
 				map = new HashMap<String, Object>();
 			}
 			// body体json格式(ajax以raw提交)
-			String body = WebUtil.read(request,encode,true);
+			String body = WebUtil.read(request, charset,true);
 			if(BasicUtil.isNotEmpty(body)){
 				if(body.startsWith("{") && body.endsWith("}")) {
 					map.putAll(DataRow.parseJson(KEY_CASE.SRC, body));
 				}else{
 					//先拆分 再解码，否则解出来 & = 会混淆
-					map.putAll(BeanUtil.param2map(body,true, true));
+					map.putAll(BeanUtil.param2map(body,true, isEncode));
 				}
 			}else {
 				// utl与form表单格式
@@ -193,7 +199,11 @@ public class WebUtil {
 					if (null != values) {
 						if (values.length == 1) {
 							if(null != values[0]){
-								map.put(key, decode(values[0].trim(),encode));
+								if(isEncode) {
+									map.put(key, decode(values[0].trim(), charset));
+								}else{
+									map.put(key, values[0].trim());
+								}
 							}else{
 								map.put(key, null);
 							}
@@ -201,9 +211,11 @@ public class WebUtil {
 							List<Object> list = new ArrayList<Object>();
 							for (String value : values) {
 								if(null != value){
-									value = decode(value.trim(),"UTF-8");
+									if(isEncode) {
+										value = decode(value.trim(), "UTF-8");
+									}
 								}
-								list.add(value);
+								list.add(value.trim());
 							}
 							map.put(key, list);
 						}
@@ -1193,13 +1205,13 @@ public class WebUtil {
 	/**
 	 * 读取request body
 	 * @param request request
-	 * @param encode 编码
+	 * @param charset 编码
 	 * @param cache 是否缓存(第二次reqad是否有效)
 	 * @return String
 	 */
-	public static String read(HttpServletRequest request, String encode, boolean cache){
+	public static String read(HttpServletRequest request, String charset, boolean cache){
 		try {
-			String str = new String(read(request,cache), encode);
+			String str = new String(read(request,cache), charset);
 			//str = decode(str,encode);
 			return str;
 		}catch (Exception e){
