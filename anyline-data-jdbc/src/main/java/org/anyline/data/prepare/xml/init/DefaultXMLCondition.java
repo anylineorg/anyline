@@ -204,7 +204,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				List<Object> values = var.getValues(); 
 				String value = null; 
 				if(BasicUtil.isNotEmpty(true,values)){ 
-					value = (String)values.get(0); 
+					value = values.get(0).toString();
 				} 
 				if(BasicUtil.isNotEmpty(value)){
 					result = result.replace("::"+var.getKey(), value);
@@ -243,21 +243,21 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				// CD=:CD 
 				List<Object> varValues = var.getValues(); 
 				if(Compare.IN == var.getCompare()){
-					String inParam = ""; 
-					for(int i=0; i<varValues.size(); i++){ 
-						inParam += "?"; 
-						if(i<varValues.size()-1){ 
-							inParam += ","; 
+					String replaceDst = "";
+					for(int i=0; i<varValues.size(); i++){
+						replaceDst += "?";
+						if(i<varValues.size()-1){
+							replaceDst += ",";
 						} 
 					}
-					result = result.replace(":"+var.getKey(), inParam);
-					result = result.replace("${"+var.getKey()+"}", inParam);
+					result = result.replace(":"+var.getKey(), replaceDst);
+					result = result.replace("{"+var.getKey()+"}", replaceDst);
 					for(Object obj:varValues){
 						runValues.add(new RunValue(var.getKey(), obj));
 					}
 				}else{
 					result = result.replace(":"+var.getKey(), "?");
-					result = result.replace("${"+var.getKey()+"}", "?");
+					result = result.replace("{"+var.getKey()+"}", "?");
 					String value = null; 
 					if(BasicUtil.isNotEmpty(true,varValues)){ 
 						value = varValues.get(0).toString(); 
