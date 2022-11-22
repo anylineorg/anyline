@@ -2987,10 +2987,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(compare, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+        return dispatch(compare, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(compare, field, unique, recursion, items, BeanUtil.array2list(keys));
+        return dispatch(compare, field, unique, recursion, items, BeanUtil.array2list(keys));
     }
     public DataSet dispatch(Compare compare, String field, DataSet items, String... keys) {
         return dispatch(compare, field, false, false, items, keys);
@@ -3101,10 +3101,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+        return dispatch(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
+        return dispatch(Compare.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
     }
     public DataSet dispatch(String field, DataSet items, String... keys) {
         return dispatch(Compare.EQUAL, field, false, false, items, keys);
