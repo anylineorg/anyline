@@ -107,6 +107,8 @@ public class DefaultVariable implements Variable {
 		}
 		if(null == values){
 			values = new ArrayList<Object>();
+		}else {
+			values.clear();
 		}
 		if(value instanceof Collection){
 			values.addAll((Collection)value);
