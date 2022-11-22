@@ -162,9 +162,9 @@ public class XMLRun extends BasicRun implements Run {
 						} 
 					} 
 					String replaceKey = ""; 
-					if(var.getSignType() ==1){ 
+					if(var.getSignType() == Variable.KEY_TYPE_SIGN_V1){
 						replaceKey = "::" + var.getKey(); 
-					}else if(var.getSignType() ==2){ 
+					}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
 						replaceKey = "${" + var.getKey() + "}"; 
 					} 
 					if(null != value){ 
@@ -191,9 +191,9 @@ public class XMLRun extends BasicRun implements Run {
 					} 
  
 					String replaceKey = ""; 
-					if(var.getSignType() ==1){ 
+					if(var.getSignType() == Variable.KEY_TYPE_SIGN_V1){
 						replaceKey = ":" + var.getKey(); 
-					}else if(var.getSignType() ==2){ 
+					}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
 						replaceKey = "${" + var.getKey() + "}";
 					} 
 					if(null != value){ 
@@ -216,9 +216,9 @@ public class XMLRun extends BasicRun implements Run {
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
  
 						String replaceKey = ""; 
-						if(var.getSignType() ==1){ 
+						if(var.getSignType() == Variable.KEY_TYPE_SIGN_V1){
 							replaceKey = ":" + var.getKey(); 
-						}else if(var.getSignType() ==2){ 
+						}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
 							replaceKey = "${" + var.getKey() + "}";
 						} 
 						if(var.getCompare() == Compare.LIKE){ 
