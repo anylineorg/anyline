@@ -195,6 +195,9 @@ public class WebUtil {
 				Enumeration<String> keys = request.getParameterNames();
 				while (keys.hasMoreElements()) {
 					String key = keys.nextElement() + "";
+					if(map.containsKey(key)){
+						continue;
+					}
 					String[] values = request.getParameterValues(key);
 					if (null != values) {
 						if (values.length == 1) {
