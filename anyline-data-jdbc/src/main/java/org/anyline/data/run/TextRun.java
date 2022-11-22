@@ -21,6 +21,7 @@ package org.anyline.data.run;
 
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.init.DefaultVariable;
@@ -58,8 +59,7 @@ public class TextRun extends BasicRun implements Run {
 	public void init(){ 
 		super.init(); 
 		// 复制 RunPrepare 查询条件 
-		if(null != conditionChain){ 
- 
+		if(null != conditionChain){
 			List<Condition> conditions = conditionChain.getConditions(); 
 			if(null != conditions){ 
 				for(Condition condition:conditions){
@@ -119,12 +119,19 @@ public class TextRun extends BasicRun implements Run {
 			int varType = -1; 
 			Compare compare = Compare.EQUAL;
 			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+			int type = 1;
+			if(keys.size() == 0){
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+				type = 2;
+			}
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				// AND CD = :CD 
 				for(int i=0; i<keys.size();i++){ 
-					List<String> keyItem = keys.get(i); 
-					String prefix = keyItem.get(1).trim(); 
-					String fullKey = keyItem.get(2).trim();	// :CD ::CD 
+					List<String> keyItem = keys.get(i);
+					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+
+					/*String prefix = keyItem.get(1).trim(); 	//
+					String fullKey = keyItem.get(2).trim();	// :CD ::CD {CD} ${CD}
 					String typeChar = keyItem.get(3);		// null || "'" || ")" 
 					String key = fullKey.replace(":", ""); 
 					if(fullKey.startsWith("::")){ 
@@ -147,7 +154,9 @@ public class TextRun extends BasicRun implements Run {
 					var.setKey(key); 
 					var.setType(varType); 
 					var.setCompare(compare); 
-					addVariable(var); 
+					addVariable(var);*/
+					var.setRequired(true);
+					addVariable(var);
 				}// end for 
 			}else{ 
 				// AND CD = ? 
@@ -156,6 +165,7 @@ public class TextRun extends BasicRun implements Run {
 					for(int i=0; i<idxKeys.size(); i++){ 
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
+						var.setRequired(true);
 						addVariable(var); 
 					} 
 				} 
