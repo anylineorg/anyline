@@ -751,15 +751,17 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 if(var.getType() == Variable.VAR_TYPE_REPLACE){
                     // CD = ::CD
-                    Object varValue = var.getValues();
+                    List<Object> values = var.getValues();
                     String value = null;
-                    if(BasicUtil.isNotEmpty(varValue)){
-                        value = varValue.toString();
+                    if(BasicUtil.isNotEmpty(true,values)){
+                        value = values.get(0).toString();
                     }
                     if(null != value){
                         result = result.replace("::"+var.getKey(), value);
+                        result = result.replace("${"+var.getKey()+"}", value);
                     }else{
                         result = result.replace("::"+var.getKey(), "NULL");
+                        result = result.replace("${"+var.getKey()+"}", "NULL");
                     }
                 }
             }
@@ -776,8 +778,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                     if(null != value){
                         result = result.replace(":"+var.getKey(), value);
+                        result = result.replace("${"+var.getKey()+"}", value);
                     }else{
                         result = result.replace(":"+var.getKey(), "");
+                        result = result.replace("${"+var.getKey()+"}", "");
                     }
                 }
             }
@@ -791,19 +795,24 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     if(BasicUtil.isNotEmpty(true, varValues)){
                         if(var.getCompare() == Compare.IN){
                             // 多个值IN
-                            String replaceSrc = ":"+var.getKey();
                             String replaceDst = "";
                             for(Object tmp:varValues){
                                 addRunValue(run, var.getKey(), tmp);
                                 replaceDst += " ?";
                             }
                             replaceDst = replaceDst.trim().replace(" ", ",");
-                            result = result.replace(replaceSrc, replaceDst);
+                            result = result.replace(":"+var.getKey(), replaceDst);
+                            result = result.replace("{"+var.getKey()+"}", replaceDst);
                         }else{
                             // 单个值
                             result = result.replace(":"+var.getKey(), "?");
+                            result = result.replace("{"+var.getKey()+"}", "?");
                             addRunValue(run, var.getKey(), varValues.get(0));
                         }
+                    }else{
+                        //没有提供参数值
+                        result = result.replace(":" + var.getKey(), "NULL");
+                        result = result.replace("{" + var.getKey() + "}", "NULL");
                     }
                 }
             }
