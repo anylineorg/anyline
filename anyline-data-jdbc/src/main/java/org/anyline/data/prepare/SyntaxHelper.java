@@ -7,18 +7,18 @@ import org.anyline.util.BasicUtil;
 public class SyntaxHelper {
  
 	/** 
-0.[ID=:ID ]				1.[ID=]				2.[:ID]			3.[ ]		 
-0.[IN(:TYPE)]			1.[IN(]				2.[:TYPE]		3.[)]		 
-0.[= ::SORT ]			1.[=]				2.[::SORT]		3.[ ]		 
-0.[':NM%]				1.[']				2.[:NM]			3.[%]		 
-0.[+ :CODE ]			1.[+]				2.[:CODE]		3.[ ]		 
-0.[+ ::CODE ]			1.[+]				2.[::CODE]		3.[ ]		 
-====================== 
-0.[ID=${ID} ]			1.[ID=]				2.[${ID}]		3.[ ]		 
-0.[IN(${TYPE})]			1.[IN(]				2.[${TYPE}]		3.[)]		 
-0.['${SORT}']			1.[']				2.[${SORT}]		3.[']		 
-0.['%${NM}%]			1.['%]				2.[${NM}]		3.[%]		 
-0.[CONTAT('%',{CODE}]	1.[CONTAT('%',]		2.[{CODE}]		3.[null]		 
+0.[ID=:ID ]				1.[ID=]				2.[:ID]			3.[ ]		 <br/>
+0.[IN(:TYPE)]			1.[IN(]				2.[:TYPE]		3.[)]		 <br/>
+0.[= ::SORT ]			1.[=]				2.[::SORT]		3.[ ]		 <br/>
+0.[':NM%]				1.[']				2.[:NM]			3.[%]		 <br/>
+0.[+ :CODE ]			1.[+]				2.[:CODE]		3.[ ]		 <br/>
+0.[+ ::CODE ]			1.[+]				2.[::CODE]		3.[ ]		 <br/>
+====================== <br/>
+0.[ID=${ID} ]			1.[ID=]				2.[${ID}]		3.[ ]		 <br/>
+0.[IN(${TYPE})]			1.[IN(]				2.[${TYPE}]		3.[)]		 <br/>
+0.['${SORT}']			1.[']				2.[${SORT}]		3.[']		 <br/>
+0.['%${NM}%]			1.['%]				2.[${NM}]		3.[%]		 <br/>
+0.[CONTAT('%',{CODE}]	1.[CONTAT('%',]		2.[{CODE}]		3.[null]	 <br/>
  
 	   @param signType 1:已:区分 2:已{}区分	 
 	 * @param all  all
@@ -38,7 +38,7 @@ public class SyntaxHelper {
 		if(signType ==1){ 
 			key = fullKey.replace(":", ""); 
 		}else if(signType ==2){ 
-			key = fullKey.replace("${", "").replace("}", "");
+			key = fullKey.replace("${", "").replace("{", "").replace("}", "");
 		} 
 		 
 		if(fullKey.startsWith("$") || fullKey.startsWith("::")){ 
