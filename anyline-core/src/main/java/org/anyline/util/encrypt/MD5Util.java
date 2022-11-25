@@ -85,9 +85,9 @@ public class MD5Util {
     /** 
     * 获取单个文件的MD5值！ 
     * @param file  文件
-    * @return D5
+    * @return MD5
     */ 
-    public static String getFileMD5(File file) { 
+    public static String crypto(File file) {
 	    if (null == file || !file.isFile() || !file.exists()){ 
 	    	return null; 
 	    } 
@@ -113,10 +113,10 @@ public class MD5Util {
     /** 
     * 获取文件夹中文件的MD5值 
     * @param file  file
-    * @param recursion ;true递归子目录中的文件 
+    * @param recursion  true递归子目录中的文件
     * @return Map
     */ 
-    public static Map<String, String> getDirMD5(File file, boolean recursion) { 
+    public static Map<String, String> crypto(File file, boolean recursion) {
 	    if(null == file || !file.isDirectory() || !file.exists()){ 
 	    	return null; 
 	    } 
@@ -126,9 +126,9 @@ public class MD5Util {
 	    for(int i=0;i<files.length;i++){ 
 	    	File f=files[i]; 
 	    	if(f.isDirectory()&&recursion){ 
-	    		map.putAll(getDirMD5(f, recursion)); 
+	    		map.putAll(crypto(f, recursion));
 	    	} else { 
-	    		md5=getFileMD5(f); 
+	    		md5=crypto(f);
 	    		if(md5!=null){ 
 	    			map.put(f.getPath(), md5); 
 	    		} 

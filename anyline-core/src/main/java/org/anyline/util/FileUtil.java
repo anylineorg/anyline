@@ -920,7 +920,7 @@ public class FileUtil {
     * @return String
     */
 	public static String md5(File file){
-		return MD5Util.getFileMD5(file);
+		return MD5Util.crypto(file);
 	}
     /**
     * 获取文件夹中文件的MD5值
@@ -929,7 +929,7 @@ public class FileUtil {
     * @return Map
     */
     public static Map<String, String> md5(File file, boolean recursion) {
-    	return MD5Util.getDirMD5(file, recursion);
+    	return MD5Util.crypto(file, recursion);
     }
 
     /**
