@@ -3,7 +3,6 @@ package org.anyline.util.encrypt;
 import org.anyline.util.Base64Util;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import sun.security.rsa.RSAPrivateKeyImpl;
 
 import javax.crypto.Cipher;
 import java.io.*;
