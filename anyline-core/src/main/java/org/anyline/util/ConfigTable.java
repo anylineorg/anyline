@@ -289,6 +289,8 @@ public class ConfigTable {
 				// 加载jar文件同目录的config
 				File dir = new File(FileUtil.merge(root,"config"));
 				loadConfigDir(dir,flag);
+				//加载当前目录下的 config.xml
+				loadConfig(new File(root, flag+"-config.xml"));
 			}else{
 				// classpath根目录
 				File dir = new File(classpath);
