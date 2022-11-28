@@ -1219,8 +1219,12 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public String buildDropRunSQL(Index index) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		builder.append("ALTER TABLE ").append(index.getTableName())
-				.append("DROP INDEX ").append(index.getName());
+		builder.append("ALTER TABLE ").append(index.getTableName());
+		if(index.isCluster()){
+			builder.append(" DROP PRIMARY KEY");
+		}else {
+			builder.append(" DROP INDEX ").append(index.getName());
+		}
 		return builder.toString();
 	}
 	/**

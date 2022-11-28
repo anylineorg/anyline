@@ -1350,6 +1350,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				indexs.put(name.toUpperCase(), index);
 				columns = new LinkedHashMap<>();
 				index.setColumns(columns);
+				if(name.equalsIgnoreCase("PRIMARY")){
+					index.setCluster(true);
+				}
 			}else {
 				columns = index.getColumns();
 			}
