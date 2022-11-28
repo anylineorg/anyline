@@ -1187,11 +1187,11 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				.append("(");
 		int qty = 0;
 		for(Column column:index.getColumns().values()){
-			builder.append(column.getName());
-			String order = column.getOrder();
 			if(qty>0){
 				builder.append(",");
 			}
+			builder.append(column.getName());
+			String order = column.getOrder();
 			if(BasicUtil.isNotEmpty(order)){
 				builder.append(" ").append(order);
 			}
