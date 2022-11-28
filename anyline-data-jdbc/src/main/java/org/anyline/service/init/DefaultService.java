@@ -2771,7 +2771,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         public boolean drop(Index index) throws Exception{
-            return false;
+            index.setService(DefaultService.this);
+            return dao.drop(index);
         }
         /* *****************************************************************************************************************
          * 													constraint
@@ -2782,7 +2783,8 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
         @Override
         public boolean add(Constraint constraint) throws Exception {
-            return false;
+            constraint.setService(DefaultService.this);
+            return dao.add(constraint);
         }
 
         @Override
@@ -2792,7 +2794,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(Constraint constraint) throws Exception {
-            return false;
+            constraint.setService(DefaultService.this);
+            return dao.drop(constraint);
         }
     };
 }
