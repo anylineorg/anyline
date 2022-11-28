@@ -1182,7 +1182,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			name = "index_"+BasicUtil.getRandomString(10);
 		}
 		StringBuilder builder = new StringBuilder();
-		builder.append("ALTER ").append(index.getTableName())
+		builder.append("ALTER TABLE ").append(index.getTableName())
 				.append(" ADD INDEX ").append(name)
 				.append("(");
 		int qty = 0;

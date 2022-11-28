@@ -1347,7 +1347,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), table.getCatalog()));
 				index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), table.getSchema()));
 				index.setTableName(string(keys, "TABLE_NAME", set));
-				indexs.put(name, index);
+				indexs.put(name.toUpperCase(), index);
 				columns = new LinkedHashMap<>();
 				index.setColumns(columns);
 			}else {
