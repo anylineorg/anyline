@@ -24,16 +24,18 @@ public class Constraint {
         return catalog;
     }
 
-    public void setCatalog(String catalog) {
+    public Constraint setCatalog(String catalog) {
         this.catalog = catalog;
+        return this;
     }
 
     public String getSchema() {
         return schema;
     }
 
-    public void setSchema(String schema) {
+    public Constraint setSchema(String schema) {
         this.schema = schema;
+        return this;
     }
 
     public String getTableName() {
@@ -44,52 +46,66 @@ public class Constraint {
         return table;
     }
 
-    public void setTable(Table table) {
+    public Constraint setTable(Table table) {
         this.table = table;
+        return this;
     }
 
-    public void setTableName(String tableName) {
+    public Constraint setTableName(String tableName) {
         this.tableName = tableName;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Constraint setName(String name) {
         this.name = name;
+        return this;
     }
 
     public boolean isUnique() {
         return unique;
     }
 
-    public void setUnique(boolean unique) {
+    public Constraint setUnique(boolean unique) {
         this.unique = unique;
+        return this;
     }
 
     public int getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public Constraint setType(Integer type) {
         this.type = type;
+        return this;
     }
 
     public LinkedHashMap<String, Column> getColumns() {
         return columns;
     }
 
-    public void setColumns(LinkedHashMap<String, Column> columns) {
+    public Constraint setColumns(LinkedHashMap<String, Column> columns) {
         this.columns = columns;
+        return this;
+    }
+    public Constraint addColumn(Column column){
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
+        columns.put(column.getName().toUpperCase(), column);
+        return this;
     }
 
     public Index getUpdate() {
         return update;
     }
 
-    public void setUpdate(Index update) {
+    public Constraint setUpdate(Index update) {
         this.update = update;
+        return this;
     }
 
     public DDListener getListener() {
