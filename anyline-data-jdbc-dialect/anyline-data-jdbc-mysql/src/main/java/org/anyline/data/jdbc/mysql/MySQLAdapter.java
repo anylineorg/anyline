@@ -1177,7 +1177,28 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public String buildAddRunSQL(Index index) throws Exception{
-		return super.buildAddRunSQL(index);
+		String name = index.getName();
+		if(BasicUtil.isEmpty(name)){
+			name = "index_"+BasicUtil.getRandomString(10);
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER ").append(index.getTableName())
+				.append(" ADD INDEX ").append(name)
+				.append("(");
+		int qty = 0;
+		for(Column column:index.getColumns().values()){
+			builder.append(column.getName());
+			String order = column.getOrder();
+			if(BasicUtil.isNotEmpty(order)){
+				builder.append(" ").append(order);
+			}
+			if(qty>0){
+				builder.append(",");
+			}
+			qty ++;
+		}
+		builder.append(")");
+		return builder.toString();
 	}
 	/**
 	 * 修改索引
@@ -1197,7 +1218,10 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public String buildDropRunSQL(Index index) throws Exception{
-		return super.buildDropRunSQL(index);
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ").append(index.getTableName())
+				.append("DROP INDEX ").append(index.getName());
+		return builder.toString();
 	}
 	/**
 	 * 修改索引名
