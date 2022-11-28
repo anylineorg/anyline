@@ -2,7 +2,7 @@
 [http://doc.anyline.org/](http://doc.anyline.org/)
 
 
-***快速开始请参考示例源码:***  
+***快速开始请参考示例源码(各种各样最简单的hello world):***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
 
