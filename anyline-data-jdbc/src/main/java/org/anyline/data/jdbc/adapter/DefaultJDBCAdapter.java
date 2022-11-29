@@ -1284,7 +1284,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
-	 * 查询表上的列
+	 * 查询表上的索引
 	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
@@ -1352,6 +1352,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				index.setColumns(columns);
 				if(name.equalsIgnoreCase("PRIMARY")){
 					index.setCluster(true);
+					index.setPrimary(true);
+				}else if(name.equalsIgnoreCase("PK_"+table.getName())){
+					index.setCluster(true);
+					index.setPrimary(true);
 				}
 			}else {
 				columns = index.getColumns();
@@ -2318,8 +2322,32 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildAddRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
-		return null;
+		String name = index.getName();
+		if(BasicUtil.isEmpty(name)){
+			name = "index_"+BasicUtil.getRandomString(10);
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("CREATE");
+		if(index.isUnique()){
+			builder.append(" UNIQUE");
+		}
+		builder.append(" INDEX ").append(name)
+				.append(" ON ").append(index.getTableName())
+				.append("(");
+		int qty = 0;
+		for(Column column:index.getColumns().values()){
+			if(qty>0){
+				builder.append(",");
+			}
+			builder.append(column.getName());
+			String order = column.getOrder();
+			if(BasicUtil.isNotEmpty(order)){
+				builder.append(" ").append(order);
+			}
+			qty ++;
+		}
+		builder.append(")");
+		return builder.toString();
 	}
 	/**
 	 * 修改索引
@@ -2338,8 +2366,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
-		return null;
+		StringBuilder builder = new StringBuilder();
+		if(index.isPrimary()){
+			builder.append("ALTER TABLE ").append(index.getTableName())
+					.append(" DROP CONSTRAINT ").append(index.getName());
+		}else {
+			builder.append("DROP INDEX ").append(index.getName());
+			String table = index.getTableName();
+			if (BasicUtil.isNotEmpty(table)) {
+				builder.append(" ON ").append(table);
+			}
+		}
+		return builder.toString();
 	}
 	/**
 	 * 修改索引名

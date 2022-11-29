@@ -1177,32 +1177,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public String buildAddRunSQL(Index index) throws Exception{
-		String name = index.getName();
-		if(BasicUtil.isEmpty(name)){
-			name = "index_"+BasicUtil.getRandomString(10);
-		}
-		StringBuilder builder = new StringBuilder();
-		builder.append("ALTER TABLE ").append(index.getTableName())
-				.append(" ADD");
-		if(index.isUnique()){
-			builder.append(" UNIQUE");
-		}
-		builder.append(" INDEX ").append(name)
-				.append("(");
-		int qty = 0;
-		for(Column column:index.getColumns().values()){
-			if(qty>0){
-				builder.append(",");
-			}
-			builder.append(column.getName());
-			String order = column.getOrder();
-			if(BasicUtil.isNotEmpty(order)){
-				builder.append(" ").append(order);
-			}
-			qty ++;
-		}
-		builder.append(")");
-		return builder.toString();
+		return super.buildAddRunSQL(index);
 	}
 	/**
 	 * 修改索引
@@ -1224,7 +1199,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public String buildDropRunSQL(Index index) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ").append(index.getTableName());
-		if(index.isCluster()){
+		if(index.isPrimary()){
 			builder.append(" DROP PRIMARY KEY");
 		}else {
 			builder.append(" DROP INDEX ").append(index.getName());

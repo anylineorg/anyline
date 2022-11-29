@@ -28,9 +28,10 @@ public class Table implements org.anyline.entity.data.Table{
     protected Long ttl                            ;
 
 
-    protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-    protected LinkedHashMap<String,Tag> tags       = new LinkedHashMap<>();
-    protected LinkedHashMap<String,Index> indexs   = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
     protected Table update;
     protected DDListener listener                 ;
 
@@ -293,6 +294,19 @@ public class Table implements org.anyline.entity.data.Table{
         this.indexs = indexs;
         return this;
     }
+
+    public LinkedHashMap<String, Constraint> getConstraints() {
+        if(null == constraints){
+            constraints = new LinkedHashMap<>();
+        }
+        return constraints;
+    }
+
+    public Table setConstraints(LinkedHashMap<String, Constraint> constraints) {
+        this.constraints = constraints;
+        return this;
+    }
+
     public Column getColumn(String name){
         if(null == columns){
             return null;

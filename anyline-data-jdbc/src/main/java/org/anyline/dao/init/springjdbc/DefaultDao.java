@@ -1974,12 +1974,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(String table) {
-		return null;
+		Table tab = new Table();
+		tab.setName(table);
+		return constraints(tab);
 	}
 
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
-		return null;
+		Table tab = new Table();
+		tab.setCatalog(catalog);
+		tab.setSchema(schema);
+		tab.setName(table);
+		return constraints(tab);
 	}
 	/* *****************************************************************************************************************
 	 *
