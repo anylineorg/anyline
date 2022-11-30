@@ -1,10 +1,13 @@
-***详细说明请【参考】:***  
+***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)
 
 
 ***快速开始请参考示例源码(各种各样最简单的hello world):***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
+
+***一个字都不想看，就想直接启动项目的下载这个源码:***  
+[https://gitee.com/anyline/anyline-simple-clear](https://gitee.com/anyline/anyline-simple-clear)
 
 有问题请联系QQ群:  86020680  
 [
