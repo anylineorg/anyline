@@ -27,18 +27,23 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 	@Override 
 	protected DataSource determineTargetDataSource() { 
 		DataSource dataSource = null; 
-		Object lookupKey = determineCurrentLookupKey(); 
-		dataSource = dataSources.get(lookupKey); 
-		if(null == dataSource){
+		Object lookupKey = determineCurrentLookupKey();
+		if(null == lookupKey || "datasource".equalsIgnoreCase(lookupKey.toString()) || "defaultDatasource".equalsIgnoreCase(lookupKey.toString())){
+			dataSource = super.determineTargetDataSource();
+		}else {
+			dataSource = dataSources.get(lookupKey);
+		}
+		/*if(null == dataSource){
 			log.error("[获取数据源失败][thread:{}][key:{}][切换回默认数据源]",Thread.currentThread().getId(),lookupKey);
 			try{ 
 				dataSource = super.determineTargetDataSource(); 
 			}catch(Exception e){ 
 				 e.printStackTrace();
 			} 
-		} 
+		}*/
 		if(null == dataSource){ 
-			log.error("[获取数据源失败][thread:{}][key:{}]",Thread.currentThread().getId(), lookupKey); 
+			log.error("[获取数据源失败][thread:{}][key:{}]",Thread.currentThread().getId(), lookupKey);
+			throw new RuntimeException("获取数据源失败:"+lookupKey);
 		} 
 		return dataSource; 
 	}
