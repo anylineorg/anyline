@@ -438,10 +438,11 @@ public abstract class BasicRun implements Run {
 
 	@Override
 	public String getFinalExecute(){
+		String text = builder.toString();
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  SQLUtil.placeholder(prepare.getText(), delimiterFr, delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
-		return prepare.getText();
+		return text;
 	}
 
 

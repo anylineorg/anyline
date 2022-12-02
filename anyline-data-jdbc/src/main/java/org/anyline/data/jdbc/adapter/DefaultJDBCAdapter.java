@@ -549,7 +549,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
-	 * public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * public Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 *
 	 * public void buildQueryRunContent(Run run)
 	 * protected void buildQueryRunContent(XMLRun run)
@@ -610,6 +610,31 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	protected void buildQueryRunContent(TableRun run){
 	}
+	/**
+	 * 构造查询主体
+	 * @param run run
+	 */
+	@Override
+	public void buildExecuteRunContent(Run run){
+		if(null != run){
+			if(run instanceof TableRun){
+				TableRun r = (TableRun) run;
+				buildExecuteRunContent(r);
+			}else if(run instanceof XMLRun){
+				XMLRun r = (XMLRun) run;
+				buildExecuteRunContent(r);
+			}else if(run instanceof TextRun){
+				TextRun r = (TextRun) run;
+				buildExecuteRunContent(r);
+			}
+		}
+	}
+	protected void buildExecuteRunContent(XMLRun run){
+	}
+	protected void buildExecuteRunContent(TextRun run){
+	}
+	protected void buildExecuteRunContent(TableRun run){
+	}
 
 
 	/**
@@ -623,7 +648,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	@Override
-	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
@@ -636,6 +661,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			run.setConfigStore(configs);
 			run.addConditions(conditions);
 			run.init();
+			//构造最终的执行SQL
+			buildQueryRunContent(run);
 		}
 		return run;
 	}
@@ -673,19 +700,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public Run buildDeleteRunSQL(String table, String key, Object values)
-	 * public Run buildDeleteRunSQL(String dest, Object obj, String ... columns)
+	 * public Run buildDeleteRun(String table, String key, Object values)
+	 * public Run buildDeleteRun(String dest, Object obj, String ... columns)
 	 * public Run buildDeleteRunContent(Run run)
 	 *
 	 * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
 	 * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
 	 ******************************************************************************************************************/
 	@Override
-	public Run buildDeleteRunSQL(String table, String key, Object values){
+	public Run buildDeleteRun(String table, String key, Object values){
 		return createDeleteRunSQLFromTable(table, key, values);
 	}
 	@Override
-	public Run buildDeleteRunSQL(String dest, Object obj, String ... columns){
+	public Run buildDeleteRun(String dest, Object obj, String ... columns){
 		if(null == obj){
 			return null;
 		}

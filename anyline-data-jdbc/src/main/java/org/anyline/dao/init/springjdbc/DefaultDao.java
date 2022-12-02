@@ -890,7 +890,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRunSQL(prepare, configs, conditions);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRun(prepare, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false]");
@@ -1195,7 +1195,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public int deletes(String table, String key, Collection<Object> values){
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, key, values);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRun(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1206,7 +1206,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list.add(value);
 			}
 		}
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, key, list);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRun(table, key, list);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1221,7 +1221,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				log.warn("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 			}else{
-				Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(dest, obj, columns);
+				Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRun(dest, obj, columns);
 				size = exeDelete(run);
 
 			}
@@ -1231,7 +1231,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, configs, conditions);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRun(table, configs, conditions);
 		int result = exeDelete(run);
 		return result;
 	}

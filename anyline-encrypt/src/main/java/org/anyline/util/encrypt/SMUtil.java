@@ -80,6 +80,12 @@ public class SMUtil {
         return sm2(false);
     }
 
+    /**
+     * 提供公钥或私钥
+     * @param publicKey 私钥
+     * @param privateKey 公钥
+     * @return SM2
+     */
     public static SM2 sm2(String publicKey, String privateKey) {
         return new SM2(publicKey, privateKey);
     }
@@ -190,7 +196,7 @@ public class SMUtil {
         }
 
         /**
-         * SM2加密算法
+         * SM2加密
          *
          * @param publicKey 公钥
          * @param bytes     待加密的数据
@@ -261,8 +267,10 @@ public class SMUtil {
          * SM2解密算法
          *
          * @param privateKey 私钥
-         * @param data       密文数据
-         * @return 解析密码hex
+         * @param data       密文数据(16进制string 不区分大小写，可以空格分隔，没有也可)
+         *    047c7876a0412479d9a59717b59624fbf43a39....
+         *    04 7C 78 76 A0 41 ....
+         * @return hex
          */
         public static String decrypt(String privateKey, String data) {
             //按国密排序标准解密
@@ -283,8 +291,8 @@ public class SMUtil {
         /**
          * SM2解密算法
          *
-         * @param privateKey 私钥
-         * @param data 密文数据
+         * @param privateKey 私钥(16进制string 可以空格分隔，没有也可)
+         * @param data 密文数据(16进制string 可以空格分隔，没有也可)
          * @param mode 密文排列方式0-C1C2C3；1-C1C3C2；
          * @return 解密后bytes
          */
@@ -292,6 +300,9 @@ public class SMUtil {
             // 使用BC库加解密时密文以04开头，传入的密文前面没有04则补上
             if (!data.startsWith("04")) {
                 data = "04" + data;
+            }
+            if(privateKey.contains(" ")){
+                privateKey = privateKey.replace(" ", "");
             }
             byte[] cipherDataByte = Hex.decode(data);
 

@@ -302,8 +302,13 @@ public interface JDBCAdapter {
 	 * @param conditions conditions
 	 * @return Run
 	 */
-	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 
+	/**
+	 * 构造执行主体
+	 * @param run run
+	 */
+	public void buildExecuteRunContent(Run run);
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
@@ -316,7 +321,7 @@ public interface JDBCAdapter {
 	 * @param columns 删除条件的我
 	 * @return Run
 	 */
-	public Run buildDeleteRunSQL(String dest, Object obj, String ... columns);
+	public Run buildDeleteRun(String dest, Object obj, String ... columns);
 	/**
 	 * 根据key values删除
 	 * @param table 表
@@ -324,7 +329,7 @@ public interface JDBCAdapter {
 	 * @param values values
 	 * @return Run
 	 */
-	public Run buildDeleteRunSQL(String table, String key, Object values);
+	public Run buildDeleteRun(String table, String key, Object values);
 
 	/**
 	 * 构造删除主体

@@ -737,9 +737,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         return builder;
     }
 
+    @Override
     protected void buildQueryRunContent(XMLRun run){
     }
+    @Override
     protected void buildQueryRunContent(TextRun run){
+        replaceVariable(run);
+        run.appendCondition();
+        run.appendGroup();
+        // appendOrderStore();
+        run.checkValid();
+    }
+
+    protected void replaceVariable(TextRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -834,11 +844,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
 
         builder.append(result);
-        run.appendCondition();
-        run.appendGroup();
-        // appendOrderStore();
-        run.checkValid();
     }
+    @Override
     protected void buildQueryRunContent(TableRun run){
         StringBuilder builder = run.getBuilder();
         TablePrepare sql = (TablePrepare)run.getPrepare();
@@ -923,6 +930,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         return sql;
     }
 
+    /* *****************************************************************************************************************
+     * 													EXECUTE
+     * -----------------------------------------------------------------------------------------------------------------
+     * public void buildExecuteRunContent(Run run);
+     ******************************************************************************************************************/
+
+    @Override
+    protected void buildExecuteRunContent(TextRun run){
+        replaceVariable(run);
+        run.appendCondition();
+        run.appendGroup();
+        run.checkValid();
+    }
     /* *****************************************************************************************************************
      * 													TOTAL
      * -----------------------------------------------------------------------------------------------------------------
