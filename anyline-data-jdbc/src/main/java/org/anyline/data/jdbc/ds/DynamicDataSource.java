@@ -22,11 +22,31 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 	@Override 
 	protected Object determineCurrentLookupKey() { 
 		return DataSourceHolder.getDataSource(); 
-	} 
-	public static void addDataSource(String key, DataSource ds) { 
+	}
+ 
+	@Override 
+	protected DataSource determineTargetDataSource() { 
+		DataSource dataSource = null; 
+		Object lookupKey = determineCurrentLookupKey(); 
+		dataSource = dataSources.get(lookupKey); 
+		if(null == dataSource){
+			log.error("[获取数据源失败][thread:{}][key:{}][切换回默认数据源]",Thread.currentThread().getId(),lookupKey);
+			try{ 
+				dataSource = super.determineTargetDataSource(); 
+			}catch(Exception e){ 
+				 e.printStackTrace();
+			} 
+		} 
+		if(null == dataSource){ 
+			log.error("[获取数据源失败][thread:{}][key:{}]",Thread.currentThread().getId(), lookupKey); 
+		} 
+		return dataSource; 
+	}
+
+	public static void addDataSource(String key, DataSource ds) {
 		dataSources.put(key, ds);
 		reg(key,ds);
-    }
+	}
 	public static void setDefaultDatasource(DataSource ds){
 		defaultDatasource = ds;
 		reg("dataSource",ds);
@@ -49,22 +69,4 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 		}
 	}
 
- 
-	@Override 
-	protected DataSource determineTargetDataSource() { 
-		DataSource dataSource = null; 
-		Object lookupKey = determineCurrentLookupKey(); 
-		dataSource = dataSources.get(lookupKey); 
-		if(null == dataSource){ 
-			try{ 
-				dataSource = super.determineTargetDataSource(); 
-			}catch(Exception e){ 
-				 
-			} 
-		} 
-		if(null == dataSource){ 
-			log.error("[获取数据源失败][thread:{}][key:{}]",Thread.currentThread().getId(), lookupKey); 
-		} 
-		return dataSource; 
-	} 
 }
