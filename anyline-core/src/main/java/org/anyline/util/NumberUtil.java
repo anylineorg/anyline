@@ -619,7 +619,7 @@ public class NumberUtil {
 	/**
 	 * 将byte转成二进制
 	 * @param b byte
-	 * @returnString
+	 * @return String
 	 */
 	public static String byte2binary(byte  b){
 		String value = Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
