@@ -913,7 +913,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return getRows(compare, 0, params);
     }
     public DataSet getRows(String... params) {
-        return getRows(Compare.EQUAL, 0, params);
+        return getRows(Compare.AUTO, 0, params);
     }
 
     public DataSet getRows(Compare compare, DataSet set, String key) {
