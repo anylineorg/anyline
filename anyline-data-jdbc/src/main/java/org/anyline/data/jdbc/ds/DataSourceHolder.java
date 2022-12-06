@@ -62,12 +62,7 @@ public class DataSourceHolder {
 	 * @param dataSource 数据源在spring context中注册的名称
 	 */
 	public static void setDataSource(String dataSource) {
-    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-    		log.warn("[切换数据源][thread:{}][数据源:{}]",Thread.currentThread().getId(),dataSource); 
-    	} 
-    	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
-    	THREAD_CUR_SOURCE.set(dataSource); 
-    	THREAD_AUTO_DEFAULT.set(false); 
+		setDataSource(dataSource, false);
     }
 
 	/**
@@ -75,7 +70,10 @@ public class DataSourceHolder {
 	 * @param dataSource 数据源在spring context中注册的名称
 	 * @param auto 执行完后切换回原来的数据库
 	 */
-    public static void setDataSource(String dataSource, boolean auto) { 
+    public static void setDataSource(String dataSource, boolean auto) {
+		if(null == dataSource || !dataSources.contains(dataSource)){
+			throw new RuntimeException("数据源未注册:"+dataSource);
+		}
     	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[切换数据源][thread:{}][数据源:{}][auto default:{}]",Thread.currentThread().getId(),dataSource,auto); 
     	} 
