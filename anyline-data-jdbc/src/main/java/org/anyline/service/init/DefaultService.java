@@ -2103,28 +2103,23 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         @Override
-        public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types) {
-            return dao.ptables(catalog, schema, name, types);
+        public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name) {
+            return dao.ptables(catalog, schema, master, name);
         }
 
         @Override
-        public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types) {
-            return ptables(null, schema, name, types);
+        public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name) {
+            return ptables(null, schema, master, name);
         }
 
         @Override
-        public LinkedHashMap<String, PartitionTable> ptables(String name, String types) {
-            return ptables(null, null, name, types);
+        public LinkedHashMap<String, PartitionTable> ptables(String master, String name) {
+            return ptables(null, null, master, name);
         }
 
         @Override
-        public LinkedHashMap<String, PartitionTable> ptables(String types) {
-            return ptables(null, types);
-        }
-
-        @Override
-        public LinkedHashMap<String, PartitionTable> ptables() {
-            return ptables("STABLE");
+        public LinkedHashMap<String, PartitionTable> ptables(String master) {
+            return ptables(master);
         }
 
         @Override
@@ -2132,13 +2127,13 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.ptables(master);
         }
         @Override
-        public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags) {
+        public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String, Object> tags) {
             return dao.ptables(master, tags);
         }
 
         @Override
-        public PartitionTable ptable(String catalog, String schema, String name) {
-            LinkedHashMap<String, PartitionTable> tables = ptables(catalog, schema, name, "STABLE");
+        public PartitionTable ptable(String catalog, String schema, String master, String name) {
+            LinkedHashMap<String, PartitionTable> tables = ptables(catalog, schema, master, name);
             if(tables.size() == 0){
                 return null;
             }
@@ -2150,13 +2145,13 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public PartitionTable ptable(String schema, String name) {
-            return ptable(null, schema, name);
+        public PartitionTable ptable(String schema, String master, String name) {
+            return ptable(null, schema, master, name);
         }
 
         @Override
-        public PartitionTable ptable(String name) {
-            return ptable(null, null, name);
+        public PartitionTable ptable(String master, String name) {
+            return ptable(null, null, master, name);
         }
 
         /* *****************************************************************************************************************

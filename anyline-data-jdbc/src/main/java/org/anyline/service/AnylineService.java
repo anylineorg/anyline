@@ -705,11 +705,10 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		public boolean exists(PartitionTable table);
-		public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
-		public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
-		public LinkedHashMap<String, PartitionTable> ptables(String types);
-		public LinkedHashMap<String, PartitionTable> ptables();
+		public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(String master, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(String master);
 		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
 
 		/**
@@ -720,9 +719,9 @@ public interface AnylineService<E>{
 		 */
 		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
 
-		public PartitionTable ptable(String catalog, String schema, String name);
-		public PartitionTable ptable(String schema, String name);
-		public PartitionTable ptable(String name);
+		public PartitionTable ptable(String catalog, String schema, String master, String name);
+		public PartitionTable ptable(String schema, String master, String name);
+		public PartitionTable ptable(String master, String name);
 
 
 		/* *****************************************************************************************************************

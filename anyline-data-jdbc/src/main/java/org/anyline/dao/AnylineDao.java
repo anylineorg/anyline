@@ -184,11 +184,10 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
-	public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
-	public LinkedHashMap<String, PartitionTable> ptables(String types);
-	public LinkedHashMap<String, PartitionTable> ptables();
+	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(String master, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(String master);
 	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
 	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
 

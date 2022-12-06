@@ -1583,33 +1583,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types)
-	 * public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types)
-	 * public LinkedHashMap<String, PartitionTable> ptables(String name, String types)
-	 * public LinkedHashMap<String, PartitionTable> ptables(String types)
-	 * public LinkedHashMap<String, PartitionTable> ptables()
+	 * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name)
+	 * public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name)
+	 * public LinkedHashMap<String, PartitionTable> ptables(String master, String name)
+	 * public LinkedHashMap<String, PartitionTable> ptables(String master)
 	 * public LinkedHashMap<String, PartitionTable> ptables(MasterTable table)
 	 ******************************************************************************************************************/
 
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types){
-		return null;
+	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name){
+		MasterTable mtable = new MasterTable(catalog, schema, master);
+		return ptables(mtable);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types){
-		return null;
+	public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name){
+		return ptables(null, schema, master, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String name, String types){
-		return null;
+	public LinkedHashMap<String, PartitionTable> ptables(String master, String name){
+		return ptables(null, null, master, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String types){
-		return null;
-	}
-	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(){
-		return null;
+	public LinkedHashMap<String, PartitionTable> ptables(String master){
+		return ptables(null, null, master, null);
 	}
 	@Override
 	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master){

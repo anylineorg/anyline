@@ -1079,20 +1079,17 @@ public class ServiceProxy {
         public static boolean exists(PartitionTable table){
             return service.metadata().exists(table);
         }
-        public static LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types){
-            return service.metadata().ptables(catalog, schema, name, types);
+        public static LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name){
+            return service.metadata().ptables(catalog, schema, master, name);
         }
-        public static LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types){
-            return service.metadata().ptables(schema, name, types);
+        public static LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name){
+            return service.metadata().ptables(schema, master, name);
         }
-        public static LinkedHashMap<String, PartitionTable> ptables(String name, String types){
-            return service.metadata().ptables(name, types);
+        public static LinkedHashMap<String, PartitionTable> ptables(String master, String name){
+            return service.metadata().ptables(master, name);
         }
-        public static LinkedHashMap<String, PartitionTable> ptables(String types){
-            return service.metadata().ptables(types);
-        }
-        public static LinkedHashMap<String, PartitionTable> ptables(){
-            return service.metadata().ptables();
+        public static LinkedHashMap<String, PartitionTable> ptables(String master){
+            return service.metadata().ptables(master);
         }
         public static LinkedHashMap<String, PartitionTable> ptables(MasterTable master){
             return service.metadata().ptables(master);

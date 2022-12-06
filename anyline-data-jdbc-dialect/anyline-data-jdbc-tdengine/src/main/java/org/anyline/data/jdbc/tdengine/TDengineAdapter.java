@@ -394,8 +394,11 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
-		String stable = master.getName();
+		StringBuilder builder = null;
+		String stable = null;
+		if(null != master) {
+			stable = master.getName();
+		}
 		//where 不支持子查询
 		/*builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("' AND TYPE='CHILD_TABLE'");
 		if(null != tags && tags.size()>0){
@@ -421,7 +424,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			for(String key:tags.keySet()){
 				builder = new StringBuilder();
 				Object value = tags.get(key);
-				builder.append("SELECT table_name FROM INFORMATION_SCHEMA.INS_TAGS WHERE stable_name = '").append(stable).append("'")
+				builder.append("SELECT table_name FROM INFORMATION_SCHEMA.INS_TAGS WHERE STABLE_NAME = '").append(stable).append("'")
 						.append(" AND TAG_NAME ='").append(key.toLowerCase()).append("'")
 						.append(" AND TAG_VALUE ");
 
