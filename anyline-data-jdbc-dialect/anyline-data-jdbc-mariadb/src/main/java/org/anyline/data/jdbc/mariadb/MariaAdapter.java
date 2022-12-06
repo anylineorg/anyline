@@ -1,15 +1,14 @@
  
 package org.anyline.data.jdbc.mariadb;
- 
+
 import org.anyline.data.entity.*;
-import org.anyline.data.entity.*;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.OrderStore;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -258,7 +257,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(master, tags, String name);
+		return super.buildQueryPartitionTableRunSQL(master, tags, name);
 	}
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
