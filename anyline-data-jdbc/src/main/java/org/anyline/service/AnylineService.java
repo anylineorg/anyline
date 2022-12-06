@@ -42,6 +42,7 @@ public interface AnylineService<E>{
 	 * @param datasource 数据源
 	 */
 	public AnylineService datasource(String datasource);
+	public AnylineService datasource();
 
 	/* *****************************************************************************************************************
 	 *

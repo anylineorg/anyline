@@ -65,6 +65,10 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSourceHolder.setDataSource(datasource);
         return this;
     }
+    public AnylineService datasource(){
+        DataSourceHolder.setDefaultDataSource();
+        return this;
+    }
     /**
      * 按条件查询
      * @param src 			数据源(表｜视图｜函数｜自定义SQL | SELECT语句)
