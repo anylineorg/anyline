@@ -26,7 +26,7 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
   机械繁琐的工作应该交给机器  
    [【查询示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-condition)  
    [【DDL示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-ddl)
-   主要一些操作表结构、索引、主表、子表等的创建更新操作  
+   主要一些操作表结构、索引、主表、分区表(子表)等的创建更新操作  
    [【metadata示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-metadata)
    主要针对几个常用数据库的元数据的一些查询    
   这里说的动态是指:  
