@@ -2119,7 +2119,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public LinkedHashMap<String, PartitionTable> ptables(String master) {
-            return ptables(master);
+            return ptables(null, null, master, null);
         }
 
         @Override

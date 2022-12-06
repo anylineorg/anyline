@@ -480,7 +480,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}else if(index < total -1){
 			//与此之前的集合求交集
 			tables.keySet().retainAll(set.getStrings("table_name"));
-		}else{
+		}
+		if(index == total -1){
 			//最后一步 补充详细信息
 			LinkedHashMap<String, PartitionTable> result = new LinkedHashMap<>();
 			for (DataRow row:set){
