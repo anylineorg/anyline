@@ -49,6 +49,9 @@ public class DefaultConfigStore implements ConfigStore {
 	protected OrderStore orders;		// 排序依据
 	protected GroupStore groups;
 
+	public DefaultConfigStore init(){
+		return new DefaultConfigStore();
+	}
 	@Override
 	public String toString(){
 		String str = "";
@@ -143,6 +146,7 @@ public class DefaultConfigStore implements ConfigStore {
 			chain.addConfig(parseConfig(config));
 		}
 	}
+
 
 	@Override
 	public ConfigStore addConditions(String var, Object ... values){
