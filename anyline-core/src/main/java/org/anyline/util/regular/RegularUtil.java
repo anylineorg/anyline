@@ -423,7 +423,7 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTag(String src, String ...tags){
-		if(null == src || null == tags || tags.length == 0){
+		if(null == src){
 			return src;
 		}
 		if(null == tags || tags.length==0){
@@ -446,7 +446,7 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagWithBody(String src, String ...tags){
-		if(null == src || null == tags || tags.length == 0){
+		if(null == src){
 			return src;
 		}
 		if(null == tags || tags.length==0){
@@ -496,7 +496,7 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeAttribute(String src, String ... attributes){
-		if(null == src || null == attributes || attributes.length == 0){
+		if(null == src){
 			return src;
 		}
 		String reg = null;
