@@ -90,8 +90,11 @@ public class DataSourceHolder {
     	if(dataSources.contains("default")){ 
     		setDataSource("default"); 
     	} 
-    	THREAD_AUTO_DEFAULT.set(false); 
-    } 
+    	THREAD_AUTO_DEFAULT.set(false);
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+			log.warn("[切换数据源][thread:{}][数据源:默认数据源]");
+		}
+	}
     public static void clearDataSource() { 
     	THREAD_CUR_SOURCE.remove(); 
     } 
