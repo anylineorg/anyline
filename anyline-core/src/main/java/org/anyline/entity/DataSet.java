@@ -799,6 +799,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         String srcFlagTag = "srcFlag"; // 参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
 
         Map<String,Compare> compares = new HashMap<>();
+        Map<String, String> compareKvs = new HashMap<>();
         if(null == compare || compare == Compare.AUTO) {
             for (String k : kvs.keySet()) {
                 // k(ID) , v(>=10)(%A%)
@@ -831,9 +832,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         v = v.substring(1);
                         cmp = Compare.LIKE_SUFFIX;
                     }
+                    compareKvs.put(k,v);
                     compares.put(k, cmp);
                 }
             }
+            kvs = compareKvs;
         }
         int size = rows.size();
         for (int i=begin; i<size; i++) {
@@ -873,7 +876,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         break;
                     }
                     Compare cmp = null;
-                    if(null != compare){
+                    if(null != compare && Compare.AUTO != compare){
                         cmp = compare;
                     }else{
                         cmp = compares.get(k);;
