@@ -368,6 +368,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name);
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags);
 	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
@@ -392,7 +393,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return List
 	 */
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = null;
 		String stable = null;
@@ -442,10 +443,17 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		builder = new StringBuilder();
 		builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("'");
+		if(BasicUtil.isNotEmpty(name)){
+			builder.append(" AND TABLE_NAME = '").append(name).append("'");
+		}
 		sqls.add(builder.toString());
 		return sqls;
 	}
 
+	@Override
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
+		return buildQueryPartitionTableRunSQL(master, tags, null);
+	}
 
 	/**
 	 *  根据查询结果集构造分区表

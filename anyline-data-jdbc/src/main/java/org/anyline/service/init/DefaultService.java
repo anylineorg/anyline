@@ -2130,6 +2130,10 @@ public class DefaultService<E> implements AnylineService<E> {
         public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String, Object> tags) {
             return dao.ptables(master, tags);
         }
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String, Object> tags, String name) {
+            return dao.ptables(master, tags, name);
+        }
 
         @Override
         public PartitionTable ptable(String catalog, String schema, String master, String name) {

@@ -568,7 +568,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != tags && tags.size()>0){
 				LinkedHashMap<String,PartitionTable> ptables = ptables(new MasterTable(dest), tags);
 				if(ptables.size() != 1){
-					throw new SQLUpdateException("子表定位异常,主表:"+dest+",标签:"+BeanUtil.map2json(tags)+",子表:"+BeanUtil.object2json(ptables.keySet()));
+					throw new SQLUpdateException("分区表定位异常,主表:"+dest+",标签:"+BeanUtil.map2json(tags)+",分区表:"+BeanUtil.object2json(ptables.keySet()));
 				}
 				dest = ptables.values().iterator().next().getName();
 			}
@@ -1593,7 +1593,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name){
 		MasterTable mtable = new MasterTable(catalog, schema, master);
-		return ptables(mtable);
+		return ptables(mtable, null, name);
 	}
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name){
@@ -1613,6 +1613,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master, Map<String, Object> tags){
+		return ptables(master, tags, null);
+	}
+	@Override
+	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master, Map<String, Object> tags, String name){
 		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
@@ -1624,7 +1628,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
 			try{
-				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master, tags);
+				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master, tags, name);
 				if(null != sqls) {
 					int idx = 0;
 					int total = sqls.size();

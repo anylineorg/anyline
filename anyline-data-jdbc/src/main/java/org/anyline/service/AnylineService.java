@@ -715,8 +715,10 @@ public interface AnylineService<E>{
 		 * 根据主表与标签值查询分区表(子表)
 		 * @param master 主表
 		 * @param tags 标签值
+		 * @param name 子表名
 		 * @return PartitionTables
 		 */
+		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags, String name);
 		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
 
 		public PartitionTable ptable(String catalog, String schema, String master, String name);

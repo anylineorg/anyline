@@ -444,6 +444,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
 	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
@@ -460,6 +461,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
+	}
+	@Override
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
+		return super.buildQueryPartitionTableRunSQL(master, tags, name);
 	}
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{

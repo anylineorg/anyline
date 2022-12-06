@@ -476,9 +476,11 @@ public interface JDBCAdapter {
 	 * 根据主表查询分区表
 	 * @param master 主表
 	 * @param tags 标签名+标签值
+	 * @param name 分区表名
 	 * @return sql
 	 * @throws Exception 异常
 	 */
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception;
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception;
 
 	/**

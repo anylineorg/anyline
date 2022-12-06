@@ -971,7 +971,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
- 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
  	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
@@ -992,6 +993,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)",37));
+		return null;
+	}
+	@Override
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)",37));
 		return null;
 	}
 
