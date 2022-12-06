@@ -1105,14 +1105,14 @@ public class ServiceProxy {
             return service.metadata().ptables(master, tags);
         }
 
-        public static PartitionTable ptable(String catalog, String schema, String name){
-            return service.metadata().ptable(catalog, schema, name);
+        public static PartitionTable ptable(String catalog, String schema, String master, String name){
+            return service.metadata().ptable(catalog, schema, master, name);
         }
-        public static PartitionTable ptable(String schema, String name){
-            return service.metadata().ptable(schema, name);
+        public static PartitionTable ptable(String schema, String master, String name){
+            return service.metadata().ptable(schema, master, name);
         }
-        public static PartitionTable ptable(String name){
-            return service.metadata().ptable(name);
+        public static PartitionTable ptable(String master, String name){
+            return service.metadata().ptable(master, name);
         }
 
 
