@@ -4547,8 +4547,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         continue;
                     }
                     if (ignoreCase) {
-                        tmpValue = tmpValue.toLowerCase();
-                        pattern = pattern.toLowerCase();
+                        pattern = "(?i)"+pattern;
                     }
                     if (RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
                         set.add(row);
@@ -4587,8 +4586,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         continue;
                     }
                     if (ignoreCase) {
-                        tmpValue = tmpValue.toLowerCase();
-                        pattern = pattern.toLowerCase();
+                        pattern = "(?i)"+pattern;
                     }
                     if (!RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
                         set.add(row);
