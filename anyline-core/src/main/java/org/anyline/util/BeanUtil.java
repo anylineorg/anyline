@@ -1320,10 +1320,10 @@ public class BeanUtil {
 	 * @param list List
 	 * @return String
 	 */
-	public String list2string(List<?> list){
+	public static String list2string(List<?> list){
 		return "[" + concat(list) + "]";
 	}
-	public <T> String array2string(T[] array){
+	public static <T> String array2string(T[] array){
 		return "[" + concat(array) + "]";
 	}
 
