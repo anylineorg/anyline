@@ -1316,6 +1316,18 @@ public class BeanUtil {
 	}
 
 	/**
+	 * 与toString不同的是 中间没有空格与引号[1,2,3]而不是[1, 2, 3]
+	 * @param list List
+	 * @return String
+	 */
+	public String list2string(List<?> list){
+		return "[" + concat(list) + "]";
+	}
+	public <T> String array2string(T[] array){
+		return "[" + concat(array) + "]";
+	}
+
+	/**
 	 * 截取数组
 	 * @param array 原数组
 	 * @param fr 开始位置
