@@ -53,7 +53,7 @@ public class ServiceProxy {
         DataSourceHolder.setDataSource(datasource, auto);
         return service;
     }
-    public static AnylineService setDefaultDataSource({
+    public static AnylineService setDefaultDataSource(){
         DataSourceHolder.setDefaultDataSource();
         return service;
     }
