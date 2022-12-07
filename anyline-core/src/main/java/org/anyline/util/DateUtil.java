@@ -22,8 +22,6 @@ import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -846,12 +844,14 @@ public class DateUtil {
 	 * @return Date
 	 */
 	public static Date parse(String date, String format) {
-		SimpleDateFormat df = new SimpleDateFormat(format);
-		try {
-			return df.parse(date);
-		} catch (ParseException e) {
-			return null;
+		DateTimeFormatter formatter = null;
+		if(null != format) {
+			formatter = DateTimeFormatter.ofPattern(format);
+		}else{
+			formatter = DateTimeFormatter.ISO_LOCAL_TIME;
 		}
+		LocalDateTime datetime = LocalDateTime.parse(date, formatter);
+		return parse(datetime);
 	}
 	public static Date parse(Object value){
 		Date date = null;
@@ -861,11 +861,14 @@ public class DateUtil {
 			}else if(value instanceof Date){
 				date = (Date)value;
 			}else if(value instanceof java.sql.Date){
-				date = new Date(((java.sql.Date)value).getTime());
+				java.sql.Date convert = (java.sql.Date)value;
+				date = new Date(convert.getTime());
 			}else if(value instanceof LocalDate){
-				date = Date.from(((LocalDate)value).atStartOfDay(ZoneId.systemDefault()).toInstant());
+				LocalDate convert = (LocalDate)value;
+				date = Date.from(convert.atStartOfDay(ZoneId.systemDefault()).toInstant());
 			}else if(value instanceof LocalDateTime){
-				date = Date.from(((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant());
+				LocalDateTime convert = (LocalDateTime)value;
+				date = Date.from(convert.atZone(ZoneId.systemDefault()).toInstant());
 			}else if(value instanceof String){
 				date = parse((String)value);
 			}
@@ -931,9 +934,8 @@ public class DateUtil {
 				if(str.contains(".")){
 					// 2020-12-19T16:22:50.101Z
 					format = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
-					SimpleDateFormat sdf = new SimpleDateFormat(format);
-					String tempTime = str.replace("Z", " UTC");
-					return sdf.parse(tempTime);
+					String temp = str.replace("Z", " UTC");
+					return parse(temp, format);
 				}
 				OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
 				return Date.from(offsetDateTime.toInstant());
@@ -953,13 +955,11 @@ public class DateUtil {
 
 		}
 
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		try {
-			date = sdf.parse(str);
+			date = parse(str, format);
 		} catch (Exception e) {
 			try {
-				sdf = new SimpleDateFormat();
-				date = sdf.parse(str);
+				date = parse(str, null);
 			} catch (Exception excep) {
 				date = null;
 			}
