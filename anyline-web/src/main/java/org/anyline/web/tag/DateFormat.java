@@ -25,6 +25,7 @@ import org.anyline.util.DateUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
  
@@ -89,7 +90,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 				}
 			}
 			if(null != date){
-				result = DateUtil.format(local,date,format);
+				result = DateUtil.format(local, ZoneId.systemDefault(),date,format);
 			}
 			if(BasicUtil.isEmpty(result)){
 				if(null !=nvl && !"false".equalsIgnoreCase(nvl.toString()) && !(nvl instanceof Boolean)){

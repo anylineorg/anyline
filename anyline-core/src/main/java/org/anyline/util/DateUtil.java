@@ -205,6 +205,33 @@ public class DateUtil {
 		return format(locale, zone, d, format);
 	}
 
+	public static String format(Locale locale, Date date, String format) {
+		return format(locale, ZoneId.systemDefault(), date, format);
+	}
+
+	public static String format(Locale locale, Long date, String format) {
+		return format(locale, ZoneId.systemDefault(), date, format);
+	}
+
+	public static String format(Locale locale) {
+		return format(locale, ZoneId.systemDefault());
+	}
+
+	public static String format(Locale locale, String format) {
+		return format(locale, ZoneId.systemDefault(), format);
+	}
+
+	public static String format(Locale locale, Date date) {
+		return format(locale, ZoneId.systemDefault(), date);
+	}
+
+	public static String format(Locale locale, Long date) {
+		return format(locale, ZoneId.systemDefault(), date);
+	}
+
+	public static String format(Locale locale, String date, String format) {
+		return format(locale, ZoneId.systemDefault(), date, format);
+	}
 	public static String format(Date date, String format) {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
