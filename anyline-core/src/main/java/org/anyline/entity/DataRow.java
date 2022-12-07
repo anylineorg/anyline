@@ -1611,6 +1611,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Long getLong(String key) throws Exception {
         Object value = get(key);
+        if(null != value){
+            if(value instanceof Long){
+                return (Long)value;
+            }
+            if(value instanceof Date){
+                Date date = (Date)value;
+                return date.getTime();
+            }
+            if(value instanceof java.sql.Timestamp){
+                java.sql.Timestamp timestamp = (java.sql.Timestamp)value;
+                return timestamp.getTime();
+            }
+            if(value instanceof java.sql.Date){
+                Date date = (java.sql.Date)value;
+                return date.getTime();
+            }
+            if(value instanceof LocalDateTime || value instanceof Locale){
+                return DateUtil.parse(value).getTime();
+            }
+        }
         return Long.parseLong(value.toString());
     }
 
