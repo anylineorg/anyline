@@ -131,26 +131,37 @@ public class BeanUtil {
 			boolean compatible = true;//是否兼容 int long等不能设置null值
 			String type = field.getType().getSimpleName().toLowerCase();
 			if(null != v){
-				if(type.equals("int") || type.equals("integer")){
-					v = Integer.parseInt(value.toString());
-				}else if(type.equals("double")){
-					v = Double.parseDouble(value.toString());
-				}else if(type.equals("long")){
-					v = Long.parseLong(value.toString());
-				}else if(type.equals("float")){
-					v = Float.parseFloat(value.toString());
-				}else if(type.equals("boolean")){
-					v = Boolean.parseBoolean(value.toString());
-				}else if(type.equals("short")){
-					v = Short.parseShort(value.toString());
-				}else if(type.equals("bigdecimal")){
-					v = new BigDecimal(value.toString());
-				}else if(type.equals("byte")){
-					v = Byte.parseByte(value.toString());
-				}else if(type.equals("date")){
-					v = DateUtil.parse(v);
-				}else if(type.equals("string")){
-					v = v.toString();
+				if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
+					if (type.equals("int") || type.equals("integer")) {
+						v = Integer.parseInt(value.toString());
+					} else if (type.equals("double")) {
+						v = Double.parseDouble(value.toString());
+					} else if (type.equals("long")) {
+						v = Long.parseLong(value.toString());
+					} else if (type.equals("float")) {
+						v = Float.parseFloat(value.toString());
+					} else if (type.equals("boolean")) {
+						v = Boolean.parseBoolean(value.toString());
+					} else if (type.equals("short")) {
+						v = Short.parseShort(value.toString());
+					} else if (type.equals("bigdecimal")) {
+						v = new BigDecimal(value.toString());
+					} else if (type.equals("byte")) {
+						v = Byte.parseByte(value.toString());
+					} else if (type.equals("date")) {
+						v = DateUtil.parse(v);
+					} else if(type.equals("localtime")){
+						Date date = DateUtil.parse(v);
+						v = DateUtil.localTime(date);
+					} else if(type.equals("localdate")){
+						Date date = DateUtil.parse(v);
+						v = DateUtil.localDate(date);
+					} else if(type.equals("localdatetime")){
+						Date date = DateUtil.parse(v);
+						v = DateUtil.localDateTime(date);
+					}else if (type.equals("string")) {
+						v = v.toString();
+					}
 				}
 			}else{
 				if(type.equals("int")

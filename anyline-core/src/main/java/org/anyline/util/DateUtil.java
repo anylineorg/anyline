@@ -24,10 +24,7 @@ import org.anyline.util.regular.RegularUtil;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 
@@ -185,7 +182,7 @@ public class DateUtil {
 	public static String format(Locale locale, Long date, String format) {
 		if (null == date || null == format)
 			return "";
-		return new java.text.SimpleDateFormat(format, locale).format(date);
+		return format(locale, parse(date), format);
 	}
 
 	public static String format(Locale locale) {
@@ -1044,7 +1041,7 @@ public class DateUtil {
 		Calendar calendar = getCalendar();
 		calendar.setTime(parse(date));
 		calendar.add(Calendar.DAY_OF_YEAR, value);
-		return DateUtil.format(calendar.getTime(),"yyyy-MM-dd");
+		return format(calendar.getTime(),"yyyy-MM-dd");
 	}
 
 	/**
@@ -1668,5 +1665,51 @@ public class DateUtil {
 			result = "0毫秒";
 		}
 		return result;
+	}
+	public static LocalDateTime localDateTime(Date date, ZoneId zone){
+		if(null == date){
+			return null;
+		}
+		return  date.toInstant().atZone(zone).toLocalDateTime();
+	}
+	public static LocalDateTime localDateTime(Date date){
+		return localDateTime(date, ZoneId.systemDefault());
+	}
+	public static LocalTime localTime(Date date, ZoneId zone){
+		if(null == date){
+			return null;
+		}
+		return  date.toInstant().atZone(zone).toLocalTime();
+	}
+	public static LocalTime localTime(Date date){
+		return localTime(date, ZoneId.systemDefault());
+	}
+	public static LocalDate localDate(Date date, ZoneId zone){
+		if(null == date){
+			return null;
+		}
+		return  date.toInstant().atZone(zone).toLocalDate();
+	}
+	public static LocalDate localDate(Date date){
+		return localDate(date, ZoneId.systemDefault());
+	}
+
+	public static LocalDateTime localDateTime(Long timestamp, ZoneId zone){
+		return localDateTime(parse(timestamp), zone);
+	}
+	public static LocalDateTime localDateTime(Long timestamp){
+		return localDateTime(parse(timestamp), ZoneId.systemDefault());
+	}
+	public static LocalTime localTime(Long timestamp, ZoneId zone){
+		return localTime(parse(timestamp), zone);
+	}
+	public static LocalTime localTime(Long timestamp){
+		return localTime(timestamp, ZoneId.systemDefault());
+	}
+	public static LocalDate localDate(Long timestamp, ZoneId zone){
+		return  localDate(parse(timestamp), zone);
+	}
+	public static LocalDate localDate(Long timestamp){
+		return localDate(timestamp, ZoneId.systemDefault());
 	}
 }
