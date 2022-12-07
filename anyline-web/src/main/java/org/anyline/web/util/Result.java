@@ -4,7 +4,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -94,8 +93,8 @@ public class Result {
         Map<String, Object> map = new HashMap<>();
         String dataType = null; // 数据类型
         String response_key_message = ConfigTable.getString("RESPONSE_KEY_MESSAGE","message");
-        String response_key_data = ConfigTable.getString("RESPONSE_KEY_MESSAGE","data");
-        String response_key_code = ConfigTable.getString("RESPONSE_KEY_MESSAGE","code");
+        String response_key_data = ConfigTable.getString("RESPONSE_KEY_DATA","data");
+        String response_key_code = ConfigTable.getString("RESPONSE_KEY_CODE","code");
 
 
         String response_key_navi = ConfigTable.getString("RESPONSE_KEY_NAVI","navi");
