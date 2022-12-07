@@ -69,6 +69,23 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSourceHolder.setDefaultDataSource();
         return this;
     }
+    public AnylineService setDataSource(String datasource){
+        DataSourceHolder.setDataSource(datasource);
+        return this;
+    }
+    public AnylineService setDataSource(String datasource, boolean auto){
+        DataSourceHolder.setDataSource(datasource, auto);
+        return this;
+    }
+    public AnylineService setDefaultDataSource(){
+        DataSourceHolder.setDefaultDataSource();
+        return this;
+    }
+    // 恢复切换前数据源
+    public AnylineService recoverDataSource(){
+        DataSourceHolder.recoverDataSource();
+        return this;
+    }
     /**
      * 按条件查询
      * @param src 			数据源(表｜视图｜函数｜自定义SQL | SELECT语句)

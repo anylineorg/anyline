@@ -43,6 +43,10 @@ public interface AnylineService<E>{
 	 */
 	public AnylineService datasource(String datasource);
 	public AnylineService datasource();
+	public AnylineService setDataSource(String datasource);
+	public AnylineService setDataSource(String datasource, boolean auto);
+	public AnylineService setDefaultDataSource();
+	public AnylineService recoverDataSource();
 
 	/* *****************************************************************************************************************
 	 *
