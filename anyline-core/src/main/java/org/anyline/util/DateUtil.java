@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -173,68 +174,66 @@ public class DateUtil {
 	 * @param format  格式
 	 * @return String
 	 */
-	public static String format(Locale locale, Date date, String format) {
+	public static String format(Locale locale, ZoneId zone, Date date, String format) {
 		if (null == date || null == format)
 			return "";
-		return new java.text.SimpleDateFormat(format, locale).format(date);
+		LocalDateTime datetime = localDateTime(date, zone);
+		return datetime.format(DateTimeFormatter.ofPattern(format, locale));
 	}
-
-	public static String format(Locale locale, Long date, String format) {
+	public static String format(Locale locale, ZoneId zone, Long date, String format) {
 		if (null == date || null == format)
 			return "";
-		return format(locale, parse(date), format);
+		return format(locale, zone, parse(date), format);
 	}
 
-	public static String format(Locale locale) {
-		return format(locale, new Date(), FORMAT_DATE_TIME);
+	public static String format(Locale locale, ZoneId zone) {
+		return format(locale, zone, new Date(), FORMAT_DATE_TIME);
 	}
 
-	public static String format(Locale locale, String format) {
-		return format(locale, new Date(), format);
+	public static String format(Locale locale, ZoneId zone, String format) {
+		return format(locale, zone, new Date(), format);
 	}
 
-	public static String format(Locale locale, Date date) {
-		return format(locale, date, FORMAT_FULL);
+	public static String format(Locale locale, ZoneId zone, Date date) {
+		return format(locale, zone, date, FORMAT_FULL);
 	}
 
-	public static String format(Locale locale, Long date) {
-		return format(locale, date, FORMAT_FULL);
+	public static String format(Locale locale, ZoneId zone, Long date) {
+		return format(locale, zone, date, FORMAT_FULL);
 	}
 
-	public static String format(Locale locale, String date, String format) {
+	public static String format(Locale locale, ZoneId zone, String date, String format) {
 		Date d = parse(date);
-		return format(locale, d, format);
+		return format(locale, zone, d, format);
 	}
 
 	public static String format(Date date, String format) {
-		return format(Locale.CHINA, date, format);
+		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
 
 	public static String format(Long date, String format) {
-		return format(Locale.CHINA, date, format);
+		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
 
 	public static String format() {
-		return format(Locale.CHINA);
+		return format(Locale.getDefault(), ZoneId.systemDefault());
 	}
 
 	public static String format(String format) {
-		return format(Locale.CHINA, format);
+		return format(Locale.getDefault(), ZoneId.systemDefault(), format);
 	}
 
 	public static String format(Date date) {
-		return format(Locale.CHINA, date);
+		return format(Locale.getDefault(), ZoneId.systemDefault(), date);
 	}
 
 	public static String format(Long date) {
-		return format(Locale.CHINA, date);
+		return format(Locale.getDefault(), ZoneId.systemDefault(), date);
 	}
 
 	public static String format(String date, String format) {
-		return format(Locale.CHINA, date, format);
+		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
-
-
 
 	/**
 	 * 时间转换成分钟
@@ -284,13 +283,7 @@ public class DateUtil {
 	 * @return String
 	 */
 	public static String getWeek(Date date) {
-		Calendar calendar = getCalendar();
-		// 再转换为时间
-		calendar.setTime(date);
-		// int hour=c.get(Calendar.DAY_OF_WEEK);
-		// hour中存的就是星期几了,其范围 1~7
-		// 1=星期日 7=星期六,其他类推
-		return new SimpleDateFormat("EEEE").format(calendar.getTime());
+		return format(date,"EEEE");
 	}
 	public static String getWeek(String date) {
 		return getWeek(parse(date));
@@ -780,9 +773,7 @@ public class DateUtil {
 	 * @return String
 	 */
 	public static String getCurrentYearEnd(Date date) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");// 可以方便地修改日期格式
-		String years = dateFormat.format(date);
-		return years + "-12-31";
+		return format(date, "yyyy") + "-12-31";
 	}
 
 	public static String getCurrentYearEnd(String date) {
@@ -800,11 +791,8 @@ public class DateUtil {
 	 * @return String
 	 */
 	public static String getPreviousYearFirst(Date date) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");// 可以方便地修改日期格式
-		String years = dateFormat.format(date);
-		int years_value = Integer.parseInt(years);
-		years_value--;
-		return years_value + "-01-01";
+		String years = format(date, "yyyy");
+		return Integer.parseInt(years)-1 + "-01-01";
 	}
 
 	public static String getPreviousYearFirst(String date) {
