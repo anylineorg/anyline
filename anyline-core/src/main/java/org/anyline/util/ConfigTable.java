@@ -417,11 +417,7 @@ public class ConfigTable {
 			isLoading = false;
 			init();
 		}
-		Object obj = configs.get(key.toUpperCase().trim());
-		if(null != obj){
-			val = obj.toString();
-		}
-		return val;
+		return configs.get(key.toUpperCase().trim());
 	}
 	public static String getString(String key) {
 		Object val = get(key);
