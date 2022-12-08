@@ -131,13 +131,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow(Map<String, Object> map) {
+        this(null, map);
+    }
+    public DataRow(LinkedHashMap columns, Map<String, Object> map) {
         this();
+        setMetadatas(columns);
         Set<Map.Entry<String, Object>> set = map.entrySet();
         for (Map.Entry<String, Object> entity : set) {
             Object value = entity.getValue();
             if(null != value){
                 if(value instanceof Map){
                     value = new DataRow((Map)value);
+                }
+                String type = getMetadataTypeName(entity.getKey());
+                if(null != type && type.toUpperCase().contains("JSON")){
+                    value = DataRow.parseJson(value.toString());
                 }
                 /*if(value instanceof byte[]) {
                     value = new String((byte[]) value);
