@@ -3,6 +3,7 @@ package org.anyline.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.entity.data.Column;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -16,24 +17,25 @@ import java.util.*;
 public class DataSet implements Collection<DataRow>, Serializable {
     private static final long serialVersionUID = 6443551515441660101L;
     protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
-    private boolean result                      = true  ; // 执行结果
-    private String code                         = null  ; // code
-    private Exception exception                 = null  ; // 异常
-    private String message                      = null  ; // 提示信息
-    private PageNavi navi                       = null  ; // 分页
-    private List<String> head                   = null  ; // 表头
-    private List<DataRow> rows                  = null  ; // 数据
-    private List<String> primaryKeys            = null  ; // 主键
-    private String datalink                     = null  ; // 数据连接
-    private String dataSource                   = null  ; // 数据源(表|视图|XML定义SQL)
-    private String schema                       = null  ; // 
-    private String table                        = null  ; // 
-    private long createTime                     = 0     ; // 创建时间
-    private long expires                        = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    private boolean isFromCache                 = false ; // 是否来自缓存
-    private boolean isAsc                       = false ; // 
-    private boolean isDesc                      = false ; // 
-    private Map<String, Object> tags            = new HashMap<>()       ; // 标签
+    private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
+    private boolean result                          = true  ; // 执行结果
+    private String code                             = null  ; // code
+    private Exception exception                     = null  ; // 异常
+    private String message                          = null  ; // 提示信息
+    private PageNavi navi                           = null  ; // 分页
+    private List<String> head                       = null  ; // 表头
+    private List<DataRow> rows                      = null  ; // 数据
+    private List<String> primaryKeys                = null  ; // 主键
+    private String datalink                         = null  ; // 数据连接
+    private String dataSource                       = null  ; // 数据源(表|视图|XML定义SQL)
+    private String schema                           = null  ; //
+    private String table                            = null  ; //
+    private long createTime                         = 0     ; // 创建时间
+    private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    private boolean isFromCache                     = false ; // 是否来自缓存
+    private boolean isAsc                           = false ; //
+    private boolean isDesc                          = false ; //
+    private Map<String, Object> tags                = new HashMap<>()       ; // 标签
 
     /**
      * 创建索引
@@ -128,6 +130,47 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return parseJson(KEY_CASE.CONFIG, json);
     }
 
+    public DataSet setMetadatas(LinkedHashMap<String, Column> metadatas){
+        this.metadatas = metadatas;
+        return this;
+    }
+    public LinkedHashMap<String, Column> getMetadatas(){
+        return metadatas;
+    }
+    public Column getMetadata(String column){
+        if(null == metadatas){
+            return null;
+        }
+        return metadatas.get(column.toUpperCase());
+    }
+    public String getMetadataTypeName(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getTypeName();
+        }
+        return null;
+    }
+    public Integer getMetadataType(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getType();
+        }
+        return null;
+    }
+    public String getMetadataFullType(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getFullType();
+        }
+        return null;
+    }
+    public String getMetadataClassName(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getClassName();
+        }
+        return null;
+    }
     public DataSet Camel(){
         for(DataRow row:rows){
             row.Camel();
