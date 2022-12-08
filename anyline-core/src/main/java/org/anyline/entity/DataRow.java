@@ -26,6 +26,7 @@ import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.entity.adapter.LowerKeyAdapter;
 import org.anyline.entity.adapter.SrcKeyAdapter;
 import org.anyline.entity.adapter.UpperKeyAdapter;
+import org.anyline.entity.data.Column;
 import org.anyline.util.*;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -65,30 +66,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * 在关系型数据库场景中 也相当于表名
      * 主要应用在在非关系型数据库场景中 如Neo4j中的Node名 MongonDB中的Document名
      */
-    private String category                     = null                  ; // 分类
-
-    private transient DataSet container         = null                  ; // 包含当前对象的容器
-    private List<String> primaryKeys            = new ArrayList<>()     ; // 主键
-    private List<String> updateColumns          = new ArrayList<>()     ; // 需要参与update insert操作
-    private List<String> ignoreUpdateColumns    = new ArrayList<>()     ; // 不参与update insert操作
-    private String datalink                     = null                  ; // 超链接
-    private String dataSource                   = null                  ; // 数据源(表|视图|XML定义SQL)
-    private String schema                       = null                  ; // schema
-    private String table                        = null                  ; // table
-    private DataRow attributes                  = null                  ; // 属性
-    private DataRow tags                        = null                  ; // 标签
-    private DataRow relations                   = null                  ; // 对外关系
-    private long createTime                     = 0                     ; // 创建时间(毫秒)
-    private long nanoTime                       = 0                     ; // 创建时间(纳秒)
-    private long expires                        = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    protected Boolean isNew                     = false                 ; // 强制新建(否则根据主键值判断insert | update)
-    protected boolean isFromCache               = false                 ; // 是否来自缓存
-    private Map<String, String> keymap          = new HashMap<>()       ; // keymap
-    private boolean isUpperKey                  = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
-    private Map<String, String> converts        = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
-    public boolean skip                         = false                 ; // 遍历计算时标记
-    private KeyAdapter keyAdapter               = null                  ; // key格式转换
-    private KEY_CASE keyCase 				    = DEFAULT_KEY_KASE      ; // 列名格式
+    private String category                         = null                  ; // 分类
+    private LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
+    private transient DataSet container             = null                  ; // 包含当前对象的容器
+    private List<String> primaryKeys                = new ArrayList<>()     ; // 主键
+    private List<String> updateColumns              = new ArrayList<>()     ; // 需要参与update insert操作
+    private List<String> ignoreUpdateColumns        = new ArrayList<>()     ; // 不参与update insert操作
+    private String datalink                         = null                  ; // 超链接
+    private String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
+    private String schema                           = null                  ; // schema
+    private String table                            = null                  ; // table
+    private DataRow attributes                      = null                  ; // 属性
+    private DataRow tags                            = null                  ; // 标签
+    private DataRow relations                       = null                  ; // 对外关系
+    private long createTime                         = 0                     ; // 创建时间(毫秒)
+    private long nanoTime                           = 0                     ; // 创建时间(纳秒)
+    private long expires                            = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    protected Boolean isNew                         = false                 ; // 强制新建(否则根据主键值判断insert | update)
+    protected boolean isFromCache                   = false                 ; // 是否来自缓存
+    private Map<String, String> keymap              = new HashMap<>()       ; // keymap
+    private boolean isUpperKey                      = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
+    private Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
+    public boolean skip                             = false                 ; // 遍历计算时标记
+    private KeyAdapter keyAdapter                   = null                  ; // key格式转换
+    private KEY_CASE keyCase 				        = DEFAULT_KEY_KASE      ; // 列名格式
 
     public DataRow() {
         parseKeycase(null);
@@ -138,9 +139,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if(value instanceof Map){
                     value = new DataRow((Map)value);
                 }
-                if(value instanceof byte[]) {
+                /*if(value instanceof byte[]) {
                     value = new String((byte[]) value);
-                }
+                }*/
             }
             put(keyAdapter.key(entity.getKey()), value);
         }
@@ -539,6 +540,51 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return parseArray((DataRow)null, kvs);
     }
 
+    public DataRow setMetadatas(LinkedHashMap<String, Column> metadatas){
+        this.metadatas = metadatas;
+        return this;
+    }
+    public LinkedHashMap<String, Column> getMetadatas(){
+        if(null == metadatas && null != container){
+            return container.getMetadatas();
+        }
+        return metadatas;
+    }
+    public Column getMetadata(String column){
+        LinkedHashMap<String, Column> metadatas = getMetadatas();
+        if(null == metadatas){
+            return null;
+        }
+        return metadatas.get(column.toUpperCase());
+    }
+    public String getMetadataTypeName(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getTypeName();
+        }
+        return null;
+    }
+    public Integer getMetadataType(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getType();
+        }
+        return null;
+    }
+    public String getMetadataFullType(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getFullType();
+        }
+        return null;
+    }
+    public String getMetadataClassName(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getClassName();
+        }
+        return null;
+    }
     /**
      * 创建时间
      * @return long
@@ -1731,15 +1777,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
         if (date instanceof Date) {
             result = (Date) date;
-        } else if (date instanceof Long) {
-            result = new Date();
-            result.setTime((Long) date);
-        } else if (date instanceof LocalDateTime) {
-            ZoneId zoneId = ZoneId.systemDefault();
-            ZonedDateTime zdt = ((LocalDateTime) date).atZone(zoneId);
-            result = Date.from(zdt.toInstant());
-        } else {
-            result = DateUtil.parse(date.toString());
+        }else{
+            result = DateUtil.parse(date);
         }
         if(null == result){
             result = def;
