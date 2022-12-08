@@ -33,6 +33,7 @@ public class DateUtil {
 	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
+	public static final String FORMAT_TIME = "HH:mm:ss";
 	public static final int DATE_PART_YEAR = Calendar.YEAR;
 	public static final int DATE_PART_MONTH = Calendar.MONTH;
 	public static final int DATE_PART_DATE = Calendar.DATE;
@@ -877,8 +878,15 @@ public class DateUtil {
 		}else{
 			formatter = DateTimeFormatter.ISO_LOCAL_TIME;
 		}
-		LocalDateTime datetime = LocalDateTime.parse(date, formatter);
-		return parse(datetime);
+		if(format.toUpperCase().contains("HH")){
+			if(format.toUpperCase().contains("D")) {
+				return parse(LocalDateTime.parse(date, formatter));
+			}else{
+				return parse(LocalTime.parse(date, formatter));
+			}
+		}else{
+			return parse(LocalDate.parse(date, formatter));
+		}
 	}
 	public static Date parse(Object value){
 		Date date = null;
@@ -920,33 +928,7 @@ public class DateUtil {
 			return null;
 		}
 		Date date = null;
-		String format = FORMAT_FULL;
-		if (!str.contains(".")) {
-			// 不带毫秒 2020-01-01 HH:mm:ss
-			format = FORMAT_DATE_TIME;
-		}
-
-		if (!str.contains(":")) {
-			// 不带时间 2020-01-01
-			format = FORMAT_DATE;
-		} else if (!str.contains(" ")) {
-			// 不带日期 12:12:12 12:12:12.109
-			format = format.replace("yyyy-MM-dd ", "");
-		}
-		if (BasicUtil.catSubCharCount(str, ":") == 1) {
-			// 只有时分 没有秒 10:10
-			format = format.replace(":ss", "");
-		}
-
-		if (str.contains("/")) {
-			// 2020/01/01
-			format = format.replace("-", "/");
-		}
-		if (!str.contains("-") && !str.contains("/")) {
-			format = format.replace("-", "").replace("/", "");
-		}
 		if(str.contains("T")){
-
 			/**
 			 * ISO8601
 			 * "2020-12-19T16:22:50.000Z"
@@ -956,30 +938,38 @@ public class DateUtil {
 			 * "2017-03-31T10:38:14.4723017Z"
 			 * "2021-09-08T09:20:14.245292+08:00"
 			 */
-			try {
-				format = "yyyy-MM-dd'T'HH:mm:ss Z";
-				if(str.contains(".")){
-					// 2020-12-19T16:22:50.101Z
-					format = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
-					String temp = str.replace("Z", " UTC");
-					return parse(temp, format);
-				}
-				OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
-				return Date.from(offsetDateTime.toInstant());
-			}catch (Exception e){
-				str = str.replace("T", " ");
-				if (str.contains(".")) {
-					format = FORMAT_FULL;
-				} else if (str.length() == 16) { // 2020-06-30 12:00
-					format = "yyyy-MM-dd HH:mm";
-				} else if (str.length() == 13) { // 2020-06-30 12
-					format = "yyyy-MM-dd HH";
-				} else {
-					format = FORMAT_DATE_TIME;
-				}
+			return Date.from(OffsetDateTime.parse(str).toInstant());
+		}
+		String format = FORMAT_FULL;
+		if (!str.contains(".")) {
+			// 不带毫秒 2020-01-01 HH:mm:ss
+			format = FORMAT_DATE_TIME;
+		}else{
+			String[] tmp = str.split("\\.");
+			str = tmp[0] + "." + BasicUtil.fillChar(tmp[1], 3);
+		}
 
-			}
+		if (!str.contains(":")) {
+			// 不带时间 2020-01-01
+			//format = FORMAT_DATE;
+			str += " 00:00:00";
+		} else if (!str.contains(" ")) {
+			// 不带日期 12:12:12 12:12:12.109
+			//format = format.replace("yyyy-MM-dd ", "");
+			str = format("yyyy-MM-dd") + " "+ str;
+		}
+		if (BasicUtil.catSubCharCount(str, ":") == 1) {
+			// 只有时分 没有秒 10:10
+			//format = format.replace(":ss", "");
+			str += ":00";
+		}
 
+		if (str.contains("/")) {
+			// 2020/01/01
+			format = format.replace("-", "/");
+		}
+		if (!str.contains("-") && !str.contains("/")) {
+			format = format.replace("-", "").replace("/", "");
 		}
 
 		try {
@@ -993,7 +983,6 @@ public class DateUtil {
 		}
 		return date;
 	}
-
 
 	public static boolean isDate(String str) {
 		return parse(str) != null;
