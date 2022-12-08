@@ -86,6 +86,9 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSourceHolder.recoverDataSource();
         return this;
     }
+    public String getDataSource(){
+        return DataSourceHolder.getDataSource();
+    }
     /**
      * 按条件查询
      * @param src 			数据源(表｜视图｜函数｜自定义SQL | SELECT语句)

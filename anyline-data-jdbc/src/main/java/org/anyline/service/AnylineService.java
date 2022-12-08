@@ -47,6 +47,7 @@ public interface AnylineService<E>{
 	public AnylineService setDataSource(String datasource, boolean auto);
 	public AnylineService setDefaultDataSource();
 	public AnylineService recoverDataSource();
+	public String getDataSource();
 
 	/* *****************************************************************************************************************
 	 *
