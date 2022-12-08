@@ -17,12 +17,12 @@
  */
 package org.anyline.data.cache;
 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.PageNavi;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.MD5Util;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Hashtable;
 import java.util.List;
- 
+
 public class CacheUtil {
 	private static final Logger log = LoggerFactory.getLogger(CacheUtil.class);
 	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		// 缓存刷新标记
