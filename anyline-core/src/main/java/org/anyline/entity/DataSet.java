@@ -1,5 +1,6 @@
 package org.anyline.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.util.*;
@@ -2584,6 +2585,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public String toJSON() {
         return toJson();
+    }
+
+    public String toJson(JsonInclude.Include include) {
+        return BeanUtil.object2json(this,include);
+    }
+
+    public String getJson(JsonInclude.Include include) {
+        return toJSON(include);
+    }
+
+    public String toJSON(JsonInclude.Include include) {
+        return toJson(include);
     }
 
     /**

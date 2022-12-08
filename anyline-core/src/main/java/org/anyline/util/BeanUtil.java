@@ -632,6 +632,9 @@ public class BeanUtil {
 	public static String map2json(Map<String,?> map){
 		return object2json(map);
 	}
+	public static String map2json(Map<String,?> map, JsonInclude.Include include){
+		return object2json(map,include);
+	}
 	public static Map<String,Object> xml2map(String xml){
 		Map<String,Object> map = new HashMap<String,Object>();
 		Document document;

@@ -17,6 +17,7 @@
  */
 package org.anyline.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -1772,6 +1773,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public String getJson() {
         return BeanUtil.map2json(this);
+    }
+    public String toJSON(JsonInclude.Include include) {
+        return BeanUtil.map2json(this,include);
+    }
+
+    public String toJson(JsonInclude.Include include) {
+        return toJSON(include);
+    }
+
+    public String getJson(JsonInclude.Include include) {
+        return BeanUtil.map2json(this,include);
     }
 
     public DataRow removeEmpty(String... keys) {
