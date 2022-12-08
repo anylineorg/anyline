@@ -280,15 +280,18 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     value = BeanUtil.getFieldValue(obj, key);
                 }
             }
+
             String str = null;
             if(value instanceof String){
                 str = (String)value;
             }
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+
             if(null != str && str.startsWith("${") && str.endsWith("}")){
                 value = str.substring(2, str.length()-1);
                 valuesBuilder.append(value);
             }else if(null != value && value instanceof SQL_BUILD_IN_VALUE){
+                //内置函数值
                 value = buildInValue((SQL_BUILD_IN_VALUE)value);
                 valuesBuilder.append(value);
             }else{
@@ -1112,6 +1115,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 value = "${"+value+"}";
             }
         }*/
+        if(null != value){
+            if(value instanceof DataRow){
+                DataRow row = (DataRow)value;
+                value = row.toJSON();
+            }else if(value instanceof DataSet){
+                DataSet set = (DataSet)value;
+                value = set.toJSON();
+            }
+        }
+
         run.addValues(key, value);
     }
     /* ************** 拼接字符串 *************** */

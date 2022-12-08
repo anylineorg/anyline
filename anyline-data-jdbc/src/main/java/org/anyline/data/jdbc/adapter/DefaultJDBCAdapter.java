@@ -2673,7 +2673,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
 		}else if(value instanceof Number || value instanceof Boolean){
 			builder.append(value);
-		}else{
+		}else if(value instanceof DataRow){
+			builder.append("'").append(((DataRow)value).toJSON().replace("'","''")).append("'");
+		} else if(value instanceof DataSet){
+			builder.append("'").append(((DataSet)value).toJSON().replace("'","''")).append("'");
+		} else{
 			builder.append(value);
 		}
 	}
