@@ -43,6 +43,7 @@ import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.util.SQLAdapterUtil;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,7 +182,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				set = select(adapter, run.getFinalQuery(), run.getValues());
+				set = select(adapter, prepare.getTable(), run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this,run,set);
 
@@ -374,7 +375,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
-		DataSet set = select(null, sql,values);
+		DataSet set = select(null, (String)null, sql,values);
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
@@ -783,7 +784,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param values  values
 	 * @return DataSet
 	 */
-	protected DataSet select(JDBCAdapter adapter, String sql, List<Object> values){
+	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -795,6 +796,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
 		DataSet set = new DataSet();
+		LinkedHashMap<String,Column> columns = null;
+		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
+			columns = CacheProxy.columns(table);
+			if(null == columns){
+				columns = columns(table);
+				CacheProxy.columns(table, columns);
+			}
+			set.setMetadatas(columns);
+		}
 		try{
 			List<Map<String,Object>> list = null;
 			if(null != values && values.size()>0){
@@ -810,7 +820,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list = adapter.process(list);
 			}
 			for(Map<String,Object> map:list){
-				DataRow row = new DataRow(map);
+				DataRow row = new DataRow(columns, map);
 				row.clearUpdateColumns();
 				set.add(row);
 			}
@@ -1337,7 +1347,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null).toUpperKey();
+							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
 							databases = adapter.databases(idx++, true, databases, set);
 						}
 					}
@@ -1424,7 +1434,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null).toUpperKey();
+							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
 							tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1529,7 +1539,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null).toUpperKey();
+							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
 							tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1634,7 +1644,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int total = sqls.size();
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, sql, null).toUpperKey();
+							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
 							tables = adapter.ptables(total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 						}
 					}
@@ -1718,7 +1728,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(adapter, sql, null);
+						DataSet set = select(adapter, (String)null, sql, null);
 						columns = adapter.columns(idx, true, table, columns, set);
 					}
 					idx ++;
@@ -1834,7 +1844,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(adapter, sql, null).toUpperKey();
+						DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
 						tags = adapter.tags(idx, true, table, tags, set);
 					}
 					idx ++;

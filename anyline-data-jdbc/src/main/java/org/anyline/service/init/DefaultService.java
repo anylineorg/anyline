@@ -25,12 +25,14 @@ import org.anyline.data.cache.CacheUtil;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
+import org.anyline.data.entity.Column;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultProcedure;
 import org.anyline.data.prepare.init.DefaultSQLStore;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
@@ -1573,6 +1575,7 @@ public class DefaultService<E> implements AnylineService<E> {
             setPageLazy(src, configs, conditions);
             RunPrepare prepare = createRunPrepare(src);
             set = dao.querys(prepare, configs, conditions);
+
          } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
@@ -1908,12 +1911,6 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
 
-    private static Map<String,DataRow> cache_metadata = new HashMap<>();
-    private static Map<String,DataRow> cache_metadatas = new HashMap<>();
-
-
-
-
     public MetaDataService metadata(){
         return metadata;
     }
@@ -1922,22 +1919,11 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     public void clearColumnCache(String catalog, String schema, String table){
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
-            cacheProvider.remove(cache, key);
-        }else{
-            cache_metadatas.remove(key);
-        }
+        CacheProxy.clearColumnCache(catalog, schema, table);
     }
     public void clearTagCache(String catalog, String schema, String table){
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
-            cacheProvider.remove(cache, key);
-        }else{
-            cache_metadatas.remove(key);
-        }
+        CacheProxy.clearTagCache(catalog, schema, table);
+
     }
     /* *****************************************************************************************************************
      *
@@ -2252,31 +2238,10 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public LinkedHashMap<String,Column> columns(Table table){
-            LinkedHashMap<String,Column> columns = null;
-            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.getName().toUpperCase();
-
-            if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-                CacheElement cacheElement = cacheProvider.get(cache, key);
-                if(null != cacheElement){
-                    columns = (LinkedHashMap<String,Column>) cacheElement.getValue();
-                }
-                if(null == columns){
-                    columns = dao.columns(table);
-                    cacheProvider.put(cache, key, columns);
-                }
-            }else{
-                // 通过静态变量缓存
-                DataRow static_cache = cache_metadatas.get(key);
-                if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                    columns = (LinkedHashMap<String,Column>) static_cache.get("keys");
-                }
-                if(null == columns){
-                    columns = dao.columns(table);
-                    static_cache = new DataRow();
-                    static_cache.put("keys", columns);
-                    cache_metadatas.put(key, static_cache);
-                }
+            LinkedHashMap<String,Column> columns = CacheProxy.columns(table.getName());
+            if(null == columns){
+                columns = dao.columns(table);
+                CacheProxy.columns(table.getName(), columns);
             }
             return columns;
 
@@ -2328,32 +2293,10 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public LinkedHashMap<String,Tag> tags(Table table){
-            String name = table.getName();
-            LinkedHashMap<String,Tag> tags = null;
-            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            String key = DataSourceHolder.getDataSource()+"_TAGS_" + name.toUpperCase();
-
-            if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-                CacheElement cacheElement = cacheProvider.get(cache, key);
-                if(null != cacheElement){
-                    tags = (LinkedHashMap<String,Tag>) cacheElement.getValue();
-                }
-                if(null == tags){
-                    tags = dao.tags(table);
-                    cacheProvider.put(cache, key, tags);
-                }
-            }else{
-                // 通过静态变量缓存
-                DataRow static_cache = cache_metadatas.get(key);
-                if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                    tags = (LinkedHashMap<String,Tag>) static_cache.get("keys");
-                }
-                if(null == tags){
-                    tags = dao.tags(table);
-                    static_cache = new DataRow();
-                    static_cache.put("keys", tags);
-                    cache_metadatas.put(key, static_cache);
-                }
+            LinkedHashMap<String,Tag> tags = CacheProxy.tags(table.getName());
+            if(null == tags){
+                tags = dao.tags(table);
+                CacheProxy.tags(table.getName(), tags);
             }
             return tags;
         }
