@@ -170,7 +170,11 @@ public class BeanUtil {
 					}else if(!type.equals("string") && null != columnType && columnType.contains("JSON")){
 						v = json2oject(v.toString(), field.getType());
 					} else if (type.equals("string")) {
-						v = v.toString();
+						if(v instanceof byte[]){
+							v = Base64Util.encode((byte[]) v);
+						}else {
+							v = v.toString();
+						}
 					}
 				}
 			}else{

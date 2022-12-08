@@ -2765,7 +2765,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			String typeName = column.getTypeName().toUpperCase();
 			if(null != typeName){
 				// 根据数据库类型
-				if(typeName.contains("INT")){
+				if(typeName.contains("BIGINT")){
+					if(value instanceof Long){
+					}else{
+						run.setValue(BasicUtil.parseLong(value, null));
+					}
+				}else if(typeName.contains("INT")){
 					if(value instanceof Integer){
 					}else{
 						run.setValue(BasicUtil.parseInt(value, null));
@@ -2774,11 +2779,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					if(value instanceof BigDecimal){
 					}else {
 						run.setValue(BasicUtil.parseDecimal(value, null));
-					}
-				}else if(typeName.equals("LONG")){
-					if(value instanceof Long){
-					}else{
-						run.setValue(BasicUtil.parseLong(value, null));
 					}
 				}else if(typeName.equals("DOUBLE")){
 					if(value instanceof Double){
