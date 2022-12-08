@@ -256,7 +256,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.beforeQuery(this,run);
 				}
-				list = select(adapter, clazz, run.getFinalQuery(), run.getValues());
+				list = select(adapter, clazz, run.getTable(), run.getFinalQuery(), run.getValues());
 				if(null != listener){
 					listener.afterQuery(this, run, list);
 
@@ -844,7 +844,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return set;
 	}
 
-	protected <T> EntitySet<T> select(JDBCAdapter adapter, Class<T> clazz, String sql, List<Object> values){
+	protected <T> EntitySet<T> select(JDBCAdapter adapter, Class<T> clazz, String table,  String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -856,6 +856,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
 		EntitySet<T> set = new EntitySet<>();
+		LinkedHashMap<String,Column> columns = null;
+		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
+			columns = CacheProxy.columns(table);
+			if(null == columns){
+				columns = columns(table);
+				CacheProxy.columns(table, columns);
+			}
+			set.setMetadatas(columns);
+		}
 		try{
 			List<Map<String,Object>> list = null;
 			if(null != values && values.size()>0){
@@ -872,7 +881,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			for(Map<String,Object> map:list){
 				if(AdapterProxy.hasAdapter()){
-					T row = AdapterProxy.entity(clazz, map);
+					T row = AdapterProxy.entity(clazz, map, columns);
 					set.add(row);
 				}else{
 					T row = BeanUtil.map2object(map, clazz);

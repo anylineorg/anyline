@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -221,25 +222,25 @@ public class AdapterProxy {
      * @return T
      * @param <T> T
      */
-    public static <T> T entity(EntityAdapter adapter, T entity,  Class<T> clazz, Map<String,Object> map){
+    public static <T> T entity(EntityAdapter adapter, T entity,  Class<T> clazz, Map<String,Object> map, LinkedHashMap columns){
         if(null != adapter){
-            return adapter.entity(entity, clazz, map);
+            return adapter.entity(entity, clazz, map, columns);
         }
         return null;
     }
-    public static <T> T entity(Class<T> clazz, Map<String,Object> map){
-        T entity =  entity(adapter, null, clazz, map);
-        for(EntityAdapter item:adapters.values()){
-            entity = entity(adapter, entity, clazz, map);
+    public static <T> T entity(Class<T> clazz, Map<String,Object> map, LinkedHashMap columns){
+        T entity =  entity(adapter, null, clazz, map, columns);
+        for(EntityAdapter item : adapters.values()){
+            entity = entity(adapter, entity, clazz, map, columns);
         }
         return entity;
     }
 
-    public static <T> EntitySet<T> entitys(Class<T> clazz, DataSet set){
+    public static <T> EntitySet<T> entitys(Class<T> clazz, DataSet set, LinkedHashMap columns){
         EntitySet<T> entitys = new EntitySet<>();
         if(null != set){
             for(DataRow row:set){
-                T entity = entity(clazz, row);
+                T entity = entity(clazz, row, columns);
                 entitys.add(entity);
             }
             entitys.setNavi(set.getNavi());

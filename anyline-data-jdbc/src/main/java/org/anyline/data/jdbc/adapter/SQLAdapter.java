@@ -20,22 +20,24 @@
 package org.anyline.data.jdbc.adapter;
 
 
+import org.anyline.data.entity.Column;
+import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.auto.AutoPrepare;
-import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.entity.Join;
-import org.anyline.data.run.TableRun;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.Compare;
-import org.anyline.exception.SQLException;
-import org.anyline.exception.SQLUpdateException;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.auto.AutoPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.TableRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.run.XMLRun;
+import org.anyline.entity.Compare;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.exception.SQLException;
+import org.anyline.exception.SQLUpdateException;
+import org.anyline.proxy.ServiceProxy;
 import org.anyline.util.*;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -1116,12 +1118,25 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
         }*/
         if(null != value){
-            if(value instanceof DataRow){
-                DataRow row = (DataRow)value;
-                value = row.toJSON();
-            }else if(value instanceof DataSet){
-                DataSet set = (DataSet)value;
-                value = set.toJSON();
+            String type = null;
+            if(ConfigTable.IS_AUTO_CHECK_METADATA) {
+                String table = run.getTable();
+                if (null != table) {
+                    LinkedHashMap<String, Column> columns = ServiceProxy.metadata().columns(table);
+                    if(null != columns){
+                        Column column = columns.get(key.toUpperCase());
+                        if(null != column){
+                            type = column.getTypeName().toUpperCase();
+                        }
+                    }
+                }
+            }
+            if(null != type){
+                if(type.contains("JSON")){
+                    value = BeanUtil.object2json(value);
+                }else if(type.contains("XML")){
+                    value = BeanUtil.object2xml(value);
+                }
             }
         }
 

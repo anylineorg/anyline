@@ -95,7 +95,7 @@ public interface EntityAdapter {
      * @return T
      * @param <T> T
      */
-    public <T> T entity(Class<T> clazz, Map<String,Object> map);
+    public <T> T entity(Class<T> clazz, Map<String,Object> map, Map columns);
 
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
@@ -103,10 +103,11 @@ public interface EntityAdapter {
      * @param entity 在此基础上执行，如果不提供则新创建
      * @param clazz 类
      * @param map map
+     * @param columns 列属性
      * @return T
      * @param <T> T
      */
-    public <T> T entity(T entity, Class<T> clazz, Map<String,Object> map);
+    public <T> T entity(T entity, Class<T> clazz, Map<String,Object> map, Map columns);
 
 
     /**

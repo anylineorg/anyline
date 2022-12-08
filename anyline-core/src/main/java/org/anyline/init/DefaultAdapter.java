@@ -3,6 +3,7 @@ package org.anyline.init;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.EntityAdapter;
 import org.anyline.entity.adapter.KeyAdapter;
+import org.anyline.entity.data.Column;
 import org.anyline.util.*;
 import org.springframework.stereotype.Component;
 
@@ -201,23 +202,23 @@ public class DefaultAdapter implements EntityAdapter {
     }
 
     @Override
-    public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map) {
+    public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map columns) {
         List<Field> fields = ClassUtil.getFields(clazz);
         Map<Field,String> fk = new HashMap<>();
-        entity = BeanUtil.map2object(entity, map, clazz, false, true, true);
+        entity = BeanUtil.map2object(entity, map, clazz, columns, false, true, true);
         for(Field field:fields){
             String column = column(clazz, field);
             Object value = map.get(column);
             if(null != value) {
-                BeanUtil.setFieldValue(entity, field, map.get(column));
+                BeanUtil.setFieldValue(entity, field, (Column) columns.get(column.toUpperCase()), map.get(column));
             }
         }
         return entity;
     }
 
     @Override
-    public <T> T entity(Class<T> clazz, Map<String, Object> map) {
-        return entity(null, clazz, map);
+    public <T> T entity(Class<T> clazz, Map<String, Object> map, Map columns) {
+        return entity(null, clazz, map, columns);
     }
 
     @Override

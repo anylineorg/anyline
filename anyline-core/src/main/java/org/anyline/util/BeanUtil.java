@@ -35,6 +35,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.data.Column;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -111,6 +112,9 @@ public class BeanUtil {
 		return v;
 	}
 
+	public static boolean setFieldValue(Object obj, Field field, Object value){
+		return setFieldValue(obj, field, null, value);
+	}
 	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值，传null
@@ -118,7 +122,7 @@ public class BeanUtil {
 	 * @param value 值
 	 * @return boolean
 	 */
-	public static boolean setFieldValue(Object obj, Field field, Object value){
+	public static boolean setFieldValue(Object obj, Field field, Column column, Object value){
 		if(null == field){
 			return false;
 		}
@@ -130,6 +134,10 @@ public class BeanUtil {
 			Object v = value;
 			boolean compatible = true;//是否兼容 int long等不能设置null值
 			String type = field.getType().getSimpleName().toLowerCase();
+			String columnType = null;
+			if(null != column){
+				columnType = column.getTypeName().toUpperCase();
+			}
 			if(null != v){
 				if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
 					if (type.equals("int") || type.equals("integer")) {
@@ -159,7 +167,9 @@ public class BeanUtil {
 					} else if(type.equals("localdatetime")){
 						Date date = DateUtil.parse(v);
 						v = DateUtil.localDateTime(date);
-					}else if (type.equals("string")) {
+					}else if(!type.equals("string") && null != columnType && columnType.contains("JSON")){
+						v = json2oject(v.toString(), field.getType());
+					} else if (type.equals("string")) {
 						v = v.toString();
 					}
 				}
@@ -511,7 +521,7 @@ public class BeanUtil {
 	 * @param <T> T
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		try {
 			if(null == obj) {
 				obj = (T) clazz.newInstance();
@@ -524,7 +534,7 @@ public class BeanUtil {
 				String k = (String) entry.getKey();
 				Object v = entry.getValue();
 				Field field = ClassUtil.getField(fields, k, ignoreCase, ignoreSplit);
-				setFieldValue(obj, field, v);
+				setFieldValue(obj, field, (Column) columns.get(k.toUpperCase()), v);
 			}
 			if(null != keys){
 				for(String key:keys){
@@ -545,11 +555,11 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
-		return map2object(null, map, clazz, recursion, ignoreCase, ignoreSplit, keys);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+		return map2object(null, map, clazz, columns, recursion, ignoreCase, ignoreSplit, keys);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		obj = map2object(obj, map, clazz, recursion, ignoreCase, ignoreSplit);
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		obj = map2object(obj, map, clazz, columns, recursion, ignoreCase, ignoreSplit);
 		for(Map.Entry item:fields.entrySet()){
 			Field field = (Field)item.getKey();
 			String column = (String)item.getValue();
@@ -559,20 +569,35 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		return map2object(null, map, clazz, recursion, ignoreCase, ignoreSplit, fields);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		return map2object(null, map, clazz, columns, recursion, ignoreCase, ignoreSplit, fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
-		return map2object(obj, map, clazz, false, false, false, fields);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		return map2object(null, map, clazz, null, recursion, ignoreCase, ignoreSplit, fields);
+	}
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, Map<Field, String> fields){
+		return map2object(obj, map, clazz, columns, false, false, false, fields);
+	}
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz,  Map<Field, String> fields){
+		return map2object(obj, map, clazz, null, false, false, false, fields);
+	}
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, Map<Field, String> fields){
+		return map2object(null, map, clazz, columns, false, false, false, fields);
 	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
-		return map2object(null, map, clazz, false, false, false, fields);
+		return map2object(null, map, clazz, null, false, false, false, fields);
+	}
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, String ... keys){
+		return map2object(obj, map, clazz, columns, false, false, false);
 	}
 	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, String ... keys){
-		return map2object(obj, map, clazz, false, false, false);
+		return map2object(obj, map, clazz, null, false, false, false);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, String ... keys){
-		return map2object(null, map, clazz, false, false, false);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, String ... keys){
+		return map2object(null, map, clazz, columns, false, false, false);
+	}
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz,  String ... keys){
+		return map2object(null, map, clazz, null, false, false, false);
 	}
 
 	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
@@ -722,20 +747,29 @@ public class BeanUtil {
 		return map2string(map, "=","&",true, true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
+		return xml2object(xml, clazz, null, recursion, ignoreCase, ignoreSplit);
+	}
+	public static <T> T xml2object(String xml, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
 		T obj = null;
 		try {
 			Map<String,?> map = xml2map(xml);
-			obj = map2object(map, clazz, recursion, ignoreCase, ignoreSplit);
+			obj = map2object(map, clazz, columns, recursion, ignoreCase, ignoreSplit);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return obj;
 	}
+	public static <T> T xml2object(String xml, Class<T> clazz, Map columns, boolean recursion){
+		return xml2object(xml, clazz, columns, recursion, false, false);
+	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion){
-		return xml2object(xml, clazz, recursion, false, false);
+		return xml2object(xml, clazz, null, recursion, false, false);
+	}
+	public static <T> T xml2object(String xml, Class<T> clazz, Map columns){
+		return xml2object(xml,  clazz, columns,true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz){
-		return xml2object(xml,  clazz, true);
+		return xml2object(xml,  clazz, null, true);
 	}
 	public static String object2xml(Object obj){
 		if(null == obj){

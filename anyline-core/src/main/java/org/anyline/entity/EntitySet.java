@@ -1,5 +1,6 @@
 package org.anyline.entity;
 
+import org.anyline.entity.data.Column;
 import org.anyline.util.AdapterProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 public class EntitySet<T> implements Collection<T>, Serializable {
     private static final long serialVersionUID = 6443551515441660102L;
     protected static final Logger log = LoggerFactory.getLogger(EntitySet.class);
+    private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     private boolean result = true;              // 执行结果
     private String code = null;
     private Exception exception = null;         // 异常
@@ -34,6 +36,48 @@ public class EntitySet<T> implements Collection<T>, Serializable {
 
     public EntitySet(){
         createTime = System.currentTimeMillis();
+    }
+
+    public EntitySet setMetadatas(LinkedHashMap metadatas){
+        this.metadatas = metadatas;
+        return this;
+    }
+    public LinkedHashMap<String, Column> getMetadatas(){
+        return metadatas;
+    }
+    public Column getMetadata(String column){
+        if(null == metadatas){
+            return null;
+        }
+        return metadatas.get(column.toUpperCase());
+    }
+    public String getMetadataTypeName(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getTypeName();
+        }
+        return null;
+    }
+    public Integer getMetadataType(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getType();
+        }
+        return null;
+    }
+    public String getMetadataFullType(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getFullType();
+        }
+        return null;
+    }
+    public String getMetadataClassName(String column){
+        Column col = getMetadata(column);
+        if(null != col){
+            return col.getClassName();
+        }
+        return null;
     }
     public T get(int index){
         return datas.get(index);

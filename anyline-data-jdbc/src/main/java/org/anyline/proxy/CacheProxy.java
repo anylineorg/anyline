@@ -32,6 +32,9 @@ public class CacheProxy {
     private static Map<String,DataRow> cache_metadatas = new HashMap<>();
 
     public static LinkedHashMap<String, Column> columns(String table){
+        if(null == table){
+            return null;
+        }
         LinkedHashMap<String, Column> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
@@ -50,6 +53,9 @@ public class CacheProxy {
         return columns;
     }
     public static void columns(String table, LinkedHashMap<String, Column> columns){
+        if(null == table){
+            return;
+        }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
@@ -73,6 +79,9 @@ public class CacheProxy {
 
 
     public static LinkedHashMap<String, Tag> tags(String table){
+        if(null == table){
+            return null;
+        }
         LinkedHashMap<String, Tag> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
@@ -91,6 +100,9 @@ public class CacheProxy {
         return tags;
     }
     public static void tags(String table, LinkedHashMap<String, Tag> tags){
+        if(null == table){
+            return;
+        }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){

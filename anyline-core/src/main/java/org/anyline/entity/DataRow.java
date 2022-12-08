@@ -1242,7 +1242,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return entity;
         }
         if (AdapterProxy.hasAdapter()) {
-            entity = AdapterProxy.entity(clazz, this);
+            entity = AdapterProxy.entity(clazz, this, metadatas);
             if (null != entity) {
                 return entity;
             }
