@@ -130,7 +130,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return parseJson(KEY_CASE.CONFIG, json);
     }
 
-    public DataSet setMetadatas(LinkedHashMap<String, Column> metadatas){
+    public DataSet setMetadatas(LinkedHashMap metadatas){
         this.metadatas = metadatas;
         return this;
     }
