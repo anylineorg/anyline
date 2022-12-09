@@ -1810,7 +1810,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public Date getDate(String key) throws Exception {
         return DateUtil.parse(getString(key));
     }
-
+    public byte[] getBytes(String key){
+        return (byte[]) get(key);
+    }
     /**
      * 转换成json格式
      * @return String
