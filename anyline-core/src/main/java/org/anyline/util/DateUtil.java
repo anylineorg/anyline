@@ -898,6 +898,8 @@ public class DateUtil {
 			}else if(value instanceof java.sql.Date){
 				java.sql.Date convert = (java.sql.Date)value;
 				date = new Date(convert.getTime());
+			}else if(value instanceof Long){
+				date = new Date((Long)value);
 			}else if(value instanceof LocalDate){
 				LocalDate convert = (LocalDate)value;
 				date = Date.from(convert.atStartOfDay(ZoneId.systemDefault()).toInstant());
