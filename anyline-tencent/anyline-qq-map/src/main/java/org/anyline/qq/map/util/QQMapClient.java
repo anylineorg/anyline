@@ -193,11 +193,13 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
             adr = row.getRow("result","ad_info");
             if(null != adr) {
                 String adcode = adr.getString("adcode");
-                String provinceCode = adcode.substring(0,2);
-                String cityCode = adcode.substring(0,4);
-                coordinate.setProvinceCode(provinceCode);
-                coordinate.setCityCode(cityCode);
-                coordinate.setCountyCode(adcode);
+                if(BasicUtil.isNotEmpty(adcode)) {
+                    String provinceCode = adcode.substring(0, 2);
+                    String cityCode = adcode.substring(0, 4);
+                    coordinate.setProvinceCode(provinceCode);
+                    coordinate.setCityCode(cityCode);
+                    coordinate.setCountyCode(adcode);
+                }
             }
             adr = row.getRow("result","address_reference","town");
             if(null != adr){
