@@ -2743,6 +2743,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/**
+	 * 根据数据库列属性 类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
 	 * @param column 列
 	 * @param run RunValue
@@ -2841,6 +2842,23 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 							run.setValue( new Time(date.getTime()));
 						}else{
 							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(typeName.contains("BLOB")){
+					if(value instanceof byte[]){
+					}else {
+						if(value instanceof String){
+							String str = (String)value;
+							if(Base64Util.verify(str)){
+								try {
+									run.setValue(Base64Util.decode(str));
+								}catch (Exception e){
+									run.setValue(str.getBytes());
+								}
+							}else{
+								run.setValue(str.getBytes());
+							}
 						}
 					}
 					return true;
