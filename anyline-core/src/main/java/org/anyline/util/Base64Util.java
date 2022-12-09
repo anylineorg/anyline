@@ -27,14 +27,20 @@ public class Base64Util {
     private static byte[] base64DecodeChars = new byte[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
             61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, 
-            -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1 }; 
-  
-    /** 
-     * 将字节数组编码为字符串 
-     * 
+            -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1 };
+
+    public static String encode(String src, String charset) throws Exception{
+        return encode(src.getBytes(charset));
+    }
+    public static String encode(String src) throws Exception{
+        return encode(src, "UTF-8");
+    }
+    /**
+     * 将字节数组编码为字符串
+     *
      * @param data  data
      * @return String
-     */ 
+     */
     public static String encode(byte[] data) { 
         StringBuffer sb = new StringBuffer(); 
         int len = data.length; 
@@ -64,9 +70,12 @@ public class Base64Util {
             sb.append(base64EncodeChars[b3 & 0x3f]); 
         } 
         return sb.toString(); 
-    } 
-    public static byte[] decode(String str) throws Exception { 
-        byte[] data = str.getBytes("GBK"); 
+    }
+    public static byte[] decode(String code) throws Exception {
+        return decode(code, "UTF-8");
+    }
+    public static byte[] decode(String code, String charset) throws Exception {
+        byte[] data = code.getBytes(charset);
         int len = data.length; 
         ByteArrayOutputStream buf = new ByteArrayOutputStream(len); 
         int i = 0; 
@@ -118,5 +127,39 @@ public class Base64Util {
             buf.write(((b3 & 0x03) << 6) | b4); 
         } 
         return buf.toByteArray(); 
-    } 
+    }
+
+    /**
+     * 检测是否符合base64编码规则
+     * @param str String
+     * @return boolean
+     */
+    public static boolean verify(String str) {
+        if (str == null) {
+            return false;
+        }
+        int len = str.trim().length();
+        if(len == 0){
+            return false;
+        }
+        if (len % 4 != 0) {
+            return false;
+        }
+        char[] strChars = str.toCharArray();
+        int idx = -1;
+        for (char c:strChars) {
+            idx ++;
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+                    || c == '+' || c == '/') {
+            }else if(c == '='){
+                if(idx < len - 2){
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
