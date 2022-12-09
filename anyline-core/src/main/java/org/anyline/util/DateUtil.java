@@ -927,9 +927,8 @@ public class DateUtil {
 				Regular.MATCH_MODE.MATCH)) {
 			return null;
 		}
-		Date date = null;
 		if(str.contains("T")){
-			/**
+			/*
 			 * ISO8601
 			 * "2020-12-19T16:22:50.000Z"
 			 * "2020-12-19T16:22:50.000+08:00"
@@ -938,8 +937,14 @@ public class DateUtil {
 			 * "2017-03-31T10:38:14.4723017Z"
 			 * "2021-09-08T09:20:14.245292+08:00"
 			 */
-			return Date.from(OffsetDateTime.parse(str).toInstant());
+			if(str.contains("+") || str.contains("Z")) {
+				return Date.from(OffsetDateTime.parse(str).toInstant());
+			}else{
+				//2022-12-08T12:29:53
+				str = str.replace("T"," ");
+			}
 		}
+		Date date = null;
 		String format = FORMAT_FULL;
 		if (!str.contains(".")) {
 			// 不带毫秒 2020-01-01 HH:mm:ss
