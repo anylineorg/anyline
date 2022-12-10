@@ -38,7 +38,7 @@
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
 		<jdbc-ojdbc.version>21.3.0.0</jdbc-ojdbc.version><!-- oracle -->
-		<jdbc-postgresql.version>42.4.3</jdbc-postgresql.version>
+		<jdbc-postgresql.version>42.4.1</jdbc-postgresql.version>
 		<jdbc-hgdb.version>4.0-jdbc42</jdbc-hgdb.version>
 		<jdbc-mariadb.version>2.4.4</jdbc-mariadb.version>
 		<jdbc-clickhouse.veriosn>0.3.2-patch7</jdbc-clickhouse.veriosn>
@@ -56,9 +56,9 @@
 		<logback.version>1.3.0-alpha11</logback.version>
 		<slf4j.version>2.0.0-alpha5</slf4j.version>
 		<json.version>2.4</json.version>
-		<jackson.version>2.12.7.1</jackson.version>
+		<jackson.version>2.10.0</jackson.version>
 		<org.dom4j.version>2.1.3</org.dom4j.version>
-		<commons.net.version>3.9.0</commons.net.version>
+		<commons.net.version>3.6</commons.net.version>
 		<commons.io.version>2.7</commons.io.version>
 		<commons.httpclient.version>3.1</commons.httpclient.version>
 		<apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
@@ -675,10 +675,10 @@
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.version}</version>
-            </dependency>
+			</dependency>
 
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -786,7 +786,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
