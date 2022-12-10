@@ -1,6 +1,8 @@
 package org.anyline.entity.adapter;
 
-public interface KeyAdapter {
+import java.io.Serializable;
+
+public interface KeyAdapter extends Serializable {
     public static enum KEY_CASE{
         CONFIG				{public String getCode(){return "CONFIG";} 			public String getName(){return "按配置文件";}},
         SRC					{public String getCode(){return "SRC";} 			public String getName(){return "不转换";}},
