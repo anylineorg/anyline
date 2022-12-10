@@ -429,7 +429,7 @@ public class NumberUtil {
 	 * 大数字转换字节流（字节数组）型数据
 	 *
 	 * @param n
-	 * @return
+	 * @return byte
 	 */
 	public static byte[] int32bytes(BigInteger n) {
 		byte tmpd[] = (byte[]) null;
@@ -455,7 +455,7 @@ public class NumberUtil {
 	/**
 	 * 换字节流（字节数组）型数据转大数字
 	 * @param bytes bytes
-	 * @return
+	 * @return BigInteger
 	 */
 	public static BigInteger byte2big(byte[] bytes) {
 		if (bytes[0] < 0) {
