@@ -360,7 +360,7 @@ public final class AwkCompiler implements PatternCompiler {
 	throw
 	  new MalformedPatternException(
               "Parse error: Superfluous interval specified at position " +
-              __bytesRead + ".  Number of occurences was set to zero.");
+              __bytesRead + ".  Number of occurrences was set to zero.");
 
       if(min == 1)
 	return atom;
@@ -415,7 +415,7 @@ public final class AwkCompiler implements PatternCompiler {
 	  throw
 	    new MalformedPatternException(
 	    "Parse error: Superfluous interval specified at position " +
-	    __bytesRead + ".  Number of occurences was set to zero.");
+	    __bytesRead + ".  Number of occurrences was set to zero.");
 
 	if(min == 0) {
 	  if(max == 1)
