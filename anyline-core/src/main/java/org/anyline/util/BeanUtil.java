@@ -133,7 +133,7 @@ public class BeanUtil {
 		try{
 			Object v = value;
 			boolean compatible = true;//是否兼容 int long等不能设置null值
-			String type = field.getType().getSimpleName().toLowerCase();
+			String type = field.getType().getSimpleName().toLowerCase();		//属性类型
 			String columnType = null;
 			if(null != column){
 				columnType = column.getTypeName().toUpperCase();
@@ -167,8 +167,12 @@ public class BeanUtil {
 					} else if(type.equals("localdatetime")){
 						Date date = DateUtil.parse(v);
 						v = DateUtil.localDateTime(date);
-					}else if(!type.equals("string") && null != columnType && columnType.contains("JSON")){
-						v = json2oject(v.toString(), field.getType());
+					}else if(!type.equals("string") && null != columnType){
+						if(columnType.contains("JSON")) {
+							v = json2oject(v.toString(), field.getType());
+						}else if(columnType.contains("XML")){
+							v = xml2object(v.toString(), field.getType());
+						}
 					} else if (type.equals("string")) {
 						if(v instanceof byte[]){
 							v = Base64Util.encode((byte[]) v);

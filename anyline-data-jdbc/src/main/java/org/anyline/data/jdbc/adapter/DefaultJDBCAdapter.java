@@ -2743,7 +2743,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 根据数据库列属性 类型转换
+	 * 根据数据库列属性 类型转换(一般是在更新数据库时调用)
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
 	 * @param column 列
 	 * @param run RunValue
