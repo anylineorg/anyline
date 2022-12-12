@@ -1131,7 +1131,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                 }
             }
-            if(null != type){
+            if(null != type && !(value instanceof String)){
                 if(type.contains("JSON")){
                     value = BeanUtil.object2json(value);
                 }else if(type.contains("XML")){
