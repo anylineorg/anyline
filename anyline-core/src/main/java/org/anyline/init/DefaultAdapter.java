@@ -210,7 +210,11 @@ public class DefaultAdapter implements EntityAdapter {
             String column = column(clazz, field);
             Object value = map.get(column);
             if(null != value) {
-                BeanUtil.setFieldValue(entity, field, (Column) columns.get(column.toUpperCase()), map.get(column));
+                Column col = null;
+                if(null != columns){
+                    col = (Column) columns.get(column.toUpperCase());
+                }
+                BeanUtil.setFieldValue(entity, field, col, map.get(column));
             }
         }
         return entity;

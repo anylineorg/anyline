@@ -542,7 +542,11 @@ public class BeanUtil {
 				String k = (String) entry.getKey();
 				Object v = entry.getValue();
 				Field field = ClassUtil.getField(fields, k, ignoreCase, ignoreSplit);
-				setFieldValue(obj, field, (Column) columns.get(k.toUpperCase()), v);
+				Column col = null;
+				if(null != columns){
+					col = (Column) columns.get(k.toUpperCase());
+				}
+				setFieldValue(obj, field, col, v);
 			}
 			if(null != keys){
 				for(String key:keys){
