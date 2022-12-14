@@ -1270,8 +1270,13 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				|| value instanceof LocalTime
 				|| value instanceof LocalDateTime
 		){
-			Date date = DateUtil.parse(value);
-			builder.append("TO_DATE('").append(DateUtil.format(date,DateUtil.FORMAT_DATE_TIME)).append("','yyyy-mm-dd hh24:mi:ss')");
+			try {
+				Date date = DateUtil.parse(value);
+				builder.append("TO_DATE('").append(DateUtil.format(date, DateUtil.FORMAT_DATE_TIME)).append("','yyyy-mm-dd hh24:mi:ss')");
+			}catch (Exception e){
+				builder.append("null");
+				e.printStackTrace();
+			}
 		}else if(value instanceof Date){
 			builder.append("TO_DATE('").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("','yyyy-mm-dd hh24:mi:ss')");
 		}else if(value instanceof Number || value instanceof Boolean){
