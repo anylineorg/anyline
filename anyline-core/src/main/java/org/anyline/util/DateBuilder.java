@@ -26,10 +26,18 @@ public class DateBuilder{
 		this.date = date;
 	}
 	public DateBuilder(String date){
-		this.date = DateUtil.parse(date);
+		try {
+			this.date = DateUtil.parse(date);
+		}catch (Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 	public DateBuilder(String date, String format){
-		this.date = DateUtil.parse(date, format);
+		try {
+			this.date = DateUtil.parse(date, format);
+		}catch (Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 	public DateBuilder(){
 
@@ -80,7 +88,7 @@ public class DateBuilder{
 	 * @param date date
 	 * @return boolean
 	 */
-	public boolean before(String date){
+	public boolean before(String date) throws Exception{
 		return before(DateUtil.parse(date));
 	}
 	public boolean before(Date date){
@@ -102,7 +110,7 @@ public class DateBuilder{
 		Long time = date.getTime();
 		return time > min.getTime() && time <max.getTime();
 	}
-	public boolean between(String min, String max){
+	public boolean between(String min, String max) throws Exception{
 		return between(DateUtil.parse(min), DateUtil.parse(max));
 	}
 

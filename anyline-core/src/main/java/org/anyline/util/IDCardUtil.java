@@ -432,8 +432,12 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {   
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		result = idcard.substring(6, 14); 
-		result = DateUtil.format(result, "yyyy-MM-dd"); 
+		result = idcard.substring(6, 14);
+		try {
+			result = DateUtil.format(result, "yyyy-MM-dd");
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		return result; 
 	} 
 	 
@@ -490,8 +494,12 @@ public class IDCardUtil {
 	public static int getAge(String idcard){ 
 		int age = -1; 
 		String birthday = getBirthday(idcard); 
-		if(BasicUtil.isNotEmpty(birthday)){ 
-			age = (int)DateUtil.diff(Calendar.YEAR, birthday); 
+		if(BasicUtil.isNotEmpty(birthday)){
+			try {
+				age = (int) DateUtil.diff(Calendar.YEAR, birthday);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		} 
 		return age; 
 	} 

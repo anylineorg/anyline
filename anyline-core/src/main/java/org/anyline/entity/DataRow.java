@@ -827,7 +827,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param cols cols
      * @return DataRow
      */
-    public DataRow formatDate(String format, String... cols) {
+    public DataRow formatDate(String format, String... cols) throws Exception{
         if (null == cols || BasicUtil.isEmpty(format)) {
             return this;
         }
@@ -841,7 +841,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow dateFormat(String target, String key, String format) {
+    public DataRow dateFormat(String target, String key, String format) throws Exception {
         if (null == target || null == key || isEmpty(key) || null == format) {
             return this;
         }
@@ -849,7 +849,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow dateParse(String target, String key, String format) {
+    public DataRow dateParse(String target, String key, String format) throws Exception {
         if (null == target || null == key || isEmpty(key) || null == format) {
             return this;
         }
@@ -857,7 +857,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow dateParse(String target, String key) {
+    public DataRow dateParse(String target, String key) throws Exception {
         if (null == target || null == key || isEmpty(key)) {
             return this;
         }
@@ -865,7 +865,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow dateFormat(String key, String format) {
+    public DataRow dateFormat(String key, String format) throws Exception {
         return dateFormat(key, key, format);
     }
 
@@ -1788,16 +1788,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
         if (date instanceof Date) {
             result = (Date) date;
-        }else{
-            result = DateUtil.parse(date);
+        }else {
+            result = DateUtil.parse(date, def);
         }
+
         if(null == result){
             result = def;
         }
         return result;
     }
 
-    public Date getDate(String key, String def) {
+    public Date getDate(String key, String def) throws Exception{
         try {
             return getDate(key);
         } catch (Exception e) {

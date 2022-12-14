@@ -1029,7 +1029,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param cols   cols
      * @return DataSet
      */
-    public DataSet formatDate(String format, String... cols) {
+    public DataSet formatDate(String format, String... cols)  throws Exception{
         if (null == cols || BasicUtil.isEmpty(format)) {
             return this;
         }
@@ -1041,31 +1041,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet dateFormat(String target, String key, String format){
+    public DataSet dateFormat(String target, String key, String format) throws Exception{
         for(DataRow row: rows){
             row.dateFormat(target, key, format);
         }
         return this;
     }
-    public DataSet dateParse(String target, String key, String format){
+    public DataSet dateParse(String target, String key, String format) throws Exception{
         for(DataRow row: rows){
             row.dateParse(target, key, format);
         }
         return this;
     }
-    public DataSet dateParse(String target, String key){
+    public DataSet dateParse(String target, String key) throws Exception{
         for(DataRow row: rows){
             row.dateParse(target, key);
         }
         return this;
     }
-    public DataSet dateParse(String key){
+    public DataSet dateParse(String key) throws Exception{
         for(DataRow row: rows){
             row.dateParse(key, key);
         }
         return this;
     }
-    public DataSet dateFormat(String key, String format){
+    public DataSet dateFormat(String key, String format) throws Exception{
         return dateFormat(key, key, format);
     }
     /**
@@ -4898,15 +4898,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
             } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
-                Date date = DateUtil.parse(value.toString());
-                for (DataRow row : src) {
-                    if (null == row.get(key)) {
-                        continue;
+                try {
+                    Date date = DateUtil.parse(value.toString());
+                    for (DataRow row : src) {
+                        if (null == row.get(key)) {
+                            continue;
+                        }
+                        if (row.isNotEmpty(key) &&
+                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) < 0) {
+                            set.add(row);
+                        }
                     }
-                    if (row.isNotEmpty(key) &&
-                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) < 0) {
-                        set.add(row);
-                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             } else {
                 for (DataRow row : src) {
@@ -4942,15 +4946,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
             } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
-                Date date = DateUtil.parse(value.toString());
-                for (DataRow row : src) {
-                    if (null == row.get(key)) {
-                        continue;
+                try {
+                    Date date = DateUtil.parse(value.toString());
+                    for (DataRow row : src) {
+                        if (null == row.get(key)) {
+                            continue;
+                        }
+                        if (row.isNotEmpty(key) &&
+                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) <= 0) {
+                            set.add(row);
+                        }
                     }
-                    if (row.isNotEmpty(key) &&
-                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) <= 0) {
-                        set.add(row);
-                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             } else {
                 for (DataRow row : src) {
@@ -4986,15 +4994,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
             } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
-                Date date = DateUtil.parse(value.toString());
-                for (DataRow row : src) {
-                    if (null == row.get(key)) {
-                        continue;
+                try {
+                    Date date = DateUtil.parse(value.toString());
+                    for (DataRow row : src) {
+                        if (null == row.get(key)) {
+                            continue;
+                        }
+                        if (row.isNotEmpty(key) &&
+                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) > 0) {
+                            set.add(row);
+                        }
                     }
-                    if (row.isNotEmpty(key) &&
-                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) > 0) {
-                        set.add(row);
-                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             } else {
                 for (DataRow row : src) {
@@ -5030,15 +5042,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
             } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
-                Date date = DateUtil.parse(value.toString());
-                for (DataRow row : src) {
-                    if (null == row.get(key)) {
-                        continue;
+                try {
+                    Date date = DateUtil.parse(value.toString());
+                    for (DataRow row : src) {
+                        if (null == row.get(key)) {
+                            continue;
+                        }
+                        if (row.isNotEmpty(key) &&
+                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) >= 0) {
+                            set.add(row);
+                        }
                     }
-                    if (row.isNotEmpty(key) &&
-                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) >= 0) {
-                        set.add(row);
-                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             } else {
                 for (DataRow row : src) {
