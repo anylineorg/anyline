@@ -28,11 +28,17 @@ import java.util.List;
 public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrepare {
 
 	public DefaultTablePrepare(){
-		super(); 
+		super();
 		chain = new DefaultAutoConditionChain();
-	} 
- 
- 
+	}
+	public DefaultTablePrepare(String table){
+		super();
+		chain = new DefaultAutoConditionChain();
+		setTable(table);
+	}
+
+
+
 	@Override 
 	public void setTable(String table) {
 		this.table = table;

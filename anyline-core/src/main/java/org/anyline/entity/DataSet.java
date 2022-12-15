@@ -137,6 +137,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public void setOverride(Boolean override) {
         this.override = override;
+        for(DataRow row:rows){
+            row.setOverride(override);
+        }
     }
 
     public DataSet setMetadatas(LinkedHashMap metadatas){

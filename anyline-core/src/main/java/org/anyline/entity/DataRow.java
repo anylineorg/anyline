@@ -685,13 +685,29 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 是否是新数据
+     * 是否是新数据<br/>
+     * 强制isNew=true时返回true<br/>
+     * 全部主键都有值时返回false只要有一个主键值为空返回true
      * @return Boolean
      */
     public Boolean isNew() {
-        String pk = getPrimaryKey();
+        if(null != isNew && isNew){
+            return true;
+        }
+        /*String pk = getPrimaryKey();
         String pv = getString(pk);
-        return (null == pv || (null == isNew) || isNew || BasicUtil.isEmpty(pv));
+        return (null == pv || (null == isNew) || isNew || BasicUtil.isEmpty(pv));*/
+
+        boolean fullPv = true; //主键值是否都有
+        List<String> ks = getPrimaryKeys();
+        for(String k:ks){
+            Object v = get(k);
+            if(BasicUtil.isEmpty(v)){
+                fullPv = false;
+                break;
+            }
+        }
+        return !fullPv;
     }
 
     /**

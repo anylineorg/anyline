@@ -20,6 +20,7 @@
 package org.anyline.data.prepare;
 
 import org.anyline.data.entity.Join;
+import org.anyline.entity.Compare;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
@@ -134,8 +135,9 @@ public interface RunPrepare extends Cloneable {
 	 * @param value   值 
 	 * @param compare 比较方式 
 	 * @return RunPrepare
-	 */ 
-	public RunPrepare addCondition(String column, Object value, int compare);
+	 */
+	public RunPrepare addCondition(String column, Object value, Compare compare);
+	public RunPrepare addCondition(String column, Object value);
  
 	 
 	/* ******************************************************************************************************* 

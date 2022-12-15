@@ -20,14 +20,12 @@
 package org.anyline.data.prepare.init;
 
 import org.anyline.data.entity.Join;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.DefaultOrderStore;
-import org.anyline.entity.PageNavi;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
+import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,14 +174,24 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @param value  值
 	 * @param compare  比较方式
 	 * @return RunPrepare
-	 */ 
-	public RunPrepare addCondition(String column, Object value, int compare) {
-		return this; 
-	} 
- 
- 
- 
- 
+	 */
+	public RunPrepare addCondition(String column, Object value, Compare compare) {
+		Condition condition = new DefaultAutoCondition(false, false, null, column, value, compare) ;
+		addCondition(condition);
+		return this;
+	}
+	public RunPrepare addCondition(String column, Object value) {
+		Compare compare = Compare.EQUAL;
+		if(null != value && value instanceof Collection){
+			compare = Compare.IN;
+		}
+		return addCondition(column, value, compare);
+	}
+
+
+
+
+
 	@Override 
 	public RunPrepare setText(String text) {
 		return this; 

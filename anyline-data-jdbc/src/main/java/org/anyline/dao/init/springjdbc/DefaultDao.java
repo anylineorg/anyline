@@ -23,6 +23,8 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.dao.init.BatchInsertStore;
 import org.anyline.data.entity.*;
+import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -526,11 +528,53 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == data){
 			return 0;
 		}
-		if(checkIsNew(data)){
+		boolean isNew = checkIsNew(data);
+		if(isNew){
 			return insert(dest, data, checkPrimary, columns);
 		}else{
-			return update(dest, data, columns);
+			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
+			Boolean override = checkOverride(data);
+			boolean exe = true;
+			if(null != override){
+				RunPrepare prepare = new DefaultTablePrepare(dest);
+				Map<String, Object> pvs = checkPv(data);
+				ConfigStore stores = new DefaultConfigStore();
+				for(String k:pvs.keySet()){
+					stores.addCondition(k, pvs.get(k));
+				}
+				boolean exists = exists(prepare, stores);
+				if(exists){
+					if(override){
+						return update(dest, data, columns);
+					}else{
+						log.warn("[跳过更新][数据已存在:{}({})]",dest, BeanUtil.map2json(pvs));
+					}
+				}else{
+					return insert(dest, data, checkPrimary, columns);
+				}
+			}else{
+				return update(dest, data, columns);
+			}
 		}
+		return 0;
+	}
+	protected Boolean checkOverride(Object obj){
+		Boolean result = null;
+		if(null != obj && obj instanceof DataRow){
+			result = ((DataRow)obj).getOverride();
+		}
+		return result;
+	}
+	protected Map<String,Object> checkPv(Object obj){
+		Map<String,Object> pvs = new HashMap<>();
+		if(null != obj && obj instanceof DataRow){
+			DataRow row = (DataRow) obj;
+			List<String> ks = row.getPrimaryKeys();
+			for(String k:ks){
+				pvs.put(k, row.get(k));
+			}
+		}
+		return pvs;
 	}
 	protected boolean checkIsNew(Object obj){
 		if(null == obj){
