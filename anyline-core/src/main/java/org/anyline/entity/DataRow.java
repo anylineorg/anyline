@@ -54,6 +54,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static KEY_CASE DEFAULT_KEY_KASE     = KEY_CASE.CONFIG       ; // key case
     public static String DEFAULT_PRIMARY_KEY    = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 
+    private Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
     private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
     private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
     private boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
@@ -549,6 +550,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public static DataRow parseArray(String... kvs) {
         return parseArray((DataRow)null, kvs);
+    }
+
+
+    public Boolean getOverride() {
+        return override;
+    }
+
+    public void setOverride(Boolean override) {
+        this.override = override;
     }
 
     public DataRow setMetadatas(LinkedHashMap<String, Column> metadatas){

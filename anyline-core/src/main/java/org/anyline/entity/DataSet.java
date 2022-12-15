@@ -18,6 +18,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private static final long serialVersionUID = 6443551515441660101L;
     protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
     private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
+    private Boolean override                        = null  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
     private boolean result                          = true  ; // 执行结果
     private String code                             = null  ; // code
     private Exception exception                     = null  ; // 异常
@@ -63,7 +64,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
             rows.add(row);
         }
     }
-
     public static DataSet build(Collection<?> list, String ... fields) {
         return parse(list, fields);
     }
@@ -128,6 +128,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public static DataSet parseJson(JsonNode json) {
         return parseJson(KEY_CASE.CONFIG, json);
+    }
+
+
+    public Boolean getOverride() {
+        return override;
+    }
+
+    public void setOverride(Boolean override) {
+        this.override = override;
     }
 
     public DataSet setMetadatas(LinkedHashMap metadatas){
