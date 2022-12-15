@@ -175,13 +175,13 @@ public class DateUtil {
 	 */
 	public static String format(Locale locale, ZoneId zone, Date date, String format) {
 		if (null == date || null == format)
-			return "";
+			return null;
 		LocalDateTime datetime = localDateTime(date, zone);
 		return datetime.format(DateTimeFormatter.ofPattern(format, locale));
 	}
 	public static String format(Locale locale, ZoneId zone, Long date, String format) throws Exception{
 		if (null == date || null == format)
-			return "";
+			return null;
 		return format(locale, zone, parse(date), format);
 	}
 
