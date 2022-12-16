@@ -195,7 +195,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				builder.append("\n\tUNION ALL");
 			}
 			builder.append("\n\tSELECT ");
-			insertValue(run, row, false, true,false, keys);
+			insertValue(run, row, true, true,false, keys);
 			builder.append(" FROM DUAL ");
 			col ++;
 		}
@@ -295,7 +295,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				builder.append("\n\tUNION ALL");
 			}
 			builder.append("\n\tSELECT ");
-			insertValue(run, obj, false, true,false, keys);
+			insertValue(run, obj, true, true,false, keys);
 			builder.append(" FROM DUAL ");
 			col ++;
 		}

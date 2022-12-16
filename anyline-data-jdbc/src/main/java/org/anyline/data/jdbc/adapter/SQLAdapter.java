@@ -138,7 +138,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
             }
-            insertValue(run, row, false, false,true, keys);
+            insertValue(run, row, true, false,true, keys);
             if(i<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append(batchInsertSeparator());
@@ -189,7 +189,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                     row.put(pk, primaryCreater.createPrimary(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
                 }
-                insertValue(run, row, false, false,true, keys);
+                insertValue(run, row, true, false,true, keys);
             }else{
                 String pk = null;
                 Object pv = null;
@@ -205,7 +205,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         BeanUtil.setFieldValue(obj, pk, pv);
                     }
                 }
-                insertValue(run, obj, false, false, true, keys);
+                insertValue(run, obj, true, false, true, keys);
             }
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
