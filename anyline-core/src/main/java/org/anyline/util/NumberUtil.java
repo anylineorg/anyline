@@ -29,6 +29,12 @@ import java.util.Random;
 
 
 public class NumberUtil {
+	/*
+	* HEX ：十六进制 Hexadecimal
+	* DEC ：十进制 Decimal
+	* OCT ：八进制 Octal
+	* BIN ：二进制 Binary
+* */
 	/**
 	 * 数据格式化
 	 *
@@ -365,25 +371,25 @@ public class NumberUtil {
 	 * @param number number
 	 * @return int
 	 */
-	public static int binary2decimal(String number) {
+	public static int bin2dec(String number) {
 		return Integer.parseInt(number,2);
 	}
 
 
 	/**
-	 * 二进制转十进制
+	 * 十进制转二进制
 	 * @param number number
 	 * @return String
 	 */
-	public static String decimal2binary(int number) {
+	public static String dec2bin(int number) {
 		return Integer.toBinaryString((number & 0xFF) + 0x100).substring(1);
 	}
 	/**
 	 * 整形转换成网络传输的字节流（字节数组）型数据
 	 * @param i 一个整型数据
-	 * @return 4个字节的自己数组
+	 * @return 4个字节的byte数组
 	 */
-	public byte[] int2bytes(int i){
+	public byte[] dec2bytes(int i){
 		byte[] bytes = new byte[4];
 		bytes[0] = (byte) (0xff & (i >> 0));
 		bytes[1] = (byte) (0xff & (i >> 8));
@@ -417,7 +423,7 @@ public class NumberUtil {
 	 * @param l 一个长整型数据
 	 * @return 4个字节的byte数组
 	 */
-	public static byte[] long2bytes(long l) {
+	public static byte[] dec2bytes(long l) {
 		byte[] bytes = new byte[8];
 		for (int i = 0; i < 8; i++) {
 			bytes[i] = (byte) (0xff & (l >> (i * 8)));
@@ -428,10 +434,10 @@ public class NumberUtil {
 	/**
 	 * 大数字转换字节流（字节数组）型数据
 	 *
-	 * @param n
-	 * @return byte
+	 * @param n 十进制
+	 * @return bytes
 	 */
-	public static byte[] int32bytes(BigInteger n) {
+	public static byte[] dec2bytes(BigInteger n) {
 		byte tmpd[] = (byte[]) null;
 		if (n == null) {
 			return null;
@@ -457,7 +463,7 @@ public class NumberUtil {
 	 * @param bytes bytes
 	 * @return BigInteger
 	 */
-	public static BigInteger byte2big(byte[] bytes) {
+	public static BigInteger byte2bigint(byte[] bytes) {
 		if (bytes[0] < 0) {
 			byte[] temp = new byte[bytes.length + 1];
 			temp[0] = 0;
@@ -471,7 +477,7 @@ public class NumberUtil {
 	 * @param hex hex
 	 * @return int
 	 */
-	public static int hex2decimal(String hex){
+	public static int hex2dec(String hex){
 		return Integer.parseInt(hex,16);
 	}
 
@@ -482,7 +488,7 @@ public class NumberUtil {
 	 * @param to 结束位置
 	 * @return int
 	 */
-	public static int hex2decimal(String[] hex, int fr, int to){
+	public static int hex2dec(String[] hex, int fr, int to){
 		StringBuilder builder = new StringBuilder();
 		for(int i=fr; i<=to; i++){
 			builder.append(hex[i]);
@@ -528,14 +534,14 @@ public class NumberUtil {
 		return hex;
 	}
 
-	public static String decimal2hex(int number){
+	public static String dec2hex(int number){
 		String hex = Integer.toHexString(number & 0xFF);
 		if(hex.length() < 2){
 			hex = "0" + hex;
 		}
 		return hex;
 	}
-	public static String[] decimal2hex(int[] numbers){
+	public static String[] dec2hex(int[] numbers){
 		String[] hex = new String[numbers.length];
 		for(int i=0; i<hex.length; i++){
 			hex[i] = Integer.toHexString(numbers[i]);
@@ -591,7 +597,7 @@ public class NumberUtil {
 		return (byte)Integer.parseInt(hex,16);
 	}
 
-	public static byte[] decimal2bcd(long num) {
+	public static byte[] dec2bcd(long num) {
 		int digits = 0;
 		long temp = num;
 		while (temp != 0) {
@@ -621,7 +627,7 @@ public class NumberUtil {
 	 * @param b byte
 	 * @return String
 	 */
-	public static String byte2binary(byte  b){
+	public static String byte2bin(byte  b){
 		String value = Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
 		return value;
 	}public static int byte2decimal(byte res) {
@@ -740,7 +746,7 @@ public class NumberUtil {
 		int length = content.length() / 2;
 		for (int i = 0; i < length; i++) {
 			String c = content.substring(i * 2, i * 2 + 2);
-			int a = hex2decimal(c);
+			int a = hex2dec(c);
 			char b = (char) a;
 			String d = String.valueOf(b);
 			result += d;
