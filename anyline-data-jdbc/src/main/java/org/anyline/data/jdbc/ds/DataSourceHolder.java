@@ -178,6 +178,13 @@ public class DataSourceHolder {
 	public static DataSource addDataSource(String key, DataSource ds) throws Exception{
 		return addDataSource(key, ds,true);
 	}
+	public static DataSource addDataSource(DataSource ds) throws Exception{
+		return addDefaultDataSource( ds);
+	}
+	public static DataSource addDefaultDataSource(DataSource ds) throws Exception{
+		return addDataSource("dataSource", ds,true);
+	}
+
 
 	/**
 	 * 注册数据源
@@ -203,7 +210,7 @@ public class DataSourceHolder {
 
 	/**
 	 *
-	 * @param key 切换数据源依据
+	 * @param key 切换数据源依据 默认key=dataSource
 	 * @param type 连接池类型 如 com.zaxxer.hikari.HikariDataSource
 	 * @param driver 驱动类 如 com.mysql.cj.jdbc.Driver
 	 * @param url url
