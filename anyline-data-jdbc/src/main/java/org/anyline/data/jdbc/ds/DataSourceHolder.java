@@ -87,8 +87,8 @@ public class DataSourceHolder {
     } 
     public static void setDefaultDataSource(){ 
     	clearDataSource(); 
-    	if(dataSources.contains("default")){ 
-    		setDataSource("default"); 
+    	if(dataSources.contains("dataSource")){
+    		setDataSource("dataSource");
     	} 
     	THREAD_AUTO_DEFAULT.set(false);
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
