@@ -75,6 +75,13 @@ public class Table implements org.anyline.entity.data.Table{
         });
         return pks;
     }
+    public Column primary(){
+        List<Column> pks = primarys();
+        if(pks.isEmpty()){
+            return null;
+        }
+        return pks.get(0);
+    }
     public Table update(){
         update = new Table();
         return update;
