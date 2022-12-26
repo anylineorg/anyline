@@ -890,7 +890,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             builder.append("*");
             builder.append(JDBCAdapter.BR);
         }
-        builder.append(" FROM ").append(JDBCAdapter.BR_TAB);
+        builder.append("FROM").append(JDBCAdapter.BR_TAB);
         if(null != run.getSchema()){
             SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
         }
@@ -913,7 +913,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
         }
 
-        builder.append("\n WHERE 1=1 \n\t");
+        builder.append("\nWHERE 1=1\n\t");
         /*添加查询条件*/
         // appendConfigStore();
         run.appendCondition();
@@ -930,8 +930,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     @Override
     public String parseExists(Run run){
-        String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS ";
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", " WHERE ");
+        String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
     }
 
@@ -962,8 +962,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     public String parseTotalQuery(Run run){
-        String sql = "SELECT COUNT(*) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F ";
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", " WHERE ");
+        String sql = "SELECT COUNT(*) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
     }
 

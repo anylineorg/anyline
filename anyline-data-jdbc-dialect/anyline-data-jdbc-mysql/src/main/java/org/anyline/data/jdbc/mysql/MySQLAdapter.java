@@ -70,7 +70,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			} 
 			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
 		} 
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", " WHERE ");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql; 
 	}
 
