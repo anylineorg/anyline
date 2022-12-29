@@ -118,7 +118,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	public DefaultConfigStore(String ... configs){
-		configs = BasicUtil.compressionSpace(configs);
+		configs = BasicUtil.compress(configs);
 		chain = new DefaultConfigChain();
 		for(String config:configs){
 			chain.addConfig(parseConfig(config));
@@ -140,7 +140,7 @@ public class DefaultConfigStore implements ConfigStore {
 		this.setPageNavi(navi);
 	}
 	public DefaultConfigStore(List<String> configs){
-		configs = BasicUtil.compressionSpace(configs);
+		configs = BasicUtil.compress(configs);
 		chain = new DefaultConfigChain();
 		for(String config:configs){
 			chain.addConfig(parseConfig(config));
