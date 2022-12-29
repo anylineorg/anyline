@@ -182,7 +182,7 @@ public class HttpClient {
 		try {
 			long fr = System.currentTimeMillis();
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
-				log.warn("[http request][method:{}][url:{}]",method.getMethod(),method.getURI());
+				log.warn("[http request][method:{}][url:{}]", method.getMethod(), method.getURI());
 			}
 			if("stream".equals(returnType)) {
 				response = client.execute(method);
@@ -195,7 +195,7 @@ public class HttpClient {
 				result = parseResult(result, response, encode);
 			}
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
-				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]",method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
+				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
 			result = new HttpResponse();
@@ -356,7 +356,6 @@ public class HttpClient {
 		}
 		if(result){
 			tmpFile.renameTo(dst);
-			// progress.finish(url, "");
 			task.finish();
 		}
 		return result;
@@ -369,14 +368,14 @@ public class HttpClient {
 		if(BasicUtil.isEmpty(encode)){
 			encode = "UTF-8";
 		}
-		String BOUNDARY="-----"+BasicUtil.getRandomLowerString(20);  // 设置边界
+		String BOUNDARY = "-----" + BasicUtil.getRandomLowerString(20);  // 设置边界
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 		HttpPost post = new HttpPost(url);
 		post.setConfig(requestConfig);
 		builder.setBoundary(BOUNDARY);
 		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  // 浏览器兼容模式
 		builder.setCharset(Charset.forName(encode));  // 设置字符编码集
-		ContentType contentType = ContentType.create("text/plain",Charset.forName(encode));
+		ContentType contentType = ContentType.create("text/plain", Charset.forName(encode));
 
 		HttpUtil.mergeParam(builder, params, contentType);
 		if(null != headers){
@@ -405,7 +404,7 @@ public class HttpClient {
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
 		post.setEntity(entity);   // post 实体.
-		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  // 表单形式.
+		post.addHeader("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);  // 表单形式.
 		HttpResponse source = exe(post);
 		return source;
 	}
