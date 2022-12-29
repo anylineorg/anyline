@@ -501,7 +501,7 @@ public class ConfigParser {
 	 * @return String
 	 */
 	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
-		conditions = BasicUtil.compressionSpace(conditions);
+		conditions = BasicUtil.compress(conditions);
 		String result = src+"|";
 		if(null != store){
 			ConfigChain chain = store.getConfigChain();
