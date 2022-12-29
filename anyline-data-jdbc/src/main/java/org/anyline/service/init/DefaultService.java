@@ -100,8 +100,8 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override
     public DataSet querys(String src, ConfigStore configs, Object obj, String... conditions) {
-        src = BasicUtil.compressionSpace(src);
-        conditions = BasicUtil.compressionSpace(conditions);
+        src = BasicUtil.compress(src);
+        conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
         return queryFromDao(src, configs, conditions);
     }
@@ -151,8 +151,8 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
         List<Map<String,Object>> maps = null;
-        src = BasicUtil.compressionSpace(src);
-        conditions = BasicUtil.compressionSpace(conditions);
+        src = BasicUtil.compress(src);
+        conditions = BasicUtil.compress(conditions);
         if(ConfigTable.isSQLDebug()){
             log.warn("[解析SQL][src:{}]", src);
         }
@@ -199,8 +199,8 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
         DataSet set = null;
-        src = BasicUtil.compressionSpace(src);
-        conditions = BasicUtil.compressionSpace(conditions);
+        src = BasicUtil.compress(src);
+        conditions = BasicUtil.compress(conditions);
         if(null == cache || "true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
             set = querys(src, append(configs, obj), conditions);
         }else{
@@ -608,7 +608,7 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override
     public DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
-        conditions = BasicUtil.compressionSpace(conditions);
+        conditions = BasicUtil.compress(conditions);
         DataSet set = queryFromDao(prepare, append(configs, obj), conditions);
         return set;
 
@@ -640,7 +640,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataSet caches(String cache, RunPrepare table, ConfigStore configs, Object obj, String ... conditions){
         DataSet set = null;
-        conditions = BasicUtil.compressionSpace(conditions);
+        conditions = BasicUtil.compress(conditions);
         if(null == cache){
             set = querys(table, configs, obj, conditions);
         }else{
@@ -782,8 +782,8 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions){
         if(null != cacheProvider) {
-            src = BasicUtil.compressionSpace(src);
-            conditions = BasicUtil.compressionSpace(conditions);
+            src = BasicUtil.compress(src);
+            conditions = BasicUtil.compress(conditions);
             String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
             cacheProvider.remove(channel, "SET:" + key);
             cacheProvider.remove(channel, "ROW:" + key);
@@ -837,8 +837,8 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public boolean exists(String src, ConfigStore configs, Object obj, String ... conditions){
         boolean result = false;
-        src = BasicUtil.compressionSpace(src);
-        conditions = BasicUtil.compressionSpace(conditions);
+        src = BasicUtil.compress(src);
+        conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(src);
         result = dao.exists(prepare, append(configs, obj), conditions);
         return result;
@@ -885,8 +885,8 @@ public class DefaultService<E> implements AnylineService<E> {
         int count = -1;
         try {
             // conditions = parseConditions(conditions);
-            src = BasicUtil.compressionSpace(src);
-            conditions = BasicUtil.compressionSpace(conditions);
+            src = BasicUtil.compress(src);
+            conditions = BasicUtil.compress(conditions);
             RunPrepare prepare = createRunPrepare(src);
             count = dao.count(prepare, append(configs, obj), conditions);
         } catch (Exception e) {
@@ -934,7 +934,7 @@ public class DefaultService<E> implements AnylineService<E> {
         dest = DataSourceHolder.parseDataSource(dest,dest);
         fixs = BeanUtil.merge(fixs, columns);
         final List<String> cols = BeanUtil.merge(fixs, columns);
-        final String _dest = BasicUtil.compressionSpace(dest);
+        final String _dest = BasicUtil.compress(dest);
         final Object _data = data;
         final ConfigStore _configs = configs;
         if(async){
@@ -1444,9 +1444,9 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public int execute(String src, ConfigStore store, String... conditions) {
         int result = -1;
-        src = BasicUtil.compressionSpace(src);
+        src = BasicUtil.compress(src);
         src = DataSourceHolder.parseDataSource(src);
-        conditions = BasicUtil.compressionSpace(conditions);
+        conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(src);
         if (null == prepare) {
             return result;
