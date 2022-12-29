@@ -1325,17 +1325,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public boolean hasKey(String key) {
-        return keys().contains(keyAdapter.key(key));
+        return keySet().contains(keyAdapter.key(key));
     }
 
     public boolean containsKey(String key) {
-        return keys().contains(keyAdapter.key(key));
+        return keySet().contains(keyAdapter.key(key));
     }
 
     public List<String> keys() {
         List<String> keys = new ArrayList<>();
-        for (Iterator<String> itr = this.keySet().iterator(); itr.hasNext(); ) {
-            keys.add(itr.next());
+        for(String key:keySet()){
+            keys.add(key);
         }
         return keys;
     }
@@ -2502,12 +2502,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    /**
+     * 所有String类型的值执行trim
+     * @return this
+     */
     public DataRow trim() {
         List<String> keys = keys();
         for (String key : keys) {
             Object value = get(key);
             if (null != value && value instanceof String) {
-                put(KEY_CASE.SRC, key, value.toString().trim());
+                put(KEY_CASE.SRC, key, ((String)value).trim());
+            }
+        }
+        return this;
+    }
+    public DataRow compress(){
+        for(String key:keySet()){
+            Object value = get(key);
+            if (null != value && value instanceof String) {
+                put(KEY_CASE.SRC, key, BasicUtil.compress((String)value));
             }
         }
         return this;
