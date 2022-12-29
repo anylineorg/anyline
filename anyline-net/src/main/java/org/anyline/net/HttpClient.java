@@ -406,7 +406,7 @@ public class HttpClient {
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
 		post.setEntity(entity);   // post 实体.
 		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  // 表单形式.
-		HttpResponse source = post();
+		HttpResponse source = exe(post);
 		return source;
 	}
 	public int status(){
