@@ -808,44 +808,25 @@ public class FileUtil {
         try {
             InputStream is = new FileInputStream(file);
             is.read(b);
-            filetype = getFileTypeByStream(b);
+            filetype = getFileType(b);
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return filetype;
     }
-	public final static String getFileTypeByStream(byte[] b){
-        String filetypeHex = String.valueOf(getFileHexString(b));
+	public static String getFileType(byte[] b){
+        String hex = NumberUtil.byte2hex(b);
         Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
         while (entryiterator.hasNext()) {
             Entry<String,String> entry =  entryiterator.next();
             String fileTypeHexValue = entry.getValue();
-            if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {
+            if (hex.toUpperCase().startsWith(fileTypeHexValue)) {
                 return entry.getKey();
             }
         }
         return null;
     }
-	 public final static String getFileHexString(byte[] b)
-	    {
-	        StringBuilder stringBuilder = new StringBuilder();
-	        if (b == null || b.length <= 0)
-	        {
-	            return null;
-	        }
-	        for (int i = 0; i < b.length; i++)
-	        {
-	            int v = b[i] & 0xFF;
-	            String hv = Integer.toHexString(v);
-	            if (hv.length() < 2)
-	            {
-	                stringBuilder.append(0);
-	            }
-	            stringBuilder.append(hv);
-	        }
-	        return stringBuilder.toString();
-	    }
 	 /**
 	  * 删除目录
 	  * @param file  file
