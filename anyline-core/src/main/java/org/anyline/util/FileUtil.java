@@ -252,6 +252,38 @@ public class FileUtil {
 		}
 		return buffer;
 	}
+	public static File byte2file(byte[] buf, File file){
+		BufferedOutputStream bos = null;
+		FileOutputStream fos = null;
+		try{
+			File dir = file.getParentFile();
+			if (!dir.exists() && dir.isDirectory()){
+				dir.mkdirs();
+			}
+			fos = new FileOutputStream(file);
+			bos = new BufferedOutputStream(fos);
+			bos.write(buf);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			if (bos != null){
+				try{
+					bos.close();
+				}catch (IOException e){
+					e.printStackTrace();
+				}
+			}
+			if (fos != null){
+				try{
+					fos.close();
+				}catch (IOException e){
+					e.printStackTrace();
+				}
+			}
+		}
+		return file;
+	}
 	/**
 	 * 读取文件
 	 * @param file  file

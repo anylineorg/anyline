@@ -25,7 +25,8 @@ public class HttpBuilder {
     private String url;
     private String encode = "UTF-8";
     private DownloadTask task;
-    private Map<String,File> uploads;
+    private Map<String,File> files;
+    private Map<String,byte[]> bytes;
     private String returnType = "text";
 
     public HttpClient build(){
@@ -43,7 +44,8 @@ public class HttpBuilder {
         client.setUrl(url);
         client.setEncode(encode);
         client.setTask(task);
-        client.setUploads(uploads);
+        client.setFiles(files);
+        client.setBytes(bytes);
         client.setReturnType(returnType);
         return client;
     }
@@ -112,7 +114,25 @@ public class HttpBuilder {
         return this;
     }
     public HttpBuilder setUploadFiles(Map<String, File> files){
-        uploads = files;
+        this.files = files;
+        return this;
+    }
+    public HttpBuilder addUploadFiles(String key, File file){
+        if(null == files){
+            files = new HashMap<>();
+        }
+        files.put(key, file);
+        return this;
+    }
+    public HttpBuilder setUploadBytes(Map<String, byte[]> bytes){
+        this.bytes = bytes;
+        return this;
+    }
+    public HttpBuilder addUploadBytes(String key, byte[] bt){
+        if(null == bytes){
+            bytes = new HashMap<>();
+        }
+        bytes.put(key, bt);
         return this;
     }
     public HttpBuilder setParams(Map<String, Object> params){

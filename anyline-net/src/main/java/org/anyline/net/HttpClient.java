@@ -63,7 +63,10 @@ public class HttpClient {
 	private List<NameValuePair> pairs = new ArrayList<>();
     private boolean autoClose = true;
     private DownloadTask task;
-	private Map<String,File> uploads;
+	//上传文件
+	private Map<String,File> files;
+	//上传byte[]
+	private Map<String,byte[]> bytes;
 	private String returnType = "text";//stream
 	private CloseableHttpClient client;
 
@@ -382,10 +385,19 @@ public class HttpClient {
 			}
 		}
 		String fileLog = "";
-		for(String key:uploads.keySet()){
-			File file = uploads.get(key);
-			builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
-			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
+		if(null != files) {
+			for (String key : files.keySet()) {
+				File file = files.get(key);
+				builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
+				fileLog += "[" + key + ":" + file.getAbsolutePath() + "]";
+			}
+		}
+		if(null != bytes) {
+			for (String key : bytes.keySet()) {
+				byte[] file = bytes.get(key);
+				builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, key);
+				fileLog += "[" + key + ":bytes]";
+			}
 		}
 		if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
 			log.warn("[http upload][url:{}]"+fileLog,url);
@@ -611,12 +623,20 @@ public class HttpClient {
 		this.task = task;
 	}
 
-	public Map<String, File> getUploads() {
-		return uploads;
+	public Map<String, File> getFiles() {
+		return files;
 	}
 
-	public void setUploads(Map<String, File> uploads) {
-		this.uploads = uploads;
+	public void setFiles(Map<String, File> files) {
+		this.files = files;
+	}
+
+	public Map<String, byte[]> getBytes() {
+		return bytes;
+	}
+
+	public void setBytes(Map<String, byte[]> bytes) {
+		this.bytes = bytes;
 	}
 
 	public String getReturnType() {
