@@ -4478,6 +4478,58 @@ public class DataSet implements Collection<DataRow>, Serializable {
         this.datalink = datalink;
     }
 
+
+
+    public DataSet copy(boolean regex, DataRow data, String[] fixs, String... keys) {
+        return copy(data, BeanUtil.array2list(fixs, keys));
+    }
+
+    public DataSet copy(boolean regex, DataRow data, String... keys) {
+        if (null == data) {
+            return this;
+        }
+        for(DataRow row:rows){
+            row.copy(regex, data, keys);
+        }
+        return this;
+
+    }
+    public DataSet copy(boolean regex, DataRow data, List<String> fixs, String... keys) {
+        if (null == data || data.isEmpty()) {
+            return this;
+        }
+        for(DataRow row:rows){
+            row.copy(regex, data, fixs, keys);
+        }
+        return this;
+    }
+
+    public DataSet copy(DataRow data, String[] fixs, String... keys) {
+        return copy(false, data, fixs, keys);
+    }
+
+    public DataSet copy(DataRow data, String... keys) {
+        return copy(false, data, keys);
+    }
+    public DataSet copy(DataRow data, List<String> fixs, String... keys) {
+        return copy(false, data, fixs, keys);
+    }
+
+
+    /**
+     * 复制String类型数据
+     * @param data data
+     * @param keys keys
+     * @return DataSet
+     */
+    public DataSet copyString(DataRow data, String... keys) {
+        for(DataRow row:rows){
+            row.copyString(data, keys);
+        }
+        return this;
+    }
+
+
     public class Select implements Serializable {
         private static final long serialVersionUID = 1L;
         private boolean ignoreCase = true;    // 是否忽略大小写
