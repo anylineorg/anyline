@@ -8,7 +8,7 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.6.1-SNAPSHOT</version>
-        <relativePath></relativePath>
+        <relativePath>../anyline-dependency/pom.xml</relativePath>
     </parent>
 
     <artifactId>anyline-oro</artifactId>
