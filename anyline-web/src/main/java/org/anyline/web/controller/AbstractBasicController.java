@@ -716,7 +716,7 @@ public class AbstractBasicController {
 	 * @return boolean
 	 */
 	protected boolean checkRequired(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		params = BasicUtil.compressionSpace(params);
+		params = BasicUtil.compress(params);
 		boolean result = true;
 		for (String param : params) {
 			param = param.trim();
