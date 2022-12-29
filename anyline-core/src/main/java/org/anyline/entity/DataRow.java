@@ -2516,6 +2516,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+    public DataRow trim(String ... keys) {
+        for (String key : keys) {
+            Object value = get(key);
+            if (null != value && value instanceof String) {
+                put(KEY_CASE.SRC, key, ((String)value).trim());
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 多个空白压缩成一个空格
+     * @return
+     */
     public DataRow compress(){
         for(String key:keySet()){
             Object value = get(key);
@@ -2525,7 +2539,38 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+    public DataRow compress(String ... keys){
+        for(String key:keys){
+            Object value = get(key);
+            if (null != value && value instanceof String) {
+                put(KEY_CASE.SRC, key, BasicUtil.compress((String)value));
+            }
+        }
+        return this;
+    }
 
+    /**
+     * 全角转半角
+     * @return this
+     */
+    public DataRow sbc2dbc(){
+        for(String key:keySet()){
+            Object value = get(key);
+            if (null != value && value instanceof String) {
+                put(KEY_CASE.SRC, key, CharUtil.sbc2dbc((String)value));
+            }
+        }
+        return this;
+    }
+    public DataRow sbc2dbc(String ... keys){
+        for(String key:keys){
+            Object value = get(key);
+            if (null != value && value instanceof String) {
+                put(KEY_CASE.SRC, key, CharUtil.sbc2dbc((String)value));
+            }
+        }
+        return this;
+    }
     /**
      * 替换所有空值
      * @param key key
