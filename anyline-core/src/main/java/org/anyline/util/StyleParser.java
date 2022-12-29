@@ -43,7 +43,7 @@ public class StyleParser {
         Map<String, String> styles = new HashMap<>();
 
         if (null != txt) {
-            txt = BasicUtil.compressionSpace(txt);//多个空格压缩成一个
+            txt = BasicUtil.compress(txt);//多个空格压缩成一个
             String[] items = txt.split(";");
             for (String item : items) {
                 if (item.contains(":")) {
