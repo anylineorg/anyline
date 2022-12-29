@@ -216,9 +216,53 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+    /**
+     * 多个空白压缩成一个空格
+     * @return
+     */
+    public DataSet compress(){
+        for(DataRow row:rows){
+            row.compress();
+        }
+        return this;
+    }
+    public DataSet compress(String ... keys){
+        for(DataRow row:rows){
+            row.compress(keys);
+        }
+        return this;
+    }
+
+    /**
+     * 所有String类型的值执行trim
+     * @return this
+     */
     public DataSet trim(){
         for(DataRow row:rows){
             row.trim();
+        }
+        return this;
+    }
+    public DataSet trim(String ... keys){
+        for(DataRow row:rows){
+            row.trim(keys);
+        }
+        return this;
+    }
+
+    /**
+     * 全角转半角
+     * @return this
+     */
+    public DataSet sbc2dbc(){
+        for(DataRow row:rows){
+            row.sbc2dbc();
+        }
+        return this;
+    }
+    public DataSet sbc2dbc(String ... keys){
+        for(DataRow row:rows){
+            row.sbc2dbc(keys);
         }
         return this;
     }
