@@ -513,6 +513,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
             if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
                 log.warn("{}[exe insert][返回主键失败]", random);
             }
