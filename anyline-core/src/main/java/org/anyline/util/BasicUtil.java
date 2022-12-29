@@ -505,34 +505,34 @@ public class BasicUtil {
 	 * @param str  str
 	 * @return String
 	 */ 
-	public static String compressionSpace(String str) { 
+	public static String compress(String str) {
 		if (null != str) { 
 			str = str.replaceAll("\\s{2,}", " ").trim(); 
 		} 
 		return str; 
 	}
 
-	public static String[] compressionSpace(String[] strs) {
+	public static String[] compress(String[] strs) {
 		if (null != strs) {
 			int size = strs.length;
 			for (int i = 0; i < size; i++) {
-				strs[i] = compressionSpace(strs[i]);
+				strs[i] = compress(strs[i]);
 			}
 		}
 		return strs;
 	}
-	public static List<String> compressionSpace(List<String> strs) {
+	public static List<String> compress(List<String> strs) {
 		List<String> result = new ArrayList<>();
 		if (null != strs) {
 			for(String str:strs){
-				result.add(compressionSpace(str));
+				result.add(compress(str));
 			}
 		}
 		return strs;
 	}
 
-	public static String compressionXml(String xml) {
-		xml = compressionSpace(xml);
+	public static String compressXml(String xml) {
+		xml = compress(xml);
 		xml = xml.replaceAll("<\\!--[\\s\\S]*-->","");
 		xml = xml.replaceAll("\\s{1,}<","<");
 		return xml;
