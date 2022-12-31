@@ -4293,7 +4293,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return this;
         }
         for (DataRow row : rows) {
-            row.replace(oldChar, replace, keys);
+            row.replaces(oldChar, replace, keys);
         }
         return this;
     }

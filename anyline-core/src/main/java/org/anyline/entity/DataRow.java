@@ -2617,7 +2617,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 
 
-    public DataRow replace(String oldChar, String replace, String ... keys) {
+    public DataRow replaces(String oldChar, String replace, String ... keys) {
         List<String> ks = null;
         if(null == keys || keys.length ==0){
             ks = keys();
