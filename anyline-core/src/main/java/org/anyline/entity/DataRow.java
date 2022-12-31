@@ -2636,7 +2636,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow replaceAll(String regex, String replace, String ... keys) {
+
+    public DataRow replaces(boolean regex, String oldChar, String replace, String ... keys) {
+        if(regex){
+            return replaceRegex(oldChar, replace, keys);
+        }else{
+            return replaces(oldChar, replace, keys);
+        }
+    }
+    public DataRow replaceRegex(String regex, String replace, String ... keys) {
         List<String> ks = null;
         if(null == keys || keys.length ==0){
             ks = keys();

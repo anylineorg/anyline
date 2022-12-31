@@ -4288,7 +4288,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 
 
-    public DataSet replace(String oldChar, String replace, String ... keys) {
+    public DataSet replaces(String oldChar, String replace, String ... keys) {
         if (null == oldChar) {
             return this;
         }
@@ -4298,10 +4298,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet replaces(boolean regex, String oldChar, String replace, String ... keys) {
+        if (regex) {
+            return replaceRegex(oldChar, replace, keys);
+        }else{
+            return replaces(oldChar, replace, keys);
+        }
+    }
 
-    public DataSet replaceAll(String regex, String replace, String ... keys) {
+
+    public DataSet replaceRegex(String regex, String replace, String ... keys) {
         for (DataRow row : rows) {
-            row.replaceAll(regex, replace, keys);
+            row.replaceRegex(regex, replace, keys);
         }
         return this;
     }
