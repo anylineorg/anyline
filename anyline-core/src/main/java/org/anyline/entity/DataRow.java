@@ -2577,9 +2577,18 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param value value
      * @return DataRow
      */
-    public DataRow replaceEmpty(String key, String replace) {
-        if (isEmpty(key)) {
-            put(key, replace);
+    public DataRow replaceEmpty(String replace, String ... keys) {
+
+        List<String> ks = null;
+        if(null == keys || keys.length ==0){
+            ks = keys();
+        }else{
+            ks = BeanUtil.array2list(keys);
+        }
+        for(String key:ks) {
+            if (isEmpty(key)) {
+                put(key, replace);
+            }
         }
         return this;
     }
@@ -2590,21 +2599,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param replace replace
      * @return DataRow
      */
-    public DataRow replaceNull(String key, String replace) {
-        if (null == get(key)) {
-            put(key, replace);
-        }
-        return this;
-    }
+    public DataRow replaceNull(String replace, String ... keys) {
 
-    /**
-     * 替换所有NULL值
-     * @param value value
-     * @return DataRow
-     */
-    public DataRow replaceNull(String replace) {
-        List<String> keys = keys();
-        for (String key : keys) {
+        List<String> ks = null;
+        if(null == keys || keys.length ==0){
+            ks = keys();
+        }else{
+            ks = BeanUtil.array2list(keys);
+        }
+        for(String key:ks) {
             if (null == get(key)) {
                 put(key, replace);
             }
@@ -2612,20 +2615,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow replace(String key, String oldChar, String replace) {
-        if (null == key || null == oldChar || null == replace) {
-            return this;
-        }
-        put(key, getStringNvl(key).replace(oldChar, replace));
-        return this;
-    }
 
-    public DataRow replace(String oldChar, String replace) {
-        List<String> keys = keys();
+
+    public DataRow replace(String oldChar, String replace, String ... keys) {
+        List<String> ks = null;
+        if(null == keys || keys.length ==0){
+            ks = keys();
+        }else{
+            ks = BeanUtil.array2list(keys);
+        }
         if (null == replace) {
             replace = "";
         }
-        for (String key : keys) {
+        for (String key : ks) {
             Object value = get(key);
             if (value != null && value instanceof String) {
                 put(key, ((String) value).replace(oldChar, replace));
@@ -2634,20 +2636,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow replaceAll(String key, String regex, String newChar) {
-        if (null == key || null == regex || null == newChar) {
-            return this;
+    public DataRow replaceAll(String regex, String replace, String ... keys) {
+        List<String> ks = null;
+        if(null == keys || keys.length ==0){
+            ks = keys();
+        }else{
+            ks = BeanUtil.array2list(keys);
         }
-        put(key, getStringNvl(key).replaceAll(regex, newChar));
-        return this;
-    }
-
-    public DataRow replaceAll(String regex, String replace) {
-        List<String> keys = keys();
         if (null == replace) {
             replace = "";
         }
-        for (String key : keys) {
+        for (String key : ks) {
             Object value = get(key);
             if (value != null && value instanceof String) {
                 put(key, ((String) value).replaceAll(regex, replace));

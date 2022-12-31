@@ -4262,11 +4262,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 替换所有NULL值
      *
      * @param replace replace
+     * @param keys 需要替换的key 如果不指定则替换全部key
      * @return DataSet
      */
-    public DataSet replaceNull(String replace) {
+    public DataSet replaceNull(String replace, String ... keys) {
         for (DataRow row : rows) {
-            row.replaceNull(replace);
+            row.replaceNull(replace, keys);
         }
         return this;
     }
@@ -4275,75 +4276,32 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 替换所有空值
      *
      * @param replace replace
+     * @param keys 需要替换的key 如果不指定则替换全部key
      * @return DataSet
      */
-    public DataSet replaceEmpty(String replace) {
+    public DataSet replaceEmpty(String replace, String ... keys) {
         for (DataRow row : rows) {
-            row.replaceEmpty(replace);
+            row.replaceEmpty(replace, keys);
         }
         return this;
     }
 
 
-    /**
-     * 替换所有NULL值
-     *
-     * @param key   key
-     * @param replace replace
-     * @return DataSet
-     */
-    public DataSet replaceNull(String key, String replace) {
-        for (DataRow row : rows) {
-            row.replaceNull(key, replace);
-        }
-        return this;
-    }
 
-    /**
-     * 替换所有空值
-     *
-     * @param key   key
-     * @param replace replace
-     * @return DataSet
-     */
-    public DataSet replaceEmpty(String key, String replace) {
-        for (DataRow row : rows) {
-            row.replaceEmpty(key, replace);
-        }
-        return this;
-    }
-
-    public DataSet replace(String key, String oldChar, String replace) {
-        if (null == key || null == oldChar || null == replace) {
+    public DataSet replace(String oldChar, String replace, String ... keys) {
+        if (null == oldChar) {
             return this;
         }
         for (DataRow row : rows) {
-            row.replace(key, oldChar, replace);
-        }
-        return this;
-    }
-
-    public DataSet replace(String oldChar, String replace) {
-        for (DataRow row : rows) {
-            row.replace(oldChar, replace);
+            row.replace(oldChar, replace, keys);
         }
         return this;
     }
 
 
-    public DataSet replaceAll(String key, String regex, String replace) {
-        if (null == key || null == regex || null == replace) {
-            return this;
-        }
+    public DataSet replaceAll(String regex, String replace, String ... keys) {
         for (DataRow row : rows) {
-            row.replaceAll(key, regex, replace);
-        }
-        return this;
-    }
-
-    public DataSet replaceAll(String regex, String replace) {
-        for (DataRow row : rows) {
-            row.replaceAll(regex, replace);
+            row.replaceAll(regex, replace, keys);
         }
         return this;
     }
