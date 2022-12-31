@@ -2577,9 +2577,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param value value
      * @return DataRow
      */
-    public DataRow replaceEmpty(String key, String value) {
+    public DataRow replaceEmpty(String key, String replace) {
         if (isEmpty(key)) {
-            put(key, value);
+            put(key, replace);
         }
         return this;
     }
@@ -2587,12 +2587,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     /**
      * 替换所有NULL值
      * @param key key
-     * @param value value
+     * @param replace replace
      * @return DataRow
      */
-    public DataRow replaceNull(String key, String value) {
+    public DataRow replaceNull(String key, String replace) {
         if (null == get(key)) {
-            put(key, value);
+            put(key, replace);
         }
         return this;
     }
@@ -2602,38 +2602,59 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param value value
      * @return DataRow
      */
-    public DataRow replaceNull(String value) {
+    public DataRow replaceNull(String replace) {
         List<String> keys = keys();
         for (String key : keys) {
             if (null == get(key)) {
-                put(key, value);
+                put(key, replace);
             }
         }
         return this;
     }
 
-    public DataRow replace(String key, String oldChar, String newChar) {
-        if (null == key || null == oldChar || null == newChar) {
+    public DataRow replace(String key, String oldChar, String replace) {
+        if (null == key || null == oldChar || null == replace) {
             return this;
         }
-        put(key, getStringNvl(key).replace(oldChar, newChar));
+        put(key, getStringNvl(key).replace(oldChar, replace));
         return this;
     }
 
-    public DataRow replace(String oldChar, String newChar) {
+    public DataRow replace(String oldChar, String replace) {
         List<String> keys = keys();
-        if (null == newChar) {
-            newChar = "";
+        if (null == replace) {
+            replace = "";
         }
         for (String key : keys) {
             Object value = get(key);
             if (value != null && value instanceof String) {
-                put(key, ((String) value).replace(oldChar, newChar));
+                put(key, ((String) value).replace(oldChar, replace));
             }
         }
         return this;
     }
 
+    public DataRow replaceAll(String key, String regex, String newChar) {
+        if (null == key || null == regex || null == newChar) {
+            return this;
+        }
+        put(key, getStringNvl(key).replaceAll(regex, newChar));
+        return this;
+    }
+
+    public DataRow replaceAll(String regex, String replace) {
+        List<String> keys = keys();
+        if (null == replace) {
+            replace = "";
+        }
+        for (String key : keys) {
+            Object value = get(key);
+            if (value != null && value instanceof String) {
+                put(key, ((String) value).replaceAll(regex, replace));
+            }
+        }
+        return this;
+    }
     /**
      * 拼接value
      * @param keys keys

@@ -4261,12 +4261,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 替换所有NULL值
      *
-     * @param value value
+     * @param replace replace
      * @return DataSet
      */
-    public DataSet replaceNull(String value) {
+    public DataSet replaceNull(String replace) {
         for (DataRow row : rows) {
-            row.replaceNull(value);
+            row.replaceNull(replace);
         }
         return this;
     }
@@ -4274,12 +4274,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 替换所有空值
      *
-     * @param value value
+     * @param replace replace
      * @return DataSet
      */
-    public DataSet replaceEmpty(String value) {
+    public DataSet replaceEmpty(String replace) {
         for (DataRow row : rows) {
-            row.replaceEmpty(value);
+            row.replaceEmpty(replace);
         }
         return this;
     }
@@ -4289,12 +4289,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 替换所有NULL值
      *
      * @param key   key
-     * @param value value
+     * @param replace replace
      * @return DataSet
      */
-    public DataSet replaceNull(String key, String value) {
+    public DataSet replaceNull(String key, String replace) {
         for (DataRow row : rows) {
-            row.replaceNull(key, value);
+            row.replaceNull(key, replace);
         }
         return this;
     }
@@ -4303,29 +4303,47 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 替换所有空值
      *
      * @param key   key
-     * @param value value
+     * @param replace replace
      * @return DataSet
      */
-    public DataSet replaceEmpty(String key, String value) {
+    public DataSet replaceEmpty(String key, String replace) {
         for (DataRow row : rows) {
-            row.replaceEmpty(key, value);
+            row.replaceEmpty(key, replace);
         }
         return this;
     }
 
-    public DataSet replace(String key, String oldChar, String newChar) {
-        if (null == key || null == oldChar || null == newChar) {
+    public DataSet replace(String key, String oldChar, String replace) {
+        if (null == key || null == oldChar || null == replace) {
             return this;
         }
         for (DataRow row : rows) {
-            row.replace(key, oldChar, newChar);
+            row.replace(key, oldChar, replace);
         }
         return this;
     }
 
-    public DataSet replace(String oldChar, String newChar) {
+    public DataSet replace(String oldChar, String replace) {
         for (DataRow row : rows) {
-            row.replace(oldChar, newChar);
+            row.replace(oldChar, replace);
+        }
+        return this;
+    }
+
+
+    public DataSet replaceAll(String key, String regex, String replace) {
+        if (null == key || null == regex || null == replace) {
+            return this;
+        }
+        for (DataRow row : rows) {
+            row.replaceAll(key, regex, replace);
+        }
+        return this;
+    }
+
+    public DataSet replaceAll(String regex, String replace) {
+        for (DataRow row : rows) {
+            row.replaceAll(regex, replace);
         }
         return this;
     }
