@@ -2354,6 +2354,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
+	@Override
 	public String buildAddRunSQL(Index index) throws Exception{
 		String name = index.getName();
 		if(BasicUtil.isEmpty(name)){
@@ -2388,6 +2389,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param index 索引
 	 * @return List
 	 */
+	@Override
 	public List<String> buildAlterRunSQL(Index index) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
 		return null;
@@ -2398,6 +2400,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
+	@Override
 	public String buildDropRunSQL(Index index) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		if(index.isPrimary()){
@@ -2418,6 +2421,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
+	@Override
 	public String buildRenameRunSQL(Index index) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
 		return null;
@@ -2435,6 +2439,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
+	@Override
 	public String buildAddRunSQL(Constraint constraint) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Constraint constraint)",37));
 		return null;
@@ -2455,6 +2460,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
+	@Override
 	public String buildDropRunSQL(Constraint constraint) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(Constraint constraint)",37));
 		return null;
@@ -2465,6 +2471,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
+	@Override
 	public String buildRenameRunSQL(Constraint constraint) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(Constraint constraint)",37));
 		return null;
