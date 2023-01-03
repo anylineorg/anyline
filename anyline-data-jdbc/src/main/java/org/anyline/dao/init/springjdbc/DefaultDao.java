@@ -2172,6 +2172,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param table
 	 */
 	private void check(Table table){
+		if(null != table.getCatalog() && null == table.getSchema()){
+			return;
+		}
 		DataSource ds = null;
 		Connection con = null;
 		try {
