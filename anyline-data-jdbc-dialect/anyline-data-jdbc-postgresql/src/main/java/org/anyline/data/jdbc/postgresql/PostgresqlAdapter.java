@@ -773,9 +773,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 			name(builder, column.getTable()).append(" ALTER ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			if(uNullable == 0){
-				builder.append("SET");
+				builder.append(" SET ");
 			}else{
-				builder.append("DROP");
+				builder.append(" DROP ");
 			}
 			builder.append(" NOT NULL");
 			return builder.toString();
