@@ -1074,7 +1074,14 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public String buildDropRunSQL(Index index) throws Exception{
-		return super.buildDropRunSQL(index);
+
+		StringBuilder builder = new StringBuilder();
+		if(index.isPrimary()){
+			log.warn("[主键索引,忽略删除][index:{}]", index.getName());
+		}else {
+			builder.append("DROP INDEX ").append(index.getName());
+		}
+		return builder.toString();
 	}
 	/**
 	 * 修改索引名
