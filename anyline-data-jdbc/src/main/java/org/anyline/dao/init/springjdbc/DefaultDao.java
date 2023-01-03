@@ -706,10 +706,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(data instanceof DataSet){
 			DataSet set = (DataSet)data;
-			int size = set.size();
-			for(int i=0; i<size; i++){
-				batchInsert(dest, set.getRow(i), checkPrimary, columns);
+			for(DataRow row:set){
+				batchInsert(dest, row, checkPrimary, columns);
 			}
+			return 0;
 		}
 
 		String table = DataSourceHolder.parseDataSource(dest,data);//SQLAdapterUtil.getAdapter(getJdbc()).getDataSource(data);
@@ -731,7 +731,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							while(true){
 								DataSet list = batchInsertStore.getDatas();
 								if(null != list && list.size()>0){
-
 									boolean listenerResult = true;
 									if(null != listener){
 										listenerResult = listener.beforeBatchInsert(DefaultDao.this,dest, list, checkPrimary, BeanUtil.array2list(columns));
@@ -741,7 +740,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 										if (null != listener) {
 											listener.afterBatchInsert(DefaultDao.this, cnt, dest, list, checkPrimary, BeanUtil.array2list(columns));
 										}
-
 									}
 								}else{
 									Thread.sleep(sleep);
