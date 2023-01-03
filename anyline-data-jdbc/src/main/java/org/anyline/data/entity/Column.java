@@ -89,7 +89,7 @@ public class Column implements org.anyline.entity.data.Column{
 
     public Column setCatalog(String catalog) {
         this.catalog = catalog;
-        if(null == table && null == table.getSchema()){
+        if(null != table && null == table.getSchema()){
             table.setCatalog(catalog);
         }
         return this;
@@ -235,7 +235,7 @@ public class Column implements org.anyline.entity.data.Column{
 
     public Column setSchema(String schema) {
         this.schema = schema;
-        if(null == table && null == table.getSchema()){
+        if(null != table && null == table.getSchema()){
             table.setSchema(schema);
         }
         return this;
