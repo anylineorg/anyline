@@ -2528,7 +2528,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 多个空白压缩成一个空格
-     * @return
+     * @return DataRow
      */
     public DataRow compress(){
         for(String key:keySet()){
@@ -2573,8 +2573,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
      * 替换所有空值
-     * @param key key
-     * @param value value
+     * @param keys keys
+     * @param replace replace
      * @return DataRow
      */
     public DataRow replaceEmpty(String replace, String ... keys) {
@@ -2595,7 +2595,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 替换所有NULL值
-     * @param key key
+     * @param keys keys
      * @param replace replace
      * @return DataRow
      */

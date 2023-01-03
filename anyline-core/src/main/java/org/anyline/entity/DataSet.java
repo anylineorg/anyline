@@ -218,7 +218,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /**
      * 多个空白压缩成一个空格
-     * @return
+     * @return DataSet
      */
     public DataSet compress(){
         for(DataRow row:rows){
