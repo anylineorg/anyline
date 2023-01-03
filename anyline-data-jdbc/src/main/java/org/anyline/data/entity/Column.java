@@ -356,6 +356,9 @@ public class Column implements org.anyline.entity.data.Column{
 
     public Column setAutoIncrement(int autoIncrement) {
         this.isAutoIncrement = autoIncrement;
+        if(autoIncrement == 1){
+            setNullable(false);
+        }
         return this;
     }
 
@@ -363,6 +366,7 @@ public class Column implements org.anyline.entity.data.Column{
         if(null != autoIncrement) {
             if(autoIncrement){
                 this.isAutoIncrement = 1;
+                setNullable(false);
             }else{
                 this.isAutoIncrement = 0;
             }
