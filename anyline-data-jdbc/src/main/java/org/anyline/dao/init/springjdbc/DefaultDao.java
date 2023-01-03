@@ -2558,6 +2558,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean add(Column column) throws Exception{
 		boolean result = false;
 		long fr = System.currentTimeMillis();
+		check(column);
 		String random = null;
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(column);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
