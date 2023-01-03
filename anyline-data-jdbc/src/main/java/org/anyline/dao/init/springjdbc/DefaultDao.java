@@ -2110,6 +2110,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String uname = update.getName();
 		long fr = System.currentTimeMillis();
 		check(table);
+		check(update);
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
