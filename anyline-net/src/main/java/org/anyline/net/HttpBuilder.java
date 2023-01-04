@@ -23,10 +23,9 @@ public class HttpBuilder {
     private List<NameValuePair> pairs = new ArrayList<>();
     private String userAgent;
     private String url;
-    private String encode = "UTF-8";
+    private String charset = "UTF-8";
     private DownloadTask task;
-    private Map<String,File> files;
-    private Map<String,byte[]> bytes;
+    private Map<String, Object> files;    //可以是文件或byte[]
     private String returnType = "text";
 
     public HttpClient build(){
@@ -42,10 +41,9 @@ public class HttpBuilder {
             client.setUserAgent(userAgent);
         }
         client.setUrl(url);
-        client.setEncode(encode);
+        client.setCharset(charset);
         client.setTask(task);
         client.setFiles(files);
-        client.setBytes(bytes);
         client.setReturnType(returnType);
         return client;
     }
@@ -73,8 +71,8 @@ public class HttpBuilder {
         this.url = url;
         return this;
     }
-    public HttpBuilder setEncode(String encode){
-        this.encode = encode;
+    public HttpBuilder setCharset(String charset){
+        this.charset = charset;
         return this;
     }
     public HttpBuilder setEntity(HttpEntity entity){
@@ -87,7 +85,7 @@ public class HttpBuilder {
     }
     public HttpBuilder setEntity(String entity){
         try {
-            this.entity = new StringEntity(entity, encode);
+            this.entity = new StringEntity(entity, charset);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -95,7 +93,7 @@ public class HttpBuilder {
     }
     public HttpBuilder setEntity(Map<String,?> map){
         try {
-            entity = new StringEntity(BeanUtil.map2json(map), encode);
+            entity = new StringEntity(BeanUtil.map2json(map), charset);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -113,7 +111,7 @@ public class HttpBuilder {
         this.task = task;
         return this;
     }
-    public HttpBuilder setUploadFiles(Map<String, File> files){
+    public HttpBuilder setUploadFiles(Map<String, Object> files){
         this.files = files;
         return this;
     }
@@ -124,15 +122,11 @@ public class HttpBuilder {
         files.put(key, file);
         return this;
     }
-    public HttpBuilder setUploadBytes(Map<String, byte[]> bytes){
-        this.bytes = bytes;
-        return this;
-    }
-    public HttpBuilder addUploadBytes(String key, byte[] bt){
-        if(null == bytes){
-            bytes = new HashMap<>();
+    public HttpBuilder addUploadFiles(String key, byte[] file){
+        if(null == files){
+            files = new HashMap<>();
         }
-        bytes.put(key, bt);
+        files.put(key, file);
         return this;
     }
     public HttpBuilder setParams(Map<String, Object> params){

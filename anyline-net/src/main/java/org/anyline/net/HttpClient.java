@@ -57,16 +57,15 @@ public class HttpClient {
 	private int socketTimeout = 72000;
 	private Map<String, String> headers;
 	private String url;
-	private String encode = "UTF-8";
+	private String charset = "UTF-8";
 	private Map<String, Object> params = new HashMap<>();
 	private HttpEntity entity = null;
 	private List<NameValuePair> pairs = new ArrayList<>();
     private boolean autoClose = true;
     private DownloadTask task;
-	//上传文件
-	private Map<String,File> files;
-	//上传byte[]
-	private Map<String,byte[]> bytes;
+	//上传文件 File或byte[]
+	private Map<String, Object> files;
+
 	private String returnType = "text";//stream
 	private CloseableHttpClient client;
 
@@ -91,7 +90,7 @@ public class HttpClient {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
-				entity = new UrlEncodedFormEntity(pairs, encode);
+				entity = new UrlEncodedFormEntity(pairs, charset);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -111,7 +110,7 @@ public class HttpClient {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
-				entity = new UrlEncodedFormEntity(pairs, encode);
+				entity = new UrlEncodedFormEntity(pairs, charset);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -127,7 +126,7 @@ public class HttpClient {
 	public HttpResponse get() {
 		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
-			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs,encode));
+			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs, charset));
 		}
 		HttpGet method = new HttpGet(url);
 		return exe(method);
@@ -135,7 +134,7 @@ public class HttpClient {
 	public HttpResponse delete() {
 		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
-			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs,encode));
+			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs, charset));
 		}
 		HttpDelete method = new HttpDelete(url);
 		return exe(method);
@@ -192,7 +191,7 @@ public class HttpClient {
 			}else{
 				method.setHeader("Connection", "close");
 				response = client.execute(method);
-				result = parseResult(result, response, encode);
+				result = parseResult(result, response, charset);
 			}
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
 				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
@@ -365,8 +364,8 @@ public class HttpClient {
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
 		}
-		if(BasicUtil.isEmpty(encode)){
-			encode = "UTF-8";
+		if(BasicUtil.isEmpty(charset)){
+			charset = "UTF-8";
 		}
 		String BOUNDARY = "-----" + BasicUtil.getRandomLowerString(20);  // 设置边界
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
@@ -374,8 +373,8 @@ public class HttpClient {
 		post.setConfig(requestConfig);
 		builder.setBoundary(BOUNDARY);
 		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  // 浏览器兼容模式
-		builder.setCharset(Charset.forName(encode));  // 设置字符编码集
-		ContentType contentType = ContentType.create("text/plain", Charset.forName(encode));
+		builder.setCharset(Charset.forName(charset));  // 设置字符编码集
+		ContentType contentType = ContentType.create("text/plain", Charset.forName(charset));
 
 		HttpUtil.mergeParam(builder, params, contentType);
 		if(null != headers){
@@ -386,16 +385,19 @@ public class HttpClient {
 		String fileLog = "";
 		if(null != files) {
 			for (String key : files.keySet()) {
-				File file = files.get(key);
-				builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
-				fileLog += "[" + key + ":" + file.getAbsolutePath() + "]";
-			}
-		}
-		if(null != bytes) {
-			for (String key : bytes.keySet()) {
-				byte[] file = bytes.get(key);
-				builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, key);
-				fileLog += "[" + key + ":bytes]";
+				Object  val  = files.get(key);
+				if(null == val){
+					continue;
+				}
+				if(val instanceof File) {
+					File file = (File)val;
+					builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
+					fileLog += "[" + key + ":" + file.getAbsolutePath() + "]";
+				}else if(val instanceof byte[]){
+					byte[] bytes = (byte[]) val;
+					builder.addBinaryBody(key, bytes, ContentType.MULTIPART_FORM_DATA, key);
+					fileLog += "[" + key + ":bytes]";
+				}
 			}
 		}
 		if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
@@ -582,12 +584,12 @@ public class HttpClient {
 		this.url = url;
 	}
 
-	public String getEncode() {
-		return encode;
+	public String getCharset() {
+		return charset;
 	}
 
-	public void setEncode(String encode) {
-		this.encode = encode;
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 	public Map<String, Object> getParams() {
@@ -622,21 +624,14 @@ public class HttpClient {
 		this.task = task;
 	}
 
-	public Map<String, File> getFiles() {
+	public Map<String, Object> getFiles() {
 		return files;
 	}
 
-	public void setFiles(Map<String, File> files) {
+	public void setFiles(Map<String, Object> files) {
 		this.files = files;
 	}
 
-	public Map<String, byte[]> getBytes() {
-		return bytes;
-	}
-
-	public void setBytes(Map<String, byte[]> bytes) {
-		this.bytes = bytes;
-	}
 
 	public String getReturnType() {
 		return returnType;
