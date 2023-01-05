@@ -664,6 +664,9 @@ public class BasicUtil {
 		if(to < 0){
 			to = src.length() + to;
 		}
+		if(to < 0 || to < fr){
+			return null;
+		}
 		return src.substring(fr, to); 
 	}
 	public static String left(String src, int len){
