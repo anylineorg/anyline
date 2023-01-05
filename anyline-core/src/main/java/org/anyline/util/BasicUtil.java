@@ -660,7 +660,10 @@ public class BasicUtil {
 		int len = src.length(); 
 		if (to > len) { 
 			to = len; 
-		} 
+		}
+		if(to < 0){
+			to = src.length() + to;
+		}
 		return src.substring(fr, to); 
 	}
 	public static String left(String src, int len){
