@@ -331,8 +331,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String random = "";
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				random = random();
-				log.warn("{}[txt:\n{}\n]", random, txt);
-				log.warn("{}[参数:{}]", random, paramLogFormat(values));
+				log.warn("{}[sql:\n{}\n]\n[param:{}]", random, txt, paramLogFormat(values));
 			}
 			/*执行SQL*/
 			try {
@@ -354,13 +353,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.afterExists(run, result, millis);
 				}
+				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						log.warn("{}[SLOW SQL][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
+						if(null != listener){
+							listener.slow("exists", run, txt, values, null, millis);
+						}
+					}
+				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
 				}
+
 			} catch (Exception e) {
 				if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
-					log.error("[{}][txt:\n{}\n]", random, LogUtil.format("查询异常", 33), prepare);
-					log.error("{}[参数][param:{}]", random, paramLogFormat(values));
+					log.error("[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常", 33), prepare,  paramLogFormat(values));
 				}
 				throw e;
 			}
@@ -423,8 +430,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(run.getUpdateColumns(),values));
+			log.warn(random + "[sql:\n{}\n]\n[param:{}]",sql,paramLogFormat(run.getUpdateColumns(),values));
 		}
 		/*执行SQL*/
 		try{
@@ -438,15 +444,23 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterUpdate(run, result, dest, data, columns, millis);
 				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
+				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						log.warn("{}[SLOW SQL][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
+					}
+					if(null != listener){
+						listener.slow("update", run, sql, values, null, millis);
+					}
+				}else {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
+					}
 				}
 
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("[{}][txt:\n{}\n]", random, LogUtil.format("更新异常", 33), sql);
-				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getUpdateColumns(),values));
+				log.error("[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常", 33), sql, paramLogFormat(run.getUpdateColumns(),values));
 			}
 			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
@@ -637,8 +651,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(run.getInsertColumns(),values));
+			log.warn(random + "[sql:\n{}\n]\n[param:{}]",sql, paramLogFormat(run.getInsertColumns(),values));
 		}
 		try{
 			boolean listenerResult = true;
@@ -651,15 +664,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
 					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
-				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , millis, LogUtil.format(cnt, 34));
+				}if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
+					}
+					if(null != listener){
+						listener.slow("insert", run, sql, values, null, millis);
+					}
+				}else {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+					}
 				}
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("插入异常", 33), sql);
-				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getInsertColumns(),values));
+				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常", 33), sql, paramLogFormat(run.getInsertColumns(),values));
 			}
 			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
@@ -795,8 +815,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			log.warn(random + "[sql:\n{}\n]\n[param:{}]",sql, paramLogFormat(values));
 		}
 		try{
 			if(null != values && values.size()>0){
@@ -805,6 +824,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				maps = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
+			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				if(mid > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
+				}
+				if(null != listener){
+					listener.slow("select",null, sql, values, null, mid);
+				}
+			}
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
@@ -816,8 +843,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
-				log.error("[{}][参数:{}]", random, paramLogFormat(values));
+				log.error("[{}][sql:\n{}\n]\n[param:{}]",LogUtil.format("查询异常", 33), random, sql, paramLogFormat(values));
 			}
 			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
@@ -844,8 +870,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			log.warn(random + "[sql:\n{}\n]\n[param:{}]",sql, paramLogFormat(values));
 		}
 		DataSet set = new DataSet();
 		LinkedHashMap<String,Column> columns = null;
@@ -865,6 +890,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
+			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				if(mid > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
+				}
+				if(null != listener){
+					listener.slow("select", null, sql, values, null, mid);
+				}
+			}
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
@@ -882,8 +915,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
-				log.error("[{}][参数:{}]", random, paramLogFormat(values));
+				log.error("[{}][sql:\n{}\n]\n[param:{}]",LogUtil.format("查询异常", 33), random, sql, paramLogFormat(values));
 			}
 			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
@@ -904,8 +936,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			log.warn(random + "[sql:\n{}\n]\n[param:{}]",sql, paramLogFormat(values));
 		}
 		EntitySet<T> set = new EntitySet<>();
 		LinkedHashMap<String,Column> columns = null;
@@ -925,6 +956,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
+			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				if(mid > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
+				}
+				if(null != listener){
+					listener.slow("select", null, sql, values, null, mid);
+				}
+			}
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
@@ -945,7 +984,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][txt:\n{}\n]",random, LogUtil.format("查询异常", 33), sql);
+				log.error("{}[{}][sql:\n{}\n]",random, LogUtil.format("查询异常", 33), sql);
 				log.error("{}}[参数:{}]",random,paramLogFormat(values));
 			}
 			e.printStackTrace();
@@ -974,8 +1013,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn(random + "[txt:\n{}\n]", txt);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			log.warn(random + "[sql:\n{}\n]\n[param:{}]", txt, paramLogFormat(values));
 		}
 		try{
 
@@ -990,6 +1028,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					result = getJdbc().update(txt);
 				}
 				Long millis = System.currentTimeMillis() - fr;
+				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						log.warn("{}[SLOW SQL][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
+					}
+
+					if(null != listener){
+						listener.slow("execute", run, txt, values, null, millis);
+					}
+				}
 				if (null != listener) {
 					listener.afterExecute(run, result, millis);
 				}
@@ -1000,8 +1047,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{},[{}][txt:\n{}\n]" ,random, LogUtil.format("SQL执行异常", 33),prepare);
-				log.error("{}[参数:{}]",random , paramLogFormat(values));
+				log.error("{},[{}][sql:\n{}\n]\n[param:{}]" ,random, LogUtil.format("SQL执行异常", 33),prepare, paramLogFormat(values));
 			}
 			throw e;
 		}finally{
@@ -1047,9 +1093,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random, sql );
-			log.warn("{}[输入参数:{}]",random,paramLogFormat(inputs));
-			log.warn("{}[输出参数:{}]",random,paramLogFormat(outputs));
+			log.warn("{}[sql:\n{}\n]\n[input param:{}]\n[output param:{}]",random, sql, paramLogFormat(inputs), paramLogFormat(outputs));
 		}
 		try{
 
@@ -1102,20 +1146,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				procedure.setResult(list);
 				result = true;
 				Long millis = System.currentTimeMillis() - fr;
+
+				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
+					}
+					if(null != listener){
+						listener.slow("procedure",null, sql, inputs, list, millis);
+					}
+				}
 				if (null != listener) {
 					listener.afterExecute(procedure, result, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[执行耗时:{}ms]", random, millis);
-					log.warn("{}[输出参数:{}]", random, list);
+					log.warn("{}[执行耗时:{}ms]\n[output param:{}]", random, millis, list);
 				}
 			}
 		}catch(Exception e){
 			result = false;
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][txt:\n{}\n]",random,LogUtil.format("存储过程执行异常", 33), sql);
-				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
-				log.error("{}[输出参数:{}]",random,paramLogFormat(outputs));
+				log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]",random,LogUtil.format("存储过程执行异常", 33), sql, paramLogFormat(inputs), paramLogFormat(outputs));
 			}
 			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
@@ -1146,9 +1196,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]", random, procedure.getName());
-			log.warn("{}[输入参数:{}]", random, paramLogFormat(inputs));
-			log.warn("{}[输出参数:{}]", random, paramLogFormat(inputs));
+			log.warn("{}[sql:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), paramLogFormat(inputs), paramLogFormat(outputs));
 		}
 		final String rdm = random;
 		DataSet set = null;
@@ -1241,6 +1289,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			});
 			Long millis = System.currentTimeMillis() - fr;
+
+			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				if(millis > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
+							, random
+							, millis
+							, procedure.getName()
+							, paramLogFormat(inputs)
+							, paramLogFormat(outputs));
+					if(null != listener){
+						listener.slow("procedure", null, procedure.getName(), inputs, outputs, millis);
+					}
+				}
+
+			}
 			if(null != listener){
 				listener.afterQuery(procedure, set, millis);
 			}
@@ -1249,9 +1312,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][txt:\n{}\n]",random,LogUtil.format("存储过程查询异常", 33), procedure.getName());
-				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
-				log.error("{}[输出参数:{}]",random,paramLogFormat(inputs));
+				log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
+						, random
+						, LogUtil.format("存储过程查询异常", 33)
+						, procedure.getName()
+						, paramLogFormat(inputs)
+						, paramLogFormat(outputs));
 			}
 			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
@@ -1317,8 +1383,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
-			log.warn("{}[参数:{}]",random,paramLogFormat(values));
+			log.warn("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
 		try{
 			boolean listenerResult = true;
@@ -1332,6 +1397,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					result = getJdbc().update(sql, values.toArray());
 				}
 				Long millis = System.currentTimeMillis() - fr;
+
+				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
+					}
+					if(null != listener){
+						listener.slow("delete", run, sql, values, null, millis);
+					}
+				}
 				if(null != listener){
 					listener.afterDelete(run, result, millis);
 				}
@@ -1342,8 +1416,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("删除异常", 33), sql);
-				log.error("{}[参数:{}]",random, paramLogFormat(values));
+				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("删除异常", 33), sql, paramLogFormat(values));
 			}
 			result = 0;
 			e.printStackTrace();
@@ -2092,7 +2165,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2130,7 +2203,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String random = null;
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				random = random();
-				log.warn("{}[txt:\n{}\n]",random,sql);
+				log.warn("{}[sql:\n{}\n]",random,sql);
 			}
 
 			DDListener listener = table.getListener();
@@ -2242,7 +2315,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2280,7 +2353,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2318,7 +2391,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String random = null;
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				random = random();
-				log.warn("{}[txt:\n{}\n]",random,sql);
+				log.warn("{}[sql:\n{}\n]",random,sql);
 			}
 
 			DDListener listener = table.getListener();
@@ -2402,7 +2475,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2440,7 +2513,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2477,7 +2550,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String random = null;
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				random = random();
-				log.warn("{}[txt:\n{}\n]",random,sql);
+				log.warn("{}[sql:\n{}\n]",random,sql);
 			}
 
 			DDListener listener = table.getListener();
@@ -2537,7 +2610,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2577,7 +2650,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(column);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = column.getListener();
 
@@ -2622,7 +2695,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = column.getListener();
 		boolean exe = true;
@@ -2662,7 +2735,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			for(String sql:sqls) {
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[txt:\n{}\n]", random, sql);
+					log.warn("{}[sql:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
 				if (null != listener) {
@@ -2719,7 +2792,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(tag);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = tag.getListener();
 
@@ -2764,7 +2837,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = tag.getListener();
 		boolean exe = true;
@@ -2804,7 +2877,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			for(String sql:sqls) {
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[txt:\n{}\n]", random, sql);
+					log.warn("{}[sql:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
 				if (null != listener) {
@@ -2857,7 +2930,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(index);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = index.getListener();
 
@@ -2901,7 +2974,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DDListener listener = index.getListener();
 		for(String sql:sqls) {
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[txt:\n{}\n]", random, sql);
+				log.warn("{}[sql:\n{}\n]", random, sql);
 			}
 			boolean exe = true;
 			if (null != listener) {
@@ -2928,7 +3001,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = index.getListener();
 		boolean exe = true;
@@ -2964,7 +3037,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(constraint);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = constraint.getListener();
 
@@ -3008,7 +3081,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DDListener listener = constraint.getListener();
 		for(String sql:sqls) {
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[txt:\n{}\n]", random, sql);
+				log.warn("{}[sql:\n{}\n]", random, sql);
 			}
 			boolean exe = true;
 			if (null != listener) {
@@ -3035,7 +3108,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[sql:\n{}\n]",random,sql);
 		}
 		DDListener listener = constraint.getListener();
 		boolean exe = true;

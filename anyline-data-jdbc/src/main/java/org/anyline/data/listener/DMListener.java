@@ -229,5 +229,5 @@ public interface DMListener {
      */
     public void afterDelete(Run run, int count, long millis);
 
-    public void slow(Run run, List<Object> params);
+    public void slow(String action, Run run, String sql, List inputs, List outputs, long millis);
 }
