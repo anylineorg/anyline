@@ -48,13 +48,12 @@ import java.util.*;
 
 public class HttpClient {
 	private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
-
 	private String protocol = "TLSv1";
 	private RequestConfig requestConfig;
 	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	private PoolingHttpClientConnectionManager connManager;
-    private int connectTimeout = 72000; // 毫秒
-	private int socketTimeout = 72000;
+    private int connectTimeout = 6000; // 毫秒
+	private int socketTimeout = 6000;
 	private Map<String, String> headers;
 	private String url;
 	private String charset = "UTF-8";
@@ -589,6 +588,9 @@ public class HttpClient {
 	}
 
 	public void setCharset(String charset) {
+		this.charset = charset;
+	}
+	public void setEncode(String charset) {
 		this.charset = charset;
 	}
 

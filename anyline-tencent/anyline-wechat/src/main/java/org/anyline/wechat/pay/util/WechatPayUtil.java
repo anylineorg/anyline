@@ -218,7 +218,7 @@ public class WechatPayUtil {
             String txt = HttpBuilder.init()
                     .setClient(httpclient)
                     .setUrl(WechatPayConfig.API_URL_REFUND)
-                    .setEncode("UTF-8")
+                    .setCharset("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
@@ -285,7 +285,7 @@ public class WechatPayUtil {
             String txt = HttpBuilder.init()
                     .setClient(httpclient)
                     .setUrl(WechatPayConfig.API_URL_SEND_REDPACK)
-                    .setEncode("UTF-8")
+                    .setCharset("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
@@ -351,7 +351,7 @@ public class WechatPayUtil {
             String txt = HttpBuilder.init()
                     .setClient(httpclient)
                     .setUrl(WechatPayConfig.API_URL_SEND_GROUP_REDPACK)
-                    .setEncode("UTF-8")
+                    .setCharset("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
@@ -411,7 +411,7 @@ public class WechatPayUtil {
             String txt = HttpBuilder.init()
                     .setClient(httpclient)
                     .setUrl(WechatPayConfig.API_URL_COMPANY_TRANSFER)
-                    .setEncode("UTF-8")
+                    .setCharset("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
@@ -485,7 +485,7 @@ public class WechatPayUtil {
             String txt = HttpBuilder.init()
                     .setClient(httpclient)
                     .setUrl(WechatPayConfig.API_URL_COMPANY_TRANSFER_BANK)
-                    .setEncode("UTF-8")
+                    .setCharset("UTF-8")
                     .setEntity(reqEntity)
                     .build().get().getText();
             // String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();

@@ -41,7 +41,9 @@ public class HttpBuilder {
             client.setUserAgent(userAgent);
         }
         client.setUrl(url);
-        client.setCharset(charset);
+        if(null != charset) {
+            client.setEncode(charset);
+        }
         client.setTask(task);
         client.setFiles(files);
         client.setReturnType(returnType);

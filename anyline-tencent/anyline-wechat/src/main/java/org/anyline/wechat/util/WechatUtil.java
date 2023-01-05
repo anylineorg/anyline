@@ -89,7 +89,7 @@ public class WechatUtil {
 		String txt = HttpBuilder.init()
 				.setClient(httpclient)
 				.setUrl(WechatConfig.API_URL_GET_PUBLIC_SECRET)
-				.setEncode("UTF-8")
+				.setCharset("UTF-8")
 				.setEntity(reqEntity)
 				.build().get().getText();
 		// String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
