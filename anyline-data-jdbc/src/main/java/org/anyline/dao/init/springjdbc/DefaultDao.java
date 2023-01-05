@@ -110,12 +110,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (run.isValid()) {
 				if(null != listener){
-					listener.beforeQuery(this,run);
+					listener.beforeQuery(run);
 				}
 				Long fr = System.currentTimeMillis();
 				maps = maps(adapter, run.getFinalQuery(), run.getValues());
 				if(null != listener){
-					listener.afterQuery(this,run, maps, System.currentTimeMillis() - fr);
+					listener.afterQuery(run, maps, System.currentTimeMillis() - fr);
 				}
 				if(null != adapter){
 					maps = adapter.process(maps);
@@ -159,7 +159,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				if (null != navi) {
 					if(null != listener){
-						listener.beforeTotal(this,run);
+						listener.beforeTotal(run);
 					}
 					Long fr = System.currentTimeMillis();
 					if (navi.getLastRow() == 0) {
@@ -175,7 +175,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 					if(null != listener){
-						listener.afterTotal(this, run, total, System.currentTimeMillis() - fr);
+						listener.afterTotal(run, total, System.currentTimeMillis() - fr);
 					}
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -184,12 +184,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (run.isValid() && (null == navi || total > 0)) {
 				if(null != listener){
-					listener.beforeQuery(this,run);
+					listener.beforeQuery(run);
 				}
 				Long fr = System.currentTimeMillis();
 				set = select(adapter, prepare.getTable(), run.getFinalQuery(), run.getValues());
 				if(null != listener){
-					listener.afterQuery(this, run, set, System.currentTimeMillis() - fr);
+					listener.afterQuery(run, set, System.currentTimeMillis() - fr);
 				}
 			} else {
 				set = new DataSet();
@@ -234,7 +234,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				if (null != navi) {
 					if(null != listener){
-						listener.beforeTotal(this,run);
+						listener.beforeTotal(run);
 					}
 					Long fr = System.currentTimeMillis();
 					if (navi.getLastRow() == 0) {
@@ -250,7 +250,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 					if(null != listener){
-						listener.afterTotal(this, run, total, System.currentTimeMillis()-fr);
+						listener.afterTotal(run, total, System.currentTimeMillis()-fr);
 					}
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -259,12 +259,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (run.isValid() && (null == navi || total > 0)) {
 				if(null != listener){
-					listener.beforeQuery(this,run);
+					listener.beforeQuery(run);
 				}
 				Long fr = System.currentTimeMillis();
 				list = select(adapter, clazz, run.getTable(), run.getFinalQuery(), run.getValues());
 				if(null != listener){
-					listener.afterQuery(this, run, list, System.currentTimeMillis() - fr);
+					listener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
 				}
 			} else {
@@ -302,12 +302,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
 			if(null != listener){
-				listener.beforeCount(this,run);
+				listener.beforeCount(run);
 			}
 			Long fr = System.currentTimeMillis();
 			count = getTotal(run.getTotalQuery(), run.getValues());
 			if(null != listener){
-				listener.afterCount(this,run, count, System.currentTimeMillis() - fr);
+				listener.afterCount(run, count, System.currentTimeMillis() - fr);
 			}
 		}finally{
 			// 自动切换回默认数据源
@@ -337,7 +337,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			/*执行SQL*/
 			try {
 				if(null != listener){
-					listener.beforeExists(this,run);
+					listener.beforeExists(run);
 				}
 				Map<String, Object> map = null;
 				if (null != values && values.size() > 0) {
@@ -352,7 +352,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				if(null != listener){
-					listener.afterExists(this,run, result, millis);
+					listener.afterExists(run, result, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
@@ -430,13 +430,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeUpdate(this,run, dest, data, columns);
+				listenerResult = listener.beforeUpdate(run, dest, data, columns);
 			}
 			if(listenerResult) {
 				result = getJdbc().update(sql, values.toArray());
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
-					listener.afterUpdate(this, run, result, dest, data, columns, millis);
+					listener.afterUpdate(run, result, dest, data, columns, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
@@ -643,14 +643,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeInsert(this, run, dest, data, checkPrimary, columns);
+				listenerResult = listener.beforeInsert(run, dest, data, checkPrimary, columns);
 			}
 			if(listenerResult) {
 
 				cnt = adapter.insert(random, data, sql, values, null);
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
-					listener.afterInsert(this, run, cnt, dest, data, checkPrimary, columns, millis);
+					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random , millis, LogUtil.format(cnt, 34));
@@ -742,13 +742,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 								if(null != list && list.size()>0){
 									boolean listenerResult = true;
 									if(null != listener){
-										listenerResult = listener.beforeBatchInsert(DefaultDao.this,dest, list, checkPrimary, BeanUtil.array2list(columns));
+										listenerResult = listener.beforeBatchInsert(dest, list, checkPrimary, BeanUtil.array2list(columns));
 									}
 									if(listenerResult) {
 										Long fr = System.currentTimeMillis();
 										int cnt = insert(dest, list, checkPrimary, columns);
 										if (null != listener) {
-											listener.afterBatchInsert(DefaultDao.this, cnt, dest, list, checkPrimary, BeanUtil.array2list(columns), System.currentTimeMillis()-fr);
+											listener.afterBatchInsert(cnt, dest, list, checkPrimary, BeanUtil.array2list(columns), System.currentTimeMillis()-fr);
 										}
 									}
 								}else{
@@ -981,7 +981,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeExecute(this,run);
+				listenerResult = listener.beforeExecute(run);
 			}
 			if(listenerResult) {
 				if (null != values && values.size() > 0) {
@@ -991,7 +991,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
-					listener.afterExecute(this, run, result, millis);
+					listener.afterExecute(run, result, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
@@ -1055,7 +1055,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeExecute(this,procedure);
+				listenerResult = listener.beforeExecute(procedure);
 			}
 			if(listenerResult) {
 				list = (List<Object>) getJdbc().execute(sql, new CallableStatementCallback<Object>() {
@@ -1103,7 +1103,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
-					listener.afterExecute(this, procedure, result, millis);
+					listener.afterExecute(procedure, result, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms]", random, millis);
@@ -1154,7 +1154,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSet set = null;
 		try{
 			if(null != listener){
-				listener.beforeQuery(this,procedure);
+				listener.beforeQuery(procedure);
 			}
 			set = (DataSet)getJdbc().execute(new CallableStatementCreator(){
 				public CallableStatement createCallableStatement(Connection conn) throws SQLException {
@@ -1242,7 +1242,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			});
 			Long millis = System.currentTimeMillis() - fr;
 			if(null != listener){
-				listener.afterQuery(this,procedure, set, millis);
+				listener.afterQuery(procedure, set, millis);
 			}
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[执行耗时:{}ms]", random, millis);
@@ -1323,7 +1323,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			boolean listenerResult = true;
 			if(null != listener){
-				listenerResult = listener.beforeDelete(this,run);
+				listenerResult = listener.beforeDelete(run);
 			}
 			if(listenerResult) {
 				if(null == values) {
@@ -1333,7 +1333,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				if(null != listener){
-					listener.afterDelete(this,run, result, millis);
+					listener.afterDelete(run, result, millis);
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
