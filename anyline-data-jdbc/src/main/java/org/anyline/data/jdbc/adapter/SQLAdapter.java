@@ -491,13 +491,15 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         i++;
                     }
                 }else{
-                    Object last = keys.get(0).get(id_key);
-                    if(last instanceof Number){
-                        Long num = BasicUtil.parseLong(last.toString(), null);
-                        if(null != num){
-                            num = num - data_size + 1;
-                            for(Object item:list){
-                                setPrimaryValue(item, num++);
+                    if(null != keys && keys.size() > 0) {
+                        Object last = keys.get(0).get(id_key);
+                        if (last instanceof Number) {
+                            Long num = BasicUtil.parseLong(last.toString(), null);
+                            if (null != num) {
+                                num = num - data_size + 1;
+                                for (Object item : list) {
+                                    setPrimaryValue(item, num++);
+                                }
                             }
                         }
                     }
@@ -506,10 +508,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     log.warn("{}[exe insert][生成主键:{}]", random, ids);
                 }
             }else{
-                Object id = keys.get(0).get(id_key);
-                setPrimaryValue(data, id);
-                if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-                    log.warn("{}[exe insert][生成主键:{}]", random, id);
+                if(null != keys && keys.size() > 0) {
+                    Object id = keys.get(0).get(id_key);
+                    setPrimaryValue(data, id);
+                    if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+                        log.warn("{}[exe insert][生成主键:{}]", random, id);
+                    }
                 }
             }
         }catch (Exception e){
