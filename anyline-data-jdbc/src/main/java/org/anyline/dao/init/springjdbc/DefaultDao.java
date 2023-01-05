@@ -353,15 +353,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != listener){
 					listener.afterExists(run, result, millis);
 				}
+				boolean slow = false;
 				if(ConfigTable.SLOW_SQL_MILLIS > 0){
 					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						slow = true;
 						log.warn("{}[SLOW SQL][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 						if(null != listener){
 							listener.slow("exists", run, txt, values, null, millis);
 						}
 					}
 				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if (!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
 				}
 
@@ -444,18 +446,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterUpdate(run, result, dest, data, columns, millis);
 				}
+				boolean slow = false;
 				if(ConfigTable.SLOW_SQL_MILLIS > 0){
 					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						slow = true;
 						log.warn("{}[SLOW SQL][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
-					}
-					if(null != listener){
-						listener.slow("update", run, sql, values, null, millis);
-					}
-				}else {
-					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-						log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
+						if(null != listener){
+							listener.slow("update", run, sql, values, null, millis);
+						}
 					}
 				}
+				if (!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
+				}
+
 
 			}
 		}catch(Exception e){
@@ -664,18 +668,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
 					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
-				}if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				}
+
+				boolean slow = false;
+				if(ConfigTable.SLOW_SQL_MILLIS > 0){
 					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						slow = true;
 						log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
-					}
-					if(null != listener){
-						listener.slow("insert", run, sql, values, null, millis);
-					}
-				}else {
-					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-						log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+						if(null != listener){
+							listener.slow("insert", run, sql, values, null, millis);
+						}
 					}
 				}
+				if (!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+				}
+
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
@@ -824,21 +832,23 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				maps = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
+			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
 				if(mid > ConfigTable.SLOW_SQL_MILLIS){
+					slow = true;
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
-				}
-				if(null != listener){
-					listener.slow("select",null, sql, values, null, mid);
+					if(null != listener){
+						listener.slow("select",null, sql, values, null, mid);
+					}
 				}
 			}
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			if(null != adapter){
 				maps = adapter.process(maps);
 			}
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,maps.size() );
 			}
 		}catch(Exception e){
@@ -890,15 +900,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
+			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				slow = true;
 				if(mid > ConfigTable.SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
-				}
-				if(null != listener){
-					listener.slow("select", null, sql, values, null, mid);
+					if(null != listener){
+						listener.slow("select", null, sql, values, null, mid);
+					}
 				}
 			}
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			if(null != adapter) {
@@ -956,15 +968,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
+			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
 				if(mid > ConfigTable.SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
-				}
-				if(null != listener){
-					listener.slow("select", null, sql, values, null, mid);
+					if(null != listener){
+						listener.slow("select", null, sql, values, null, mid);
+					}
 				}
 			}
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			if(null != adapter) {
@@ -1028,19 +1041,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					result = getJdbc().update(txt);
 				}
 				Long millis = System.currentTimeMillis() - fr;
+				boolean slow = false;
 				if(ConfigTable.SLOW_SQL_MILLIS > 0){
 					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+						slow = true;
 						log.warn("{}[SLOW SQL][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
-					}
-
-					if(null != listener){
-						listener.slow("execute", run, txt, values, null, millis);
+						if(null != listener){
+							listener.slow("execute", run, txt, values, null, millis);
+						}
 					}
 				}
 				if (null != listener) {
 					listener.afterExecute(run, result, millis);
 				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if (!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn(random + "[执行耗时:{}ms][影响行数:{}]", millis, LogUtil.format(result, 34));
 				}
 
@@ -1147,18 +1161,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 				Long millis = System.currentTimeMillis() - fr;
 
+				boolean slow = false;
 				if(ConfigTable.SLOW_SQL_MILLIS > 0){
 					if(millis > ConfigTable.SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
-					}
-					if(null != listener){
-						listener.slow("procedure",null, sql, inputs, list, millis);
+						if(null != listener){
+							listener.slow("procedure",null, sql, inputs, list, millis);
+						}
 					}
 				}
 				if (null != listener) {
 					listener.afterExecute(procedure, result, millis);
 				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if (!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms]\n[output param:{}]", random, millis, list);
 				}
 			}
@@ -1289,7 +1304,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			});
 			Long millis = System.currentTimeMillis() - fr;
-
+			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
 				if(millis > ConfigTable.SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
@@ -1306,7 +1321,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != listener){
 				listener.afterQuery(procedure, set, millis);
 			}
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[执行耗时:{}ms]", random, millis);
 			}
 		}catch(Exception e){
@@ -1396,19 +1411,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					result = getJdbc().update(sql, values.toArray());
 				}
 				Long millis = System.currentTimeMillis() - fr;
-
+				boolean slow = false;
 				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+					slow = true;
 					if(millis > ConfigTable.SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
-					}
-					if(null != listener){
-						listener.slow("delete", run, sql, values, null, millis);
+						if(null != listener){
+							listener.slow("delete", run, sql, values, null, millis);
+						}
 					}
 				}
 				if(null != listener){
 					listener.afterDelete(run, result, millis);
 				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if (!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
 				}
 				// result = 1;
