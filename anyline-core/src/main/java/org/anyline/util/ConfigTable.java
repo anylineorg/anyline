@@ -35,7 +35,6 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
@@ -53,12 +52,13 @@ public class ConfigTable {
 	// 对应配置文件key
 	public static boolean IS_DEBUG 										= true		;	// DEBUG状态会输出更多日志
 	public static boolean IS_SHOW_SQL									= true		;	// 执行SQL时是否输出日志
+	public static long SLOW_SQL_MILLIS									= 0			; 	// 慢SQL
 	public static boolean IS_SHOW_SQL_PARAM								= true		;	// 执行SQL时是否输出日志
 	public static boolean IS_SHOW_SQL_WHEN_ERROR						= true		;	// 执行SQL异常时是否输出日志
 	public static boolean IS_SHOW_SQL_PARAM_WHEN_ERROR					= true		;	// 执行SQL异常时是否输出日志
 	public static boolean IS_SQL_DEBUG	 								= false		;	// 加载自定义SQL时是否输出日志
 	public static boolean IS_HTTP_LOG 									= true		;	// 调用HTTP接口时是否出输出日志
-	public static int HTTP_PARAM_ENCODE									 = 0		;   // 0:自动识别 1:确认编码 -1:确认未编码
+	public static int HTTP_PARAM_ENCODE									= 0			;   // 0:自动识别 1:确认编码 -1:确认未编码
 	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// 是否忽略大小写
