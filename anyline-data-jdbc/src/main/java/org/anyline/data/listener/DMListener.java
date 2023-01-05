@@ -38,8 +38,9 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      * @param total total
+     * @param millis 耗时(毫秒)
      */
-    public void afterTotal(AnylineDao dao, Run run, int total);
+    public void afterTotal(AnylineDao dao, Run run, int total, long millis);
     /**
      * 查询之前调用
      * @param dao dao
@@ -51,16 +52,18 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      * @param maps 查询结果
+     * @param millis 耗时(毫秒)
      */
-    public void afterQuery(AnylineDao dao, Run run, List<?>  maps);
-    public void afterQuery(AnylineDao dao, Run run, EntitySet<?> maps);
+    public void afterQuery(AnylineDao dao, Run run, List<?>  maps, long millis);
+    public void afterQuery(AnylineDao dao, Run run, EntitySet<?> maps, long millis);
     /**
      * 查询之后调用(调用service.query或service.querys)
      * @param dao dao
      * @param run sql
      * @param set 查询结果
+     * @param millis 耗时(毫秒)
      */
-    public void afterQuery(AnylineDao dao, Run run, DataSet set );
+    public void afterQuery(AnylineDao dao, Run run, DataSet set, long millis);
     /**
      * count之前调用
      * @param dao dao
@@ -72,8 +75,9 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      * @param count count
+     * @param millis 耗时(毫秒)
      */
-    public void afterCount(AnylineDao dao, Run run, int count);
+    public void afterCount(AnylineDao dao, Run run, int count, long millis);
 
     /**
      * 判断是否存在之前调用
@@ -86,8 +90,9 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      * @param exists 是否存在
+     * @param millis 耗时(毫秒)
      */
-    public void afterExists(AnylineDao dao, Run run, boolean exists);
+    public void afterExists(AnylineDao dao, Run run, boolean exists, long millis);
 
     /**
      * 更新之前调用
@@ -107,8 +112,9 @@ public interface DMListener {
      * @param dest 需要更新的表
      * @param obj 更新内容
      * @param columns 需要更新的列
+     * @param millis 耗时(毫秒)
      */
-    public void afterUpdate(AnylineDao dao, Run run, int count, String dest, Object obj, List<String> columns);
+    public void afterUpdate(AnylineDao dao, Run run, int count, String dest, Object obj, List<String> columns, long millis);
 
     /**
      * 插入之前调用
@@ -131,8 +137,9 @@ public interface DMListener {
      * @param obj 接入内容
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
+     * @param millis 耗时(毫秒)
      */
-    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkPrimary, List<String> columns);
+    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkPrimary, List<String> columns, long millis);
 
     /**
      * 批量插入前调用
@@ -152,8 +159,9 @@ public interface DMListener {
      * @param obj 接入内容
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
+     * @param millis 耗时(毫秒)
      */
-    public void afterBatchInsert(AnylineDao dao, int count, String dest, Object obj, boolean checkPrimary, List<String> columns);
+    public void afterBatchInsert(AnylineDao dao, int count, String dest, Object obj, boolean checkPrimary, List<String> columns, long millis);
 
     /**
      * 执行SQL之前调用
@@ -168,8 +176,9 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      * @param count 影响行数
+     * @param millis 耗时(毫秒)
      */
-    public void afterExecute(AnylineDao dao, Run run, int count);
+    public void afterExecute(AnylineDao dao, Run run, int count, long millis);
 
     /**
      * 执行存储过程之前调用
@@ -184,8 +193,9 @@ public interface DMListener {
      * @param dao dao
      * @param procedure 存储过程
      * @param result 执行是否成功 如果需要返回值需要从procedure中获取
+     * @param millis 耗时(毫秒)
      */
-    public void afterExecute(AnylineDao dao, Procedure procedure, boolean result);
+    public void afterExecute(AnylineDao dao, Procedure procedure, boolean result, long millis);
 
     /**
      * 查询存过程之前调用
@@ -199,8 +209,9 @@ public interface DMListener {
      * @param dao dao
      * @param procedure 存储过程
      * @param set 返回结果集
+     * @param millis 耗时(毫秒)
      */
-    public void afterQuery(AnylineDao dao, Procedure procedure, DataSet set);
+    public void afterQuery(AnylineDao dao, Procedure procedure, DataSet set, long millis);
 
     /**
      * 执行删除前调用
@@ -215,6 +226,9 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      * @param count 影响行数
+     * @param millis 耗时(毫秒)
      */
-    public void afterDelete(AnylineDao dao, Run run, int count);
+    public void afterDelete(AnylineDao dao, Run run, int count, long millis);
+
+    public void slow(Run run, List<Object> params);
 }
