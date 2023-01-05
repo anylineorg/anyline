@@ -1302,7 +1302,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						listener.slow("procedure", null, procedure.getName(), inputs, outputs, millis);
 					}
 				}
-
 			}
 			if(null != listener){
 				listener.afterQuery(procedure, set, millis);
