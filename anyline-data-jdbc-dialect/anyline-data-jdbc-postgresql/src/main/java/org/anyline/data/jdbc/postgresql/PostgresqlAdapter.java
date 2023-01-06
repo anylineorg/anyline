@@ -443,23 +443,6 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		return super.buildCreateRunSQL(table);
 	}
 
-	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
-	 * @param table 表
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	public String buildCreateCommentRunSQL(Table table) throws Exception {
-		String comment = table.getComment();
-		if(BasicUtil.isNotEmpty(comment)) {
-			StringBuilder sql = new StringBuilder();
-			sql.append("COMMENT ON TABLE ");
-			name(sql, table);
-			sql.append("IS '").append(comment).append("'");
-			return sql.toString();
-		}
-		return null;
-	}
 
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
@@ -499,6 +482,16 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		}else{
 			return null;
 		}
+	}
+
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Table table) throws Exception {
+		return buildChangeCommentRunSQL(table);
 	}
 	/**
 	 * 删除表
@@ -814,7 +807,14 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Column column) throws Exception{
-		String comment = column.getComment();
+		String comment = null;
+		Column update = column.getUpdate();
+		if(null != update){
+			comment = update.getComment();
+		}
+		if(BasicUtil.isEmpty(comment)){
+			comment = column.getComment();
+		}
 		if(BasicUtil.isNotEmpty(comment)) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON COLUMN ");
@@ -834,17 +834,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * @throws Exception 异常
 	 */
 	public String buildCreateCommentRunSQL(Column column) throws Exception {
-		String comment = column.getComment();
-		if(BasicUtil.isNotEmpty(comment)) {
-			StringBuilder sql = new StringBuilder();
-			sql.append("COMMENT ON COLUMN ");
-			Table table = column.getTable();
-			name(sql, table);
-			sql.append(".").append(column.getName());
-			sql.append("IS '").append(comment).append("'");
-			return sql.toString();
-		}
-		return null;
+		return buildChangeCommentRunSQL(column);
 	}
 
 
