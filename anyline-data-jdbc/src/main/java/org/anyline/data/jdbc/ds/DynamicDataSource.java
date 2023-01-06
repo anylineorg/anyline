@@ -67,7 +67,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 		return dataSources;
 	}
 	private static void reg(String key, DataSource ds){
-		//注意 解析配置文件时 上下文还没有初始化完成
+		//注意 解析配置文件时 不要调用 这时上下文还没有初始化完成
 		ApplicationContext context = SpringContextUtil.getApplicationContext();
 		if(null != context && !context.containsBean(key)){
 			((ConfigurableApplicationContext)context).getBeanFactory().registerSingleton(key, ds);
