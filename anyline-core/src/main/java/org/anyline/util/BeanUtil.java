@@ -45,6 +45,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -2890,4 +2891,96 @@ public class BeanUtil {
 		}
 	}
 
+	/**
+	 * 根据配置文件提取指定key的值
+	 * @param prefix 前缀
+	 * @param env 配置文件环境
+	 * @param keys key列表 第一个有值的key生效
+	 * @return String
+	 */
+
+	/**
+	 * 根据配置文件提取指定key的值
+	 * @param prefix 前缀
+	 * @param env 配置文件环境
+	 * @param keys key列表 第一个有值的key生效
+	 * @return String
+	 */
+	public static String value(String prefix, Environment env, String ... keys){
+		String value = null;
+		if(null == env || null == keys){
+			return value;
+		}
+		if(null == prefix){
+			prefix = "";
+		}
+		for(String key:keys){
+			key = prefix + key;
+			value = env.getProperty(key);
+			if(null != value){
+				return value;
+			}
+			//以中划线分隔的配置文件
+			String[] ks = key.split("-");
+			String sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+
+			//以下划线分隔的配置文件
+			ks = key.split("_");
+			sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+
+			ks = key.toLowerCase().split("_");
+			sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+
+			//中划线
+			sKey = key.replace("_","-");
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+
+			//小写中划线
+			sKey = key.toLowerCase().replace("_","-");
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+		}
+		return value;
+	}
+	private static String value(Environment env, String ... keys){
+		return value(null, env, keys);
+	}
 } 
