@@ -717,7 +717,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateCommentRunSQL(Table table) throws Exception;
+	public String buildCreateCommentRunSQL(Table table) throws Exception;
 
 	/**
 	 * 修改表
@@ -725,7 +725,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildAlterRunSQL(Table table) throws Exception;
+	public List<String> buildAlterRunSQL(Table table) throws Exception;
 
 	/**
 	 * 重命名
@@ -804,7 +804,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateCommentRunSQL(MasterTable table) throws Exception;
+	public String buildCreateCommentRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表
@@ -812,7 +812,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildAlterRunSQL(MasterTable table) throws Exception;
+	public List<String> buildAlterRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 主表重命名
@@ -857,14 +857,14 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateCommentRunSQL(PartitionTable table) throws Exception;
+	public String buildCreateCommentRunSQL(PartitionTable table) throws Exception;
 	/**
 	 * 修改分区表
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildAlterRunSQL(PartitionTable table) throws Exception;
+	public List<String> buildAlterRunSQL(PartitionTable table) throws Exception;
 
 	/**
 	 * 分区表重命名
@@ -969,7 +969,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateCommentRunSQL(Column column) throws Exception;
+	public String buildCreateCommentRunSQL(Column column) throws Exception;
 	/**
 	 * 定义列
 	 * @param builder builder

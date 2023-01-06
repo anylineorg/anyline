@@ -425,8 +425,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(Table table)
-	 * public String buildAlterRunSQL(Table table)
+	 * public List<String> buildCreateRunSQL(Table table)
+	 * public String buildCreateCommentRunSQL(Table table);
+	 * public List<String> buildAlterRunSQL(Table table)
 	 * public String buildRenameRunSQL(Table table)
 	 * public String buildChangeCommentRunSQL(Table table)
 	 * public String buildDropRunSQL(Table table)
@@ -438,12 +439,30 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 
 
 	@Override
-	public String buildCreateRunSQL(Table table) throws Exception{
+	public List<String> buildCreateRunSQL(Table table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Table table) throws Exception {
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			StringBuilder sql = new StringBuilder();
+			sql.append("COMMENT ON TABLE ");
+			name(sql, table);
+			sql.append("IS '").append(comment).append("'");
+			return sql.toString();
+		}
+		return null;
+	}
+
 	@Override
-	public String buildAlterRunSQL(Table table) throws Exception{
+	public List<String> buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	/**
@@ -543,7 +562,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Table table){
-		return super.comment(builder, table);
+		//return super.comment(builder, table);
+		//单独添加备注
+		return builder;
 	}
 
 	/**
@@ -559,8 +580,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(MasterTable table);
-	 * public String buildAlterRunSQL(MasterTable table);
+	 * public List<String> buildCreateRunSQL(MasterTable table);
+	 * public String buildCreateCommentRunSQL(MasterTable table)
+	 * public List<String> buildAlterRunSQL(MasterTable table);
 	 * public String buildDropRunSQL(MasterTable table);
 	 * public String buildRenameRunSQL(MasterTable table);
 	 * public String buildChangeCommentRunSQL(MasterTable table);
@@ -571,11 +593,11 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(MasterTable table) throws Exception{
+	public List<String>  buildCreateRunSQL(MasterTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
-	public String buildAlterRunSQL(MasterTable table) throws Exception{
+	public List<String> buildAlterRunSQL(MasterTable table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	@Override
@@ -595,8 +617,8 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(PartitionTable table);
-	 * public String buildAlterRunSQL(PartitionTable table);
+	 * public List<String> buildCreateRunSQL(PartitionTable table);
+	 * public List<String> buildAlterRunSQL(PartitionTable table);
 	 * public String buildDropRunSQL(PartitionTable table);
 	 * public String buildRenameRunSQL(PartitionTable table);
 	 * public String buildChangeCommentRunSQL(PartitionTable table);
@@ -607,11 +629,11 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<String>  buildCreateRunSQL(PartitionTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
-	public String buildAlterRunSQL(PartitionTable table) throws Exception{
+	public List<String> buildAlterRunSQL(PartitionTable table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	@Override
@@ -639,6 +661,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * public String buildChangeDefaultRunSQL(Column column)
 	 * public String buildChangeNullableRunSQL(Column column)
 	 * public String buildChangeCommentRunSQL(Column column)
+	 * public String buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
@@ -804,6 +827,27 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		}
 	}
 
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Column column) throws Exception {
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			StringBuilder sql = new StringBuilder();
+			sql.append("COMMENT ON COLUMN ");
+			Table table = column.getTable();
+			name(sql, table);
+			sql.append(".").append(column.getName());
+			sql.append("IS '").append(comment).append("'");
+			return sql.toString();
+		}
+		return null;
+	}
+
+
 
 
 	/**
@@ -907,7 +951,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Column column){
-		return super.comment(builder, column);
+		//return super.comment(builder, column);
+		//单独生成备注
+		return builder;
 	}
 
 	/**
