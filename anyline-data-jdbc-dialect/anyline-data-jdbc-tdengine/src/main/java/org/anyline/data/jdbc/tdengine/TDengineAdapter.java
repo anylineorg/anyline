@@ -856,7 +856,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(Table table);
+	 * public List<String> buildCreateRunSQL(Table table);
+	 * public List<String> buildCreateCommentRunSQL(Table table);
 	 * public String buildAlterRunSQL(Table table);
 	 * public String buildRenameRunSQL(Table table);
 	 * public String buildChangeCommentRunSQL(Table table);
@@ -869,8 +870,17 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 
 	@Override
-	public String buildCreateRunSQL(Table table) throws Exception{
+	public List<String> buildCreateRunSQL(Table table) throws Exception{
 		return super.buildCreateRunSQL(table);
+	}
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateCommentRunSQL(Table table) throws Exception {
+		return super.buildCreateCommentRunSQL(table);
 	}
 	@Override
 	public String buildAlterRunSQL(Table table) throws Exception{
@@ -959,11 +969,12 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(MasterTable table);
-	 * public String buildAlterRunSQL(MasterTable table);
-	 * public String buildDropRunSQL(MasterTable table);
-	 * public String buildRenameRunSQL(MasterTable table);
-	 * public String buildChangeCommentRunSQL(MasterTable table);
+	 * public List<String> buildCreateRunSQL(MasterTable table)
+	 * public List<String> buildCreateCommentRunSQL(MasterTable table)
+	 * public String buildAlterRunSQL(MasterTable table)
+	 * public String buildDropRunSQL(MasterTable table)
+	 * public String buildRenameRunSQL(MasterTable table)
+	 * public String buildChangeCommentRunSQL(MasterTable table)
 	 ******************************************************************************************************************/
 	/**
 	 * 创建主表
@@ -971,25 +982,35 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(MasterTable table) throws Exception{
-		StringBuilder builder = new StringBuilder();
+	public List<String> buildCreateRunSQL(MasterTable table) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		Table tab = table;
- 		String sql = buildCreateRunSQL(tab);
-		builder.append(sql);
-		builder.append(" TAGS (");
-		LinkedHashMap<String,Tag> tags = table.getTags();
-		int idx = 0;
-		for(Tag tag:tags.values()){
-			if(idx > 0){
-				builder.append(",");
-			}
-			SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			type(builder, tag);
-			comment(builder, tag);
-			idx ++;
-		}
-		builder.append(")");
-		return builder.toString();
+ 		List<String> list = buildCreateRunSQL(tab);
+		 int size = list.size();
+		 for(int i=0; i<size; i++){
+			 String sql = sqls.get(i);
+			 if(i ==0){
+				 StringBuilder builder = new StringBuilder();
+				 builder.append(sql);
+				 builder.append(" TAGS (");
+				 LinkedHashMap<String,Tag> tags = table.getTags();
+				 int idx = 0;
+				 for(Tag tag:tags.values()){
+					 if(idx > 0){
+						 builder.append(",");
+					 }
+					 SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+					 type(builder, tag);
+					 comment(builder, tag);
+					 idx ++;
+				 }
+				 builder.append(")");
+				 sqls.add(builder.toString());
+			 }else{
+				 sqls.add(sql);
+			 }
+		 }
+		return sqls;
 	}
 	@Override
 	public String buildAlterRunSQL(MasterTable table) throws Exception{
@@ -1025,7 +1046,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<String> buildCreateRunSQL(PartitionTable table) throws Exception{
+		List<String> sqls = new ArrayList<>();
+
 		StringBuilder builder = new StringBuilder();
 		String stable = table.getMasterName();
 		if(BasicUtil.isEmpty(stable)){
@@ -1055,8 +1078,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			idx ++;
 		}
 		builder.append(")");
-
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	@Override
 	public String buildAlterRunSQL(PartitionTable table) throws Exception{
@@ -1088,6 +1111,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * public String buildChangeDefaultRunSQL(Column column)
 	 * public String buildChangeNullableRunSQL(Column column)
 	 * public String buildChangeCommentRunSQL(Column column)
+	 * public List<String> buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
 	 * public StringBuilder nullable(StringBuilder builder, Column column)

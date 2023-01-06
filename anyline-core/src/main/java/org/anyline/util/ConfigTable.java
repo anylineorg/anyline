@@ -25,6 +25,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
@@ -34,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
+@Component("anyline.config")
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
@@ -85,6 +87,11 @@ public class ConfigTable {
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;
 
 	public static String CONFIG_NAME = "anyline-config.xml";
+
+	@Value("${anyline.IS_DEBUG:true}")
+	public void setDebug(){
+
+	}
 
 	static{
 		init();

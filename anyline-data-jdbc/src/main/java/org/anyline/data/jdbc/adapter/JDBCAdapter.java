@@ -709,7 +709,15 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateRunSQL(Table table) throws Exception;
+	public List<String> buildCreateRunSQL(Table table) throws Exception;
+
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateCommentRunSQL(Table table) throws Exception;
 
 	/**
 	 * 修改表
@@ -788,7 +796,15 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateRunSQL(MasterTable table) throws Exception;
+	public List<String> buildCreateRunSQL(MasterTable table) throws Exception;
+
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateCommentRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表
@@ -833,8 +849,15 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateRunSQL(PartitionTable table) throws Exception;
+	public List<String> buildCreateRunSQL(PartitionTable table) throws Exception;
 
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateCommentRunSQL(PartitionTable table) throws Exception;
 	/**
 	 * 修改分区表
 	 * @param table 表
@@ -940,6 +963,13 @@ public interface JDBCAdapter {
 	 */
 	public String buildChangeCommentRunSQL(Column column) throws Exception;
 
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateCommentRunSQL(Column column) throws Exception;
 	/**
 	 * 定义列
 	 * @param builder builder

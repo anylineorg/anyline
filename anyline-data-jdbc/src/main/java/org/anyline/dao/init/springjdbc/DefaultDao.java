@@ -2176,25 +2176,27 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean result = false;
 		long fr = System.currentTimeMillis();
 		check(table);
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
-		String random = null;
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]",random,sql);
-		}
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		DDListener listener = table.getListener();
 		boolean exe = true;
 		if(null != listener){
 			exe = listener.beforeDrop(table);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			for(String sql:sqls) {
+				String random = null;
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					random = random();
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				getJdbc().update(sql);
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[create table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+				}
+			}
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[create table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
-		}
 		if(null != listener){
 			listener.afterDrop(table, result);
 		}
@@ -2364,24 +2366,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean result = false;
 		long fr = System.currentTimeMillis();
 		check(table);
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]",random,sql);
-		}
+
 		DDListener listener = table.getListener();
 		boolean exe = true;
 		if(null != listener){
 			exe = listener.beforeDrop(table);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			for(String sql:sqls) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					random = random();
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				getJdbc().update(sql);
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+				}
+			}
 			result = true;
-		}
-
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
 			listener.afterDrop(table, result);
@@ -2524,25 +2528,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean result = false;
 		long fr = System.currentTimeMillis();
 		check(table);
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
-		String random = null;
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]",random,sql);
-		}
+
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
+
 		DDListener listener = table.getListener();
 		boolean exe = true;
-		if(null != listener){
+		if (null != listener) {
 			exe = listener.beforeDrop(table);
 		}
-		if(exe) {
-			getJdbc().update(sql);
+		if (exe) {
+			for(String sql:sqls) {
+				String random = null;
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					random = random();
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				getJdbc().update(sql);
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+				}
+			}
 			result = true;
 		}
 
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
-		}
 		if(null != listener){
 			listener.afterDrop(table, result);
 		}

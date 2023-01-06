@@ -424,7 +424,8 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(Table table)
+	 * public List<String> buildCreateRunSQL(Table table)
+	 * public List<String> buildCreateCommentRunSQL(Table table);
 	 * public String buildAlterRunSQL(Table table)
 	 * public String buildRenameRunSQL(Table table)
 	 * public String buildChangeCommentRunSQL(Table table)
@@ -437,10 +438,19 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 
 	@Override
-	public String buildCreateRunSQL(Table table) throws Exception{
+	public List<String> buildCreateRunSQL(Table table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateCommentRunSQL(Table table) throws Exception {
+		return super.buildCreateCommentRunSQL(table);
+	}
 	@Override
 	public String buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
@@ -523,7 +533,8 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(MasterTable table);
+	 * public List<String> buildCreateRunSQL(MasterTable table);
+	 * public List<String> buildCreateCommentRunSQL(MasterTable table)
 	 * public String buildAlterRunSQL(MasterTable table);
 	 * public String buildDropRunSQL(MasterTable table);
 	 * public String buildRenameRunSQL(MasterTable table);
@@ -535,7 +546,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(MasterTable table) throws Exception{
+	public List<String>  buildCreateRunSQL(MasterTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
@@ -571,7 +582,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<String>  buildCreateRunSQL(PartitionTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
@@ -603,6 +614,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public String buildChangeDefaultRunSQL(Column column)
 	 * public String buildChangeNullableRunSQL(Column column)
 	 * public String buildChangeCommentRunSQL(Column column)
+	 * public List<String> buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
 	 * public StringBuilder nullable(StringBuilder builder, Column column)

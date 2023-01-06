@@ -1494,7 +1494,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(Table table);
+	 * public List<String> buildCreateRunSQL(Table table);
+	 * public List<String> buildCreateCommentRunSQL(Table table);
 	 * public String buildAlterRunSQL(Table table);
      * public String buildRenameRunSQL(Table table);
 	 * public String buildChangeCommentRunSQL(Table table);
@@ -1507,15 +1508,17 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 
 	@Override
-	public String buildCreateRunSQL(Table table) throws Exception{
+	public List<String> buildCreateRunSQL(Table table) throws Exception{
+		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		table.setCreater(this);
 		builder.append("CREATE ").append(table.getKeyword()).append(" ");
 		checkTableExists(builder, false);
 		name(builder, table);
 		LinkedHashMap columMap = table.getColumns();
+		Collection<Column> columns = null;
 		if(null != columMap){
-			Collection<Column> columns = columMap.values();
+			columns = columMap.values();
 			if(null != columns && columns.size() >0){
 				builder.append("(\n");
 				int idx = 0;
@@ -1534,8 +1537,23 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 		}
 		comment(builder, table);
-		return builder.toString();
+		list.add(builder.toString());
+
+		list.addAll(buildCreateCommentRunSQL(table));
+		if(null != columns){
+			for(Column column:columns){
+				list.addAll(buildCreateCommentRunSQL(column));
+			}
+		}
+		return list;
 	}
+
+	@Override
+	 public List<String> buildCreateCommentRunSQL(Table table) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		return sqls;
+	 }
+
 
 	@Override
 	public String buildAlterRunSQL(Table table) throws Exception{
@@ -1659,7 +1677,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(MasterTable table);
+	 * public List<String> buildCreateRunSQL(MasterTable table);
+	 * public List<String> buildCreateCommentRunSQL(MasterTable table);
 	 * public String buildAlterRunSQL(MasterTable table);
 	 * public String buildDropRunSQL(MasterTable table);
 	 * public String buildRenameRunSQL(MasterTable table);
@@ -1671,9 +1690,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(MasterTable table) throws Exception{
+	public List<String> buildCreateRunSQL(MasterTable table) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildCreateRunSQL(MasterTable table)",37));
 		return null;
+	}
+	@Override
+	public List<String> buildCreateCommentRunSQL(MasterTable table) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		return sqls;
 	}
 	@Override
 	public String buildAlterRunSQL(MasterTable table) throws Exception{
@@ -1700,7 +1724,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(PartitionTable table);
+	 * public List<String> buildCreateRunSQL(PartitionTable table);
+	 * public List<String> buildCreateCommentRunSQL(MasterTable table) throws Exception
 	 * public String buildAlterRunSQL(PartitionTable table);
 	 * public String buildDropRunSQL(PartitionTable table);
 	 * public String buildRenameRunSQL(PartitionTable table);
@@ -1712,9 +1737,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<String> buildCreateRunSQL(PartitionTable table) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildCreateRunSQL(PartitionTable table)",37));
 		return null;
+	}
+	@Override
+	public List<String> buildCreateCommentRunSQL(PartitionTable table) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		return sqls;
 	}
 	@Override
 	public String buildAlterRunSQL(PartitionTable table) throws Exception{
@@ -1749,6 +1779,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public String buildChangeDefaultRunSQL(Column column)
 	 * public String buildChangeNullableRunSQL(Column column)
 	 * public String buildChangeCommentRunSQL(Column column)
+	 * public List<String> buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
@@ -1950,6 +1981,17 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
+	/**
+	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<String> buildCreateCommentRunSQL(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		return sqls;
+	}
 
 
 
