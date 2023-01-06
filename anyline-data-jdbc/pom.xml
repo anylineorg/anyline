@@ -26,5 +26,10 @@
 			<artifactId>spring-jdbc</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
