@@ -628,7 +628,7 @@ public class BasicUtil {
 	 * @param chr  chr
 	 * @return int
 	 */ 
-	public static int catSubCharCount(String src, String chr) { 
+	public static int charCount(String src, String chr) {
 		int count = 0; 
 		int idx = -1; 
 		if (null == src || null == chr || "".equals(chr.trim())) { 
@@ -651,8 +651,15 @@ public class BasicUtil {
 			} 
 		} 
 		return null; 
-	} 
- 
+	}
+
+	/**
+	 * 截取子串
+	 * @param src string
+	 * @param fr 开始位置
+	 * @param to 结束位置 负数表示倒数,如-2表示删除最后2位
+	 * @return String
+	 */
 	public static String cut(String src, int fr, int to) { 
 		if (null == src) { 
 			return null; 
@@ -669,6 +676,13 @@ public class BasicUtil {
 		}
 		return src.substring(fr, to); 
 	}
+
+	/**
+	 * 从左侧开始取len位
+	 * @param src String
+	 * @param len 截取长度
+	 * @return String
+	 */
 	public static String left(String src, int len){
 		if(null == src){
 			return null;
@@ -679,6 +693,12 @@ public class BasicUtil {
 		}
 		return src.substring(0, len);
 	}
+	/**
+	 * 从右侧开始取len位
+	 * @param src String
+	 * @param len 截取长度
+	 * @return String
+	 */
 	public static String right(String src, int len){
 		if(null == src){
 			return null;
@@ -690,12 +710,12 @@ public class BasicUtil {
 		return src.substring(max-len, max);
 	}
 
-		/**
-         * 获取本机IP
-         * @return List
-         */
+	/**
+	 * 获取本机IP
+	 * @return List
+	 */
 	@SuppressWarnings("rawtypes")
-	public static List<InetAddress> getLocalIps(){ 
+	public static List<InetAddress> localInetAddress(){
 		List<InetAddress> ips = new ArrayList<InetAddress>(); 
 		try{ 
 			Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces(); 
@@ -719,9 +739,9 @@ public class BasicUtil {
 	 * 获取本机IP地址 
 	 * @return List
 	 */ 
-	public static List<String> getLocalIpsAddress(){ 
+	public static List<String> localIps(){
 		List<String> ips = new ArrayList<>();
-		List<InetAddress> list = getLocalIps(); 
+		List<InetAddress> list = localInetAddress();
 		for(InetAddress ip:list){ 
 			ips.add(ip.getHostAddress()); 
 		} 

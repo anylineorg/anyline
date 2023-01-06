@@ -17,15 +17,11 @@
  */
 
 
-package org.anyline.util; 
- 
-import java.util.ArrayList; 
-import java.util.Collections; 
-import java.util.HashMap; 
-import java.util.List; 
-import java.util.Map; 
- 
-import org.anyline.util.regular.RegularUtil; 
+package org.anyline.util;
+
+import org.anyline.util.regular.RegularUtil;
+
+import java.util.*;
  
 public class SeoUtil { 
  
@@ -62,7 +58,7 @@ public class SeoUtil {
 			} 
 			key = key.trim(); 
 			int bodyWordSize =srcLen/key.length();											// 单词个数(默认单词长度与关键词长度相同)
-			int existKeyCount = BasicUtil.catSubCharCount(src, key);						// 源文中已存在关键词个数
+			int existKeyCount = BasicUtil.charCount(src, key);						// 源文中已存在关键词个数
 			int insertKkeyCount = KEYWORDS_DENSITY * bodyWordSize / 100 - existKeyCount;	// 插入关键词个数
 			if(0 == insertKkeyCount){ 
 				continue; 

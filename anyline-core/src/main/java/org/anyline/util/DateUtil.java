@@ -994,7 +994,7 @@ public class DateUtil {
 			//format = format.replace("yyyy-MM-dd ", "");
 			str = format("yyyy-MM-dd") + " "+ str;
 		}
-		if (BasicUtil.catSubCharCount(str, ":") == 1) {
+		if (BasicUtil.charCount(str, ":") == 1) {
 			// 只有时分 没有秒 10:10
 			//format = format.replace(":ss", "");
 			str += ":00";
