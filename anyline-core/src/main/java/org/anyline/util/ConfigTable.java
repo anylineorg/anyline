@@ -25,7 +25,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -46,7 +45,7 @@ public class ConfigTable {
 	protected static Hashtable<String,Object> configs;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
-	protected static final String version 				= "8.6.1-SNAPSHOT"	;	// 版本号
+	protected static final String version 				= "8.6.1-20230106"	;	// 版本号
 	protected static final String minVersion 			= "0007"			;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
@@ -87,11 +86,6 @@ public class ConfigTable {
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;
 
 	public static String CONFIG_NAME = "anyline-config.xml";
-
-	@Value("${anyline.IS_DEBUG:true}")
-	public void setDebug(){
-
-	}
 
 	static{
 		init();
