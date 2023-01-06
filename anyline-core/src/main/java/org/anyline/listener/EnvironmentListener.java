@@ -1,5 +1,7 @@
 package org.anyline.listener;
 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.CharUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
@@ -20,7 +22,10 @@ public class EnvironmentListener implements  EnvironmentAware {
         for(Field field:fields){
             String name = field.getName();
             String value = getProperty("anyline", environment, "."+name);
-            System.out.println(name+"="+value);
+            if(BasicUtil.isNotEmpty(value)) {
+                BeanUtil.setFieldValue(null, field, value);
+            }
+
         }
     }
 
