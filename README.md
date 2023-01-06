@@ -13,6 +13,13 @@
 [<img src="http://alcms.oss-cn-shanghai.aliyuncs.com/anyline/img/ab/rhodilywys.jpg"/>](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)   
 没有QQ的再联系微信  
 <img src="http://cdn.anyline.org/img/user/zhv.jpg" width="90">
+
+2023-01-03之后的版本中,多数据源不再需需要依赖org.anyboot:anyboot-data-jdbc  
+原来的org.anyboot.data.jdbc.ds.DynamicDataSourceRegister可以用org.anyline.data.jdbc.ds.DynamicDataSourceRegister可以用org替代
+
+这样就彻底剥离了springboot(只是anyline源码中不再依赖，实际项目中不受影响)  
+项目中不再需要考虑anyline与springboot的版本匹配  
+
 ## 简介
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
 其重点是:
