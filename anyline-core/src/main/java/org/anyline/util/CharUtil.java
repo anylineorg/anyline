@@ -214,7 +214,7 @@ public class CharUtil {
 		return String.valueOf(cs);
 	}
 	/**
-	 * 半角转全角的函数(SBC case)
+	 * 半角转全角的函数(SBC case) 注意$没有转成￥
 	 *
 	 * @param input 任意字符串
 	 * @return 全角字符串
