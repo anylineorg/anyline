@@ -768,7 +768,13 @@ public class NumberUtil {
 				src = src.replaceAll("^0+","");
 				src = src.replaceAll("0+$","");
 			}
-			if(src.endsWith(".")){
+			if(".".equals(src)){
+				if(integer){
+					src = "0";
+				}else{
+					src = "0.0";
+				}
+			}else if(src.endsWith(".")){
 				if(integer){
 					src = src.substring(0, src.length()-1);
 				}else{
