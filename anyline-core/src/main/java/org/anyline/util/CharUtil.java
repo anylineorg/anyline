@@ -265,7 +265,7 @@ public class CharUtil {
 	}
 
 	/**
-	 * 全角转半角的函数(DBC case)注意￥没有转成$
+	 * 全角转半角的函数(DBC case)注意￥没有转成$ 顿号、没有转换
 	 * @param input 任意字符串
 	 * @return 半角字符串
 	 */
