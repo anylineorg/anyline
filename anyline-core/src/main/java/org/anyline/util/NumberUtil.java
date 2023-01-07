@@ -753,4 +753,41 @@ public class NumberUtil {
 		}
 		return result;
 	}
+
+
+	/**
+	 * 压缩最前位的0与小数最后的0
+	 * @param src src
+	 * @param integer 是否压缩成整数 1|1.0
+	 * @return String
+	 */
+	public static String compress(String src, boolean integer) {
+		if (null != src) {
+			int idx = src.indexOf(".");
+			if(idx != -1){
+				src = src.replaceAll("^0+","");
+				src = src.replaceAll("0+$","");
+			}
+			if(src.endsWith(".")){
+				if(integer){
+					src = src.substring(0, src.length()-1);
+				}else{
+					src = src + "0";
+				}
+			}
+			if(src.startsWith(".")){
+				src = "0" + src;
+			}
+		}
+		return src;
+	}
+
+	public static double compress(double src) {
+		String str = compress(src+"", false);
+		src = BasicUtil.parseDouble(str, src);
+		return src;
+	}
+	public static String compress(String src) {
+		return compress(src, false);
+	}
 } 
