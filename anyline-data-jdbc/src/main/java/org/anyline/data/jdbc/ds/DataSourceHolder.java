@@ -86,10 +86,12 @@ public class DataSourceHolder {
     	THREAD_CUR_SOURCE.set(THREAD_RECALL_SOURCE.get()); 
     } 
     public static void setDefaultDataSource(){ 
-    	clearDataSource(); 
-    	if(dataSources.contains("default")){
-    		setDataSource("default");
-    	}
+    	clearDataSource();
+		if(dataSources.contains("dataSource")){
+			setDataSource("dataSource");
+		}else if(dataSources.contains("default")){
+			setDataSource("default");
+		}
     	THREAD_AUTO_DEFAULT.set(false);
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[切换数据源][thread:{}][数据源:默认数据源]");
