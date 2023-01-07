@@ -215,7 +215,6 @@ public class CharUtil {
 	}
 	/**
 	 * 半角转全角的函数(SBC case)
-	 * 全角空格为12288,半角空格为32，其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248
 	 *
 	 * @param input 任意字符串
 	 * @return 全角字符串
@@ -226,8 +225,36 @@ public class CharUtil {
 		}
 		char[] c = input.toCharArray();
 		for (int i = 0; i < c.length; i++) {
-			if (c[i] == 32) {
+			if (c[i] == 42) { //×
+				c[i] = (char) 215;
+				continue;
+			}
+			if (c[i] == 45) { //—
+				c[i] = (char) 8212;
+				continue;
+			}
+			if (c[i] == 39) { //‘
+				c[i] = (char) 8216;
+				continue;
+			}
+			if (c[i] == 34) { //“
+				c[i] = (char) 8220;
+				continue;
+			}
+			if (c[i] == 32) {//空格
 				c[i] = (char) 12288;
+				continue;
+			}
+			if (c[i] == 46) { //。
+				c[i] = (char) 12290;
+				continue;
+			}
+			if (c[i] == 91) { //【
+				c[i] = (char) 12304;
+				continue;
+			}
+			if (c[i] == 93) { //】
+				c[i] = (char) 12305;
 				continue;
 			}
 			if (c[i] < 127) {
@@ -238,8 +265,7 @@ public class CharUtil {
 	}
 
 	/**
-	 * 全角转半角的函数(DBC case)
-	 * 全角空格为12288，半角空格为32 其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248
+	 * 全角转半角的函数(DBC case)注意￥没有转成$
 	 * @param input 任意字符串
 	 * @return 半角字符串
 	 */
@@ -249,8 +275,36 @@ public class CharUtil {
 		}
 		char[] c = input.toCharArray();
 		for (int i = 0; i < c.length; i++) {
-			if (c[i] == 12288) {
+			if (c[i] == 215) { //×
+				c[i] = (char) 42;
+				continue;
+			}
+			if (c[i] == 8212) { //—
+				c[i] = (char) 45;
+				continue;
+			}
+			if (c[i] == 8216) { //‘
+				c[i] = (char) 39;
+				continue;
+			}
+			if (c[i] == 8220) { //“
+				c[i] = (char) 34;
+				continue;
+			}
+			if (c[i] == 12288) {//空格
 				c[i] = (char) 32;
+				continue;
+			}
+			if (c[i] == 12290) { //。
+				c[i] = (char) 46;
+				continue;
+			}
+			if (c[i] == 12304) { //【
+				c[i] = (char) 91;
+				continue;
+			}
+			if (c[i] == 12305) { //】
+				c[i] = (char) 93;
 				continue;
 			}
 			if (c[i] > 65280 && c[i] < 65375) {
