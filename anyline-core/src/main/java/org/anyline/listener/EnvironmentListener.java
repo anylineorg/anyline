@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 
 @Component
-public class EnvironmentListener implements  EnvironmentAware {
+public class EnvironmentListener implements EnvironmentAware {
     private Logger log = LoggerFactory.getLogger(EnvironmentListener.class);
 
     @Override
@@ -26,6 +26,4 @@ public class EnvironmentListener implements  EnvironmentAware {
             }
         }
     }
-
-
 }
