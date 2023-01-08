@@ -83,11 +83,15 @@ public interface PageNavi extends Serializable{
 	 * 设置排序方式 
 	 * @param order  order
 	 * @param type  type
+	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return PageNavi
-	 */ 
-	public PageNavi order(String order, String type); 
-	public PageNavi order(String order); 
-	 
+	 */
+	public PageNavi order(String order, String type, boolean override);
+	public PageNavi order(String order, String type);
+	public PageNavi order(String order, boolean override);
+
+	public PageNavi order(String order);
+
 	/** 
 	 * 设置总行数 
 	 * @param totalRow  totalRow

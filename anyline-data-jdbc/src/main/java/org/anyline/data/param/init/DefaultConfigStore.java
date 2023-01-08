@@ -428,27 +428,41 @@ public class DefaultConfigStore implements ConfigStore {
 	/** 
 	 * 添加排序 
 	 * @param order  order
+	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return ConfigStore
 	 */
 	@Override 
-	public ConfigStore order(Order order){
+	public ConfigStore order(Order order, boolean override){
 		if(null == orders){ 
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order); 
+		orders.order(order, override);
 		if(null != navi){ 
-			navi.order(order.getColumn(), order.getType().getCode()); 
-		} 
+			navi.order(order.getColumn(), order.getType().getCode(), override);
+		}
 		return this; 
-	} 
+	}
+	@Override
+	public ConfigStore order(Order order){
+		return order(order, true);
+	}
  
 	@Override 
-	public ConfigStore order(String column, String type){ 
-		return order(new DefaultOrder(column,type));
-	} 
+	public ConfigStore order(String column, String type, boolean override){
+		return order(new DefaultOrder(column,type), override);
+	}
+
+	@Override
+	public ConfigStore order(String column, String type){
+		return order(column, type, true);
+	}
+	@Override
+	public ConfigStore order(String order, boolean override){
+		return order(new DefaultOrder(order), override);
+	}
 	@Override 
-	public ConfigStore order(String order){ 
-		return order(new DefaultOrder(order));
+	public ConfigStore order(String order){
+		return order(order, true);
 	} 
 	@Override 
 	public OrderStore getOrders() { 
