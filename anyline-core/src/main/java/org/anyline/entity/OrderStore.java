@@ -29,6 +29,8 @@ public interface OrderStore extends Cloneable,Serializable{
 	public void order(Order order);
 	public void order(String col, Order.TYPE type, boolean override);
 	public void order(String col, Order.TYPE type);
+	public void order(String col, String type, boolean override);
+	public void order(String col, String type);
 	public void order(String str, boolean override) ;
 	public void order(String str) ;
 	public Order getOrder(String order); 
