@@ -124,13 +124,18 @@ public interface ConfigStore {
 	public ConfigStore ors(Compare compare, String var, Object value);
 	/** 
 	 * 添加排序 
-	 * @param order  order
+	 * @param order order
+	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return ConfigStore
-	 */ 
+	 */
+	public ConfigStore order(Order order, boolean override);
 	public ConfigStore order(Order order);
- 
-	public ConfigStore order(String column, String type); 
-	public ConfigStore order(String order); 
+
+
+	public ConfigStore order(String column, String type);
+	public ConfigStore order(String column, String type, boolean override);
+	public ConfigStore order(String order);
+	public ConfigStore order(String order, boolean override);
 	public OrderStore getOrders() ;
 	public ConfigStore setOrders(OrderStore orders) ; 
 	/** 
