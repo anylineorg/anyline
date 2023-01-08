@@ -106,7 +106,7 @@ Anyline一的切都是面向动态、面向运行时环境
 
 - **网络爬虫数据解析**    
     不固定的结构、html解析(当然不是用正则或dom那太费脑子了)  
-  [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f935a8657bb0ff2d784)
+  [【参考】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f51d08504f16eef5d4dd25719cf7844ce)
 
 
 
