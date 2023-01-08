@@ -19,14 +19,16 @@
 
 package org.anyline.web.controller;
 
-import org.anyline.entity.*;
-import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.entity.*;
+import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.listener.EntityListener;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
+import org.anyline.web.listener.ControllerListener;
 import org.anyline.web.util.Constant;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
@@ -49,9 +51,11 @@ public class AbstractBasicController {
 
 
 	protected static EntityAdapter adapter;
-	protected static EntityListener listener;
+	protected static EntityListener elistener;
+	protected static ControllerListener clistener;
 	private static boolean is_adapter_load = false;
-	private static boolean is_listener_load = false;
+	private static boolean is_elistener_load = false;
+	private static boolean is_clistener_load = false;
 
 	@Autowired(required = false)
 	@Qualifier("anyline.service")
@@ -60,19 +64,37 @@ public class AbstractBasicController {
 	@Autowired(required = false)
 	@Qualifier("anyline.entity.listener")
 	public void setListener(EntityListener listener){
-		AbstractBasicController.listener = listener;
+		AbstractBasicController.elistener = listener;
 	}
-	protected static EntityListener getListener(){
-		if(null != listener){
-			return listener;
+	protected static EntityListener getEntityListener(){
+		if(null != elistener){
+			return elistener;
 		}
-		if(!is_listener_load) {
+		if(!is_elistener_load) {
 			try {
-				listener = (EntityListener)SpringContextUtil.getBean("anyline.entity.listener");
+				elistener = SpringContextUtil.getBean(EntityListener.class);
 			}catch (Exception e){}
-			is_listener_load = true;
+			is_elistener_load = true;
 		}
-		return listener;
+		return elistener;
+	}
+
+	@Autowired(required = false)
+	@Qualifier("anyline.controller.listener")
+	public void setListener(ControllerListener listener){
+		AbstractBasicController.clistener = listener;
+	}
+	protected static ControllerListener getControllerListener(){
+		if(null != clistener){
+			return clistener;
+		}
+		if(!is_clistener_load) {
+			try {
+				clistener = SpringContextUtil.getBean(ControllerListener.class);
+			}catch (Exception e){}
+			is_clistener_load = true;
+		}
+		return clistener;
 	}
 	/******************************************************************************************************************
 	 *
@@ -128,9 +150,9 @@ public class AbstractBasicController {
 					BeanUtil.setFieldValue(entity, field, value);
 				}
 			}// end 未指定属性与request参数对应关系
-			listener = getListener();
-			if(null != listener){
-				listener.after(request, entity);
+			elistener = getEntityListener();
+			if(null != elistener){
+				elistener.after(request, entity);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -192,9 +214,9 @@ public class AbstractBasicController {
 			}*/
 		}
 
-		listener = getListener();
-		if(null != listener){
-			listener.after(request, row);
+		elistener = getEntityListener();
+		if(null != elistener){
+			elistener.after(request, row);
 		}
 		return row;
 	}
@@ -342,9 +364,9 @@ public class AbstractBasicController {
 					}
 				}
 
-				listener = getListener();
-				if(null != listener){
-					listener.after(request, row);
+				elistener = getEntityListener();
+				if(null != elistener){
+					elistener.after(request, row);
 				}
 				set.addRow(row);
 			}
@@ -403,6 +425,11 @@ public class AbstractBasicController {
 			store.setPageNavi(pageNavi);
 		}
 		store.setValue(WebUtil.value(request));
+
+		clistener = getControllerListener();
+		if(null != clistener){
+			clistener.after(request, store);
+		}
 		return store;
 	}
 
@@ -429,6 +456,10 @@ public class AbstractBasicController {
 			store.setPageNavi(pageNavi);
 		}
 		store.setValue(WebUtil.value(request));
+		clistener = getControllerListener();
+		if(null != clistener){
+			clistener.after(request, store);
+		}
 		return store;
 	}
 	protected ConfigStore condition(HttpServletRequest request, int vol, String... configs) {
@@ -455,6 +486,10 @@ public class AbstractBasicController {
 		navi.setLastRow(to);
 		store.setPageNavi(navi);
 		store.setValue(WebUtil.value(request));
+		clistener = getControllerListener();
+		if(null != clistener){
+			clistener.after(request, store);
+		}
 		return store;
 	}
 
