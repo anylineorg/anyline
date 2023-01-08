@@ -88,9 +88,12 @@ public interface PageNavi extends Serializable{
 	 */
 	public PageNavi order(String order, String type, boolean override);
 	public PageNavi order(String order, String type);
-	public PageNavi order(String order, boolean override);
 
+	public PageNavi order(String order, boolean override);
 	public PageNavi order(String order);
+
+	public PageNavi order(Order order, boolean override);
+	public PageNavi order(Order order);
 
 	/** 
 	 * 设置总行数 

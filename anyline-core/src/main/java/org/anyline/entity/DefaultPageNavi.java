@@ -29,7 +29,7 @@ import java.util.*;
 
 
 public class DefaultPageNavi implements PageNavi{
-	protected static final long serialVersionUID = 3593100423479113410L; 
+	protected static final long serialVersionUID = 3593100423479113410L;
 	protected static final Logger log = LoggerFactory.getLogger(DefaultPageNavi.class);
  
 	protected static final String BR 					= "\n"; 
@@ -265,30 +265,45 @@ public class DefaultPageNavi implements PageNavi{
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
+	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return PageNavi
-	 */ 
-	public PageNavi order(Order order){ 
+	 */
+	@Override
+	public PageNavi order(Order order, boolean override){
 		if(null == orders){ 
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order); 
+		orders.order(order, override);
 		return this; 
-	} 
+	}
+	@Override
+	public PageNavi order(Order order){
+		return order(order, true);
+	}
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
 	 * @param type  type
+	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return PageNavi
-	 */ 
-	@Override 
-	public PageNavi order(String order, String type){ 
-		return order(new DefaultOrder(order, type));
-	} 
-	@Override 
-	public PageNavi order(String order){ 
-		return order(new DefaultOrder(order));
-	} 
-	 
+	 */
+	@Override
+	public PageNavi order(String order, String type, boolean override){
+		return order(new DefaultOrder(order, type), override);
+	}
+	@Override
+	public PageNavi order(String order, String type){
+		return order(order, type, true);
+	}
+	@Override
+	public PageNavi order(String order, boolean override){
+		return order(new DefaultOrder(order), override);
+	}
+	@Override
+	public PageNavi order(String order){
+		return order(order, true);
+	}
+
 	/** 
 	 * 设置总行数 
 	 * @param totalRow  totalRow
