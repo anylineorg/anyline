@@ -30,30 +30,41 @@ public class DefaultOrderStore implements OrderStore{
 	private List<Order> orders = new ArrayList<Order>(); 
  
 	public DefaultOrderStore() {
-	} 
-	public void order(Order order) { 
+	}
+	@Override
+	public void order(Order order, boolean override) {
 		if(null == order){ 
 			return; 
 		} 
 		Order tmp = getOrder(order.getColumn()); 
-		if(null != tmp){ 
-			tmp.setType(order.getType()); 
+		if(null != tmp){
+			if(override) {
+				tmp.setType(order.getType());
+			}
 		}else{ 
 			orders.add(order); 
 		} 
-	} 
- 
-	public void order(String col, Order.TYPE type) { 
-		order(new DefaultOrder(col, type));
-	} 
+	}
+
+	public void order(Order order) {
+		order(order, true);
+	}
+
+	public void order(String col, Order.TYPE type, boolean override) {
+		order(new DefaultOrder(col, type), override);
+	}
+	public void order(String col, Order.TYPE type) {
+		order(col, type, true);
+	}
 	/** 
 	 * 排序多列以,分隔 
 	 * order("CD","DESC"); 
 	 * order("CD DESC"); 
 	 * order("CD DESC,NM ASC"); 
 	 * @param str  str
+	 * @param override 如果已存在相同的排序列 是否覆盖
 	 */ 
-	public void order(String str) { 
+	public void order(String str, boolean override) {
 		if (BasicUtil.isEmpty(str)) { 
 			return; 
 		}
@@ -64,9 +75,13 @@ public class DefaultOrderStore implements OrderStore{
 		} 
 		String[] tmps = str.split(","); // 多列排序 
 		for (String tmp : tmps) { 
-			order(new DefaultOrder(tmp));
+			order(new DefaultOrder(tmp), override);
 		} 
-	} 
+	}
+
+	public void order(String str) {
+		order(str, true);
+	}
 	public Order getOrder(String order){ 
 		if(null == order){ 
 			return null; 
