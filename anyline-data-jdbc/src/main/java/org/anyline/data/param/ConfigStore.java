@@ -132,10 +132,12 @@ public interface ConfigStore {
 	public ConfigStore order(Order order);
 
 
-	public ConfigStore order(String column, String type);
+	public ConfigStore order(String column, Order.TYPE type, boolean override);
+	public ConfigStore order(String column, Order.TYPE type);
 	public ConfigStore order(String column, String type, boolean override);
-	public ConfigStore order(String order);
+	public ConfigStore order(String column, String type);
 	public ConfigStore order(String order, boolean override);
+	public ConfigStore order(String order);
 	public OrderStore getOrders() ;
 	public ConfigStore setOrders(OrderStore orders) ; 
 	/** 

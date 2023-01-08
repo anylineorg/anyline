@@ -446,8 +446,18 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore order(Order order){
 		return order(order, true);
 	}
- 
-	@Override 
+
+	@Override
+	public ConfigStore order(String column, Order.TYPE type, boolean override){
+		return order(new DefaultOrder(column,type), override);
+	}
+
+	@Override
+	public ConfigStore order(String column, Order.TYPE type){
+		return order(column, type, true);
+	}
+
+	@Override
 	public ConfigStore order(String column, String type, boolean override){
 		return order(new DefaultOrder(column,type), override);
 	}
@@ -456,6 +466,7 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore order(String column, String type){
 		return order(column, type, true);
 	}
+
 	@Override
 	public ConfigStore order(String order, boolean override){
 		return order(new DefaultOrder(order), override);
