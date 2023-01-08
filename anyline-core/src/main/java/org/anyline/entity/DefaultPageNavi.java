@@ -288,6 +288,14 @@ public class DefaultPageNavi implements PageNavi{
 	 * @return PageNavi
 	 */
 	@Override
+	public PageNavi order(String order, Order.TYPE type, boolean override){
+		return order(new DefaultOrder(order, type), override);
+	}
+	@Override
+	public PageNavi order(String order, Order.TYPE type){
+		return order(order, type, true);
+	}
+	@Override
 	public PageNavi order(String order, String type, boolean override){
 		return order(new DefaultOrder(order, type), override);
 	}

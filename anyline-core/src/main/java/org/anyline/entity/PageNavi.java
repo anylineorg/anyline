@@ -89,6 +89,9 @@ public interface PageNavi extends Serializable{
 	public PageNavi order(String order, String type, boolean override);
 	public PageNavi order(String order, String type);
 
+	public PageNavi order(String order, Order.TYPE type, boolean override);
+	public PageNavi order(String order, Order.TYPE type);
+
 	public PageNavi order(String order, boolean override);
 	public PageNavi order(String order);
 
