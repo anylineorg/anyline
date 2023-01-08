@@ -1,4 +1,4 @@
-package org.anyline.entity;
+package org.anyline.listener;
 
 
 public interface EntityListener {
