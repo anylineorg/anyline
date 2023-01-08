@@ -94,7 +94,7 @@ public class DataSourceHolder {
 		}
     	THREAD_AUTO_DEFAULT.set(false);
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[切换数据源][thread:{}][数据源:默认数据源]");
+			log.warn("[切换数据源][thread:{}][数据源:默认数据源]",Thread.currentThread().getId());
 		}
 	}
     public static void clearDataSource() { 
