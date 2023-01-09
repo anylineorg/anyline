@@ -23,6 +23,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			<artifactId>anyline-web</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-boot</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
