@@ -7,8 +7,8 @@ import org.anyline.util.ConfigTable;
 
 import java.util.Hashtable;
 
-public class BaiduSiteConfig extends AnylineConfig {
-    public static String CONFIG_NAME = "anyline-baidu-site.xml";
+public class BaiduSeoConfig extends AnylineConfig {
+    public static String CONFIG_NAME = "anyline-baidu-seo.xml";
     private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
     public static String DEFAULT_SITE = ""				;
@@ -29,7 +29,7 @@ public class BaiduSiteConfig extends AnylineConfig {
      * @param content 配置文件内容
      */
     public static void parse(String content){
-        parse(BaiduSiteConfig.class, content, instances ,compatibles);
+        parse(BaiduSeoConfig.class, content, instances ,compatibles);
     }
     /**
      * 初始化默认配置文件
@@ -39,19 +39,19 @@ public class BaiduSiteConfig extends AnylineConfig {
         load();
     }
 
-    public static BaiduSiteConfig getInstance(){
+    public static BaiduSeoConfig getInstance(){
         return getInstance(DEFAULT_INSTANCE_KEY);
     }
-    public static BaiduSiteConfig getInstance(String key){
+    public static BaiduSeoConfig getInstance(String key){
         if(BasicUtil.isEmpty(key)){
             key = DEFAULT_INSTANCE_KEY;
         }
 
-        if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - BaiduSiteConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+        if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - BaiduSeoConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
             // 重新加载 
             load();
         }
-        return (BaiduSiteConfig)instances.get(key);
+        return (BaiduSeoConfig)instances.get(key);
     }
     /**
      * 加载配置文件 
@@ -59,26 +59,26 @@ public class BaiduSiteConfig extends AnylineConfig {
      * 然后加载anyline开头的xml文件并覆盖先加载的配置 
      */
     private synchronized static void load() {
-        load(instances, BaiduSiteConfig.class, CONFIG_NAME);
-        BaiduSiteConfig.lastLoadTime = System.currentTimeMillis();
+        load(instances, BaiduSeoConfig.class, CONFIG_NAME);
+        BaiduSeoConfig.lastLoadTime = System.currentTimeMillis();
     }
     private static void debug(){
     }
-    public static BaiduSiteConfig register(String instance, DataRow row){
-        BaiduSiteConfig config = parse(BaiduSiteConfig.class, instance, row, instances, compatibles);
-        BaiduSiteClient.getInstance(instance);
+    public static BaiduSeoConfig register(String instance, DataRow row){
+        BaiduSeoConfig config = parse(BaiduSeoConfig.class, instance, row, instances, compatibles);
+        BaiduSeoClient.getInstance(instance);
         return config;
     }
-    public static BaiduSiteConfig register(DataRow row){
+    public static BaiduSeoConfig register(DataRow row){
         return register(DEFAULT_INSTANCE_KEY, row);
     }
-    public static BaiduSiteConfig register(String instance,  String site, String token){
+    public static BaiduSeoConfig register(String instance, String site, String token){
         DataRow row = new DataRow();
         row.put("SITE", site);
         row.put("TOKEN", token);
         return register(instance, row);
     }
-    public static BaiduSiteConfig register(String site, String token){
+    public static BaiduSeoConfig register(String site, String token){
         return register(DEFAULT_INSTANCE_KEY, site, token);
     }
 }
