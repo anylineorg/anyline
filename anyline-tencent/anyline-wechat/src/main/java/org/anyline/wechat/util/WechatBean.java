@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component("anyline.wechat.load.bean")
-public class WechatyBean implements InitializingBean {
+public class WechatBean implements InitializingBean {
 
     @Value("${anyline.wechat.app:}")
     private String APP_ID 						 	; // AppID(应用ID)
@@ -66,8 +66,8 @@ public class WechatyBean implements InitializingBean {
     public WechatOpenUtil instanceOpen(){
         return WechatOpenUtil.getInstance();
     }
-    @Bean("anyline.wechat.programe.init.util")
-    public WechatProgramUtil instancePrograme(){
+    @Bean("anyline.wechat.program.init.util")
+    public WechatProgramUtil instanceProgram(){
         return WechatProgramUtil.getInstance();
     }
     @Bean("anyline.wechat.wap.init.util")
