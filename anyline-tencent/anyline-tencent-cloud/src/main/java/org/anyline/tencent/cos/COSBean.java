@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component("anyline.tencent.cos.load.bean")
 public class COSBean implements InitializingBean {
 
-    @Value("${anyline.tencent.cos.id:}")
+    @Value("${anyline.tencent.cos.accessId:}")
     public String ACCESS_ID					; // 
-    @Value("${anyline.tencent.cos.secret :}")
+    @Value("${anyline.tencent.cos.accessSecret :}")
     public String ACCESS_SECRET 			; // 
     @Value("${anyline.tencent.cos.endpoint:}")
     public String ENDPOINT					; // 
