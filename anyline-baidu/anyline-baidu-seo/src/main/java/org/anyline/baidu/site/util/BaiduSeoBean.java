@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component("anyline.baidu.site.load.bean")
-public class BaiduSiteBean implements InitializingBean {
+public class BaiduSeoBean implements InitializingBean {
 
     @Value("${anyline.baidu.site.site:}")
     private String SITE		;
@@ -17,14 +17,14 @@ public class BaiduSiteBean implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        SITE = BasicUtil.evl(SITE, BaiduSiteConfig.DEFAULT_SITE);
+        SITE = BasicUtil.evl(SITE, BaiduSeoConfig.DEFAULT_SITE);
         if(BasicUtil.isEmpty(SITE)){
             return;
         }
-        BaiduSiteConfig.register(SITE, BasicUtil.evl(TOKEN, BaiduSiteConfig.DEFAULT_TOKEN));
+        BaiduSeoConfig.register(SITE, BasicUtil.evl(TOKEN, BaiduSeoConfig.DEFAULT_TOKEN));
     }
     @Bean("anyline.baidu.site.init.client")
-    public BaiduSiteClient instance(){
-        return BaiduSiteClient.getInstance();
+    public BaiduSeoClient instance(){
+        return BaiduSeoClient.getInstance();
     }
 }
