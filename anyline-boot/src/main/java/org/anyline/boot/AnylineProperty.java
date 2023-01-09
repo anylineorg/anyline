@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "anyline")
-public class DefaultConfig {
+public class AnylineProperty {
     //以下属性与ConfigTable一一对应
 
     protected  boolean debug 									= true		;	// debug状态会输出更多日志
