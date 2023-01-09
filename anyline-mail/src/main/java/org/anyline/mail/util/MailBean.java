@@ -31,7 +31,7 @@ public class MailBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         ACCOUNT = BasicUtil.evl(ACCOUNT, MailConfig.DEFAULT_ACCOUNT);
         if(BasicUtil.isEmpty(ACCOUNT)){
             return;

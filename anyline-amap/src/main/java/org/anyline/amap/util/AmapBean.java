@@ -17,7 +17,7 @@ public class AmapBean implements InitializingBean {
     private String TABLE 	;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         KEY = BasicUtil.evl(KEY, AmapConfig.DEFAULT_KEY);
         if(BasicUtil.isEmpty(KEY)){
             return;

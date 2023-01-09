@@ -16,7 +16,7 @@ public class BaiduSeoBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         SITE = BasicUtil.evl(SITE, BaiduSeoConfig.DEFAULT_SITE);
         if(BasicUtil.isEmpty(SITE)){
             return;

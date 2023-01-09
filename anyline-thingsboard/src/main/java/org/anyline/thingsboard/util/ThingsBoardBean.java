@@ -20,7 +20,7 @@ public class ThingsBoardBean implements InitializingBean {
     public String TENANT	      ;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         ACCOUNT = BasicUtil.evl(ACCOUNT, ThingsBoardConfig.DEFAULT_ACCOUNT);
         if(BasicUtil.isEmpty(ACCOUNT)){
             return;

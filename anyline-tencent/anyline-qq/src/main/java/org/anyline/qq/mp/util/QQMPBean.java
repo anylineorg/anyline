@@ -17,7 +17,7 @@ public class QQMPBean implements InitializingBean {
     @Value("${anyline.qq.mp.redirect:}")
     private String OAUTH_REDIRECT_URL 	; // 登录成功回调URL
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         APP_ID = BasicUtil.evl(APP_ID, QQMPConfig.DEFAULT_APP_ID);
         if(BasicUtil.isEmpty(APP_ID)){
             return;

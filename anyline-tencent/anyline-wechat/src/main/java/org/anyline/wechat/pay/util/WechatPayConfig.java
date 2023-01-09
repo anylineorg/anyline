@@ -31,10 +31,10 @@ public class WechatPayConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
 	public static String DEFAULT_MCH_ID 					= "" ; // 商户号
-	public static String DEFAULT_SP_MCHID 					= "" ; // 服务商商户号(服务商模式)
-	public static String DEFAULT_SUB_MCHID 					= "" ; // 子商户商户号(服务商模式)
+	public static String DEFAULT_SP_MCH_ID 					= "" ; // 服务商商户号(服务商模式)
+	public static String DEFAULT_SUB_MCH_ID					= "" ; // 子商户商户号(服务商模式)
 	public static String DEFAULT_API_SECRET 				= "" ; // 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API密钥设置
-	public static String DEFAULT_API_SECRET_V3				= "" ; // 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
+	public static String DEFAULT_API_SECRET3				= "" ; // 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
 	public static String DEFAULT_MCH_PRIVATE_SECRET_FILE	= "" ; // 商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
 	public static String DEFAULT_CERTIFICATE_SERIAL        	= "" ; // 证书序号 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API证书-->查看证书
 	public static String DEFAULT_KEY_STORE_FILE 			= "" ; // 证书文件
@@ -45,10 +45,10 @@ public class WechatPayConfig extends AnylineConfig{
 
 
 	public String MCH_ID 					= DEFAULT_MCH_ID 					; // 商户号
-	public String SP_MCHID 					= DEFAULT_SP_MCHID 					; // 服务商商户号(服务商模式)
-	public String SUB_MCHID 				= DEFAULT_SUB_MCHID 				; // 子商户商户号(服务商模式)
+	public String SP_MCH_ID 				= DEFAULT_SP_MCH_ID					; // 服务商商户号(服务商模式)
+	public String SUB_MCH_ID 				= DEFAULT_SUB_MCH_ID 				; // 子商户商户号(服务商模式)
 	public String API_SECRET 				= DEFAULT_API_SECRET 				; // 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API密钥设置
-	public String API_SECRET_V3				= DEFAULT_API_SECRET_V3 			; // 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
+	public String API_SECRET3				= DEFAULT_API_SECRET3 			; // 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
 	public String MCH_PRIVATE_SECRET_FILE	= DEFAULT_MCH_PRIVATE_SECRET_FILE 	; // 商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
 	public String CERTIFICATE_SERIAL        = DEFAULT_CERTIFICATE_SERIAL 		; // 证书序号 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API证书-->查看证书
 	public String KEY_STORE_FILE 			= DEFAULT_KEY_STORE_FILE 			; // 证书文件

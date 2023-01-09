@@ -23,7 +23,7 @@ public class OSSBean implements InitializingBean {
 	public int EXPIRE_SECOND 	;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		ACCESS_SECRET = BasicUtil.evl(ACCESS_SECRET, OSSConfig.DEFAULT_ACCESS_SECRET);
  		if(BasicUtil.isEmpty(ACCESS_SECRET)){
 			return;

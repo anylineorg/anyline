@@ -25,7 +25,7 @@ public class HGAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 

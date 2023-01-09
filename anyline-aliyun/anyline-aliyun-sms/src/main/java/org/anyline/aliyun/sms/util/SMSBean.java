@@ -30,7 +30,7 @@ public class SMSBean implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         ACCESS_KEY = BasicUtil.evl(ACCESS_KEY, SMSConfig.DEFAULT_ACCESS_KEY);
         if(BasicUtil.isEmpty(ACCESS_KEY)) {
             return;

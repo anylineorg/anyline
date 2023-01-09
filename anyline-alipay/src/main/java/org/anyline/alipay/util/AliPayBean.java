@@ -28,7 +28,7 @@ public class AliPayBean implements InitializingBean {
     private String NOTIFY_URL;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         APP_ID = BasicUtil.evl(APP_ID, AlipayConfig.DEFAULT_APP_ID);
         if(BasicUtil.isEmpty(APP_ID)){
             return;

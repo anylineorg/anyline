@@ -6,8 +6,8 @@ import org.anyline.wechat.mp.util.WechatMPConfig;
 import org.anyline.wechat.mp.util.WechatMPUtil;
 import org.anyline.wechat.open.util.WechatOpenConfig;
 import org.anyline.wechat.open.util.WechatOpenUtil;
-import org.anyline.wechat.programe.WechatProgrameConfig;
-import org.anyline.wechat.programe.WechatProgrameUtil;
+import org.anyline.wechat.program.WechatProgramConfig;
+import org.anyline.wechat.program.WechatProgramUtil;
 import org.anyline.wechat.wap.util.WechatWapConfig;
 import org.anyline.wechat.wap.util.WechatWapUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,7 +37,7 @@ public class WechatyBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         APP_ID = BasicUtil.evl(APP_ID, WechatConfig.DEFAULT_APP_ID);
         if(BasicUtil.isEmpty(APP_ID)){
             return;
@@ -54,7 +54,7 @@ public class WechatyBean implements InitializingBean {
 
         WechatMPConfig.register(row);
         WechatOpenConfig.register(row);
-        WechatProgrameConfig.register(row);
+        WechatProgramConfig.register(row);
         WechatWapConfig.register(row);
     }
 
@@ -67,8 +67,8 @@ public class WechatyBean implements InitializingBean {
         return WechatOpenUtil.getInstance();
     }
     @Bean("anyline.wechat.programe.init.util")
-    public WechatProgrameUtil instancePrograme(){
-        return WechatProgrameUtil.getInstance();
+    public WechatProgramUtil instancePrograme(){
+        return WechatProgramUtil.getInstance();
     }
     @Bean("anyline.wechat.wap.init.util")
     public WechatWapUtil instanceWap(){

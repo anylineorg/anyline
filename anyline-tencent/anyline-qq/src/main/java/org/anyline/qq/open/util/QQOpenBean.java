@@ -34,7 +34,7 @@ public class QQOpenBean implements InitializingBean {
     public String PAY_KEY_STORE_FILE 		; // 支付证书存放路径地址
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         APP_ID = BasicUtil.evl(APP_ID, QQMPConfig.DEFAULT_APP_ID);
         if(BasicUtil.isEmpty(APP_ID)){
             return;

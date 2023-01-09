@@ -13,7 +13,7 @@ public class QuestDbAdapter extends PostgresqlAdapter {
     private String delimiter;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         setDelimiter(delimiter);
     }
 } 

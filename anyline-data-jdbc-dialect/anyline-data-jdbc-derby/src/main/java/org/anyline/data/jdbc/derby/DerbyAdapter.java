@@ -34,7 +34,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 

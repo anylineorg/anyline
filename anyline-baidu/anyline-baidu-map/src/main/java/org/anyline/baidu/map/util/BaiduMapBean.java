@@ -16,7 +16,7 @@ public class BaiduMapBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         AK = BasicUtil.evl(AK, BaiduMapConfig.DEFAULT_AK);
         if(BasicUtil.isEmpty(AK)){
             return;

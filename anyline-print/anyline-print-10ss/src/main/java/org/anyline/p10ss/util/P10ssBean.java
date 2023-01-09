@@ -21,7 +21,7 @@ public class P10ssBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         APP_ID = BasicUtil.evl(APP_ID, P10ssConfig.DEFAULT_APP_ID);
         if(BasicUtil.isEmpty(APP_ID)){
             return;

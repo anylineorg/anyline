@@ -26,7 +26,7 @@ public class MinioBean implements InitializingBean {
     public int EXPIRE_SECOND 		;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         ACCESS_KEY = BasicUtil.evl(ACCESS_KEY, MinioConfig.DEFAULT_ACCESS_KEY);
         if(BasicUtil.isEmpty(ACCESS_KEY)){
             return;

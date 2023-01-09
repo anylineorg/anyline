@@ -277,7 +277,7 @@ public class WechatPayUtil {
 
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
-            SecretKeySpec key = new SecretKeySpec(config.API_SECRET_V3.getBytes("UTF-8"), "AES");
+            SecretKeySpec key = new SecretKeySpec(config.API_SECRET3.getBytes("UTF-8"), "AES");
             GCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce.getBytes("UTF-8"));
 
             cipher.init(Cipher.DECRYPT_MODE, (Key) key, spec);

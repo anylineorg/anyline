@@ -23,7 +23,7 @@ public class COSBean implements InitializingBean {
     public int EXPIRE_SECOND 				; // 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         ACCESS_ID = BasicUtil.evl(ACCESS_ID, COSConfig.DEFAULT_ACCESS_ID);
         if(BasicUtil.isEmpty(ACCESS_ID)){
             return;

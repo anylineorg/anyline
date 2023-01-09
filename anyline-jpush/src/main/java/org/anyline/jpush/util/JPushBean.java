@@ -16,7 +16,7 @@ public class JPushBean implements InitializingBean {
 
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		APP_KEY = BasicUtil.evl(APP_KEY, JPushConfig.DEFAULT_APP_KEY);
 		if(BasicUtil.isEmpty(APP_KEY)){
 			return;

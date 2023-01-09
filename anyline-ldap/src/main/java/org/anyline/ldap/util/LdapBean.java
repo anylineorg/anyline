@@ -29,7 +29,7 @@ public class LdapBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         ADDRESS = BasicUtil.evl(ADDRESS, LdapConfig.DEFAULT_ADDRESS);
         if(BasicUtil.isEmpty(ADDRESS)){
             return;

@@ -13,7 +13,7 @@ public class TimescaleAdapter extends PostgresqlAdapter {
     private String delimiter;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         setDelimiter(delimiter);
     }
 }

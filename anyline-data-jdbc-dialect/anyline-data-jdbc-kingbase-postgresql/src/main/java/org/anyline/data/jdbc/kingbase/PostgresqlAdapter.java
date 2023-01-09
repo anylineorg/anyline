@@ -24,7 +24,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 

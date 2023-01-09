@@ -51,7 +51,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 

@@ -15,7 +15,7 @@
  *
  *
  */
-package org.anyline.wechat.programe;
+package org.anyline.wechat.program;
 
 
 import org.anyline.entity.DataRow;
@@ -37,53 +37,53 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class WechatProgrameUtil extends WechatUtil {
+public class WechatProgramUtil extends WechatUtil {
 
-	private WechatProgrameConfig config = null;
+	private WechatProgramConfig config = null;
 
 
-	private static Hashtable<String, WechatProgrameUtil> instances = new Hashtable<String,WechatProgrameUtil>();
+	private static Hashtable<String, WechatProgramUtil> instances = new Hashtable<String, WechatProgramUtil>();
 
 	static {
-		Hashtable<String, AnylineConfig> configs = WechatProgrameConfig.getInstances();
+		Hashtable<String, AnylineConfig> configs = WechatProgramConfig.getInstances();
 		for(String key:configs.keySet()){
 			instances.put(key, getInstance(key));
 		}
 	}
 
-	public static WechatProgrameUtil getInstance(){
-		return getInstance(WechatProgrameConfig.DEFAULT_INSTANCE_KEY);
+	public static WechatProgramUtil getInstance(){
+		return getInstance(WechatProgramConfig.DEFAULT_INSTANCE_KEY);
 	}
-	public WechatProgrameUtil(WechatProgrameConfig config){
+	public WechatProgramUtil(WechatProgramConfig config){
 		this.config = config;
 	}
-	public WechatProgrameUtil(String key, DataRow config){
-		WechatProgrameConfig conf = WechatProgrameConfig.parse(key, config);
+	public WechatProgramUtil(String key, DataRow config){
+		WechatProgramConfig conf = WechatProgramConfig.parse(key, config);
 		this.config = conf;
 		instances.put(key, this);
 	}
-	public static WechatProgrameUtil reg(String key, DataRow config){
-		WechatProgrameConfig conf = WechatProgrameConfig.reg(key, config);
-		WechatProgrameUtil util = new WechatProgrameUtil(conf);
+	public static WechatProgramUtil reg(String key, DataRow config){
+		WechatProgramConfig conf = WechatProgramConfig.reg(key, config);
+		WechatProgramUtil util = new WechatProgramUtil(conf);
 		instances.put(key, util);
 		return util;
 	}
-	public static WechatProgrameUtil getInstance(String key){
+	public static WechatProgramUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = WechatProgrameConfig.DEFAULT_INSTANCE_KEY;
+			key = WechatProgramConfig.DEFAULT_INSTANCE_KEY;
 		}
-		WechatProgrameUtil util = instances.get(key);
+		WechatProgramUtil util = instances.get(key);
 		if(null == util){
-			WechatProgrameConfig config = WechatProgrameConfig.getInstance(key);
+			WechatProgramConfig config = WechatProgramConfig.getInstance(key);
 			if(null != config) {
-				util = new WechatProgrameUtil(config);
+				util = new WechatProgramUtil(config);
 				instances.put(key, util);
 			}
 		}
 		return util;
 	}
 
-	public WechatProgrameConfig getConfig() {
+	public WechatProgramConfig getConfig() {
 		return config;
 	}
 

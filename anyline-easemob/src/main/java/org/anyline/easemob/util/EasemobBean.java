@@ -23,7 +23,7 @@ public class EasemobBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         HOST = BasicUtil.evl(HOST, EasemobConfig.DEFAULT_HOST);
         if(BasicUtil.isEmpty(HOST)){
             return;

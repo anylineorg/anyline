@@ -24,7 +24,7 @@ public class HSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 

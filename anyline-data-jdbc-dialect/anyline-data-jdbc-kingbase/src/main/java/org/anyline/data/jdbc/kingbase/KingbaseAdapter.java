@@ -27,7 +27,7 @@ public class KingbaseAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 

@@ -26,7 +26,7 @@ public class CassandraAdapter extends SQLAdapter implements JDBCAdapter, Initial
     private String delimiter;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         setDelimiter(delimiter);
     }
 

@@ -16,7 +16,7 @@ public class QQMapBean implements InitializingBean {
 
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         KEY = BasicUtil.evl(KEY, QQMapConfig.DEFAULT_KEY);
         if(BasicUtil.isEmpty(KEY)){
             return;

@@ -31,7 +31,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
 
