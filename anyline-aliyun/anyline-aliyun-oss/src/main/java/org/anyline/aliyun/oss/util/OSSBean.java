@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component("anyline.oss.load.bean")
 public class OSSBean implements InitializingBean {
 
-	@Value("${anyline.aliyun.oss.id:}")
+	@Value("${anyline.aliyun.oss.accessId:}")
 	public String ACCESS_ID		;
-	@Value("${anyline.aliyun.oss.secret:}")
+	@Value("${anyline.aliyun.oss.accessSecret:}")
 	public String ACCESS_SECRET ;
 	@Value("${anyline.aliyun.oss.endpoint:}")
 	public String ENDPOINT		;
