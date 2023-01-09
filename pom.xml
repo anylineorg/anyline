@@ -110,6 +110,7 @@
         <module>anyline-thingsboard</module>
         <module>anyline-sms</module>
         <module>anyline-encrypt</module>
+        <module>anyline-boot</module>
     </modules>
 	<build>
 		<plugins>
