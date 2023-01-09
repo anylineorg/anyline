@@ -11,7 +11,7 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-baidu-site</artifactId>
+    <artifactId>anyline-baidu-seo</artifactId>
     <packaging>jar</packaging>
     <name>anyline-baidu-map</name>
     <description>百度站点</description>
