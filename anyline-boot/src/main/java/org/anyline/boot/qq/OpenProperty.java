@@ -3,7 +3,7 @@ package org.anyline.boot.qq;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.qq.open")
 @ConfigurationProperties(prefix = "anyline.qq.open")
 public class OpenProperty {
 

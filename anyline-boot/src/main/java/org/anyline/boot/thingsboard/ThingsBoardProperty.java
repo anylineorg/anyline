@@ -3,7 +3,7 @@ package org.anyline.boot.thingsboard;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.thingsboard")
 @ConfigurationProperties(prefix = "anyline.thingsboard")
 public class ThingsBoardProperty {
 

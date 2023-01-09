@@ -4,7 +4,7 @@ package org.anyline.boot.aliyun;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.aliyun.oss")
 @ConfigurationProperties(prefix = "anyline.aliyun.oss")
 public class OSSProperty {
     public String accessId	    ;

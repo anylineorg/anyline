@@ -3,7 +3,7 @@ package org.anyline.boot.qq;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.qq.mp")
 @ConfigurationProperties(prefix = "anyline.qq.mp")
 public class MPProperty {
 

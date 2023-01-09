@@ -3,7 +3,7 @@ package org.anyline.boot.nacos;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.nacos")
 @ConfigurationProperties(prefix = "anyline.nacos")
 public class NacosProperty {
 

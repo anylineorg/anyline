@@ -4,7 +4,7 @@ package org.anyline.boot.aliyun;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.aliyun.sms")
 @ConfigurationProperties(prefix = "anyline.aliyun.sms")
 public class SMSProperty {
     public String accessKey		;

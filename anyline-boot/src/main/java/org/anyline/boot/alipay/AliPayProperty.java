@@ -4,7 +4,7 @@ package org.anyline.boot.alipay;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.alipay")
 @ConfigurationProperties(prefix = "anyline.alipay")
 public class AliPayProperty {
 

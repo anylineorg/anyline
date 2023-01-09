@@ -3,7 +3,7 @@ package org.anyline.boot.jpush;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.jpush")
 @ConfigurationProperties(prefix = "anyline.jpush")
 public class JPushProperty {
     private String appKey;

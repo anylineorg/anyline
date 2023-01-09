@@ -3,7 +3,7 @@ package org.anyline.boot.minio;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.minio")
 @ConfigurationProperties(prefix = "anyline.minio")
 public class MinIOProperty {
 

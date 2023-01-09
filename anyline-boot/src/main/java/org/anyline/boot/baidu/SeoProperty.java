@@ -3,7 +3,7 @@ package org.anyline.boot.baidu;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.baidu.seo")
 @ConfigurationProperties(prefix = "anyline.baidu.seo")
 public class SeoProperty {
     private String site;

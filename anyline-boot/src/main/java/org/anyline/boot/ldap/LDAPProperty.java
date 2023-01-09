@@ -3,7 +3,7 @@ package org.anyline.boot.ldap;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.ldap")
 @ConfigurationProperties(prefix = "anyline.ldap")
 public class LDAPProperty {
 

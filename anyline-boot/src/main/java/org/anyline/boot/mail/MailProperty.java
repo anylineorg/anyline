@@ -3,7 +3,7 @@ package org.anyline.boot.mail;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.mail")
 @ConfigurationProperties(prefix = "anyline.mail")
 public class MailProperty {
 

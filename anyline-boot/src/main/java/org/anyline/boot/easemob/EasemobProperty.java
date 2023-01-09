@@ -3,7 +3,7 @@ package org.anyline.boot.easemob;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("anyline.boot.easemob")
 @ConfigurationProperties(prefix = "anyline.easemob")
 public class EasemobProperty {
 

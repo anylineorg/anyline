@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 
-@Configuration
+@Configuration("anyline.boot.amap")
 @ConfigurationProperties(prefix = "anyline.amap")
 public class AmapProperty {
 

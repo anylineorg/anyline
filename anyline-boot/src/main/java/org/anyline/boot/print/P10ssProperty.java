@@ -3,8 +3,8 @@ package org.anyline.boot.print;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConfigurationProperties(prefix = "anyline.p10ss")
+@Configuration("anyline.boot.print.p10ss")
+@ConfigurationProperties(prefix = "anyline.print.p10ss")
 public class P10ssProperty {
 
     public String appId                   ;
