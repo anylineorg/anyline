@@ -24,7 +24,7 @@ public class MailBean implements InitializingBean {
     @Value("${anyline.mail.attachment:}")
     public String ATTACHMENT_DIR 				;	// 附件下载地址
     @Value("${anyline.mail.ssl:false}")
-    public boolean SSL_FLAG 					;  // 是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
+    public boolean SSL       					;  // 是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
     @Value("${anyline.mail.download:true}")
     public boolean AUTO_DOWNLOAD_ATTACHMENT 	;
 
@@ -44,7 +44,7 @@ public class MailBean implements InitializingBean {
         row.put("HOST",BasicUtil.evl(HOST,MailConfig.DEFAULT_HOST));
         row.put("PORT",BasicUtil.evl(PORT,MailConfig.DEFAULT_PORT));
         row.put("ATTACHMENT_DIR",BasicUtil.evl(ATTACHMENT_DIR,MailConfig.DEFAULT_ATTACHMENT_DIR));
-        row.put("SSL_FLAG",SSL_FLAG);
+        row.put("SSL",SSL);
         row.put("AUTO_DOWNLOAD_ATTACHMENT",AUTO_DOWNLOAD_ATTACHMENT);
         MailConfig.register(row);
     }
