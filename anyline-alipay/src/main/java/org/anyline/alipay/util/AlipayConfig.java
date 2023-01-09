@@ -13,7 +13,7 @@ public class AlipayConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
 	public static String DEFAULT_APP_PRIVATE_KEY 	= ""		;
-	public static String DEFAULT_ALIPAY_PUBLIC_KEY 	= ""		;
+	public static String DEFAULT_PLATFORM_PUBLIC_KEY= ""		;
 	public static String DEFAULT_APP_ID 			= ""		;
 	public static String DEFAULT_DATA_FORMAT 		= "json"	;
 	public static String DEFAULT_ENCODE 			= "utf-8"	;
@@ -23,7 +23,7 @@ public class AlipayConfig extends AnylineConfig{
 
 
 	public String APP_PRIVATE_KEY 	= DEFAULT_APP_PRIVATE_KEY;
-	public String ALIPAY_PUBLIC_KEY = DEFAULT_ALIPAY_PUBLIC_KEY;
+	public String PLATFORM_PUBLIC_KEY = DEFAULT_PLATFORM_PUBLIC_KEY;
 	public String APP_ID 			= DEFAULT_APP_ID;
 	public String DATA_FORMAT 		= DEFAULT_DATA_FORMAT;
 	public String ENCODE 			= DEFAULT_ENCODE;

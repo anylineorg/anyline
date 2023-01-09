@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component("anyline.alipay.load.bean")
 public class AliPayBean implements InitializingBean {
 
-    @Value("${anyline.alipay.app.id:}")
+    @Value("${anyline.alipay.appId:}")
     private String APP_ID;
-    @Value("${anyline.alipay.app.privateKey:}")
+    @Value("${anyline.alipay.appPrivateKey:}")
     private String APP_PRIVATE_KEY;
-    @Value("${anyline.alipay.publicKey:}")
-    private String ALIPAY_PUBLIC_KEY;
+    @Value("${anyline.alipay.platformPublicKey:}")
+    private String PLATFORM_PUBLIC_KEY;
     @Value("${anyline.alipay.dataFormat:}")
     private String DATA_FORMAT;
     @Value("${anyline.alipay.encode:}")
@@ -36,7 +36,7 @@ public class AliPayBean implements InitializingBean {
         DataRow row = new DataRow();
         row.put("APP_ID",BasicUtil.evl(APP_ID, AlipayConfig.DEFAULT_APP_ID));
         row.put("APP_PRIVATE_KEY",BasicUtil.evl(APP_PRIVATE_KEY, AlipayConfig.DEFAULT_APP_PRIVATE_KEY));
-        row.put("ALIPAY_PUBLIC_KEY",BasicUtil.evl(ALIPAY_PUBLIC_KEY, AlipayConfig.DEFAULT_ALIPAY_PUBLIC_KEY));
+        row.put("PLATFORM_PUBLIC_KEY",BasicUtil.evl(PLATFORM_PUBLIC_KEY, AlipayConfig.DEFAULT_PLATFORM_PUBLIC_KEY));
         row.put("DATA_FORMAT", BasicUtil.evl(DATA_FORMAT, AlipayConfig.DEFAULT_DATA_FORMAT));
         row.put("ENCODE", BasicUtil.evl(ENCODE, AlipayConfig.DEFAULT_ENCODE));
         row.put("SIGN_TYPE", BasicUtil.evl(SIGN_TYPE, AlipayConfig.DEFAULT_SIGN_TYPE));

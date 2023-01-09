@@ -5,22 +5,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "anyline.aliyun.alipay")
+@ConfigurationProperties(prefix = "anyline.alipay")
 public class AliPayProperty {
 
-    private String alipayPublicKey;
+    private String platformPublicKey;
     private String dataFormat;
     private String encode;
     private String signType;
     private String returnUrl;
     private String notifyUrl;
 
-    public String getAlipayPublicKey() {
-        return alipayPublicKey;
+    public String getPlatformPublicKey() {
+        return platformPublicKey;
     }
 
-    public void setAlipayPublicKey(String alipayPublicKey) {
-        this.alipayPublicKey = alipayPublicKey;
+    public void setPlatformPublicKey(String platformPublicKey) {
+        this.platformPublicKey = platformPublicKey;
     }
 
     public String getDataFormat() {
