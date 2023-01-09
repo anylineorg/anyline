@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component("anyline.p100s.load.bean")
-public class P10sBean implements InitializingBean {
+public class P10ssBean implements InitializingBean {
 
     @Value("${anyline.p100s.app:}")
     public String APP_ID                   ;
