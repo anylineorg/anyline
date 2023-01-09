@@ -2,9 +2,9 @@ package org.anyline.boot;
 
 import org.anyline.util.ConfigTable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "anyline")
 public class DefaultConfig {
     //以下属性与ConfigTable一一对应
