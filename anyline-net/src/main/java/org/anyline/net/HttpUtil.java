@@ -78,6 +78,9 @@ public class HttpUtil {
 	public static HttpResponse post(String url, HttpEntity entity) {
 		return post(null, url, null, entity);
 	}
+	public static HttpResponse post(Map<String, String> headers,String url, HttpEntity entity) {
+		return post(headers, url, null, entity);
+	}
 	public static HttpResponse post(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
