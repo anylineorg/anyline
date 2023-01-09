@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @Component("anyline.sms.load.bean")
 public class SMSBean implements InitializingBean {
 
-    @Value("${anyline.aliyun.sms.key:}")
+    @Value("${anyline.aliyun.sms.accesskey:}")
     private String ACCESS_KEY;
-    @Value("${anyline.aliyun.sms.secret:}")
+    @Value("${anyline.aliyun.sms.accessSecret:}")
     private String ACCESS_SECRET;
     @Value("${anyline.aliyun.sms.sign:}")
     private String SIGN;
