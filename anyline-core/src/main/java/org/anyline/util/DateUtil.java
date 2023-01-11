@@ -179,9 +179,10 @@ public class DateUtil {
 		LocalDateTime datetime = localDateTime(date, zone);
 		return datetime.format(DateTimeFormatter.ofPattern(format, locale));
 	}
-	public static String format(Locale locale, ZoneId zone, Long date, String format) throws Exception{
-		if (null == date || null == format)
+	public static String format(Locale locale, ZoneId zone, Long date, String format) {
+		if (null == date || null == format){
 			return null;
+		}
 		return format(locale, zone, parse(date), format);
 	}
 
@@ -197,7 +198,7 @@ public class DateUtil {
 		return format(locale, zone, date, FORMAT_FULL);
 	}
 
-	public static String format(Locale locale, ZoneId zone, Long date) throws Exception{
+	public static String format(Locale locale, ZoneId zone, Long date) {
 		return format(locale, zone, date, FORMAT_FULL);
 	}
 
@@ -210,7 +211,7 @@ public class DateUtil {
 		return format(locale, ZoneId.systemDefault(), date, format);
 	}
 
-	public static String format(Locale locale, Long date, String format) throws Exception{
+	public static String format(Locale locale, Long date, String format) {
 		return format(locale, ZoneId.systemDefault(), date, format);
 	}
 
@@ -226,7 +227,7 @@ public class DateUtil {
 		return format(locale, ZoneId.systemDefault(), date);
 	}
 
-	public static String format(Locale locale, Long date) throws Exception{
+	public static String format(Locale locale, Long date) {
 		return format(locale, ZoneId.systemDefault(), date);
 	}
 
@@ -237,7 +238,7 @@ public class DateUtil {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
 
-	public static String format(Long date, String format) throws Exception{
+	public static String format(Long date, String format) {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
 
@@ -253,7 +254,7 @@ public class DateUtil {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date);
 	}
 
-	public static String format(Long date) throws Exception{
+	public static String format(Long date) {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date);
 	}
 
@@ -898,24 +899,38 @@ public class DateUtil {
 		}
 		return result;
 	}
+
+	public static Date parse(Long value){
+		Date date = new Date((Long)value);
+		return date;
+	}
+	public static Date parse(java.sql.Date value){
+		Date date = new Date(value.getTime());
+		return date;
+	}
+	public static Date parse(LocalDate value){
+		Date date = Date.from(value.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		return date;
+	}
+	public static Date parse(LocalDateTime value){
+		Date date = Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
+		return date;
+	}
 	public static Date parse(Object value) throws Exception{
 		Date date = null;
 		if(null != value){
 			if(value instanceof Timestamp){
-				date = new Date(((Timestamp)value).getTime());
+				date = parse((Timestamp)value);
 			}else if(value instanceof Date){
 				date = (Date)value;
 			}else if(value instanceof java.sql.Date){
-				java.sql.Date convert = (java.sql.Date)value;
-				date = new Date(convert.getTime());
+				date = parse((java.sql.Date)value);
 			}else if(value instanceof Long){
-				date = new Date((Long)value);
+				date = parse((Long)value);
 			}else if(value instanceof LocalDate){
-				LocalDate convert = (LocalDate)value;
-				date = Date.from(convert.atStartOfDay(ZoneId.systemDefault()).toInstant());
+				date = parse((LocalDate)value);
 			}else if(value instanceof LocalDateTime){
-				LocalDateTime convert = (LocalDateTime)value;
-				date = Date.from(convert.atZone(ZoneId.systemDefault()).toInstant());
+				date = parse((LocalDateTime)value);
 			}else if(value instanceof String){
 				date = parse((String)value);
 			}
@@ -1738,22 +1753,22 @@ public class DateUtil {
 		return localDate(date, ZoneId.systemDefault());
 	}
 
-	public static LocalDateTime localDateTime(Long timestamp, ZoneId zone) throws Exception{
+	public static LocalDateTime localDateTime(Long timestamp, ZoneId zone) {
 			return localDateTime(parse(timestamp), zone);
 	}
-	public static LocalDateTime localDateTime(Long timestamp) throws Exception{
+	public static LocalDateTime localDateTime(Long timestamp) {
 		return localDateTime(parse(timestamp), ZoneId.systemDefault());
 	}
-	public static LocalTime localTime(Long timestamp, ZoneId zone) throws Exception{
+	public static LocalTime localTime(Long timestamp, ZoneId zone) {
 		return localTime(parse(timestamp), zone);
 	}
-	public static LocalTime localTime(Long timestamp) throws Exception{
+	public static LocalTime localTime(Long timestamp) {
 		return localTime(timestamp, ZoneId.systemDefault());
 	}
-	public static LocalDate localDate(Long timestamp, ZoneId zone) throws Exception{
+	public static LocalDate localDate(Long timestamp, ZoneId zone) {
 		return  localDate(parse(timestamp), zone);
 	}
-	public static LocalDate localDate(Long timestamp) throws Exception{
+	public static LocalDate localDate(Long timestamp) {
 		return localDate(timestamp, ZoneId.systemDefault());
 	}
 }
