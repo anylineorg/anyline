@@ -2774,6 +2774,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow convertDecimal(BigDecimal def, String... keys) {
+        if(null == keys || keys.length ==0){
+            keys = BeanUtil.list2array(keys());
+        }
+        for (String key : keys) {
+            Object v = get(key);
+            BigDecimal result = null;
+            if (null != v) {
+                result = BasicUtil.parseDecimal(v ,def);
+            }
+            remove(keyAdapter.key(key));
+            put(key, result);
+        }
+        return this;
+    }
+
     public DataRow convertString(String... keys) {
         List<String> list = null;
         if (null == keys || keys.length == 0) {
