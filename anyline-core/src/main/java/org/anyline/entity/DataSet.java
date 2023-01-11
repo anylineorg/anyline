@@ -792,18 +792,54 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataRow
      */
     public DataSet convertNumber(String ... keys){
-        if(null != keys) {
-            for(DataRow row:rows){
-                row.convertNumber(keys);
-            }
+        for(DataRow row:rows){
+            row.convertNumber(keys);
         }
         return this;
     }
     public DataSet convertString(String ... keys){
-        if(null != keys) {
-            for(DataRow row:rows){
-                row.convertString(keys);
-            }
+        for(DataRow row:rows){
+            row.convertString(keys);
+        }
+        return this;
+    }
+    public DataSet convertInt(Integer def, String ... keys){
+        for(DataRow row:rows){
+            row.convertInt(def, keys);
+        }
+        return this;
+    }
+    public DataSet convertInt(String ... keys){
+        Integer def = null;
+        return convertInt(def, keys);
+    }
+    public DataSet convertLong(String ... keys){
+        Long def = null;
+        return convertLong(def, keys);
+    }
+    public DataSet convertLong(Long def, String ... keys){
+        for(DataRow row:rows){
+            row.convertLong(def, keys);
+        }
+        return this;
+    }
+    public DataSet convertDouble(String ... keys){
+        Double def = null;
+        return convertDouble(def, keys);
+    }
+    public DataSet convertDouble(Double def, String ... keys){
+        for(DataRow row:rows){
+            row.convertDouble(def, keys);
+        }
+        return this;
+    }
+    public DataSet convertDecimal(String ... keys){
+        BigDecimal def = null;
+        return convertDecimal(def, keys);
+    }
+    public DataSet convertDecimal(BigDecimal def, String ... keys){
+        for(DataRow row:rows){
+            row.convertDecimal(def, keys);
         }
         return this;
     }

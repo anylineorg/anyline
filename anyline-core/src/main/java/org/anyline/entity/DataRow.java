@@ -2784,6 +2784,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if (null != v) {
                 result = BasicUtil.parseDecimal(v ,def);
             }
+            if(null == result){
+                result = def;
+            }
+
             remove(keyAdapter.key(key));
             put(key, result);
         }
