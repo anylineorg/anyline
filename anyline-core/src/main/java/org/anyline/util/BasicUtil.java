@@ -360,11 +360,33 @@ public class BasicUtil {
 		if (null == value) {
 			return def;
 		}
-		try {
-			return new BigDecimal(value.toString());
-		} catch (Exception e) {
-			return def;
+		BigDecimal result = null;
+		if(value instanceof Long){
+			result = new BigDecimal((Long)value);
+		}else if(value instanceof Date){
+			Date date = (Date)value;
+			result = new BigDecimal(date.getTime());
+		}else if(value instanceof java.sql.Timestamp){
+			java.sql.Timestamp timestamp = (java.sql.Timestamp)value;
+			result = new BigDecimal(timestamp.getTime());
+		}else if(value instanceof java.sql.Date){
+			Date date = (java.sql.Date)value;
+			result = new BigDecimal(date.getTime());
+		}else if(value instanceof LocalDateTime){
+			result = new BigDecimal(DateUtil.parse((LocalDateTime)value).getTime());
+		}else if(value instanceof LocalDate){
+			result = new BigDecimal(DateUtil.parse((LocalDate)value).getTime());
+		}else{
+			try {
+				result = new BigDecimal(value.toString());
+			} catch (Exception e) {
+				return def;
+			}
 		}
+		if(null == result){
+			result = def;
+		}
+		return result;
 	}
 	public static Long parseLong(Object value, Long def) {
 		if (null == value) {
