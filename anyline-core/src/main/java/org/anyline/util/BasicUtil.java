@@ -399,7 +399,6 @@ public class BasicUtil {
 		}
 	}
 	public static Long parseLong(Object value) throws Exception {
-
 		if(value instanceof Long){
 			return (Long)value;
 		}
@@ -418,9 +417,7 @@ public class BasicUtil {
 		if(value instanceof LocalDateTime || value instanceof LocalDate){
 			return DateUtil.parse(value).getTime();
 		}
-
 		return Long.parseLong(value.toString());
-
 	} 
  
 	/** 
