@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -1695,27 +1696,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Long getLong(String key) throws Exception {
         Object value = get(key);
-        if(null != value){
-            if(value instanceof Long){
-                return (Long)value;
-            }
-            if(value instanceof Date){
-                Date date = (Date)value;
-                return date.getTime();
-            }
-            if(value instanceof java.sql.Timestamp){
-                java.sql.Timestamp timestamp = (java.sql.Timestamp)value;
-                return timestamp.getTime();
-            }
-            if(value instanceof java.sql.Date){
-                Date date = (java.sql.Date)value;
-                return date.getTime();
-            }
-            if(value instanceof LocalDateTime || value instanceof Locale){
-                return DateUtil.parse(value).getTime();
-            }
-        }
-        return Long.parseLong(value.toString());
+        return BasicUtil.parseLong(value);
     }
 
     public Long getLong(String key, Long def) {
@@ -2683,20 +2664,95 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
-
+    public DataRow convertDate(String ... keys){
+        Date def = null;
+        return convertDate(def, keys);
+    }
+    public DataRow convertDate(Date def, String ... keys){
+        if(null == keys || keys.length ==0){
+            keys = BeanUtil.list2array(keys());
+        }
+        for(String key:keys){
+            Object v = get(key);
+            remove(keyAdapter.key(key));
+            Date result = DateUtil.parse(v, def);
+            put(key, result);
+        }
+        return this;
+    }
+    public DataRow convertInt(String ... keys){
+        Integer def = null;
+        return convertInt(def, keys);
+    }
+    public DataRow convertInt(Integer def, String ... keys){
+        if(null == keys || keys.length ==0){
+            keys = BeanUtil.list2array(keys());
+        }
+        for(String key:keys){
+            Object v = get(key);
+            remove(keyAdapter.key(key));
+            Integer result = BasicUtil.parseInt(v, def);
+            put(key, result);
+        }
+        return this;
+    }
+    public DataRow convertLong(String ... keys){
+        Long def = null;
+        return convertLong(def, keys);
+    }
+    public DataRow convertLong(Long def, String ... keys){
+        if(null == keys || keys.length ==0){
+            keys = BeanUtil.list2array(keys());
+        }
+        for(String key:keys){
+            Object v = get(key);
+            remove(keyAdapter.key(key));
+            Long result = BasicUtil.parseLong(v, def);
+            put(key, result);
+        }
+        return this;
+    }
     /**
      * 指定key转换成number
      * @param keys keys
      * @return DataRow
      */
     public DataRow convertNumber(String... keys) {
-        if (null != keys) {
-            for (String key : keys) {
-                String v = getString(key);
-                if (null != v) {
-                    remove(keyAdapter.key(key));
-                    put(key, new BigDecimal(v));
+        if(null == keys || keys.length ==0){
+            keys = BeanUtil.list2array(keys());
+        }
+        for (String key : keys) {
+            Object v = get(key);
+            Object result = null;
+            if (null != v) {
+                if(v instanceof Integer
+                        || v instanceof Long
+                        || v instanceof Short
+                        || v instanceof Double
+                        || v instanceof Float
+                        || v instanceof Byte
+                        || v instanceof BigDecimal
+                ){
+                    continue;
+                }else if(v instanceof Date){
+                    Date date = (Date)v;
+                    result = date.getTime();
+                }else if(v instanceof java.sql.Timestamp){
+                    java.sql.Timestamp timestamp = (java.sql.Timestamp)v;
+                    result = timestamp.getTime();
+                }else if(v instanceof java.sql.Date){
+                    Date date = (java.sql.Date)v;
+                    result = date.getTime();
+                }else if(v instanceof LocalDateTime){
+                    result = DateUtil.parse((LocalDateTime)v).getTime();
+                }else if(v instanceof LocalDate){
+                    result = DateUtil.parse((LocalDate)v).getTime();
                 }
+                if(null == result){
+                    result = new BigDecimal(v.toString());
+                }
+                remove(keyAdapter.key(key));
+                put(key, result);
             }
         }
         return this;
