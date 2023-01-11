@@ -25,6 +25,8 @@ import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
  
 public class BasicUtil { 
@@ -363,16 +365,40 @@ public class BasicUtil {
 		} catch (Exception e) {
 			return def;
 		}
-	} 
-	public static Long parseLong(Object value, Long def) { 
-		if (null == value) { 
-			return def; 
-		} 
-		try { 
-			return Long.parseLong(value.toString()); 
-		} catch (Exception e) { 
-			return def; 
-		} 
+	}
+	public static Long parseLong(Object value, Long def) {
+		if (null == value) {
+			return def;
+		}
+		try{
+			return parseLong(value);
+		}catch (Exception e){
+			return def;
+		}
+	}
+	public static Long parseLong(Object value) throws Exception {
+
+		if(value instanceof Long){
+			return (Long)value;
+		}
+		if(value instanceof Date){
+			Date date = (Date)value;
+			return date.getTime();
+		}
+		if(value instanceof java.sql.Timestamp){
+			java.sql.Timestamp timestamp = (java.sql.Timestamp)value;
+			return timestamp.getTime();
+		}
+		if(value instanceof java.sql.Date){
+			Date date = (java.sql.Date)value;
+			return date.getTime();
+		}
+		if(value instanceof LocalDateTime || value instanceof LocalDate){
+			return DateUtil.parse(value).getTime();
+		}
+
+		return Long.parseLong(value.toString());
+
 	} 
  
 	/** 
