@@ -2712,6 +2712,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
+    public DataRow convertDouble(String ... keys){
+        Double def = null;
+        return convertDouble(def, keys);
+    }
+    public DataRow convertDouble(Double def, String ... keys){
+        if(null == keys || keys.length ==0){
+            keys = BeanUtil.list2array(keys());
+        }
+        for(String key:keys){
+            Object v = get(key);
+            remove(keyAdapter.key(key));
+            Double result = BasicUtil.parseDouble(v, def);
+            put(key, result);
+        }
+        return this;
+    }
     /**
      * 指定key转换成number
      * @param keys keys
