@@ -1,6 +1,13 @@
 用来维护快照的私服到2023-03-31就不维护了，需要快照版本的请从中央仓库下载  
 请参考[【maven配置】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f51d08504f16eef5d6eedaac28b67c2bc)
 
+8.6.2之后的版本中,多数据源不再需需要依赖org.anyboot:anyboot-data-jdbc  
+原来的org.anyboot.data.jdbc.ds.DynamicDataSourceRegister可以用
+org.anyline.data.jdbc.ds.DynamicDataSourceRegister替代
+
+这样就彻底剥离了springboot(只是anyline源码中不再依赖，实际项目中不受影响)  
+项目中不再需要考虑anyline与springboot的版本匹配
+
 ***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)
 
@@ -17,11 +24,6 @@
 没有QQ的再联系微信  
 <img src="http://cdn.anyline.org/img/user/zhv.jpg" width="90">
 
-2023-01-03之后的版本中,多数据源不再需需要依赖org.anyboot:anyboot-data-jdbc  
-原来的org.anyboot.data.jdbc.ds.DynamicDataSourceRegister可以用org.anyline.data.jdbc.ds.DynamicDataSourceRegister可以用org替代
-
-这样就彻底剥离了springboot(只是anyline源码中不再依赖，实际项目中不受影响)  
-项目中不再需要考虑anyline与springboot的版本匹配  
 
 ## 简介
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
