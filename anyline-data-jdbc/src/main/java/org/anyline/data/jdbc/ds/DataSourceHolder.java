@@ -38,12 +38,12 @@ public class DataSourceHolder {
     private static final ThreadLocal<String> THREAD_RECALL_SOURCE = new ThreadLocal<String>(); 
 	// 当前数据源 
     private static final ThreadLocal<String> THREAD_CUR_SOURCE = new ThreadLocal<String>(); 
-    // 是否还原默认数据源,执行一次操作后还原回默认数据源 
-    private static final ThreadLocal<Boolean> THREAD_AUTO_DEFAULT = new ThreadLocal<Boolean>(); 
+    // 是否还原默认数据源,执行一次操作后还原回  切换之前的数据源
+    private static final ThreadLocal<Boolean> THREAD_AUTO_RECOVER = new ThreadLocal<Boolean>(); 
     private static List<String> dataSources = new ArrayList<>();
 	private static Map<String, JDBCAdapter.DB_TYPE> types = new HashMap<>();
     static{ 
-    	THREAD_AUTO_DEFAULT.set(false); 
+    	THREAD_AUTO_RECOVER.set(false); 
     } 
     public static String getDataSource() { 
         return THREAD_CUR_SOURCE.get(); 
@@ -75,11 +75,11 @@ public class DataSourceHolder {
 			throw new RuntimeException("数据源未注册:"+dataSource);
 		}
     	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-    		log.warn("[切换数据源][thread:{}][数据源:{}][auto default:{}]",Thread.currentThread().getId(),dataSource,auto); 
+    		log.warn("[切换数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get(), dataSource, auto);
     	} 
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
     	THREAD_CUR_SOURCE.set(dataSource); 
-    	THREAD_AUTO_DEFAULT.set(auto); 
+    	THREAD_AUTO_RECOVER.set(auto); 
     } 
     // 恢复切换前数据源 
     public static void recoverDataSource(){ 
@@ -92,19 +92,19 @@ public class DataSourceHolder {
 		}else if(dataSources.contains("default")){
 			setDataSource("default");
 		}
-    	THREAD_AUTO_DEFAULT.set(false);
+    	THREAD_AUTO_RECOVER.set(false);
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[切换数据源][thread:{}][数据源:默认数据源]",Thread.currentThread().getId());
+			log.warn("[切换数据源][thread:{}][数据源:{}>默认数据源]",Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get());
 		}
 	}
     public static void clearDataSource() { 
     	THREAD_CUR_SOURCE.remove(); 
     } 
     public static boolean isAutoDefault(){ 
-    	if(null == THREAD_AUTO_DEFAULT || null == THREAD_AUTO_DEFAULT.get()){ 
+    	if(null == THREAD_AUTO_RECOVER || null == THREAD_AUTO_RECOVER.get()){ 
     		return false; 
     	} 
-    	return THREAD_AUTO_DEFAULT.get(); 
+    	return THREAD_AUTO_RECOVER.get(); 
     } 
  
 	/** 
