@@ -658,4 +658,12 @@ public class HttpClient {
 	public void setEntity(HttpEntity entity) {
 		this.entity = entity;
 	}
+
+	public Object getParam(String key){
+		if(null != params){
+			return params.get(key);
+		}else{
+			return null;
+		}
+	}
 }

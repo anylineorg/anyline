@@ -50,6 +50,45 @@ public class HttpBuilder {
         return client;
     }
 
+    /**
+     * 解析url 识别出参数k=v&k=v
+     * @param url url
+     * @return HttpBuilder
+     */
+    public static HttpBuilder parse(String url){
+        HttpBuilder builder = new HttpBuilder();
+        builder.setUrl(url);
+        if(null != url){
+            String base = null;
+            String sub = null;
+            int idx_session = url.indexOf(";");
+            int idx_param = url.indexOf("?");
+            if(idx_param > 0) {
+                if (idx_session > 0 && idx_session < idx_param) {
+                    //jsessionid
+                    base = url.substring(0, idx_session);
+                    sub = url.substring(url.indexOf("?") + 1);
+                } else {
+                    base = url.substring(0, url.indexOf("?"));
+                    sub = url.substring(url.indexOf("?") + 1);
+                }
+                builder.setUrl(base);
+            }
+            if(null != sub){
+                String[] ps = sub.split("&");
+                for(String p:ps){
+                    if(p.contains("=")){
+                        String[] kv = p.split("=");
+                        if(kv.length == 2){
+                            builder.setParam(kv[0], kv[1]);
+                        }
+                    }
+                }
+            }
+        }
+        return builder;
+    }
+
     public static HttpBuilder init(){
         return new HttpBuilder();
     }
@@ -145,6 +184,36 @@ public class HttpBuilder {
     }
     public HttpBuilder setUserAgent(String agent){
         this.userAgent = agent;
+        return this;
+    }
+    public Object getParam(String key){
+        if(null != params){
+            return params.get(key);
+        }else{
+            return null;
+        }
+    }
+    public HttpBuilder setParam(String key, Object value){
+        if(null == params){
+            params = new HashMap<>();
+        }
+        Object param = params.get(key);
+        if(null != param && null != value){
+            List list = null;
+            if(param instanceof List){
+                list = (List)param;
+            }else{
+                list = new ArrayList();
+            }
+            if(value instanceof List){
+                list.addAll((List)value);
+            }else{
+                list.add(value);
+            }
+            params.put(key, list);
+        }else{
+            params.put(key, value);
+        }
         return this;
     }
 
