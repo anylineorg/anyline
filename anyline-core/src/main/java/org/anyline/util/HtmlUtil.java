@@ -336,4 +336,62 @@ public class HtmlUtil {
     public static String table(String cells, int cols){
         return table(cells, cols,"\n");
     }
+
+    /**
+     * 截取html,避免拆破标签,不支持多层嵌套结构
+     * @param html html
+     * @param fr fr
+     * @param to to
+     * @return String
+     */
+    public static String cut(String html, int fr, int to){
+        String chk = BasicUtil.cut(html, fr, to);
+        String result = null;
+        int chk_max = html.length();
+        int result_end = chk.length();
+        //flag <,>,</,>,/,/>
+        //     0 1 2  3 4 5
+        System.out.println("result end:"+result_end);
+        int chk_last_t0 = chk.lastIndexOf("<");
+        if(chk_last_t0 > 0){
+            int chk_last_t1 = chk.lastIndexOf("/>");
+            int chk_last_t1_ = chk.lastIndexOf("</");
+            String after_src_last_t0 = html.substring(chk_last_t0+1, chk_last_t0+2);
+            if((chk_last_t1 < chk_last_t0 && chk_last_t1_ < chk_last_t0) || "/".equals(after_src_last_t0)){
+                // < 后没有结束
+                int src_last_t1 = html.indexOf(">", chk_last_t0);
+                if(src_last_t1 > chk_last_t0){
+                    // >之前的位置
+                    String before_src_last_t1 = html.substring(src_last_t1-1, src_last_t1);
+                    System.out.println("before_src_last_t1:"+before_src_last_t1);
+                    if(before_src_last_t1.equals("/")){
+                        //<br/>
+                        //单标签找到结束位置
+                        chk = html.substring(0, src_last_t1+1);
+                    }else{
+                        //<之后的位置
+                        System.out.println("after_src_last_t0:"+after_src_last_t0);
+                        if(after_src_last_t0.equals("/")){
+                            // </a>
+                            //如果是end标签，找到end标签结束位置
+                            int end_tag_tag = html.indexOf(">",chk_last_t0);
+                            chk = html.substring(0, end_tag_tag+1);
+                        }else {
+                            // <a href=''
+                            //如果是start标签,找到相应的end标签
+                            int start_tag_end = html.indexOf(">",chk_last_t0+1 );
+                            int end_tag_end = html.indexOf(">",start_tag_end+1);
+                            chk = html.substring(0, end_tag_end+1);
+                        }
+
+                    }
+                    result = chk;
+                }
+            }
+        }
+        if(null == result){
+            result = chk;
+        }
+        return result;
+    }
 }
