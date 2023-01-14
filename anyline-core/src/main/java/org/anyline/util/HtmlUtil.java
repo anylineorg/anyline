@@ -347,7 +347,9 @@ public class HtmlUtil {
     public static String cut(String html, int fr, int to){
         String chk = BasicUtil.cut(html, fr, to);
         String result = null;
-        int chk_max = html.length();
+        if(to >= html.length()){
+            return html;
+        }
         int result_end = chk.length();
         //flag <,>,</,>,/,/>
         //     0 1 2  3 4 5
