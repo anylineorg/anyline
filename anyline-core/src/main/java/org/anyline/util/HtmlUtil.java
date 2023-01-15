@@ -353,7 +353,6 @@ public class HtmlUtil {
         int result_end = chk.length();
         //flag <,>,</,>,/,/>
         //     0 1 2  3 4 5
-        System.out.println("result end:"+result_end);
         int chk_last_t0 = chk.lastIndexOf("<");
         if(chk_last_t0 > 0){
             int chk_last_t1 = chk.lastIndexOf("/>");
@@ -365,14 +364,12 @@ public class HtmlUtil {
                 if(src_last_t1 > chk_last_t0){
                     // >之前的位置
                     String before_src_last_t1 = html.substring(src_last_t1-1, src_last_t1);
-                    System.out.println("before_src_last_t1:"+before_src_last_t1);
                     if(before_src_last_t1.equals("/")){
                         //<br/>
                         //单标签找到结束位置
                         chk = html.substring(0, src_last_t1+1);
                     }else{
                         //<之后的位置
-                        System.out.println("after_src_last_t0:"+after_src_last_t0);
                         if(after_src_last_t0.equals("/")){
                             // </a>
                             //如果是end标签，找到end标签结束位置
@@ -385,7 +382,6 @@ public class HtmlUtil {
                             int end_tag_end = html.indexOf(">",start_tag_end+1);
                             chk = html.substring(0, end_tag_end+1);
                         }
-
                     }
                     result = chk;
                 }
