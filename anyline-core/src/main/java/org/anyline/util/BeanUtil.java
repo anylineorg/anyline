@@ -2271,9 +2271,7 @@ public class BeanUtil {
 		if(null != arrays) {
 			for (T[] array : arrays) {
 				if(null != array) {
-					for (T item : array) {
-						list.add(item);
-					}
+					list.addAll(Arrays.asList(array));
 				}
 			}
 		}
