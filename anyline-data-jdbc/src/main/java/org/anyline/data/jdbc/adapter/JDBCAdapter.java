@@ -251,6 +251,16 @@ public interface JDBCAdapter {
 	public Object buildConditionLike(StringBuilder builder, Compare compare, Object value);
 
 	/**
+	 * 构造 FIND_IN_SET 查询条件
+	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param builder builder
+	 * @param column column
+	 * @param compare compare
+	 * @param value value
+	 * @return value
+	 */
+	public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value);
+	/**
 	 * 构造(NOT) IN 查询条件
 	 * @param builder builder
 	 * @param compare compare

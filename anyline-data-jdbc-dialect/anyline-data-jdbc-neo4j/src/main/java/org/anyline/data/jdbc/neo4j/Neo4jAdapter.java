@@ -469,6 +469,11 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return value;
     }
 
+    @Override
+    public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value) {
+        return null;
+    }
+
     /**
      * 构造(NOT) IN 查询条件
      * @param builder builder

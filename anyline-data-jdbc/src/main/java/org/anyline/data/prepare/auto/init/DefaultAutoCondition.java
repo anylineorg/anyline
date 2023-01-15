@@ -39,9 +39,9 @@ import java.util.*;
  * 
  */ 
 public class DefaultAutoCondition extends DefaultCondition implements AutoCondition {
-	private String table;		// 表或表别名
-	private String column;		// 列 
-	private Object values;		// 参数值 
+	private String table;			// 表或表别名
+	private String column;			// 列
+	private Object values;			// 参数值
 	private Object orValues;		// 参数值 
 	private Compare compare = Compare.EQUAL;
 	private Compare orCompare = Compare.EQUAL;
@@ -127,50 +127,63 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
+		int compareCode = compare.getCode();
+
+		StringBuilder col_builder = new StringBuilder();
 		if(!column.contains(".")){
 			if(BasicUtil.isNotEmpty(prefix)){
-				SQLUtil.delimiter(builder, prefix, delimiterFr, delimiterTo).append(".");
+				SQLUtil.delimiter(col_builder, prefix, delimiterFr, delimiterTo).append(".");
 			}else {
 				if (BasicUtil.isNotEmpty(table)) {
-					SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo).append(".");
+					SQLUtil.delimiter(col_builder, table, delimiterFr, delimiterTo).append(".");
 				}
 			}
 		}
-		SQLUtil.delimiter(builder, column, delimiterFr, delimiterTo);
-		int compareCode = compare.getCode();
-		if(compareCode == 10){
-			Object v = getValue(val);
-			if(null == v || "NULL".equals(v.toString())){
-				builder.append(" IS NULL");
-				if("NULL".equals(getValue())){
-					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+
+		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
+
+		if(compareCode ==60){
+			// FIND_IN_SET(?, CODES)
+			val = adapter.buildConditionFindInSet(builder, col_builder.toString(), compare, val);
+		}else{
+			builder.append(col_builder);
+			if(compareCode == 10){
+				Object v = getValue(val);
+				if(null == v || "NULL".equals(v.toString())){
+					builder.append(" IS NULL");
+					if("NULL".equals(getValue())){
+						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+					}
+				}else{
+					builder.append(compare.getSQL());
 				}
-			}else{
+			}else if(compareCode == 20){
+				// "> ?";
 				builder.append(compare.getSQL());
+			}else if(compareCode == 21){
+				// ">= ?";
+				builder.append(compare.getSQL());
+			}else if(compareCode == 30){
+				// "< ?";
+				builder.append(compare.getSQL());
+			}else if(compareCode == 110){
+				// "<> ?";
+				builder.append(compare.getSQL());
+			}else if(compareCode == 31){
+				// "<= ?";
+				builder.append(compare.getSQL());
+			}else if(compareCode == 80){
+				// " BETWEEN ? AND ?";
+				builder.append(compare.getSQL());
+			}else if(compareCode == 40 || compareCode == 140){
+				adapter.buildConditionIn(builder, compare, val);
+			}else if(compareCode >= 50 && compareCode <= 52){
+				val = adapter.buildConditionLike(builder, compare, val) ;
 			}
-		}else if(compareCode == 20){
-			// "> ?";
-			builder.append(compare.getSQL());
-		}else if(compareCode == 21){
-			// ">= ?";
-			builder.append(compare.getSQL());
-		}else if(compareCode == 30){
-			// "< ?";
-			builder.append(compare.getSQL());
-		}else if(compareCode == 110){
-			// "<> ?";
-			builder.append(compare.getSQL());
-		}else if(compareCode == 31){
-			// "<= ?";
-			builder.append(compare.getSQL());
-		}else if(compareCode == 80){
-			// " BETWEEN ? AND ?";
-			builder.append(compare.getSQL());
-		}else if(compareCode == 40 || compareCode == 140){
-			adapter.buildConditionIn(builder, compare, val);
-		}else if(compareCode >= 50 && compareCode <= 52){
-			val = adapter.buildConditionLike(builder, compare, val) ;
 		}
+
+
+
 		// runtime value
 		if(null != val) {
 			if (compareCode == 40 || compareCode == 140 || compareCode == 80) {

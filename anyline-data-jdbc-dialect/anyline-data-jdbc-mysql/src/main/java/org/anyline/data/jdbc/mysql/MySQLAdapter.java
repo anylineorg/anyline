@@ -4,10 +4,7 @@ import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -79,6 +76,21 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 
+
+	/**
+	 * 构造 FIND_IN_SET 查询条件
+	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param builder builder
+	 * @param compare compare
+	 * @param column column
+	 * @param value value
+	 * @return value
+	 */
+	@Override
+	public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value){
+		builder.append("FIND_IN_SET(?,").append(column).append(")");
+		return value;
+	}
 
 
 	/* *****************************************************************************************************************

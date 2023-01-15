@@ -161,6 +161,30 @@ public enum Compare {
             return BeanUtil.array2list(arrays).contains(value);
         }
     },
+    FIND_IN_SET_OR{
+        public int getCode(){return 61;}
+        public String getSQL(){return " FIND_IN_SET ";}
+        public String getName(){return "find in set";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            String[] arrays = target.toString().split(",");
+            return BeanUtil.array2list(arrays).contains(value);
+        }
+    },
+    FIND_IN_SET_AND{
+        public int getCode(){return 62;}
+        public String getSQL(){return " FIND_IN_SET ";}
+        public String getName(){return "find in set";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            String[] arrays = target.toString().split(",");
+            return BeanUtil.array2list(arrays).contains(value);
+        }
+    },
     BETWEEN			{
         public int getCode(){return 80;}
         public String getSQL(){return " BETWEEN ? AND ? ";}

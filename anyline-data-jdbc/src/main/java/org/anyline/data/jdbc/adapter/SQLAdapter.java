@@ -690,8 +690,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * public StringBuilder buildConditionLike(StringBuilder builder, Compare compare)
-     * public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value)
+     * public Object buildConditionLike(StringBuilder builder, Compare compare)
+     * public Object buildConditionFindInSet(StringBuilder builder, Compare compare, Object value)
+     * public Object buildConditionIn(StringBuilder builder, Compare compare, Object value)
      *
      * protected void buildQueryRunContent(XMLRun run)
      * protected void buildQueryRunContent(TextRun run)
@@ -718,6 +719,20 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         return value;
     }
 
+    /**
+     * 构造 FIND_IN_SET 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param builder builder
+     * @param column column
+     * @param compare compare
+     * @param value value
+     * @return value
+     */
+    @Override
+    public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value){
+        log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value)",37));
+        return null;
+    }
     /**
      * 构造(NOT) IN 查询条件
      * @param builder builder

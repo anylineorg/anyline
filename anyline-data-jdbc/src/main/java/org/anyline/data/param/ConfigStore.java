@@ -79,6 +79,14 @@ public interface ConfigStore {
 	 */
 	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(String text);
+
+	/**
+	 *
+	 * @param id 列名或XML中查询条件的ID
+	 * @param compare 匹配方式
+	 * @param value value
+	 * @return ConfigStore
+	 */
 	public ConfigStore addCondition(Compare compare, String id, Object value);
 	public ConfigStore addCondition(Compare compare, String id, String var, Object value);
 	public ConfigStore addCondition(Compare compare, String id, Object value, boolean overCondition, boolean overValue);
