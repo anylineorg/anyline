@@ -20,11 +20,11 @@
 package org.anyline.data.param.init;
 
 import org.anyline.data.param.Config;
-import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;

@@ -142,7 +142,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
 
-		if(compareCode ==60){
+		if(compareCode >=60 && compareCode <= 62){
 			// FIND_IN_SET(?, CODES)
 			val = adapter.buildConditionFindInSet(builder, col_builder.toString(), compare, val);
 		}else{

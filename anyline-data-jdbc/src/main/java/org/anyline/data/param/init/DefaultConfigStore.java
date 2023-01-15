@@ -28,8 +28,8 @@ import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.init.DefaultGroup;
 import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.entity.*;
-import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.encrypt.DESUtil;
 
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore addConditions(String var, Object ... values){
-		return addCondition(Compare.IN, var, values);
+		return addCondition(Compare.IN, var, BeanUtil.array2list(values));
 //		Config conf = chain.getConfig(null,var,Compare.IN);
 //		if(null == conf){
 //			conf = new DefaultConfig();
@@ -213,22 +213,26 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore addCondition(Compare compare, String var, Object value) {
-		return addCondition(compare, var, value, false, false);
+	public ConfigStore addCondition(Compare compare, String var, Object ... values) {
+		return addCondition(compare, var, BeanUtil.array2list(values), false, false);
 	}
 	@Override
-	public ConfigStore addCondition(Compare compare, String id, String var, Object value) {
-		return addCondition(compare, id, var, value, false, false);
+	public ConfigStore addCondition(Compare compare, String id, String var, Object ... values) {
+		return addCondition(compare, id, var, BeanUtil.array2list(values), false, false);
 	}
 	@Override
-	public ConfigStore addCondition(String id, String var, Object value) {
-		return addCondition(id, var, value, false, false);
+	public ConfigStore addCondition(String id, String var, Object ... values) {
+		return addCondition(id, var, BeanUtil.array2list(values), false, false);
 	}
 	@Override
 	public ConfigStore addCondition(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		Config conf = null;
 		boolean require = false;
 		boolean strictRequired = false;
+		if(null == compare){
+			compare = Compare.AUTO;
+		}
+		int compareCode = compare.getCode();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1,var.length());
@@ -245,20 +249,51 @@ public class DefaultConfigStore implements ConfigStore {
 				var = var.substring(1);
 			}
 		}
-		if(null == conf){
-			conf = new DefaultConfig();
-			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-			conf.setCompare(compare);
-			chain.addConfig(conf);
+		if(value instanceof List){
+			List list = (List)value;
+			if(list.size() == 0){
+				value = null;
+			}else if(list.size() ==1){
+				value = list.get(0);
+			}
 		}
-		conf.setPrefix(prefix);
-		conf.setVariable(var);
-		conf.setRequire(require);
-		conf.setStrictRequired(strictRequired);
-		if(overValue){
-			conf.setValue(value);
+
+		if(value instanceof List && ((List)value).size()>1 && compareCode >= 61 && compareCode <= 62){
+			List list = (List)value;
+			if(compareCode == 61){
+				//FIND_IN_OR
+				boolean first = true;
+				for(Object item:list){
+					if(first){
+						addCondition(compare, prefix, var, item, false, false);
+						first = false;
+					}else {
+						this.or(compare, var, item);
+					}
+				}
+			}else if(compareCode == 62){
+				//FIND_IN_AND
+				for(Object item:list){
+					addCondition(compare, prefix, var, item, false, false);
+				}
+			}
 		}else{
-			conf.addValue(value);
+			if(null == conf){
+				conf = new DefaultConfig();
+				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				conf.setCompare(compare);
+				chain.addConfig(conf);
+			}
+
+			conf.setPrefix(prefix);
+			conf.setVariable(var);
+			conf.setRequire(require);
+			conf.setStrictRequired(strictRequired);
+			if(overValue){
+				conf.setValue(value);
+			}else{
+				conf.addValue(value);
+			}
 		}
 		return this;
 	}
@@ -277,24 +312,24 @@ public class DefaultConfigStore implements ConfigStore {
 		return addCondition(var, value, false, false);
 	} 
 	@Override
-	public ConfigStore and(String var, Object value){
-		return addCondition(var, value, false, false);
+	public ConfigStore and(String var, Object ... values){
+		return addCondition(var, BeanUtil.array2list(values), false, false);
 	} 
 	@Override
-	public ConfigStore and(Compare compare, String var, Object value) {
-		return addCondition(compare, var, value, false, false);
+	public ConfigStore and(Compare compare, String var, Object ... values) {
+		return addCondition(compare, var, BeanUtil.array2list(values), false, false);
 	}
 
 	@Override
-	public ConfigStore or(String var, Object value){
-		return or(Compare.EQUAL, var, value);
+	public ConfigStore or(String var, Object ... values){
+		return or(Compare.EQUAL, var, BeanUtil.array2list(values));
 	} 
 	@Override
-	public ConfigStore or(Compare compare, String var, Object value) {
+	public ConfigStore or(Compare compare, String var, Object ... values) {
 		List<Config> configs = chain.getConfigs();
 		// 如果当前没有其他条件
 		if(configs.size()==0){
-			and(compare, var, value);
+			and(compare, var, values);
 		}else{
 			ConfigChain orChain = new DefaultConfigChain();
 			Config last = configs.get(configs.size()-1);
@@ -313,7 +348,7 @@ public class DefaultConfigStore implements ConfigStore {
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 			conf.setCompare(compare);
 			conf.setVariable(var);
-			conf.setValue(value);
+			conf.setValue(values);
 			
 			orChain.addConfig(conf);
 			chain.addConfig(orChain);
@@ -322,13 +357,13 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	
 	@Override
-	public ConfigStore conditions(String var, Object value) {
-		return addConditions(var, value);
+	public ConfigStore conditions(String var, Object ... values) {
+		return addConditions(var, BeanUtil.array2list(values));
 	}
 
 	@Override
-	public ConfigStore condition(String var, Object value) {
-		return addCondition(var, value);
+	public ConfigStore condition(String var, Object ... values) {
+		return addCondition(var, BeanUtil.array2list(values));
 	}
 
 	@Override
@@ -342,8 +377,8 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore condition(Compare compare, String var, Object value) {
-		return addCondition(compare, var, value);
+	public ConfigStore condition(Compare compare, String var, Object ... values) {
+		return addCondition(compare, var, BeanUtil.array2list(values));
 	}
 
 	@Override
@@ -352,8 +387,8 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore condition(String id, String var, Object value) {
-		return addCondition(id, var, value);
+	public ConfigStore condition(String id, String var, Object ... values) {
+		return addCondition(id, var, BeanUtil.array2list(values));
 	}
 
 	@Override
@@ -362,11 +397,11 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore ors(String var, Object value){
-		return ors(Compare.EQUAL, var, value);
+	public ConfigStore ors(String var, Object ... values){
+		return ors(Compare.EQUAL, var, BeanUtil.array2list(values));
 	} 
 	@Override
-	public ConfigStore ors(Compare compare, String var, Object value) {
+	public ConfigStore ors(Compare compare, String var, Object ... values) {
 		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
 		
@@ -374,7 +409,7 @@ public class DefaultConfigStore implements ConfigStore {
 		conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 		conf.setCompare(compare);
 		conf.setVariable(var);
-		conf.setValue(value);
+		conf.setValue(values);
 		
 		newChain.addConfig(conf);
 		
