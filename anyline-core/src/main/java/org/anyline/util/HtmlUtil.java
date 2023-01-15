@@ -338,7 +338,7 @@ public class HtmlUtil {
     }
 
     /**
-     * 截取html,避免拆破标签,不支持多层嵌套结构
+     * 截取html,截取to位置所在的第一层标签的结束位置,避免拆破标签,不支持多层嵌套结构
      * @param html html
      * @param fr fr
      * @param to to
