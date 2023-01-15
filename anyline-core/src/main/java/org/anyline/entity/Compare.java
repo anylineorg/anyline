@@ -1,6 +1,7 @@
 package org.anyline.entity;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -146,6 +147,18 @@ public enum Compare {
                 return false;
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+        }
+    },
+    FIND_IN_SET{
+        public int getCode(){return 60;}
+        public String getSQL(){return " FIND_IN_SET ";}
+        public String getName(){return "find in set";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            String[] arrays = target.toString().split(",");
+            return BeanUtil.array2list(arrays).contains(value);
         }
     },
     BETWEEN			{
