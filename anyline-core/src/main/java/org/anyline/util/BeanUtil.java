@@ -2271,7 +2271,14 @@ public class BeanUtil {
 		if(null != arrays) {
 			for (T[] array : arrays) {
 				if(null != array) {
-					list.addAll(Arrays.asList(array));
+					//list.addAll(Arrays.asList(array));
+					for (T item : array) {
+						if(item instanceof Collection){
+							list.addAll((Collection)item);
+						}else {
+							list.add(item);
+						}
+					}
 				}
 			}
 		}
