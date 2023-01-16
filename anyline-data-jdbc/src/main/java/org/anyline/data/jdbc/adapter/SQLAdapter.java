@@ -711,9 +711,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     public Object buildConditionLike(StringBuilder builder, Compare compare, Object value){
         if(compare == Compare.LIKE){
             builder.append(" LIKE ").append(concat("'%'", "?" , "'%'"));
-        }else if(compare == Compare.LIKE_PREFIX){
+        }else if(compare == Compare.LIKE_PREFIX|| compare == Compare.START_WITH){
             builder.append(" LIKE ").append(concat("?" , "'%'"));
-        }else if(compare == Compare.LIKE_SUFFIX){
+        }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH){
             builder.append(" LIKE ").append(concat("'%'", "?"));
         }
         return value;
