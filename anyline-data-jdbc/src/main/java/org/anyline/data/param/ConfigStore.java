@@ -56,8 +56,8 @@ public interface ConfigStore {
 	public ConfigStore removeConfig(String var, Compare compare);
 	public List<Object> getConfigValues(String var, Compare compare);
 	public Object getConfigValue(String var, Compare compare);
-	public ConfigStore addConditions(String var, Object ... values);
-	public ConfigStore addCondition(String var, Object value);
+	public ConfigStore ands(String var, Object ... values);
+	public ConfigStore and(String var, Object value);
 	/**
 	 * 
 	 * @param id 表别名或XML中查询条件的ID
@@ -67,7 +67,7 @@ public interface ConfigStore {
 	 * @param overValue		覆盖条件value overValue		覆盖条件value
 	 * @return ConfigStore
 	 */
-	public ConfigStore addCondition(String id, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(String id, String var, Object value, boolean overCondition, boolean overValue);
 
 	/**
 	 *
@@ -77,8 +77,8 @@ public interface ConfigStore {
 	 * @param overValue		覆盖条件value overValue		覆盖条件value
 	 * @return ConfigStore
 	 */
-	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore addCondition(String text);
+	public ConfigStore and(String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(String text);
 
 	/**
 	 *
@@ -87,10 +87,10 @@ public interface ConfigStore {
 	 * @param value value
 	 * @return ConfigStore
 	 */
-	public ConfigStore addCondition(Compare compare, String id, Object value);
-	public ConfigStore addCondition(Compare compare, String id, String var, Object value);
-	public ConfigStore addCondition(Compare compare, String id, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore addCondition(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(Compare compare, String id, Object value);
+	public ConfigStore and(Compare compare, String id, String var, Object value);
+	public ConfigStore and(Compare compare, String id, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 
 	/**
 	 * XML自定义SQL条件中指定变量赋值
@@ -99,21 +99,9 @@ public interface ConfigStore {
 	 * @param value value
 	 * @return ConfigStore
 	 */
-	public ConfigStore addCondition(String id, String var, Object value);
-	public ConfigStore addCondition(Config config);
-	
-	public ConfigStore conditions(String var, Object value);
-	public ConfigStore condition(String var, Object value);
-	public ConfigStore condition(String id, String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore condition(String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore condition(Compare compare, String var, Object value);
-	public ConfigStore condition(Compare compare, String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore condition(String id, String var, Object value);
-	public ConfigStore condition(Config config);
-	
+	public ConfigStore and(String id, String var, Object value);
+	public ConfigStore and(Config config);
 
-	public ConfigStore and(String var, Object value);
-	public ConfigStore and(Compare compare, String var, Object value);
 	/**
 	 * 与ConfigStore中前一个条件合成or
 	 * @param key key
