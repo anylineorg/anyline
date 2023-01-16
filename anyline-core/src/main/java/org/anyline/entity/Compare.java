@@ -130,7 +130,18 @@ public enum Compare {
     LIKE_PREFIX		{
         public int getCode(){return 51;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "%like";}
+        public String getName(){return "START_WITH";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
+        }
+    },
+    START_WITH		{
+        public int getCode(){return 51;}
+        public String getSQL(){return " LIKE ";}
+        public String getName(){return "START_WITH";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -141,7 +152,18 @@ public enum Compare {
     LIKE_SUFFIX		{
         public int getCode(){return 52;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "like%";}
+        public String getName(){return "END_WITH";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+        }
+    },
+    END_WITH		{
+        public int getCode(){return 52;}
+        public String getSQL(){return " LIKE ";}
+        public String getName(){return "END_WITH";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -247,20 +269,4 @@ public enum Compare {
     public abstract String getSQL();
     public abstract int getCode();
     public abstract String getName();
-/*
-    public static int AUTO          = 0;
-    public static int EQUAL         = 10;
-    public static int NOT_EQUAL     = 110;
-    public static int BETWEEN       = 80;
-    public static int BIG           = 20;
-    public static int BIG_EQUAL     = 21;
-    public static int END_WITH      = 52;
-    public static int START_WITH    = 51;
-    public static int IN            = 40;
-    public static int LESS          = 30;
-    public static int LESS_EQUAL    = 31;
-    public static int LIKE          = 50;
-    public static int LIKE_SUFFIX   = 52;
-    public static int LIKE_PREFIX   = 51;
-    public static int NOT_IN        = 140;*/
 }
