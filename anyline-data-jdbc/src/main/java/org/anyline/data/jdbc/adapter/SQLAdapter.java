@@ -399,7 +399,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
             if(place){
                 builder.append("?");
-                addRunValue(run, null, value);
+                addRunValue(run, key, value);
             }else {
                 value(builder, obj, key);
             }

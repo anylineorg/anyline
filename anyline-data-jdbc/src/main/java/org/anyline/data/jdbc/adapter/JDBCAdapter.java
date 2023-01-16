@@ -30,6 +30,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -370,6 +371,7 @@ public interface JDBCAdapter {
 	 * @param table table
 	 */
 	public void checkSchema(Table table);
+	public void checkSchema(Connection con, Table table);
 	public void checkSchema(Column table);
 	public void checkSchema(Index index);
 	public void checkSchema(Constraint constraint);

@@ -806,13 +806,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		try {
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			if (null == table.getCatalog()) {
-				table.setCatalog(con.getCatalog());
-			}
-			if (null == table.getSchema()) {
-				table.setSchema(con.getSchema());
-			}
-			table.setCheckSchemaTime(new Date());
+			checkSchema(con, table);
 		}catch (Exception e){
 			log.warn("check table exception");
 		}finally {
@@ -820,6 +814,20 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
+	}
+	@Override
+	public void checkSchema(Connection con, Table table){
+		try {
+			if (null == table.getCatalog()) {
+				table.setCatalog(con.getCatalog());
+			}
+			if (null == table.getSchema()) {
+				table.setSchema(con.getSchema());
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		table.setCheckSchemaTime(new Date());
 	}
 	@Override
 	public void checkSchema(Column column){

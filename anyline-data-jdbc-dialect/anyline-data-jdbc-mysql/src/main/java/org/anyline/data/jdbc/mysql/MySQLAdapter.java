@@ -124,8 +124,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			//注意这里与数据库不一致
-			if (null == table.getCatalog()) {
-				table.setCatalog(con.getSchema());
+			if (null == table.getSchema()) {
+				table.setSchema(con.getCatalog());
 			}
 			table.setCheckSchemaTime(new Date());
 		}catch (Exception e){
