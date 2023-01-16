@@ -92,10 +92,6 @@ public interface AnylineDao<E>{
 	public int insert(Object data, List<String> columns);
 
 
-	public int batchInsert(String dest, Object data, boolean checkPrimary, String ... columns);
-	public int batchInsert(Object data, boolean checkPrimary, String ... columns);
-	public int batchInsert(String dest, Object data, String ... columns);
-	public int batchInsert(Object data, String ... columns);
 	/** 
 	 * 保存(insert|update) 
 	 * @param dest  表

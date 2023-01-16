@@ -87,33 +87,6 @@ public interface AnylineService<E>{
 	public int insert(String dest, Object data, String ... columns);
 
 	/* *****************************************************************************************************************
-	 * 													BATCH INSERT
-	 ******************************************************************************************************************/
-	/**
-	 * 异步插入
-	 * @param dest dest
-	 * @param data data
-	 * @param checkPriamry checkPriamry
-	 * @param fixs 指定更新或保存的列
-	 * @param columns columns
-	 * @return int
-	 */
-	public int batchInsert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int batchInsert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int batchInsert(Object data, List<String> fixs, String ... columns);
-	public int batchInsert(String dest, Object data, List<String> fixs, String ... columns);
-
-	public int batchInsert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int batchInsert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int batchInsert(Object data, String[] fixs, String ... columns);
-	public int batchInsert(String dest, Object data, String[] fixs, String ... columns);
-
-	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
-	public int batchInsert(Object data, String ... columns);
-	public int batchInsert(String dest, Object data, String ... columns);
-
-	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
 

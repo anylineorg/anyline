@@ -141,28 +141,6 @@ public interface DMListener {
     public void afterInsert(Run run, int count, String dest, Object obj, boolean checkPrimary, List<String> columns, long millis);
 
     /**
-     * 批量插入前调用
-     * 
-     * @param dest 需要插入的表
-     * @param obj 插入内容
-     * @param checkPrimary 是否需要检查重复主键,默认不检查
-     * @param columns 需要插入的列
-     * @return 是否执行  如果返回false 将不执行插入
-     */
-    public boolean beforeBatchInsert(String dest, Object obj, boolean checkPrimary, List<String> columns);
-    /**
-     * 批量插入之后调用
-     * 
-     * @param count 影响行数
-     * @param dest 需要插入的表
-     * @param obj 接入内容
-     * @param checkPrimary 是否需要检查重复主键,默认不检查
-     * @param columns 需要插入的列
-     * @param millis 耗时(毫秒)
-     */
-    public void afterBatchInsert(int count, String dest, Object obj, boolean checkPrimary, List<String> columns, long millis);
-
-    /**
      * 执行SQL之前调用
      * 
      * @param run sql
