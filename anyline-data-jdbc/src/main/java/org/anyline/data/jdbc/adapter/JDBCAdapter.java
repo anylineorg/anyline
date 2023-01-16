@@ -93,7 +93,6 @@ public interface JDBCAdapter {
 	public String getDelimiterTo();
 	public void setJdbc(JdbcTemplate jdbc);
 
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -366,6 +365,14 @@ public interface JDBCAdapter {
 	 *
 	 ******************************************************************************************************************/
 
+	/**
+	 * 检测 schema与catalog
+	 * @param table table
+	 */
+	public void checkSchema(Table table);
+	public void checkSchema(Column table);
+	public void checkSchema(Index index);
+	public void checkSchema(Constraint constraint);
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/
