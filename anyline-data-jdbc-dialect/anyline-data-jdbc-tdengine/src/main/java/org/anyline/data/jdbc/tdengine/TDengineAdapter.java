@@ -59,9 +59,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			}
 			if(compare == Compare.LIKE){
 				builder.append(" LIKE '%"+value+"%'");
-			}else if(compare == Compare.LIKE_PREFIX){
+			}else if(compare == Compare.LIKE_PREFIX|| compare == Compare.START_WITH){
 				builder.append(" LIKE'"+value+"%'");
-			}else if(compare == Compare.LIKE_SUFFIX){
+			}else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH){
 				builder.append(" LIKE '%"+value+"'");
 			}
 		}
