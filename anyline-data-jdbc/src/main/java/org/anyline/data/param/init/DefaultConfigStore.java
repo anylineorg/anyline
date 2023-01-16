@@ -31,8 +31,8 @@ import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.encrypt.DESUtil;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
  
@@ -165,7 +165,8 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore and(String prefix, String var, Object value, boolean overCondition, boolean overValue){
-		return and(Compare.EQUAL, prefix, var, value, overCondition, overValue);
+		Compare compare = compare(value);
+		return and(compare, prefix, var, value, overCondition, overValue);
 	}
 
 	@Override
@@ -274,7 +275,8 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore or(String var, Object value){
-		return or(Compare.EQUAL, var, value);
+		Compare compare = compare(value);
+		return or(compare, var, value);
 	} 
 	@Override
 	public ConfigStore or(Compare compare, String var, Object value) {
@@ -312,7 +314,8 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore ors(String var, Object value){
-		return ors(Compare.EQUAL, var, value);
+		Compare compare = compare(value);
+		return ors(compare, var, value);
 	} 
 	@Override
 	public ConfigStore ors(Compare compare, String var, Object value) {
@@ -329,6 +332,23 @@ public class DefaultConfigStore implements ConfigStore {
 		
 		chain = newChain;
 		return this;
+	}
+	private Compare compare(Object value){
+		Compare compare = Compare.EQUAL;
+		if(null != value){
+			if(value instanceof Collection){
+				Collection col = (Collection) value;
+				if(col.size()>1){
+					compare = Compare.IN;
+				}
+			}else if(value instanceof Object[]){
+				Object[] array = (Object[])value;
+				if(array.length > 1){
+					compare = Compare.IN;
+				}
+			}
+		}
+		return compare;
 	}
 	
 	/** 
