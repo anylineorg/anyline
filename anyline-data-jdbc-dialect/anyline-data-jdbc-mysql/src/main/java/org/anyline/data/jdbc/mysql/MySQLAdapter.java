@@ -123,6 +123,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		try {
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
+			//注意这里与数据库不一致
 			if (null == table.getCatalog()) {
 				table.setCatalog(con.getSchema());
 			}
