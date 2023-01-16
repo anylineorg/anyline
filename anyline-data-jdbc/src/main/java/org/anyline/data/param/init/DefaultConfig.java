@@ -149,7 +149,8 @@ public class DefaultConfig implements Config {
 		Condition condition = null; 
 		if(isRequire() || !isEmpty()){
 			if(this instanceof ConfigChain){
-				condition = new DefaultAutoConditionChain((ConfigChain)this).setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				condition = new DefaultAutoConditionChain((ConfigChain)this);
+				condition.setJoin(this.getJoin());
 				condition.setContainer(chain);
 			}else{
 				if(null != text){

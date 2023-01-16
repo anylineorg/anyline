@@ -31,12 +31,13 @@ import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.encrypt.DESUtil;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
- 
- 
+
+
 /** 
  * 查询参数 
  * @author zh 
@@ -207,17 +208,7 @@ public class DefaultConfigStore implements ConfigStore {
 				var = var.substring(1);
 			}
 		}
-		if(value instanceof Object[]){
-			value = BeanUtil.array2list((Object[])value);
-		}
-		if(value instanceof List){
-			List list = (List)value;
-			if(list.size() == 0){
-				value = null;
-			}else if(list.size() ==1){
-				value = list.get(0);
-			}
-		}
+		value = value(value);
 
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 			List list = (List)value;
@@ -272,7 +263,6 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore and(String var, Object value){
 		return and(var, value, false, false);
 	}
-
 	@Override
 	public ConfigStore or(String var, Object value){
 		Compare compare = compare(value);
@@ -285,28 +275,55 @@ public class DefaultConfigStore implements ConfigStore {
 		if(configs.size()==0){
 			and(compare, var, value);
 		}else{
-			ConfigChain orChain = new DefaultConfigChain();
-			Config last = configs.get(configs.size()-1);
-			configs.remove(last);
-			
-			if(last instanceof ConfigChain){
-				ConfigChain lastChain = (ConfigChain)last;
-				List<Config> lastItems = lastChain.getConfigs();
-				for(Config lastItem:lastItems){
-					orChain.addConfig(lastItem);
+			int compareCode = compare.getCode();
+			value = value(value);
+			if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
+				List list = (List)value;
+				if(compareCode == 60 || compareCode == 61){
+					//FIND_IN_OR
+					for(Object item:list){
+						or(compare, var, item);
+					}
+				}else if(compareCode == 62){
+					//FIND_IN_AND
+					ConfigChain findChain = new DefaultConfigChain();
+					findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					for(Object item:list){
+						Config conf = new DefaultConfig();
+						conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+						conf.setCompare(compare);
+						conf.setVariable(var);
+						conf.setValue(item);
+						findChain.addConfig(conf);
+					}
+					chain.addConfig(findChain);
 				}
 			}else{
-				orChain.addConfig(last);
-			}
+				ConfigChain orChain = new DefaultConfigChain();
+				Config last = configs.get(configs.size()-1);
+				configs.remove(last);
 
-			Config conf = new DefaultConfig();
-			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-			conf.setCompare(compare);
-			conf.setVariable(var);
-			conf.setValue(value);
-			
-			orChain.addConfig(conf);
-			chain.addConfig(orChain);
+				if(last instanceof ConfigChain){
+					ConfigChain lastChain = (ConfigChain)last;
+					List<Config> lastItems = lastChain.getConfigs();
+					for(Config lastItem:lastItems){
+						orChain.addConfig(lastItem);
+					}
+				}else{
+					orChain.addConfig(last);
+				}
+
+				Config conf = null;
+
+				conf = new DefaultConfig();
+				conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+				conf.setCompare(compare);
+				conf.setVariable(var);
+				conf.setValue(value);
+
+				orChain.addConfig(conf);
+				chain.addConfig(orChain);
+			}
 		}
 		return this;
 	}
@@ -321,17 +338,61 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore ors(Compare compare, String var, Object value) {
 		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
-		
-		Config conf = new DefaultConfig();
-		conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-		conf.setCompare(compare);
-		conf.setVariable(var);
-		conf.setValue(value);
-		
-		newChain.addConfig(conf);
+
+		int compareCode = compare.getCode();
+		value = value(value);
+		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
+			List list = (List)value;
+			if(compareCode == 60 || compareCode == 61){
+				//FIND_IN_OR
+				for(Object item:list){
+					Config conf = new DefaultConfig();
+					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					conf.setCompare(compare);
+					conf.setVariable(var);
+					conf.setValue(item);
+					newChain.addConfig(conf);
+				}
+			}else if(compareCode == 62){
+				//FIND_IN_AND
+				ConfigChain findChain = new DefaultConfigChain();
+				findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+				for(Object item:list){
+					Config conf = new DefaultConfig();
+					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+					conf.setCompare(compare);
+					conf.setVariable(var);
+					conf.setValue(item);
+					findChain.addConfig(conf);
+				}
+				newChain.addConfig(findChain);
+			}
+		}else {
+			Config conf = new DefaultConfig();
+			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+			conf.setCompare(compare);
+			conf.setVariable(var);
+			conf.setValue(value);
+
+			newChain.addConfig(conf);
+		}
 		
 		chain = newChain;
 		return this;
+	}
+	private Object value(Object value){
+		if(value instanceof Object[]){
+			value = BeanUtil.array2list((Object[])value);
+		}
+		if(value instanceof List){
+			List list = (List)value;
+			if(list.size() == 0){
+				value = null;
+			}else if(list.size() ==1){
+				value = list.get(0);
+			}
+		}
+		return value;
 	}
 	private Compare compare(Object value){
 		Compare compare = Compare.EQUAL;

@@ -22,6 +22,7 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.run.RunValue;
+import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,7 +91,10 @@ public abstract class DefaultConditionChain extends DefaultCondition implements 
 	public List<RunValue> getRunValues(){
 		return runValues; 
 	} 
-	public String getJoin(){ 
+	public String getJoin(){
+		if(BasicUtil.isNotEmpty(join)){
+			return join;
+		}
 		return Condition.CONDITION_JOIN_TYPE_AND; 
 	} 
 	public int getJoinSize(){ 
