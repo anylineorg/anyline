@@ -9,14 +9,14 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
@@ -109,6 +109,32 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 *
 	 ******************************************************************************************************************/
 
+	/**
+	 * 检测 schema与catalog
+	 * @param table table
+	 */
+	@Override
+	public void checkSchema(Table table){
+		if(null == table || null != table.getCheckSchemaTime()){
+			return;
+		}
+		DataSource ds = null;
+		Connection con = null;
+		try {
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			if (null == table.getCatalog()) {
+				table.setCatalog(con.getSchema());
+			}
+			table.setCheckSchemaTime(new Date());
+		}catch (Exception e){
+			log.warn("check table exception");
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+	}
 	/* *****************************************************************************************************************
 	 * 													database
 	 * -----------------------------------------------------------------------------------------------------------------
