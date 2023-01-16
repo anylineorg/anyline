@@ -191,8 +191,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				set = new DataSet();
 			}
 			set.setDataSource(prepare.getDataSource());
-//		set.setSchema(sql.getSchema());
-//		set.setTable(sql.getTable());
 			set.setNavi(navi);
 			if (null != navi && navi.isLazy()) {
 				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
@@ -1485,11 +1483,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			if(null == catalog){
-				catalog = con.getCatalog();
-			}
-			if(null == schema){
-				schema = con.getSchema();
+
+			if(null == catalog || null == schema){
+				Table tmp = new Table();
+				adapter.checkSchema(con, tmp);
+				if(null == catalog){
+					catalog = tmp.getCatalog();
+				}
+				if(null == schema){
+					schema = tmp.getSchema();
+				}
 			}
 			String[] tps = null;
 			if(null != types){
@@ -1589,11 +1592,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			if(null == catalog){
-				catalog = con.getCatalog();
-			}
-			if(null == schema){
-				schema = con.getSchema();
+			if(null == catalog || null == schema){
+				Table tmp = new Table();
+				adapter.checkSchema(con, tmp);
+				if(null == catalog){
+					catalog = tmp.getCatalog();
+				}
+				if(null == schema){
+					schema = tmp.getSchema();
+				}
 			}
 			String[] tps = null;
 			if(null != types){
@@ -1773,20 +1780,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		JDBCAdapter adapter = adapter();
+		adapter.checkSchema(table);
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			metadata = con.getMetaData();;
-			if (null == catalog) {
-				catalog = con.getCatalog();
-				table.setCatalog(catalog);
-			}
-			if(null == schema){
-				schema = con.getSchema();
-				table.setSchema(schema);
-			}
 		}catch (Exception e){}
 
 		// 先根据metadata解析 SELECT * FROM T WHERE 1=0
@@ -1889,20 +1889,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		JDBCAdapter adapter = adapter();
+		adapter.checkSchema(table);
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			metadata = con.getMetaData();;
-			if (null == catalog) {
-				catalog = con.getCatalog();
-				table.setCatalog(catalog);
-			}
-			if(null == schema){
-				schema = con.getSchema();
-				table.setSchema(schema);
-			}
+			metadata = con.getMetaData();
 		}catch (Exception e){}
 
 		// 先根据metadata解析 SELECT * FROM T WHERE 1=0
@@ -2008,23 +2001,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public LinkedHashMap<String, Index> indexs(Table table){
 		LinkedHashMap<String,Index> indexs = null;
+		JDBCAdapter adapter = adapter();
+		adapter.checkSchema(table);
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		String tab = table.getName();
 		DataSource ds = null;
 		Connection con = null;
-		JDBCAdapter adapter = adapter();
 		try {
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			if(null == catalog){
-				catalog = con.getCatalog();
-				table.setCatalog(catalog);
-			}
-			if(null == schema){
-				schema = con.getSchema();
-				table.setSchema(schema);
-			}
 			DatabaseMetaData metaData = con.getMetaData();
 			ResultSet set = metaData.getIndexInfo(catalog, schema, tab, false, false);
 			indexs = adapter.indexs(true, table, indexs, set);
