@@ -1281,66 +1281,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return insert(dest, data, false, columns);
     }
 
-    @Override
-    public int batchInsert(String dest, Object data, boolean checkPrimary, List<String> fixs,  String... columns) {
-        dest = DataSourceHolder.parseDataSource(dest,data);
-        columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
-        return dao.batchInsert(dest, data, checkPrimary, columns);
-    }
 
-    @Override
-    public int batchInsert(String dest, Object data, boolean checkPrimary, String[] fixs,  String... columns) {
-        return batchInsert(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
-    @Override
-    public int batchInsert(String dest, Object data, boolean checkPrimary, String... columns) {
-        return batchInsert(dest, data, checkPrimary, BeanUtil.array2list(columns));
-    }
-
-
-    @Override
-    public int batchInsert(Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        return batchInsert(null, data, checkPrimary, fixs, columns);
-    }
-    @Override
-    public int batchInsert(Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return batchInsert(null, data, checkPrimary, fixs, columns);
-    }
-    @Override
-    public int batchInsert(Object data, boolean checkPrimary, String... columns) {
-        return batchInsert(null, data, checkPrimary, columns);
-    }
-
-    @Override
-    public int batchInsert(Object data, List<String> fixs, String... columns) {
-        return batchInsert(null, data, false, fixs, columns);
-    }
-
-
-    @Override
-    public int batchInsert(Object data, String[] fixs, String... columns) {
-        return batchInsert(null, data, false, fixs, columns);
-    }
-
-
-    @Override
-    public int batchInsert(Object data, String... columns) {
-        return batchInsert(null, data, false, columns);
-    }
-
-
-    @Override
-    public int batchInsert(String dest, Object data, List<String> fixs, String... columns) {
-        return batchInsert(dest, data, false, fixs, columns);
-    }
-    @Override
-    public int batchInsert(String dest, Object data, String[] fixs, String... columns) {
-        return batchInsert(dest, data, false, fixs, columns);
-    }
-    @Override
-    public int batchInsert(String dest, Object data, String... columns) {
-        return batchInsert(dest, data, false, columns);
-    }
     @Override
     public boolean executeProcedure(String procedure, String... inputs) {
         Procedure proc = new DefaultProcedure();
@@ -1767,9 +1708,9 @@ public class DefaultService<E> implements AnylineService<E> {
                 for(Object key:map.keySet()){
                     Object value = map.get(key);
                     if (value instanceof Collection) {
-                        configs.addConditions(key.toString(), value);
+                        configs.ands(key.toString(), value);
                     } else {
-                        configs.addCondition(key.toString(), value);
+                        configs.and(key.toString(), value);
                     }
                 }
             }else {
@@ -1785,9 +1726,9 @@ public class DefaultService<E> implements AnylineService<E> {
                             continue;
                         }
                         if (value instanceof Collection) {
-                            configs.addConditions(key, value);
+                            configs.ands(key, value);
                         } else {
-                            configs.addCondition(key, value);
+                            configs.and(key, value);
                         }
                     }
                 }
