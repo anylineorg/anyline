@@ -39,9 +39,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.*;
@@ -790,6 +792,63 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 ******************************************************************************************************************/
 
 
+	/**
+	 * 检测 schema与catalog
+	 * @param table table
+	 */
+	@Override
+	public void checkSchema(Table table){
+		if(null == table || null != table.getCheckSchemaTime()){
+			return;
+		}
+		DataSource ds = null;
+		Connection con = null;
+		try {
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			if (null == table.getCatalog()) {
+				table.setCatalog(con.getCatalog());
+			}
+			if (null == table.getSchema()) {
+				table.setSchema(con.getSchema());
+			}
+			table.setCheckSchemaTime(new Date());
+		}catch (Exception e){
+			log.warn("check table exception");
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+	}
+	@Override
+	public void checkSchema(Column column){
+		Table table = column.getTable();
+		if(null != table){
+			checkSchema(table);
+			column.setCatalog(table.getCatalog());
+			column.setSchema(table.getSchema());
+		}
+	}
+	@Override
+	public void checkSchema(Index index){
+		Table table = index.getTable();
+		if(null != table){
+			checkSchema(table);
+			index.setCatalog(table.getCatalog());
+			index.setSchema(table.getSchema());
+		}
+	}
+	@Override
+	public void checkSchema(Constraint constraint){
+		Table table = constraint.getTable();
+		if(null != table){
+			checkSchema(table);
+			constraint.setCatalog(table.getCatalog());
+			constraint.setSchema(table.getSchema());
+		}
+	}
+
 	/* *****************************************************************************************************************
 	 * 													database
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -797,10 +856,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 *
 	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
 	 ******************************************************************************************************************/
+	@Override
 	public List<String> buildQueryDatabaseRunSQL() throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryDatabaseRunSQL()",37));
 		return null;
 	}
+	@Override
 	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)",37));
 		return null;
