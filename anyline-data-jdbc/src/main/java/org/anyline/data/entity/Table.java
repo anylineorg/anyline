@@ -26,6 +26,7 @@ public class Table implements org.anyline.entity.data.Table{
     protected String charset                      ;
     protected String collate                      ;
     protected Long ttl                            ;
+    protected Date checkSchemaTime                ;
 
 
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
@@ -375,6 +376,14 @@ public class Table implements org.anyline.entity.data.Table{
             listener.setAdapter(adapter);
         }
         return this;
+    }
+
+    public Date getCheckSchemaTime() {
+        return checkSchemaTime;
+    }
+
+    public void setCheckSchemaTime(Date checkSchemaTime) {
+        this.checkSchemaTime = checkSchemaTime;
     }
 
     public String getKeyword() {
