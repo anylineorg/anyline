@@ -880,7 +880,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -905,7 +905,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return tables;
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+
+		ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}

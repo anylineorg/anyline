@@ -31,6 +31,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -425,16 +426,18 @@ public interface JDBCAdapter {
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
 	/**
-	 * 根据JDBC
+	 * 根据JDBC补充
 	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param tables 上一步查询结果
+	 * @param dbmd DatabaseMetaData
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @param set set
+	 * @param pattern pattern
+	 * @param types types
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 

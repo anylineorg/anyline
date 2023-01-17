@@ -3,13 +3,13 @@ package org.anyline.data.jdbc.mssql;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.OrderStore;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
-import org.anyline.data.run.Run;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.run.Run;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -194,7 +195,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -214,8 +215,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.tables(index, create, catalog, schema, tables, set);
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
-		return super.tables(create, catalog, schema, tables, set);
+	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
 	/* *****************************************************************************************************************

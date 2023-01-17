@@ -1535,8 +1535,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
-				tables = adapter.tables(true, catalog, schema, tables, set);
+				tables = adapter.tables(true,tables, con.getMetaData(), catalog, schema, pattern, tps);
 			}catch (Exception e){
 				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}

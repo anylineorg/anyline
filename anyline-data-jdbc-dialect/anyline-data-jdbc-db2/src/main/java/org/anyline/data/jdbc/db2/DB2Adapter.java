@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -108,7 +109,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -128,8 +129,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		return super.tables(index, create, catalog, schema, tables, set);
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
-		return super.tables(create, catalog, schema, tables, set);
+	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
 	/* *****************************************************************************************************************

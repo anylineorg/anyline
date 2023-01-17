@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -173,7 +174,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -245,8 +246,48 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return tables;
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
-		return super.tables(create, catalog, schema, tables, set);
+	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+		//参考 checkSchema()
+		ResultSet set = dbmd.getTables(schema, catalog, pattern, types);
+
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		Map<String,Integer> keys = keys(set);
+		while(set.next()) {
+			String tableName = string(keys, "TABLE_NAME", set);
+
+			if(BasicUtil.isEmpty(tableName)){
+				tableName = string(keys, "NAME", set);
+			}
+			if(BasicUtil.isEmpty(tableName)){
+				continue;
+			}
+			Table table = tables.get(tableName.toUpperCase());
+			if(null == table){
+				if(create){
+					table = new Table();
+					tables.put(tableName.toUpperCase(), table);
+				}else{
+					continue;
+				}
+			}
+			//参考 checkSchema()
+			table.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			table.setCatalog(null);
+
+			table.setName(tableName);
+			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+			tables.put(tableName.toUpperCase(), table);
+
+			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+		}
+		return tables;
 	}
 
 	/* *****************************************************************************************************************
