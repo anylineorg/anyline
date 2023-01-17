@@ -305,7 +305,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
 	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
+	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
 	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 
@@ -383,12 +383,12 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
-		return super.columns(create, table, columns, set);
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
+		return super.columns(create, columns, table, set);
 	}
 	@Override
 	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.columns(create, table, columns, set);
+		return super.columns(create, columns, dbmd, table, pattern);
 	}
 
 
@@ -474,7 +474,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 	@Override
 	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
-		return super.indexs(create, table, indexs, set);
+		return super.indexs(create, indexs, dbmd, table, unique, approximate);
 	}
 
 

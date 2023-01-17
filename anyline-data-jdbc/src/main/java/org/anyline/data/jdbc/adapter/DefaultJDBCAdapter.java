@@ -1085,7 +1085,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception
 	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
 	 *
 	 * protected Column column(Column column, SqlRowSetMetaData rsm, int index)
@@ -1123,7 +1123,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}

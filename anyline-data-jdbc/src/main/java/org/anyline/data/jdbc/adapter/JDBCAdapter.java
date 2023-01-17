@@ -567,7 +567,7 @@ public interface JDBCAdapter {
 	 * @return columns columns
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
 
 	/**
 	 * 解析JDBC getcolumns结果

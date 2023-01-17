@@ -246,7 +246,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception
 	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 
@@ -275,12 +275,12 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return super.columns(index, create, table, columns, set);
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
-		return super.columns(create, table, columns, set);
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
+		return super.columns(create, columns, table, set);
 	}
 	@Override
 	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.columns(create, table, columns, set);
+		return super.columns(create, columns, dbmd, table, pattern);
 	}
 
 
@@ -323,7 +323,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.tags(create, table, tags, set);
+		return super.tags(create, tags, dbmd, table, pattern);
 	}
 
 	/* *****************************************************************************************************************
@@ -365,7 +365,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	}
 	@Override
 	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
-		return super.indexs(create, table, indexs, set);
+		return super.indexs(create, indexs, dbmd, table, unique, approximate);
 	}
 
 
