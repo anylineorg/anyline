@@ -210,12 +210,12 @@ public interface AnylineService<E>{
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件
 	 * @param conditions	固定查询条件
-	 * 			原生SQL(AND GROUP ORDER)
-	 * 			{原生}
-	 * 			[+]CD:1
-	 * 			[+]CD:
-	 * 			[+]CD:null
-	 * 			[+]CD:NULL
+	 * 			CD:1 生成SQL: CD = 1
+	 * 			CD: 忽略
+	 * 			CD:null 忽略
+	 * 			CD:NULL 生成SQL:CD IS NULL
+	 * 			原生SQL(包括GROUP、ORDER、HAVING等)如 ID > 1 AND ID < 10
+	 * 			${原生SQL}:${}之内的SQL不全处理 如果原生SQL比较复杂(如出现小时格式)可能与以上几种格式混淆,可以用${}表示不解析按原文执行
 	 * 			
 	 * @return DataSet
 	 */

@@ -330,6 +330,12 @@ public class AnylineController extends AbstractBasicController {
 		return entitys(getRequest(), null, false, false, params);
 	}
 
+	/**
+	 * 构造查询条件
+	 * @param navi 是否分页
+	 * @param configs 查询条件参考doc.anyline.org查询参数约定格式 http://doc.anyline.org/s?id=1059
+	 * @return ConfigStore
+	 */
 	protected ConfigStore condition(boolean navi, String... configs) {
 		return condition(getRequest(), navi, configs);
 	}
@@ -350,6 +356,13 @@ public class AnylineController extends AbstractBasicController {
 		return condition(getRequest(), vol, fixs, configs);
 	}
 
+	/**
+	 * 构造查询条件
+	 * @param fr 开始行数
+	 * @param to 结束行数
+	 * @param configs 查询条件参考doc.anyline.org查询参数约定格式 http://doc.anyline.org/s?id=1059
+	 * @return ConfigStore
+	 */
 	protected ConfigStore condition(int fr, int to, String... configs) {
 		return condition(getRequest(), fr, to, configs);
 	}
@@ -462,32 +475,6 @@ public class AnylineController extends AbstractBasicController {
 	protected List<String> getStrings(String key) {
 		return getStrings(getRequest(), key, false, false);
 	}
-
-
-	protected String param(String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
-		return getParam(getRequest(), key, keyEncrypt, valueEncrypt, defs);
-	} 
- 
-	protected String param(String key, boolean valueEncrypt, String ... defs) {
-		return getParam(getRequest(), key, false, valueEncrypt, defs);
-	} 
- 
-	protected String param(String key, String ... defs) {
-		return getParam(getRequest(), key, false, false, defs);
-	} 
- 
-	protected List<Object> params(String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return getParams(getRequest(), key, keyEncrypt, valueEncrypt); 
-	} 
-	protected List<Object> params(String key, boolean valueEncrypt) { 
-		return getParams(getRequest(), key, false, valueEncrypt); 
-	} 
- 
-	protected List<Object> params(String key) { 
-		return getParams(getRequest(), key, false, false); 
-	}
-
-
 
 
 
