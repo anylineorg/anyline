@@ -25,7 +25,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
@@ -35,7 +34,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-@Component("anyline.config")
+
+
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
@@ -507,7 +507,6 @@ public class ConfigTable {
 			return;
 		}
 		try{
-
 			String time = null;
 			String version = ConfigTable.version;
 			String project = null;
@@ -548,7 +547,7 @@ public class ConfigTable {
 			System.out.println();
 			line("","*", 0,true);
 			line("Anyline Core [" + version + "]", " ",0, true);
-			line("doc.anyline.org ", " ", 0, true);
+			line("http://doc.anyline.org ", " ", 0, true);
 			line(""," ", 0, true);
 			if(null != time && time.startsWith("2")){
 				line("Last Modified " + "[" + time +"] ", " ", 0, true);
