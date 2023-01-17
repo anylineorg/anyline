@@ -16,7 +16,7 @@ import java.security.SecureRandom;
 
 /**
  * 对org.bouncycastle:bcprov-jdk15on:1.57-1.70扩展<br/>
- * BC库加密按C1C2C3，国密标准按C1C3C2(加密芯片)<br/>
+ * BC库加密按C1C2C3,国密标准按C1C3C2(加密芯片)<br/>
  * 本扩展主要实现加密结果排列方式可选(通过mode属性设置)
  */
 public class SM2Engine {
@@ -53,7 +53,7 @@ public class SM2Engine {
     }
 
     /**
-     * 默认初始化方法，使用国密排序标准
+     * 默认初始化方法,使用国密排序标准
      * @param encryption  是否以加密模式初始化
      * @param param  曲线参数
      */
@@ -62,7 +62,7 @@ public class SM2Engine {
     }
 
     /**
-     * 默认初始化方法，使用国密排序标准
+     * 默认初始化方法,使用国密排序标准
      * @param encryption 是否以加密模式初始化
      * @param mode 加密数据排列模式：1:标准排序；0:BC默认排序
      * @param param 曲线参数
@@ -104,7 +104,7 @@ public class SM2Engine {
     }
 
     /**
-     * 加密实现，根据cipherMode输出指定排列的结果，默认按标准方式排列
+     * 加密实现,根据cipherMode输出指定排列的结果,默认按标准方式排列
      * @param bytes bytes
      * @param offset offset
      * @param len len
@@ -136,7 +136,7 @@ public class SM2Engine {
     }
 
     /**
-     * 解密实现，默认按标准排列方式解密，解密时解出c2部分原文并校验c3部分
+     * 解密实现,默认按标准排列方式解密,解密时解出c2部分原文并校验c3部分
      * @param bytes bytes
      * @param offset offset
      * @param len len

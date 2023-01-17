@@ -202,10 +202,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 *
 	 *        如果提供了columns则根据columns获取insert列
 	 *
-	 *        但是columns中出现了添加前缀列，则解析完columns后，继续解析obj
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj
 	 *
-	 *        以上执行完后，如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
-	 *        则把执行结果与表结构对比，删除表中没有的列
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
+	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
 	@Override
@@ -318,7 +318,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 批量插入数据时，多行数据之间分隔符
+	 * 批量插入数据时,多行数据之间分隔符
 	 * @return String
 	 */
 	@Override
@@ -371,7 +371,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param dest 表
 	 * @param list 对象集合
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
-	 * @param columns 需要插入的列，如果不指定则全部插入
+	 * @param columns 需要插入的列,如果不指定则全部插入
 	 * @return Run
 	 */
 	protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns){
@@ -455,8 +455,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 *        如果没有提供columns 但row.keys中有必须更新的列 也不再遍历row.keys
 	 *        其他情况需要遍历row.keys
 	 *
-	 *        以上执行完后，如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
-	 *        则把执行结果与表结构对比，删除表中没有的列
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
+	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
 	protected List<String> confirmUpdateColumns(String dest, DataRow row, ConfigStore configs, List<String> columns){
@@ -952,7 +952,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -971,14 +971,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 从jdbc结果中提取表结构
 	 * ResultSet set = con.getMetaData().getTables()
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param set 查询结果
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1021,7 +1021,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 从上一步生成的SQL查询结果中 提取表结构
 	 * @param index 第几条SQL
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -1046,7 +1046,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
  	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -1077,7 +1077,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 *  根据查询结果集构造Table
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1097,7 +1097,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * 根据JDBC
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1107,7 +1107,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1174,7 +1174,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 *
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
@@ -1348,7 +1348,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
@@ -1403,7 +1403,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 *
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
 	 * @param set set
@@ -1511,7 +1511,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Constraint
 	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
 	 * @param set set
@@ -2056,7 +2056,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param column 列
 	 * @return sql
 	 * @throws Exception 异常
@@ -2622,7 +2622,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				return true;
 			}
 		}else{
-			// 如果没有同步法数据库，直接生成column可能只设置了type Name
+			// 如果没有同步法数据库,直接生成column可能只设置了type Name
 			String type = column.getTypeName();
 			if(null != type){
 				type = type.toLowerCase();
@@ -2657,7 +2657,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				return true;
 			}
 		}else{
-			// 如果没有同步法数据库，直接生成column可能只设置了type Name
+			// 如果没有同步法数据库,直接生成column可能只设置了type Name
 			String type = column.getTypeName();
 			if(null != type){
 				type = type.toLowerCase();
@@ -2869,7 +2869,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
 	 * @param column 列
 	 * @param run RunValue
-	 * @return boolean 是否完成类型转换，决定下一步是否继续
+	 * @return boolean 是否完成类型转换,决定下一步是否继续
 	 */
 	@Override
 	public boolean convert(Column column, RunValue run){

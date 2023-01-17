@@ -327,7 +327,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否需要检查重复主键,默认不检查
-     * @param columns 需要插入的列，如果不指定则全部插入
+     * @param columns 需要插入的列,如果不指定则全部插入
      * @return Run
      */
     @Override

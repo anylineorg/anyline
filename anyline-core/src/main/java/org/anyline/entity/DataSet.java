@@ -921,7 +921,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /**
      *
-     * @param compare 对比方式，如果不指定则根据k:v解析 如 k:%v%
+     * @param compare 对比方式,如果不指定则根据k:v解析 如 k:%v%
      * @param begin 开始
      * @param qty 结果最大数量
      * @param kvs 条件
@@ -2613,7 +2613,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 
     /**
-     * 每页最少1行,最少分1页，最多分DataSet.size()页
+     * 每页最少1行,最少分1页,最多分DataSet.size()页
      * 多余的从第1页开始追加
      * 5行分2页:共分成2页(3+2)
      * 5行分3页:共分成3页(2+2+1)

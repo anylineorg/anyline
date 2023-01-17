@@ -78,9 +78,9 @@ public class SMSUtil {
 	 * 发送短信
 	 * @param sign 签名(如果不指定则使用配置文件中默认签名)
 	 * @param template 模板code(SMS_88550009,注意不要写成工单号)
-	 * @param mobile 手机号，多个以逗号分隔
+	 * @param mobile 手机号,多个以逗号分隔
 	 * @param params 参数
-	 * @param extend 上行短信扩展码。上行短信指发送给通信服务提供商的短信，用于定制某种服务、完成查询，或是办理某种业务等，需要收费，按运营商普通短信资费进行扣费。
+	 * @param extend 上行短信扩展码。上行短信指发送给通信服务提供商的短信,用于定制某种服务、完成查询,或是办理某种业务等,需要收费,按运营商普通短信资费进行扣费。
 	 * @param out 外部流水扩展字段。
 	 * @return SMSResult
 	 */
@@ -133,7 +133,7 @@ public class SMSUtil {
 	 * send("sign","SMS_000000","15800000000", new User()/new DataRow(), ["id","name:userNmae","age:userAge"])
 	 * @param sign 签名(如果不指定则使用配置文件中默认签名)
 	 * @param template 模板code(SMS_88550009,注意不要写成工单号)
-	 * @param mobile 手机号，多个以逗号分隔
+	 * @param mobile 手机号,多个以逗号分隔
 	 * @param entity 实体对象
 	 * @param keys 对象属性(根据keys从entity中取值生成短信参数),如果参数名与属性名不一致通过 短信参数名:属性名 转换
 	 * @return SMSResult
@@ -204,7 +204,7 @@ public class SMSUtil {
 	}
 
 	/**
-	 * 查询发送状态,有可能查出多个发送记录，按时间倒序
+	 * 查询发送状态,有可能查出多个发送记录,按时间倒序
 	 * @param mobile 手机号
 	 * @param biz 回执号
 	 * @param date 发送日期(yyyyMMdd) 不传默认当天 支持查询最近30天的记录。
@@ -495,7 +495,7 @@ public class SMSUtil {
 						int status = body.getTemplateStatus();
 						// 0：审核中。
 						// 1：审核通过。
-						// 2：审核失败，请在返回参数Reason中查看审核失败原因。
+						// 2：审核失败,请在返回参数Reason中查看审核失败原因。
 						// 10:取消审核。
 						if (status == 0) {
 							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_INIT);

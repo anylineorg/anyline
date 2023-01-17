@@ -395,7 +395,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 更新记录
 	 * @param data		需要更新的数据
-	 * @param dest		需要更新的表，如果没有提供则根据data解析
+	 * @param dest		需要更新的表,如果没有提供则根据data解析
 	 * @param columns	需要更新的列 如果没有提供则解析data解析
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @return int 影响行数
@@ -1466,9 +1466,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
 	/**
 	 * tables
-	 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名，而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意，其登陆名必须是大写，不然的话是无法获取到相应的数据，而MySQL则不做强制要求。
-	 * @param pattern 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
+	 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
 	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 	 * @return List
 	 */
@@ -1505,7 +1505,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(null != pattern){
 				if(table_map.isEmpty()){
-					// 如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
+					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
 					LinkedHashMap<String,Table> all = tables(catalog, schema, null, types);
 					for(Table table:all.values()){
 						table_map.put(table.getName().toUpperCase(), table.getName());
@@ -1612,7 +1612,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(null != pattern){
 				if(table_map.isEmpty()){
-					// 如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
+					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
 					LinkedHashMap<String, MasterTable> all = mtables(catalog, schema, null, types);
 					for(Table table:all.values()){
 						table_map.put(table.getName().toUpperCase(), table.getName());
@@ -1643,8 +1643,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
-				tables = adapter.mtables(false, catalog, schema, tables, set);
+				tables = adapter.mtables(false, tables, con.getMetaData(), catalog, schema, pattern, tps);
 			}catch (Exception e){
 				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}

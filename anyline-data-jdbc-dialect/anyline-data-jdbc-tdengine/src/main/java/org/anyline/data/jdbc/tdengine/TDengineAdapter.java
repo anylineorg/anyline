@@ -68,7 +68,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return null;
 	}
 	/**
-	 * 批量插入数据时，多行数据之间分隔符
+	 * 批量插入数据时,多行数据之间分隔符
 	 * @return String
 	 */
 	@Override
@@ -261,7 +261,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
+	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -293,15 +293,15 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 * 从jdbc结果中提取表结构
 	 * ResultSet set = con.getMetaData().getTables()
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param set 查询结果
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
-		return super.mtables(create, catalog, schema, tables, set);
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
 
@@ -309,7 +309,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -371,7 +371,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name);
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags);
 	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -459,7 +459,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 *  根据查询结果集构造分区表
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -506,7 +506,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 * 根据JDBC
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -516,7 +516,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
 		return ptables(create, catalog, master, schema, tables, set);
 	}
 
@@ -555,7 +555,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 *
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
@@ -601,8 +601,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 * 根据JDBC接口
-	 * 会返回TAG，所以上一步未查到的，不需要新创建
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * 会返回TAG,所以上一步未查到的,不需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns columns
 	 * @param set set
@@ -663,7 +663,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
@@ -727,8 +727,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 * 根据metadata 解析
-	 * 没有相应接口，不需要实现
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * 没有相应接口,不需要实现
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
@@ -769,7 +769,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 *
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
 	 * @param set set
@@ -812,7 +812,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 *  根据查询结果集构造Constraint
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
 	 * @param set set
@@ -874,7 +874,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return super.buildCreateRunSQL(table);
 	}
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常

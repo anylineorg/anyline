@@ -64,7 +64,7 @@ public interface AnylineService<E>{
 	 * EXECUTE			: 执行(原生SQL及存储过程)
 	 * DELETE			: 删除
 	 * CACHE			: 缓存
-	 * METADATA			: 简单格式元数据，只返回NAME
+	 * METADATA			: 简单格式元数据,只返回NAME
 	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
@@ -92,9 +92,9 @@ public interface AnylineService<E>{
 
 	/**
 	 * 更新记录
-	 * 默认情况下以主键为更新条件，需在更新的数据保存在data中
-	 * 如果提供了dest则更新dest表，如果没有提供则根据data解析出表名
-	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键，则根据TYPE_CODE更新
+	 * 默认情况下以主键为更新条件,需在更新的数据保存在data中
+	 * 如果提供了dest则更新dest表,如果没有提供则根据data解析出表名
+	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
 	 * 可以提供了ConfigStore以实现更复杂的更新条件
 	 * 需要更新的列通过fixs/columns提供
 	 * @param fixs	  	需要更新的列
@@ -256,7 +256,7 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据calzz返回实体集合
-	 * 为了更容易记忆和区分,往后的版本中删除，所有返回实体类的方法换成selects/select
+	 * 为了更容易记忆和区分,往后的版本中删除,所有返回实体类的方法换成selects/select
 	 * @param clazz clazz
 	 * @param configs configs
 	 * @param entity entity
@@ -520,7 +520,7 @@ public interface AnylineService<E>{
 	 * 删除 根据columns列删除 可设置复合主键
 	 * @param dest 表
 	 * @param set 数据
-	 * @param columns 生成删除条件的列，如果不设置则根据主键删除
+	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
 	public int delete(String dest, DataSet set, String ... columns);
@@ -530,7 +530,7 @@ public interface AnylineService<E>{
 	/**
 	 * 根据columns列删除
 	 * @param obj obj
-	 * @param columns 生成删除条件的列，如果不设置则根据主键删除
+	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
 	public int delete(Object obj, String ... columns);
@@ -634,9 +634,9 @@ public interface AnylineService<E>{
 		public boolean exists(Table table);
 		/**
 		 * tables
-		 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-		 * @param schema 可以理解为数据库的登录名，而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意，其登陆名必须是大写，不然的话是无法获取到相应的数据，而MySQL则不做强制要求。
-		 * @param name 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
+		 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+		 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
+		 * @param name 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
 		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 		 * @return tables
 		 */
@@ -718,7 +718,7 @@ public interface AnylineService<E>{
 		public boolean exists(String table, String name);
 		public boolean exists(String catalog, String schema, String table, String name);
 		/**
-		 * 查询表中所有的表，注意这里的map.KEY全部转大写
+		 * 查询表中所有的表,注意这里的map.KEY全部转大写
 		 * @param table 表
 		 * @return map
 		 */

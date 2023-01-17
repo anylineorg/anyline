@@ -308,7 +308,7 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 反射属性target上的注解，获取注解上指定的属性值
+	 * 反射属性target上的注解,获取注解上指定的属性值
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
 	 * @param target 属性
@@ -500,7 +500,7 @@ public class ClassUtil {
 	/**
 	 * 查询指定类的有annotation注解的属性
 	 * @param clazz  clazz
-	 * @param annotations  annotation 支持模糊匹配，不区分大小写 如 Table*
+	 * @param annotations  annotation 支持模糊匹配,不区分大小写 如 Table*
 	 * @return List
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })

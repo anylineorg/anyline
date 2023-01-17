@@ -216,7 +216,7 @@ public class AdapterProxy {
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
      * 如果不实现当前可以返回null,将继续执行默认处理方式
      * @param adapter adapter
-     * @param entity 在此基础上执行，如果不提供则新创建
+     * @param entity 在此基础上执行,如果不提供则新创建
      * @param clazz 类
      * @param map map
      * @return T

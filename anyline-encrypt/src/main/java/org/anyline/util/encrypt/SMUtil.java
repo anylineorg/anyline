@@ -36,15 +36,15 @@ import java.security.SecureRandom;
  * 注意3:<br/>
  * 解密后的返回结果是hex格式的String如果有需要可以通过NumberUtil.hex2string转换<br/>
  * <br/>
- * 返回结果一般与输入参数对应，输入bytes[]也返回bytes 输入hex也返回hex<br/>
+ * 返回结果一般与输入参数对应,输入bytes[]也返回bytes 输入hex也返回hex<br/>
  * string byte hex之间转换可以调用NumberUtil.hex2byte,byte2hex等<br/>
  */
 public class SMUtil {
     /**
      * 获取sm2密钥对
-     * BC库使用的公钥=64个字节+1个字节（04标志位），BC库使用的私钥=32个字节
-     * SM2秘钥的组成部分有 私钥D 、公钥X 、 公钥Y , 他们都可以用长度为64的16进制的HEX串表示，
-     * <br/>SM2公钥并不是直接由X+Y表示 , 而是额外添加了一个头，当启用压缩时:公钥=有头+公钥X ，即省略了公钥Y的部分
+     * BC库使用的公钥=64个字节+1个字节（04标志位）,BC库使用的私钥=32个字节
+     * SM2秘钥的组成部分有 私钥D 、公钥X 、 公钥Y , 他们都可以用长度为64的16进制的HEX串表示,
+     * <br/>SM2公钥并不是直接由X+Y表示 , 而是额外添加了一个头,当启用压缩时:公钥=有头+公钥X ,即省略了公钥Y的部分
      *
      * @param compress 是否压缩公钥（加密解密都使用BC库才能使用压缩）
      * @return SM2
@@ -170,7 +170,7 @@ public class SMUtil {
          *
          * @param publicKey 公钥 hex格式的String
          * @param data      待加密的数据 如果是hex格式要先转成byte[]
-         * @return 密文，BC库产生的密文带由04标识符，与非BC库对接时需要去掉开头的04
+         * @return 密文,BC库产生的密文带由04标识符,与非BC库对接时需要去掉开头的04
          */
         public static String encrypt(String publicKey, String data) {
             return encrypt(publicKey, data, SM2Engine.CIPHER_MODE_CN);
@@ -201,16 +201,16 @@ public class SMUtil {
          * @param publicKey 公钥
          * @param bytes     待加密的数据
          * @param mode      密文排列方式0-C1C2C3；1-C1C3C2；
-         * @return 密文，BC库产生的密文带由04标识符，与非BC库对接时需要去掉开头的04
+         * @return 密文,BC库产生的密文带由04标识符,与非BC库对接时需要去掉开头的04
          */
         public static byte[] encrypt(byte[] publicKey, byte[] bytes, int mode) {
             // 获取一条SM2曲线参数
             X9ECParameters sm2ECParameters = GMNamedCurves.getByName(CRYPTO_NAME);
-            // 构造ECC算法参数，曲线方程、椭圆曲线G点、大整数N
+            // 构造ECC算法参数,曲线方程、椭圆曲线G点、大整数N
             ECDomainParameters domainParameters = new ECDomainParameters(sm2ECParameters.getCurve(), sm2ECParameters.getG(), sm2ECParameters.getN());
             //提取公钥点
             ECPoint pukPoint = sm2ECParameters.getCurve().decodePoint(publicKey);
-            // 公钥前面的02或者03表示是压缩公钥，04表示未压缩公钥, 04的时候，可以去掉前面的04
+            // 公钥前面的02或者03表示是压缩公钥,04表示未压缩公钥, 04的时候,可以去掉前面的04
             ECPublicKeyParameters publicKeyParameters = new ECPublicKeyParameters(pukPoint, domainParameters);
 
             SM2Engine sm2Engine = new SM2Engine();
@@ -267,7 +267,7 @@ public class SMUtil {
          * SM2解密算法
          *
          * @param privateKey 私钥
-         * @param data       密文数据(16进制string 不区分大小写，可以空格分隔，没有也可)
+         * @param data       密文数据(16进制string 不区分大小写,可以空格分隔,没有也可)
          *    047c7876a0412479d9a59717b59624fbf43a39....
          *    04 7C 78 76 A0 41 ....
          * @return hex
@@ -291,13 +291,13 @@ public class SMUtil {
         /**
          * SM2解密算法
          *
-         * @param privateKey 私钥(16进制string 可以空格分隔，没有也可)
-         * @param data 密文数据(16进制string 可以空格分隔，没有也可)
+         * @param privateKey 私钥(16进制string 可以空格分隔,没有也可)
+         * @param data 密文数据(16进制string 可以空格分隔,没有也可)
          * @param mode 密文排列方式0-C1C2C3；1-C1C3C2；
          * @return 解密后bytes
          */
         public static byte[] decrypt(String privateKey, String data, int mode) {
-            // 使用BC库加解密时密文以04开头，传入的密文前面没有04则补上
+            // 使用BC库加解密时密文以04开头,传入的密文前面没有04则补上
             if (!data.startsWith("04")) {
                 data = "04" + data;
             }

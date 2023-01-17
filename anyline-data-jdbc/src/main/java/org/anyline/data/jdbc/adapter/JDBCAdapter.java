@@ -157,16 +157,16 @@ public interface JDBCAdapter {
 	 *
 	 *        如果提供了columns则根据columns获取insert列
 	 *
-	 *        但是columns中出现了添加前缀列，则解析完columns后，继续解析obj
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj
 	 *
-	 *        以上执行完后，如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
-	 *        则把执行结果与表结构对比，删除表中没有的列
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
+	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
 	public List<String> confirmInsertColumns(String dest, Object data, List<String> columns);
 
 	/**
-	 * 批量插入数据时，多行数据之间分隔符
+	 * 批量插入数据时,多行数据之间分隔符
 	 * @return String
 	 */
 	public String batchInsertSeparator ();
@@ -390,7 +390,7 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造 Database
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param databases 上一步查询结果
 	 * @param set set
 	 * @return databases
@@ -415,7 +415,7 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -427,7 +427,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 根据JDBC补充
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 上一步查询结果
 	 * @param dbmd DatabaseMetaData
 	 * @param catalog catalog
@@ -457,7 +457,7 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -469,7 +469,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 根据JDBC
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -477,7 +477,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -509,7 +509,7 @@ public interface JDBCAdapter {
 	 *  根据查询结果集构造Table
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -522,7 +522,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 根据JDBC
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -531,7 +531,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -549,7 +549,7 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
@@ -560,7 +560,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 解析查询结果metadata(0=1)
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns columns
 	 * @param set set
@@ -571,7 +571,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 解析JDBC getcolumns结果
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns columns
 	 * @param set set
@@ -597,7 +597,7 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
@@ -608,7 +608,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 解析查询结果metadata(0=1)
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set 查询结果
@@ -620,7 +620,7 @@ public interface JDBCAdapter {
 	/**
 	 *
 	 * 解析JDBC getcolumns结果
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set 查询结果
@@ -645,7 +645,7 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Index
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
 	 * @param set set
@@ -656,7 +656,7 @@ public interface JDBCAdapter {
 
 	/**
 	 *
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
 	 * @param set set
@@ -667,7 +667,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 解析JDBC getIndex结果
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param set set
 	 * @return indexs indexs
@@ -691,10 +691,10 @@ public interface JDBCAdapter {
 	/**
 	 *  根据查询结果集构造Constraint
 	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
-	 * @param set set
+	 * @param set DataSet
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
@@ -734,7 +734,7 @@ public interface JDBCAdapter {
 	public List<String> buildCreateRunSQL(Table table) throws Exception;
 
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -821,7 +821,7 @@ public interface JDBCAdapter {
 	public List<String> buildCreateRunSQL(MasterTable table) throws Exception;
 
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -874,7 +874,7 @@ public interface JDBCAdapter {
 	public List<String> buildCreateRunSQL(PartitionTable table) throws Exception;
 
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -986,7 +986,7 @@ public interface JDBCAdapter {
 	public String buildChangeCommentRunSQL(Column column) throws Exception;
 
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param column 列
 	 * @return sql
 	 * @throws Exception 异常
@@ -1268,7 +1268,7 @@ public interface JDBCAdapter {
 	public boolean convert(Column column, RunValue run);
 
 	/**
-	 * 在不检测数据库结构时才生效，否则会被convert代替
+	 * 在不检测数据库结构时才生效,否则会被convert代替
 	 * 生成value格式 主要确定是否需要单引号  或  类型转换
 	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
 	 * 如 TO_DATE('')
@@ -1318,7 +1318,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 内置函数
-	 * 如果需要引号，方法应该一块返回
+	 * 如果需要引号,方法应该一块返回
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */

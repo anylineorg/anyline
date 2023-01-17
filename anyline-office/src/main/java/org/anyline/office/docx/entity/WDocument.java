@@ -222,7 +222,7 @@ public class WDocument {
 
     /**
      * 获取doby下的table
-     * @param recursion 是否递归获取所有级别的table,正常情况下不需要，word中的tbl一般在body下的最顶级,除非有表格嵌套
+     * @param recursion 是否递归获取所有级别的table,正常情况下不需要,word中的tbl一般在body下的最顶级,除非有表格嵌套
      * @return tables
      */
     public List<Wtable> tables(boolean recursion){

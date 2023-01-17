@@ -21,7 +21,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected String name                         ; // 名称
     protected Integer type                        ; // 类型
     protected String typeName                     ; // 类型名称
-    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
     protected int nullable                   = -1 ; // 是否可以为NULL
     protected int caseSensitive              = -1 ; // 是否区分大小写

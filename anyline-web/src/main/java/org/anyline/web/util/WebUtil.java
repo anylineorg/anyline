@@ -187,7 +187,7 @@ public class WebUtil {
 				if(body.startsWith("{") && body.endsWith("}")) {
 					map.putAll(DataRow.parseJson(KEY_CASE.SRC, body));
 				}else{
-					//先拆分 再解码，否则解出来 & = 会混淆
+					//先拆分 再解码,否则解出来 & = 会混淆
 					map.putAll(BeanUtil.param2map(body,true, isEncode));
 				}
 			}else {

@@ -59,7 +59,7 @@ public interface AnylineDao<E>{
 	/**
 	 * 更新记录
 	 * @param data		需要更新的数据
-	 * @param dest		需要更新的表，如果没有提供则根据data解析
+	 * @param dest		需要更新的表,如果没有提供则根据data解析
 	 * @param columns	需要更新的列 如果没有提供则解析data解析
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @return int 影响行数

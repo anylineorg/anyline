@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * 系统启动时解析多数据源配置
  * 需要在启动类上注解 @org.springframework.context.annotation.Import(DynamicDataSourceRegister.class)
- * 注意这时spring上下文还没有初始化完成，不要调用spring context BeanFactory
+ * 注意这时spring上下文还没有初始化完成,不要调用spring context BeanFactory
  */
 public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar, EnvironmentAware {
     private Logger log = LoggerFactory.getLogger(DynamicDataSourceRegister.class);

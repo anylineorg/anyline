@@ -118,7 +118,7 @@ public class BeanUtil {
 	}
 	/**
 	 * 属性赋值
-	 * @param obj 对象 如果给类静态属性赋值，传null
+	 * @param obj 对象 如果给类静态属性赋值,传null
 	 * @param field 属性
 	 * @param value 值
 	 * @return boolean
@@ -519,7 +519,7 @@ public class BeanUtil {
 
 	/**
 	 * map转实现
-	 * @param obj 在此基础上执行，如果不提供则新创建
+	 * @param obj 在此基础上执行,如果不提供则新创建
 	 * @param map map
 	 * @param clazz class
 	 * @param recursion 是否递归

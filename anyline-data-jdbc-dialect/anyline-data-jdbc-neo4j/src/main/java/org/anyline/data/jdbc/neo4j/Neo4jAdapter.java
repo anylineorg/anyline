@@ -193,7 +193,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否检测主键
-     * @param columns 需要插入的列，如果不指定则全部插入
+     * @param columns 需要插入的列,如果不指定则全部插入
      * @return Run
      */
     @Override

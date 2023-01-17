@@ -242,7 +242,7 @@ public class RegularUtil {
 	}
 
 	/**
-	 * 根据属性名与属性值 删除标签(只删除标签，保留标签体)
+	 * 根据属性名与属性值 删除标签(只删除标签,保留标签体)
 	 * @param src xml/html
 	 * @param attribute 属性名
 	 * @param value 属性值
@@ -262,7 +262,7 @@ public class RegularUtil {
 		return src;
 	}
 	/**
-	 * 根据属性名 删除标签(只删除标签，保留标签体)
+	 * 根据属性名 删除标签(只删除标签,保留标签体)
 	 * @param src xml/html
 	 * @param attribute 属性名
 	 * @return String
@@ -442,7 +442,7 @@ public class RegularUtil {
 	/**
 	 * 删除标签及标签体
 	 * @param src xml/html
-	 * @param tags 标签，如果不提供则删除所有标签
+	 * @param tags 标签,如果不提供则删除所有标签
 	 * @return String
 	 */
 	public static String removeTagWithBody(String src, String ...tags){

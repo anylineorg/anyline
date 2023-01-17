@@ -917,9 +917,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
     /**
      * 更新记录
-     * 默认情况下以主键为更新条件，需在更新的数据保存在data中
-     * 如果提供了dest则更新dest表，如果没有提供则根据data解析出表名
-     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键，则根据TYPE_CODE更新
+     * 默认情况下以主键为更新条件,需在更新的数据保存在data中
+     * 如果提供了dest则更新dest表,如果没有提供则根据data解析出表名
+     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
      * 可以提供了ConfigStore以实现更复杂的更新条件
      * 需要更新的列通过fixs/columns提供
      * @param fixs	  	需要更新的列

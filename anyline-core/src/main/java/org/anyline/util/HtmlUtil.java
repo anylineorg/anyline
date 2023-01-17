@@ -284,7 +284,7 @@ public class HtmlUtil {
 
     /**
      * 根据单元格内容生成表格<br/>
-     * 什么情况下需要，通过OCR识别内容时，如果原文是表格形式，识别出来的结果排列会乱<br/>
+     * 什么情况下需要,通过OCR识别内容时,如果原文是表格形式,识别出来的结果排列会乱<br/>
      * <pre>
      * 如：原文是这样
      * ---------------
@@ -372,7 +372,7 @@ public class HtmlUtil {
                         //<之后的位置
                         if(after_src_last_t0.equals("/")){
                             // </a>
-                            //如果是end标签，找到end标签结束位置
+                            //如果是end标签,找到end标签结束位置
                             int end_tag_tag = html.indexOf(">",chk_last_t0);
                             chk = html.substring(0, end_tag_tag+1);
                         }else {

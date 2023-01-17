@@ -116,7 +116,7 @@ public class SeoUtil {
 	private static List<Integer> getSingIdx(String src){ 
 		List<Integer> idxs = new ArrayList<Integer>();
 
-		String signTmpSrc = src.replaceAll("[,.;?!:'\"，。；？！：’”>]", SIGN_REPLACE_CHAR);
+		String signTmpSrc = src.replaceAll("[,.;?!:'\",。；？！：’”>]", SIGN_REPLACE_CHAR);
 		// String signTmpSrc = src.replaceAll("[\\pP‘’“”]", SIGN_REPLACE_CHAR);
 		int idx = -1; 
 		while((idx = signTmpSrc.indexOf(SIGN_REPLACE_CHAR,idx+1)) != -1){ 

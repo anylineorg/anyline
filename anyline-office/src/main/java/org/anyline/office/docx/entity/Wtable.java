@@ -218,7 +218,7 @@ public class Wtable {
         insert(index, BeanUtil.array2list(tds));
     }
     /**
-     * 追加行，并填充内容
+     * 追加行,并填充内容
      * @param tds 每列的文本 数量多于表格列的 条目无效
      */
     public void insert(String ... tds){
@@ -230,7 +230,7 @@ public class Wtable {
         insert(index, tds);
     }
     /**
-     * 在index位置插入行,原来index位置的行被挤到下一行，以template为模板
+     * 在index位置插入行,原来index位置的行被挤到下一行,以template为模板
      * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param template 模板
      * @param qty 插入数量
@@ -255,7 +255,7 @@ public class Wtable {
         return insert(null, template, qty);
     }
     /**
-     * 在index位置插入qty行，以原来index位置行为模板,原来index位置以下行的挤到下一行
+     * 在index位置插入qty行,以原来index位置行为模板,原来index位置以下行的挤到下一行
      * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param qty 插入数量
      * @return Wtable
@@ -269,7 +269,7 @@ public class Wtable {
         return this;
     }
     /**
-     * 在最后位置插入qty行，以最后一行为模板
+     * 在最后位置插入qty行,以最后一行为模板
      * @param qty 插入数量
      * @return Wtable
      */
@@ -281,7 +281,7 @@ public class Wtable {
     }
 
     /**
-     * 在index位置插入1行，以原来index位置行为模板,原来index位置以下行的挤到下一行
+     * 在index位置插入1行,以原来index位置行为模板,原来index位置以下行的挤到下一行
      * @param index 插入位置下标 负数表示倒数第index行 插入 null表示从最后追加与append效果一致
      * @param html html内容
      */
@@ -296,7 +296,7 @@ public class Wtable {
     }
 
     /**
-     * 插入行 如果模板位于当前表中则从当前模板位置往后插入，否则插入到最后一行
+     * 插入行 如果模板位于当前表中则从当前模板位置往后插入,否则插入到最后一行
      * @param template 模板
      * @param html html.tr源码
      */
@@ -519,7 +519,7 @@ public class Wtable {
     }
 
     /**
-     * 以template为模板 在index位置插入qty行，以原来index位置行为模板,原来index位置以下行的挤到下一行
+     * 以template为模板 在index位置插入qty行,以原来index位置行为模板,原来index位置以下行的挤到下一行
      * @param template 模板
      * @param index 插入位置
      * @param qty 插入数量

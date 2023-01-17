@@ -79,7 +79,7 @@ public class ConfigTable {
 	public static String SQL_STORE_DIR									= null		;	//自定义SQL目录 默认${classpath}/sql
 	public static String ENTITY_TABLE_ANNOTATION						= null		;   // 表名注解
 	public static String ENTITY_COLUMN_ANNOTATION						= null		;	// 列名注解
-	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null		;   // 主键注解(逗号分隔，不区分大小写，支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
+	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
 	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
 	public static String TABLE_METADATA_CACHE_KEY						= ""		;	// 表结构缓存key
 	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)

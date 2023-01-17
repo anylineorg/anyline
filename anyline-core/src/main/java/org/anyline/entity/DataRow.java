@@ -178,7 +178,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 数组解析成DataRow
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param list 数组
      * @param fields 下标对应的属性(字段/key)名称,如果不输入则以下标作为DataRow的key,如果属性数量超出list长度,取null值存入DataRow
      * @return DataRow
@@ -221,7 +221,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析实体类对象
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param obj obj
      * @param keys 列名:obj属性名 "ID:memberId"
      * @return DataRow
@@ -313,7 +313,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析json结构字符
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param keyCase key大小写
      * @param json json
      * @return DataRow
@@ -342,7 +342,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析JSONObject
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param keyCase keyCase
      * @param json json
      * @return DataRow
@@ -420,7 +420,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
      * 解析xml结构字符
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param keyCase KEY_CASE
      * @param xml xml
      * @return DataRow
@@ -447,7 +447,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析xml
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param keyCase KEY_CASE
      * @param element element
      * @return DataRow
@@ -509,7 +509,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析 key1,value1,key2,value2,key3:value3组合
-     * @param row 在此基础上执行，如果不提供则新创建
+     * @param row 在此基础上执行,如果不提供则新创建
      * @param kvs kvs
      * @return DataRow
      */

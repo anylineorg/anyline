@@ -75,11 +75,11 @@ public class ThingsBoardClient extends RestClient {
 
 
     /**
-     * 保存遥测数据 一交提交多条时调用，一次提交一条时调用
+     * 保存遥测数据 一交提交多条时调用,一次提交一条时调用
      * @param type 实体类型 如 设备:DEVICE
      * @param id 实体ID
      * @param scope 范围 ANY
-     * @param ttl 生存时间(秒)不低于1天，如果低于1天则按1在算，如果不需要可以设置成0或null 一般是调用其他不带ttl的重载
+     * @param ttl 生存时间(秒)不低于1天,如果低于1天则按1在算,如果不需要可以设置成0或null 一般是调用其他不带ttl的重载
      * @param maps json结构的数据
      *           maps = [
      *             {"ts":1634712287000,"values":{"temperature":26, "humidity":87}}

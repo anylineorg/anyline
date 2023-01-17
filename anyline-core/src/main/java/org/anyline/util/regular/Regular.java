@@ -143,8 +143,8 @@ public interface Regular {
 		}
 		/**
 		 * html标签<br/>
-		 * 只匹配标签，不匹配标签体<br/>
-		 * 匹配所有开始与闭合标签，不要求开始标签与闭合标签一致<br/>
+		 * 只匹配标签,不匹配标签体<br/>
+		 * 匹配所有开始与闭合标签,不要求开始标签与闭合标签一致<br/>
 		 */
 		,HTML_TAG{
 			public String getName(){return "html tag";}

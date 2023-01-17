@@ -37,7 +37,7 @@ public class AnylineProperty {
     protected  String sqlStoreDir								= null		;	//自定义sql目录 默认${classpath}/sql
     protected  String entityTableAnnotation						= null		;   // 表名注解
     protected  String entityColumnAnnotation					= null		;	// 列名注解
-    protected  String entityPrimaryKeyAnnotation				= null		;   // 主键注解(逗号分隔，不区分大小写，支持正则匹配) tableid.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+    protected  String entityPrimaryKeyAnnotation				= null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableid.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
     protected  String httpParamKeyCase							= "camel"	;	// http参数格式 camel:小驼峰 camel:大驼峰 lower:小写 upper:大写  service.column2param会把 userName 转成username
     protected  String tableMetadataCacheKey					    = ""		;	// 表结构缓存key
     protected  int tableMetadataCacheSecond						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)

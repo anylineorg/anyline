@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  */ 
 public abstract class DefaultCondition implements Condition {
-	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值，本身并不拼接到最终SQL
+	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
 	protected boolean required = false									;	// 是否必须
 	protected boolean strictRequired = false							;	// 是否必须
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)

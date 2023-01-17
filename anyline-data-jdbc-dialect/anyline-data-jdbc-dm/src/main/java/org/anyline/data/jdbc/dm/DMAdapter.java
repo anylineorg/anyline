@@ -128,7 +128,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -146,22 +146,22 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 * 从jdbc结果中提取表结构
 	 * ResultSet set = con.getMetaData().getTables()
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param set 查询结果
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
-		return super.mtables(create, catalog, schema, tables, set);
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
 
 	/**
 	 * 从上一步生成的SQL查询结果中 提取表结构
 	 * @param index 第几条SQL
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -182,7 +182,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
 	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -210,7 +210,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 *  根据查询结果集构造Table
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -226,7 +226,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 	/**
 	 * 根据JDBC
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
@@ -236,8 +236,8 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
-		return super.ptables(create, catalog, master, schema, tables, set);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
+		return super.ptables(create, tables, dbmd, catalog, schema, master);
 	}
 
 
@@ -263,7 +263,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 *
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
@@ -306,7 +306,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
@@ -348,7 +348,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 *
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
 	 * @param set set
@@ -391,7 +391,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 *  根据查询结果集构造Constraint
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
 	 * @param set set
@@ -453,7 +453,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	}
 
 	/**
-	 * 添加表备注(表创建完成后调用，创建过程能添加备注的不需要实现)
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
