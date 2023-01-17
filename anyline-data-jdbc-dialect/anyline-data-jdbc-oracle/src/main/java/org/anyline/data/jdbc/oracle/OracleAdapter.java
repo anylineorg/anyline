@@ -414,7 +414,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param set 查询结果
+	 * @param dbmd DatabaseMetaData
 	 * @return List
 	 */
 	@Override
@@ -496,7 +496,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param set set
+	 * @paramd bmd DatabaseMetaData
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -512,7 +512,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -544,7 +544,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return super.columns(create, table, columns, set);
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return super.columns(create, table, columns, set);
 	}
 
@@ -555,7 +555,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -587,7 +587,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return super.tags(create, table, tags, set);
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return super.tags(create, table, tags, set);
 	}
 
@@ -597,7 +597,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -629,7 +629,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return super.indexs(create, table, indexs, set);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
 		return super.indexs(create, table, indexs, set);
 	}
 

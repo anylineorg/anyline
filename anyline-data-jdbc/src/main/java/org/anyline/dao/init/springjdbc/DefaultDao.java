@@ -1825,30 +1825,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		// 根据jdbc接口补充
 		try {
-			// isAutoIncrement isGenerated remark default
-			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
-			columns = adapter.columns(true, table, columns, rs);
+			columns = adapter.columns(true, columns, metadata, table, null);
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
-		}
-
-		// 主键
-		try {
-			ResultSet rs = metadata.getPrimaryKeys(catalog, schema, table.getName());
-			while (rs.next()) {
-				String name = rs.getString(4);
-				Column column = columns.get(name.toUpperCase());
-				if (null == column) {
-					continue;
-				}
-				column.setPrimaryKey(true);
-			}
-		}catch (Exception e){
-
 		}
 
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -1935,30 +1918,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		// 根据jdbc接口补充
 		try {
 			// isAutoIncrement isGenerated remark default
-			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
 			// 这一步会查出所有列(包括非tag列)
-			tags = adapter.tags(false, table, tags, rs);
+			tags = adapter.tags(false, tags, metadata, table, null);
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
-		}
-
-		// 主键
-		try {
-			ResultSet rs = metadata.getPrimaryKeys(catalog, schema, table.getName());
-			while (rs.next()) {
-				String name = rs.getString(4);
-				Tag tag = tags.get(name.toUpperCase());
-				if (null == tag) {
-					continue;
-				}
-				tag.setPrimaryKey(true);
-			}
-		}catch (Exception e){
-
 		}
 
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -2001,17 +1968,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Index> indexs = null;
 		JDBCAdapter adapter = adapter();
 		adapter.checkSchema(table);
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
 		String tab = table.getName();
 		DataSource ds = null;
 		Connection con = null;
 		try {
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			DatabaseMetaData metaData = con.getMetaData();
-			ResultSet set = metaData.getIndexInfo(catalog, schema, tab, false, false);
-			indexs = adapter.indexs(true, table, indexs, set);
+			indexs = adapter.indexs(true, indexs, con.getMetaData(), table, false, false);
 			table.setIndexs(indexs);
 		}catch (Exception e){
 			e.printStackTrace();

@@ -982,38 +982,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
-
-		Map<String,Integer> keys = keys(set);
-		while(set.next()) {
-			String tableName = string(keys, "TABLE_NAME", set);
-
-			if(BasicUtil.isEmpty(tableName)){
-				tableName = string(keys, "NAME", set);
-			}
-			if(BasicUtil.isEmpty(tableName)){
-				continue;
-			}
-			MasterTable table = tables.get(tableName.toUpperCase());
-			if(null == table){
-				if(create) {
-					table = new MasterTable(tableName);
-					tables.put(tableName.toUpperCase(), table);
-				}else {
-					continue;
-				}
-			}
-			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
-			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
-			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-			tables.put(tableName.toUpperCase(), table);
-
-			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
-		}
 		return tables;
 	}
 
@@ -1108,41 +1076,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
-		if(null == tables){
-			tables = new LinkedHashMap<>();
-		}
-
-		Map<String,Integer> keys = keys(set);
-		while(set.next()) {
-			String tableName = string(keys, "TABLE_NAME", set);
-
-			if(BasicUtil.isEmpty(tableName)){
-				tableName = string(keys, "NAME", set);
-			}
-			if(BasicUtil.isEmpty(tableName)){
-				continue;
-			}
-			PartitionTable table = tables.get(tableName.toUpperCase());
-			if(null == table){
-				if(create) {
-					table = new PartitionTable(tableName);
-					tables.put(tableName.toUpperCase(), table);
-				}else {
-					continue;
-				}
-			}
-			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
-			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
-			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-			tables.put(tableName.toUpperCase(), table);
-
-			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
-		}
 		return tables;
 	}
 
@@ -1153,7 +1086,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
 	 *
 	 * protected Column column(Column column, SqlRowSetMetaData rsm, int index)
 	 * protected Column column(Column column, ResultSet rs)
@@ -1213,10 +1146,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
+		ResultSet set = dbmd.getColumns(table.getCatalog(), table.getSchema(), table.getName(), pattern);
 		Map<String,Integer> keys = keys(set);
 		while (set.next()){
 			String name = set.getString("COLUMN_NAME");
@@ -1251,6 +1185,17 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 			column(column, set);
+		}
+
+		// 主键
+		ResultSet rs = dbmd.getPrimaryKeys(table.getCatalog(), table.getSchema(), table.getName());
+		while (rs.next()) {
+			String name = rs.getString(4);
+			Column column = columns.get(name.toUpperCase());
+			if (null == column) {
+				continue;
+			}
+			column.setPrimaryKey(true);
 		}
 		return columns;
 	}
@@ -1331,7 +1276,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -1372,8 +1317,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return tags;
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set)",37));
+	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1386,7 +1331,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata)
 	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception
+	 * public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的索引
@@ -1427,10 +1372,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return indexs;
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
+		ResultSet set = dbmd.getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), unique, approximate);
 		Map<String, Integer> keys = keys(set);
 		LinkedHashMap<String, Column> columns = null;
 		while (set.next()) {

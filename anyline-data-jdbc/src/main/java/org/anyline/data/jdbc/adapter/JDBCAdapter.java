@@ -473,7 +473,7 @@ public interface JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param set set
+	 * @param dbmd DatabaseMetaData
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -527,7 +527,7 @@ public interface JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param set set
+	 * @param dbmd DatabaseMetaData
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -573,12 +573,12 @@ public interface JDBCAdapter {
 	 * 解析JDBC getcolumns结果
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param columns columns
-	 * @param set set
-	 * @return columns columns
+	 * @param dbmd DatabaseMetaData
+	 * @return columns 上一步查询结果
+	 * @return attern attern
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
 
 
@@ -623,11 +623,12 @@ public interface JDBCAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
-	 * @param set 查询结果
+	 * @param dbmd DatabaseMetaData
+	 * @param pattern pattern
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -669,11 +670,11 @@ public interface JDBCAdapter {
 	 * 解析JDBC getIndex结果
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param set set
+	 * @param dbmd DatabaseMetaData
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
 
 
 	/* *****************************************************************************************************************
