@@ -145,10 +145,12 @@ public interface Regular {
 		 * html标签<br/>
 		 * 只匹配标签,不匹配标签体<br/>
 		 * 匹配所有开始与闭合标签,不要求开始标签与闭合标签一致<br/>
+		 *
 		 */
 		,HTML_TAG{
 			public String getName(){return "html tag";}
-			public String getCode(){return "<(.*?)[^>]*>.*?|<.*?/>";}
+			//public String getCode(){return "(?i)<(.*?)[^>]*>.*?|<.*?/>";} //不要匹配到注释 <!---->
+			public String getCode(){return "<([a-zA-Z]*?)[^>]*>.*?|<[a-zA-Z]*?/>";}
 		}
 		/**
 		 * html标签与标签体
@@ -156,7 +158,7 @@ public interface Regular {
 		 */
 		,HTML_TAG_WITH_BODY{
 			public String getName(){return "html tag";}
-			public String getCode(){return "(?i)<(.+?)[^>]*>[\\s\\S]*?</\\1>";}
+			public String getCode(){return "<([a-zA-Z]+?)[^>]*>[\\s\\S]*?</\\1>";}
 		}
 		/**
 		 * img标签 图片地址取下标2

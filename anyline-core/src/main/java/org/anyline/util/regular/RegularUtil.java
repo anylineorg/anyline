@@ -395,17 +395,16 @@ public class RegularUtil {
 	 * @param tags  tags
 	 * @return String
 	 */
+
 	public static String removeTagExcept(String src, String ...tags){
 		if(null == src || null == tags || tags.length == 0){
 			return src;
 		}
 		int size = tags.length;
-		String reg = "(?i)<(?!(";
+		String reg = "(?i)<(?!(\\!"; // <!--不匹配注释
 		for(int i=0; i<size; i++){
+			reg += "|";
 			reg += "(/?\\s?" + tags[i] + "\\b)";
-			if(i < size-1){
-				reg += "|";
-			}
 		}
 		reg += "))[^>]+>";
 		src = src.replaceAll(reg, "");
