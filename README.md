@@ -1,7 +1,7 @@
 用来维护快照的私服到2023-03-31就不维护了，需要快照版本的请从中央仓库下载  
 请参考[【maven配置】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f51d08504f16eef5d6eedaac28b67c2bc)
 
-8.6.2之后的版本中,多数据源不再需需要依赖org.anyboot:anyboot-data-jdbc  
+2023之后的版本中,多数据源不再需需要依赖org.anyboot:anyboot-data-jdbc  
 原来的org.anyboot.data.jdbc.ds.DynamicDataSourceRegister可以用
 org.anyline.data.jdbc.ds.DynamicDataSourceRegister替代
 
