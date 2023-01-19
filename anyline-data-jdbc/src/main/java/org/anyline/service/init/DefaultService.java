@@ -146,7 +146,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public List<String> column2param(String table){
         List<String> columns = columns(table);
-        return AdapterProxy.column2param(columns);
+        return EntityAdapterProxy.column2param(columns);
     }
     @Override
     public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
@@ -1209,8 +1209,8 @@ public class DefaultService<E> implements AnylineService<E> {
             if (data instanceof DataRow || data instanceof DataSet) {
                 dest = DataSourceHolder.parseDataSource(dest, data);
             }else{
-                if(AdapterProxy.hasAdapter()){
-                    dest = AdapterProxy.table(data.getClass());
+                if(EntityAdapterProxy.hasAdapter()){
+                    dest = EntityAdapterProxy.table(data.getClass());
                 }
             }
         }
@@ -1435,11 +1435,11 @@ public class DefaultService<E> implements AnylineService<E> {
             dest = DataSourceHolder.parseDataSource(null, row);
             return dao.delete(dest, row, columns);
         }else{
-            if(AdapterProxy.hasAdapter()){
+            if(EntityAdapterProxy.hasAdapter()){
                 if(obj instanceof Collection){
-                    dest = AdapterProxy.table(((Collection)obj).iterator().next().getClass());
+                    dest = EntityAdapterProxy.table(((Collection)obj).iterator().next().getClass());
                 }else{
-                    dest = AdapterProxy.table(obj.getClass());
+                    dest = EntityAdapterProxy.table(obj.getClass());
                 }
                 return dao.delete(dest, obj, columns);
             }
@@ -1719,8 +1719,8 @@ public class DefaultService<E> implements AnylineService<E> {
                     Object value = BeanUtil.getFieldValue(entity, field);
                     if (BasicUtil.isNotEmpty(true, value)) {
                         String key = field.getName();
-                        if (AdapterProxy.hasAdapter()) {
-                            key = AdapterProxy.column(entity.getClass(), field);
+                        if (EntityAdapterProxy.hasAdapter()) {
+                            key = EntityAdapterProxy.column(entity.getClass(), field);
                         }
                         if(BasicUtil.isEmpty(key)){
                             continue;

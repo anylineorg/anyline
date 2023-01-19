@@ -1,7 +1,7 @@
 package org.anyline.entity;
 
 import org.anyline.entity.data.Column;
-import org.anyline.util.AdapterProxy;
+import org.anyline.util.EntityAdapterProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
     }
 
     public DataSet set(String ... keys){
-        return AdapterProxy.set(this, keys);
+        return EntityAdapterProxy.set(this, keys);
     }
 
     public boolean isResult() {

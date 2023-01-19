@@ -13,8 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("entity.adapter.proxy")
-public class AdapterProxy {
+@Component("anyline.entity.adapter.proxy")
+public class EntityAdapterProxy {
 
     public static boolean hasAdapter(){
         return null != adapter;
@@ -27,7 +27,7 @@ public class AdapterProxy {
 
     @Autowired(required = false)
     public void setAdapter(Map<String,EntityAdapter> adapters) {
-        AdapterProxy.adapters = adapters;
+        EntityAdapterProxy.adapters = adapters;
         String defaultKey = "anyline.entity.adapter";
         if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ){
             // 如果禁用 adapter 引用 随机引用一个 , adapters引用其他

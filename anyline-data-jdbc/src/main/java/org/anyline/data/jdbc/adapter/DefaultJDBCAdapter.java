@@ -258,8 +258,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}else{
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_COLUMN;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_COLUMN;
-				if(AdapterProxy.hasAdapter()){
-					keys = AdapterProxy.columns(obj.getClass(), true, false);
+				if(EntityAdapterProxy.hasAdapter()){
+					keys = EntityAdapterProxy.columns(obj.getClass(), true, false);
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass());
@@ -284,8 +284,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if(null != row) {
 					value = row.get(key);
 				}else{
-					if(AdapterProxy.hasAdapter()){
-						value = BeanUtil.getFieldValue(obj, AdapterProxy.field(obj.getClass(), key));
+					if(EntityAdapterProxy.hasAdapter()){
+						value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
 					}else{
 						value = BeanUtil.getFieldValue(obj, key);
 					}
@@ -347,9 +347,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			DataRow row = (DataRow)obj;
 			row.put(row.getPrimaryKey(), value);
 		}else{
-			if(AdapterProxy.hasAdapter()){
-				String key = AdapterProxy.primaryKey(obj.getClass());
-				Field field = AdapterProxy.field(obj.getClass(), key);
+			if(EntityAdapterProxy.hasAdapter()){
+				String key = EntityAdapterProxy.primaryKey(obj.getClass());
+				Field field = EntityAdapterProxy.field(obj.getClass(), key);
 				BeanUtil.setFieldValue(obj, field, value);
 			}
 		}
@@ -727,8 +727,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(obj instanceof Collection){
 				entity = ((Collection)obj).iterator().next();
 			}
-			if(AdapterProxy.hasAdapter()){
-				dest = AdapterProxy.table(entity.getClass());
+			if(EntityAdapterProxy.hasAdapter()){
+				dest = EntityAdapterProxy.table(entity.getClass());
 			}
 		}
 		if(obj instanceof ConfigStore){
@@ -2703,8 +2703,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
 		}else {
-			if (AdapterProxy.hasAdapter()) {
-				Field field = AdapterProxy.field(obj.getClass(), key);
+			if (EntityAdapterProxy.hasAdapter()) {
+				Field field = EntityAdapterProxy.field(obj.getClass(), key);
 				value = BeanUtil.getFieldValue(obj, field);
 			} else {
 				value = BeanUtil.getFieldValue(obj, key);

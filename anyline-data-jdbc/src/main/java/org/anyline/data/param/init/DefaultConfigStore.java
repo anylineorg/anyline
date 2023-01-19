@@ -264,10 +264,18 @@ public class DefaultConfigStore implements ConfigStore {
 		return and(var, value, false, false);
 	}
 	@Override
+	public ConfigStore param(String var, Object value){
+		return and(var, value);
+	}
+	@Override
+	public ConfigStore param(String id, String var, Object value){
+		return and(id, var, value);
+	}
+	@Override
 	public ConfigStore or(String var, Object value){
 		Compare compare = compare(value);
 		return or(compare, var, value);
-	} 
+	}
 	@Override
 	public ConfigStore or(Compare compare, String var, Object value) {
 		List<Config> configs = chain.getConfigs();

@@ -213,8 +213,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
-			if(AdapterProxy.hasAdapter()){
-				prepare.setDataSource(AdapterProxy.table(clazz));
+			if(EntityAdapterProxy.hasAdapter()){
+				prepare.setDataSource(EntityAdapterProxy.table(clazz));
 			}
 			JDBCAdapter adapter = adapter();
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
@@ -606,8 +606,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			DataRow row = (DataRow)obj;
 			return row.isNew();
 		}else{
-			if(AdapterProxy.hasAdapter()){
-				Map<String,Object> values = AdapterProxy.primaryValues(obj);
+			if(EntityAdapterProxy.hasAdapter()){
+				Map<String,Object> values = EntityAdapterProxy.primaryValues(obj);
 				for(Map.Entry entry:values.entrySet()){
 					if(BasicUtil.isNotEmpty(entry.getValue())){
 						return false;
@@ -910,8 +910,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list = adapter.process(list);
 			}
 			for(Map<String,Object> map:list){
-				if(AdapterProxy.hasAdapter()){
-					T row = AdapterProxy.entity(clazz, map, columns);
+				if(EntityAdapterProxy.hasAdapter()){
+					T row = EntityAdapterProxy.entity(clazz, map, columns);
 					set.add(row);
 				}else{
 					T row = BeanUtil.map2object(map, clazz);

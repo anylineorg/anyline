@@ -25,9 +25,9 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
-import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.EntityAdapterProxy;
 import org.anyline.util.FileUtil;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
@@ -155,7 +155,7 @@ public class AnylineController extends AbstractBasicController {
 	}
 	public DataRow entity(TableBuilder table, DataRow row){
 		List<String> metadatas = service.columns(table.getTable());
-		List<String> params = AdapterProxy.column2param(metadatas);
+		List<String> params = EntityAdapterProxy.column2param(metadatas);
 		return entity(getRequest(), null, row, false, false, params);
 	}
 
@@ -320,13 +320,13 @@ public class AnylineController extends AbstractBasicController {
 
 	public DataSet entitys(TableBuilder table){
 		List<String> metadatas = service.columns(table.getTable());
-		List<String> params = AdapterProxy.column2param(metadatas);
+		List<String> params = EntityAdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 
 	public DataSet entitys(RunPrepare prepare){
 		List<String> metadatas = service.columns(prepare.getTable());
-		List<String> params = AdapterProxy.column2param(metadatas);
+		List<String> params = EntityAdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 

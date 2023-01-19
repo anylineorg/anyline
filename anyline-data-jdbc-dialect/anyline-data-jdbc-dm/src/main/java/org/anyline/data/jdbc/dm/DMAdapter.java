@@ -1265,8 +1265,8 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		Object value = null;
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
-		}else if(AdapterProxy.hasAdapter()){
-			Field field = AdapterProxy.field(obj.getClass(), key);
+		}else if(EntityAdapterProxy.hasAdapter()){
+			Field field = EntityAdapterProxy.field(obj.getClass(), key);
 			value = BeanUtil.getFieldValue(obj, field);
 		}else{
 			value = BeanUtil.getFieldValue(obj, key);

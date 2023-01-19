@@ -19,13 +19,13 @@
  
 package org.anyline.data.jdbc.ds;
 
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.EntityAdapterProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,9 +144,9 @@ public class DataSourceHolder {
 			}
 		} else if (obj instanceof Collection) {
 			Object first = ((Collection)obj).iterator().next();
-			result = AdapterProxy.table(first.getClass());
+			result = EntityAdapterProxy.table(first.getClass());
 		} else{
-			result = AdapterProxy.table(obj.getClass());
+			result = EntityAdapterProxy.table(obj.getClass());
 		}
 		result = parseDataSource(result);
 		return result;

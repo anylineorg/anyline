@@ -278,10 +278,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			}else{
 				String pk = null;
 				Object pv = null;
-				if(AdapterProxy.hasAdapter()){
-					pk = AdapterProxy.primaryKey(obj.getClass());
-					pv = AdapterProxy.primaryValue(obj);
-					AdapterProxy.createPrimaryValue(obj);
+				if(EntityAdapterProxy.hasAdapter()){
+					pk = EntityAdapterProxy.primaryKey(obj.getClass());
+					pv = EntityAdapterProxy.primaryValue(obj);
+					EntityAdapterProxy.createPrimaryValue(obj);
 				}else{
 					pk = DataRow.DEFAULT_PRIMARY_KEY;
 					pv = BeanUtil.getFieldValue(obj, pk);
@@ -1529,8 +1529,8 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		Object value = null;
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
-		}else if(AdapterProxy.hasAdapter()){
-			Field field = AdapterProxy.field(obj.getClass(), key);
+		}else if(EntityAdapterProxy.hasAdapter()){
+			Field field = EntityAdapterProxy.field(obj.getClass(), key);
 			value = BeanUtil.getFieldValue(obj, field);
 		}else{
 			value = BeanUtil.getFieldValue(obj, key);

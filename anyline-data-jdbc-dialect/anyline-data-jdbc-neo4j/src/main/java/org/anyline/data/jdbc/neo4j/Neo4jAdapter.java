@@ -232,10 +232,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }else{
             String pk = null;
             Object pv = null;
-            if(AdapterProxy.hasAdapter()){
-                pk = AdapterProxy.primaryKey(obj.getClass());
-                pv = AdapterProxy.primaryValue(obj);
-                AdapterProxy.createPrimaryValue(obj);
+            if(EntityAdapterProxy.hasAdapter()){
+                pk = EntityAdapterProxy.primaryKey(obj.getClass());
+                pv = EntityAdapterProxy.primaryValue(obj);
+                EntityAdapterProxy.createPrimaryValue(obj);
             }else{
                 pk = DataRow.DEFAULT_PRIMARY_KEY;
                 pv = BeanUtil.getFieldValue(obj, pk);
@@ -264,8 +264,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             if(null != row){
                 value = row.get(key);
             }else{
-                if(AdapterProxy.hasAdapter()){
-                    value = BeanUtil.getFieldValue(obj, AdapterProxy.field(obj.getClass(), key));
+                if(EntityAdapterProxy.hasAdapter()){
+                    value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                 }else{
                     value = BeanUtil.getFieldValue(obj, key);
                 }
@@ -774,12 +774,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(null != columns && columns.size() >0 ){
             keys = columns;
         }else{
-            if(AdapterProxy.hasAdapter()){
-                keys = AdapterProxy.columns(obj.getClass(), false, true);
+            if(EntityAdapterProxy.hasAdapter()){
+                keys = EntityAdapterProxy.columns(obj.getClass(), false, true);
             }
         }
-        if(AdapterProxy.hasAdapter()){
-            primaryKeys = AdapterProxy.primaryKeys(obj.getClass());
+        if(EntityAdapterProxy.hasAdapter()){
+            primaryKeys = EntityAdapterProxy.primaryKeys(obj.getClass());
         }else{
             primaryKeys = new ArrayList<>();
             primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
@@ -805,8 +805,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
                 Object value = null;
-                if(AdapterProxy.hasAdapter()){
-                    Field field = AdapterProxy.field(obj.getClass(), key);
+                if(EntityAdapterProxy.hasAdapter()){
+                    Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
@@ -836,8 +836,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     builder.append(" AND ");
                     SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                     updateColumns.add(pk);
-                    if (AdapterProxy.hasAdapter()) {
-                        Field field = AdapterProxy.field(obj.getClass(), pk);
+                    if (EntityAdapterProxy.hasAdapter()) {
+                        Field field = EntityAdapterProxy.field(obj.getClass(), pk);
                         // values.add(BeanUtil.getFieldValue(obj, field));
                         run.addValues(pk, BeanUtil.getFieldValue(obj, field));
                     } else {
@@ -1026,8 +1026,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             if(obj instanceof DataRow){
                 keys = ((DataRow)obj).getPrimaryKeys();
             }else{
-                if(AdapterProxy.hasAdapter()){
-                    keys = AdapterProxy.primaryKeys(obj.getClass());
+                if(EntityAdapterProxy.hasAdapter()){
+                    keys = EntityAdapterProxy.primaryKeys(obj.getClass());
                 }
             }
         }
@@ -1044,8 +1044,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 if(obj instanceof DataRow){
                     value = ((DataRow)obj).get(key);
                 }else{
-                    if(AdapterProxy.hasAdapter()){
-                        value = BeanUtil.getFieldValue(obj,AdapterProxy.field(obj.getClass(), key));
+                    if(EntityAdapterProxy.hasAdapter()){
+                        value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                     }else{
                         value = BeanUtil.getFieldValue(obj, key);
                     }

@@ -38,11 +38,18 @@ public class DefaultEntityAdapter implements EntityAdapter {
         if(BasicUtil.isNotEmpty(name)){
             return name;
         }
-        // 2.注解
-        name = ClassUtil.parseAnnotationFieldValue(clazz, "table.name", "table.value", "tableName.name", "tableName.value");
-        if(BasicUtil.isNotEmpty(name)){
-            class2table.put(key, name);
-            return name;
+        // 2.注解 以及父类注解直到Object
+        while (true){
+            name = ClassUtil.parseAnnotationFieldValue(clazz, "table.name", "table.value", "tableName.name", "tableName.value");
+            if(BasicUtil.isEmpty(name)){
+                clazz = clazz.getSuperclass();
+                if(null == clazz){
+                    break;
+                }
+            }else{
+                class2table.put(key, name);
+                return name;
+            }
         }
         // 3.类名
         name = clazz.getSimpleName();

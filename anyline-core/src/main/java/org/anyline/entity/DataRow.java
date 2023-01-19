@@ -228,8 +228,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      */
     @SuppressWarnings("rawtypes")
     public static DataRow parse(DataRow row, Object obj, String... keys) {
-        if (AdapterProxy.hasAdapter()) {
-            row = AdapterProxy.row(row, obj, keys);
+        if (EntityAdapterProxy.hasAdapter()) {
+            row = EntityAdapterProxy.row(row, obj, keys);
             if (null != row) {
                 return row;
             }
@@ -1266,8 +1266,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null == clazz) {
             return entity;
         }
-        if (AdapterProxy.hasAdapter()) {
-            entity = AdapterProxy.entity(clazz, this, metadatas);
+        if (EntityAdapterProxy.hasAdapter()) {
+            entity = EntityAdapterProxy.entity(clazz, this, metadatas);
             if (null != entity) {
                 return entity;
             }
