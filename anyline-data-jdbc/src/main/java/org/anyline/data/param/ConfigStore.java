@@ -105,7 +105,7 @@ public interface ConfigStore {
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
 	 * @param id 自定义查询条件ID
-	 * @param var 变量或点位符key
+	 * @param var 变量或占位符key
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
