@@ -98,7 +98,7 @@ public class DateUtil {
 	 * @param to 结束时间
 	 * @return boolean
 	 */
-	public static boolean between(String cur, String fr, String to) throws Exception{
+	public static boolean between(String cur, String fr, String to) {
 		return between(parse(cur), parse(fr), parse(to));
 	}
 
@@ -153,7 +153,7 @@ public class DateUtil {
 		return result;
 	}
 
-	public static long diff(int part, String fr, String to) throws Exception{
+	public static long diff(int part, String fr, String to) {
 		return diff(part, parse(fr), parse(to));
 	}
 
@@ -161,7 +161,7 @@ public class DateUtil {
 		return diff(part, fr, new Date());
 	}
 
-	public static long diff(int part, String fr) throws Exception{
+	public static long diff(int part, String fr) {
 		return diff(part, parse(fr));
 	}
 
@@ -202,7 +202,7 @@ public class DateUtil {
 		return format(locale, zone, date, FORMAT_FULL);
 	}
 
-	public static String format(Locale locale, ZoneId zone, String date, String format) throws Exception{
+	public static String format(Locale locale, ZoneId zone, String date, String format) {
 		Date d = parse(date);
 		return format(locale, zone, d, format);
 	}
@@ -231,7 +231,7 @@ public class DateUtil {
 		return format(locale, ZoneId.systemDefault(), date);
 	}
 
-	public static String format(Locale locale, String date, String format) throws Exception{
+	public static String format(Locale locale, String date, String format) {
 		return format(locale, ZoneId.systemDefault(), date, format);
 	}
 	public static String format(Date date, String format) {
@@ -258,7 +258,7 @@ public class DateUtil {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date);
 	}
 
-	public static String format(String date, String format) throws Exception {
+	public static String format(String date, String format)  {
 		return format(Locale.getDefault(), ZoneId.systemDefault(), date, format);
 	}
 
@@ -312,7 +312,7 @@ public class DateUtil {
 	public static String getWeek(Date date) {
 		return format(date,"EEEE");
 	}
-	public static String getWeek(String date) throws Exception{
+	public static String getWeek(String date) {
 		return getWeek(parse(date));
 	}
 
@@ -330,7 +330,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfWeek(String date) throws Exception{
+	public static Date getFirstDayOfWeek(String date) {
 		return getFirstDayOfWeek(parse(date));
 	}
 
@@ -351,7 +351,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfNextWeek(String date) throws Exception{
+	public static Date getFirstDayOfNextWeek(String date) {
 		return getFirstDayOfNextWeek(parse(date));
 	}
 
@@ -373,7 +373,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfPreviousWeek(String date) throws Exception{
+	public static Date getFirstDayOfPreviousWeek(String date) {
 		return getFirstDayOfPreviousWeek(parse(date));
 	}
 
@@ -393,7 +393,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getLastDayOfWeek(String date) throws Exception{
+	public static Date getLastDayOfWeek(String date) {
 		return getLastDayOfWeek(parse(date));
 	}
 
@@ -414,7 +414,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getLastDayOfNextWeek(String date) throws Exception{
+	public static Date getLastDayOfNextWeek(String date) {
 		return getLastDayOfNextWeek(parse(date));
 	}
 
@@ -436,7 +436,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getLastDayOfPreviousWeek(String date) throws Exception{
+	public static Date getLastDayOfPreviousWeek(String date) {
 		return getLastDayOfPreviousWeek(parse(date));
 	}
 
@@ -456,7 +456,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfMonth(String date) throws Exception{
+	public static Date getFirstDayOfMonth(String date) {
 		return getFirstDayOfMonth(parse(date));
 	}
 
@@ -477,7 +477,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfNextMonth(String date) throws Exception{
+	public static Date getFirstDayOfNextMonth(String date) {
 		return getFirstDayOfNextMonth(parse(date));
 	}
 
@@ -498,7 +498,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfPreviousMonth(String date) throws Exception{
+	public static Date getFirstDayOfPreviousMonth(String date) {
 		return getFirstDayOfPreviousMonth(parse(date));
 	}
 
@@ -520,7 +520,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getLastDayOfMonth(String date) throws Exception{
+	public static Date getLastDayOfMonth(String date) {
 		return getLastDayOfMonth(parse(date));
 	}
 
@@ -542,7 +542,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getLastDayOfPreviousMonth(String date) throws Exception{
+	public static Date getLastDayOfPreviousMonth(String date) {
 		return getLastDayOfPreviousMonth(parse(date));
 	}
 
@@ -564,7 +564,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getLastDayOfNextMonth(String date) throws Exception{
+	public static Date getLastDayOfNextMonth(String date) {
 		return getLastDayOfNextMonth(parse(date));
 	}
 
@@ -581,7 +581,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getCurrentWeekday(String date) throws Exception{
+	public static Date getCurrentWeekday(String date) {
 		return getCurrentWeekday(parse(date));
 	}
 
@@ -615,7 +615,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getMondayOFWeek(String date) throws Exception{
+	public static Date getMondayOFWeek(String date) {
 		return getMondayOFWeek(parse(date));
 	}
 
@@ -632,7 +632,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getNextMonday(String date) throws Exception{
+	public static Date getNextMonday(String date) {
 		return getNextMonday(parse(date));
 	}
 
@@ -649,7 +649,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getNextSunday(String date) throws Exception{
+	public static Date getNextSunday(String date) {
 		return getNextSunday(parse(date));
 	}
 
@@ -686,7 +686,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getNextYearEnd(String date) throws Exception{
+	public static Date getNextYearEnd(String date) {
 		return getNextYearEnd(parse(date));
 	}
 
@@ -707,7 +707,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getNextYearFirst(String date) throws Exception{
+	public static Date getNextYearFirst(String date) {
 		return getNextYearFirst(parse(date));
 	}
 
@@ -728,7 +728,7 @@ public class DateUtil {
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
-	public static int countDaysOfYear(int year) throws Exception{
+	public static int countDaysOfYear(int year) {
 		Date date = parse(year+"-01-01");
 		return countDaysOfYear(date);
 	}
@@ -750,7 +750,7 @@ public class DateUtil {
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 
-	public static int countDaysOfMonth(String ym) throws Exception{
+	public static int countDaysOfMonth(String ym) {
 		Date date = parse(ym+"-01");
 		return countDaysOfMonth(date);
 	}
@@ -786,7 +786,7 @@ public class DateUtil {
 		return calendar.getTime();
 	}
 
-	public static Date getFirstDayOfYear(String date) throws Exception{
+	public static Date getFirstDayOfYear(String date) {
 		return getFirstDayOfYear(parse(date));
 	}
 
@@ -803,7 +803,7 @@ public class DateUtil {
 		return format(date, "yyyy") + "-12-31";
 	}
 
-	public static String getCurrentYearEnd(String date) throws Exception{
+	public static String getCurrentYearEnd(String date) {
 		return getCurrentYearEnd(parse(date));
 	}
 
@@ -822,7 +822,7 @@ public class DateUtil {
 		return Integer.parseInt(years)-1 + "-01-01";
 	}
 
-	public static String getPreviousYearFirst(String date) throws Exception{
+	public static String getPreviousYearFirst(String date) {
 		return getPreviousYearFirst(parse(date));
 	}
 
@@ -872,7 +872,7 @@ public class DateUtil {
 	 * @param format  format
 	 * @return Date
 	 */
-	public static Date parse(String date, String format) throws Exception{
+	public static Date parse(String date, String format) throws RuntimeException{
 		DateTimeFormatter formatter = null;
 		if(null != format || format.length()==0) {
 			formatter = DateTimeFormatter.ofPattern(format);
@@ -916,7 +916,7 @@ public class DateUtil {
 		Date date = Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
-	public static Date parse(Object value) throws Exception{
+	public static Date parse(Object value) throws RuntimeException{
 		Date date = null;
 		if(null != value){
 			if(value instanceof Timestamp){
@@ -963,7 +963,7 @@ public class DateUtil {
 	 * @param str 日期
 	 * @return Date
 	 */
-	public static Date parse(String str) throws Exception{
+	public static Date parse(String str) throws RuntimeException{
 		if (BasicUtil.isEmpty(str)) {
 			return null;
 		}
@@ -1096,7 +1096,7 @@ public class DateUtil {
 		calendar.add(Calendar.DAY_OF_YEAR, value);
 		return calendar.getTime();
 	}
-	public static String addDay(String date, int value) throws Exception{
+	public static String addDay(String date, int value) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(parse(date));
 		calendar.add(Calendar.DAY_OF_YEAR, value);
@@ -1129,7 +1129,7 @@ public class DateUtil {
 		calendar.add(Calendar.MONTH, value);
 		return calendar.getTime();
 	}
-	public static Date addMonth(String date, int value) throws Exception{
+	public static Date addMonth(String date, int value) {
 		return addMonth(parse(date), value);
 	}
 
@@ -1181,7 +1181,7 @@ public class DateUtil {
 	public static int getDayOfWeek() {
 		return getDayOfWeek(new Date());
 	}
-	public static int getDayOfWeek(String date) throws Exception{
+	public static int getDayOfWeek(String date) {
 		return getDayOfWeek(parse(date));
 	}
 	/**
@@ -1209,7 +1209,7 @@ public class DateUtil {
 	 * @param to yyyy-MM 或 yyyy-MM-dd
 	 * @return List
 	 */
-	public static List<String> getMonths(String fr, String to) throws Exception{
+	public static List<String> getMonths(String fr, String to) {
 		List<String> list = new ArrayList<>();
 		if(fr.length() < 10){
 			fr = fr + "-01";
@@ -1230,10 +1230,10 @@ public class DateUtil {
 		return list;
 	}
 
-	public static List<Date> getDaysOfYear(int year) throws Exception{
+	public static List<Date> getDaysOfYear(int year) {
 		return getDaysOfYear(parse(year+"-01-01"));
 	}
-	public static List<Date> getDaysOfYear(String year) throws Exception{
+	public static List<Date> getDaysOfYear(String year) {
 		String ymd = year + "-01-01";
 		if(year.length()>4){
 			ymd = year;
@@ -1249,7 +1249,7 @@ public class DateUtil {
 		}
 		return list;
 	}
-	public static List<Date> getDaysOfMonth(String ym) throws Exception{
+	public static List<Date> getDaysOfMonth(String ym) {
 		String ymd = ym+"-01";
 		if(ym.length()>7){
 			ymd = ym;
@@ -1281,7 +1281,7 @@ public class DateUtil {
 		}
 		return list;
 	}
-	public static List<Date> getDaysOfWeek(String date) throws Exception{
+	public static List<Date> getDaysOfWeek(String date) {
 		return getDaysOfWeek(parse(date));
 	}
 	public static List<Date> getDaysOfWeek(Date date){
@@ -1293,7 +1293,7 @@ public class DateUtil {
 		return list;
 	}
 
-	public static List<String> getDays(String fr, String to) throws Exception{
+	public static List<String> getDays(String fr, String to) {
 		List<String> list = new ArrayList<>();
 		list.add(fr);
 		while(true){
@@ -1305,7 +1305,7 @@ public class DateUtil {
 		}
 		return list;
 	}
-	public static String max(String ... dates) throws Exception{
+	public static String max(String ... dates) {
 		String result = null;
 		if(null != dates){
 			for(String date:dates){
@@ -1320,7 +1320,7 @@ public class DateUtil {
 		}
 		return result;
 	}
-	public static String min(String ... dates) throws Exception{
+	public static String min(String ... dates) {
 		String result = null;
 		if(null != dates){
 			for(String date:dates){
@@ -1393,7 +1393,7 @@ public class DateUtil {
 		calendar.add(Calendar.YEAR, value);
 		return calendar.getTime();
 	}
-	public static Date addYear(String date, int value) throws Exception{
+	public static Date addYear(String date, int value) {
 		return addYear(parse(date), value);
 	}
 
@@ -1423,7 +1423,7 @@ public class DateUtil {
 		calendar.add(Calendar.HOUR_OF_DAY, value);
 		return calendar.getTime();
 	}
-	public static Date addHour(String date, int value) throws Exception{
+	public static Date addHour(String date, int value) {
 		return addHour(parse(date), value);
 	}
 
@@ -1453,7 +1453,7 @@ public class DateUtil {
 		calendar.add(Calendar.MINUTE, value);
 		return calendar.getTime();
 	}
-	public static Date addMinute(String date, int value) throws Exception{
+	public static Date addMinute(String date, int value) {
 		return addMinute(parse(date), value);
 	}
 
@@ -1471,7 +1471,7 @@ public class DateUtil {
 	public static int year() {
 		return year(new Date());
 	}
-	public static int year(String date) throws Exception{
+	public static int year(String date) {
 		return year(parse(date));
 	}
 
@@ -1485,7 +1485,7 @@ public class DateUtil {
 		calendar.setTime(date);
 		return calendar.get(Calendar.MONTH)+1;
 	}
-	public static int month(String date) throws Exception{
+	public static int month(String date) {
 		return month(parse(date));
 	}
 
@@ -1504,7 +1504,7 @@ public class DateUtil {
 	public static int dayOfWeek() {
 		return getDayOfWeek();
 	}
-	public static int dayOfWeek(String date) throws Exception{
+	public static int dayOfWeek(String date) {
 		return getDayOfWeek(date);
 	}
 	/**
@@ -1515,7 +1515,7 @@ public class DateUtil {
 	public static int dayOfMonth(Date date) {
 		return getDayOfMonth(date);
 	}
-	public static int dayOfMonth(String date) throws Exception{
+	public static int dayOfMonth(String date) {
 		return getDayOfMonth(date);
 	}
 
@@ -1528,7 +1528,7 @@ public class DateUtil {
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 
-	public static int getDayOfMonth(String date) throws Exception{
+	public static int getDayOfMonth(String date) {
 		return getDayOfMonth(parse(date));
 	}
 
@@ -1549,7 +1549,7 @@ public class DateUtil {
 		return getDayOfYear(date);
 	}
 
-	public static int dayOfYear(String date) throws Exception {
+	public static int dayOfYear(String date)  {
 		return getDayOfYear(date);
 	}
 
@@ -1563,7 +1563,7 @@ public class DateUtil {
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
-	public static int getDayOfYear(String date) throws Exception{
+	public static int getDayOfYear(String date) {
 		return getDayOfYear(parse(date));
 	}
 
@@ -1636,7 +1636,7 @@ public class DateUtil {
 		}
 	}
 
-	public static int compare(String fr, String to) throws Exception{
+	public static int compare(String fr, String to) {
 		return compare(parse(fr), parse(to));
 	}
 
