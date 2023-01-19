@@ -347,5 +347,6 @@ public class AnylineProperty {
 
     public void setDisabledDefaultEntityAdapter(boolean disabledDefaultEntityAdapter) {
         this.disabledDefaultEntityAdapter = disabledDefaultEntityAdapter;
+        ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER = disabledDefaultEntityAdapter;
     }
 }
