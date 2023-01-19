@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @Component("anyline.entity.adapter")
-public class DefaultAdapter implements EntityAdapter {
+public class DefaultEntityAdapter implements EntityAdapter {
     private static Map<String,String> class2table    = new HashMap<>();  // class.name > table.name
     private static Map<String,String> field2column   = new HashMap<>();  // class.name:field.name > column.name
     private static Map<String,Field> column2field    = new HashMap<>();  // column.name > field
@@ -41,7 +41,7 @@ public class DefaultAdapter implements EntityAdapter {
         // 2.注解
         name = ClassUtil.parseAnnotationFieldValue(clazz, "table.name", "table.value", "tableName.name", "tableName.value");
         if(BasicUtil.isNotEmpty(name)){
-            class2table.put(key, name.toString());
+            class2table.put(key, name);
             return name;
         }
         // 3.类名
@@ -58,9 +58,9 @@ public class DefaultAdapter implements EntityAdapter {
     public List<String> columns(Class clazz, boolean insert, boolean update) {
         List<String> columns = null;
         if(insert) {
-            columns = DefaultAdapter.insert_columns.get(clazz.getName());
+            columns = DefaultEntityAdapter.insert_columns.get(clazz.getName());
         }else if(update){
-            columns = DefaultAdapter.update_columns.get(clazz.getName());
+            columns = DefaultEntityAdapter.update_columns.get(clazz.getName());
         }
         if(null == columns) {
             columns = new ArrayList<>();
@@ -88,9 +88,9 @@ public class DefaultAdapter implements EntityAdapter {
                 }
             }
             if(insert) {
-                DefaultAdapter.insert_columns.put(clazz.getName(),columns);
+                DefaultEntityAdapter.insert_columns.put(clazz.getName(),columns);
             }else if(update){
-                DefaultAdapter.update_columns.put(clazz.getName(),columns);
+                DefaultEntityAdapter.update_columns.put(clazz.getName(),columns);
             }
         }
         List<String> list = new ArrayList<>();

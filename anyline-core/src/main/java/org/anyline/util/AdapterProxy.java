@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("entity.adatper.proxy")
+@Component("entity.adapter.proxy")
 public class AdapterProxy {
 
     public static boolean hasAdapter(){
@@ -29,7 +29,7 @@ public class AdapterProxy {
     public void setAdapter(Map<String,EntityAdapter> adapters) {
         AdapterProxy.adapters = adapters;
         String defaultKey = "anyline.entity.adapter";
-        if(ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false)){
+        if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ){
             // 如果禁用 adapter 引用 随机引用一个 , adapters引用其他
             // 计算时先调用 adapter 再用其他覆盖
             adapters.remove(defaultKey);
@@ -270,7 +270,7 @@ public class AdapterProxy {
         return row(null, obj, keys);
     }
     public static DataRow row(DataRow row, Object obj, String ... keys){
-        if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false)){
+        if(!ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER){
             row = DataRow.parse(row, KeyAdapter.KEY_CASE.CONFIG, obj, keys);
             if(null != adapter){
                 row = row(adapter, row, obj, keys);
@@ -322,7 +322,7 @@ public class AdapterProxy {
         }
 
         // 如果没有禁用默认adapter
-        if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false) && null != adapter){
+        if(!ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER && null != adapter){
             return column2param(adapter, metadatas);
         }
         return metadatas;
@@ -335,7 +335,7 @@ public class AdapterProxy {
         }
 
         // 如果没有禁用默认adapter
-        if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false) && null != adapter){
+        if(!ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER && null != adapter){
             return column2param(adapter, metadata);
         }
         return metadata;

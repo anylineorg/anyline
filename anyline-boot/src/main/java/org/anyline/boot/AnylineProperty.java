@@ -26,6 +26,7 @@ public class AnylineProperty {
     protected  boolean updateNullColumn							= false		;	// 是否更新nul值的列
     protected  boolean updateEmptyColumn						= false		;	// 是否更新空值的列
     protected  boolean insertNullColumn							= false		;	// 是否更新nul值的列
+    protected boolean  disabledDefaultEntityAdapter             = false     ;   // 禁用默认的entity adapter
     protected  boolean insertEmptyColumn						= false		;	// 是否更新空值的列
     protected  boolean sqlDelimiterOpen 						= false		;	// 是否开启 界定符
     protected  boolean sqlDelimiterPlaceholderOpen 			    = false		;	// 是否开启 界定符的占位符
@@ -338,5 +339,13 @@ public class AnylineProperty {
     public void setSqlDelimiterPlaceholder(String sqlDelimiterPlaceholder) {
         this.sqlDelimiterPlaceholder = sqlDelimiterPlaceholder;
         ConfigTable.SQL_DELIMITER_PLACEHOLDER = sqlDelimiterPlaceholder;
+    }
+
+    public boolean isDisabledDefaultEntityAdapter() {
+        return disabledDefaultEntityAdapter;
+    }
+
+    public void setDisabledDefaultEntityAdapter(boolean disabledDefaultEntityAdapter) {
+        this.disabledDefaultEntityAdapter = disabledDefaultEntityAdapter;
     }
 }

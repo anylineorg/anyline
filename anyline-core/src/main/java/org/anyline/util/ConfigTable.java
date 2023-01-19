@@ -73,6 +73,7 @@ public class ConfigTable {
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false		;	// 是否开启 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false		; 	// 禁用默认的entity adapter
 	public static String DEFAULT_PRIMARY_KEY							= "ID"		;	// 默认主键
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
