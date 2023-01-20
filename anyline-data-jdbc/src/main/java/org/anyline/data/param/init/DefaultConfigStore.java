@@ -537,8 +537,8 @@ public class DefaultConfigStore implements ConfigStore {
 	} 
 
 	@Override 
-	public ConfigStore group(String group){ 
-		return group(new DefaultGroup(group));
+	public ConfigStore group(String column){
+		return group(new DefaultGroup(column));
 	} 
 	public GroupStore getGroups() { 
 		return groups; 
