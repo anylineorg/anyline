@@ -88,6 +88,9 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
         if(null != coordinate) {
             coordinate.setType(Coordinate.TYPE.GCJ02LL);
         }
+        if(null != coordinate) {
+            coordinate.correct();
+        }
         return coordinate;
     }
 
@@ -143,6 +146,9 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
             coordinate.setAccuracy(result.getInt("level",0));
             coordinate.setSuccess(true);
 
+        }
+        if(null != coordinate) {
+            coordinate.correct();
         }
         return coordinate;
     }
@@ -208,6 +214,9 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
             }
             coordinate.setSuccess(true);
 
+        }
+        if(null != coordinate) {
+            coordinate.correct();
         }
         return coordinate;
     }

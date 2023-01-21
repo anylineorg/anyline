@@ -783,6 +783,9 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				coordinate.setSuccess(true);
 			}
 		}
+		if(null != coordinate) {
+			coordinate.correct();
+		}
 		return coordinate;
 	}
 	/** 
@@ -836,6 +839,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		}
 
 		if(null != coordinate) {
+			coordinate.correct();
 		}
 		return coordinate;
 	}

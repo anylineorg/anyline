@@ -41,6 +41,8 @@ public class Coordinate {
 	private String message = null			; // 执行结果说明
 	private int reliability					; // 可信度参考：值范围 1 <低可信> - 10 <高可信>
 	private int accuracy					; // 解析精度级别
+	private boolean direct = false			; // 是否直辖市
+	private boolean correct = false			; //
 
 	public Coordinate(String location){
 		if(BasicUtil.isNotEmpty(location)){
@@ -301,5 +303,29 @@ public class Coordinate {
 
 	public void setAccuracy(int accuracy) {
 		this.accuracy = accuracy;
+	}
+
+	public Coordinate correct(){
+		if(correct){
+			return this;
+		}
+		String code = BasicUtil.evl(getVillageCode(), getTownCode(), getCountyCode(), getCityCode(), getProvinceCode());
+		if(null == code){
+			return this;
+		}
+		if(code.startsWith("11")
+				||code.startsWith("12")
+				||code.startsWith("31")
+				||code.startsWith("50")
+		){
+			cityCode = countyCode;
+			cityName = countyName;
+			countyCode = townCode;
+			countyName = townName;
+			townCode = villageCode;
+			townName = villageName;
+			correct = true;
+		}
+		return this;
 	}
 }

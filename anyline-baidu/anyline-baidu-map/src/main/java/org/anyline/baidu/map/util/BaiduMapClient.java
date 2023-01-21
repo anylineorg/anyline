@@ -86,6 +86,9 @@ public class BaiduMapClient extends AbstractMapClient implements MapClient {
                 coordinate.setSuccess(true);
             }
         }
+        if(null != coordinate) {
+            coordinate.correct();
+        }
         return coordinate;
     }
     @Override
@@ -134,6 +137,9 @@ public class BaiduMapClient extends AbstractMapClient implements MapClient {
                 coordinate.setStreetNumber(number);
                 coordinate.setSuccess(true);
             }
+        }
+        if(null != coordinate) {
+            coordinate.correct();
         }
         return coordinate;
     }
