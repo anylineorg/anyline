@@ -39,11 +39,12 @@ public class DefaultEntityAdapter implements EntityAdapter {
             return name;
         }
         // 2.注解 以及父类注解直到Object
+        Class parent = clazz;
         while (true){
-            name = ClassUtil.parseAnnotationFieldValue(clazz, "table.name", "table.value", "tableName.name", "tableName.value");
+            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name", "table.value", "tableName.name", "tableName.value");
             if(BasicUtil.isEmpty(name)){
-                clazz = clazz.getSuperclass();
-                if(null == clazz){
+                parent = parent.getSuperclass();
+                if(null == parent){
                     break;
                 }
             }else{
