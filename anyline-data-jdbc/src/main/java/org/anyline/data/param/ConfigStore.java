@@ -109,9 +109,11 @@ public interface ConfigStore {
 	public ConfigStore and(String var, Object value, boolean overCondition, boolean overValue);
 	/**
 	 * 构造查询条件
+	 * @param cross 遇到空值处理方式
 	 * @param text 可以是一条原生的SQL查询条件
 	 * @return ConfigStore
 	 */
+	public ConfigStore and(EMPTY_VALUE_CROSS cross, String text);
 	public ConfigStore and(String text);
 
 	/**
