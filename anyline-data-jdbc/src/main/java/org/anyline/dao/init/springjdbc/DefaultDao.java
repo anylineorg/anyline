@@ -1768,6 +1768,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public LinkedHashMap<String, Column> columns(Table table){
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+		if(null == table || BasicUtil.isEmpty(table.getName())){
+			return columns;
+		}
 		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
@@ -1858,8 +1861,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public LinkedHashMap<String, Tag> tags(Table table) {
-
 		LinkedHashMap<String,Tag> tags = new LinkedHashMap<>();
+
+		if(null == table || BasicUtil.isEmpty(table.getName())){
+			return tags;
+		}
 		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
