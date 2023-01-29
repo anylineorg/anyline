@@ -27,7 +27,13 @@ import java.util.Map;
  
  
  
-public interface Condition extends Cloneable{ 
+public interface Condition extends Cloneable{
+	public static enum EMPTY_VALUE_CROSS{
+		 DEFAULT //默认由参数格式决定  如 +ID:id  ++ID:id
+		, BREAK	 //中断执行
+		, NULL	 //生成 IS NULL
+		, SRC	 //原样处理
+	}
 	public static String CONDITION_JOIN_TYPE_AND		= " AND "	;	// 拼接方式 AND
 	public static String CONDITION_JOIN_TYPE_OR			= " OR "	;	// 拼接方式 OR
 	// 参数变量类型
