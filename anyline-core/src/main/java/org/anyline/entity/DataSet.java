@@ -4200,6 +4200,48 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return new LinkedHashMap();
     }
 
+    /**
+     * [{code:"A", type:"A1"},{code:"B", type:"B1"}] map("code","type") 转换成{A:"A1",B:"B1"}<br/>
+     * 如果需要排序、去重 可以先调用asc/desc distinct
+     * @param key 作为key的列
+     * @param value 作为value的列
+     * @return DataRow
+     */
+    public DataRow row(String key, String value){
+        DataRow result = new DataRow();
+        for(DataRow row:rows){
+            result.put(row.getString(key), row.get(value));
+        }
+        return result;
+    }
+    /**
+     * @param key 作为key的列的下标
+     * @param value 作为value的列的下标
+     * @return DataRow
+     */
+    public DataRow row(int key, int value){
+        if(null != rows && rows.size() >0){
+            List<String> keys = rows.get(0).keys();
+            if(keys.size()>key && keys.size()>value) {
+                return row(keys.get(key), keys.get(value));
+            }
+        }
+        return new DataRow();
+    }
+    /**
+     * 默认第0列值作为key,第1列值作为value
+     * @return DataRow
+     */
+    public DataRow row(){
+        if(null != rows && rows.size() >0){
+            List<String> keys = rows.get(0).keys();
+            if(keys.size()>1) {
+                return row(keys.get(0), keys.get(1));
+            }
+        }
+        return new DataRow();
+    }
+
     private String concatValue(DataRow row, String split){
         StringBuilder builder = new StringBuilder();
         List<String> keys = row.keys();
