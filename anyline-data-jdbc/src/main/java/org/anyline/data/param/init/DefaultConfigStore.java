@@ -259,20 +259,23 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}else{
 			if(null == conf){
-				conf = new DefaultConfig();
-				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-				conf.setCompare(compare);
-				chain.addConfig(conf);
+				//if(compare != Compare.NONE) {//只作为参数
+					conf = new DefaultConfig();
+					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+					conf.setCompare(compare);
+					chain.addConfig(conf);
+				//}
 			}
-
-			conf.setPrefix(prefix);
-			conf.setVariable(var);
-			conf.setRequire(require);
-			conf.setStrictRequired(strictRequired);
-			if(overValue){
-				conf.setValue(value);
-			}else{
-				conf.addValue(value);
+			if(null != conf) {
+				conf.setPrefix(prefix);
+				conf.setVariable(var);
+				conf.setRequire(require);
+				conf.setStrictRequired(strictRequired);
+				if (overValue) {
+					conf.setValue(value);
+				} else {
+					conf.addValue(value);
+				}
 			}
 		}
 		return this;
@@ -304,19 +307,19 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore param(EMPTY_VALUE_CROSS cross, String var, Object value){
-		return and(cross, var, value);
+		return and(cross, Compare.NONE, var, value);
 	}
 	@Override
 	public ConfigStore param(String var, Object value){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, var, value);
+		return and(EMPTY_VALUE_CROSS.DEFAULT,  Compare.NONE, var, value);
 	}
 	@Override
 	public ConfigStore param(EMPTY_VALUE_CROSS cross, String id, String var, Object value){
-		return and(cross, id, var, value);
+		return and(cross, Compare.NONE,  id, var, value);
 	}
 	@Override
 	public ConfigStore param(String id, String var, Object value){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, id, var, value);
+		return and(EMPTY_VALUE_CROSS.DEFAULT, Compare.NONE,  id, var, value);
 	}
 	@Override
 	public ConfigStore or(EMPTY_VALUE_CROSS cross, String var, Object value){
