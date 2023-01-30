@@ -76,7 +76,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 				// condition instanceof ConditionChain
 				// if(i>0 /*&& !condition.isContainer()*/){
 				if(joinSize>0){
-					String chk = txt.toLowerCase().trim();
+					String chk = txt.toLowerCase().trim().replace("\n"," ").replace("\t", " ");
 					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")){
 						subBuilder.append(condition.getJoin());
 					}
