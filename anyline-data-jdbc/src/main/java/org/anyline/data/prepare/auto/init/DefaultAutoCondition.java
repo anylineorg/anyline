@@ -128,6 +128,10 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
 		int compareCode = compare.getCode();
+		if(compareCode == -1){
+			//只作参数赋值
+			return "";
+		}
 
 		StringBuilder col_builder = new StringBuilder();
 		if(!column.contains(".")){

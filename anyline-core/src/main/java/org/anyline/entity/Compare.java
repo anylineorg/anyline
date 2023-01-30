@@ -8,6 +8,29 @@ import java.util.Collection;
 import java.util.List;
 
 public enum Compare {
+    //只作为参数值为占位符赋值,不能独立生成新的查询条件
+    NONE{
+        @Override
+        public boolean compare(Object value, Object target) {
+            return false;
+        }
+
+        @Override
+        public String getSQL() {
+            return null;
+        }
+
+        @Override
+        public int getCode() {
+            return -1;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+    },
+    //根据参数格式判断
     AUTO{
         @Override
         public boolean compare(Object value, Object target) {
