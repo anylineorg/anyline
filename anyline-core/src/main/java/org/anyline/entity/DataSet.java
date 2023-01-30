@@ -4157,6 +4157,36 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return pivot(pks, classKeys, valueKeys);
     }
+
+    /**
+     * [{code:"A", type:"A1"},{code:"B", type:"B1"}] map("code","type") 转换成{A:"A1",B:"B1"}<br/>
+     * 如果需要排序、去重 可以先调用asc/desc distinct
+     * @param key 作为key的列
+     * @param value 作为value的列
+     * @return LinkedHashMap
+     */
+    public Map map(String key, String value){
+        Map map = new LinkedHashMap();
+        for(DataRow row:rows){
+            map.put(row.get(key), row.get(value));
+        }
+        return map;
+    }
+
+    /**
+     * 默认第0列值作为key,第1列值作为value
+     * @return LinkedHashMap
+     */
+    public Map map(){
+        if(null != rows && rows.size() >0){
+            List<String> keys = rows.get(0).keys();
+            if(keys.size()>1) {
+                return map(keys.get(0), keys.get(1));
+            }
+        }
+        return new LinkedHashMap();
+    }
+
     private String concatValue(DataRow row, String split){
         StringBuilder builder = new StringBuilder();
         List<String> keys = row.keys();
