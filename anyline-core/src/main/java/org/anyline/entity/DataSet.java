@@ -4172,7 +4172,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return map;
     }
-
+    /**
+     * @param key 作为key的列的下标
+     * @param value 作为value的列的下标
+     * @return LinkedHashMap
+     */
+    public Map map(int key, int value){
+        if(null != rows && rows.size() >0){
+            List<String> keys = rows.get(0).keys();
+            if(keys.size()>key && keys.size()>value) {
+                return map(keys.get(key), keys.get(value));
+            }
+        }
+        return new LinkedHashMap();
+    }
     /**
      * 默认第0列值作为key,第1列值作为value
      * @return LinkedHashMap
