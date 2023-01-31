@@ -866,6 +866,28 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return set;
 	}
 */
+	protected static DataRow row(JDBCAdapter adapter, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
+		DataRow row = new DataRow();
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int qty = rsmd.getColumnCount();
+			if (metadatas.isEmpty()) {
+				for (int i = 1; i <= qty; i++) {
+					Column column = adapter.column(null, rsmd, i);
+					metadatas.put(column.getName().toUpperCase(), column);
+				}
+			}
+			for (int i = 1; i <= qty; i++) {
+				String name = rsmd.getColumnName(i);
+				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
+				row.put(name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
+			}
+			row.setMetadatas(metadatas);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return row;
+	}
 
 	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
@@ -888,45 +910,47 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			set.setMetadatas(columns);
 		}
 		try{
+			final long[] mid = {0};
 			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
-			getJdbc().query(sql,   new RowCallbackHandler(){
-				@Override
-				public void processRow(ResultSet rs) throws SQLException {
-					ResultSetMetaData rsmd = rs.getMetaData();
-					int qty = rsmd.getColumnCount();
-					if(metadatas.isEmpty()){
-						for(int i=1; i<=qty; i++){
-							Column column = adapter.column(null, rsmd, i);
-							metadatas.put(column.getName().toUpperCase(), column);
+			if(null != values && values.size()>0){
+				getJdbc().query(sql, values.toArray(), new RowCallbackHandler() {
+					@Override
+					public void processRow(ResultSet rs) throws SQLException {
+						if(mid[0] == 0){
+							mid[0] = System.currentTimeMillis();
 						}
+						DataRow row = row(adapter, metadatas, rs);
+						set.add(row);
 					}
-					DataRow row = new DataRow();
-					for(int i=1; i<=qty; i++){
-						String name = rsmd.getColumnName(i);
-						org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
-						row.put(name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
+				});
+			}else {
+				getJdbc().query(sql, new RowCallbackHandler() {
+					@Override
+					public void processRow(ResultSet rs) throws SQLException {
+						if(mid[0] == 0){
+							mid[0] = System.currentTimeMillis();
+						}
+						DataRow row = row(adapter, metadatas, rs);
+						set.add(row);
 					}
-					row.setMetadatas(metadatas);
-					set.add(row);
-				}
-			});
-			long mid = System.currentTimeMillis();
+				});
+			}
 			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
 				slow = true;
-				if(mid > ConfigTable.SLOW_SQL_MILLIS){
-					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
+				if(mid[0] > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0], sql, paramLogFormat(values));
 					if(null != listener){
-						listener.slow("select", null, sql, values, null, mid);
+						listener.slow("select", null, sql, values, null, mid[0]);
 					}
 				}
 			}
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("{}[执行耗时:{}ms]", random, mid - fr);
+				log.warn("{}[执行耗时:{}ms]", random, mid[0] - fr);
 			}
 			set.setDatalink(DataSourceHolder.getDataSource());
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, set.size());
+				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
