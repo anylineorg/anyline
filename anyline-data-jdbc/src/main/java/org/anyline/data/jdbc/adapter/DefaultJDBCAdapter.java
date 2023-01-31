@@ -1079,7 +1079,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return tables;
 	}
 
-
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1087,7 +1086,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception
 	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
-	 *
+	 * public Column column(Column column, SqlRowSetMetaData rsm, int index);
+	 * public Column column(Column column, ResultSet rs);
 	 * protected Column column(Column column, SqlRowSetMetaData rsm, int index)
 	 * protected Column column(Column column, ResultSet rs)
 	 * protected List<String> keys(ResultSet rs) throws Exception
@@ -1200,8 +1200,90 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return columns;
 	}
 
+	/**
+	 * 构建Column
+	 * @param column 列
+	 * @param rs  ResultSet
+	 * @return Column
+	 */
+	/*
+		TABLE_CAT                             = api
+		TABLE_SCHEM                           = null
+		TABLE_NAME                            = 表名
+		COLUMN_NAME                           = ID
+		DATA_TYPE                             = -5
+		TYPE_NAME                             = BIGINT/JSON/VARCHAR
+		COLUMN_SIZE                           = 19
+		BUFFER_LENGTH                         = 65535
+		DECIMAL_DIGITS                        = null
+		NUM_PREC_RADIX                        = 10
+		NULLABLE                              = 0
+		REMARKS                               = ID
+		COLUMN_DEF                            = null
+		SQL_DATA_TYPE                         = 0
+		SQL_DATETIME_SUB                      = 0
+		CHAR_OCTET_LENGTH                     = null
+		ORDINAL_POSITION                      = 1
+		IS_NULLABLE                           = NO
+		SCOPE_CATALOG                         = null
+		SCOPE_SCHEMA                          = null
+		SCOPE_TABLE                           = null
+		SOURCE_DATA_TYPE                      = null
+		IS_AUTOINCREMENT                      = YES
+		IS_GENERATEDCOLUMN                    = NO
+*/
+	@Override
+	public Column column(Column column, ResultSet rs){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			Map<String,Integer> keys = keys(rs);
+			if(null == column.getName()){
+				column.setName(string(keys, "COLUMN_NAME", rs));
+			}
+			if(null == column.getType()){
+				column.setType(BasicUtil.parseInt(string(keys, "DATA_TYPE", rs), null));
+			}
+			if(null == column.getType()){
+				column.setType(BasicUtil.parseInt(string(keys, "SQL_DATA_TYPE", rs), null));
+			}
+			if(null == column.getTypeName()){
+				column.setTypeName(string(keys, "TYPE_NAME", rs));
+			}
+			if(null == column.getPrecision()) {
+				column.setPrecision(integer(keys, "COLUMN_SIZE", rs, null));
+			}
+			if(null == column.getScale()) {
+				column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
+			}
+			if(null == column.getPosition()) {
+				column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			}
+			if(-1 == column.isAutoIncrement()) {
+				column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
+			}
+			if(-1 == column.isGenerated()) {
+				column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
+			}
+			if(null == column.getComment()) {
+				column.setComment(string(keys, "REMARKS", rs));
+			}
+			if(null == column.getPosition()){
+				column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			}
+			if (BasicUtil.isEmpty(column.getDefaultValue())) {
+				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
 
-	protected Column column(Column column, SqlRowSetMetaData rsm, int index){
+
+	@Override
+	public Column column(Column column, SqlRowSetMetaData rsm, int index){
 		if(null == column){
 			column = new Column();
 		}
@@ -1225,28 +1307,26 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		return column;
 	}
-
-	/**
-	 * 构建Column
-	 * @param column 列
-	 * @param rs  ResultSet
-	 * @return Column
-	 */
-	protected Column column(Column column, ResultSet rs){
+	@Override
+	public Column column(Column column, ResultSetMetaData rsm, int index){
 		if(null == column){
 			column = new Column();
 		}
 		try {
-			Map<String,Integer> keys = keys(rs);
-			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
-			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
-			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
-			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
-			column.setComment(string(keys, "REMARKS", rs));
-			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
-			if (BasicUtil.isEmpty(column.getDefaultValue())) {
-				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
-			}
+			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+			column.setClassName(rsm.getColumnClassName(index));
+			column.setCaseSensitive(rsm.isCaseSensitive(index));
+			column.setCurrency(rsm.isCurrency(index));
+			column.setComment(rsm.getColumnLabel(index));
+			column.setName(rsm.getColumnName(index));
+			column.setPrecision(rsm.getPrecision(index));
+			column.setScale(rsm.getScale(index));
+			column.setDisplaySize(rsm.getColumnDisplaySize(index));
+			column.setSigned(rsm.isSigned(index));
+			column.setTableName(rsm.getTableName(index));
+			column.setType(rsm.getColumnType(index));
+			column.setTypeName(rsm.getColumnTypeName(index));
 		}catch (Exception e){
 			e.printStackTrace();
 		}
