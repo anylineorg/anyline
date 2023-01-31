@@ -86,7 +86,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null != list) {
             for (Object obj : list) {
                 DataRow row = null;
-                if(obj instanceof Collection){
+                if(obj instanceof DataRow){
+                    row = (DataRow)obj;
+                }else if(obj instanceof Collection){
                     row = DataRow.parseList((Collection)obj, fields);
                 }else {
                     row = DataRow.parse(obj, fields);
