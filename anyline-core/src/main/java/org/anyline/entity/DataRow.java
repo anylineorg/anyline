@@ -369,7 +369,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return BeanUtil.value(json);
         }
         if (json.isArray()) {
-
             Collection<Object> list = null;
             if(null != obj && obj instanceof Collection) {
                 list = (Collection)obj;
@@ -377,13 +376,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 list = new ArrayList<>();
             }
             Iterator<JsonNode> items = json.iterator();
+            boolean isDataRow = true;
             while (items.hasNext()) {
                 JsonNode item = items.next();
-                list.add(parse(obj, keyCase, item));
+                Object row = parse(obj, keyCase, item);
+                if(row instanceof DataRow){
+                }else{
+                    isDataRow = false;
+                }
+                list.add(row);
+            }
+            if(isDataRow){
+                return DataSet.parse(list);
             }
             return list;
         } else if (json.isObject()) {
-
             DataRow row = null;
             if(null != obj && obj instanceof DataRow){
                 row = (DataRow)obj;
