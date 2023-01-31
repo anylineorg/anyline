@@ -22,8 +22,20 @@ package org.anyline.dao.init.springjdbc;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.jdbc.util.SQLAdapterUtil;
+import org.anyline.data.listener.DDListener;
+import org.anyline.data.listener.DMListener;
+import org.anyline.data.param.ConfigParser;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.prepare.Procedure;
+import org.anyline.data.prepare.ProcedureParam;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -31,19 +43,6 @@ import org.anyline.entity.PageNavi;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.param.ConfigParser;
-import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.Procedure;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.ProcedureParam;
-import org.anyline.data.run.Run;
-import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
-import org.anyline.data.jdbc.ds.DataSourceHolder;
-import org.anyline.data.jdbc.util.SQLAdapterUtil;
-import org.anyline.data.listener.DDListener;
-import org.anyline.data.listener.DMListener;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -53,6 +52,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -797,7 +797,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param sql  sql
 	 * @param values  values
 	 * @return DataSet
-	 */
+	 *//*
 	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
@@ -850,6 +850,83 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			set.setDatalink(DataSourceHolder.getDataSource());
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, list.size());
+			}
+		}catch(Exception e){
+			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常", 33), sql, paramLogFormat(values));
+			}
+			e.printStackTrace();
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+				SQLQueryException ex = new SQLQueryException("query异常",e);
+				ex.setSql(sql);
+				ex.setValues(values);
+				throw ex;
+			}
+		}
+		return set;
+	}
+*/
+
+	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
+		if(BasicUtil.isEmpty(sql)){
+			throw new SQLQueryException("未指定SQL");
+		}
+		long fr = System.currentTimeMillis();
+		String random = "";
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
+		}
+		DataSet set = new DataSet();
+		LinkedHashMap<String,Column> columns = null;
+		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
+			columns = CacheProxy.columns(table);
+			if(null == columns){
+				columns = columns(table);
+				CacheProxy.columns(table, columns);
+			}
+			set.setMetadatas(columns);
+		}
+		try{
+			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
+			getJdbc().query(sql,   new RowCallbackHandler(){
+				@Override
+				public void processRow(ResultSet rs) throws SQLException {
+					ResultSetMetaData rsmd = rs.getMetaData();
+					int qty = rsmd.getColumnCount();
+					if(metadatas.isEmpty()){
+						for(int i=1; i<=qty; i++){
+							Column column = adapter.column(null, rsmd, i);
+							metadatas.put(column.getName().toUpperCase(), column);
+						}
+					}
+					DataRow row = new DataRow();
+					for(int i=1; i<=qty; i++){
+						String name = rsmd.getColumnName(i);
+						org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
+						row.put(name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
+					}
+					row.setMetadatas(metadatas);
+					set.add(row);
+				}
+			});
+			long mid = System.currentTimeMillis();
+			boolean slow = false;
+			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				slow = true;
+				if(mid > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
+					if(null != listener){
+						listener.slow("select", null, sql, values, null, mid);
+					}
+				}
+			}
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("{}[执行耗时:{}ms]", random, mid - fr);
+			}
+			set.setDatalink(DataSourceHolder.getDataSource());
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, set.size());
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
