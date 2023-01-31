@@ -211,6 +211,67 @@ public class BeanUtil {
 		}
 		return true;
 	}
+
+	public static Object value(String type, Object value){
+		Object v = value;
+		if(null == type){
+			return v;
+		}
+		type = type.toLowerCase();
+		if(null != v){
+			if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
+				if (type.equals("bigint") || type.equals("long")) {
+					v = Long.parseLong(value.toString());
+				}else if (type.contains("int")) {
+					v = Integer.parseInt(value.toString());
+				} else if (type.equals("double")) {
+					v = Double.parseDouble(value.toString());
+				} else if (type.equals("long")) {
+					v = Long.parseLong(value.toString());
+				} else if (type.equals("float")) {
+					v = Float.parseFloat(value.toString());
+				} else if (type.equals("boolean")) {
+					v = Boolean.parseBoolean(value.toString());
+				} else if (type.equals("short")) {
+					v = Short.parseShort(value.toString());
+				} else if (type.equals("bigdecimal")) {
+					v = new BigDecimal(value.toString());
+				} else if (type.equals("byte")) {
+					v = Byte.parseByte(value.toString());
+				} else if (type.equals("date")) {
+					v = DateUtil.parse(v);
+				} else if(type.equals("localtime")){
+					Date date = DateUtil.parse(v);
+					v = DateUtil.localTime(date);
+				} else if(type.equals("localdate")){
+					Date date = DateUtil.parse(v);
+					v = DateUtil.localDate(date);
+				} else if(type.equals("localdatetime")){
+					Date date = DateUtil.parse(v);
+					v = DateUtil.localDateTime(date);
+				}else if(type.equals("json")){
+					String str = v.toString().trim();
+					try{
+						JsonNode node = BeanUtil.JSON_MAPPER.readTree(str);
+						if(node.isArray()){
+							v = DataSet.parseJson(node);
+						}else{
+							v = DataRow.parseJson(node);
+						}
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+				}else if (type.equals("blob")) {
+					if(v instanceof byte[]){
+						v = Base64Util.encode((byte[]) v);
+					}else {
+						v = v.toString();
+					}
+				}
+			}
+		}
+		return v;
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){
 		if(null == obj || null == field){
