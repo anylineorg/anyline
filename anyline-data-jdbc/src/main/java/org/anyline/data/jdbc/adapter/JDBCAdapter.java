@@ -21,18 +21,20 @@ package org.anyline.data.jdbc.adapter;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.Compare;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.run.RunValue;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.RunValue;
+import org.anyline.entity.Compare;
+import org.anyline.entity.DataSet;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -580,7 +582,9 @@ public interface JDBCAdapter {
 	 */
 	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
-
+	public Column column(Column column, SqlRowSetMetaData rsm, int index);
+	public Column column(Column column, ResultSetMetaData rsm, int index);
+	public Column column(Column column, ResultSet rs);
 
 	/* *****************************************************************************************************************
 	 * 													tag
