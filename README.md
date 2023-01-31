@@ -6,7 +6,9 @@
 org.anyline.data.jdbc.ds.DynamicDataSourceRegister替代
 
 这样就彻底剥离了springboot(只是anyline源码中不再依赖，实际项目中不受影响)  
-项目中不再需要考虑anyline与springboot的版本匹配
+项目中不再需要考虑anyline与springboot的版本匹配  
+
+原来有用过ConfigStore.addCondition/addConditions的换成and/ands  
 
 ***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)
