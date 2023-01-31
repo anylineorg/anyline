@@ -9,41 +9,41 @@ import org.springframework.context.annotation.Configuration;
 public class AnylineProperty {
     //以下属性与ConfigTable一一对应
 
-    protected  boolean debug 									= true		;	// debug状态会输出更多日志
-    protected  boolean showSql									= true		;	// 执行sql时是否输出日志
-    protected  long slowSqlMillis								= 0			; 	// 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
-    protected  boolean showSqlParam								= true		;	// 执行sql时是否输出日志
-    protected  boolean showSqlWhenError						    = true		;	// 执行sql异常时是否输出日志
-    protected  boolean showSqlParamWhenError					= true		;	// 执行sql异常时是否输出日志
-    protected  boolean sqlDebug	 								= false		;	// 加载自定义sql时是否输出日志
-    protected  boolean httpLog 									= true		;	// 调用http接口时是否出输出日志
-    protected  int httpParamEncode								= 0			;   // 0:自动识别 1:确认编码 -1:确认未编码
-    protected  boolean upperKey 								= true		;	// 是否自动转换成大写
-    protected  boolean lowerKey 								= false		;	// 是否自动转换成小写
-    protected  boolean keyIgnoreCase 							= true		;	// 是否忽略大小写
-    protected  boolean throwSqlQueryException 					= true		;	// sql执行异常时是否抛出
-    protected  boolean throwSqlUpdateException 				    = true		;	// sql执行异常时是否抛出
-    protected  boolean updateNullColumn							= false		;	// 是否更新nul值的列
-    protected  boolean updateEmptyColumn						= false		;	// 是否更新空值的列
-    protected  boolean insertNullColumn							= false		;	// 是否更新nul值的列
+    protected boolean debug 									= true		;	// debug状态会输出更多日志
+    protected boolean showSql									= true		;	// 执行sql时是否输出日志
+    protected long slowSqlMillis								= 0			; 	// 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
+    protected boolean showSqlParam								= true		;	// 执行sql时是否输出日志
+    protected boolean showSqlWhenError						    = true		;	// 执行sql异常时是否输出日志
+    protected boolean showSqlParamWhenError					    = true		;	// 执行sql异常时是否输出日志
+    protected boolean sqlDebug	 								= false		;	// 加载自定义sql时是否输出日志
+    protected boolean httpLog 									= true		;	// 调用http接口时是否出输出日志
+    protected int httpParamEncode								= 0			;   // 0:自动识别 1:确认编码 -1:确认未编码
+    protected boolean upperKey 								    = true		;	// 是否自动转换成大写
+    protected boolean lowerKey 								    = false		;	// 是否自动转换成小写
+    protected boolean keyIgnoreCase 							= true		;	// 是否忽略大小写
+    protected boolean throwSqlQueryException 					= true		;	// sql执行异常时是否抛出
+    protected boolean throwSqlUpdateException 				    = true		;	// sql执行异常时是否抛出
+    protected boolean updateNullColumn							= false		;	// 是否更新nul值的列
+    protected boolean updateEmptyColumn						    = false		;	// 是否更新空值的列
+    protected boolean insertNullColumn							= false		;	// 是否更新nul值的列
     protected boolean  disabledDefaultEntityAdapter             = false     ;   // 禁用默认的entity adapter
-    protected  boolean insertEmptyColumn						= false		;	// 是否更新空值的列
-    protected  boolean sqlDelimiterOpen 						= false		;	// 是否开启 界定符
-    protected  boolean sqlDelimiterPlaceholderOpen 			    = false		;	// 是否开启 界定符的占位符
-    protected  boolean returnEmptyInstanceReplaceNull			= false		;	// service.query() dataset.getrow()返回null时,是否替换成new datarow(), new entity()
-    protected  boolean autoCheckMetadata						= false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
-    protected  String defaultPrimaryKey							= "id"		;	// 默认主键
-    protected  int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
-    protected  boolean ddlAutoDropColumn						= false		;   // ddl执行时是否自动删除定义中不存在的列
-    protected  String sqlStoreDir								= null		;	//自定义sql目录 默认${classpath}/sql
-    protected  String entityTableAnnotation						= null		;   // 表名注解
-    protected  String entityColumnAnnotation					= null		;	// 列名注解
-    protected  String entityPrimaryKeyAnnotation				= null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableid.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
-    protected  String httpParamKeyCase							= "camel"	;	// http参数格式 camel:小驼峰 camel:大驼峰 lower:小写 upper:大写  service.column2param会把 userName 转成username
-    protected  String tableMetadataCacheKey					    = ""		;	// 表结构缓存key
-    protected  int tableMetadataCacheSecond						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
-    protected  String sqlDelimiterPlaceholder					= "`"		;
-
+    protected boolean insertEmptyColumn						    = false		;	// 是否更新空值的列
+    protected boolean sqlDelimiterOpen 						    = false		;	// 是否开启 界定符
+    protected boolean sqlDelimiterPlaceholderOpen 			    = false		;	// 是否开启 界定符的占位符
+    protected boolean returnEmptyInstanceReplaceNull			= false		;	// service.query() dataset.getrow()返回null时,是否替换成new datarow(), new entity()
+    protected boolean autoCheckMetadata						    = false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+    protected boolean removeEmptyHttpKey                        = false     ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
+    protected String defaultPrimaryKey							= "id"		;	// 默认主键
+    protected int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+    protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
+    protected String sqlStoreDir								= null		;	//自定义sql目录 默认${classpath}/sql
+    protected String entityTableAnnotation						= null		;   // 表名注解
+    protected String entityColumnAnnotation					    = null		;	// 列名注解
+    protected String entityPrimaryKeyAnnotation				    = null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableid.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+    protected String httpParamKeyCase							= "camel"	;	// http参数格式 camel:小驼峰 camel:大驼峰 lower:小写 upper:大写  service.column2param会把 userName 转成username
+    protected String tableMetadataCacheKey					    = ""		;	// 表结构缓存key
+    protected int tableMetadataCacheSecond						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+    protected String sqlDelimiterPlaceholder					= "`"		;
     public boolean isDebug() {
         return debug;
     }
@@ -348,5 +348,14 @@ public class AnylineProperty {
     public void setDisabledDefaultEntityAdapter(boolean disabledDefaultEntityAdapter) {
         this.disabledDefaultEntityAdapter = disabledDefaultEntityAdapter;
         ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER = disabledDefaultEntityAdapter;
+    }
+
+    public boolean isRemoveEmptyHttpKey() {
+        return removeEmptyHttpKey;
+    }
+
+    public void setRemoveEmptyHttpKey(boolean removeEmptyHttpKey) {
+        this.removeEmptyHttpKey = removeEmptyHttpKey;
+        ConfigTable.IS_REMOVE_EMPTY_HTTP_KEY = removeEmptyHttpKey;
     }
 }
