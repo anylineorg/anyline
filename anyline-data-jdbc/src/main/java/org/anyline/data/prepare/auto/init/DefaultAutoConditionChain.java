@@ -81,7 +81,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 						subBuilder.append(condition.getJoin());
 					}
 				}
-				if(!txt.startsWith(" ") && !txt.startsWith("(")){
+				if(subBuilder.length() > 0 && !txt.startsWith(" ") && !txt.startsWith("(")){
 					subBuilder.append(" ");
 				}
 
