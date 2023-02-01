@@ -133,8 +133,6 @@ public interface ConfigStore {
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
-	 * @param overCondition 覆盖相同key的条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String id, String var, Object value);
@@ -282,7 +280,7 @@ public interface ConfigStore {
 	public ConfigStore order(String column, String type);
 	/**
 	 * 添加排序
-	 * @param column 列名
+	 * @param order 列名+排序方式
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return ConfigStore
 	 */

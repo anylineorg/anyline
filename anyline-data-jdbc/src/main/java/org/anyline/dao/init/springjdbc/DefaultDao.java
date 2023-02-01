@@ -790,14 +790,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		return maps;
-	}
-	/**
-	 * 查询
-	 * @param adapter  adapter
-	 * @param sql  sql
-	 * @param values  values
-	 * @return DataSet
-	 *//*
+	}/*
 	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");

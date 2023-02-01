@@ -967,15 +967,17 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
-
 	/**
-	 * 从jdbc结果中提取表结构
-	 * ResultSet set = con.getMetaData().getTables()
+	 *
 	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param tables 上一步查询结果
+	 * @param dbmd DatabaseMetaData
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param set 查询结果
-	 * @return List
+	 * @param pattern pattern
+	 * @param types types
+	 * @return LinkedHashMap
+	 * @throws Exception
 	 */
 	@Override
 	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
@@ -1064,15 +1066,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 根据JDBC
+	 *
 	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param master 主表
+	 * @param tables 上一步查询结果
+	 * @param dbmd DatabaseMetaData
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @param set set
-	 * @return tables
-	 * @throws Exception 异常
+	 * @param master 主表
+	 * @return LinkedHashMap
+	 * @throws Exception
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
