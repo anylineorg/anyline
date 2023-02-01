@@ -1295,7 +1295,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setClassName(rsm.getColumnClassName(index));
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
 			column.setCurrency(rsm.isCurrency(index));
-			column.setComment(rsm.getColumnLabel(index));
 			column.setOriginalName(rsm.getColumnName(index));
 			column.setName(rsm.getColumnLabel(index));
 			column.setPrecision(rsm.getPrecision(index));
@@ -1321,7 +1320,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setClassName(rsm.getColumnClassName(index));
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
 			column.setCurrency(rsm.isCurrency(index));
-			column.setComment(rsm.getColumnLabel(index));
 			column.setOriginalName(rsm.getColumnName(index));
 			column.setName(rsm.getColumnLabel(index));
 			column.setPrecision(rsm.getPrecision(index));
