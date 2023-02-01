@@ -54,6 +54,7 @@ public class Tag extends Column{
     public Object clone(){
         Tag copy = new Tag();
         copy.setName(name);
+        copy.setOriginalName(originalName);
         copy.setCatalog(catalog);
         copy.setClassName(className);
         copy.setSchema(schema);

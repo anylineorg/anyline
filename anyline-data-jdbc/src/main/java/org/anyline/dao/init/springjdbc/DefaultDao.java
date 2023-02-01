@@ -878,7 +878,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 			for (int i = 1; i <= qty; i++) {
-				String name = rsmd.getColumnName(i);
+				String name = rsmd.getColumnLabel(i);
 				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
 				row.put(name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
 			}
@@ -1288,7 +1288,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					ResultSetMetaData rsmd = rs.getMetaData();
 					int cols = rsmd.getColumnCount();
 					for(int i=1; i<=cols; i++){
-						set.addHead(rsmd.getColumnName(i));
+						set.addHead(rsmd.getColumnLabel(i));
 					}
 					long mid = System.currentTimeMillis();
 					int index = 0;
@@ -1305,7 +1305,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						){
 							DataRow row = new DataRow();
 							for(int i=1; i<=cols; i++){
-								row.put(rsmd.getColumnName(i), rs.getObject(i));
+								row.put(rsmd.getColumnLabel(i), rs.getObject(i));
 							}
 							set.addRow(row);
 						}

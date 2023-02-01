@@ -9,8 +9,10 @@ import org.anyline.util.BeanUtil;
 
 public class Column implements org.anyline.entity.data.Column{
 
-    protected String keyword = "COLUMN"            ;
+    protected String keyword = "COLUMN"           ;
 
+    protected String name                         ; // 名称
+    protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
     protected String catalog                      ; // 数据库
     protected String className                    ; // java.lang.Long
     protected String schema                       ; // dbo
@@ -18,7 +20,6 @@ public class Column implements org.anyline.entity.data.Column{
     protected Table table                         ; // 表
     protected Integer displaySize                 ; // display size
     protected String comment                      ; // 备注
-    protected String name                         ; // 名称
     protected Integer type                        ; // 类型
     protected String typeName                     ; // 类型名称
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
@@ -507,6 +508,15 @@ public class Column implements org.anyline.entity.data.Column{
         return this;
     }
 
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public Column setOriginalName(String originalName) {
+        this.originalName = originalName;
+        return this;
+    }
+
     public String getBefore() {
         return before;
     }
@@ -583,6 +593,7 @@ public class Column implements org.anyline.entity.data.Column{
     public Object clone(){
         Column copy = new Column();
         copy.setName(name);
+        copy.setOriginalName(originalName);
         copy.setTypeName(typeName);
         copy.setCatalog(catalog);
         copy.setClassName(className);
@@ -606,10 +617,12 @@ public class Column implements org.anyline.entity.data.Column{
         copy.setAfter(after);
         copy.setCharset(charset);
         copy.setCollate(collate);
+
         return copy;
     }
     public String getKeyword() {
         return this.keyword;
     }
+
 }
 

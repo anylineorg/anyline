@@ -1294,7 +1294,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
 			column.setCurrency(rsm.isCurrency(index));
 			column.setComment(rsm.getColumnLabel(index));
-			column.setName(rsm.getColumnName(index));
+			column.setOriginalName(rsm.getColumnName(index));
+			column.setName(rsm.getColumnLabel(index));
 			column.setPrecision(rsm.getPrecision(index));
 			column.setScale(rsm.getScale(index));
 			column.setDisplaySize(rsm.getColumnDisplaySize(index));
@@ -1319,7 +1320,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
 			column.setCurrency(rsm.isCurrency(index));
 			column.setComment(rsm.getColumnLabel(index));
-			column.setName(rsm.getColumnName(index));
+			column.setOriginalName(rsm.getColumnName(index));
+			column.setName(rsm.getColumnLabel(index));
 			column.setPrecision(rsm.getPrecision(index));
 			column.setScale(rsm.getScale(index));
 			column.setDisplaySize(rsm.getColumnDisplaySize(index));
@@ -1344,7 +1346,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		Map<String, Integer> keys = new HashMap<>();
 		if(null != rsmd){
 			for (int i = 1; i < rsmd.getColumnCount(); i++) {
-				keys.put(rsmd.getColumnName(i).toUpperCase(), i);
+				keys.put(rsmd.getColumnLabel(i).toUpperCase(), i);
 			}
 		}
 		return keys;

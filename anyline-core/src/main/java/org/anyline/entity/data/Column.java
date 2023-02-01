@@ -12,6 +12,7 @@ public interface Column {
     public String getComment();
 
     public String getName();
+    public String getOriginalName();
 
     public Integer getType();
 
