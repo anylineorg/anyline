@@ -85,7 +85,7 @@ public class XMLRun extends BasicRun implements Run {
 			for(String condition:conditions){ 
 				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
-				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){ 
+				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE){ 
 					 value = BeanUtil.array2list(value.toString().split(","));
 				} 
 				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());

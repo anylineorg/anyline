@@ -216,7 +216,7 @@ public class ConfigParser {
 			// [1,2,3]或[1,2,3]:[1,2,3]
 			// id:[id:cd:{[1,2,3]}]
 			result.setCompare(Compare.IN);
-			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
+			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE);
 			if(isKey){
 				config = config.substring(1,config.length()-1);
 			}
@@ -324,7 +324,7 @@ public class ConfigParser {
 			String className = parser.getClazz();
 			String methodName = parser.getMethod();
 			// int fetchValueType = parser.getParamFetchType();
-			int fetchValueType = Config.FETCH_REQUEST_VALUE_TYPE_MULIT;
+			int fetchValueType = Config.FETCH_REQUEST_VALUE_TYPE_MULTIPLE;
 			boolean isKeyEncrypt = parser.isKeyEncrypt();
 			boolean isValueEncrypt = parser.isValueEncrypt();
 
@@ -401,7 +401,7 @@ public class ConfigParser {
 				if(key.startsWith("${") && key.endsWith("}")){
 					// col:value
 					key = key.substring(2, key.length()-1);
-					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
 						if(key.startsWith("[") && key.endsWith("]")){
 							key = key.substring(1, key.length()-1);
 						}
@@ -439,7 +439,7 @@ public class ConfigParser {
 		List<Object> result = new ArrayList<Object>();
 		String value = parser.getKey();
 		if(BasicUtil.isNotEmpty(value)){
-			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
 				if(value.startsWith("[") && value.endsWith("]")){
 					value = value.substring(1, value.length()-1);
 				}
@@ -469,7 +469,7 @@ public class ConfigParser {
 		if(null != defs){
 			for(ParseResult def:defs){
 				String key = def.getKey();
-				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
 					if(key.startsWith("[") && key.endsWith("]")){
 						key = key.substring(1, key.length()-1);
 					}

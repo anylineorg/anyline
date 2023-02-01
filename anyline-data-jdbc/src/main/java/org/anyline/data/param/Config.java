@@ -30,7 +30,7 @@ public interface Config {
 	// 从request 取值方式
 	public static int FETCH_REQUEST_VALUE_TYPE_NONE 	= 0;	// 没有参数
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE 	= 1;	// 单值
-	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  	= 2;	// 数组
+	public static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE = 2;	// 数组
 	public void setValue(Map<String,Object> values); 
 	public List<Object> getValues() ; 
 	public List<Object> getOrValues() ; 

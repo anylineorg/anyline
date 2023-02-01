@@ -31,6 +31,7 @@ public interface Condition extends Cloneable{
 	public static enum EMPTY_VALUE_CROSS{
 		 DEFAULT //默认由参数格式决定  如 +ID:id  ++ID:id,默认情况下如果值为空则忽略当前条件
 		, BREAK	 //中断执行 整个SQL不执行
+		, IGNORE //当前条件不参考最终SQL执行
 		, NULL	 //生成 IS NULL
 		, SRC	 //原样处理
 	}

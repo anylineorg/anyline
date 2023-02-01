@@ -245,7 +245,7 @@ public class DefaultConfigStore implements ConfigStore {
 				boolean first = true;
 				for(Object item:list){
 					if(first){
-						and(compare, prefix, var, item, false, false);
+						and(cross, compare, prefix, var, item, false, false);
 						first = false;
 					}else {
 						or(compare, var, item);
@@ -254,19 +254,22 @@ public class DefaultConfigStore implements ConfigStore {
 			}else if(compareCode == 62){
 				//FIND_IN_AND
 				for(Object item:list){
-					and(compare, prefix, var, item, false, false);
+					and(cross, compare, prefix, var, item, false, false);
 				}
 			}
 		}else{
 			if(null == conf){
-				//if(compare != Compare.NONE) {//只作为参数
-					conf = new DefaultConfig();
-					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-					conf.setCompare(compare);
-					chain.addConfig(conf);
-				//}
+				conf = new DefaultConfig();
+				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				conf.setCompare(compare);
+				chain.addConfig(conf);
 			}
 			if(null != conf) {
+				if(EMPTY_VALUE_CROSS.BREAK == cross) {
+					conf.setStrictRequired(true);
+				} else if(EMPTY_VALUE_CROSS.IGNORE == cross) {
+					conf.setStrictRequired(true);
+				}
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
 				conf.setRequire(require);
