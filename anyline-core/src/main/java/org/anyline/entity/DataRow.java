@@ -53,7 +53,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String KEY_ALL_CHILDREN       = "CHILDREN"            ; // 所有子级
     public static String KEY_ITEMS              = "ITEMS"               ; // items
     public static KEY_CASE DEFAULT_KEY_KASE     = KEY_CASE.CONFIG       ; // key case
-    public static String DEFAULT_PRIMARY_KEY    = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+    public static String DEFAULT_PRIMARY_KEY    = ConfigTable.DEFAULT_PRIMARY_KEY;
 
     private Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
     private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
@@ -1032,7 +1032,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
         /*本身与容器都没有主键 返回默认主键*/
         List<String> defaultPrimary = new ArrayList<>();
-        String configKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+        String configKey = ConfigTable.DEFAULT_PRIMARY_KEY;
         if (null != configKey && !configKey.trim().equals("")) {
             defaultPrimary.add(configKey);
         }
@@ -1082,7 +1082,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != getContainer()) {
             return getContainer().hasPrimaryKeys();
         }
-        if (keys().contains(ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"))) {
+        if (keys().contains(ConfigTable.DEFAULT_PRIMARY_KEY)) {
             return true;
         }
         return false;

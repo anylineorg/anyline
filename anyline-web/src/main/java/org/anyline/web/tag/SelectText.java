@@ -17,29 +17,22 @@
  */
 
 
-package org.anyline.web.tag; 
- 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package org.anyline.web.tag;
+
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
  
  
 public class SelectText extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD"); 
+	private String valueKey = ConfigTable.DEFAULT_PRIMARY_KEY;
 	private String textKey = "NM"; 
  
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -143,7 +136,7 @@ public class SelectText extends BaseBodyTag{
 		super.release(); 
 		scope = null; 
 		data = null;
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		valueKey = ConfigTable.DEFAULT_PRIMARY_KEY;
 		textKey = "NM";
 		value = null; 
 	} 

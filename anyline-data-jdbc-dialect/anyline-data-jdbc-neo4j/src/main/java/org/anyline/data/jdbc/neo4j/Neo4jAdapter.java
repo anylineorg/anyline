@@ -225,7 +225,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
                 String pk = row.getPrimaryKey();
                 if(null == pk){
-                    pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+                    pk = ConfigTable.DEFAULT_PRIMARY_KEY;
                 }
                 row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
             }

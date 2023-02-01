@@ -34,7 +34,7 @@ public class Radio extends BaseBodyTag{
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
+	private String valueKey =ConfigTable.DEFAULT_PRIMARY_KEY; 
 	private String textKey = "NM"; 
 	private String head;
 	private String headValue;
@@ -228,7 +228,7 @@ public class Radio extends BaseBodyTag{
 		body = null;
 		head = null;
 		headValue = null;
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
+		valueKey =ConfigTable.DEFAULT_PRIMARY_KEY;
 		textKey = "NM";
 		border = "true";
 		borderClazz = "al-radio-item-border";

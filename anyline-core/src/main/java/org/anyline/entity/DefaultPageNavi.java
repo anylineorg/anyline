@@ -258,7 +258,7 @@ public class DefaultPageNavi implements PageNavi{
 			result = orders.getRunText(delimiter);
 		} 
 		if(require && result.length() == 0){ 
-			result = "ORDER BY " + ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
+			result = "ORDER BY " +ConfigTable.DEFAULT_PRIMARY_KEY; 
 		} 
 		return result; 
 	} 

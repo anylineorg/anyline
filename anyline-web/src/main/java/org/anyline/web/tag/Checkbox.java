@@ -43,7 +43,7 @@ public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
+	private String valueKey =ConfigTable.DEFAULT_PRIMARY_KEY; 
 	private String textKey = "NM"; 
 	// private Object checked;	//
 	private String property;
@@ -294,7 +294,7 @@ public class Checkbox extends BaseBodyTag {
 		property = null;
 		head= null;
 		headValue="";
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
+		valueKey =ConfigTable.DEFAULT_PRIMARY_KEY;
 		textKey = "NM";
 		rely = null;
 		checked = false;

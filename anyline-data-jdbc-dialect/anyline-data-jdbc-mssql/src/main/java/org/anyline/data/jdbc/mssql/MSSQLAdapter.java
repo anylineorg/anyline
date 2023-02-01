@@ -129,7 +129,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}else{ 
 				// 2005 及以上
 				if(BasicUtil.isEmpty(order)){ 
-					order = "ORDER BY "+ ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+					order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
 				} 
 				builder.append("SELECT "+cols+" FROM( \n"); 
 				builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(") 

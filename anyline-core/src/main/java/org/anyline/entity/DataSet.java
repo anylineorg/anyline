@@ -2890,7 +2890,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         List<String> list = BeanUtil.merge(fixs, keys);
         if (list.size() == 0) {
-            list.add(ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"));
+            list.add(ConfigTable.DEFAULT_PRIMARY_KEY);
         }
         int size = set.size();
         for (int i = 0; i < size; i++) {
@@ -2944,7 +2944,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         List<String> list = BeanUtil.merge(fixs, keys);
         if (list.size() == 0) {
-            list.add(ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"));
+            list.add(ConfigTable.DEFAULT_PRIMARY_KEY);
         }
         String params[] = packParam(row, list);
         return exists(params);

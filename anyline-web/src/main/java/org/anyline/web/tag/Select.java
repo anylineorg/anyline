@@ -31,7 +31,7 @@ public class Select extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"); 
+	private String valueKey = ConfigTable.DEFAULT_PRIMARY_KEY; 
 	private String textKey = "NM"; 
 	private String head; 
 	private String headValue; 
@@ -175,7 +175,7 @@ public class Select extends BaseBodyTag {
 		size = 1;
 		headValue = null; 
 		type = "select"; 
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"); 
+		valueKey = ConfigTable.DEFAULT_PRIMARY_KEY; 
 		textKey = "NM"; 
 		multiple = null; 
  
