@@ -238,6 +238,12 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		value = value(value);
 
+		if(EMPTY_VALUE_CROSS.BREAK == cross) {
+			strictRequired = true;
+		} else if(EMPTY_VALUE_CROSS.IGNORE == cross) {
+			require = true;
+		}
+
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 			List list = (List)value;
 			if(compareCode == 60 || compareCode == 61){
@@ -265,11 +271,6 @@ public class DefaultConfigStore implements ConfigStore {
 				chain.addConfig(conf);
 			}
 			if(null != conf) {
-				if(EMPTY_VALUE_CROSS.BREAK == cross) {
-					conf.setStrictRequired(true);
-				} else if(EMPTY_VALUE_CROSS.IGNORE == cross) {
-					conf.setStrictRequired(true);
-				}
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
 				conf.setRequire(require);
