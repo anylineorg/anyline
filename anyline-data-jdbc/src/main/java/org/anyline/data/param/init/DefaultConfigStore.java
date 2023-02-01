@@ -222,7 +222,7 @@ public class DefaultConfigStore implements ConfigStore {
 		int compareCode = compare.getCode();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
-			var = var.substring(var.indexOf(".")+1,var.length());
+			var = var.substring(var.indexOf(".")+1);
 		}
 		if(overCondition){
 			conf = chain.getConfig(prefix,var, compare);
