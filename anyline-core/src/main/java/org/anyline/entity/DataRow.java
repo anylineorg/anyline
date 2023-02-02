@@ -1642,7 +1642,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if (null == defs || defs.length == 0) {
                 result = "";
             } else {
-                result = BasicUtil.nvl(defs).toString();
+                result = BasicUtil.evl(defs).toString();
             }
         }
         return result;
