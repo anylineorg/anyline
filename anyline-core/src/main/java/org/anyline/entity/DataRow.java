@@ -1627,6 +1627,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public String getStringNvl(String key, String... defs) {
         String result = getString(key);
+        if (null == result) {
+            if (null == defs || defs.length == 0) {
+                result = "";
+            } else {
+                result = BasicUtil.nvl(defs).toString();
+            }
+        }
+        return result;
+    }
+    public String getStringEvl(String key, String... defs) {
+        String result = getString(key);
         if (BasicUtil.isEmpty(result)) {
             if (null == defs || defs.length == 0) {
                 result = "";
@@ -1637,17 +1648,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return result;
     }
 
-    public String getString(String key) {
+    /**
+     * 返回第1个不为null 的值
+     * @param keys keys
+     * @return String
+     */
+    public String getString(String ... keys) {
         String result = null;
-        if (null == key) {
-            return result;
-        }
-        if (key.contains("${") && key.contains("}")) {
-            result = BeanUtil.parseFinalValue(this, key);
-        } else {
-            Object value = get(key);
-            if (null != value) {
-                result = value.toString();
+        for(String key:keys) {
+            if (null == key) {
+                continue;
+            }
+            if (key.contains("${") && key.contains("}")) {
+                result = BeanUtil.parseFinalValue(this, key);
+            } else {
+                Object value = get(key);
+                if (null != value) {
+                    result = value.toString();
+                }
+            }
+            if(null != result) {
+                return result;
             }
         }
         return result;
