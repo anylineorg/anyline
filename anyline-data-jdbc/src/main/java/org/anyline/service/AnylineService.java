@@ -20,7 +20,6 @@
 package org.anyline.service;
 
 import org.anyline.data.entity.*;
-import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
@@ -515,10 +514,20 @@ public interface AnylineService<E>{
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 ******************************************************************************************************************/
+
+	/**
+	 * 根据ConfigStore中的条件+conditions条件删除
+	 * @param table 表
+	 * @param configs 匹配条件
+	 * @param conditions  匹配条件
+	 * @return 影响行数
+	 */
 	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
-	 * 删除 根据columns列删除 可设置复合主键
-	 * @param dest 表
+	 * 删除 根据columns列删除 可设置复合主键<br/>
+	 * 注意:为了避免整表删除,columns必须提供否则会抛出异常 <br/>
+	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
+	 * @param dest 表 如果不指定表名则根据set中的表名删除
 	 * @param set 数据
 	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
@@ -528,15 +537,30 @@ public interface AnylineService<E>{
 	public int delete(String dest, DataRow row, String ... columns);
 
 	/**
-	 * 根据columns列删除
-	 * @param obj obj
+	 * 根据columns列删除 <br/>
+	 * 注意:为了避免整表删除,columns必须提供否则会抛出异常 <br/>
+	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
+	 * delete(User/DataRow, "TYPE","AGE")<br/>
+	 * DELETE FROM USER WHERE TYPE = ? AND AGE = ?
+	 * @param obj 实体对象或DataRow/Dataset
 	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
 	public int delete(Object obj, String ... columns);
 
 	/**
-	 * 根据多列条件删除 delete("user","type","1", "age:20");
+	 * 根据多列条件删除<br/>
+	 * 以k,v,k,v或"k:v"形式提供参数<br/>
+	 * delete("HR_EMPLOYEE","type","1", "age:20");<br/>
+	 * DELETE FROM HR_EMPLOYEE WHERE TYPE = 1 AND AGE = 20<br/>
+	 *<br/>
+	 * 注意以下两咱情况,并不会忽略空值
+	 *<br/>
+	 * service.delete("HR_EMPLOYEE","ID","", "CODE:20");<br/>
+	 * DELETE FROM HR_EMPLOYEE WHERE ID = '' AND CODE = 20<br/>
+	 *<br/>
+	 * service.delete("HR_EMPLOYEE","ID","1", "CODE:");<br/>
+	 * DELETE FROM HR_EMPLOYEE WHERE ID = 1 AND CODE = ''<br/>
 	 * @param table 表
 	 * @param kvs key-value
 	 * @return 影响行数
@@ -544,16 +568,24 @@ public interface AnylineService<E>{
 	public int delete(String table, String ... kvs);
 
 	/**
-	 * 根据一列的多个值删除多行
+	 * 根据一列的多个值删除<br/>
+	 * 注意:为了避免整表删除,values必须提供否则会抛出异常 <br/>
+	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
+	 * delete("USER", "TYPE", [1,2,3])<br/>
+	 * DELETE FROM USER WHERE TYPE IN(1,2,3)
 	 * @param table 表
-	 * @param key 名
+	 * @param key 列
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
 	public int deletes(String table, String key, Collection<Object> values);
 
 	/**
-	 * 根据一列的多个值删除多行
+	 * 根据一列的多个值删除<br/>
+	 * 注意:为了避免整表删除,values必须提供否则会抛出异常 <br/>
+	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
+	 * delete("USER", "TYPE", "1","2","3")<br/>
+	 * DELETE FROM USER WHERE TYPE IN(1,2,3)
 	 * @param table 表
 	 * @param key 名
 	 * @param values 值集合
