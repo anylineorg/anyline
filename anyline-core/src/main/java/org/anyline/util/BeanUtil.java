@@ -1954,7 +1954,7 @@ public class BeanUtil {
 				}
 			}
 		}
-		if(BasicUtil.isEmpty(value)){
+		if(BasicUtil.isEmpty(value) || value.equals(key)){
 			value = def;
 		}
 		return value;
