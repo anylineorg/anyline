@@ -388,7 +388,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
-		DataSet set = select(null, (String)null, sql,values);
+		JDBCAdapter adapter = adapter();
+		DataSet set = select(adapter, (String)null, sql,values);
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
@@ -931,10 +932,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
 				slow = true;
-				if(mid[0] > ConfigTable.SLOW_SQL_MILLIS){
-					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0], sql, paramLogFormat(values));
+				if(mid[0] - fr > ConfigTable.SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, paramLogFormat(values));
 					if(null != listener){
-						listener.slow("select", null, sql, values, null, mid[0]);
+						listener.slow("select", null, sql, values, null, mid[0] - fr);
 					}
 				}
 			}
