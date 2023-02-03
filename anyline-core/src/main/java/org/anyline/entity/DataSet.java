@@ -2019,7 +2019,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result.add(row.getInt(key));
         }
         return result;
-
+    }
+    public List<Integer> getDistinctInts(String key) throws Exception {
+        List<Integer> result = new ArrayList<Integer>();
+        for (DataRow row : rows) {
+            int item = row.getInt(key);
+            if(!result.contains(row)){
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     public List<Integer> getInts(String key, int def) {
@@ -2076,6 +2085,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return result;
     }
+    public List<Long> getDistinctLongs(String key, Long def) {
+        List<Long> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            long item = row.getLong(key, def);
+            if(!result.contains(item)){
+                result.add(item);
+            }
+        }
+        return result;
+    }
 
     public List<Long[]> getLongArrays(String ... keys) throws Exception{
         List<Long[]> result = new ArrayList<>();
@@ -2113,7 +2132,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result.add(row.getDouble(key));
         }
         return result;
+    }
 
+    public List<Double> getDistinctDoubles(String key) throws Exception {
+        List<Double> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            double item = row.getDouble(key);
+            if(!result.contains(item)){
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     public List<Double> getDoubles(String key, Double def) {
@@ -2256,27 +2285,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet extract(List<String> fixs, String ... keys){
         return extract(false, fixs, keys);
     }
-    /**
-     * html格式(未实现)
-     *
-     * @param index 索引
-     * @param key   key
-     * @return String
-     * @throws Exception 异常 Exception
-     */
-    public String getHtmlString(int index, String key) throws Exception {
-        return getString(index, key);
-    }
-
-    public String getHtmlString(int index, String key, String def) {
-        return getString(index, key, def);
-    }
-
-
-    public String getHtmlString(String key) throws Exception {
-        return getHtmlString(0, key);
-    }
-
 
     /**
      * escape String
@@ -2299,14 +2307,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public String getDoubleEscapeString(int index, String key) throws Exception {
-        return EscapeUtil.doubleEscape(getString(index, key));
+        return EscapeUtil.escape2(getString(index, key));
     }
 
     public String getDoubleEscapeString(int index, String key, String def) {
         try {
             return getDoubleEscapeString(index, key);
         } catch (Exception e) {
-            return EscapeUtil.doubleEscape(def);
+            return EscapeUtil.escape2(def);
         }
 
     }
