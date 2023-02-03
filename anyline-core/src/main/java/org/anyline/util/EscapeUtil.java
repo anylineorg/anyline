@@ -95,10 +95,13 @@ public class EscapeUtil{
             }         
         }         
         return sbuf.toString();         
-    }    
-    public static String doubleEscape(String s){ 
-    	return escape(escape(s)); 
-    } 
+    }
+    public static String escape2(String s){
+        return escape(escape(s));
+    }
+    public static String unescape2(String s){
+        return unescape(unescape(s));
+    }
     public static String unescape(String s) { 
     	if("".equals(s) || null==s){
     		return s; 
