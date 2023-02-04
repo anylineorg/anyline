@@ -50,7 +50,7 @@ public class ConfigTable {
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
 
-	// 对应配置文件key
+	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
 	public static boolean IS_DEBUG 										= true		;	// DEBUG状态会输出更多日志
 	public static boolean IS_SHOW_SQL									= true		;	// 执行SQL时是否输出日志
 	public static long SLOW_SQL_MILLIS									= 0			; 	// 慢SQL,如果配置了>0的毫秒数,在SQL执行超出时限后会输出日志,并调用DMListener.slow
