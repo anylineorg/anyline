@@ -23,6 +23,8 @@ public class AnylineProperty {
     protected boolean keyIgnoreCase 							= true		;	// 是否忽略大小写
     protected boolean throwSqlQueryException 					= true		;	// sql执行异常时是否抛出
     protected boolean throwSqlUpdateException 				    = true		;	// sql执行异常时是否抛出
+    protected boolean httpParamAutoTrim						    = true		;   // http参数值是否自动trim
+    protected boolean ignoreEmptyHttpKey						= false		;	// AnylineController.entity(String ck)是否忽略http未提交的key
     protected boolean updateNullColumn							= false		;	// 是否更新nul值的列
     protected boolean updateEmptyColumn						    = false		;	// 是否更新空值的列
     protected boolean insertNullColumn							= false		;	// 是否更新nul值的列
@@ -357,5 +359,23 @@ public class AnylineProperty {
     public void setRemoveEmptyHttpKey(boolean removeEmptyHttpKey) {
         this.removeEmptyHttpKey = removeEmptyHttpKey;
         ConfigTable.IS_REMOVE_EMPTY_HTTP_KEY = removeEmptyHttpKey;
+    }
+
+    public boolean isHttpParamAutoTrim() {
+        return httpParamAutoTrim;
+    }
+
+    public void setHttpParamAutoTrim(boolean httpParamAutoTrim) {
+        this.httpParamAutoTrim = httpParamAutoTrim;
+        ConfigTable.IS_HTTP_PARAM_AUTO_TRIM = httpParamAutoTrim;
+    }
+
+    public boolean isIgnoreEmptyHttpKey() {
+        return ignoreEmptyHttpKey;
+    }
+
+    public void setIgnoreEmptyHttpKey(boolean ignoreEmptyHttpKey) {
+        this.ignoreEmptyHttpKey = ignoreEmptyHttpKey;
+        ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY = ignoreEmptyHttpKey;
     }
 }
