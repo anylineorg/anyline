@@ -60,7 +60,7 @@ public class ConfigTable {
 	public static boolean IS_SQL_DEBUG	 								= false		;	// 加载自定义SQL时是否输出日志
 	public static boolean IS_HTTP_LOG 									= true		;	// 调用HTTP接口时是否出输出日志
 	public static boolean IS_HTTP_PARAM_AUTO_TRIM						= true		;   // http参数值是否自动trim
-	public static boolean IS_IGNORE_EMPTY_HTTP_KEY						= false		;	// AnylineController.entity(String ck)是否忽略http未提交的key
+	public static boolean IS_IGNORE_EMPTY_HTTP_KEY						= true		;	// AnylineController.entity(String ck)是否忽略http未提交的key
 	public static int HTTP_PARAM_ENCODE									= 0			;   // 0:自动识别 1:确认编码 -1:确认未编码
 	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
@@ -71,6 +71,10 @@ public class ConfigTable {
 	public static boolean IS_UPDATE_EMPTY_COLUMN						= false		;	// 是否更新空值的列
 	public static boolean IS_INSERT_NULL_COLUMN							= false		;	// 是否更新nul值的列
 	public static boolean IS_INSERT_EMPTY_COLUMN						= false		;	// 是否更新空值的列
+	public static boolean IS_UPDATE_NULL_FIELD							= false		;	// 是否更新nul值的属性
+	public static boolean IS_UPDATE_EMPTY_FIELD							= false		;	// 是否更新空值的属性
+	public static boolean IS_INSERT_NULL_FIELD							= false		;	// 是否更新nul值的属性
+	public static boolean IS_INSERT_EMPTY_FIELD							= false		;	// 是否更新空值的属性
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false		;	// 是否开启 界定符
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false		;	// 是否开启 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()

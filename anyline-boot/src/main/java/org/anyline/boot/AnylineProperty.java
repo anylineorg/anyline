@@ -28,8 +28,12 @@ public class AnylineProperty {
     protected boolean updateNullColumn							= false		;	// 是否更新nul值的列
     protected boolean updateEmptyColumn						    = false		;	// 是否更新空值的列
     protected boolean insertNullColumn							= false		;	// 是否更新nul值的列
-    protected boolean  disabledDefaultEntityAdapter             = false     ;   // 禁用默认的entity adapter
     protected boolean insertEmptyColumn						    = false		;	// 是否更新空值的列
+    protected boolean updateNullField							= false		;	// 是否更新nul值的属性
+    protected boolean updateEmptyField						    = false		;	// 是否更新空值的属性
+    protected boolean insertNullField							= false		;	// 是否更新nul值的属性
+    protected boolean insertEmptyField						    = false		;	// 是否更新空值的属性
+    protected boolean  disabledDefaultEntityAdapter             = false     ;   // 禁用默认的entity adapter
     protected boolean sqlDelimiterOpen 						    = false		;	// 是否开启 界定符
     protected boolean sqlDelimiterPlaceholderOpen 			    = false		;	// 是否开启 界定符的占位符
     protected boolean returnEmptyInstanceReplaceNull			= false		;	// service.query() dataset.getrow()返回null时,是否替换成new datarow(), new entity()
@@ -377,5 +381,41 @@ public class AnylineProperty {
     public void setIgnoreEmptyHttpKey(boolean ignoreEmptyHttpKey) {
         this.ignoreEmptyHttpKey = ignoreEmptyHttpKey;
         ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY = ignoreEmptyHttpKey;
+    }
+
+    public boolean isUpdateNullField() {
+        return updateNullField;
+    }
+
+    public void setUpdateNullField(boolean updateNullField) {
+        this.updateNullField = updateNullField;
+        ConfigTable.IS_UPDATE_NULL_FIELD = updateNullField;
+    }
+
+    public boolean isUpdateEmptyField() {
+        return updateEmptyField;
+    }
+
+    public void setUpdateEmptyField(boolean updateEmptyField) {
+        this.updateEmptyField = updateEmptyField;
+        ConfigTable.IS_UPDATE_EMPTY_FIELD = updateEmptyField;
+    }
+
+    public boolean isInsertNullField() {
+        return insertNullField;
+    }
+
+    public void setInsertNullField(boolean insertNullField) {
+        this.insertNullField = insertNullField;
+        ConfigTable.IS_INSERT_NULL_FIELD = insertNullField;
+    }
+
+    public boolean isInsertEmptyField() {
+        return insertEmptyField;
+    }
+
+    public void setInsertEmptyField(boolean insertEmptyField) {
+        this.insertEmptyField = insertEmptyField;
+        ConfigTable.IS_INSERT_EMPTY_FIELD = insertEmptyField;
     }
 }
