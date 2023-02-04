@@ -92,7 +92,7 @@
 	<!--忽略加密的值-->
 	<property key="DES_IGNORE">0,-1</property>
 	<!--http参数是否trim-->
-	<property key="HTTP_PARAM_TRIM">true</property>
+	<property key="IS_HTTP_PARAM_AUTO_TRIM">true</property>
 	<!---http 客户端请求时间KEY -->
 	<property key="HTTP_REQUEST_TIME_KET">_anyline_request_time</property>
 	<!---http 服务器端开始响应时间KEY-->

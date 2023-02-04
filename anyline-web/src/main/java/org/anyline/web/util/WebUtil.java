@@ -201,11 +201,15 @@ public class WebUtil {
 					String[] values = request.getParameterValues(key);
 					if (null != values) {
 						if (values.length == 1) {
-							if(null != values[0]){
+							String v = values[0];
+							if(null != v){
+								if(ConfigTable.IS_HTTP_PARAM_AUTO_TRIM){
+									v = v.trim();
+								}
 								if(isEncode) {
-									map.put(key, decode(values[0].trim(), charset));
+									map.put(key, decode(v, charset));
 								}else{
-									map.put(key, values[0].trim());
+									map.put(key, v);
 								}
 							}else{
 								map.put(key, null);
@@ -214,11 +218,14 @@ public class WebUtil {
 							List<Object> list = new ArrayList<Object>();
 							for (String value : values) {
 								if(null != value){
+									if(ConfigTable.IS_HTTP_PARAM_AUTO_TRIM){
+										value = value.trim();
+									}
 									if(isEncode) {
-										value = decode(value.trim(), "UTF-8");
+										value = decode(value, "UTF-8");
 									}
 								}
-								list.add(value.trim());
+								list.add(value);
 							}
 							map.put(key, list);
 						}

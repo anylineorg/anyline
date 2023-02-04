@@ -59,6 +59,7 @@ public class ConfigTable {
 	public static boolean IS_SHOW_SQL_PARAM_WHEN_ERROR					= true		;	// 执行SQL异常时是否输出日志
 	public static boolean IS_SQL_DEBUG	 								= false		;	// 加载自定义SQL时是否输出日志
 	public static boolean IS_HTTP_LOG 									= true		;	// 调用HTTP接口时是否出输出日志
+	public static boolean IS_HTTP_PARAM_AUTO_TRIM						= true		;   // http参数值是否自动trim
 	public static int HTTP_PARAM_ENCODE									= 0			;   // 0:自动识别 1:确认编码 -1:确认未编码
 	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
