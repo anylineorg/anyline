@@ -197,9 +197,11 @@ public class AbstractBasicController {
 			Map<String,Object> requestValues = WebUtil.value(request);
 			for (String param : arrays) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				if(requestValues.containsKey(parser.getVar()) || requestValues.containsKey(parser.getKey())) {
+				String col = parser.getVar();
+				String key = parser.getKey();
+				if(!ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY || requestValues.containsKey(key)) {
 					Object value = ConfigParser.getValue(requestValues, parser);
-					row.put(parser.getVar(), value);
+					row.put(col, value);
 				}
 				if(parser.isRequired()){
 					row.addUpdateColumns(parser.getVar());
