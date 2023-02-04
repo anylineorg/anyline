@@ -874,7 +874,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			for (int i = 1; i <= qty; i++) {
 				String name = rsmd.getColumnLabel(i);
 				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
-				row.put(name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
+				row.put(false, name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
 			}
 			row.setMetadatas(metadatas);
 		}catch (Exception e){
