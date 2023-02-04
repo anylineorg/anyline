@@ -131,7 +131,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         }
 
         // 3.属性名转成列名
-        if("camel_".equals(ConfigTable.getString("ENTITY_FIELD_COLUMN_MAP"))){
+        if("camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)){
             name = BeanUtil.camel_(field.getName());
             field2column.put(key, name);
             column2field.put(clazz.getName()+":"+name.toUpperCase(), field);

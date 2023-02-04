@@ -246,8 +246,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             String pk = null;
             Object pv = null;
             if(EntityAdapterProxy.hasAdapter()){
-                pk = EntityAdapterProxy.primaryKey(obj.getClass());
-                pv = EntityAdapterProxy.primaryValue(obj);
+                //pk = EntityAdapterProxy.primaryKey(obj.getClass());
+                //pv = EntityAdapterProxy.primaryValue(obj);
                 EntityAdapterProxy.createPrimaryValue(obj);
             }else{
                 pk = DataRow.DEFAULT_PRIMARY_KEY;
@@ -570,6 +570,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(size > 0){
             builder.append("UPDATE ").append(parseTable(dest));
             builder.append(" SET").append(JDBCAdapter.BR_TAB);
+            boolean first = true;
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
                 Object value = null;
@@ -583,17 +584,34 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
 
+                    if(!first){
+                        builder.append(",");
+                    }
                     SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+                    first = false;
                 }else{
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
                     if("NULL".equals(value)){
                         value = null;
                     }
-                    updateColumns.add(key);
-                    addRunValue(run, key, value);
-                }
-                if(i<size-1){
-                    builder.append(",");
+                    boolean chk = true;
+                    if(null == value){
+                        if(!ConfigTable.IS_UPDATE_NULL_FIELD){
+                            chk = false;
+                        }
+                    }else if("".equals(value)){
+                        if(!ConfigTable.IS_UPDATE_EMPTY_FIELD){
+                            chk = false;
+                        }
+                    }
+                    if(chk){
+                        if(!first){
+                            builder.append(",");
+                        }
+                        first = false;
+                        SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+                        updateColumns.add(key);
+                        addRunValue(run, key, value);
+                    }
                 }
             }
             builder.append(JDBCAdapter.BR);

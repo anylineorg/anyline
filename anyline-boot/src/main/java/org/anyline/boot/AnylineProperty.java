@@ -42,7 +42,8 @@ public class AnylineProperty {
     protected String defaultPrimaryKey							= "id"		;	// 默认主键
     protected int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
     protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
-    protected String sqlStoreDir								= null		;	//自定义sql目录 默认${classpath}/sql
+    protected String sqlStoreDir								= null		;	// 自定义sql目录 默认${classpath}/sql
+    protected String entityFieldColumnMap                       = "camel_"  ;   // 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
     protected String entityTableAnnotation						= null		;   // 表名注解
     protected String entityColumnAnnotation					    = null		;	// 列名注解
     protected String entityPrimaryKeyAnnotation				    = null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableid.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
@@ -52,6 +53,15 @@ public class AnylineProperty {
     protected String sqlDelimiterPlaceholder					= "`"		;
     public boolean isDebug() {
         return debug;
+    }
+
+    public String getEntityFieldColumnMap() {
+        return entityFieldColumnMap;
+    }
+
+    public void setEntityFieldColumnMap(String entityFieldColumnMap) {
+        this.entityFieldColumnMap = entityFieldColumnMap;
+        ConfigTable.ENTITY_FIELD_COLUMN_MAP = entityFieldColumnMap;
     }
 
     public void setDebug(boolean debug) {
