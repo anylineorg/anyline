@@ -263,11 +263,11 @@ public class DataSourceHolder {
 	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{
         try {
             String pool = (String)params.get("pool");
-			if(BasicUtil.isNotEmpty(pool)){
+			if(BasicUtil.isEmpty(pool)){
 				pool = (String)params.get("type");
 			}
             if (pool == null) {
-                throw new Exception("未设置数据源类型(如:type=com.zaxxer.hikari.HikariDataSource)");
+                throw new Exception("未设置数据源类型(如:pool=com.zaxxer.hikari.HikariDataSource)");
             }
             Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName((String) pool);
             Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
