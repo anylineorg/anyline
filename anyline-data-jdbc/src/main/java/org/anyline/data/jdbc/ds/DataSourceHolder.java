@@ -213,7 +213,7 @@ public class DataSourceHolder {
 	/**
 	 *
 	 * @param key 切换数据源依据 默认key=dataSource
-	 * @param type 连接池类型 如 com.zaxxer.hikari.HikariDataSource
+	 * @param pool 连接池类型 如 com.zaxxer.hikari.HikariDataSource
 	 * @param driver 驱动类 如 com.mysql.cj.jdbc.Driver
 	 * @param url url
 	 * @param user 用户名
@@ -221,15 +221,18 @@ public class DataSourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	public static DataSource reg(String key, String type, String driver, String url, String user, String password) throws Exception{
+	public static DataSource reg(String key, String pool, String driver, String url, String user, String password) throws Exception{
 		Map<String,String> param = new HashMap<String,String>();
-		param.put("type", type);
+		param.put("pool", pool);
 		param.put("driver", driver);
 		param.put("url", url);
 		param.put("user", user);
 		param.put("password", password);
 		DataSource ds = buildDataSource(param);
 		return reg(key, ds, true);
+	}
+	public static DataSource reg(String key, JDBCAdapter.DB_TYPE type, String url, String user, String password) throws Exception{
+		return reg(key, "om.zaxxer.hikari.HikariDataSource", type.getDriver(), url, user, password);
 	}
 	public static DataSource reg(String key, DataSource ds, boolean over) throws Exception{
 		return addDataSource(key, ds, over);
@@ -248,7 +251,7 @@ public class DataSourceHolder {
 	/**
 	 * 创建数据源
 	 * @param params 数据源参数
-	 * 	  type 连接池类型 如 com.zaxxer.hikari.HikariDataSource
+	 * 	  pool 连接池类型 如 com.zaxxer.hikari.HikariDataSource
 	 * 	  driver 驱动类 如 com.mysql.cj.jdbc.Driver
 	 * 	  url url
 	 * 	  user 用户名
@@ -259,15 +262,18 @@ public class DataSourceHolder {
 	@SuppressWarnings("unchecked")
 	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{
         try {
-            String type = (String)params.get("type");
-            if (type == null) {
+            String pool = (String)params.get("pool");
+			if(BasicUtil.isNotEmpty(pool)){
+				pool = (String)params.get("type");
+			}
+            if (pool == null) {
                 throw new Exception("未设置数据源类型(如:type=com.zaxxer.hikari.HikariDataSource)");
             }
-            Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName((String) type);
+            Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName((String) pool);
             Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
 			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
 			Object user =  BeanUtil.propertyNvl(params,"user","username");
-            DataSource ds =  dataSourceType.newInstance();
+            DataSource ds =  poolClass.newInstance();
             Map<String,Object> map = new HashMap<String,Object>();
             map.putAll(params);
             map.put("url", url);

@@ -51,37 +51,39 @@ public interface JDBCAdapter {
 
 
 	public static enum DB_TYPE{
-		Cassandra			{public String getCode(){return "DB_TYPE_CASSANDRA";}			public String getName(){return "Cassandra";}}			,
-		ClickHouse			{public String getCode(){return "DB_TYPE_CLICKHOUSE";}			public String getName(){return "ClickHouse";}}			,
-		CockroachDB			{public String getCode(){return "DB_TYPE_COCKROACHDB";}			public String getName(){return "CockroachDB";}}			,
-		DB2					{public String getCode(){return "DB_TYPE_DB2";}					public String getName(){return "db2";}}					,
-		Derby  				{public String getCode(){return "DB_TYPE_DERBY";}				public String getName(){return "Derby";}}				,
-		DM		 			{public String getCode(){return "DB_TYPE_DM";}					public String getName(){return "达梦";}}					,
-		GBase  				{public String getCode(){return "DB_TYPE_GBASE";}				public String getName(){return "南大通用";}}				,
-		H2  				{public String getCode(){return "DB_TYPE_H2";}					public String getName(){return "H2";}}					,
-		HighGo				{public String getCode(){return "DB_TYPE_HIGHGO";}				public String getName(){return "瀚高";}}					,
-		HSQLDB  			{public String getCode(){return "DB_TYPE_HSQLDB";}				public String getName(){return "HSQLDB";}}				,
-		InfluxDB			{public String getCode(){return "DB_TYPE_INFLUXDB";}			public String getName(){return "InfluxDB";}}			,
-		KingBase			{public String getCode(){return "DB_TYPE_KINGBASE";}			public String getName(){return "人大金仓 Oracle";}}		,
-		KingBase_PostgreSQL	{public String getCode(){return "DB_TYPE_KINGBASE_POSTGRESQL";}	public String getName(){return "人大金仓 PostgreSQL";}}	,
-		MariaDB				{public String getCode(){return "DB_TYPE_MARIADB";}				public String getName(){return "MariaDB";}}				,
-		MongoDB				{public String getCode(){return "DB_TYPE_MONGODB";}				public String getName(){return "MongoDB";}}				,
-		MSSQL				{public String getCode(){return "DB_TYPE_MSSQL";}				public String getName(){return "mssql";}}				,
-		MYSQL				{public String getCode(){return "DB_TYPE_MYSQL";}				public String getName(){return "mysql";}}				,
-		Neo4j  				{public String getCode(){return "DB_TYPE_NEO4J";}				public String getName(){return "Neo4j";}}				,
-		OceanBase 			{public String getCode(){return "DB_TYPE_OCEANBASE";}			public String getName(){return "OceanBase";}}			,
-		ORACLE				{public String getCode(){return "DB_TYPE_ORACLE";}				public String getName(){return "oracle";}}				,
-		oscar				{public String getCode(){return "DB_TYPE_OSCAR";}				public String getName(){return "神舟通用";}}				,
-		PolarDB  			{public String getCode(){return "DB_TYPE_POLARDB";}				public String getName(){return "PolarDB";}}				,
-		PostgreSQL 			{public String getCode(){return "DB_TYPE_POSTGRESQL";}			public String getName(){return "PostgreSQL";}}			,
-		QuestDB 			{public String getCode(){return "DB_TYPE_QUESTDB";}				public String getName(){return "QuestDB";}}				,
-		RethinkDB  			{public String getCode(){return "DB_TYPE_RETHINKDB";}			public String getName(){return "RethinkDB";}}			,
-		SQLite  			{public String getCode(){return "DB_TYPE_SQLITE";}				public String getName(){return "SQLite";}}				,
-		TDengine  			{public String getCode(){return "DB_TYPE_TDENGINE";}			public String getName(){return "TDengine";}}			,
-		Timescale			{public String getCode(){return "DB_TYPE_TIMESCALE";}			public String getName(){return "Timescale";}};
+		Cassandra			{public String getCode(){return "DB_TYPE_CASSANDRA";}			public String getName(){return "Cassandra";}			public String getDriver(){return "";}},
+		ClickHouse			{public String getCode(){return "DB_TYPE_CLICKHOUSE";}			public String getName(){return "ClickHouse";}			public String getDriver(){return "ru.yandex.clickhouse.ClickHouseDriver";}},
+		CockroachDB			{public String getCode(){return "DB_TYPE_COCKROACHDB";}			public String getName(){return "CockroachDB";}			public String getDriver(){return "";}},
+		DB2					{public String getCode(){return "DB_TYPE_DB2";}					public String getName(){return "db2";}					public String getDriver(){return "com.ibm.db2.jcc.DB2Driver";}},
+		Derby  				{public String getCode(){return "DB_TYPE_DERBY";}				public String getName(){return "Derby";}				public String getDriver(){return "org.apache.derby.jdbc.EmbeddedDriver";}},
+		DM		 			{public String getCode(){return "DB_TYPE_DM";}					public String getName(){return "达梦";}					public String getDriver(){return "dm.jdbc.driver.DmDriver";}},
+		GBase  				{public String getCode(){return "DB_TYPE_GBASE";}				public String getName(){return "南大通用";}				public String getDriver(){return "com.gbase.jdbc.Driver";}},
+		H2  				{public String getCode(){return "DB_TYPE_H2";}					public String getName(){return "H2";}					public String getDriver(){return "org.h2.Driver";}},
+		HighGo				{public String getCode(){return "DB_TYPE_HIGHGO";}				public String getName(){return "瀚高";}					public String getDriver(){return "com.highgo.jdbc.Driver";}},
+		HSQLDB  			{public String getCode(){return "DB_TYPE_HSQLDB";}				public String getName(){return "HSQLDB";}				public String getDriver(){return "org.hsqldb.jdbcDriver";}},
+		InfluxDB			{public String getCode(){return "DB_TYPE_INFLUXDB";}			public String getName(){return "InfluxDB";}				public String getDriver(){return "";}},
+		KingBase			{public String getCode(){return "DB_TYPE_KINGBASE";}			public String getName(){return "人大金仓 Oracle";}		public String getDriver(){return "com.kingbase8.Driver";}},
+		KingBase_PostgreSQL	{public String getCode(){return "DB_TYPE_KINGBASE_POSTGRESQL";}	public String getName(){return "人大金仓 PostgreSQL";}	public String getDriver(){return "";}},
+		MariaDB				{public String getCode(){return "DB_TYPE_MARIADB";}				public String getName(){return "MariaDB";}				public String getDriver(){return "org.mariadb.jdbc.Driver";}},
+		MongoDB				{public String getCode(){return "DB_TYPE_MONGODB";}				public String getName(){return "MongoDB";}				public String getDriver(){return "";}},
+		MSSQL				{public String getCode(){return "DB_TYPE_MSSQL";}				public String getName(){return "mssql";}				public String getDriver(){return "com.microsoft.sqlserver.jdbc.SQLServerDriver";}},
+		MYSQL				{public String getCode(){return "DB_TYPE_MYSQL";}				public String getName(){return "mysql";}				public String getDriver(){return "com.mysql.cj.jdbc.Driver";}},
+		Neo4j  				{public String getCode(){return "DB_TYPE_NEO4J";}				public String getName(){return "Neo4j";}				public String getDriver(){return "org.neo4j.jdbc.Driver";}},
+		OceanBase 			{public String getCode(){return "DB_TYPE_OCEANBASE";}			public String getName(){return "OceanBase";}			public String getDriver(){return "com.oceanbase.jdbc.Driver";}},
+		ORACLE				{public String getCode(){return "DB_TYPE_ORACLE";}				public String getName(){return "oracle";}				public String getDriver(){return "oracle.jdbc.OracleDriver";}},
+		oscar				{public String getCode(){return "DB_TYPE_OSCAR";}				public String getName(){return "神舟通用";}				public String getDriver(){return "com.oscar.Driver";}},
+		PolarDB  			{public String getCode(){return "DB_TYPE_POLARDB";}				public String getName(){return "PolarDB";}				public String getDriver(){return "com.aliyun.polardb.Driver";}},
+		PostgreSQL 			{public String getCode(){return "DB_TYPE_POSTGRESQL";}			public String getName(){return "PostgreSQL";}			public String getDriver(){return "org.postgresql.Driver";}},
+		QuestDB 			{public String getCode(){return "DB_TYPE_QUESTDB";}				public String getName(){return "QuestDB";}				public String getDriver(){return "org.postgresql.Driver";}},
+		RethinkDB  			{public String getCode(){return "DB_TYPE_RETHINKDB";}			public String getName(){return "RethinkDB";}			public String getDriver(){return "";}},
+		SQLite  			{public String getCode(){return "DB_TYPE_SQLITE";}				public String getName(){return "SQLite";}				public String getDriver(){return "org.sqlite.JDBC";}},
+		TDengine  			{public String getCode(){return "DB_TYPE_TDENGINE";}			public String getName(){return "TDengine";}				public String getDriver(){return "com.taosdata.jdbc.TSDBDriver";}},
+		Timescale			{public String getCode(){return "DB_TYPE_TIMESCALE";}			public String getName(){return "Timescale";}			public String getDriver(){return "org.postgresql.Driver";}};
 
 		public abstract String getCode();
 		public abstract String getName();
+		//默认的驱动,在注册数据源时可能用到,如果不准确,需要根据依赖的驱动jar修改
+		public abstract String getDriver();
 	} 
 	public static final String TAB 		= "\t"		;
 	public static final String BR 		= "\n"		;
