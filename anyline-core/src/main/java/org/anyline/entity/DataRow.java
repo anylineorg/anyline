@@ -1649,7 +1649,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 返回第1个不为null 的值
+     * 返回第1个存在的key对应的值,有可能返回null或""
      * @param keys keys
      * @return String
      */
@@ -1662,14 +1662,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if (key.contains("${") && key.contains("}")) {
                 result = BeanUtil.parseFinalValue(this, key);
             } else {
+                if(!contains(key)){
+                    continue;
+                }
                 Object value = get(key);
                 if (null != value) {
                     result = value.toString();
                 }
             }
-            if(null != result) {
-                return result;
-            }
+            break;
         }
         return result;
     }
@@ -1681,8 +1682,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return int
      * @throws Exception 异常 Exception
      */
-    public Integer getInt(String key) throws Exception {
-        Object val = get(key);
+    public Integer getInt(String ... keys) throws Exception {
+        Object val = get(keys);
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
             if (bol) {
@@ -1703,8 +1704,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public Double getDouble(String key) throws Exception {
-        Object value = get(key);
+    public Double getDouble(String ... keys) throws Exception {
+        Object value = get(keys);
         return Double.parseDouble(value.toString());
     }
 
@@ -1722,8 +1723,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getDouble(key, def.doubleValue());
     }
 
-    public Long getLong(String key) throws Exception {
-        Object value = get(key);
+    public Long getLong(String ... keys) throws Exception {
+        Object value = get(keys);
         return BasicUtil.parseLong(value);
     }
 
@@ -1741,8 +1742,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getLong(key, def.longValue());
     }
 
-    public Float getFloat(String key) throws Exception {
-        Object value = get(key);
+    public Float getFloat(String ... keys) throws Exception {
+        Object value = get(keys);
         return Float.parseFloat(value.toString());
     }
 
@@ -1764,12 +1765,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return BasicUtil.parseBoolean(getString(key), def);
     }
 
-    public Boolean getBoolean(String key) throws Exception {
-        return BasicUtil.parseBoolean(getString(key));
+    public Boolean getBoolean(String ... keys) throws Exception {
+        return BasicUtil.parseBoolean(getString(keys));
     }
 
-    public BigDecimal getDecimal(String key) throws Exception {
-        return new BigDecimal(getString(key));
+    public BigDecimal getDecimal(String ... keys) throws Exception {
+        return new BigDecimal(getString(keys));
     }
 
     public BigDecimal getDecimal(String key, Double def) {
@@ -1841,8 +1842,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public Date getDate(String key) throws Exception {
-        return DateUtil.parse(getString(key));
+    public Date getDate(String ... keys) throws Exception {
+        return DateUtil.parse(getString(keys));
     }
     public byte[] getBytes(String key){
         return (byte[]) get(key);
@@ -2838,17 +2839,60 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public Object get(String key) {
+    /**
+     * 是否包含key(不要求完全匹配,根据KEY_CASE有可能不区分大小写)
+     * @param key key
+     * @return boolean
+     */
+    public boolean contains(String key){
+        boolean result = false;
+        if(null != key){
+            key = keyAdapter.key(key);
+            if (ConfigTable.IS_KEY_IGNORE_CASE) {
+                String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+                key = keymap.get(ignoreKey);
+            }
+            result = super.containsKey(key);
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 返回第一个存在的key对应的value,key不要求完全匹配根据KEY_CASE有可能不区分大小写<br/>
+     * 如果需要取第一个不为null的值调用nvl(String ... keys)<br/>
+     * 第一个不为空的值调用evl(String ... keys)
+     * @param keys keys
+     * @return Object
+     */
+    public Object get(String ... keys) {
+        Object result = null;
+        for(String key:keys) {
+            if (null != key) {
+                key = keyAdapter.key(key);
+                if (ConfigTable.IS_KEY_IGNORE_CASE) {
+                    String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+                    key = keymap.get(ignoreKey);
+                }
+                if(super.containsKey(key)){
+                    return super.get(key);
+                }
+            }
+        }
+        return result;
+    }
+
+    public Object get(String  key) {
         Object result = null;
         if (null != key) {
             key = keyAdapter.key(key);
             if (ConfigTable.IS_KEY_IGNORE_CASE) {
                 String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
                 key = keymap.get(ignoreKey);
-                result = super.get(key);
-            } else {
-                result = super.get(key);
             }
+            result = super.get(key);
+
         }
         return result;
     }
@@ -2886,10 +2930,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
         }
         return result;
-    }
-
-    public Object get(String... keys) {
-        return get(false, keys);
     }
 
     public Object nvl(String... keys) {
