@@ -214,7 +214,7 @@ public class CharUtil {
 		return String.valueOf(cs);
 	}
 	/**
-	 * 半角转全角的函数(SBC case) 注意$没有转成￥
+	 * 半角转全角的(SBC case) 注意$没有转成￥
 	 *
 	 * @param input 任意字符串
 	 * @return 全角字符串
@@ -265,7 +265,7 @@ public class CharUtil {
 	}
 
 	/**
-	 * 全角转半角的函数(DBC case)注意￥没有转成$ 顿号、没有转换
+	 * 全角转半角(DBC case)注意￥没有转成$ 顿号、没有转换
 	 * @param input 任意字符串
 	 * @return 半角字符串
 	 */
@@ -305,6 +305,14 @@ public class CharUtil {
 			}
 			if (c[i] == 12305) { //】
 				c[i] = (char) 93;
+				continue;
+			}
+			if (c[i] == 12308) { //〔-12308不是〔-65288
+				c[i] = (char) 40;
+				continue;
+			}
+			if (c[i] == 12309) { //〕-12309
+				c[i] = (char) 41;
 				continue;
 			}
 			if (c[i] > 65280 && c[i] < 65375) {
