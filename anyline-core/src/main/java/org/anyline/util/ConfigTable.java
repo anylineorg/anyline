@@ -81,6 +81,7 @@ public class ConfigTable {
 	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false		; 	// 禁用默认的entity adapter
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true		;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
+	public static boolean IS_CACHE_DISABLED								= false		; 	// 是否禁用查询缓存
 	public static String DEFAULT_PRIMARY_KEY							= "ID"		;	// 默认主键
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列

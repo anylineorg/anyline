@@ -38,7 +38,7 @@ public class CacheProxy {
         LinkedHashMap<String, Column> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
                 columns = (LinkedHashMap<String, Column>) cacheElement.getValue();
@@ -58,7 +58,7 @@ public class CacheProxy {
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, columns);
         }else{
             DataRow static_cache = new DataRow();
@@ -70,7 +70,7 @@ public class CacheProxy {
     public static void clearColumnCache(String catalog, String schema, String table){
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
+        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
             provider.remove(cache, key);
         }else{
             cache_metadatas.remove(key);
@@ -85,7 +85,7 @@ public class CacheProxy {
         LinkedHashMap<String, Tag> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
                 tags = (LinkedHashMap<String, Tag>) cacheElement.getValue();
@@ -105,7 +105,7 @@ public class CacheProxy {
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, tags);
         }else{
             DataRow static_cache = new DataRow();
@@ -116,7 +116,7 @@ public class CacheProxy {
     public static void clearTagCache(String catalog, String schema, String table){
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
+        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
             provider.remove(cache, key);
         }else{
             cache_metadatas.remove(key);

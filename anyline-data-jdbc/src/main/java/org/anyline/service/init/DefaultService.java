@@ -201,7 +201,7 @@ public class DefaultService<E> implements AnylineService<E> {
         DataSet set = null;
         src = BasicUtil.compress(src);
         conditions = BasicUtil.compress(conditions);
-        if(null == cache || "true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+        if(null == cache || ConfigTable.IS_CACHE_DISABLED){
             set = querys(src, append(configs, obj), conditions);
         }else{
             if(null != cacheProvider){
@@ -277,7 +277,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
         // 是否启动缓存
-        if(null == cache){
+        if(null == cache || null == cacheProvider ||  ConfigTable.IS_CACHE_DISABLED){
             return query(src, configs, obj, conditions);
         }
         DefaultPageNavi navi = new DefaultPageNavi();

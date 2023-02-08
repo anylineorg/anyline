@@ -33,7 +33,8 @@ public class AnylineProperty {
     protected boolean updateEmptyField						    = false		;	// 是否更新空值的属性
     protected boolean insertNullField							= false		;	// 是否更新nul值的属性
     protected boolean insertEmptyField						    = false		;	// 是否更新空值的属性
-    protected boolean  disabledDefaultEntityAdapter             = false     ;   // 禁用默认的entity adapter
+    protected boolean cacheDisabled                             = false     ;   // 是否禁用查询缓存
+    protected boolean disabledDefaultEntityAdapter              = false     ;   // 禁用默认的entity adapter
     protected boolean sqlDelimiterOpen 						    = false		;	// 是否开启 界定符
     protected boolean sqlDelimiterPlaceholderOpen 			    = false		;	// 是否开启 界定符的占位符
     protected boolean returnEmptyInstanceReplaceNull			= false		;	// service.query() dataset.getrow()返回null时,是否替换成new datarow(), new entity()
@@ -256,6 +257,15 @@ public class AnylineProperty {
     public void setAutoCheckMetadata(boolean autoCheckMetadata) {
         this.autoCheckMetadata = autoCheckMetadata;
         ConfigTable.IS_AUTO_CHECK_METADATA = autoCheckMetadata;
+    }
+
+    public boolean isCacheDisabled() {
+        return cacheDisabled;
+    }
+
+    public void setCacheDisabled(boolean cacheDisabled) {
+        this.cacheDisabled = cacheDisabled;
+        ConfigTable.IS_CACHE_DISABLED = cacheDisabled;
     }
 
     public String getDefaultPrimaryKey() {
