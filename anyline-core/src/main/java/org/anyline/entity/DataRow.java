@@ -680,7 +680,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow ognl(String key, String formula, Object values) throws Exception {
-        put(key, ognl(key, formula, values));
+        put(key, ognl(formula, values));
         return this;
     }
 
