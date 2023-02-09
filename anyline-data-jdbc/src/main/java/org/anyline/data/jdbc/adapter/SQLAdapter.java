@@ -564,6 +564,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
         }
 
+        keys = checkMetadata(dest, keys);
+        keys = BeanUtil.distinct(keys);
+
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
         int size = keys.size();
