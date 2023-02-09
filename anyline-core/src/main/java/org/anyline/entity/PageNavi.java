@@ -159,6 +159,7 @@ public interface PageNavi extends Serializable{
 	 */
 	public PageNavi setLazy(long ms);
 	public String html(String adapter);
+	public String form();
 	public PageNavi setFlag(String flag);
 	public String getFlag();
 	public PageNavi setType(int type);
@@ -197,4 +198,5 @@ public interface PageNavi extends Serializable{
 	public PageNavi setMethod(String method);
 	public String getMethod();
 	public String getHtml();
+	public String getForm();
 }

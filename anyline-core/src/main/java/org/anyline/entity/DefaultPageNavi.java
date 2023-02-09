@@ -479,14 +479,19 @@ public class DefaultPageNavi implements PageNavi{
 		return this;
 	}
  
-	/** 
-	 *  @param adapter adapter
+	/**
+	 *  @param adapter html/ajax
+	 *  @param method get/post
 	 * @return String
 	 */ 
-	public String html(String adapter){
+	public String html(String adapter, String method){
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
 		if(null == config){
 			config = new PageNaviConfig();
+		}
+		boolean get = false;
+		if("get".equalsIgnoreCase(method)){
+			get = true;
 		}
 		calculate(); 
 		StringBuilder navi = new StringBuilder(); 
@@ -498,7 +503,22 @@ public class DefaultPageNavi implements PageNavi{
 		String configVarKey = ""; 
 		if(null == flag){ 
 			flag = ""; 
-		} 
+		}
+
+		if(get){
+			String params = null;
+			if(config.VAR_CLIENT_SET_VOL_ENABLE){
+				params = config.KEY_PAGE_ROWS + "=" + pageRows;
+			}
+			if(null != params) {
+				if (baseLink.contains("?")) {
+					baseLink += "&" + params;
+				} else {
+					baseLink += "?" + params;
+				}
+			}
+		}
+
 		if("ajax".equals(adapter)){
 			configVarKey = config.KEY_ID_FLAG + flag;	// _anyline_navi_conf_0 
 		} 
@@ -511,8 +531,8 @@ public class DefaultPageNavi implements PageNavi{
 		} 
 		if("ajax".equals(adapter)){
 			navi.append("<div class=\"form\">\n"); 
-		} 
-		// 当前页 
+		}
+		// 当前页
 		navi.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n"); 
 		// 共多少页 
 		navi.append("<input type='hidden' id='hid_total_page_"+flag+"' name='"+config.KEY_TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n"); 
@@ -578,11 +598,11 @@ public class DefaultPageNavi implements PageNavi{
  
 			} 
 			 
-			// config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示��2页或倒数第2页时显示省略号) 
+			// config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示第2页或倒数第2页时显示省略号)
 			// 1 .. 3 4 5 6 7 8 .. 10 
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){ 
 				if(config.VAR_SHOW_BUTTON){ 
-					createPageTag(index, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey); 
+					createPageTag(index, method,"navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
 				} 
 				// 下标 
 				if(config.VAR_SHOW_INDEX){ 
@@ -593,43 +613,43 @@ public class DefaultPageNavi implements PageNavi{
 						to = totalPage-1; 
 					} 
 					index.append("<div class='navi-num-border'>\n"); 
-					createPageTag(index, "navi-num-item", "1", 1, configVarKey); 
+					createPageTag(index, method, "navi-num-item", "1", 1, configVarKey);
 					if(fr > 2){ 
-						createPageTag(index, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey); 
+						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
 					for(int i=fr; i<=to; i++){ 
-						createPageTag(index, "navi-num-item", i + "", i, configVarKey); 
+						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					if(to < totalPage-1){ 
-						createPageTag(index, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey); 
+						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
 					if(totalPage >1){//不是只有一页 
-						createPageTag(index, "navi-num-item", totalPage+"", totalPage, configVarKey); 
+						createPageTag(index, method, "navi-num-item", totalPage+"", totalPage, configVarKey);
 					} 
 					index.append("</div>\n"); 
 				} 
 				// 下一页 最后页 
 				if(config.VAR_SHOW_BUTTON){ 
-					createPageTag(index, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey); 
+					createPageTag(index, method, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 				} 
 			}else{ 
 				// 上一页  第一页 
 				if(config.VAR_SHOW_BUTTON){ 
-					createPageTag(index, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey); 
-					createPageTag(index, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey); 
+					createPageTag(index, method, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
+					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
 				} 
 				// 下标 
 				if(config.VAR_SHOW_INDEX){ 
 					index.append("<div class='navi-num-border'>\n"); 
 					for(int i=fr; i<=to; i++){ 
-						createPageTag(index, "navi-num-item", i + "", i, configVarKey); 
+						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					index.append("</div>\n"); 
 				} 
 				// 下一页 最后页 
 				if(config.VAR_SHOW_BUTTON){ 
-					createPageTag(index, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey); 
-					createPageTag(index, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey); 
+					createPageTag(index, method, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
+					createPageTag(index, method, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
 				} 
 			} 
 			// VOL位置:下标之后 
@@ -653,7 +673,7 @@ public class DefaultPageNavi implements PageNavi{
 		}else if(type == 1){ 
 			// 加载更多
 			if(curPage+1 <= totalPage){
-				createPageTag(index, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
+				createPageTag(index, method, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
 			}else{
 				index.append(config.STYLE_PAGE_OVER);
 			}
@@ -687,12 +707,17 @@ public class DefaultPageNavi implements PageNavi{
 	/** 
 	 *  
 	 * @param builder  builder
+	 * @param method   get/post
 	 * @param clazz   clazz
 	 * @param tag 显示内容 
 	 * @param page 跳到第几页 
 	 * @param configFlag  configFlag
 	 */ 
-	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){ 
+	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, int page, String configFlag){
+		boolean get = false;
+		if("get".equalsIgnoreCase(method)){
+			get = true;
+		}
 		builder.append("<span class ='").append(clazz); 
 		if(page == curPage && 0 == type){ 
 			if(clazz.contains("navi-num-item")){//下标 
@@ -703,16 +728,33 @@ public class DefaultPageNavi implements PageNavi{
 			builder.append("'"); 
 		}else{ 
 			builder.append("'"); 
-			if(page>0){ 
-				builder.append(" onclick='_navi_go(").append(page); 
-				if(BasicUtil.isNotEmpty(configFlag)){ 
-					builder.append(",").append(configFlag); 
-				} 
-				builder.append(")'"); 
+			if(page>0){
+				if(!get) {//post
+					builder.append(" onclick='_navi_go(").append(page);
+					if (BasicUtil.isNotEmpty(configFlag)) {
+						builder.append(",").append(configFlag);
+					}
+					builder.append(")'");
+				}
 			} 
 		} 
-		builder.append(">"); 
-		builder.append(tag).append("</span>\n"); 
+		builder.append(">");
+		if(get){//get
+			PageNaviConfig config = PageNaviConfig.getInstance(style);
+			if(null == config){
+				config = new PageNaviConfig();
+			}
+			builder.append("<a href='").append(baseLink);
+			if(baseLink.contains("?")){
+				builder.append("&");
+			}else{
+				builder.append("?");
+			}
+			builder.append(config.KEY_PAGE_NO).append("=").append(page).append("'>").append(tag).append("</a>");
+		}else{//post
+			builder.append(tag);
+		}
+		builder.append("</span>\n");
 	} 
 	// 创建隐藏参数 
 	private String createHidParams(PageNaviConfig config){ 
@@ -748,8 +790,20 @@ public class DefaultPageNavi implements PageNavi{
 			} 
 		} 
 		return html; 
-	} 
+	}
 	public String getHtml(){
-		return html("html");
+		return html("html", "get");
+	}
+	public String html(){
+		return html("html", "get");
+	}
+	public String html(String adapter){
+		return html(adapter, "get");
+	}
+	public String getForm(){
+		return html("html", "post");
+	}
+	public String form(){
+		return html("html", "post");
 	}
 }
