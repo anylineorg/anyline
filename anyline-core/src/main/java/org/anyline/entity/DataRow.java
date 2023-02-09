@@ -1678,7 +1678,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * boolean类型true 解析成 1
-     * @param key key
+     * @param keys key
      * @return int
      * @throws Exception 异常 Exception
      */
@@ -3127,12 +3127,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * ROUND_UNNECESSARY=7 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
      * @return DataRow
      */
-    public DataRow divide(String target, String key, BigDecimal value, int mode) {
-        put(target, getDecimal(key, 0).divide(value, mode));
-        return this;
-    }
     public DataRow divide(String target, String key, BigDecimal value, int scale, int mode) {
         put(target, getDecimal(key, 0).divide(value, scale, mode));
+        return this;
+    }
+    public DataRow divide(String target, String key, BigDecimal value, int mode) {
+        put(target, getDecimal(key, 0).divide(value, mode));
         return this;
     }
 
