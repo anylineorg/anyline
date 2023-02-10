@@ -1,6 +1,8 @@
 package org.anyline.entity.data;
 
-public interface Column {
+import java.io.Serializable;
+
+public interface Column extends Serializable {
 
 
     public String getCatalog();

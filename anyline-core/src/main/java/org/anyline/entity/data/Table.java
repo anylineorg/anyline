@@ -1,4 +1,6 @@
 package org.anyline.entity.data;
 
-public interface Table {
+import java.io.Serializable;
+
+public interface Table  extends Serializable {
 }
