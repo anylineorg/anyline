@@ -533,21 +533,21 @@ public class DefaultPageNavi implements PageNavi{
 			navi.append("<div class=\"form\">\n"); 
 		}
 		// 当前页
-		navi.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n"); 
+		navi.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='anyline-navi-cur-page' value='"+curPage+"'/>\n");
 		// 共多少页 
-		navi.append("<input type='hidden' id='hid_total_page_"+flag+"' name='"+config.KEY_TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n"); 
+		navi.append("<input type='hidden' id='hid_total_page_"+flag+"' name='"+config.KEY_TOTAL_PAGE+"' class='anyline-navi-total-page' value='"+totalPage+"'/>\n");
 		// 共多少条 
-		navi.append("<input type='hidden' id='hid_total_row_"+flag+"' name='"+config.KEY_TOTAL_ROW+"' class='_anyline_navi_total_row' value='"+totalRow+"'/>\n"); 
+		navi.append("<input type='hidden' id='hid_total_row_"+flag+"' name='"+config.KEY_TOTAL_ROW+"' class='anyline-navi-total-row' value='"+totalRow+"'/>\n");
 		// 每页显示多少条 
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){ 
-			navi.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='_anyline_navi_page_rows_key' value='"+config.KEY_PAGE_ROWS+"'/>\n"); 
-			navi.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n"); 
+			navi.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='anyline-navi-page-rows-key' value='"+config.KEY_PAGE_ROWS+"'/>\n");
+			navi.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='anyline-navi-page-rows' value='"+pageRows+"'/>\n");
 		} 
 		if("ajax".equals(adapter)){
 			navi.append("<input type='hidden' class='"+config.KEY_ID_FLAG+"' value='" + flag + "'/>"); 
 		} 
 		navi.append(createHidParams(config)); 
-		navi.append("<div class=\"anyline_navi\">\n"); 
+		navi.append("<div class=\"anyline-navi\">\n");
 		// 数据统计 
 		String statFormat = config.STYLE_STAT_FORMAT;  
 		statFormat = statFormat.replace("${totalRow}", totalRow+"").replace("${curPage}", curPage+"").replace("${totalPage}", totalPage+"");
@@ -661,7 +661,7 @@ public class DefaultPageNavi implements PageNavi{
 				jump.append(config.STYLE_LABEL_JUMP) 
 				.append("<input type='text' value='") 
 				.append(curPage) 
-				.append("' class='navi-go-txt _anyline_jump_txt' id='hid_jump_txt_"+flag+"' onkeydown='_navi_jump_enter("+configVarKey+")'/>") 
+				.append("' class='navi-go-txt anyline-jump-txt' id='hid_jump_txt_"+flag+"' onkeydown='_navi_jump_enter("+configVarKey+")'/>")
 				.append(config.STYLE_LABEL_JUMP_PAGE) 
 				.append("<span class='navi-go-button' onclick='_navi_jump("+configVarKey+")'>") 
 				.append(config.STYLE_BUTTON_JUMP).append("</span>\n"); 
