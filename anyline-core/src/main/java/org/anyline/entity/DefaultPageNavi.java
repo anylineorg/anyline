@@ -806,4 +806,7 @@ public class DefaultPageNavi implements PageNavi{
 	public String form(){
 		return html("html", "post");
 	}
+	public String ajax(){
+		return html("ajax", "post");
+	}
 }

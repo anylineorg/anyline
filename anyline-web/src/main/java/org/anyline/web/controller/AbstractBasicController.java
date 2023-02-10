@@ -982,8 +982,6 @@ public class AbstractBasicController {
 		}
 		String html = "";
 		try{
-
-
 			html = WebUtil.parseJsp(request, response, page);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1000,7 +998,7 @@ public class AbstractBasicController {
 				type = 1;
 			}
 			navi.setType(type);
-			map.put("NAVI", BasicUtil.escape(navi.html("ajax")));
+			map.put("NAVI", BasicUtil.escape(navi.ajax()));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
 			map.put("CUR_PAGE", navi.getCurPage()+"");
