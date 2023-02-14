@@ -17,21 +17,19 @@
  */
 
 
-package org.anyline.web.tag; 
- 
-import java.io.IOException;
-
-import javax.servlet.jsp.JspWriter;
+package org.anyline.web.tag;
 
 import org.anyline.util.BasicUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
  
 public class Ellipsis extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
 	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() "; 
 	private int length;					// 结果长度
 	private String replace = "...";		// 替换字符
+	private boolean label = true;		// 是否显示label
 	private boolean toggle = false; 
  
 	public int doEndTag() { 
@@ -66,11 +64,17 @@ public class Ellipsis extends BaseBodyTag {
 					String sub = "<span id='tgs_" + random + "'>"+result+"<span style='display:inline;' onclick=\"$('#tgs_"+random+"').hide();$('#tga_"+random+"').show();\">" + replace + "</span></span>";
 					result = all + sub;
 				}else{ 
-					result += replace; 
-					result = "<label title=\""+src+"\">" + result + "</label>";
+					result += replace;
+					if(label){
+						result = "<label title=\""+src+"\">" + result + "</label>";
+					}
 				} 
 			}else{
-				result = "<label title=\""+src+"\">" + src + "</label>";
+				if(label){
+					result = "<label title=\""+src+"\">" + src + "</label>";
+				}else{
+					result = src;
+				}
 			} 
 			writer.print(result); 
 		} catch (IOException e) { 
@@ -87,6 +91,7 @@ public class Ellipsis extends BaseBodyTag {
 		value = null; 
 		length = 0; 
 		replace = "...";
+		label = true;
 		toggle = false; 
 	} 
  
@@ -113,5 +118,12 @@ public class Ellipsis extends BaseBodyTag {
 	public void setToggle(boolean toggle) {
 		this.toggle = toggle;
 	}
-	 
-} 
+
+	public boolean isLabel() {
+		return label;
+	}
+
+	public void setLabel(boolean label) {
+		this.label = label;
+	}
+}
