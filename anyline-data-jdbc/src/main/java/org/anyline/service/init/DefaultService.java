@@ -1472,6 +1472,10 @@ public class DefaultService<E> implements AnylineService<E> {
         table = DataSourceHolder.parseDataSource(table);
         return dao.delete(table, configs, conditions);
     }
+    @Override
+    public int truncate(String table){
+        return dao.truncate(table);
+    }
     protected PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
         PageNavi navi =  null;
         String lazyKey = null;

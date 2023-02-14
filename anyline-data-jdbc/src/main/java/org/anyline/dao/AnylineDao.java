@@ -135,7 +135,7 @@ public interface AnylineDao<E>{
 	 */
 	public int deletes(String table, String key, Collection<Object> values);
 	public int deletes(String table, String key, String ... values);
-
+	public int truncate(String table);
 
 	/* *****************************************************************************************************************
 	 *

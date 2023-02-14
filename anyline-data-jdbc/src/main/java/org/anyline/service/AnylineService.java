@@ -593,6 +593,8 @@ public interface AnylineService<E>{
 	 */
 	public int deletes(String table, String key, String ... values);
 
+	public int truncate(String table);
+
 
 	/* *****************************************************************************************************************
 	 * 													METADATA

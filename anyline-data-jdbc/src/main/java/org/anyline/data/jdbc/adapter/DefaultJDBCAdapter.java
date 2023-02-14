@@ -774,6 +774,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
+	@Override
+	public String buildTruncateSQL(String table){
+		StringBuilder builder = new StringBuilder();
+		builder.append("TRUNCATE TABLE ");
+		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
+		return builder.toString();
+	}
 
 	/* *****************************************************************************************************************
 	 *

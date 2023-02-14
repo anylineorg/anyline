@@ -353,6 +353,7 @@ public interface JDBCAdapter {
 	 */
 	public Run buildDeleteRunContent(Run run);
 
+	public String buildTruncateSQL(String table);
 
 
 	/* *****************************************************************************************************************

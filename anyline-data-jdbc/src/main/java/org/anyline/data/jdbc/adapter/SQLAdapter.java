@@ -1045,8 +1045,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         builder.append("\nWHERE 1=1\n\t");
 
-
-
         /*添加查询条件*/
         // appendConfigStore();
         run.appendCondition();
@@ -1063,7 +1061,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
         StringBuilder builder = new StringBuilder();
         TableRun run = new TableRun(this,table);
-        builder.append("DELETE FROM ").append(table).append(" WHERE ");
+        builder.append("DELETE FROM ");
+        SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
+        builder.append(" WHERE ");
+
         if(values instanceof Collection){
             Collection cons = (Collection)values;
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
@@ -1099,7 +1100,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
         TableRun run = new TableRun(this,dest);
         StringBuilder builder = new StringBuilder();
-        builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
+        builder.append("DELETE FROM ");
+        SQLUtil.delimiter(builder, parseTable(dest), delimiterFr, delimiterTo);
+        builder.append(" WHERE ");
         List<String> keys = new ArrayList<>();
         if(null != columns && columns.length>0){
             for(String col:columns){

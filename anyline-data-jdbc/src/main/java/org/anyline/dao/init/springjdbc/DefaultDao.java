@@ -35,6 +35,7 @@ import org.anyline.data.prepare.ProcedureParam;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -1476,6 +1477,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 
+
+	@Override
+	public int truncate(String table){
+		JDBCAdapter adapter = adapter();
+		String sql = adapter.buildTruncateSQL(table);
+		RunPrepare prepare = new DefaultTextPrepare(sql);;
+		return execute(prepare);
+	}
 
 
 	/* *****************************************************************************************************************
