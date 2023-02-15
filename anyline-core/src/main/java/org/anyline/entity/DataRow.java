@@ -2909,27 +2909,55 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return result;
     }
 
-    public Object get(boolean voluntary, String... keys) {
+
+    /**
+     * 按keys顺序递归取值,如果其中一层是数组 取第0个，不支持多维数组<br/>
+     * strict=false时,如果遇到基础类型值(包含String)则直接返回当前值，忽略之后的key<br/>
+     * strict=true时，必须提取到最后一层，如果失败则返回null
+     * 如提取用户的部门的领导的年率,中间遇到部门只是个String类型,则直接返回部门String<br/>
+     * @param keys keys
+     * @param strict 是否严格按key顺序提取到最后一层
+     * @return Object
+     */
+    public Object recursion(boolean strict, String... keys) {
         if (null == keys || keys.length == 0) {
             return null;
         }
         Object result = this;
-        for (String key : keys) {
+        int size = keys.length;
+        for (int i=0; i<size; i++) {
+            String key = keys[i];
             if (null != result) {
-                if (result instanceof DataRow) {
-                    result = ((DataRow) result).get(voluntary, key);
-                } else if (ClassUtil.isWrapClass(result) && !(result instanceof String)) {
+                //如果是数组 取第0个，不支持多维数组
+                if(result instanceof Collection){
+                    Collection list = (Collection) result;
+                    if(list.size()>0){
+                        result = list.iterator().next();
+                    }
+                }
+                if (ClassUtil.isWrapClass(result) && !(result instanceof String)) {
                     result = BeanUtil.getFieldValue(result, key);
                 } else {
-                    if (voluntary) {
+                    if(!strict) {
+                        //不严格要求提取到最后一层
                         return result;
-                    } else {
-                        result = null;
+                    }else{
+                        //严格要求提取到最后一层
+                        if(i == size -1){
+                            return result;
+                        }else{
+                            //没有到最后一层就遇到基础类型不能继续下一级提取了
+                            return null;
+                        }
                     }
                 }
             }
         }
         return result;
+    }
+
+    public Object recursion(String... keys) {
+        return recursion(true, keys);
     }
 
     public Object nvl(String... keys) {
