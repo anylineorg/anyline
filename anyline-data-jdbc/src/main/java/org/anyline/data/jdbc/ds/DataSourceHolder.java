@@ -223,7 +223,7 @@ public class DataSourceHolder {
 	 */
 	public static DataSource reg(String key, String pool, String driver, String url, String user, String password) throws Exception{
 		Map<String,String> param = new HashMap<String,String>();
-		param.put("pool", pool);
+		param.put("type", pool);
 		param.put("driver", driver);
 		param.put("url", url);
 		param.put("user", user);
@@ -262,14 +262,14 @@ public class DataSourceHolder {
 	@SuppressWarnings("unchecked")
 	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{
         try {
-            String pool = (String)params.get("pool");
-			if(BasicUtil.isEmpty(pool)){
-				pool = (String)params.get("type");
+            String type = (String)params.get("pool");
+			if(BasicUtil.isEmpty(type)){
+				type = (String)params.get("type");
 			}
-            if (pool == null) {
+            if (type == null) {
                 throw new Exception("未设置数据源类型(如:pool=com.zaxxer.hikari.HikariDataSource)");
             }
-            Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName((String) pool);
+            Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName((String) type);
             Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
 			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
 			Object user =  BeanUtil.propertyNvl(params,"user","username");
