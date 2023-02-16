@@ -2195,6 +2195,7 @@ public class BeanUtil {
 				return value;
 			}
 		}
+
 		return value;
 	}
 
