@@ -97,7 +97,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				String status = row.getString("status"); 
 				if("1".equals(status) && row.containsKey("_id")){ 
 					id = row.getString("_id"); 
-					log.warn("[添加标注完成][id:{}][name:{}]",id,name); 
+					log.warn("[添加标注完成][id:{}][name:{}]", id, name);
 				}else{ 
 					log.warn("[添加标注失败][name:{}][info:{}]", name, row.getString("info")); 
 					log.warn("[param:{}]",BeanUtil.map2string(params)); 
@@ -180,7 +180,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[删除标注][param:{}]",BeanUtil.map2string(params)); 
+			log.warn("[删除标注][param:{}]", BeanUtil.map2string(params));
 		} 
 		try{ 
 			DataRow json = DataRow.parseJson(txt); 
@@ -188,9 +188,9 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
 					cnt = json.getInt("success"); 
-					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getInt("fail")); 
+					log.warn("[删除标注完成][success:{}][fail:{}]", cnt, json.getInt("fail"));
 				}else{ 
-					log.warn("[删除标注失败][info:{}]",json.getString("info")); 
+					log.warn("[删除标注失败][info:{}]", json.getString("info"));
 				} 
 			} 
 		}catch(Exception e){ 

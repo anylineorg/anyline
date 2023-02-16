@@ -18,14 +18,13 @@
 
 
 package org.anyline.wechat.mp.tag;
- 
+
+import org.anyline.web.tag.BaseBodyTag;
+import org.anyline.web.util.WebUtil;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.ConfigTable;
-import org.anyline.web.tag.BaseBodyTag;
-import org.anyline.web.util.WebUtil;
 
 /**
  * 
@@ -43,9 +42,6 @@ public class WechatCheck extends BaseBodyTag {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				e.printStackTrace();
-			} 
 		} finally { 
 			release(); 
 		} 

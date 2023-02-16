@@ -890,12 +890,11 @@ public class DefaultService<E> implements AnylineService<E> {
             RunPrepare prepare = createRunPrepare(src);
             count = dao.count(prepare, append(configs, obj), conditions);
         } catch (Exception e) {
-            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-                e.printStackTrace();
-            }
             log.error("COUNT ERROR:"+e);
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 throw e;
+            }else{
+                e.printStackTrace();
             }
         }
         return count;

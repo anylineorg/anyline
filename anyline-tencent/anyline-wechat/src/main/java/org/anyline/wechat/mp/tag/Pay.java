@@ -18,18 +18,16 @@
 
 
 package org.anyline.wechat.mp.tag;
- 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.wechat.pay.util.WechatPayUtil;
 import org.anyline.wechat.util.WechatUtil;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -95,9 +93,6 @@ public class Pay extends BaseBodyTag {
 			out.println(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				e.printStackTrace();
-			} 
 		} finally { 
 			release(); 
 		} 

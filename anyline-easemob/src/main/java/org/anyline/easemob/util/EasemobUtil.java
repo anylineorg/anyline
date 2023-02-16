@@ -167,7 +167,7 @@ public class EasemobUtil {
 			headers.put("Authorization", "Bearer " + getAccessToken()); 
 			String txt = HttpUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText(); 
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[reset passworod][json:{}][result:{}]",json,txt); 
+				log.warn("[reset password][json:{}][result:{}]",json,txt);
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
@@ -632,7 +632,7 @@ public class EasemobUtil {
 			params.put("owner", owner); 
 			String txt = HttpUtil.post(defaultHeader(), url, "UTF-8", params).getText(); 
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[create group][result:" + txt + "]"); 
+				log.warn("[create group][result:{}]",txt);
 			} 
 			DataRow row = DataRow.parseJson(txt); 
 			if(null != row && row.has("data")){ 

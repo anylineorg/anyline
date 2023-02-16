@@ -53,9 +53,6 @@ public class COSConfig extends BaseBodyTag {
             out.println(script);
         } catch (Exception e) {
             e.printStackTrace();
-            if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-                e.printStackTrace();
-            }
         } finally {
             release();
         }
