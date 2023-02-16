@@ -1619,8 +1619,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return null;
         }
         Object obj = get(key);
-        if (null != obj && obj instanceof List) {
-            return (List<?>) obj;
+        if (null != obj){
+            if(obj instanceof List) {
+                return (List<?>) obj;
+            }else if(obj instanceof DataSet){
+                return ((DataSet)obj).getRows();
+            }
         }
         return null;
     }
