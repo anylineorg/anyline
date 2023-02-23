@@ -444,6 +444,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>selector</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>scope</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

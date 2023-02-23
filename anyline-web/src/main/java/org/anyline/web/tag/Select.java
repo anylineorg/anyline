@@ -16,8 +16,8 @@
  *           
  */ 
  
-package org.anyline.web.tag; 
- 
+package org.anyline.web.tag;
+
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -30,7 +30,8 @@ import java.util.*;
 public class Select extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
-	private Object data; 
+	private Object data;
+	private String selector;
 	private String valueKey = ConfigTable.DEFAULT_PRIMARY_KEY; 
 	private String textKey = "NM"; 
 	private String head; 
@@ -84,7 +85,10 @@ public class Select extends BaseBodyTag {
 			} 
 			data = list; 
 		} 
-		Collection items = (Collection) data; 
+		Collection items = (Collection) data;
+		if(BasicUtil.isNotEmpty(selector) && data instanceof Collection){
+			items = BeanUtil.select(items,selector.split(","));
+		}
 		try { 
 			if ("text".equals(type)) { 
 				if (null != items) { 
@@ -177,8 +181,17 @@ public class Select extends BaseBodyTag {
 		type = "select"; 
 		valueKey = ConfigTable.DEFAULT_PRIMARY_KEY; 
 		textKey = "NM"; 
-		multiple = null; 
- 
+		multiple = null;
+		selector = null;
+
+	}
+
+	public String getSelector() {
+		return selector;
+	}
+
+	public void setSelector(String selector) {
+		this.selector = selector;
 	}
 
 	public int getSize() {
