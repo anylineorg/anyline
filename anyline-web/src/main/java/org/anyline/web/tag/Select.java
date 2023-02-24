@@ -143,8 +143,29 @@ public class Select extends BaseBodyTag {
 			release(); 
 		} 
 		return EVAL_PAGE; 
-	} 
- 
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void addParam(String key, Object value) {
+//		if(null == value || "".equals(value.toString().trim())){
+//			return ;
+//		}
+		if(null == key){
+			if(null == paramList){
+				paramList = new ArrayList<Object>();
+			}
+			if(value instanceof Collection){
+				paramList.addAll((Collection)value);
+			}else{
+				paramList.add(value);
+			}
+		}else{
+			if(null == paramMap){
+				paramMap = new HashMap<String,Object>();
+			}
+			paramMap.put(key.trim(), value);
+		}
+	}
 	public Object getData() { 
 		return data; 
 	} 
