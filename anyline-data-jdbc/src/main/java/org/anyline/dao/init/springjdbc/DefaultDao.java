@@ -762,9 +762,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
-				if(mid > ConfigTable.SLOW_SQL_MILLIS){
+				if(mid-fr > ConfigTable.SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid-fr, sql, paramLogFormat(values));
 					if(null != listener){
 						listener.slow("select",null, sql, values, null, mid);
 					}
