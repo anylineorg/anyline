@@ -905,30 +905,36 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			set.setMetadatas(columns);
 		}
 		try{
-			final long[] mid = {0};
+			final long[] mid = {System.currentTimeMillis()};
+			final boolean[] process = {false};
 			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
 			if(null != values && values.size()>0){
 				getJdbc().query(sql, values.toArray(), new RowCallbackHandler() {
 					@Override
 					public void processRow(ResultSet rs) throws SQLException {
-						if(mid[0] == 0){
+						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
 						DataRow row = row(adapter, metadatas, rs);
 						set.add(row);
+						process[0] = true;
 					}
 				});
 			}else {
 				getJdbc().query(sql, new RowCallbackHandler() {
 					@Override
 					public void processRow(ResultSet rs) throws SQLException {
-						if(mid[0] == 0){
+						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
 						DataRow row = row(adapter, metadatas, rs);
 						set.add(row);
+						process[0] = true;
 					}
 				});
+			}
+			if(!process[0]){
+				mid[0] = System.currentTimeMillis();
 			}
 			boolean slow = false;
 			if(ConfigTable.SLOW_SQL_MILLIS > 0){
