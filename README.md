@@ -1,14 +1,3 @@
-用来维护快照的私服到2023-03-31就不维护了，需要快照版本的请从中央仓库下载  
-请参考[【maven配置】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f51d08504f16eef5d6eedaac28b67c2bc)
-
-2023之后的版本中,多数据源不再需需要依赖org.anyboot:anyboot-data-jdbc  
-原来的org.anyboot.data.jdbc.ds.DynamicDataSourceRegister可以用
-org.anyline.data.jdbc.ds.DynamicDataSourceRegister替代
-
-这样就彻底剥离了springboot(只是anyline源码中不再依赖，实际项目中不受影响)  
-项目中不再需要考虑anyline与springboot的版本匹配  
-
-原来有用过ConfigStore.addCondition/addConditions的换成and/ands  
 
 ***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)
@@ -21,7 +10,7 @@ org.anyline.data.jdbc.ds.DynamicDataSourceRegister替代
 ***一个字都不想看，就想直接启动项目的下载这个源码:***  
 [https://gitee.com/anyline/anyline-simple-clear](https://gitee.com/anyline/anyline-simple-clear)
 
-有问题请联系QQ群:  86020680  
+有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致，有问题请联系下面的QQ群(86020680)或微信    
 [<img src="http://alcms.oss-cn-shanghai.aliyuncs.com/anyline/img/ab/rhodilywys.jpg"/>](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)   
 没有QQ的再联系微信  
 <img src="http://cdn.anyline.org/img/user/zhv.jpg" width="90">
