@@ -13,18 +13,18 @@ public class Column implements org.anyline.entity.data.Column{
 
     protected String name                         ; // 名称
     protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
-    protected String catalog                      ; // 数据库
-    protected String className                    ; // java.lang.Long
-    protected String schema                       ; // dbo
+    protected String catalog                      ; // 数据库 catalog与schema 不同有数据库实现方式不一样
+    protected String schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
+    protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected String tableName                    ; // 表名
     protected Table table                         ; // 表
     protected Integer displaySize                 ; // display size
     protected String comment                      ; // 备注
     protected Integer type                        ; // 类型
-    protected String typeName                     ; // 类型名称
+    protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
-    protected int nullable                   = -1 ; // 是否可以为NULL
+    protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
     protected int caseSensitive              = -1 ; // 是否区分大小写
     protected int isCurrency                 = -1 ; // 是否是货币
     protected int isSigned                   = -1 ; // 是否可以带正负号
