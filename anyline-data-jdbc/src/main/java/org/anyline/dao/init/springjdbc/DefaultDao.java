@@ -2249,10 +2249,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				column.setUpdate(ucolumn);
 				column.setService(table.getService());
 				alter(column);
+				result = true;
 			}else{
 				// 添加列
 				ucolumn.setTable(update);
 				add(ucolumn);
+				result = true;
 			}
 		}
 		// 删除列
@@ -2265,6 +2267,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null == ucolumn) {
 					column.setTable(update);
 					drop(column);
+					result = true;
 				}
 			}
 		}
@@ -2390,10 +2393,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				column.setUpdate(ucolumn);
 				column.setService(table.getService());
 				alter(column);
+				result = true;
 			}else{
 				// 添加列
 				ucolumn.setTable(update);
 				add(ucolumn);
+				result = true;
 			}
 		}
 		// 删除列
@@ -2406,6 +2411,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null == ucolumn) {
 					column.setTable(update);
 					drop(column);
+					result = true;
 				}
 			}
 		}
@@ -2418,10 +2424,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				tag.setUpdate(utag);
 				tag.setService(table.getService());
 				alter(tag);
+				result = true;
 			}else{
 				// 添加列
 				utag.setTable(update);
 				add(utag);
+				result = true;
 			}
 		}
 		// 删除标签
@@ -2431,6 +2439,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null == utag) {
 					tag.setTable(update);
 					drop(tag);
+					result = true;
 				}
 			}
 		}
@@ -2555,10 +2564,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				column.setUpdate(ucolumn);
 				column.setService(table.getService());
 				alter(column);
+				result = true;
 			}else{
 				// 添加列
 				ucolumn.setTable(update);
 				add(ucolumn);
+				result = true;
 			}
 		}
 		// 删除列
@@ -2571,6 +2582,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null == ucolumn) {
 					column.setTable(update);
 					drop(column);
+					result = true;
 				}
 			}
 		}
