@@ -123,6 +123,6 @@
 	<property key="IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL">flase</property>
 	<!--insert update 时是否自动检测表结构(删除表中不存在的属性)-->
 	<property key="IS_AUTO_CHECK_METADATA">flase</property>
-	<!-- DDL执行时 是否自动删除不定义中不存在的列 -->
+	<!-- DDL执行时 是否自动删除定义中不存在的列 -->
 	<property key="IS_DDL_AUTO_DROP_COLUMN">flase</property>
 </properties>

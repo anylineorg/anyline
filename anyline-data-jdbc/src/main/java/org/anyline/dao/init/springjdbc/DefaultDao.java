@@ -2163,9 +2163,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(Table table) throws Exception;
-	 * public boolean alter(Table table) throws Exception;
-	 * public boolean drop(Table table) throws Exception;
+	 * public boolean create(Table table) throws Exception
+	 * public boolean alter(Table table) throws Exception
+	 * public boolean drop(Table table) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Table table) throws Exception {
@@ -2306,9 +2306,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(MasterTable table) throws Exception;
-	 * public boolean alter(MasterTable table) throws Exception;
-	 * public boolean drop(MasterTable table) throws Exception;
+	 * public boolean create(MasterTable table) throws Exception
+	 * public boolean alter(MasterTable table) throws Exception
+	 * public boolean drop(MasterTable table) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(MasterTable table) throws Exception{
@@ -2470,9 +2470,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(PartitionTable table) throws Exception;
-	 * public boolean alter(PartitionTable table) throws Exception;
-	 * public boolean drop(PartitionTable table) throws Exception;
+	 * public boolean create(PartitionTable table) throws Exception
+	 * public boolean alter(PartitionTable table) throws Exception
+	 * public boolean drop(PartitionTable table) throws Exception
 	 ******************************************************************************************************************/
 
 	@Override
@@ -2611,10 +2611,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Column column) throws Exception;
-	 * public boolean alter(Table table, Column column) throws Exception;
-	 * public boolean alter(Column column) throws Exception;
-	 * public boolean drop(Column column) throws Exception;
+	 * public boolean add(Column column) throws Exception
+	 * public boolean alter(Table table, Column column) throws Exception
+	 * public boolean alter(Column column) throws Exception
+	 * public boolean drop(Column column) throws Exception
 	 *
 	 * private boolean alter(Table table, Column column, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
@@ -2755,10 +2755,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Tag tag) throws Exception;
-	 * public boolean alter(Table table, Tag tag) throws Exception;
-	 * public boolean alter(Tag tag) throws Exception;
-	 * public boolean drop(Tag tag) throws Exception;
+	 * public boolean add(Tag tag) throws Exception
+	 * public boolean alter(Table table, Tag tag) throws Exception
+	 * public boolean alter(Tag tag) throws Exception
+	 * public boolean drop(Tag tag) throws Exception
 	 *
 	 * private boolean alter(Table table, Tag tag, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
@@ -2898,9 +2898,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Index index) throws Exception;
-	 * public boolean alter(Index index) throws Exception;
-	 * public boolean drop(Index index) throws Exception;
+	 * public boolean add(Index index) throws Exception
+	 * public boolean alter(Index index) throws Exception
+	 * public boolean drop(Index index) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Index index) throws Exception {
@@ -3008,9 +3008,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Constraint constraint) throws Exception;
-	 * public boolean alter(Constraint constraint) throws Exception;
-	 * public boolean drop(Constraint constraint) throws Exception;
+	 * public boolean add(Constraint constraint) throws Exception
+	 * public boolean alter(Constraint constraint) throws Exception
+	 * public boolean drop(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Constraint constraint) throws Exception {
