@@ -2258,7 +2258,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		// 删除列
-		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+		if(table.isAutoDropColumn()) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
 					continue;
@@ -2402,7 +2402,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		// 删除列
-		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+		if(table.isAutoDropColumn()) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
 					continue;
@@ -2433,7 +2433,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		// 删除标签
-		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+		if(table.isAutoDropColumn()) {
 			for (Tag tag : tags.values()) {
 				Tag utag = utags.get(tag.getName().toUpperCase());
 				if (null == utag) {
@@ -2573,7 +2573,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		// 删除列
-		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+		if(table.isAutoDropColumn()) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
 					continue;

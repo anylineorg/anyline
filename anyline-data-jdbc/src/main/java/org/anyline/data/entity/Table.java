@@ -3,8 +3,9 @@ package org.anyline.data.entity;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
-import org.anyline.service.AnylineService;
 import org.anyline.exception.AnylineException;
+import org.anyline.service.AnylineService;
+import org.anyline.util.ConfigTable;
 
 import java.util.*;
 
@@ -35,6 +36,7 @@ public class Table implements org.anyline.entity.data.Table{
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
     protected Table update;
     protected DDListener listener                 ;
+    protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
 
     public Table(){
@@ -392,5 +394,13 @@ public class Table implements org.anyline.entity.data.Table{
 
     public String toString(){
         return keyword+":"+name;
+    }
+
+    public boolean isAutoDropColumn() {
+        return autoDropColumn;
+    }
+
+    public void setAutoDropColumn(boolean autoDropColumn) {
+        this.autoDropColumn = autoDropColumn;
     }
 }
