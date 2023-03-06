@@ -248,7 +248,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
-		ResultSet set = dbmd.getTables(schema, catalog, pattern, types);
+		ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
 
 		if(null == tables){
 			tables = new LinkedHashMap<>();
