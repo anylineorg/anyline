@@ -132,7 +132,9 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 			//只作参数赋值
 			return "";
 		}
-
+		if(BasicUtil.isNotEmpty(table)){
+			prefix = table;
+		}
 		StringBuilder col_builder = new StringBuilder();
 		if(!column.contains(".")){
 			if(BasicUtil.isNotEmpty(prefix)){
