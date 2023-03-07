@@ -496,7 +496,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @paramd bmd DatabaseMetaData
+	 * @param dbmd DatabaseMetaData
 	 * @return tables
 	 * @throws Exception 异常
 	 */

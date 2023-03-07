@@ -302,7 +302,7 @@ public class HttpUtil {
 	 * @param charset
 	 * @param headers
 	 * @param params
-	 * @return
+	 * @return HttpResponse
 	 */
 	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String,String> headers, Map<String,Object> params){
 		return HttpBuilder.init()
