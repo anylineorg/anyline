@@ -1242,6 +1242,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         if (size() > 0) {
             List<String> list = BeanUtil.merge(fixs, keys);
+            if(list.size() ==0 && size() >0){
+                list = getRow(0).numberKeys();
+            }
             for (String key : list) {
                 result.put(key, sum(key));
             }
@@ -1251,12 +1254,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow sums(DataRow result, String[] fixs, String... keys) {
         return sums(result, BeanUtil.array2list(fixs, keys));
     }
+    public DataRow sums(DataRow result, String... keys) {
+        return sums(result, BeanUtil.array2list(keys));
+    }
     public DataRow sums(String ... keys) {
-        List<String> list = BeanUtil.array2list(keys);
-        if(list.size() ==0 && size() >0){
-            list = getRow(0).numberKeys();
-        }
-        return sums(new DataRow(), list);
+        return sums(new DataRow(), BeanUtil.array2list(keys));
     }
 
 
@@ -1274,6 +1276,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         if (size() > 0) {
             List<String> list = BeanUtil.merge(fixs, keys);
+            if(list.size() ==0 && size() >0){
+                list = getRow(0).numberKeys();
+            }
             for (String key : list) {
                 result.put(key, avg(key));
             }
@@ -1284,12 +1289,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow avgs(DataRow result, String[] fixs, String... keys) {
         return avgs(result, BeanUtil.array2list(fixs, keys));
     }
+    public DataRow avgs(DataRow result,  String... keys) {
+        return avgs(result, BeanUtil.array2list(keys));
+    }
     public DataRow avgs(String ... keys) {
-        List<String> list = BeanUtil.array2list(keys);
-        if(list.size() ==0 && size() >0){
-            list = getRow(0).numberKeys();
-        }
-        return avgs(new DataRow(), list);
+        return avgs(new DataRow(), BeanUtil.array2list(keys));
     }
 
 
@@ -1308,6 +1312,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         if (size() > 0) {
             List<String> list = BeanUtil.merge(fixs, keys);
+            if(list.size() ==0 && size() >0){
+                list = getRow(0).numberKeys();
+            }
             for (String key : keys) {
                 result.put(key, avg(key, scale, round));
             }
@@ -1318,12 +1325,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow avgs(DataRow result, int scale, int round, String[] fixs, String... keys) {
         return avgs(result, scale, round, BeanUtil.array2list(fixs, keys));
     }
+    public DataRow avgs(DataRow result, int scale, int round, String... keys) {
+        return avgs(result, scale, round, BeanUtil.array2list(keys));
+    }
     public DataRow avgs(int scale, int round, String ... keys) {
-        List<String> list = BeanUtil.array2list(keys);
-        if(list.size() ==0 && size() >0){
-            list = getRow(0).numberKeys();
-        }
-        return avgs(new DataRow(), scale, round,  list);
+        return avgs(new DataRow(), scale, round, BeanUtil.array2list(keys));
     }
     /**
      * 最大值
