@@ -3,6 +3,8 @@ package org.anyline.data.jdbc.util;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.util.SpringContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -17,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class SQLAdapterUtil {
 
+	private static final Logger log = LoggerFactory.getLogger(SQLAdapterUtil.class);
 	private static ConcurrentHashMap<String, JDBCAdapter> adapters= new ConcurrentHashMap<>();
 	public SQLAdapterUtil(){}
 	@Autowired(required = false)
@@ -57,10 +60,11 @@ public class SQLAdapterUtil {
 				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
 				name += con.getMetaData().getURL().toLowerCase();
 				// 根据url中关键字
+				log.warn("[检测数据库适配器][检测依据:{}]", name);
 				adapter = getAdapter(name);
-
 			}
 			if(null == adapter){
+				log.warn("[检测数据库适配器][检测失败][检测其他可用的适配器]");
 				adapter = SpringContextUtil.getBean(JDBCAdapter.class);
 			}
 		} catch (SQLException e) {
@@ -70,7 +74,11 @@ public class SQLAdapterUtil {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
-		adapter.setJdbc(jdbc);
+		if(null == adapter){
+			log.error("[检测数据库适配器][检测其他可用的适配器失败][可能没有依赖anyline-data-jdbc-*或没有扫描org.anyline包]");
+		}else {
+			adapter.setJdbc(jdbc);
+		}
 		return adapter;
 	}
 	private static JDBCAdapter getAdapter(String name){
@@ -116,7 +124,9 @@ public class SQLAdapterUtil {
 		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.Neo4j.getCode()) && name.contains("neo4j")){
 			adapter =  adapters.get(JDBCAdapter.DB_TYPE.Neo4j.getCode());
 		}
-		adapters.put(name, adapter);
+		if(null != adapter) {
+			adapters.put(name, adapter);
+		}
 		return adapter;
 	}
 }
