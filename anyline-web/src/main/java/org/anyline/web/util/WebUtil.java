@@ -70,7 +70,7 @@ public class WebUtil {
 	/**
 	 * 这里需要根据代理中配置解析
 	 * @param request  HttpServletRequest
-	 * @return ips如果多个IP以,分隔(如经过多层代理转发)
+	 * @return ips如果多个IP以,分隔(如经过多层代理转发一般取第0个IP)
 	 */
 	public static String getRemoteIps(HttpServletRequest request) {
 		String ip = request.getHeader("x-real-ip");
