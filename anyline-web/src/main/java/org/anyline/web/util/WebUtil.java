@@ -73,12 +73,9 @@ public class WebUtil {
 	 * @return ips如果多个IP以,分隔(如经过多层代理转发一般取第0个IP)
 	 */
 	public static String getRemoteIps(HttpServletRequest request) {
-		String ip = request.getHeader("x-real-ip");
+		String ip = request.getHeader("X-Forwarded-For");
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("X-Real-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("X-Forwarded-For");
 		}
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("Proxy-Client-IP");
