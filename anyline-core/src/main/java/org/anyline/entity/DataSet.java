@@ -3123,6 +3123,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return dispatchs(compare, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
 
+    /**
+     * 没有匹配成功的情况下，field依然会保留，如果需要清空可以调用set.removeEmptyRow(field)
+     * @param compare 对比方式
+     * @param field file
+     * @param unique 是否唯一 items中同一个条目只能匹配成功一次
+     * @param recursion 是否递归
+     * @param items items
+     * @param fixs fixs
+     * @param keys 匹配条件
+     * @return this
+     */
     public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
@@ -3142,8 +3153,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     if (unique) {
                         result.skip = true;
                     }
-                    row.put(field, result);
                 }
+                //result为空时 需要保留 field
+                row.put(field, result);
             }
         }
         items.skip(false);
