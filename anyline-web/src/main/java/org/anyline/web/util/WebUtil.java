@@ -66,8 +66,17 @@ public class WebUtil {
 		}
 		return ip;
 	}
+
+	/**
+	 * 这里需要根据代理中配置解析
+	 * @param request  HttpServletRequest
+	 * @return ips如果多个IP以,分隔(如经过多层代理转发)
+	 */
 	public static String getRemoteIps(HttpServletRequest request) {
 		String ip = request.getHeader("x-real-ip");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("X-Real-IP");
+		}
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("X-Forwarded-For");
 		}
