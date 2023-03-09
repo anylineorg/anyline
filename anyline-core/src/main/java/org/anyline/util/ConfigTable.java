@@ -93,6 +93,7 @@ public class ConfigTable {
 	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
 	public static String TABLE_METADATA_CACHE_KEY						= ""		;	// 表结构缓存key
 	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+	public static String MIX_DEFAULT_SEED								= "al"		;   // MixUti.mix默认seed
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;
 
 	public static String CONFIG_NAME = "anyline-config.xml";
