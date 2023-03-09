@@ -51,6 +51,7 @@ public class AnylineProperty {
     protected String httpParamKeyCase							= "camel"	;	// http参数格式 camel:小驼峰 camel:大驼峰 lower:小写 upper:大写  service.column2param会把 userName 转成username
     protected String tableMetadataCacheKey					    = ""		;	// 表结构缓存key
     protected int tableMetadataCacheSecond						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+    protected String mixDefaultSeed                             = "al"      ;   // MixUtil.mix默认seed
     protected String sqlDelimiterPlaceholder					= "`"		;
     public boolean isDebug() {
         return debug;
@@ -437,5 +438,14 @@ public class AnylineProperty {
     public void setInsertEmptyField(boolean insertEmptyField) {
         this.insertEmptyField = insertEmptyField;
         ConfigTable.IS_INSERT_EMPTY_FIELD = insertEmptyField;
+    }
+
+    public String getMixDefaultSeed() {
+        return mixDefaultSeed;
+    }
+
+    public void setMixDefaultSeed(String mixDefaultSeed) {
+        this.mixDefaultSeed = mixDefaultSeed;
+        ConfigTable.MIX_DEFAULT_SEED = mixDefaultSeed;
     }
 }
