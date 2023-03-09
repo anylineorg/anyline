@@ -8,7 +8,7 @@ public class MixUtil {
         return mix(seed, 6, 8, value);
     }
     public static String mix(String value){
-        return mix("al", 6, 8, value);
+        return mix(ConfigTable.MIX_DEFAULT_SEED, 6, 8, value);
     }
     public static String mix(String seed, int begin, int end, String value){
         String result = MD5Util.crypto(seed + MD5Util.crypto(value).substring(begin) + value).substring(begin, end);
@@ -19,7 +19,7 @@ public class MixUtil {
         return verify(verify, seed, 6, 8, value);
     }
     public static boolean verify(String verify, String value){
-        return verify(verify,"al", 6, 8, value);
+        return verify(verify,ConfigTable.MIX_DEFAULT_SEED, 6, 8, value);
     }
     public static boolean verify(String verify, String seed, int begin, int end, String value){
         String result = MD5Util.crypto(seed + MD5Util.crypto(value).substring(begin) + value).substring(begin, end);
