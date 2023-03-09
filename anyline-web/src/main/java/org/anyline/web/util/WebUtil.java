@@ -469,7 +469,7 @@ public class WebUtil {
 //	 * @return Object
 //	 */
 	public static Object getHttpRequestParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
-		String result = "";
+		String result = null;
 		List<Object> list = getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 		if(null != list && list.size()>0){
 			result = (String)list.get(0);
