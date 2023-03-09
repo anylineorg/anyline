@@ -60,7 +60,6 @@ public class SQLAdapterUtil {
 				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
 				name += con.getMetaData().getURL().toLowerCase();
 				// 根据url中关键字
-				log.warn("[检测数据库适配器][检测依据:{}]", name);
 				adapter = getAdapter(name);
 			}
 			if(null == adapter){
