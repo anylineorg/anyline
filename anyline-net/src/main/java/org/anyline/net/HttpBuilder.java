@@ -92,6 +92,15 @@ public class HttpBuilder {
     public static HttpBuilder init(){
         return new HttpBuilder();
     }
+    public static HttpBuilder init(String url){
+        return new HttpBuilder().setUrl(url);
+    }
+    public static HttpBuilder init(CloseableHttpClient client, String url){
+        return new HttpBuilder().setClient(client).setUrl(url);
+    }
+    public static HttpBuilder init(CloseableHttpClient client){
+        return new HttpBuilder().setClient(client);
+    }
     public HttpBuilder setContentType(String type){
         headers.put("Content-Type", type);
         return this;
