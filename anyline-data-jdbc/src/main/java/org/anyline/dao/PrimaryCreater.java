@@ -20,7 +20,9 @@
 package org.anyline.dao;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter.DB_TYPE;
- 
+
+import java.util.List;
+
 public interface PrimaryCreater { 
-	public Object createPrimary(DB_TYPE type,String table, String column, String other);
+	public Object create(Object entity, DB_TYPE type, String table, List<String> columns, String other);
 } 
