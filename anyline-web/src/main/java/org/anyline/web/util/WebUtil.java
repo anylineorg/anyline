@@ -66,7 +66,26 @@ public class WebUtil {
 		}
 		return ip;
 	}
-
+	//get post参数
+	public static Map<String,Object> params(HttpServletRequest request){
+		Map<String,Object> params = new HashMap<>();
+		Enumeration<String> keys = request.getParameterNames();
+		while (keys.hasMoreElements()){
+			String key = keys.nextElement();
+			String[] values = request.getParameterValues(key);
+			params.put(key, values);
+			if(null != values){
+				if(values.length ==0){
+					params.put(key, null);
+				}else if(values.length == 1){
+					params.put(key, values[0]);
+				}else if(values.length >1){
+					params.put(key, BeanUtil.array2list(values));
+				}
+			}
+		}
+		return params;
+	}
 	/**
 	 * 这里需要根据代理中配置解析
 	 * @param request  HttpServletRequest
