@@ -76,6 +76,20 @@ public class CacheProxy {
             cache_metadatas.remove(key);
         }
     }
+    public static void clearColumnCache(String table){
+        clearColumnCache(null, null, table);
+    }
+    public static void clearColumnCache(){
+        if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
+            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+            if(BasicUtil.isNotEmpty(cache)) {
+                provider.clear(cache);
+            }
+        }else{
+            cache_metadatas.clear();
+        }
+    }
+
 
 
     public static LinkedHashMap<String, Tag> tags(String table){

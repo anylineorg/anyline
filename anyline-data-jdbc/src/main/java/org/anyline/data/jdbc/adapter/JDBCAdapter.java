@@ -800,6 +800,12 @@ public interface JDBCAdapter {
 	public StringBuilder primary(StringBuilder builder, Table table);
 
 	/**
+	 * 单独创建主键
+	 * @return String
+	 */
+	//public String primary(Table table);
+
+	/**
 	 * 表备注
 	 * @param builder builder
 	 * @param table 表

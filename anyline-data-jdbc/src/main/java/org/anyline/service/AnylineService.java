@@ -27,6 +27,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.proxy.CacheProxy;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -622,6 +623,9 @@ public interface AnylineService<E>{
 	public List<String> tags(String catalog, String schema, String table);
 
 
+	public void clearColumnCache(String catalog, String schema, String table);
+	public void clearColumnCache(String table);
+	public void clearColumnCache();
 
 	public DDLService ddl();
 	public MetaDataService metadata();

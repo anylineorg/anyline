@@ -1862,8 +1862,17 @@ public class DefaultService<E> implements AnylineService<E> {
         return ddl;
     }
 
+    @Override
     public void clearColumnCache(String catalog, String schema, String table){
         CacheProxy.clearColumnCache(catalog, schema, table);
+    }
+    @Override
+    public void clearColumnCache(String table){
+        CacheProxy.clearColumnCache(table);
+    }
+    @Override
+    public void clearColumnCache(){
+        CacheProxy.clearColumnCache();
     }
     public void clearTagCache(String catalog, String schema, String table){
         CacheProxy.clearTagCache(catalog, schema, table);
