@@ -90,6 +90,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @param data entity|DataRow|DataSet
 	 * @param sql sql
 	 * @param values 占位参数值
+	 * @param pks 主键
 	 * @return int 影响行数
 	 * @throws Exception 异常
 	 */
@@ -103,11 +104,12 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				@Override
 				public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
 					PreparedStatement ps = null;
-					if(null != pks && pks.length>0){
+					/*if(null != pks && pks.length>0){
 						ps = con.prepareStatement(sql, pks);
 					}else {
 						ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-					}
+					}*/
+					ps = con.prepareStatement(sql);
 					int idx = 0;
 					if (null != values) {
 						for (Object obj : values) {
@@ -988,7 +990,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
  		List<String> list = buildCreateRunSQL(tab);
 		 int size = list.size();
 		 for(int i=0; i<size; i++){
-			 String sql = sqls.get(i);
+			 String sql = list.get(i);
 			 if(i ==0){
 				 StringBuilder builder = new StringBuilder();
 				 builder.append(sql);
@@ -1055,7 +1057,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			throw new SQLException("未指定主表");
 		}
 		Table tab = table;
-		builder.append(super.buildCreateRunSQL(tab));
+		builder.append(super.buildCreateRunSQL(tab).get(0));
 		builder.append(" USING ");
 		SQLUtil.delimiter(builder, stable, getDelimiterFr(), getDelimiterTo());
 		builder.append("(");
