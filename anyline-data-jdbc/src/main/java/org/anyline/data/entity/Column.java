@@ -246,9 +246,6 @@ public class Column implements org.anyline.entity.data.Column{
         if(null != table){
             return table.getName();
         }
-        if(null == table && null == table.getSchema()){
-            table.setSchema(schema);
-        }
         return tableName;
     }
 
