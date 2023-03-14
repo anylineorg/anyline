@@ -1295,26 +1295,75 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	@Override
 	public Column column(Column column, SqlRowSetMetaData rsm, int index){
-		if(null == column){
+		if(null == column) {
 			column = new Column();
-		}
-		try {
-			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
-			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
-			column.setClassName(rsm.getColumnClassName(index));
-			column.setCaseSensitive(rsm.isCaseSensitive(index));
-			column.setCurrency(rsm.isCurrency(index));
-			column.setOriginalName(rsm.getColumnName(index));
-			column.setName(rsm.getColumnLabel(index));
-			column.setPrecision(rsm.getPrecision(index));
-			column.setScale(rsm.getScale(index));
-			column.setDisplaySize(rsm.getColumnDisplaySize(index));
-			column.setSigned(rsm.isSigned(index));
-			column.setTableName(rsm.getTableName(index));
-			column.setType(rsm.getColumnType(index));
-			column.setTypeName(rsm.getColumnTypeName(index));
-		}catch (Exception e){
-			e.printStackTrace();
+
+			try {
+				column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getCatalogName]");
+			}
+			try {
+				column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getSchemaName]");
+			}
+			try {
+				column.setClassName(rsm.getColumnClassName(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getColumnClassName]");
+			}
+			try {
+				column.setCurrency(rsm.isCurrency(index));
+			} catch (Exception e) {
+				column.setCaseSensitive(rsm.isCaseSensitive(index));
+				log.warn("[获取MetaData失败][驱动未实现:isCurrency]");
+			}
+			try {
+				column.setOriginalName(rsm.getColumnName(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getColumnName]");
+			}
+			try {
+				column.setName(rsm.getColumnLabel(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getColumnLabel]");
+			}
+			try {
+				column.setPrecision(rsm.getPrecision(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getPrecision]");
+			}
+			try {
+				column.setScale(rsm.getScale(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getScale]");
+			}
+			try {
+				column.setDisplaySize(rsm.getColumnDisplaySize(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
+			}
+			try {
+				column.setSigned(rsm.isSigned(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:isSigned]");
+			}
+			try {
+				column.setTableName(rsm.getTableName(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getTableName]");
+			}
+			try {
+				column.setType(rsm.getColumnType(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getColumnType]");
+			}
+			try {
+				column.setTypeName(rsm.getColumnTypeName(index));
+			} catch (Exception e) {
+				log.warn("[获取MetaData失败][驱动未实现:getColumnTypeName]");
+			}
 		}
 		return column;
 	}
@@ -1323,23 +1372,75 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null == column){
 			column = new Column();
 		}
-		try {
+		try{
 			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getCatalogName]");
+		}
+		try{
 			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getSchemaName]");
+		}
+		try{
 			column.setClassName(rsm.getColumnClassName(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getColumnClassName]");
+		}
+		try{
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:isCaseSensitive]");
+		}
+		try{
 			column.setCurrency(rsm.isCurrency(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:isCurrency]");
+		}
+		try{
 			column.setOriginalName(rsm.getColumnName(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getColumnName]");
+		}
+		try{
 			column.setName(rsm.getColumnLabel(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getColumnLabel]");
+		}
+		try{
 			column.setPrecision(rsm.getPrecision(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getPrecision]");
+		}
+		try{
 			column.setScale(rsm.getScale(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getScale]");
+		}
+		try{
 			column.setDisplaySize(rsm.getColumnDisplaySize(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
+		}
+		try{
 			column.setSigned(rsm.isSigned(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:isSigned]");
+		}
+		try{
 			column.setTableName(rsm.getTableName(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getTableName]");
+		}
+		try {
 			column.setType(rsm.getColumnType(index));
+		}catch (Exception e){
+			log.warn("[获取MetaData失败][驱动未实现:getColumnType]");
+		}
+		try {
 			column.setTypeName(rsm.getColumnTypeName(index));
 		}catch (Exception e){
-			e.printStackTrace();
+			log.warn("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 		}
 		return column;
 	}
