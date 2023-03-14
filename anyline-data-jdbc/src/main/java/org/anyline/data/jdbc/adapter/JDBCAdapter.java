@@ -186,6 +186,7 @@ public interface JDBCAdapter {
 	 * @param data data
 	 * @param sql sql
 	 * @param values value
+	 * @param pks pks
 	 * @return int
 	 * @throws Exception 异常
 	 */
