@@ -1671,7 +1671,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }
                 Object value = get(key);
                 if (null != value) {
-                    result = value.toString();
+                    if(value instanceof byte[]){
+                        result = new String((byte[])value);
+                    }else {
+                        result = value.toString();
+                    }
                 }
             }
             break;
