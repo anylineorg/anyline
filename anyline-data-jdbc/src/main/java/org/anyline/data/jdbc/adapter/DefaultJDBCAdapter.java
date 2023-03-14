@@ -433,7 +433,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(metadatas.contains(item.toUpperCase())){
 				list.add(item);
 			}else{
-				log.warn("[{}][column:{}][insert/update忽略当前列名]", LogUtil.format("检测列名失败", 31), item);
+				log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("检测列名失败", 31), table, item);
 			}
 		}
 		return list;
@@ -1148,6 +1148,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null == column){
 				if(create){
 					column = column(column, rsm, i);
+					if(BasicUtil.isEmpty(column.getName())) {
+						column.setName(name);
+					}
 					columns.put(column.getName().toUpperCase(), column);
 				}else{
 					continue;
@@ -1181,7 +1184,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if("TAG".equals(remark)){
 				column = new Tag();
 			}
-			column.setName(name);
 			column.setComment(remark);
 			column.setCatalog(BasicUtil.evl(string(keys,"TABLE_CAT", set, table.getCatalog())));
 			column.setSchema(BasicUtil.evl(string(keys,"TABLE_SCHEM", set, table.getSchema())));
@@ -1196,6 +1198,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 			column(column, set);
+			column.setName(name);
 		}
 
 		// 主键
@@ -1297,7 +1300,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public Column column(Column column, SqlRowSetMetaData rsm, int index){
 		if(null == column) {
 			column = new Column();
-
 			try {
 				column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
 			} catch (Exception e) {
