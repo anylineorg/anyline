@@ -416,6 +416,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param data entity|DataRow|DataSet
      * @param sql sql
      * @param values 占位参数值
+     * @param pks pks
      * @return int 影响行数
      * @throws Exception 异常
      */
