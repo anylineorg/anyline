@@ -17,8 +17,10 @@ public class SpringContextUtil implements ApplicationContextAware {
 
 	@Override
 	public void setApplicationContext(ApplicationContext ac) throws BeansException { 
-		 SpringContextUtil.applicationContext = ac;   
-	} 
+		SpringContextUtil.applicationContext = ac;
+		ConfigTable.setEnvironment(ac.getEnvironment());
+	}
+
 	 
 	public static ApplicationContext getApplicationContext() {   
 		return applicationContext; 
@@ -41,5 +43,6 @@ public class SpringContextUtil implements ApplicationContextAware {
     		}
     	}
     	return null;
-    }  
+    }
+
 } 

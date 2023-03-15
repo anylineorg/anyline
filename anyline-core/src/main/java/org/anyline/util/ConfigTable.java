@@ -25,6 +25,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,6 +39,7 @@ import java.util.jar.JarFile;
 
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
+	private static Environment environment;
 	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
 	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
@@ -423,13 +425,25 @@ public class ConfigTable {
 		if(null == key){
 			return null;
 		}
-		String val = null;
+		Object val = null;
 		if(reload > 0 && (System.currentTimeMillis() - lastLoadTime)/1000 > reload){
 			// 重新加载
 			isLoading = false;
 			init();
 		}
-		return configs.get(key.toUpperCase().trim());
+		val = configs.get(key.toUpperCase().trim());
+		if(null == val && null != environment){
+			val = environment.getProperty(key);
+			if(null == val){
+				if(key.startsWith("anyline.")){
+					key = key.replace("anyline.","");
+				}else{
+					key = "anyline." + key;
+				}
+				val = environment.getProperty(key);
+			}
+		}
+		return val;
 	}
 	public static String getString(String key) {
 		Object val = get(key);
@@ -586,5 +600,7 @@ public class ConfigTable {
 	public static void setLowerKey(boolean bol){
 		IS_LOWER_KEY = bol;
 	}
-
+	public static void setEnvironment(Environment env){
+		environment = env;
+	}
 }
