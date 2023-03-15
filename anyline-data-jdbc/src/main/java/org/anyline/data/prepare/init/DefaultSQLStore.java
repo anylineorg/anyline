@@ -20,11 +20,11 @@
 package org.anyline.data.prepare.init;
 
 
-import org.anyline.data.prepare.xml.init.DefaultXMLCondition;
-import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.SQLStore;
+import org.anyline.data.prepare.xml.init.DefaultXMLCondition;
+import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -66,6 +66,7 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		List<File> files;
 		if (FileUtil.getPathType(ConfigTable.getClassPath()) == 0) {
+			//jar内部目录
 			if (sqlDir.contains("${classpath}")) {
 				sqlDir = sqlDir.replace("${classpath}", ConfigTable.getClassPath());
 			} else if (sqlDir.startsWith("/")) {
@@ -73,6 +74,7 @@ public class DefaultSQLStore extends SQLStore {
 			} else {
 			}
 			sqlDir = sqlDir.substring(sqlDir.indexOf("!/")).replaceAll("!/", "") + "/";
+			log.warn("[解析SQL][dir:{}]", sqlDir);
 			// 遍历jar
 			List<JarEntry> list = new ArrayList<JarEntry>();
 			JarFile jFile = null;
@@ -98,7 +100,8 @@ public class DefaultSQLStore extends SQLStore {
 			for (JarEntry jarEntry : list) {
 				String fileName = jarEntry.getName();
 				InputStream is = DefaultSQLStore.class.getClassLoader().getResourceAsStream(fileName);
-				sqls.putAll(parseSQLFile(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf(".xml")), is));
+				String prefix = fileName.substring(fileName.indexOf("sql") + 4, fileName.lastIndexOf(".xml")).replace("/",".").replace("\\", ".");
+				sqls.putAll(parseSQLFile(prefix, is));
 			}
 		} else {
 			File scanDir = null;
@@ -134,13 +137,16 @@ public class DefaultSQLStore extends SQLStore {
 	private static Hashtable<String, RunPrepare> parseSQLFile(File file) {
 		Hashtable<String, RunPrepare> result = new Hashtable();
 		String fileName = file.getPath();
-		String dirName = "";
+		/*String dirName = "";
 		if (sqlDir.contains(ConfigTable.getWebRoot())) {
 			dirName = sqlDir + FileUtil.getFileSeparator();
 		} else {
 			dirName = new File(ConfigTable.getWebRoot(), sqlDir).getPath() + FileUtil.getFileSeparator();
-		}
-		fileName = fileName.substring(fileName.indexOf("sql") + 4, fileName.indexOf(".xml")).replace("/", ".").replace("\\", ".").replace("src/main", ".");
+		}*/
+		fileName = fileName.substring(fileName.indexOf("sql") + 4, fileName.indexOf(".xml"))
+				.replace("/", ".")
+				.replace("\\", ".")
+				.replace("src/main", ".");
 
 		Document document = createDocument(file);
 		if (null == document) {
@@ -182,7 +188,13 @@ public class DefaultSQLStore extends SQLStore {
 		return result;
 	}
 
-	private static Hashtable<String, RunPrepare> parseSQLFile(String fileName, InputStream is) {
+	/**
+     * 解析SQL
+	 * @param prefix 用来标记SQL.ID crm.hr.user.f1:USER_LIST  prefix = crm.hr.user.f1
+	 * @param is  InputStream
+	 * @return Hashtable
+	 */
+	private static Hashtable<String, RunPrepare> parseSQLFile(String prefix, InputStream is) {
 		Hashtable<String, RunPrepare> result = new Hashtable();
 
 		Document document = createDocument(is);
@@ -203,11 +215,11 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		for (Iterator<?> itrSql = root.elementIterator("sql"); itrSql.hasNext(); ) {
 			Element sqlElement = (Element) itrSql.next();
-			String sqlId = fileName + ":" + sqlElement.attributeValue("id");                        // RunPrepare 主键
+			String sqlId = prefix + ":" + sqlElement.attributeValue("id");                        // RunPrepare 主键
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text");                                    // RunPrepare 文本
 			RunPrepare prepare = new DefaultXMLPrepare();
-			prepare.setDataSource(fileName + ":" + sqlId);
+			prepare.setDataSource(prefix + ":" + sqlId);
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);
 			for (Iterator<?> itrParam = sqlElement.elementIterator("condition"); itrParam.hasNext(); ) {
