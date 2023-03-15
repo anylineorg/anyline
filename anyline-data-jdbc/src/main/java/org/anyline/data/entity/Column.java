@@ -47,7 +47,7 @@ public class Column implements org.anyline.entity.data.Column{
 
     protected Column update                       ;
 
-    protected DDListener listener                 ;
+    protected transient DDListener listener                 ;
 
 
     public Column(){

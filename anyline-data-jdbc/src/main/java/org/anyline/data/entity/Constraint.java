@@ -17,7 +17,7 @@ public class Constraint {
     private Integer type        ; //
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
     private Index update;
-    private DDListener listener ;
+    private transient DDListener listener ;
 
 
     public String getCatalog() {
