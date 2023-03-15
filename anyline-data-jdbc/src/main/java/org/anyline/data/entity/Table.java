@@ -35,7 +35,7 @@ public class Table implements org.anyline.entity.data.Table{
     protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
     protected Table update;
-    protected DDListener listener                 ;
+    protected transient DDListener listener                 ;
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
 
