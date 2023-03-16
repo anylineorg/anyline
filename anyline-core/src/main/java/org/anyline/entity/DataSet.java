@@ -5325,7 +5325,49 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
 
     }
+    public class Format implements Serializable{
+        /**
+         * 根据列名日期格式化
+         * @param format 日期格式
+         * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
+         * @return DataSet
+         */
+        public DataSet date(String format, String ... cols){
+            for(DataRow row:rows){
+                row.format.date(format, cols);
+            }
+            return DataSet.this;
+        }
 
+        /**
+         * 根据数据类型日期格式化 如set.format.date("yyyy-MM-dd", Date.class);
+         * @param format 日期格式
+         * @param types 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
+         *             如果需要根据列名确定参与格式化的列参考date(format, cols)<br/>
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
+         * @return DataSet
+         */
+        public DataSet dates(String format, Class ... classes){
+            for(DataRow row:rows){
+                row.format.date(format, classes);
+            }
+            return DataSet.this;
+        }
+        /**
+         * 格式化所有日期类型列(类型中出现date关键字)
+         * @param all 传入true时生效
+         * @param format 日期格式
+         * @return DataSet
+         */
+        public DataSet date(boolean all, String format){
+            for(DataRow row:rows){
+                row.format.date(all, format);
+            }
+            return DataSet.this;
+        }
+    }
     public Select select = new Select();
-
+    public Format format = new Format();
 }
