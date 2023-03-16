@@ -52,6 +52,7 @@ public class AnylineProperty {
     protected String tableMetadataCacheKey					    = ""		;	// 表结构缓存key
     protected int tableMetadataCacheSecond						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
     protected String mixDefaultSeed                             = "al"      ;   // MixUtil.mix默认seed
+    protected String elAttributePrefix      					= "al"		;
     protected String sqlDelimiterPlaceholder					= "`"		;
     public boolean isDebug() {
         return debug;
@@ -447,5 +448,14 @@ public class AnylineProperty {
     public void setMixDefaultSeed(String mixDefaultSeed) {
         this.mixDefaultSeed = mixDefaultSeed;
         ConfigTable.MIX_DEFAULT_SEED = mixDefaultSeed;
+    }
+
+    public String getElAttributePrefix() {
+        return elAttributePrefix;
+    }
+
+    public void setElAttributePrefix(String elAttributePrefix) {
+        this.elAttributePrefix = elAttributePrefix;
+        ConfigTable.EL_ATTRIBUTE_PREFIX = elAttributePrefix;
     }
 }
