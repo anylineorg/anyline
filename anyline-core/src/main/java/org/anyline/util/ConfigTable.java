@@ -356,7 +356,7 @@ public class ConfigTable {
 				Element propertyElement = itrProperty.next();
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
-				configs.put(key.toUpperCase().trim(), value);
+				put(key.toUpperCase().trim(), value);
 				if (IS_DEBUG) {
 					log.info("[解析配置文件][{}={}]", key, value);
 				}
@@ -487,6 +487,21 @@ public class ConfigTable {
 	}
 	public static void put(String key, Object value){
 		configs.put(key, value);
+		if(value instanceof Collection){
+			Collection cols = (Collection) value;
+			int i = 0;
+			for(Object col:cols){
+				configs.put(key + "[" + i++ + "]", col);
+				configs.put(key + "." + i++ , col);
+			}
+		}
+		if(value instanceof Map){
+			Map map = (Map)value;
+			for(Object k: map.keySet()){
+				configs.put(key + "[" + k + "]", map.get(k));
+				configs.put(key + "." + k , map.get(k));
+			}
+		}
 		if(IS_DEBUG){
 			log.warn("[ConfigTable动态更新][{}={}]",key,value);
 		}
@@ -603,8 +618,5 @@ public class ConfigTable {
 	}
 	public static void setEnvironment(Environment env){
 		environment = env;
-		if(null != env){
-
-		}
 	}
 }
