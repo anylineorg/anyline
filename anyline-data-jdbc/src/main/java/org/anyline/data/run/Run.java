@@ -80,7 +80,7 @@ public interface Run {
 	 * @param conditions 查询条件、ORDER、GROUP、HAVING 等
 	 * @return Run
 	 */
-	public Run addConditions(String ... conditions) ;
+	public Run addCondition(String ... conditions) ;
 	public Run addCondition(Condition condition) ;
 	public Condition getCondition(String name); 
 	public ConditionChain getConditionChain() ; 

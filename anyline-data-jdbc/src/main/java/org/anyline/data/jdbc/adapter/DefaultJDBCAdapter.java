@@ -580,7 +580,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			//如果是text类型 将解析文本并抽取出变量
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
-			run.addConditions(conditions);
+			run.addCondition(conditions);
 			//为变量赋值
 			run.init();
 			//构造最终的查询SQL
@@ -663,7 +663,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			run.setAdapter(this);
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
-			run.addConditions(conditions);
+			run.addCondition(conditions);
 			run.init();
 			//构造最终的执行SQL
 			buildQueryRunContent(run);
@@ -739,7 +739,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			prepare.setDataSource(dest);
 			run.setPrepare(prepare);
 			run.setConfigStore((ConfigStore)obj);
-			run.addConditions(columns);
+			run.addCondition(columns);
 			run.init();
 			buildDeleteRunContent(run);
 		}else{

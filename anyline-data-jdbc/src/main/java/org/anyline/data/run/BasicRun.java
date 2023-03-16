@@ -497,7 +497,7 @@ public abstract class BasicRun implements Run {
 	 * @return Run
 	 */
 	@Override
-	public Run addConditions(String ... conditions) {
+	public Run addCondition(String ... conditions) {
 		/*添加查询条件*/
 		if(null != conditions){
 			for(String condition:conditions){

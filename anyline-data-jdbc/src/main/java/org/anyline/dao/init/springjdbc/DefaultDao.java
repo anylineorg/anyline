@@ -97,6 +97,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<Map<String,Object>> maps = null;
 		try {
 			JDBCAdapter adapter = adapter();
+			if(null != queryInterceptor){
+				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
+				if(exe == -1){
+					return new ArrayList<>();
+				}
+			}
+
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
@@ -110,13 +117,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn(tmp);
 			}
 			if (run.isValid()) {
-				int exe = 1;
-				if(null != queryInterceptor){
-					exe = queryInterceptor.before(run);
-				}
-				if(exe == -1){
-					return new ArrayList<>();
-				}
 				if (null != listener) {
 					listener.beforeQuery(run, -1);
 				}
@@ -154,6 +154,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSet set = null;
 		try {
 			JDBCAdapter adapter = adapter();
+			if(null != queryInterceptor){
+				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
+				if(exe == -1){
+					return new DataSet();
+				}
+			}
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
@@ -169,15 +175,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			PageNavi navi = run.getPageNavi();
 			int total = 0;
 			if (run.isValid()) {
-
-				if(null != queryInterceptor){
-					int exe = queryInterceptor.before(run);
-					if(exe == -1){
-						return new DataSet();
-					}
-				}
-
-
 				if (null != navi) {
 					if (null != listener) {
 						listener.beforeTotal(run);
@@ -250,6 +247,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				prepare.setDataSource(EntityAdapterProxy.table(clazz));
 			}
 			JDBCAdapter adapter = adapter();
+			if(null != queryInterceptor){
+				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
+				if(exe == -1){
+					return new EntitySet<>();
+				}
+			}
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
@@ -259,12 +262,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			PageNavi navi = run.getPageNavi();
 			int total = 0;
 			if (run.isValid()) {
-				if(null != queryInterceptor){
-					int exe = queryInterceptor.before(run);
-					if(exe == -1){
-						return new EntitySet<>();
-					}
-				}
 				if (null != navi) {
 					if (null != listener) {
 						listener.beforeTotal(run);
@@ -343,13 +340,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		int count = -1;
 		try{
 			JDBCAdapter adapter = adapter();
-			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if(null != queryInterceptor){
-				int exe = queryInterceptor.before(run);
+				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
 					return count;
 				}
 			}
+			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			Long fr = System.currentTimeMillis();
 			if (null != listener) {
 				listener.beforeCount(run);
