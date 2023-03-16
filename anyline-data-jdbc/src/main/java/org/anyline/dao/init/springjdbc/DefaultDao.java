@@ -107,7 +107,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (run.isValid()) {
 				if(null != listener){
-					listener.beforeQuery(run);
+					listener.beforeQuery(run, -1);
 				}
 				Long fr = System.currentTimeMillis();
 				maps = maps(adapter, run.getFinalQuery(), run.getValues());
@@ -181,7 +181,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (run.isValid() && (null == navi || total > 0)) {
 				if(null != listener){
-					listener.beforeQuery(run);
+					listener.beforeQuery(run, total);
 				}
 				Long fr = System.currentTimeMillis();
 				set = select(adapter, prepare.getTable(), run.getFinalQuery(), run.getValues());
@@ -254,7 +254,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (run.isValid() && (null == navi || total > 0)) {
 				if(null != listener){
-					listener.beforeQuery(run);
+					listener.beforeQuery(run, total);
 				}
 				Long fr = System.currentTimeMillis();
 				list = select(adapter, clazz, run.getTable(), run.getFinalQuery(), run.getValues());

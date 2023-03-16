@@ -42,10 +42,11 @@ public interface DMListener {
     public void afterTotal(Run run, int total, long millis);
     /**
      * 查询之前调用
-     * 
+     *
      * @param run sql
+     * @param total 上一步合计的总行数
      */
-    public void beforeQuery(Run run);
+    public void beforeQuery(Run run, int total);
     /**
      * 查询之后调用(调用service.map或service.maps)
      * 
