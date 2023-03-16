@@ -442,6 +442,9 @@ public class ConfigTable {
 					key = "anyline." + key;
 				}
 				val = environment.getProperty(key);
+				if(null != val){
+					put(key, val);
+				}
 			}
 		}
 		return val;
