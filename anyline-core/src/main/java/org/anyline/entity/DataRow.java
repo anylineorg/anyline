@@ -875,12 +875,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow dateFormat(String target, String key, String format) throws Exception {
+    public DataRow dateFormat(String target, String key, String format, Date def) {
         if (null == target || null == key || isEmpty(key) || null == format) {
             return this;
         }
-        put(target, DateUtil.format(getString(key), format));
+        put(target, DateUtil.format(getDate(key, def), format));
         return this;
+    }
+    public DataRow dateFormat(String target, String key, String format, String def) {
+        if (null == target || null == key || isEmpty(key) || null == format) {
+            return this;
+        }
+        try {
+            put(target, DateUtil.format(getDate(key), format));
+        }catch (Exception e){
+            put(target, def);
+        }
+        return this;
+    }
+    public DataRow dateFormat(String target, String key, String format) {
+        return dateFormat(target, key, format, "");
     }
 
     public DataRow dateParse(String target, String key, String format) throws Exception {
@@ -3263,14 +3277,39 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
 
         /**
-         * 格式化所有的列
-         * @param all 传入true时生效
+         * 格式化所有日期类型列(类型或列名中出现date关键字)
+         * @param type 传入true时检查列名，否则只检查数据类型
          * @param format 日期格式
+         * @param def 默认值
          * @return DataRow
          */
-        public DataRow date(boolean all, String format){
+        public DataRow date(boolean type, String format, String def){
+            if(type){
+                List<String> keys = keys();
+                for(String key:keys){
+                    if(key.toUpperCase().contains("DATE")){
+                        dateFormat(key, key, format, def);
+                    }
+                }
+            }
             return DataRow.this;
+        }
+        public DataRow date(boolean type, String format, Date def){
+            if(type){
+                List<String> keys = keys();
+                for(String key:keys){
+                    if(key.toUpperCase().contains("DATE")){
+                        dateFormat(key, key, format, def);
+                    }
+                }
+            }
+            return DataRow.this;
+        }
+        public DataRow date(boolean type, String format){
+            return date(type, format, "");
         }
     }
     public Format format = new Format();
+
+
 }

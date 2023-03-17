@@ -1099,16 +1099,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null == cols || BasicUtil.isEmpty(format)) {
             return this;
         }
-        int size = size();
-        for (int i = 0; i < size; i++) {
-            DataRow row = getRow(i);
+        for(DataRow row: rows){
             row.formatNumber(format, cols);
         }
         return this;
     }
     public DataSet numberFormat(String target, String key, String format){
         for(DataRow row: rows){
-            numberFormat(target, key, format);
+            row.numberFormat(target, key, format);
         }
         return this;
     }
@@ -5349,21 +5347,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
          *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
          * @return DataSet
          */
-        public DataSet dates(String format, Class ... classes){
+        public DataSet date(String format, Class ... classes){
             for(DataRow row:rows){
                 row.format.date(format, classes);
             }
             return DataSet.this;
         }
         /**
-         * 格式化所有日期类型列(类型中出现date关键字)
-         * @param all 传入true时生效
+         * 格式化所有日期类型列(类型或列名中出现date关键字)
+         * @param type 传入true时检查列名，否则只检查数据类型
          * @param format 日期格式
          * @return DataSet
          */
-        public DataSet date(boolean all, String format){
+        public DataSet date(boolean type, String format){
             for(DataRow row:rows){
-                row.format.date(all, format);
+                row.format.date(type, format);
             }
             return DataSet.this;
         }
