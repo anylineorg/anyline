@@ -827,95 +827,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    /**
-     * 数字格式化
-     * @param format format
-     * @param cols cols
-     * @return DataRow
-     */
-    public DataRow formatNumber(String format, String... cols) {
-        if (null == cols || BasicUtil.isEmpty(format)) {
-            return this;
-        }
-        for (String col : cols) {
-            String value = getString(col);
-            if (null != value) {
-                value = NumberUtil.format(value, format);
-                put(col, value);
-            }
-        }
-        return this;
-    }
 
-    public DataRow numberFormat(String target, String key, String format) {
-        if (null == target || null == key || isEmpty(key) || null == format) {
-            return this;
-        }
-        put(target, NumberUtil.format(getString(key), format));
-        return this;
-    }
-
-    /**
-     * 日期格式化
-     * @param format format
-     * @param cols cols
-     * @return DataRow
-     */
-    public DataRow formatDate(String format, String... cols) throws Exception{
-        if (null == cols || BasicUtil.isEmpty(format)) {
-            return this;
-        }
-        for (String col : cols) {
-            String value = getString(col);
-            if (null != value) {
-                value = DateUtil.format(value, format);
-                put(col, value);
-            }
-        }
-        return this;
-    }
-
-    public DataRow dateFormat(String target, String key, String format, Date def) {
-        if (null == target || null == key || isEmpty(key) || null == format) {
-            return this;
-        }
-        put(target, DateUtil.format(getDate(key, def), format));
-        return this;
-    }
-    public DataRow dateFormat(String target, String key, String format, String def) {
-        if (null == target || null == key || isEmpty(key) || null == format) {
-            return this;
-        }
-        try {
-            put(target, DateUtil.format(getDate(key), format));
-        }catch (Exception e){
-            put(target, def);
-        }
-        return this;
-    }
-    public DataRow dateFormat(String target, String key, String format) {
-        return dateFormat(target, key, format, "");
-    }
-
-    public DataRow dateParse(String target, String key, String format) throws Exception {
-        if (null == target || null == key || isEmpty(key) || null == format) {
-            return this;
-        }
-        put(target, DateUtil.parse(getString(key), format));
-        return this;
-    }
-
-    public DataRow dateParse(String target, String key) throws Exception {
-        if (null == target || null == key || isEmpty(key)) {
-            return this;
-        }
-        put(target, DateUtil.parse(getString(key)));
-        return this;
-    }
-
-    public DataRow dateFormat(String key, String format) throws Exception {
-        return dateFormat(key, key, format);
-    }
 
     /**
      * 指定列是否为空
@@ -3241,14 +3153,70 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return toJSON();
     }
 
+    private DataRow numberFormat(String src, String tar, String format, String def) {
+        if (null == tar || null == src || isEmpty(src) || null == format) {
+            return this;
+        }
+        try {
+            put(tar, NumberUtil.format(getString(src), format));
+        }catch (Exception e){
+            put(tar, def);
+        }
+        return this;
+    }
+
+    private DataRow dateFormat(String src, String tar, String format, Date def) {
+        if (null == tar || null == src || isEmpty(src) || null == format) {
+            return this;
+        }
+        put(tar, DateUtil.format(getDate(src, def), format));
+        return this;
+    }
+    private DataRow dateFormat(String src, String tar, String format, String def) {
+        if (null == tar || null == src || isEmpty(src) || null == format) {
+            return this;
+        }
+        try {
+            put(tar, DateUtil.format(getDate(src), format));
+        }catch (Exception e){
+            put(tar, def);
+        }
+        return this;
+    }
+
+    /**
+     * 日期解析,推荐调用parse.date()
+     * @param src 源列
+     * @param tar 结果列
+     * @param format 如果是String 按format格式解析
+     * @param def 默认值
+     * @return DataRow
+     * @throws Exception
+     */
+    private DataRow dateParse(String src, String tar, String format, Date def)  {
+        if (null == tar || null == src || isEmpty(src) || null == format) {
+            return this;
+        }
+        Object value = get(src);
+        Date date = null;
+        if(value instanceof String && null != format){
+            date = DateUtil.parse((String)value, format);
+        }else {
+            date = DateUtil.parse(value);
+        }
+        put(tar, date);
+        return this;
+    }
+
 
     public class Format implements Serializable{
         /**
          * 根据列名日期格式化,如果失败 默认 ""
          * @param format 日期格式
          * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             支持date(format, "SRC:TAR:DEF")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值DEF<br/>
          *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>
-         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(greedy, format)
          * @return DataRow
          */
         public DataRow date(String format, String ... cols){
@@ -3256,7 +3224,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 return DataRow.this;
             }
             for (String col : cols) {
-                dateFormat(col, col, format);
+                String src = col;
+                String tar = col;
+                String def = "";
+                if(col.contains(":")){
+                    String[] tmps = col.split(":");
+                    if(tmps.length>=2){
+                        src = tmps[0];
+                        tar = tmps[1];
+                    }
+                    if(tmps.length > 2){
+                        def = tmps[2];
+                    }
+                }
+                dateFormat(tar, src, format, def);
             }
             return DataRow.this;
         }
@@ -3266,7 +3247,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
          * @param format 日期格式
          * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
          *             如果需要根据列名确定参与格式化的列参考date(format, cols)<br/>
-         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(greedy, format)
          * @return DataSet
          */
         public DataRow date(String format, Class ... classes){
@@ -3283,7 +3264,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                         }
                     }
                     if(exe){
-                        dateFormat(key, key, format);
+                        dateFormat(key, key, format, "");
                     }
                 }
             }
@@ -3318,7 +3299,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     }
                     if(exe){
                         checked.add(key);
-                        dateFormat(key, key, format);
+                        dateFormat(key, key, format, "");
                     }
                 }
             }
@@ -3362,7 +3343,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     }
                     if(exe){
                         checked.add(key);
-                        dateFormat(key, key, format);
+                        dateFormat(key, key, format, def);
                     }
                 }
             }
@@ -3387,6 +3368,114 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
          */
         public DataRow date(boolean greedy, String format){
             return date(greedy, format, "");
+        }
+
+        /**
+         * 根据列名数字格式化,如果失败 默认 ""
+         * @param format 数字格式
+         * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             支持number(format, "SRC:TAR:DEF")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值DEF<br/>
+         *             如果需要根据数据烦劳确定参与格式化的列参考number(format,Class)<br/>
+         *             如果需要格式化所有的数字类型的列参考number(greedy, format)
+         * @return DataRow
+         */
+        public DataRow number(String format, String ... cols){
+            if (null == cols || BasicUtil.isEmpty(format)) {
+                return DataRow.this;
+            }
+            for (String col : cols) {
+                String src = col;
+                String tar = col;
+                String def = "";
+                if(col.contains(":")){
+                    String[] tmps = col.split(":");
+                    if(tmps.length>=2){
+                        src = tmps[0];
+                        tar = tmps[1];
+                    }
+                    if(tmps.length > 2){
+                        def = tmps[2];
+                    }
+                }
+                numberFormat(tar, src, format, def);
+            }
+            return DataRow.this;
+        }
+        /**
+         * 根据数据类型数字格式化 ,如果失败 默认 ""<br/>
+         * 如set.format.number("##.00", Date.class);
+         * @param format 数字格式
+         * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
+         *             如果需要根据列名确定参与格式化的列参考number(format, cols)<br/>
+         *             如果需要格式化所有的数字类型的列参考number(greedy, format)
+         * @return DataSet
+         */
+        public DataRow number(String format, Class ... classes){
+            List<String> keys = keys();
+            for(String key:keys){
+                Object value = get(key);
+                Class vc = value.getClass();
+                if(null != value){
+                    boolean exe = false;
+                    for(Class c:classes){
+                        if(vc.equals(c)){
+                            exe = true;
+                            break;
+                        }
+                    }
+                    if(exe){
+                        numberFormat(key, key, format, "");
+                    }
+                }
+            }
+            return DataRow.this;
+        }
+
+        /**
+         * 格式化所有数字类型列
+         * @param greedy 传入true时执行
+         * @param format 数字格式
+         * @param def 默认值
+         * @return DataRow
+         */
+        public DataRow number(boolean greedy, String format, String def){
+            if(!greedy){
+                return DataRow.this;
+            }
+            List<String> checked = new ArrayList<>();
+            List<String> keys = keys();
+            for(String key:keys){
+                Object value = get(key);
+                String vc = value.getClass().getSimpleName().toUpperCase();
+                if(null != value){
+                    boolean exe = false;
+                    if(vc.contains("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
+                        exe = true;
+                    }
+                    if(!exe){
+                        Column column = getMetadata(key);
+                        if(null != column){
+                            vc = column.getTypeName().toUpperCase();
+                            if(vc.contains("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
+                                exe = true;
+                            }
+                        }
+                    }
+                    if(exe){
+                        numberFormat(key, key, format, def);
+                    }
+                }
+            }
+            return DataRow.this;
+        }
+        /**
+         * @param greedy 传入true时执行
+         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
+         * @param format 数字格式
+         * @return DataRow
+         */
+        public DataRow number(boolean greedy, String format){
+            return number(greedy, format, "");
         }
     }
     public Format format = new Format();

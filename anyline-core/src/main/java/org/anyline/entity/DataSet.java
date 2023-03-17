@@ -1088,78 +1088,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet getRows(DataRow row, String... keys) {
         return getRows(Compare.EQUAL, row, keys);
     }
-    /**
-     * 数字格式化
-     *
-     * @param format format
-     * @param cols   cols
-     * @return DataSet
-     */
-    public DataSet formatNumber(String format, String... cols) {
-        if (null == cols || BasicUtil.isEmpty(format)) {
-            return this;
-        }
-        for(DataRow row: rows){
-            row.formatNumber(format, cols);
-        }
-        return this;
-    }
-    public DataSet numberFormat(String target, String key, String format){
-        for(DataRow row: rows){
-            row.numberFormat(target, key, format);
-        }
-        return this;
-    }
-    public DataSet numberFormat(String key, String format){
-        return numberFormat(key, key, format);
-    }
 
-    /**
-     * 日期格式化
-     *
-     * @param format format
-     * @param cols   cols
-     * @return DataSet
-     */
-    public DataSet formatDate(String format, String... cols)  throws Exception{
-        if (null == cols || BasicUtil.isEmpty(format)) {
-            return this;
-        }
-        int size = size();
-        for (int i = 0; i < size; i++) {
-            DataRow row = getRow(i);
-            row.formatDate(format, cols);
-        }
-        return this;
-    }
-
-    public DataSet dateFormat(String target, String key, String format) throws Exception{
-        for(DataRow row: rows){
-            row.dateFormat(target, key, format);
-        }
-        return this;
-    }
-    public DataSet dateParse(String target, String key, String format) throws Exception{
-        for(DataRow row: rows){
-            row.dateParse(target, key, format);
-        }
-        return this;
-    }
-    public DataSet dateParse(String target, String key) throws Exception{
-        for(DataRow row: rows){
-            row.dateParse(target, key);
-        }
-        return this;
-    }
-    public DataSet dateParse(String key) throws Exception{
-        for(DataRow row: rows){
-            row.dateParse(key, key);
-        }
-        return this;
-    }
-    public DataSet dateFormat(String key, String format) throws Exception{
-        return dateFormat(key, key, format);
-    }
     /**
      * 提取符合指定属性值的集合
      *
@@ -5329,8 +5258,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
          * 根据列名日期格式化,如果失败 默认 ""
          * @param format 日期格式
          * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             支持date(format, "SRC:TAR:DEF")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值DEF<br/>
          *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>
-         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考 date(all, format)
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考 date(greedy, format)
          * @return DataSet
          */
         public DataSet date(String format, String ... cols){
@@ -5343,9 +5273,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
          * 根据数据类型日期格式化 ,如果失败 默认 ""<br/>
          * 如set.format.date("yyyy-MM-dd", Date.class);
          * @param format 日期格式
-         * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
+         * @param classes 数据类型,不指定则不执行(避免传参失败)<br/>
          *             如果需要根据列名确定参与格式化的列参考date(format, cols)<br/>
-         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(greedy, format)
          * @return DataSet
          */
         public DataSet date(String format, Class ... classes){
@@ -5392,6 +5322,59 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 row.format.date(greedy, format);
             }
             return DataSet.this;
+        }
+        /**
+         * 根据列名数字格式化,如果失败 默认 ""
+         * @param format 数字格式
+         * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             支持number(format, "SRC:TAR:DEF")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值DEF<br/>
+         *             如果需要根据数据烦劳确定参与格式化的列参考number(format,Class)<br/>
+         *             如果需要格式化所有的数字类型的列参考number(greedy, format)
+         * @return DataSet
+         */
+        public DataSet number(String format, String ... cols){
+            for(DataRow row:rows){
+                row.format.number(format, cols);
+            }
+            return DataSet.this;
+        }
+        /**
+         * 根据数据类型数字格式化 ,如果失败 默认 ""<br/>
+         * 如set.format.number("##.00", Date.class);
+         * @param format 数字格式
+         * @param classes 数据类型,不指定则不执行(避免传参失败)<br/>
+         *             如果需要根据列名确定参与格式化的列参考number(format, cols)<br/>
+         *             如果需要格式化所有的数字类型的列参考number(greedy, format)
+         * @return DataSet
+         */
+        public DataSet number(String format, Class ... classes){
+            for(DataRow row:rows){
+                row.format.number(format, classes);
+            }
+            return DataSet.this;
+        }
+
+        /**
+         * 格式化所有数字类型列
+         * @param greedy 传入true时执行
+         * @param format 数字格式
+         * @param def 默认值
+         * @return DataSet
+         */
+        public DataSet number(boolean greedy, String format, String def){
+            for(DataRow row:rows){
+                row.format.number(greedy, format, def);
+            }
+            return DataSet.this;
+        }
+        /**
+         * @param greedy 传入true时执行
+         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
+         * @param format 数字格式
+         * @return DataRow
+         */
+        public DataSet number(boolean greedy, String format){
+            return number(greedy, format, "");
         }
     }
     public Select select = new Select();
