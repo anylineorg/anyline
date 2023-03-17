@@ -5343,7 +5343,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
          * 根据数据类型日期格式化 ,如果失败 默认 ""<br/>
          * 如set.format.date("yyyy-MM-dd", Date.class);
          * @param format 日期格式
-         * @param types 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
+         * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
          *             如果需要根据列名确定参与格式化的列参考date(format, cols)<br/>
          *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(all, format)
          * @return DataSet
