@@ -22,7 +22,6 @@ package org.anyline.dao.init.springjdbc;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
-import org.anyline.data.interceptor.QueryInterceptor;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.util.SQLAdapterUtil;
@@ -73,9 +72,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Autowired(required=false)
 	protected DMListener listener;
 
-	@Autowired(required=false)
-	protected QueryInterceptor queryInterceptor;
-
 	public JdbcTemplate getJdbc(){
 		return jdbc;
 	}
@@ -97,12 +93,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<Map<String,Object>> maps = null;
 		try {
 			JDBCAdapter adapter = adapter();
-			if(null != queryInterceptor){
+			/*if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
 					return new ArrayList<>();
 				}
-			}
+			}*/
 
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
@@ -128,9 +124,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != listener) {
 					listener.afterQuery(run, maps, System.currentTimeMillis() - fr);
 				}
-				if(null != queryInterceptor){
+				/*if(null != queryInterceptor){
 					queryInterceptor.after(run, maps, System.currentTimeMillis() - fr);
-				}
+				}*/
 
 			} else {
 				maps = new ArrayList<>();
@@ -153,13 +149,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
-			JDBCAdapter adapter = adapter();
+			JDBCAdapter adapter = adapter();/*
 			if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
 					return new DataSet();
 				}
-			}
+			}*/
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
@@ -212,10 +208,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}else{
 					set = new DataSet();
-				}
+				}/*
 				if(null != queryInterceptor){
 					queryInterceptor.after(run, set, System.currentTimeMillis() - fr);
-				}
+				}*/
 			} else {
 				set = new DataSet();
 			}
@@ -246,13 +242,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(EntityAdapterProxy.hasAdapter()){
 				prepare.setDataSource(EntityAdapterProxy.table(clazz));
 			}
-			JDBCAdapter adapter = adapter();
+			JDBCAdapter adapter = adapter();/*
 			if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
 					return new EntitySet<>();
 				}
-			}
+			}*/
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false]";
@@ -302,10 +298,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}else{
 					list = new EntitySet<>();
-				}
+				}/*
 				if(null != queryInterceptor){
 					queryInterceptor.after(run, list, System.currentTimeMillis() - fr);
-				}
+				}*/
 			} else {
 				list = new EntitySet<>();
 			}
@@ -339,13 +335,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
-			JDBCAdapter adapter = adapter();
+			JDBCAdapter adapter = adapter();/*
 			if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
 					return count;
 				}
-			}
+			}*/
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			Long fr = System.currentTimeMillis();
 			if (null != listener) {
@@ -356,10 +352,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			if(null != listener){
 				listener.afterCount(run, count, System.currentTimeMillis() - fr);
-			}
+			}/*
 			if(null != queryInterceptor){
 				queryInterceptor.after(run, count, System.currentTimeMillis() - fr);
-			}
+			}*/
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1300,12 +1296,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		final String rdm = random;
 		DataSet set = null;
 		try{
-			if(null != queryInterceptor){
+			/*if(null != queryInterceptor){
 				int exe = queryInterceptor.before(procedure);
 				if(exe == -1){
 					return new DataSet();
 				}
-			}
+			}*/
 			if(null != listener){
 				listener.beforeQuery(procedure);
 			}
@@ -1411,9 +1407,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != listener){
 				listener.afterQuery(procedure, set, millis);
 			}
-			if(null != queryInterceptor){
+/*			if(null != queryInterceptor){
 				queryInterceptor.after(procedure, set, millis);
-			}
+			}*/
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[执行耗时:{}ms]", random, millis);
 			}

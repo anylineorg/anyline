@@ -5377,6 +5377,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return number(greedy, format, "");
         }
     }
-    public Select select = new Select();
+
+    public class Parse implements Serializable{
+        /**
+         * 根据列名日期格式化,如果失败 默认 ""
+         * @param format 日期格式
+         * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             支持date(format, "SRC:TAR:2020-01-01 10:10:10")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值2020-01-01 10:10:10<br/>
+         *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(greedy, format)
+         * @return DataRow
+         */
+        public DataSet date(String ... cols){
+            for(DataRow row:rows){
+                row.parse.date(cols);
+            }
+            return DataSet.this;
+        }
+        public DataSet number(String ... cols){
+            for(DataRow row:rows){
+                row.parse.number(cols);
+            }
+            return DataSet.this;
+        }
+    }
     public Format format = new Format();
+    public Parse parse = new Parse();
 }

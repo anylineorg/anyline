@@ -3209,6 +3209,40 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
 
+    /**
+     * 数字解析,解析成BigDecimal 推荐调用parse.number()
+     * @param src 源列
+     * @param tar 结果列
+     * @param def 默认值 如果默认值转换数字失败会抛出异常
+     * @return DataRow
+     * @throws Exception
+     */
+    private DataRow numberParse(String src, String tar, String def) {
+        if (null == tar || null == src || isEmpty(src) ) {
+            return this;
+        }
+        Object value = get(src);
+        if(null == value){
+            value = def;
+        }
+        BigDecimal result = null;
+        if(null != value){
+            try {
+                if (value instanceof String) {
+                    String str = ((String) value).replace(",", "");
+                    result = new BigDecimal(str);
+                } else {
+                    result = BasicUtil.parseDecimal(value, null);
+                }
+            }catch (Exception e){
+                if(null != def) {
+                    result = new BigDecimal(def);
+                }
+            }
+        }
+        put(tar, result);
+        return this;
+    }
     public class Format implements Serializable{
         /**
          * 根据列名日期格式化,如果失败 默认 ""
@@ -3478,7 +3512,57 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return number(greedy, format, "");
         }
     }
+    public class Parse implements Serializable{
+        /**
+         * 根据列名日期格式化,如果失败 默认 ""
+         * @param format 日期格式
+         * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
+         *             支持date(format, "SRC:TAR:2020-01-01 10:10:10")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值2020-01-01 10:10:10<br/>
+         *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>
+         *             如果需要格式化所有的日期类型的列(类型中出现date关键字)参考date(greedy, format)
+         * @return DataRow
+         */
+        public DataRow date(String ... cols){
+            for(String col:cols){
+                String src = col;
+                String tar = col;
+                Date def = null;
+                if(col.contains(":")){
+                    String[] tmps = col.split(":");
+                    if(tmps.length >= 2){
+                        src = tmps[0];
+                        tar = tmps[1];
+                    }
+                    if(tmps.length > 2){
+                        def = DateUtil.parse(col.replace(src+":"+tar+":", "").trim());
+                    }
+                    dateParse(src, tar, null, def);
+                }
+            }
+            return DataRow.this;
+        }
+        public DataRow number(String ... cols){
+            for(String col:cols){
+                String src = col;
+                String tar = col;
+                String def = null;
+                if(col.contains(":")){
+                    String[] tmps = col.split(":");
+                    if(tmps.length >= 2){
+                        src = tmps[0];
+                        tar = tmps[1];
+                    }
+                    if(tmps.length > 2){
+                        def =col.replace(src+":"+tar+":", "").trim();
+                    }
+                    numberParse(src, tar,  def);
+                }
+            }
+            return DataRow.this;
+        }
+    }
     public Format format = new Format();
+    public Parse parse = new Parse();
 
 
 }
