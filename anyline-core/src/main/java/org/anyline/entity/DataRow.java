@@ -1865,7 +1865,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Date getDate(String ... keys) throws Exception {
-        return DateUtil.parse(getString(keys));
+        return DateUtil.parse(get(keys));
     }
     public byte[] getBytes(String key){
         return (byte[]) get(key);
@@ -3244,7 +3244,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public class Format implements Serializable{
         /**
-         * 根据列名日期格式化
+         * 根据列名日期格式化,如果失败 默认 ""
          * @param format 日期格式
          * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
          *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>
@@ -3256,16 +3256,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 return DataRow.this;
             }
             for (String col : cols) {
-                String value = getString(col);
-                if (null != value) {
-                    value = DateUtil.format(value, format);
-                    put(col, value);
-                }
+                dateFormat(col, col, format);
             }
             return DataRow.this;
         }
         /**
-         * 根据数据类型日期格式化 如set.format.date("yyyy-MM-dd", Date.class);
+         * 根据数据类型日期格式化 ,如果失败 默认 ""<br/>
+         * 如set.format.date("yyyy-MM-dd", Date.class);
          * @param format 日期格式
          * @param types 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
          *             如果需要根据列名确定参与格式化的列参考date(format, cols)<br/>
@@ -3273,20 +3270,63 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
          * @return DataSet
          */
         public DataRow date(String format, Class ... classes){
+            List<String> keys = keys();
+            for(String key:keys){
+                Object value = get(key);
+                Class vc = value.getClass();
+                if(null != value){
+                    boolean exe = false;
+                    for(Class c:classes){
+                        if(vc.equals(c)){
+                            exe = true;
+                            break;
+                        }
+                    }
+                    if(exe){
+                        dateFormat(key, key, format);
+                    }
+                }
+            }
             return DataRow.this;
         }
 
         /**
          * 格式化所有日期类型列(类型或列名中出现date关键字)
-         * @param type 传入true时检查列名，否则只检查数据类型
+         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
          * @param format 日期格式
          * @param def 默认值
          * @return DataRow
          */
-        public DataRow date(boolean type, String format, String def){
-            if(type){
-                List<String> keys = keys();
+        public DataRow date(boolean greedy, String format, String def){
+            List<String> checked = new ArrayList<>();
+            List<String> keys = keys();
+            for(String key:keys){
+                Object value = get(key);
+                String vc = value.getClass().getSimpleName();
+                if(null != value){
+                    boolean exe = false;
+                    if(vc.toUpperCase().contains("DATE")){
+                        exe = true;
+                    }
+                    if(!exe){
+                        Column column = getMetadata(key);
+                        if(null != column){
+                            if(column.getTypeName().toUpperCase().contains("DATE")){
+                                exe = true;
+                            }
+                        }
+                    }
+                    if(exe){
+                        checked.add(key);
+                        dateFormat(key, key, format);
+                    }
+                }
+            }
+            if(greedy){
                 for(String key:keys){
+                    if(checked.contains(key)){
+                        continue;
+                    }
                     if(key.toUpperCase().contains("DATE")){
                         dateFormat(key, key, format, def);
                     }
@@ -3294,10 +3334,44 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
             return DataRow.this;
         }
-        public DataRow date(boolean type, String format, Date def){
-            if(type){
-                List<String> keys = keys();
+        /**
+         * 格式化所有日期类型列(类型或列名中出现date关键字)
+         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
+         * @param format 日期格式
+         * @param def 默认值
+         * @return DataRow
+         */
+        public DataRow date(boolean greedy, String format, Date def){
+            List<String> checked = new ArrayList<>();
+            List<String> keys = keys();
+            for(String key:keys){
+                Object value = get(key);
+                String vc = value.getClass().getSimpleName();
+                if(null != value){
+                    boolean exe = false;
+                    if(vc.toUpperCase().contains("DATE")){
+                        exe = true;
+                    }
+                    if(!exe){
+                        Column column = getMetadata(key);
+                        if(null != column){
+                            if(column.getTypeName().toUpperCase().contains("DATE")){
+                                exe = true;
+                            }
+                        }
+                    }
+                    if(exe){
+                        checked.add(key);
+                        dateFormat(key, key, format);
+                    }
+                }
+            }
+            if(greedy){
                 for(String key:keys){
+                    if(checked.contains(key)){
+                        continue;
+                    }
+                    Column column = metadatas.get(key);
                     if(key.toUpperCase().contains("DATE")){
                         dateFormat(key, key, format, def);
                     }
@@ -3305,8 +3379,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
             return DataRow.this;
         }
-        public DataRow date(boolean type, String format){
-            return date(type, format, "");
+        /**
+         * 格式化所有日期类型列(类型或列名中出现date关键字),如果失败 默认 ""
+         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
+         * @param format 日期格式
+         * @return DataRow
+         */
+        public DataRow date(boolean greedy, String format){
+            return date(greedy, format, "");
         }
     }
     public Format format = new Format();
