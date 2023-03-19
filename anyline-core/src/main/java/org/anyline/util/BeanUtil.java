@@ -206,7 +206,7 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("[set field value][result:fail][msg:{}]", e.getMessage());
 			return false;
 		}
 		return true;
@@ -2263,8 +2263,9 @@ public class BeanUtil {
 	 * 设置所有属性值
 	 * @param obj obj
 	 * @param map map
+	 * @param alert 赋值失败时是否提示异常信息
 	 */
-    public static void setFieldsValue(Object obj, Map<String,?> map ){
+    public static void setFieldsValue(Object obj, Map<String,?> map , boolean alert){
     	if(null != map && null != obj) {
 			List<String> fields = ClassUtil.getFieldsName(obj.getClass());
 			for (String field : fields) {
@@ -2276,6 +2277,9 @@ public class BeanUtil {
 		}
     }
 
+	public static void setFieldsValue(Object obj, Map<String,?> map ){
+		setFieldsValue(obj, map, true);
+	}
 	public static byte[] serialize(Object value) {
 		byte[] rv=new byte[0];
 		if (value == null) {
