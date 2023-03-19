@@ -5401,6 +5401,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return DataSet.this;
         }
     }
+    public Select select = new Select();
     public Format format = new Format();
     public Parse parse = new Parse();
 }
