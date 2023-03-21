@@ -89,7 +89,36 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value){
-		builder.append("FIND_IN_SET(?,").append(column).append(")");
+		List<Object> values = new ArrayList<>();
+		if(null != value){
+			if(value instanceof Collection){
+				Collection cols = (Collection) value;
+				for(Object col:cols){
+					values.add(col);
+				}
+			}else if(value instanceof Object[]){
+				Object[] array = (Object[]) value;
+				for(Object obj:array){
+					values.add(obj);
+				}
+			}else{
+				values.add(value);
+			}
+		}
+		if(values.size() > 1){
+			builder.append("(");
+		}
+		boolean first = true;
+		for(Object v:values){
+			if(!first){
+				builder.append(" OR ");
+			}
+			builder.append("FIND_IN_SET(?,").append(column).append(")");
+			first = false;
+		}
+		if(values.size() > 1){
+			builder.append(")");
+		}
 		return value;
 	}
 

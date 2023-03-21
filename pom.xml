@@ -111,6 +111,7 @@
         <module>anyline-sms</module>
         <module>anyline-encrypt</module>
         <module>anyline-boot</module>
+        <module>anyline-baidu/anyline-baidu-ai/anyline-baidu-ai-ocr</module>
     </modules>
 	<build>
 		<plugins>

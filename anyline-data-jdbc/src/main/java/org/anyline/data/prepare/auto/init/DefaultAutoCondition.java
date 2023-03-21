@@ -192,7 +192,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 
 		// runtime value
 		if(null != val) {
-			if (compareCode == 40 || compareCode == 140 || compareCode == 80) {
+			if (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62)) {
 				List<Object> list = getValues(val);
 				if (null != list) {
 					for (Object obj : list) {

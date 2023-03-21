@@ -232,6 +232,9 @@ public class ConfigParser {
 		} else if (config.endsWith("%")) {
 			result.setCompare(Compare.LIKE_PREFIX);
 			config = config.substring(0, config.length()-1);
+		} else if(config.startsWith("(") && config.endsWith(")")){
+			result.setCompare(Compare.FIND_IN_SET);
+			config = config.substring(1, config.length()-1);
 		} else {
 			result.setCompare(Compare.EQUAL);
 		}
