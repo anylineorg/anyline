@@ -196,49 +196,52 @@ public class ConfigParser {
 	 * @return ParseResult
 	 */
 	private static ParseResult parseCompare(ParseResult result, boolean isKey){
-		String config = result.getKey();
-		if (config.startsWith(">=")) {
+		String key = result.getKey();
+		String var = result.getVar();
+		if (key.startsWith(">=")) {
 			result.setCompare(Compare.GREAT_EQUAL);
-			config = config.substring(2);
-		} else if (config.startsWith(">")) {
+			key = key.substring(2);
+		} else if (key.startsWith(">")) {
 			result.setCompare(Compare.GREAT);
-			config = config.substring(1);
-		} else if (config.startsWith("<=")) {
+			key = key.substring(1);
+		} else if (key.startsWith("<=")) {
 			result.setCompare(Compare.LESS_EQUAL);
-			config = config.substring(2);
-		} else if (config.startsWith("<>") || config.startsWith("!=")) {
+			key = key.substring(2);
+		} else if (key.startsWith("<>") || key.startsWith("!=")) {
 			result.setCompare(Compare.NOT_EQUAL);
-			config = config.substring(2);
-		} else if (config.startsWith("<")) {
+			key = key.substring(2);
+		} else if (key.startsWith("<")) {
 			result.setCompare(Compare.LESS);
-			config = config.substring(1);
-		} else if (config.startsWith("[") && config.endsWith("]")) {
+			key = key.substring(1);
+		} else if (key.startsWith("[") && key.endsWith("]")) {
 			// [1,2,3]或[1,2,3]:[1,2,3]
 			// id:[id:cd:{[1,2,3]}]
 			result.setCompare(Compare.IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE);
 			if(isKey){
-				config = config.substring(1,config.length()-1);
+				key = key.substring(1,key.length()-1);
 			}
 
-		} else if (config.startsWith("%")) {
-			if (config.endsWith("%")) {
+		} else if (key.startsWith("%")) {
+			if (key.endsWith("%")) {
 				result.setCompare(Compare.LIKE);
-				config = config.substring(1, config.length()-1);
+				key = key.substring(1, key.length()-1);
 			} else {
 				result.setCompare(Compare.LIKE_SUFFIX);
-				config = config.substring(1, config.length());
+				key = key.substring(1, key.length());
 			}
-		} else if (config.endsWith("%")) {
+		} else if (key.endsWith("%")) {
 			result.setCompare(Compare.LIKE_PREFIX);
-			config = config.substring(0, config.length()-1);
-		} else if(config.startsWith("(") && config.endsWith(")")){
-			result.setCompare(Compare.FIND_IN_SET);
-			config = config.substring(1, config.length()-1);
-		} else {
+			key = key.substring(0, key.length()-1);
+		}else {
 			result.setCompare(Compare.EQUAL);
 		}
-		result.setKey(config);
+		result.setKey(key);
+		if(var.startsWith("[") && var.endsWith("]")){
+			result.setCompare(Compare.FIND_IN_SET);
+			var = var.substring(1, var.length()-1);
+			result.setVar(var);
+		}
 		return result;
 	}/**
 	 * 解析默认值
