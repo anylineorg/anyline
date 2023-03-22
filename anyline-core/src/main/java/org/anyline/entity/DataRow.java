@@ -2236,6 +2236,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 
     public DataRow camel() {
+        return camel(false);
+    }
+    /**
+     * 下划线转驼峰
+     * @param lower 是否先转换成小写 遇到全大写但没有下划线的情况 false:不处理 true:全部转成小写
+     * @return DataSet
+     */
+    public DataRow camel(boolean lower) {
+        if(lower){
+            toLowerKey();
+        }
         List<String> keys = keys();
         for (String key : keys) {
             Object value = get(key);

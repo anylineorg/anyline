@@ -192,8 +192,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
     public DataSet camel(){
+        return camel(false);
+    }
+
+    /**
+     * 下划线转驼峰
+     * @param lower 是否先转换成小写 遇到全大写但没有下划线的情况 false:不处理 true:全部转成小写
+     * @return DataSet
+     */
+    public DataSet camel(boolean lower){
         for(DataRow row:rows){
-            row.camel();
+            row.camel(lower);
         }
         return this;
     }
