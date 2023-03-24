@@ -67,36 +67,50 @@ public class TextRun extends BasicRun implements Run {
 						continue;
 					} 
 					AutoCondition con = (AutoCondition)condition;
-					setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
-					Variable var = this.getVariable(con.getId());
-					if(null != var){
+
+					//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+					List<Variable> vars = this.getVariables(con.getId());
+					if(vars.size() > 0){
+						//用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
 						con.setVariableSlave(true);
-						con.setVariableSlave(true);
-						var.setValue(false, con.getValues());
-					} 
+						for(Variable var:vars){
+							var.setValue(false, con.getValues());
+						}
+					} else{
+						//查询条件和SQL体变量赋值
+						setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
+					}
 				}
 			} 
 		} 
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){
+
+				List<Variable> vars = this.getVariables(conf.getVariable());
+				//查询条件赋值
 				List<Condition> cons = getConditions(conf.getVariable());
-				for(Condition con:cons){
-					Variable var = this.getVariable(conf.getVariable());
-					// sql体中有对应的变量
-					if(null != con){
-						setConditionValue(
-								conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
+				if(vars.size()>0) {
+					for (Condition con : cons) {
+						if (null != con) {
+							//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+							con.setVariableSlave(true);
+						}
 					}
-					if(null != var){
+					for (Variable var : vars) {
 						var.setValue(false, conf.getValues());
 					}
-
-					if(null == var && null == con){
-						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+				}
+				for (Condition con : cons) {
+					if (null != con) {
+						//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+						setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
 					}
 				}
-			} 
-			 
+				//如果没有对应的查询条件和SQL体变量，新加一个条件
+				if(vars.size()==0 && cons.size()==0){
+					conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+				}
+			}
 			OrderStore orderStore = configStore.getOrders(); 
 			if(null != orderStore){ 
 				List<Order> orders = orderStore.getOrders(); 
@@ -354,20 +368,35 @@ public class TextRun extends BasicRun implements Run {
 		} 
 		conditionChain.addCondition(condition); 
 		return this; 
-	} 
+	}
 	public Variable getVariable(String key){
-		if(null == key || null == variables){ 
-			return null; 
-		} 
+		if(null == key || null == variables){
+			return null;
+		}
 		for(Variable var:variables){
 			if(null == var){
 				continue;
-			} 
-			if(key.equalsIgnoreCase(var.getKey())){ 
-				return var; 
-			} 
-		} 
-		return null; 
+			}
+			if(key.equalsIgnoreCase(var.getKey())){
+				return var;
+			}
+		}
+		return null;
+	}
+	public List<Variable> getVariables(String key){
+		List<Variable> list = new ArrayList<>();
+		if(null == key || null == variables){
+			return list;
+		}
+		for(Variable var:variables){
+			if(null == var){
+				continue;
+			}
+			if(key.equalsIgnoreCase(var.getKey())){
+				list.add(var);
+			}
+		}
+		return list;
 	}
 
 }

@@ -25,6 +25,7 @@ import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.Transient;
 import java.util.*;
 
 
@@ -791,21 +792,27 @@ public class DefaultPageNavi implements PageNavi{
 		} 
 		return html; 
 	}
+	@Transient
 	public String getHtml(){
 		return html("html", "get");
 	}
+	@Transient
 	public String html(){
 		return html("html", "get");
 	}
+	@Transient
 	public String html(String adapter){
 		return html(adapter, "get");
 	}
+	@Transient
 	public String getForm(){
 		return html("html", "post");
 	}
+	@Transient
 	public String form(){
 		return html("html", "post");
 	}
+	@Transient
 	public String ajax(){
 		return html("ajax", "post");
 	}

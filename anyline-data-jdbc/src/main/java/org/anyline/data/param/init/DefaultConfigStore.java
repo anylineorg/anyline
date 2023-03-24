@@ -313,6 +313,7 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore param(EMPTY_VALUE_CROSS cross, String var, Object value){
 		return and(cross, Compare.NONE, var, value);
 	}
+	//Compare.NONE 只作为参数值为占位符赋值,不能独立生成新的查询条件
 	@Override
 	public ConfigStore param(String var, Object value){
 		return and(EMPTY_VALUE_CROSS.DEFAULT,  Compare.NONE, var, value);
