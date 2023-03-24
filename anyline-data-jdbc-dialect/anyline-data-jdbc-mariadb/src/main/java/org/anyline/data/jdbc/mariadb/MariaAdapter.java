@@ -1006,7 +1006,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}else{
 			String after = column.getAfter();
 			if(BasicUtil.isNotEmpty(after)){
-				builder.append(" AFTER").append(after);
+				builder.append(" AFTER ").append(after);
 			}
 		}
 		return builder;
