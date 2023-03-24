@@ -284,7 +284,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     row.put(k, value);
                 }
             } else {
-                List<Field> fields = ClassUtil.getFields(obj.getClass());
+                List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
                 for (Field field : fields) {
                     if (Modifier.isStatic(field.getModifiers())) {
                         continue;
@@ -1208,7 +1208,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         try {
             entity = (T) clazz.newInstance();
             /*读取类属性*/
-            List<Field> fields = ClassUtil.getFields(clazz);
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
             for (Field field : fields) {
                 if (Modifier.isStatic(field.getModifiers())) {
                     continue;

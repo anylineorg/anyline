@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -373,18 +374,29 @@ public class ClassUtil {
 	/**
 	 * 提取类及父类的所有属性
 	 * @param clazz  clazz
+	 * @param statics  是否提供静态
+	 * @param finals  是否提供final
 	 * @return List
 	 */
-	public static List<Field> getFields(Class<?> clazz){
+	public static List<Field> getFields(Class<?> clazz, boolean statics, boolean finals){
 		List<Field> fields = new ArrayList<Field>();
 		while(null != clazz){
 			Field[] tmp = clazz.getDeclaredFields();
 			for(Field field:tmp){
+				if(!statics && Modifier.isStatic(field.getModifiers())){
+					continue;
+				}
+				if(!finals && Modifier.isFinal(field.getModifiers())){
+					continue;
+				}
 				fields.add(field);
 			}
 			clazz = clazz.getSuperclass();
 		}
 		return fields;
+	}
+	public static List<Field> getFields(Class<?> clazz){
+		return getFields(clazz, true, true);
 	}
 	public static List<String> getFieldsName(Class<?> clazz){
 		List<Field> fields = getFields(clazz);

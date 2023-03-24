@@ -262,7 +262,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					keys = EntityAdapterProxy.columns(obj.getClass(), true, false);
 				}else {
 					keys = new ArrayList<>();
-					List<Field> fields = ClassUtil.getFields(obj.getClass());
+					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
 					for (Field field : fields) {
 						Class clazz = field.getType();
 						if (clazz == String.class || clazz == Date.class || ClassUtil.isPrimitiveClass(clazz)) {

@@ -1717,7 +1717,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                 }
             }else {
-                List<Field> fields = ClassUtil.getFields(entity.getClass());
+                List<Field> fields = ClassUtil.getFields(entity.getClass(), false, false);
                 for (Field field : fields) {
                     Object value = BeanUtil.getFieldValue(entity, field);
                     if (BasicUtil.isNotEmpty(true, value)) {

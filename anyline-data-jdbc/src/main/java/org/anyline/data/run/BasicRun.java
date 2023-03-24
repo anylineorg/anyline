@@ -354,9 +354,9 @@ public abstract class BasicRun implements Run {
 		return this; 
 	}
 	@Override
-	public ConditionChain getConditionChain() { 
-		return this.conditionChain; 
-	} 
+	public ConditionChain getConditionChain() {
+		return this.conditionChain;
+	}
 
 	/*******************************************************************************************
 	 * 
@@ -397,13 +397,24 @@ public abstract class BasicRun implements Run {
 
 
 	@Override
-	public Condition getCondition(String name){ 
-		for(Condition con:conditionChain.getConditions()){ 
-			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)){ 
-				return con; 
-			} 
-		} 
-		return null; 
+	public Condition getCondition(String name){
+		for(Condition con:conditionChain.getConditions()){
+			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)){
+				return con;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<Condition> getConditions(String name){
+		List<Condition> list = new ArrayList<>();
+		for(Condition con:conditionChain.getConditions()){
+			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)){
+				list.add(con);
+			}
+		}
+		return list;
 	}
 
 	@Override

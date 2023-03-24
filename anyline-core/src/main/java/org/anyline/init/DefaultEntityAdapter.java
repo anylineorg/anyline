@@ -72,7 +72,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         }
         if(null == columns) {
             columns = new ArrayList<>();
-            List<Field> fields = ClassUtil.getFields(clazz);
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
             List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient");
             fields.removeAll(ignores);
             for (Field field : fields) {
@@ -191,7 +191,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
             }
             if(list.isEmpty()) {
                 //从所有属性中 过滤出名称与DataRow.DEFAULT_PRIMARY_KEY相同的属性
-                fields = ClassUtil.getFields(clazz);
+                fields = ClassUtil.getFields(clazz, false, false);
                 Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
                 if (null != field) {
                     String name = column(clazz, field);
@@ -211,7 +211,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
 
     @Override
     public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map columns) {
-        List<Field> fields = ClassUtil.getFields(clazz);
+        List<Field> fields = ClassUtil.getFields(clazz, false, false);
         Map<Field,String> fk = new HashMap<>();
         entity = BeanUtil.map2object(entity, map, clazz, columns, false, true, true);
         for(Field field:fields){

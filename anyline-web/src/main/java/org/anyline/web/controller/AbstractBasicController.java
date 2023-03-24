@@ -141,7 +141,7 @@ public class AbstractBasicController {
 			} else {// end指定属性与request参数对应关系
 				/* 未指定属性与request参数对应关系 */
 				/* 读取类属性 */
-				List<Field> fields = ClassUtil.getFields(clazz);
+				List<Field> fields = ClassUtil.getFields(clazz, false, false);
 				for (Field field : fields) {
 					/* 取request参数值 */
 					String fieldName = field.getName();
