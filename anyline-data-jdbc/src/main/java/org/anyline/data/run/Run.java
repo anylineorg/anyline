@@ -80,9 +80,16 @@ public interface Run {
 	 * @param conditions 查询条件、ORDER、GROUP、HAVING 等
 	 * @return Run
 	 */
-	public Run addCondition(String ... conditions) ;
-	public Run addCondition(Condition condition) ;
-	public Condition getCondition(String name); 
+	public Run addCondition(String ... conditions);
+	public Run addCondition(Condition condition);
+	public Condition getCondition(String name);
+
+	/**
+	 * 根据key查询条件,包括sql主体部分,有可能有多个相同key的条件
+	 * @param name name
+	 * @return List
+	 */
+	public List<Condition> getConditions(String name);
 	public ConditionChain getConditionChain() ; 
 
 	/** 
