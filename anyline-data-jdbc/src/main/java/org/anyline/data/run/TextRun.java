@@ -79,19 +79,21 @@ public class TextRun extends BasicRun implements Run {
 		} 
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				Condition con = getCondition(conf.getVariable());
-				Variable var = this.getVariable(conf.getVariable());
-				// sql体中有对应的变量
-				if(null != con){
-					setConditionValue( 
-						conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
-				}
-				if(null != var){
-					var.setValue(false, conf.getValues());
-				}
-				
-				if(null == var && null == con){
-					conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+				List<Condition> cons = getConditions(conf.getVariable());
+				for(Condition con:cons){
+					Variable var = this.getVariable(conf.getVariable());
+					// sql体中有对应的变量
+					if(null != con){
+						setConditionValue(
+								conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
+					}
+					if(null != var){
+						var.setValue(false, conf.getValues());
+					}
+
+					if(null == var && null == con){
+						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+					}
 				}
 			} 
 			 
