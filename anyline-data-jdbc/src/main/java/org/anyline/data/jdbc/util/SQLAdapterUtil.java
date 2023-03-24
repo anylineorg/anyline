@@ -2,6 +2,7 @@ package org.anyline.data.jdbc.util;
 
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.util.LogUtil;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ public class SQLAdapterUtil {
 				adapter = getAdapter(name);
 			}
 			if(null == adapter){
-				log.warn("[检测数据库适配器][检测失败][检测其他可用的适配器]");
+				log.warn("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 				adapter = SpringContextUtil.getBean(JDBCAdapter.class);
 			}
 		} catch (SQLException e) {
@@ -74,7 +75,7 @@ public class SQLAdapterUtil {
 			}
 		}
 		if(null == adapter){
-			log.error("[检测数据库适配器][检测其他可用的适配器失败][可能没有依赖anyline-data-jdbc-*或没有扫描org.anyline包]");
+			log.error("[检测数据库适配器][检测其他可用的适配器失败][可用适配器数量:{}][{}]", adapters.size(), LogUtil.format("可能没有依赖anyline-data-jdbc-*(如mysql,neo4j)或没有扫描org.anyline包", 31));
 		}else {
 			adapter.setJdbc(jdbc);
 		}
