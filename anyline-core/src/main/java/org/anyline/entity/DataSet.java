@@ -3372,6 +3372,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+    public DataSet toLowerValue() {
+        for (DataRow row : rows) {
+            row.toLowerValue();
+        }
+        return this;
+    }
+
+    public DataSet toUpperValue() {
+        for (DataRow row : rows) {
+            row.toUpperValue();
+        }
+        return this;
+    }
 
     /**
      * 设置是否更新null列

@@ -827,6 +827,53 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    /**
+     * value转换成小写
+     * @param keys keys
+     * @return DataRow
+     */
+    public DataRow toLowerValue(String... keys) {
+        if (null != keys && keys.length > 0) {
+            for (String key : keys) {
+                Object value = get(key);
+                if(value instanceof String){
+                    put(KEY_CASE.SRC, key, ((String) value).toLowerCase());
+                }
+            }
+        } else {
+            for (String key : keys()) {
+                Object value = get(key);
+                if(value instanceof String){
+                    put(KEY_CASE.SRC, key, ((String) value).toLowerCase());
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * value转换成大写
+     * @param keys keys
+     * @return DataRow
+     */
+    public DataRow toUpperValue(String... keys) {
+        if (null != keys && keys.length > 0) {
+            for (String key : keys) {
+                Object value = get(key);
+                if(value instanceof String){
+                    put(KEY_CASE.SRC, key, ((String) value).toUpperCase());
+                }
+            }
+        } else {
+            for (String key : keys()) {
+                Object value = get(key);
+                if(value instanceof String){
+                    put(KEY_CASE.SRC, key, ((String) value).toUpperCase());
+                }
+            }
+        }
+        return this;
+    }
 
 
     /**
