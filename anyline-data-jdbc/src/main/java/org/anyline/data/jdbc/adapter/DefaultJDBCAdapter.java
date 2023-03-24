@@ -433,7 +433,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(metadatas.contains(item.toUpperCase())){
 				list.add(item);
 			}else{
-				log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("检测列名失败", 31), table, item);
+				log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, item);
 			}
 		}
 		return list;
