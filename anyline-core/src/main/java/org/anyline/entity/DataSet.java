@@ -710,7 +710,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow getRow(int begin, DataRow params) {
         return getRow(Compare.EQUAL, begin, params);
     }
-
+    public DataRow getRowById(String value){
+        return getRow("ID", value);
+    }
+    public DataRow getRowByPrimvaryValue(String value){
+        return getRow(DataRow.DEFAULT_PRIMARY_KEY, value);
+    }
     /**
      * 根据keys去重
      *
@@ -1898,7 +1903,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public List<Object> gets(String key) {
         List<Object> list = new ArrayList<Object>();
         for (DataRow row : rows) {
-            list.add(row.getString(key));
+            list.add(row.get(key));
         }
         return list;
     }
@@ -1921,7 +1926,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return result;
     }
-
 
     public List<String> getStrings(String key, String ... defs) {
         List<String> result = new ArrayList<>();
@@ -5391,7 +5395,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         /**
          * @param greedy 传入true时执行
-         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
          * @param format 数字格式
          * @return DataRow
          */
@@ -5403,7 +5406,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public class Parse implements Serializable{
         /**
          * 根据列名日期格式化,如果失败 默认 ""
-         * @param format 日期格式
          * @param cols 参考格式化的列(属性)如果不指定则不执行(避免传参失败)<br/>
          *             支持date(format, "SRC:TAR:2020-01-01 10:10:10")表示把SRC列的值格式华后存入TAR列,SRC列保持不变,如果格式化失败使用默认值2020-01-01 10:10:10<br/>
          *             如果需要根据数据烦劳确定参与格式化的列参考date(format,Class)<br/>

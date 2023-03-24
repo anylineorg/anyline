@@ -3562,7 +3562,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         /**
          * @param greedy 传入true时执行
-         * @param greedy false:只检查JAVA和SQL数据类型, true:在以上基础上检测列名
          * @param format 数字格式
          * @return DataRow
          */
