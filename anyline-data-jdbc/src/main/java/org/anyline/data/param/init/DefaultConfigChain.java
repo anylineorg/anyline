@@ -96,6 +96,14 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 			return null;
 		}
 		for(Config conf: configs){
+			if(conf instanceof ConfigChain){
+				ConfigChain chain = (ConfigChain) conf;
+				conf = chain.getConfig(id, var);
+				if(null != conf){
+					return conf;
+				}
+				continue;
+			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			if(BasicUtil.isEmpty(id)){

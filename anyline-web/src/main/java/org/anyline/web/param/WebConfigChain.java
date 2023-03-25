@@ -18,19 +18,18 @@
 
 
 package org.anyline.web.param;
- 
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.anyline.entity.Compare;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WebConfigChain extends WebConfig implements  ConfigChain{
 	private List<Config> configs = new ArrayList<Config>();
@@ -43,6 +42,14 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 			return null;
 		}
 		for(Config conf: configs){
+			if(conf instanceof ConfigChain){
+				ConfigChain chain = (ConfigChain) conf;
+				conf = chain.getConfig(prefix, var, type);
+				if(null != conf){
+					return conf;
+				}
+				continue;
+			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			Compare confType = conf.getCompare();
