@@ -8,18 +8,22 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.6.3-20230326</version>
-        <relativePath>../../anyline-dependency/pom.xml</relativePath>
+        <relativePath>../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-office</artifactId>
+    <artifactId>anyline-pdf</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-office</name>
-    <url>http://www.anyline.org/office</url>
+    <name>anyline-pdf</name>
+    <url>http://www.anyline.org/pdf</url>
 
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-net</artifactId>
+            <artifactId>anyline-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
         </dependency>
     </dependencies>
 </project>

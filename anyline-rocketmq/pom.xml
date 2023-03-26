@@ -6,17 +6,11 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.6.3-20230326</version>
-        <relativePath>../../anyline-dependency/pom.xml</relativePath>
+        <relativePath>../anyline-dependency/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-ldap</artifactId>
+    <artifactId>anyline-rocketmq</artifactId>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>org.anyline</groupId>
-            <artifactId>anyline-core</artifactId>
-        </dependency>
-    </dependencies>
 </project>

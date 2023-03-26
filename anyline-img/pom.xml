@@ -8,18 +8,18 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.6.3-20230326</version>
-        <relativePath>../../anyline-dependency/pom.xml</relativePath>
+        <relativePath>../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-sms</artifactId>
+    <artifactId>anyline-img</artifactId>
+    <name>anyline-img</name>
     <packaging>jar</packaging>
-    <name>anyline-sms</name>
-    <url>http://www.anyline.org/sms</url>
+    <url>http://www.anyline.org/img</url>
 
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-net</artifactId>
+            <artifactId>anyline-core</artifactId>
         </dependency>
     </dependencies>
 </project>
