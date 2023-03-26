@@ -7,23 +7,19 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.6.3-SNAPSHOT</version>
-        <relativePath>../anyline-dependency/pom.xml</relativePath>
+        <version>8.6.3-20230326</version>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-pdf</artifactId>
+    <artifactId>anyline-sms</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-pdf</name>
-    <url>http://www.anyline.org/pdf</url>
+    <name>anyline-sms</name>
+    <url>http://www.anyline.org/sms</url>
 
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
+            <artifactId>anyline-net</artifactId>
         </dependency>
     </dependencies>
 </project>

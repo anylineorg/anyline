@@ -6,8 +6,8 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.6.3-SNAPSHOT</version>
-		<relativePath>../anyline-dependency/pom.xml</relativePath>
+		<version>8.6.3-20230326</version>
+		<relativePath>../../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-nc</artifactId>
@@ -32,7 +32,7 @@
 			<artifactId>netcdf</artifactId>
 			<version>5.5.2</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/main/lib/netcdfAll-5.5.2.jar</systemPath>
+			<systemPath>src/main/lib/netcdfAll-5.5.2.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>

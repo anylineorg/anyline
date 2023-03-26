@@ -7,22 +7,19 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.6.3-SNAPSHOT</version>
-		<relativePath>../anyline-dependency/pom.xml</relativePath>
+		<version>8.6.3-20230326</version>
+		<relativePath>../../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>anyline-mail</artifactId>
+	<artifactId>anyline-easemob</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mail</name>
-	<url>http://www.anyline.org/mail</url>
+	<name>anyline-easemob</name>
+	<url>http://www.anyline.org/easemob</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
+			<artifactId>anyline-net</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency-web</artifactId>
-        <version>8.6.3-SNAPSHOT</version>
-        <relativePath>../anyline-dependency-web/pom.xml</relativePath>
+        <version>8.6.3-20230326</version>
+        <relativePath>../../anyline-dependency-web/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -38,7 +38,7 @@
             <artifactId>rest-client</artifactId>
             <version>3.1.1</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/lib/rest-client-3.1.1.jar</systemPath>
+            <systemPath>src/main/lib/rest-client-3.1.1.jar</systemPath>
             <!--在这里下载  https://repo.thingsboard.io/artifactory/libs-release-public/org/thingsboard/rest-client/-->
         </dependency>
         <dependency>
@@ -46,7 +46,7 @@
             <artifactId>data</artifactId>
             <version>3.1.1</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/lib/data-3.1.1.jar</systemPath>
+            <systemPath>src/main/lib/data-3.1.1.jar</systemPath>
             <!--在这里下载  https://repo.thingsboard.io/artifactory/libs-release-public/org/thingsboard/common/data//-->
         </dependency>
     </dependencies>
