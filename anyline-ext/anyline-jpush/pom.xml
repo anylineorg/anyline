@@ -7,19 +7,27 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.6.3-20230326</version>
-		<relativePath>../anyline-dependency/pom.xml</relativePath>
+		<version>8.6.3-20230327</version>
+		<relativePath>../../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>anyline-easemob</artifactId>
+	<artifactId>anyline-jpush</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-easemob</name>
-	<url>http://www.anyline.org/easemob</url>
+	<name>anyline-jpush</name>
+	<url>http://www.anyline.org/jpush</url>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-net</artifactId>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>cn.jpush.api</groupId>-->
+<!--			<artifactId>jiguang-common</artifactId>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>cn.jpush.api</groupId>
+			<artifactId>jpush-client</artifactId>
 		</dependency>
 	</dependencies>
 </project>

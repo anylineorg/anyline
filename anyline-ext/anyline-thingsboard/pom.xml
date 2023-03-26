@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency-web</artifactId>
-        <version>8.6.3-20230326</version>
-        <relativePath>../anyline-dependency-web/pom.xml</relativePath>
+        <version>8.6.3-20230327</version>
+        <relativePath>../../anyline-dependency-web/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

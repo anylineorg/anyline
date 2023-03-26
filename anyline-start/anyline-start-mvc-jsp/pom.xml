@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-start-mvc</artifactId>
-		<version>8.6.3-20230326</version>
+		<version>8.6.3-20230327</version>
 		<relativePath>../anyline-start-mvc/pom.xml</relativePath>
 	</parent>
 	<artifactId>anyline-start-mvc-jsp</artifactId>
