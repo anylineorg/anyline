@@ -1164,13 +1164,13 @@ public class BeanUtil {
 	/**
 	 * 数组拼接成字符串
 	 *
-	 * @param list   数组
+	 * @param list   集合
 	 * @param split  分隔符
-	 * @param key key
+	 * @param field 条目属性
 	 * @return String
 	 */
 
-	public static String concat(List<?> list, String key, String split) {
+	public static String concat(List<?> list, String field, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1180,7 +1180,7 @@ public class BeanUtil {
 				if (builder.length() > 0) {
 					builder.append(split);
 				}
-				builder.append(item);
+				builder.append(getFieldValue(item, field));
 			}
 		}
 		return builder.toString();
@@ -1201,6 +1201,40 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static String concat(List<?> list) {
+		return concat(list,",");
+	}
+
+	public static String concat(Collection<?> list, String field, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(getFieldValue(item, field));
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(Collection<?> list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(Collection<?> list) {
 		return concat(list,",");
 	}
 
