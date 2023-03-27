@@ -47,10 +47,13 @@ public class AnylineProperty {
     public int primaryGeneratorRandomLength				        = 32		;	// 主随机主键总长度
     public boolean primaryGeneratorUpper					    = true		;	// 生成主键大写
     public boolean primaryGeneratorLower					    = false		;	// 生成主键小写
+    public String primaryGeneratorTimeFormat					= null		;	// 生成主键日期格式(默认yyyymmddhhmmsssss)
+    public int primaryGeneratorTimeSuffixLength				    = 3			;   // 生成主键time/timestamp后缀随机数长度
     public boolean primaryGeneratorUuidActive			        = false		;	// 是否开启默认的主键生成器(uuid)
     public boolean primaryGeneratorSnowflakeActive		        = false		;	// 是否开启默认的主键生成器(雪花)
     public boolean primaryGeneratorRandomActive			        = false		;	// 是否开启默认的主键生成器(随机)
-
+    public boolean primaryGeneratorTimestampActive			    = false		;	// 是否开启默认的主键生成器(时间戳)
+    public boolean primaryGeneratorTimeActive					= false		;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
 
     protected int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
     protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
@@ -540,5 +543,41 @@ public class AnylineProperty {
     public void setPrimaryGeneratorRandomActive(boolean primaryGeneratorRandomActive) {
         primaryGeneratorRandomActive = primaryGeneratorRandomActive;
         ConfigTable.PRIMARY_GENERATOR_RANDOM_ACTIVE = primaryGeneratorRandomActive;
+    }
+
+    public String getPrimaryGeneratorTimeFormat() {
+        return primaryGeneratorTimeFormat;
+    }
+
+    public void setPrimaryGeneratorTimeFormat(String primaryGeneratorTimeFormat) {
+        this.primaryGeneratorTimeFormat = primaryGeneratorTimeFormat;
+        ConfigTable.PRIMARY_GENERATOR_TIME_FORMAT = primaryGeneratorTimeFormat;
+    }
+
+    public int getPrimaryGeneratorTimeSuffixLength() {
+        return primaryGeneratorTimeSuffixLength;
+    }
+
+    public void setPrimaryGeneratorTimeSuffixLength(int primaryGeneratorTimeSuffixLength) {
+        this.primaryGeneratorTimeSuffixLength = primaryGeneratorTimeSuffixLength;
+        ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH = primaryGeneratorTimeSuffixLength;
+    }
+
+    public boolean isPrimaryGeneratorTimestampActive() {
+        return primaryGeneratorTimestampActive;
+    }
+
+    public void setPrimaryGeneratorTimestampActive(boolean primaryGeneratorTimestampActive) {
+        this.primaryGeneratorTimestampActive = primaryGeneratorTimestampActive;
+        ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE = primaryGeneratorTimestampActive;
+    }
+
+    public boolean isPrimaryGeneratorTimeActive() {
+        return primaryGeneratorTimeActive;
+    }
+
+    public void setPrimaryGeneratorTimeActive(boolean primaryGeneratorTimeActive) {
+        this.primaryGeneratorTimeActive = primaryGeneratorTimeActive;
+        ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE = primaryGeneratorTimeActive;
     }
 }

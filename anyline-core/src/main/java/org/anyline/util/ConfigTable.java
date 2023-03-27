@@ -91,9 +91,13 @@ public class ConfigTable {
 	public static int PRIMARY_GENERATOR_RANDOM_LENGTH					= 32		;	// 主随机主键总长度
 	public static boolean PRIMARY_GENERATOR_UPPER						= true		;	// 生成主键大写
 	public static boolean PRIMARY_GENERATOR_LOWER						= false		;	// 生成主键小写
+	public static String PRIMARY_GENERATOR_TIME_FORMAT					= null		;	// 生成主键日期格式(默认yyyyMMddHHmmssSSS)
+	public static int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3			;   // 生成主键TIME/TIMESTAMP后缀随机数长度
 	public static boolean PRIMARY_GENERATOR_UUID_ACTIVE					= false		;	// 是否开启默认的主键生成器(UUID)
 	public static boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false		;	// 是否开启默认的主键生成器(雪花)
 	public static boolean PRIMARY_GENERATOR_RANDOM_ACTIVE				= false		;	// 是否开启默认的主键生成器(随机)
+	public static boolean PRIMARY_GENERATOR_TIMESTAMP_ACTIVE			= false		;	// 是否开启默认的主键生成器(时间戳)
+	public static boolean PRIMARY_GENERATOR_TIME_ACTIVE					= false		;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
 
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
