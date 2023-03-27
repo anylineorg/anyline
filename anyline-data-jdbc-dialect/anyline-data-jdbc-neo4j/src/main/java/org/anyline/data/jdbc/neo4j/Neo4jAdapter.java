@@ -222,15 +222,15 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         DataRow row = null;
         if(obj instanceof DataRow){
             row = (DataRow)obj;
-            if(row.hasPrimaryKeys() && null != primaryCreater){
-                primaryCreater.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+            if(row.hasPrimaryKeys() && null != primaryGenerator){
+                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             if(EntityAdapterProxy.hasAdapter()){
                 EntityAdapterProxy.createPrimaryValue(obj);
             }else{
-                if(null != primaryCreater){
-                    primaryCreater.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                if(null != primaryGenerator){
+                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
             }
         }

@@ -131,7 +131,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             if(null == row){
                 continue;
             }
-            if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
+            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
                 List<String> pks = row.getPrimaryKeys();
                 if(null == pks){
                     pks = new ArrayList<>();
@@ -139,7 +139,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 if(pks.size() ==0){
                     pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
                 }
-                primaryCreater.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             insertValue(run, row, true, false,true, keys);
             if(i<dataSize-1){
@@ -185,17 +185,15 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         for(Object obj:list){
             if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
-                if (row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                    primaryCreater.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
+                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 }
                 insertValue(run, row, true, false,true, keys);
             }else{
                 if(EntityAdapterProxy.hasAdapter()){
                     EntityAdapterProxy.createPrimaryValue(obj);
                 }else{
-                    if(null != primaryCreater){
-                        primaryCreater.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
-                    }
+                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
                 insertValue(run, obj, true, false, true, keys);
             }
@@ -227,8 +225,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         DataRow row = null;
         if(obj instanceof DataRow){
             row = (DataRow)obj;
-            if(row.hasPrimaryKeys() && null != primaryCreater){
-                 primaryCreater.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+            if(row.hasPrimaryKeys()){
+                 createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             String pk = null;
@@ -236,9 +234,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             if(EntityAdapterProxy.hasAdapter()){
                 EntityAdapterProxy.createPrimaryValue(obj);
             }else{
-                if(null != primaryCreater){
-                    primaryCreater.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""),  null, null);
-                }
+                createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""),  null, null);
             }
         }
 

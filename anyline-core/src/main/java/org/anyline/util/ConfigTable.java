@@ -85,10 +85,20 @@ public class ConfigTable {
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true		;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false		; 	// 是否禁用查询缓存
 	public static String DEFAULT_PRIMARY_KEY							= "ID"		;	// 默认主键
+
+	public static int PRIMARY_GENERATOR_WORKER_ID						= 1			;	// 主键生成器机器ID
+	public static String PRIMARY_GENERATOR_PREFIX						= ""		;	// 主键前缀(随机主键)
+	public static int PRIMARY_GENERATOR_RANDOM_LENGTH					= 32		;	// 主随机主键总长度
+	public static boolean PRIMARY_GENERATOR_UPPER						= true		;	// 生成主键大写
+	public static boolean PRIMARY_GENERATOR_LOWER						= false		;	// 生成主键小写
+	public static boolean PRIMARY_GENERATOR_UUID_ACTIVE					= false		;	// 是否开启默认的主键生成器(UUID)
+	public static boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false		;	// 是否开启默认的主键生成器(雪花)
+	public static boolean PRIMARY_GENERATOR_RANDOM_ACTIVE				= false		;	// 是否开启默认的主键生成器(随机)
+
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
-	public static String SQL_STORE_DIR									= null		;	//自定义SQL目录 默认${classpath}/sql
-	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  ;	//实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
+	public static String SQL_STORE_DIR									= null		;	// 自定义SQL目录 默认${classpath}/sql
+	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  ;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
 	public static String ENTITY_TABLE_ANNOTATION						= null		;   // 表名注解
 	public static String ENTITY_COLUMN_ANNOTATION						= null		;	// 列名注解
 	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)

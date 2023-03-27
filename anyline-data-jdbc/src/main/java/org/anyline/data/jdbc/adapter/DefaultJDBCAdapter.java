@@ -20,7 +20,10 @@
 package org.anyline.data.jdbc.adapter;
 
 
-import org.anyline.dao.PrimaryCreater;
+import org.anyline.data.generator.PrimaryGenerator;
+import org.anyline.data.generator.init.RandomGenerator;
+import org.anyline.data.generator.init.SnowflakeGenerator;
+import org.anyline.data.generator.init.UUIDGenerator;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
@@ -62,7 +65,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
 
 	@Autowired(required=false)
-	protected PrimaryCreater primaryCreater;
+	protected PrimaryGenerator primaryGenerator;
 
 	@Autowired(required = false)
 	protected JdbcTemplate jdbc;
@@ -71,6 +74,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Qualifier("anyline.service")
 	protected AnylineService service;
 
+	protected static UUIDGenerator uuidGenerator;
+	protected static SnowflakeGenerator snowflakeGenerator;
+	protected static RandomGenerator randomGenerator;
 
 	public String delimiterFr = "";
 	public String delimiterTo = "";
@@ -87,6 +93,30 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return this.delimiterTo;
 	}
 
+	public Object createPrimaryValue(Object entity, DB_TYPE type, String table, List<String> columns, String other){
+		if(null != primaryGenerator){
+		}else if(ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE){
+			if(null == snowflakeGenerator){
+				snowflakeGenerator = new SnowflakeGenerator();
+			}
+			primaryGenerator = snowflakeGenerator;
+		}else if(ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE){
+			if(null == randomGenerator){
+				randomGenerator = new RandomGenerator();
+			}
+			primaryGenerator = randomGenerator;
+		}else if(ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE){
+			if(null == uuidGenerator){
+				uuidGenerator = new UUIDGenerator();
+			}
+			primaryGenerator = uuidGenerator;
+		}
+		if(null != primaryGenerator) {
+			return primaryGenerator.create(entity, type, table, columns, other);
+		}else{
+			return entity;
+		}
+	}
 	public void setDelimiter(String delimiter){
 		if(BasicUtil.isNotEmpty(delimiter)){
 			delimiter = delimiter.replaceAll("\\s", "");
@@ -3200,5 +3230,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public PrimaryGenerator getPrimaryGenerator() {
+		return primaryGenerator;
+	}
+
+	public void setPrimaryGenerator(PrimaryGenerator primaryGenerator) {
+		this.primaryGenerator = primaryGenerator;
 	}
 }

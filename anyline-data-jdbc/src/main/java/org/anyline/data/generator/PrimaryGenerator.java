@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.dao;
+package org.anyline.data.generator;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter.DB_TYPE;
 
 import java.util.List;
 
-public interface PrimaryCreater { 
+public interface PrimaryGenerator {
 	public Object create(Object entity, DB_TYPE type, String table, List<String> columns, String other);
 } 

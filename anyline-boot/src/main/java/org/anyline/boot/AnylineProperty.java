@@ -41,6 +41,17 @@ public class AnylineProperty {
     protected boolean autoCheckMetadata						    = false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
     protected boolean removeEmptyHttpKey                        = false     ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
     protected String defaultPrimaryKey							= "id"		;	// 默认主键
+
+    public int primaryGeneratorWorkerId					        = 1			;	// 主键生成器机器id
+    public String primaryGeneratorPrefix					    = ""		;	// 主键前缀(随机主键)
+    public int primaryGeneratorRandomLength				        = 32		;	// 主随机主键总长度
+    public boolean primaryGeneratorUpper					    = true		;	// 生成主键大写
+    public boolean primaryGeneratorLower					    = false		;	// 生成主键小写
+    public boolean primaryGeneratorUuidActive			        = false		;	// 是否开启默认的主键生成器(uuid)
+    public boolean primaryGeneratorSnowflakeActive		        = false		;	// 是否开启默认的主键生成器(雪花)
+    public boolean primaryGeneratorRandomActive			        = false		;	// 是否开启默认的主键生成器(随机)
+
+
     protected int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
     protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
     protected String sqlStoreDir								= null		;	// 自定义sql目录 默认${classpath}/sql
@@ -457,5 +468,77 @@ public class AnylineProperty {
     public void setElAttributePrefix(String elAttributePrefix) {
         this.elAttributePrefix = elAttributePrefix;
         ConfigTable.EL_ATTRIBUTE_PREFIX = elAttributePrefix;
+    }
+
+    public int getPrimaryGeneratorWorkerId() {
+        return primaryGeneratorWorkerId;
+    }
+
+    public void setPrimaryGeneratorWorkerId(int primaryGeneratorWorkerId) {
+        primaryGeneratorWorkerId = primaryGeneratorWorkerId;
+        ConfigTable.PRIMARY_GENERATOR_WORKER_ID = primaryGeneratorWorkerId;
+    }
+
+    public String getPrimaryGeneratorPrefix() {
+        return primaryGeneratorPrefix;
+    }
+
+    public void setPrimaryGeneratorPrefix(String primaryGeneratorPrefix) {
+        primaryGeneratorPrefix = primaryGeneratorPrefix;
+        ConfigTable.PRIMARY_GENERATOR_PREFIX = primaryGeneratorPrefix;
+    }
+
+    public int getPrimaryGeneratorRandomLength() {
+        return primaryGeneratorRandomLength;
+    }
+
+    public void setPrimaryGeneratorRandomLength(int primaryGeneratorRandomLength) {
+        primaryGeneratorRandomLength = primaryGeneratorRandomLength;
+        ConfigTable.PRIMARY_GENERATOR_RANDOM_LENGTH = primaryGeneratorRandomLength;
+    }
+
+    public boolean isPrimaryGeneratorUpper() {
+        return primaryGeneratorUpper;
+    }
+
+    public void setPrimaryGeneratorUpper(boolean primaryGeneratorUpper) {
+        primaryGeneratorUpper = primaryGeneratorUpper;
+        ConfigTable.PRIMARY_GENERATOR_UPPER = primaryGeneratorUpper;
+    }
+
+    public boolean isPrimaryGeneratorLower() {
+        return primaryGeneratorLower;
+    }
+
+    public void setPrimaryGeneratorLower(boolean primaryGeneratorLower) {
+        primaryGeneratorLower = primaryGeneratorLower;
+        ConfigTable.PRIMARY_GENERATOR_LOWER = primaryGeneratorLower;
+    }
+
+    public boolean isPrimaryGeneratorUuidActive() {
+        return primaryGeneratorUuidActive;
+    }
+
+    public void setPrimaryGeneratorUuidActive(boolean primaryGeneratorUuidActive) {
+        primaryGeneratorUuidActive = primaryGeneratorUuidActive;
+        ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE = primaryGeneratorUuidActive;
+    }
+
+    public boolean isPrimaryGeneratorSnowflakeActive() {
+        return primaryGeneratorSnowflakeActive;
+    }
+
+    public void setPrimaryGeneratorSnowflakeActive(boolean primaryGeneratorSnowflakeActive) {
+        primaryGeneratorSnowflakeActive = primaryGeneratorSnowflakeActive;
+        ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE = primaryGeneratorSnowflakeActive;
+    }
+
+    public boolean isPrimaryGeneratorRandomActive() {
+        return primaryGeneratorRandomActive;
+    }
+
+    public void setPrimaryGeneratorRandomActive(boolean primaryGeneratorRandomActive) {
+        primaryGeneratorRandomActive = primaryGeneratorRandomActive;
+        ConfigTable.PRIMARY_GENERATOR_RANDOM_ACTIVE = primaryGeneratorRandomActive;
     }
 }

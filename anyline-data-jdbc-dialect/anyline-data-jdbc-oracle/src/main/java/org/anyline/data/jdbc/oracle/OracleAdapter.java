@@ -184,8 +184,8 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		keys.removeAll(seqs.keySet());
 		int col = 0;
 		for(DataRow row:set) {
-			if(row.hasPrimaryKeys() && null != primaryCreater){
-				primaryCreater.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+			if(row.hasPrimaryKeys() && null != primaryGenerator){
+				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 			}
 
 			if(col > 0){
@@ -264,20 +264,20 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		for(Object obj:list){
 			if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
-				if (row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())) {
+				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
 					String pk = row.getPrimaryKey();
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					primaryCreater.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				}
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
 
 					EntityAdapterProxy.createPrimaryValue(obj);
 				}else{
-					if(null != primaryCreater){
-						primaryCreater.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+					if(null != primaryGenerator){
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 					}
 				}
 			}
