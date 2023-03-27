@@ -929,6 +929,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+
+                if(null != join.getSchema()){
+                    SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
+                }
                 SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
                 if(BasicUtil.isNotEmpty(join.getAlias())){
                     // builder.append(" AS ").append(join.getAlias());
@@ -1019,6 +1023,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+                if(null != join.getSchema()){
+                    SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
+                }
                 SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
                 if(BasicUtil.isNotEmpty(join.getAlias())){
                     builder.append("  ").append(join.getAlias());
