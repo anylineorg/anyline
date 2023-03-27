@@ -916,6 +916,10 @@ public class DateUtil {
 		Date date = Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
+	public static Date parse(Timestamp value){
+		Date date = new Date(value.getTime());
+		return date;
+	}
 	public static Date parse(Object value) throws RuntimeException{
 		Date date = null;
 		if(null != value){
