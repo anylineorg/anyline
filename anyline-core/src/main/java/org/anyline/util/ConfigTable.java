@@ -26,6 +26,7 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
@@ -36,7 +37,7 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-
+@Component
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	private static Environment environment;
@@ -115,7 +116,7 @@ public class ConfigTable {
 
 	public static String CONFIG_NAME = "anyline-config.xml";
 
-	static{
+	public ConfigTable(){
 		init();
 		debug();
 	}
@@ -151,7 +152,7 @@ public class ConfigTable {
 			}
 		}).start();
 	}
-	protected ConfigTable(){}
+
 	public static void addConfig(String content){
 		loadConfig(content);
 	}
