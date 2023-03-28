@@ -1160,15 +1160,18 @@ public class BeanUtil {
 		return equals(obj1, obj2, array2list(keys));
 	}
 
+/*
 
-	/**
+	*/
+/**
 	 * 数组拼接成字符串
 	 *
 	 * @param list   集合
 	 * @param split  分隔符
 	 * @param field 条目属性
 	 * @return String
-	 */
+	 *//*
+
 
 	public static String concat(List<?> list, String field, String split) {
 		StringBuilder builder = new StringBuilder();
@@ -1203,6 +1206,7 @@ public class BeanUtil {
 	public static String concat(List<?> list) {
 		return concat(list,",");
 	}
+*/
 
 	public static String concat(Collection<?> list, String field, String split) {
 		StringBuilder builder = new StringBuilder();
