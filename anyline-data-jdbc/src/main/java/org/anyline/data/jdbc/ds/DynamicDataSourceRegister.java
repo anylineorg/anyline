@@ -23,9 +23,10 @@ import java.util.Map;
  * 需要在启动类上注解 @org.springframework.context.annotation.Import(DynamicDataSourceRegister.class)
  * 注意这时spring上下文还没有初始化完成,不要调用spring context BeanFactory
  */
+//@Component
+//@Import(DynamicDataSourceRegister.class)
 public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar, EnvironmentAware {
     private Logger log = LoggerFactory.getLogger(DynamicDataSourceRegister.class);
-
     //指定默认数据源(springboot2.0默认数据源是hikari如何想使用其他数据源可以自己配置)
     private static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
