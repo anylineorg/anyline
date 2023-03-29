@@ -158,23 +158,6 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -548,7 +531,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	@Override
 	public List<String> buildCreateRunSQL(Table table) throws Exception{
-		return super.buildCreateRunSQL(table);
+		List<String> sqls = super.buildCreateRunSQL(table);
+		//如果有备注 单独生成
+		String sql = buildChangeCommentRunSQL(table);
+		sqls.add(sql);
+		return sqls;
 	}
 
 	/**
@@ -648,14 +635,14 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	/**
 	 * 备注
-	 *
+	 * 需要单独生成添加注释的SQL
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Table table){
-		return super.comment(builder, table);
+		return builder;
 	}
 
 	/**
