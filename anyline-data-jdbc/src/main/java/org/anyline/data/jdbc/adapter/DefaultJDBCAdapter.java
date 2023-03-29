@@ -854,7 +854,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				table.setSchema(con.getSchema());
 			}
 		}catch (Exception e){
-			e.printStackTrace();
 		}
 		table.setCheckSchemaTime(new Date());
 	}
