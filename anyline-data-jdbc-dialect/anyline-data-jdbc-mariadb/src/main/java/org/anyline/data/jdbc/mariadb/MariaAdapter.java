@@ -332,7 +332,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}else{
 			String catalog = table.getCatalog();
 			String schema = table.getSchema();
-			builder.append("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 ");
+			builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
 			if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
 			}
@@ -365,11 +365,11 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			column.setSchema(row.getString("TABLE_SCHEMA"));
 			column.setTable(row.getString("TABLE_NAME"));
 			column.setName(row.getString("COLUMN_NAME"));
-			column.setPosition(row.getInt("ORDINAL_POSITION"));
+			column.setPosition(row.getInt("ORDINAL_POSITION", 0));
 			column.setComment(row.getString("COLUMN_COMMENT"));
 			column.setTypeName(row.getString("DATA_TYPE"));
 			column.setDefaultValue(row.get("COLUMN_DEFAULT"));
-			column.setNullable(row.getBoolean("IS_NULLABLE"));
+			column.setNullable(row.getBoolean("IS_NULLABLE", null));
 			int len = row.getInt("CHARACTER_MAXIMUM_LENGTH",-1);
 			if(len == -1){
 				len = row.getInt("NUMERIC_PRECISION",0);

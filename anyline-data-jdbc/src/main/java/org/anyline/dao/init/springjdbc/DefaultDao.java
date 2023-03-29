@@ -1959,7 +1959,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			metadata = con.getMetaData();;
 		}catch (Exception e){}
-
+		int qty1, qty2, qty3;
 		// 先根据metadata解析 SELECT * FROM T WHERE 1=0
 		try {
 			List<String> sqls = adapter.buildQueryColumnRunSQL(table , true);
@@ -1976,7 +1976,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
-
+		qty1 = columns.size();
 		// 再根据系统表查询
 		try{
 			List<String> sqls = adapter.buildQueryColumnRunSQL(table, false);
@@ -1995,7 +1995,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
-
+		qty2 = columns.size() - qty1;
 		// 根据jdbc接口补充
 		try {
 			columns = adapter.columns(true, columns, metadata, table, null);
@@ -2006,9 +2006,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
+		qty3 = columns.size() - qty1 - qty2;
 
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[columns][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
+			log.warn("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty1, qty2, qty3, System.currentTimeMillis() - fr);
 		}
 		return columns;
 	}
