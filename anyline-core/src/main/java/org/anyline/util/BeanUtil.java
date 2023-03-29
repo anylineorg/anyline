@@ -327,6 +327,9 @@ public class BeanUtil {
 			value = getFieldValue(obj, f);
 		}else{
 			Field f = ClassUtil.getField(obj.getClass(), field, recursion);
+			if(null == f){
+				f = ClassUtil.getField(obj.getClass(), camel(field), recursion);
+			}
 			value = getFieldValue(obj, f);
 		}
 		return value;
