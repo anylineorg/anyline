@@ -2281,7 +2281,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return true;
     }
 
-
+    /**
+     * 驼峰转下划线
+     * @return DataRow
+     */
+    public DataRow camel_(){
+        List<String> keys = keys();
+        for (String key : keys) {
+            Object value = get(key);
+            String camel_ = BeanUtil.camel_(key);
+            updateColumns.remove(key);
+            super.remove(key);
+            put(KEY_CASE.SRC, camel_, value);
+        }
+        this.setKeyCase(KEY_CASE.SRC);
+        return this;
+    }
     public DataRow camel() {
         return camel(false);
     }
