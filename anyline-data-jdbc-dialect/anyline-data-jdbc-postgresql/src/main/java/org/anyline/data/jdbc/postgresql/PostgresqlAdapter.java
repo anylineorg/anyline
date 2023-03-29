@@ -461,7 +461,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		builder.append("ALTER TABLE ");
 		name(builder, table);
 		builder.append(" RENAME TO ");
-		name(builder, table.getUpdate());
+		//去掉catalog schema前缀
+		Table update = new Table(table.getUpdate().getName());
+		name(builder, update);
 		return builder.toString();
 	}
 
