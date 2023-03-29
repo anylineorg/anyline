@@ -55,17 +55,20 @@ public class SQLAdapterUtil {
 		DataSource ds = null;
 		Connection con = null;
 		try {
+			String name = null;
 			if(null != jdbc){
 				ds = jdbc.getDataSource();
 				con = DataSourceUtils.getConnection(ds);
-				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
-				name += con.getMetaData().getURL().toLowerCase();
+				name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
+				name += " " + con.getMetaData().getURL().toLowerCase();
 				// 根据url中关键字
 				adapter = getAdapter(name);
 			}
 			if(null == adapter){
 				log.warn("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 				adapter = SpringContextUtil.getBean(JDBCAdapter.class);
+			}else{
+				log.warn("[检测数据库适配器][根据url检测完成][url:{}][适配器:{}]", name, adapter);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
