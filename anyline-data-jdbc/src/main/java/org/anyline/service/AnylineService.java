@@ -21,6 +21,7 @@ package org.anyline.service;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
@@ -630,6 +631,7 @@ public interface AnylineService<E>{
 	public DDLService ddl();
 	public MetaDataService metadata();
 
+	public ConfigStore condition();
 
 	/* *****************************************************************************************************************
 	 *
@@ -899,5 +901,6 @@ public interface AnylineService<E>{
 		public boolean add(Constraint constraint) throws Exception;
 		public boolean alter(Constraint constraint) throws Exception;
 		public boolean drop(Constraint constraint) throws Exception;
+
 	}
 }

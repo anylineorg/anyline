@@ -1574,6 +1574,10 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return list;
     }
+
+    public ConfigStore condition(){
+        return new DefaultConfigStore();
+    }
     /**
      * 解析SQL中指定的主键table(col1,col2)&lt;pk1,pk2&gt;
      * @param src  src

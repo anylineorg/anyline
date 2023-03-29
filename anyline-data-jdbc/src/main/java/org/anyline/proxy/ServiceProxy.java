@@ -3,6 +3,7 @@ package org.anyline.proxy;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
@@ -33,6 +34,9 @@ public class ServiceProxy {
         ServiceProxy.metadata = service.metadata();
     }
 
+    public static ConfigStore condition(){
+        return new DefaultConfigStore();
+    }
     /**
      * 切换数据源
      * @param datasource 数据源
