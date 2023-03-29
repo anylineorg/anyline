@@ -116,8 +116,10 @@ public class ConfigTable {
 
 	public static String CONFIG_NAME = "anyline-config.xml";
 
-	public ConfigTable(){
+	static{
 		init();
+	}
+	public ConfigTable(){
 		debug();
 	}
 	private synchronized static void listener(){
