@@ -365,7 +365,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         for(int i=0; i<keySize; i++){
             boolean place = placeholder;
             String key = keys.get(i);
-            Object value = BeanUtil.getFieldValue(obj, key);
+            Object value = null;
+            if(obj instanceof DataRow){
+                value = BeanUtil.getFieldValue(obj, key);
+            }else{
+                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
+            }
             if(value != null){
                 if(value instanceof SQL_BUILD_IN_VALUE){
                     place = false;
