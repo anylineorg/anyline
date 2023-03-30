@@ -273,6 +273,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				mastKeys.addAll(row.getUpdateColumns());
 				ignores.addAll(row.getIgnoreUpdateColumns());
 				keys = row.keys();
+
 				isInsertNullColumn = row.isInsertNullColumn();
 				isInsertEmptyColumn = row.isInsertEmptyColumn();
 
@@ -296,8 +297,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = true;
 				isInsertEmptyColumn = true;
 			}
+			log.debug("[confirm insert columns][columns:{}]", keys);
 			BeanUtil.removeAll(ignores, columns);
 			BeanUtil.removeAll(keys, ignores);
+			log.debug("[confirm insert columns][ignores:{}]", ignores);
 			int size = keys.size();
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);
@@ -337,6 +340,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 			}
 		}
+		log.debug("[confirm insert columns][result:{}]", keys);
 		keys = checkMetadata(dest, keys);
 		keys = BeanUtil.distinct(keys);
 		return keys;
@@ -453,14 +457,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		List<String> list = new ArrayList<>();
 		List<String> metadatas = service.columns(table);
-		metadatas = BeanUtil.toUpperCase(metadatas);
-		for (String item:columns){
-			if(metadatas.contains(item.toUpperCase())){
-				list.add(item);
-			}else{
-				log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, item);
+		if(metadatas.size() > 0) {
+			metadatas = BeanUtil.toUpperCase(metadatas);
+			for (String item : columns) {
+				if (metadatas.contains(item.toUpperCase())) {
+					list.add(item);
+				} else {
+					log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, item);
+				}
 			}
+		}else{
+			log.warn("[{}][table:{}][忽略列名检测]", LogUtil.format("表结构检测失败", 33), table);
 		}
+		log.debug("[check column metadata][src:{}][result:{}]", columns.size(), list.size());
 		return list;
 	}
 

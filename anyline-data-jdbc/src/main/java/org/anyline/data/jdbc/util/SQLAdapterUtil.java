@@ -67,8 +67,6 @@ public class SQLAdapterUtil {
 			if(null == adapter){
 				log.warn("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 				adapter = SpringContextUtil.getBean(JDBCAdapter.class);
-			}else{
-				log.warn("[检测数据库适配器][根据url检测完成][url:{}][适配器:{}]", name, adapter);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -129,7 +127,10 @@ public class SQLAdapterUtil {
 		}
 		if(null != adapter) {
 			adapters.put(name, adapter);
+			log.warn("[检测数据库适配器][根据url检测完成][url:{}][适配器:{}]", name, adapter);
 		}
+
+
 		return adapter;
 	}
 }
