@@ -7,11 +7,13 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.EntityAdapterProxy;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +145,127 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		 
 		return builder.toString(); 
 		 
-	} 
+	}
+
+	/**
+	 * 根据DataSet创建批量INSERT RunPrepare
+	 * 2000版本单独处理  insert into tab(nm) select 1 untion all select 2
+	 * @param run run
+	 * @param dest 表 如果不指定则根据set解析
+	 * @param set 集合
+	 * @param keys 需插入的列
+	 */
+	@Override
+	public void createInserts(Run run, String dest, DataSet set,  List<String> keys){
+		if(!"2000".equals(getDbVersion())){
+			super.createInserts(run, dest, set, keys);
+			return;
+		}
+		StringBuilder builder = run.getBuilder();
+		if(null == builder){
+			builder = new StringBuilder();
+			run.setBuilder(builder);
+		}
+		builder.append("INSERT INTO ").append(parseTable(dest));
+		builder.append("(");
+
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			if(i<keySize-1){
+				builder.append(",");
+			}
+		}
+		builder.append(")");
+		int dataSize = set.size();
+		for(int i=0; i<dataSize; i++){
+			DataRow row = set.getRow(i);
+			if(null == row){
+				continue;
+			}
+			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
+				List<String> pks = row.getPrimaryKeys();
+				if(null == pks){
+					pks = new ArrayList<>();
+				}
+				if(pks.size() ==0){
+					pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
+				}
+				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+			}
+			builder.append("\n SELECT ");
+			insertValue(run, row, true, false,false, keys);
+			if(i<dataSize-1){
+				//多行数据之间的分隔符
+				builder.append("\n UNION ALL ");
+			}
+		}
+	}
+
+	/**
+	 * 根据Collection创建批量INSERT RunPrepare
+	 * 2000版本单独处理  insert into tab(nm) select 1 untion all select 2
+	 * @param run run
+	 * @param dest 表 如果不指定则根据set解析
+	 * @param list 集合
+	 * @param keys 需插入的列
+	 */
+	@Override
+	public void createInserts(Run run, String dest, Collection list,  List<String> keys){
+		if(!"2000".equals(getDbVersion())){
+			super.createInserts(run, dest, list, keys);
+			return;
+		}
+		StringBuilder builder = run.getBuilder();
+		if(null == builder){
+			builder = new StringBuilder();
+			run.setBuilder(builder);
+		}
+		if(list instanceof DataSet){
+			DataSet set = (DataSet) list;
+			createInserts(run, dest, set, keys);
+			return;
+		}
+		builder.append("INSERT INTO ").append(parseTable(dest));
+		builder.append("(");
+
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			if(i<keySize-1){
+				builder.append(",");
+			}
+		}
+		builder.append(")\n ");
+		int dataSize = list.size();
+		int idx = 0;
+		for(Object obj:list){
+			builder.append("\n SELECT ");
+			if(obj instanceof DataRow) {
+				DataRow row = (DataRow)obj;
+				if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				}
+				insertValue(run, row, true, false,false, keys);
+			}else{
+				if(EntityAdapterProxy.hasAdapter()){
+					EntityAdapterProxy.createPrimaryValue(obj);
+				}else{
+					createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+				}
+				insertValue(run, obj, true, false, false, keys);
+			}
+			if(idx<dataSize-1){
+				//多行数据之间的分隔符
+				builder.append("\n UNION ALL ");
+
+			}
+			idx ++;
+		}
+	}
+
 	@Override 
 	public String parseExists(Run run){
 		String sql = "IF EXISTS(\n" + run.getBuilder().toString() +"\n) SELECT 1 AS IS_EXISTS ELSE SELECT 0 AS IS_EXISTS"; 
@@ -547,6 +669,13 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		//如果有备注 单独生成
 		String sql = buildChangeCommentRunSQL(table);
 		sqls.add(sql);
+		//列备注
+		for(Column col:table.getColumns().values()){
+			String cmt = col.getComment();
+			if(BasicUtil.isNotEmpty(cmt)){
+				sqls.add(buildChangeCommentRunSQL(col));
+			}
+		}
 		return sqls;
 	}
 
@@ -585,12 +714,22 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
-		builder.append(",@value=N'").append(comment).append("'");
-		builder.append(",@level0type=N'SCHEMA'");
-		builder.append(",@level0name=N'").append(table.getSchema()).append("'");
-		builder.append(",@level1type=N'TABLE'");
-		builder.append(",@level1name=N'").append(table.getName()).append("'");
+		if("2000".equals(getDbVersion())){
+			builder.append("EXEC sp_addextendedproperty ");
+			builder.append("'MS_Description',");
+			builder.append("N'").append(comment).append("',");
+			builder.append("'USER',");
+			builder.append("'").append(table.getSchema()).append("',");
+			builder.append("'TABLE',");
+			builder.append("'").append(table.getName()).append("'");
+		}else {
+			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+			builder.append(",@value=N'").append(comment).append("'");
+			builder.append(",@level0type=N'SCHEMA'");
+			builder.append(",@level0name=N'").append(table.getSchema()).append("'");
+			builder.append(",@level1type=N'TABLE'");
+			builder.append(",@level1name=N'").append(table.getName()).append("'");
+		}
 		return builder.toString();
 	}
 	/**
@@ -905,14 +1044,30 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
-		builder.append(",@value=N'").append(comment).append("'");
-		builder.append(",@level0type=N'SCHEMA'");
-		builder.append(",@level0name=N'").append(column.getSchema()).append("'");
-		builder.append(",@level1type=N'TABLE'");
-		builder.append(",@level1name=N'").append(column.getTableName()).append("'");
-		builder.append(",@level2type=N'COLUMN'");
-		builder.append(",@level2name=N'").append(column.getName()).append("'");
+		String schema = column.getSchema();
+		if(BasicUtil.isEmpty(schema)){
+			schema = column.getTable().getSchema();
+		}
+		if("2000".equals(getDbVersion())){
+			builder.append("EXEC sp_addextendedproperty ");
+			builder.append("'MS_Description',");
+			builder.append("N'").append(comment).append("',");
+			builder.append("'USER',");
+			builder.append("'").append(schema).append("',");
+			builder.append("'TABLE',");
+			builder.append("'").append(column.getTableName()).append("',");
+			builder.append("'COLUMN',");
+			builder.append("'").append(column.getName()).append("'");
+		}else {
+			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+			builder.append(",@value=N'").append(comment).append("'");
+			builder.append(",@level0type=N'SCHEMA'");
+			builder.append(",@level0name=N'").append(schema).append("'");
+			builder.append(",@level1type=N'TABLE'");
+			builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+			builder.append(",@level2type=N'COLUMN'");
+			builder.append(",@level2name=N'").append(column.getName()).append("'");
+		}
 		return builder.toString();
 	}
 
