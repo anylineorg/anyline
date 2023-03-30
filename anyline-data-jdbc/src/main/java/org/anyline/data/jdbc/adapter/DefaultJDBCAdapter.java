@@ -265,8 +265,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		if(each){
 			// 是否插入null及""列
-			boolean isInsertNullColumn =  batch || false;
-			boolean isInsertEmptyColumn =  batch || false;
+			boolean isInsertNullColumn =  false;
+			boolean isInsertEmptyColumn = false;
 			DataRow row = null;
 			if(obj instanceof DataRow){
 				row = (DataRow)obj;
@@ -291,6 +291,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 						}
 					}
 				}
+			}
+			if(batch){
+				isInsertNullColumn = true;
+				isInsertEmptyColumn = true;
 			}
 			BeanUtil.removeAll(ignores, columns);
 			BeanUtil.removeAll(keys, ignores);
