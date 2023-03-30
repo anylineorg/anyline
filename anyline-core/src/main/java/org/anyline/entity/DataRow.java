@@ -1320,7 +1320,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return keys;
     }
-
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> map) {
+        for(String key:map.keySet()){
+            put(key, map.get(key));
+        }
+    }
     public DataRow put(KEY_CASE keyCase, String key, Object value){
         return put(true, keyCase, key, value);
     }
@@ -2254,7 +2259,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
-
     /**
      * 检测必选项
      * @param keys keys
@@ -2857,7 +2861,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             key = keyAdapter.key(key);
             if (ConfigTable.IS_KEY_IGNORE_CASE) {
                 String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
-                key = keymap.get(ignoreKey);
+                String tmp = keymap.get(ignoreKey);
+                if(null != tmp){
+                    key = tmp;
+                }
             }
             result = super.containsKey(key);
         }
@@ -2880,7 +2887,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 key = keyAdapter.key(key);
                 if (ConfigTable.IS_KEY_IGNORE_CASE) {
                     String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
-                    key = keymap.get(ignoreKey);
+                    String tmp = keymap.get(ignoreKey);
+                    if(null != tmp){
+                        key = tmp;
+                    }
                 }
                 if(super.containsKey(key)){
                     return super.get(key);
@@ -2896,7 +2906,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             key = keyAdapter.key(key);
             if (ConfigTable.IS_KEY_IGNORE_CASE) {
                 String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
-                key = keymap.get(ignoreKey);
+                String tmp = keymap.get(ignoreKey);
+                if(null != tmp){
+                    key = tmp;
+                }
             }
             result = super.get(key);
 
