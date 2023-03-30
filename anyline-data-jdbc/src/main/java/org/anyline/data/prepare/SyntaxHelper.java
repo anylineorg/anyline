@@ -22,13 +22,19 @@ public class SyntaxHelper {
  
 	   @param signType 1:已:区分 2:已{}区分	 
 	 * @param all  all
-	 * @param prefix  prefix
+	 * @param prefix  prefix CODE = 'A:1' prefix = "A"(因为这个规则，所以吸用来解析SQL体不要用来解析查询条件)
 	 * @param fullKey  fullKey
 	 * @param afterChar  afterChar
 	 * @return Variable
 	 */ 
 	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){
-		int varType = -1; 
+		int varType = -1;
+		if(BasicUtil.isNotEmpty(prefix)){
+			//CODE = 'A:1' prefix = "A"
+			if(prefix.matches(".*[a-zA-Z0-9]$")){
+				return null;
+			}
+		}
 		Compare compare = Compare.EQUAL;
 		if(null == afterChar){ 
 			afterChar = ""; 
