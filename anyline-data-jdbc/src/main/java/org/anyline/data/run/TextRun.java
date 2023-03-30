@@ -144,8 +144,11 @@ public class TextRun extends BasicRun implements Run {
 				// AND CD = :CD 
 				for(int i=0; i<keys.size();i++){ 
 					List<String> keyItem = keys.get(i);
-					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
 
+					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+					if(null == var){
+						continue;
+					}
 					/*String prefix = keyItem.get(1).trim(); 	//
 					String fullKey = keyItem.get(2).trim();	// :CD ::CD {CD} ${CD}
 					String typeChar = keyItem.get(3);		// null || "'" || ")" 
