@@ -1211,11 +1211,19 @@ public class BeanUtil {
 	}
 */
 
-	public static String concat(Collection<?> list, String field, String split) {
+	/**
+	 * 拼接属性值
+	 * @param list 集合
+	 * @param field 属性
+	 * @param required 是否必须 false:不拼接空值
+	 * @param split 分隔符号
+	 * @return String
+	 */
+	public static String concat(Collection<?> list, String field, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1226,11 +1234,14 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Collection<?> list, String split) {
+	public static String concat(Collection<?> list, String field, String split) {
+		return concat(list, field, split, false);
+	}
+	public static String concat(Collection<?> list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1241,16 +1252,40 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
+	public static String concat(Collection<?> list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(Collection<?> list, boolean required) {
+		return concat(list,",", required);
+	}
 	public static String concat(Collection<?> list) {
-		return concat(list,",");
+		return concat(list, false);
 	}
 
 
-	public static <T> String concat(T[] list, String key, String split) {
+	public static <T> String concat(T[] list, String key, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static <T> String concat(T[] list, String key, String split) {
+		return concat(list, key, split, false);
+	}
+	public static <T> String concat(T[] list, String split, boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1262,30 +1297,21 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static <T> String concat(T[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
-					continue;
-				}
-				if (builder.length() > 0) {
-					builder.append(split);
-				}
-				builder.append(item);
-			}
-		}
-		return builder.toString();
+		return concat(list, split, false);
+	}
+	public static <T> String concat(T[] list, boolean required) {
+		return concat(list,",", required);
 	}
 	public static <T> String concat(T[] list) {
-		return concat(list,",");
+		return concat(list, false);
 	}
 
 
-	public static String concat(int[] list, String split) {
+	public static String concat(Integer[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1296,15 +1322,21 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(int[] list) {
-		return concat(list,",");
+	public static String concat(Integer[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(Integer[] list, boolean required) {
+		return concat(list, ",", required);
+	}
+	public static String concat(Integer[] list) {
+		return concat(list, false);
 	}
 
-	public static String concat(long[] list, String split) {
+	public static String concat(Long[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1315,15 +1347,21 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(long[] list) {
-		return concat(list,",");
+	public static String concat(Long[] list, String split) {
+		return concat(list, split);
+	}
+	public static String concat(Long[] list, boolean required) {
+		return concat(list, ",", required);
+	}
+	public static String concat(Long[] list) {
+		return concat(list,false);
 	}
 
-	public static String concat(double[] list, String split) {
+	public static String concat(Double[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required &&BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1334,15 +1372,21 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(double[] list) {
-		return concat(list,",");
+	public static String concat(Double[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(Double[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(Double[] list) {
+		return concat(list, false);
 	}
 
-	public static String concat(float[] list, String split) {
+	public static String concat(Float[] list, String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1353,15 +1397,21 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(float[] list) {
-		return concat(list,",");
+	public static String concat(Float[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(Float[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(Float[] list) {
+		return concat(list, false);
 	}
 
-	public static String concat(short[] list, String split) {
+	public static String concat(Short[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1372,15 +1422,21 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(short[] list) {
-		return concat(list,",");
+	public static String concat(Short[] list, String split){
+		return concat(list, split, false);
+	}
+	public static String concat(Short[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(Short[] list) {
+		return concat(list, false);
 	}
 
-	public static String concat(byte[] list, String split) {
+	public static String concat(Byte[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
-				if(BasicUtil.isEmpty(item)){
+				if(!required && BasicUtil.isEmpty(item)){
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1391,8 +1447,15 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(byte[] list) {
-		return concat(list,",");
+
+	public static String concat(Byte[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(Byte[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(Byte[] list) {
+		return concat(list,false);
 	}
 
 	public static List<String> toUpperCase(List<String> list){

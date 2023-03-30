@@ -3244,7 +3244,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				return paramLogFormat(values);
 			}
 		}else if(null != values){
-			builder.append(BeanUtil.concat(values)).append("\n");
+			builder.append(BeanUtil.concat(values, true)).append("\n");
 		}
 		return builder.toString();
 
