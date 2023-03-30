@@ -150,6 +150,7 @@ public interface JDBCAdapter {
 	/**
 	 * 确认需要插入的列
 	 * @param data  Entity或DataRow
+	 * @param batch  是否批量
 	 * @param columns 提供额外的判断依据
 	 *                列可以加前缀
 	 *                +:表示必须插入
@@ -167,7 +168,7 @@ public interface JDBCAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
-	public List<String> confirmInsertColumns(String dest, Object data, List<String> columns);
+	public List<String> confirmInsertColumns(String dest, Object data, List<String> columns, boolean batch);
 
 	/**
 	 * 批量插入数据时,多行数据之间分隔符

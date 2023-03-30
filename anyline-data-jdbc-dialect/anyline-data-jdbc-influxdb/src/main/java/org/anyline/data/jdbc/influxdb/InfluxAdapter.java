@@ -77,7 +77,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			run = new TableRun(this,dest);
 			if(obj instanceof DataRow){
 				DataRow row = (DataRow)obj;
-				List<String> cols = confirmInsertColumns(dest, obj, columns);
+				List<String> cols = confirmInsertColumns(dest, obj, columns, false);
 				// insert al, tag1=value1 qty=1,name=5
 				builder.append("insert ").append(parseTable(dest)).append(" ");
 				Map<String,Object> tags = row.getTags();

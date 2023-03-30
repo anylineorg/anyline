@@ -237,7 +237,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
         /*确定需要插入的列*/
 
-        List<String> keys = confirmInsertColumns(dest, obj, columns);
+        List<String> keys = confirmInsertColumns(dest, obj, columns, false);
         // CREATE (e:Employee{id:123,name:"zh"})
         builder.append("(");
         if(BasicUtil.isNotEmpty(alias)){

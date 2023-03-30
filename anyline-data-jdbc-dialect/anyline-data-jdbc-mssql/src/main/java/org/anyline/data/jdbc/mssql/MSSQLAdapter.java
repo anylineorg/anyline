@@ -20,12 +20,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mssql") 
 public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
@@ -173,6 +171,20 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 *
 	 ******************************************************************************************************************/
 
+	@Override
+	public void checkSchema(Connection con, Table table){
+		try {
+			if (null == table.getCatalog()) {
+				table.setCatalog(con.getCatalog());
+			}
+			if (null == table.getSchema()) {
+				//table.setSchema(con.getSchema());
+				table.setSchema("dbo");
+			}
+		}catch (Exception e){
+		}
+		table.setCheckSchemaTime(new Date());
+	}
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------

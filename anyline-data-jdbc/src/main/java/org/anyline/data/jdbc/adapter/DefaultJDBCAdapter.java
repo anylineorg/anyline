@@ -211,6 +211,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 确认需要插入的列
 	 * @param obj  Entity或DataRow
+	 * @param batch  是否批量，批量时不检测值是否为空
 	 * @param columns 提供额外的判断依据
 	 *                列可以加前缀
 	 *                +:表示必须插入
@@ -229,7 +230,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns){
+	public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns, boolean batch){
 		List<String> keys = null;/*确定需要插入的列*/
 		if(null == obj){
 			return new ArrayList<>();
@@ -264,8 +265,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		if(each){
 			// 是否插入null及""列
-			boolean isInsertNullColumn =  false;
-			boolean isInsertEmptyColumn = false;
+			boolean isInsertNullColumn =  batch || false;
+			boolean isInsertEmptyColumn =  batch || false;
 			DataRow row = null;
 			if(obj instanceof DataRow){
 				row = (DataRow)obj;
