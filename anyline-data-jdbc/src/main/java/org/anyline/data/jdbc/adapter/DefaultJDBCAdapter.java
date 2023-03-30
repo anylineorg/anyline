@@ -3071,7 +3071,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					}else{
 						run.setValue(BasicUtil.parseInt(value, null));
 					}
-				}else if(typeName.contains("DECIMAL") || typeName.contains("NUMERIC")){
+				}else if(typeName.contains("DECIMAL") || typeName.contains("NUMERIC") || typeName.contains("MONEY")){
 					if(value instanceof BigDecimal){
 					}else {
 						run.setValue(BasicUtil.parseDecimal(value, null));
@@ -3108,7 +3108,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					}
 					return true;
 				}else if(typeName.equals("DATETIME")){
-					if(value instanceof Timestamp || value instanceof Date){
+					if(value instanceof Timestamp){
+					}else {
+						Date date = DateUtil.parse(value);
+						if(null != date) {
+							run.setValue(new Timestamp(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(typeName.equals("TIMESTAMP")){
+					if(value instanceof Timestamp){
 					}else {
 						Date date = DateUtil.parse(value);
 						if(null != date) {
