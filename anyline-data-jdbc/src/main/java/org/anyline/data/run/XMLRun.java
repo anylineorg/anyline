@@ -104,7 +104,7 @@ public class XMLRun extends BasicRun implements Run {
 					} 
 				} 
 				if(con.isStrictRequired()){ 
-					log.warn("[valid:false][con:{}]",con.getId());
+					log.warn("[valid:false][不具备执行条件][con:{}]",con.getId());
 					this.valid = false; 
 				} 
 			} 
@@ -131,7 +131,7 @@ public class XMLRun extends BasicRun implements Run {
 			for(Variable var:variables){
 				if(var.isRequired() || var.isStrictRequired()){ 
 					if(BasicUtil.isEmpty(true,var.getValues())){ 
-						log.warn("[valid:false][var:{}]",var.getKey());
+						log.warn("[valid:false][不具备执行条件][var:{}]",var.getKey());
 						this.valid = false; 
 						return; 
 					} 

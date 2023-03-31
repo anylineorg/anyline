@@ -62,7 +62,7 @@ public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar,
          DataSourceHolder.reg("dataSource");
         //添加其他数据源
         for (String key : DynamicDataSource.getDataSources().keySet()) {
-            log.warn("[注册数据源][key:{}]",key);
+            log.info("[注册数据源][key:{}]",key);
             DataSourceHolder.reg(key);
         }
 
