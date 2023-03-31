@@ -469,7 +469,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}else{
 			log.warn("[{}][table:{}][忽略列名检测]", LogUtil.format("表结构检测失败", 33), table);
 		}
-		log.debug("[check column metadata][src:{}][result:{}]", columns.size(), list.size());
+		log.info("[check column metadata][src:{}][result:{}]", columns.size(), list.size());
 		return list;
 	}
 

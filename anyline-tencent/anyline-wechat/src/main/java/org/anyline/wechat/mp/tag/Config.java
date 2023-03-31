@@ -54,7 +54,7 @@ public class Config extends BaseBodyTag {
 				String url = "";
 				if("auto".equals(server)){
 					server = HttpUtil.host(request.getServerName());
-					log.warn("[wechat config][auto confirm server][server:{}]",server);
+					log.info("[wechat config][auto confirm server][server:{}]",server);
 				}
 				if(null != server){
 					if(server.contains("127.0.0.1") || server.contains("localhost")){
@@ -63,11 +63,11 @@ public class Config extends BaseBodyTag {
 				}
 				if(BasicUtil.isEmpty(server)){
 					server = util.getConfig().WEB_SERVER;
-					log.warn("[wechat config][config server][server:{}]",server);
+					log.info("[wechat config][config server][server:{}]",server);
 				}
 				if(BasicUtil.isEmpty(server)){
 					server = HttpUtil.host(request.getServerName());
-					log.warn("[wechat config][server host][server:{}]",server);
+					log.info("[wechat config][server host][server:{}]",server);
 				}
 				url =  HttpUtil.mergePath(server , BasicUtil.evl(request.getAttribute("javax.servlet.forward.request_uri"),"")+"");
 				if(null != util.getConfig().WEB_SERVER && util.getConfig().WEB_SERVER.startsWith("https")){
@@ -78,7 +78,7 @@ public class Config extends BaseBodyTag {
 					url += "?" + param;
 				}
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-					log.warn("[config init][url:{}]", url);
+					log.info("[config init][url:{}]", url);
 				}
 				Map<String,Object> map = util.jsapiSign(url);
 				StringBuilder builder = new StringBuilder();

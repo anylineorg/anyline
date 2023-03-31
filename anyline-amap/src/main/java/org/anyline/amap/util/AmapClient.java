@@ -97,7 +97,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				String status = row.getString("status"); 
 				if("1".equals(status) && row.containsKey("_id")){ 
 					id = row.getString("_id"); 
-					log.warn("[添加标注完成][id:{}][name:{}]", id, name);
+					log.info("[添加标注完成][id:{}][name:{}]", id, name);
 				}else{ 
 					log.warn("[添加标注失败][name:{}][info:{}]", name, row.getString("info")); 
 					log.warn("[param:{}]",BeanUtil.map2string(params)); 
@@ -180,7 +180,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[删除标注][param:{}]", BeanUtil.map2string(params));
+			log.info("[删除标注][param:{}]", BeanUtil.map2string(params));
 		} 
 		try{ 
 			DataRow json = DataRow.parseJson(txt); 
@@ -188,9 +188,9 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
 					cnt = json.getInt("success"); 
-					log.warn("[删除标注完成][success:{}][fail:{}]", cnt, json.getInt("fail"));
+					log.info("[删除标注完成][success:{}][fail:{}]", cnt, json.getInt("fail"));
 				}else{ 
-					log.warn("[删除标注失败][info:{}]", json.getString("info"));
+					log.info("[删除标注失败][info:{}]", json.getString("info"));
 				} 
 			} 
 		}catch(Exception e){ 
@@ -239,7 +239,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		params.put("sig", sign(params)); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-			log.warn("[更新标注][param:{}]",BeanUtil.map2string(params)); 
+			log.info("[更新标注][param:{}]",BeanUtil.map2string(params));
 		} 
 		try{ 
 			DataRow json = DataRow.parseJson(txt); 
@@ -247,7 +247,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
 					cnt = 1; 
-					log.warn("[更新标注完成][id:{}][name:{}]",id,name); 
+					log.info("[更新标注完成][id:{}][name:{}]",id,name);
 				}else{ 
 					log.warn("[更新标注失败][name:{}][info:{}]",name,json.getString("info")); 
 					cnt = 0; 
@@ -298,9 +298,9 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		DataRow json = DataRow.parseJson(txt); 
 		if(json.containsKey("tableid")){ 
 			tableId = json.getString("tableid"); 
-			log.warn("[创建地图完成][tableid:{}]",tableId); 
+			log.info("[创建地图完成][tableid:{}]",tableId);
 		}else{ 
-			log.warn("[创建地图失败][info:{}][param:{}]",txt,BeanUtil.map2string(params)); 
+			log.info("[创建地图失败][info:{}][param:{}]",txt,BeanUtil.map2string(params));
 		} 
 		return tableId; 
 	} 
@@ -347,17 +347,17 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set = json.getSet("datas"); 
 			}else{ 
 				set = new DataSet(); 
-				log.warn("[本地搜索失败][info:{}]",json.getString("info")); 
-				log.warn("[本地搜索失败][params:{}]",BeanUtil.map2string(params)); 
+				log.info("[本地搜索失败][info:{}]",json.getString("info"));
+				log.info("[本地搜索失败][params:{}]",BeanUtil.map2string(params));
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[本地搜索失败][info:{}]",e.toString()); 
+			log.warn("[本地搜索失败][info:{}]",e.toString());
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
 		set.setNavi(navi); 
-		log.warn("[本地搜索][size:{}]",navi.getTotalRow()); 
+		log.info("[本地搜索][size:{}]",navi.getTotalRow());
 		return set; 
 	} 
 	/** 
@@ -436,7 +436,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 			set.setException(e); 
 		} 
 		set.setNavi(navi); 
-		log.warn("[周边搜索][size:{}]",navi.getTotalRow()); 
+		log.info("[周边搜索][size:{}]",navi.getTotalRow());
 		return set; 
 	} 
  
@@ -511,7 +511,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 			if(json.containsKey("datas")){ 
 				set = json.getSet("datas"); 
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-					log.warn("[条件搜索][结果数量:{}]",set.size());	 
+					log.info("[条件搜索][结果数量:{}]",set.size());
 				} 
 			}else{ 
 				set = new DataSet(); 
@@ -525,7 +525,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 			set.setException(e); 
 		} 
 		set.setNavi(navi); 
-		log.warn("[条件搜索][size:{}]",navi.getTotalRow()); 
+		log.info("[条件搜索][size:{}]",navi.getTotalRow());
 		return set; 
 	} 
 	/** 

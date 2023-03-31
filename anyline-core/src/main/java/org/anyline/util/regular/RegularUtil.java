@@ -55,7 +55,7 @@ public class RegularUtil {
 	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode){
 		boolean result = false;
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.warn("[match][src:{}][regx:{}][mode:{}]",src, regx, mode);
+			log.info("[match][src:{}][regx:{}][mode:{}]",src, regx, mode);
 		}
 		if(null == src || null == regx ){
 			return result;
@@ -68,7 +68,7 @@ public class RegularUtil {
 			e.printStackTrace();
 		}
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.warn("[match][src:{}][regx:{}][mode:{}][result:{}]", src, regx, mode, result);
+			log.info("[match][src:{}][regx:{}][mode:{}][result:{}]", src, regx, mode, result);
 		}
 		return result;
 	}

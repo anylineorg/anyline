@@ -91,7 +91,7 @@ public class COSUtil {
 			result = createUrl(path);
 			client.putObject(config.BUCKET, path, file);
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				log.warn("[COS upload file][result:true][file:{}][url:{}]",file.getAbsolutePath(), result);
+				log.info("[COS upload file][result:true][file:{}][url:{}]",file.getAbsolutePath(), result);
 			}
 		}
 		return result;

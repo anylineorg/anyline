@@ -626,7 +626,7 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val));
 						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-							log.warn("[request param][{}={}]", key, BasicUtil.cut(val,0,20));
+							log.info("[request param][{}={}]", key, BasicUtil.cut(val,0,20));
 						}
 					}
 				}else if(value instanceof Collection){
@@ -636,8 +636,8 @@ public class HttpUtil {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
-						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-							log.warn("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
+						if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+							log.info("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
 						}
 					}
 				}else if(null != value){

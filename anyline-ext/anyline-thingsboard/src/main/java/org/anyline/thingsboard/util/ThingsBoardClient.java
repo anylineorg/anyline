@@ -56,10 +56,10 @@ public class ThingsBoardClient extends RestClient {
             if(null != config) {
                 client = new ThingsBoardClient(config.HOST);
                 client.config = config;
-                log.warn("[client login][account:{}]",config.ACCOUNT);
+                log.info("[client login][account:{}]",config.ACCOUNT);
                 try {
                     client.login(config.ACCOUNT, config.PASSWORD);
-                    log.warn("[client login][success]");
+                    log.info("[client login][success]");
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -325,13 +325,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                         cnt++;
                     }
                 }
-                log.warn("{}[exe insert][生成主键:{}]", random, ids);
+                log.info("{}[exe insert][生成主键:{}]", random, ids);
             }else{
                 if(rs.next()){
                     cnt ++;
                     Object id = rs.getObject("__ID0");
                     setPrimaryValue(data, id);
-                    log.warn("{}[exe insert][生成主键:{}]", random, id);
+                    log.info("{}[exe insert][生成主键:{}]", random, id);
                 }
             }
 

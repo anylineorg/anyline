@@ -127,7 +127,7 @@ public class ConfigTable {
 			return;
 		}
 		listener_running = true;
-		log.warn("[启动监听]");
+		log.info("[启动监听]");
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -288,7 +288,7 @@ public class ConfigTable {
 			}
 
 			if("jar".equals(getPackageType())){
-				log.warn("[加载配置文件][type:jar][file:{}]",flag+"-config.xml");
+				log.info("[加载配置文件][type:jar][file:{}]",flag+"-config.xml");
 				InputStream in;
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
 					// 遍历jar
@@ -342,7 +342,7 @@ public class ConfigTable {
 		}
 	}
 	protected synchronized static void loadConfigDir(File dir, String flag) {
-		log.warn("[加载配置文件][dir:{}]",dir.getAbsolutePath());
+		log.info("[加载配置文件][dir:{}]",dir.getAbsolutePath());
 		List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 		for(File f:files){
 			String name = f.getName();
@@ -356,7 +356,7 @@ public class ConfigTable {
 				loadConfig(f);
 			}
 		}
-		log.warn("[加载配置文件完成]");
+		log.info("[加载配置文件完成]");
 	}
 	public static void parse(File file){
 		parse(FileUtil.read(file).toString());
@@ -502,7 +502,7 @@ public class ConfigTable {
 	public static void put(String key, String value){
 		configs.put(key, value);
 		if(IS_DEBUG){
-			log.warn("[ConfigTable动态更新][{}={}]",key,value);
+			log.info("[ConfigTable动态更新][{}={}]",key,value);
 		}
 	}
 	public static void put(String key, Object value){
@@ -523,7 +523,7 @@ public class ConfigTable {
 			}
 		}
 		if(IS_DEBUG){
-			log.warn("[ConfigTable动态更新][{}={}]",key,value);
+			log.info("[ConfigTable动态更新][{}={}]",key,value);
 		}
 	}
 	public static String getVersion(){

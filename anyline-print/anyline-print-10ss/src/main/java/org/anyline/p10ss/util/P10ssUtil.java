@@ -67,7 +67,7 @@ public class P10ssUtil {
         Map<String,String> header = new HashMap<String,String>();
         header.put("Content-Type","application/x-www-form-urlencoded");
         String txt = HttpUtil.post(header,url.getCode(), "UTF-8",params).getText();
-        log.warn("[invoike api][result:{}]", txt);
+        log.info("[invoice api][result:{}]", txt);
         DataRow row = DataRow.parseJson(txt);
         if(row.getInt("error",-1) ==0){
             result = row.getRow("body");
@@ -109,13 +109,13 @@ public class P10ssUtil {
             params.put("grant_type", "client_credentials");
             params.put("scope","all");
             row = api(P10ssConfig.URL.ACCESS_TOKEN, params);
-            log.warn("[new access token][token:{}]", row);
+            log.info("[new access token][token:{}]", row);
         }else{
             String url = config.ACCESS_TOKEN_SERVER+ "?appid="+config.APP_ID+"&secret="+config.APP_SECRET;
 
             String text = HttpUtil.post(url).getText();
             row = DataRow.parseJson(text);
-            log.warn("[new access token][server:{}][token:{}]", config.ACCESS_TOKEN_SERVER, row);
+            log.info("[new access token][server:{}][token:{}]", config.ACCESS_TOKEN_SERVER, row);
         }
         row.put("APP_ID", config.APP_ID);
         accessTokens.addRow(row);
@@ -130,7 +130,7 @@ public class P10ssUtil {
         params.put("code",code);
         params.put("scope","all");
         row = api(P10ssConfig.URL.ACCESS_TOKEN, params);
-        log.warn("[new access token][code:{}][token:{}]", code, row);
+        log.info("[new access token][code:{}][token:{}]", code, row);
 /*        }else{
             String url = config.ACCESS_TOKEN_SERVER+ "?appid="+config.APP_ID+"&secret="+config.APP_SECRET;
             if(BasicUtil.isNotEmpty(code)){
@@ -138,7 +138,7 @@ public class P10ssUtil {
             }
             String text = HttpUtil.post(url,"UTF-8").getText();
             row = DataRow.parseJson(text);
-            log.warn("[new access token][server:{}][code:{}][token:{}]", config.ACCESS_TOKEN_SERVER, code, row);
+            log.info("[new access token][server:{}][code:{}][token:{}]", config.ACCESS_TOKEN_SERVER, code, row);
         }*/
         row.put("APP_ID", config.APP_ID);
         return row;
@@ -156,7 +156,7 @@ public class P10ssUtil {
             url += "&refresh="+refresh;
             String text = HttpUtil.post(url,"UTF-8").getText();
             row = DataRow.parseJson(text);
-            log.warn("[refresh access token][server:{}][refresh:{}][token:{}]", config.ACCESS_TOKEN_SERVER, refresh, row);
+            log.info("[refresh access token][server:{}][refresh:{}][token:{}]", config.ACCESS_TOKEN_SERVER, refresh, row);
         }*/
         return row;
     }

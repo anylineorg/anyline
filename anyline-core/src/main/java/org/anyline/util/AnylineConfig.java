@@ -65,7 +65,7 @@ public abstract class AnylineConfig {
 			int configSize = 0;
 			if ("jar".equals(ConfigTable.getPackageType())) {
 				InputStream in = null;
-				log.warn("[加载配置文件][type:jar][file:{}]", fileName);
+				log.info("[加载配置文件][type:jar][file:{}]", fileName);
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
 					// 遍历jar
 					List<JarEntry> list = new ArrayList<JarEntry>();
@@ -114,7 +114,7 @@ public abstract class AnylineConfig {
 					}
 				}
 			}
-			log.warn("[解析配置文件][文件:{}][数量:{}/{}][请参考:http://doc.anyline.org或源码中resources/{}]", fileName, configSize, instances.size(), fileName);
+			log.info("[解析配置文件][文件:{}][数量:{}/{}][请参考:http://doc.anyline.org或源码中resources/{}]", fileName, configSize, instances.size(), fileName);
 
 		} catch (Exception e) {
 			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]", fileName, e);
@@ -139,7 +139,7 @@ public abstract class AnylineConfig {
 					try {
 						String value = row.getString(nm);
 						config.setValue(nm, value);
-						log.warn("[解析配置文件][{}={}]", nm, value);
+						log.info("[解析配置文件][{}={}]", nm, value);
 						kvs.put(nm, value);
 						config.afterParse(nm, value);
 					} catch (Exception e) {
@@ -164,7 +164,7 @@ public abstract class AnylineConfig {
 								kvs.put(newKey, val);
 								config.setValue(newKey, val);
 								config.afterParse(newKey, val);
-								log.warn("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
+								log.info("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
 							}
 						}
 					}
@@ -225,7 +225,7 @@ public abstract class AnylineConfig {
 								if (null != element) {
 									String val = element.getTextTrim();
 									kvs.put(newKey, val);
-									log.warn("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
+									log.info("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
 								}
 							}
 						}
@@ -262,7 +262,7 @@ public abstract class AnylineConfig {
 			return;
 		}
 		listener_running = true;
-		log.warn("[启动本地配置监听]");
+		log.info("[启动本地配置监听]");
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -300,7 +300,7 @@ public abstract class AnylineConfig {
 	}
 	// 兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) {
-		log.warn("[解析配置文件][file:{}]", file);
+		log.info("[解析配置文件][file:{}]", file);
 		if (null == file || !file.exists()) {
 			log.warn("[解析配置文件][文件不存在][file:{}]", file);
 			return instances;

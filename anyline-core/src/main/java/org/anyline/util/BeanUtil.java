@@ -2690,8 +2690,8 @@ public class BeanUtil {
 				}
 			}
 		}
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			// log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			//log.info("[parse run time value][key:"+key+"][value:"+value+"]");
 		}
 		return value;
 	}

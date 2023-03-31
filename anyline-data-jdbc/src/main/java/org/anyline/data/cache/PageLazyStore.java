@@ -1,10 +1,10 @@
 package org.anyline.data.cache;
- 
-import java.util.Hashtable; 
- 
-import org.anyline.util.ConfigTable; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+
+import org.anyline.util.ConfigTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Hashtable;
  
 public class PageLazyStore { 
 	private static final Logger log = LoggerFactory.getLogger(PageLazyStore.class); 
@@ -26,14 +26,14 @@ public class PageLazyStore {
 				lazyTotal.remove(key); 
 				lazyTime.remove(key); 
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-					log.warn("[记录总数过期][key:{}][生存:{}/{}]", key, age, period); 
+					log.info("[记录总数过期][key:{}][生存:{}/{}]", key, age, period);
 				} 
 				return 0; 
 			} 
 		} 
 		Integer result = lazyTotal.get(key); 
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-			log.warn("[提取记录总数][key:{}][total:{}][生存:{}/{}]", key, result, age, period); 
+			log.info("[提取记录总数][key:{}][total:{}][生存:{}/{}]", key, result, age, period);
 		} 
 		if(null == result){ 
 			return 0; 

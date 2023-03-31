@@ -575,7 +575,7 @@ public class DefaultPageNavi implements PageNavi{
 		if(type ==0){ // 下标导航
 			// 每页多少条 
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[vol set][enable:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,pageRows,config.CONFIG_PAGE_VAL_SET_SORT); 
+				log.info("[vol set][enable:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
 			} 
 			if(config.VAR_CLIENT_SET_VOL_ENABLE){ 
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){ 

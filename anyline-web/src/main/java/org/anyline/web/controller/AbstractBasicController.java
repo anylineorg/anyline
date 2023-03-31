@@ -990,7 +990,7 @@ public class AbstractBasicController {
 		map.put("BODY", BasicUtil.escape(html));
 		if(null != navi){
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				log.warn("[load jsp navi][rows:{}][page:{}]", navi.getTotalRow(), navi.getTotalPage());
+				log.info("[load jsp navi][rows:{}][page:{}]", navi.getTotalRow(), navi.getTotalPage());
 			}
 			int type = 0;
 			String _type = getParam(request,"_anyline_navi_type");

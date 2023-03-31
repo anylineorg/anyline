@@ -737,7 +737,7 @@ public class ConfigParser {
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-			log.warn("[decrypt][start][src:{}][type:{}]", src, type);
+			log.info("[decrypt][start][src:{}][type:{}]", src, type);
 		}
 		if(null != src && DESUtil.ignores.contains(src)){
 			return src;
@@ -751,7 +751,7 @@ public class ConfigParser {
 			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)){
 				result = result.substring(7);
 				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-					log.warn("[decrypt][删除混淆码][result:{}]",result);
+					log.info("[decrypt][删除混淆码][result:{}]",result);
 				}
 			}
 		}
@@ -767,7 +767,7 @@ public class ConfigParser {
 			}
 			result = result.substring(sub);
 			if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-				log.warn("[decrypt][删除前缀][result:{}]",result);
+				log.info("[decrypt][删除前缀][result:{}]",result);
 			}
 			// 解析版本
 			String tmp[] = parseDESVersion(result);
@@ -791,7 +791,7 @@ public class ConfigParser {
 			result = null;
 		}
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-			log.warn("[decrypt][end][result:{}]",result);
+			log.info("[decrypt][end][result:{}]",result);
 		}
 		return result;
 	}
