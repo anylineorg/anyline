@@ -16,7 +16,7 @@ public abstract class AbstractMapClient implements MapClient{
      */
     @Override
     public Coordinate regeo(Coordinate coordinate) {
-        log.warn(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 public Coordinate regeo(Coordinate coordinate)",37));
+        log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 public Coordinate regeo(Coordinate coordinate)",37));
         return null;
     }
     /**
@@ -27,7 +27,7 @@ public abstract class AbstractMapClient implements MapClient{
      */
     @Override
     public Coordinate geo(String address, String city){
-        log.warn(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 Coordinate geo(String address, String city)",37));
+        log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 Coordinate geo(String address, String city)",37));
         return null;
     }
 

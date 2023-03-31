@@ -159,7 +159,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 			table.setCheckSchemaTime(new Date());
 		}catch (Exception e){
-			log.warn("check table exception");
+			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);

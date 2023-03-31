@@ -908,12 +908,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 ******************************************************************************************************************/
 	@Override
 	public List<String> buildQueryDatabaseRunSQL() throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryDatabaseRunSQL()",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryDatabaseRunSQL()",37));
 		return null;
 	}
 	@Override
 	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)",37));
 		return null;
 	}
 
@@ -934,13 +934,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
 
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1006,7 +1006,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
 	/**
@@ -1043,7 +1043,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1071,17 +1071,17 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)",37));
 		return null;
 	}
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)",37));
 		return null;
 	}
 
@@ -1100,7 +1100,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1144,7 +1144,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryColumnRunSQL(Table table, boolean metadata)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryColumnRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1160,7 +1160,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set)",37));
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1513,7 +1513,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryTagRunSQL(Table table, boolean metadata)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryTagRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1529,7 +1529,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1537,7 +1537,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1545,7 +1545,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1568,7 +1568,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryIndexRunSQL(Table table, boolean metadata)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryIndexRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1584,7 +1584,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set)",37));
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
@@ -1592,7 +1592,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set)",37));
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
@@ -1677,7 +1677,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1693,7 +1693,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set)",37));
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
@@ -1701,7 +1701,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set)",37));
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
@@ -1709,7 +1709,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set)",37));
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
@@ -1806,7 +1806,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(Table table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(Table table)",37));
 		return null;
 	}
 	/**
@@ -1818,13 +1818,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Table table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(Table table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(Table table)",37));
 		return null;
 	}
 
 	@Override
 	public String buildChangeCommentRunSQL(Table table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(Table table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(Table table)",37));
 		return null;
 	}
 	/**
@@ -1940,7 +1940,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildCreateRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildCreateRunSQL(MasterTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildCreateRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
@@ -1949,22 +1949,22 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public List<String> buildAlterRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(MasterTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildDropRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(MasterTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildRenameRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(MasterTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildChangeCommentRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(MasterTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(MasterTable table)",37));
 		return null;
 	}
 
@@ -1986,7 +1986,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildCreateRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildCreateRunSQL(PartitionTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildCreateRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
@@ -1995,22 +1995,22 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	@Override
 	public List<String> buildAlterRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(PartitionTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildDropRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(PartitionTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildRenameRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(PartitionTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(PartitionTable table)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(PartitionTable table)",37));
 		return null;
 	}
 
@@ -2187,7 +2187,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildChangeTypeRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildChangeTypeRunSQL(Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildChangeTypeRunSQL(Column column)",37));
 		return null;
 	}
 	/**
@@ -2199,7 +2199,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeDefaultRunSQL(Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeDefaultRunSQL(Column column)",37));
 		return null;
 	}
 
@@ -2212,7 +2212,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildChangeNullableRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeNullableRunSQL(Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeNullableRunSQL(Column column)",37));
 		return null;
 	}
 	/**
@@ -2224,7 +2224,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(Column column)",37));
 		return null;
 	}
 
@@ -2363,7 +2363,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder increment(StringBuilder builder, Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder increment(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2379,7 +2379,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder onupdate(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder onupdate(StringBuilder builder, Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder onupdate(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2392,7 +2392,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder position(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder position(StringBuilder builder, Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder position(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2405,7 +2405,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder comment(StringBuilder builder, Column column)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder comment(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2417,7 +2417,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists){
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 checkColumnExists(StringBuilder builder, boolean exists)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 checkColumnExists(StringBuilder builder, boolean exists)",37));
 		return builder;
 	}
 
@@ -2574,7 +2574,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeDefaultRunSQL(Tag tag)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeDefaultRunSQL(Tag tag)",37));
 		return null;
 	}
 
@@ -2587,7 +2587,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildChangeNullableRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeNullableRunSQL(Tag tag)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeNullableRunSQL(Tag tag)",37));
 		return null;
 	}
 	/**
@@ -2599,7 +2599,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(Tag tag)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildChangeCommentRunSQL(Tag tag)",37));
 		return null;
 	}
 
@@ -2612,7 +2612,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildChangeTypeRunSQL(Tag tag)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildChangeTypeRunSQL(Tag tag)",37));
 		return null;
 	}
 
@@ -2625,7 +2625,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder checkTagExists(StringBuilder builder, boolean exists)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 StringBuilder checkTagExists(StringBuilder builder, boolean exists)",37));
 		return builder;
 	}
 
@@ -2679,7 +2679,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildAlterRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
 		return null;
 	}
 
@@ -2711,7 +2711,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Index index)",37));
 		return null;
 	}
 	/* *****************************************************************************************************************
@@ -2729,7 +2729,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildAddRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Constraint constraint)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildAddRunSQL(Constraint constraint)",37));
 		return null;
 	}
 	/**
@@ -2739,7 +2739,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(Constraint constraint)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<String> buildAlterRunSQL(Constraint constraint)",37));
 		return null;
 	}
 
@@ -2750,7 +2750,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildDropRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(Constraint constraint)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildDropRunSQL(Constraint constraint)",37));
 		return null;
 	}
 	/**
@@ -2761,7 +2761,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(Constraint constraint)",37));
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 String buildRenameRunSQL(Constraint constraint)",37));
 		return null;
 	}
 

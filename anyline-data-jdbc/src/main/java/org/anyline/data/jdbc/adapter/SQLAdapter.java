@@ -736,7 +736,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value){
-        log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value)",37));
+        log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value)",37));
         return null;
     }
     /**
