@@ -50,7 +50,7 @@ public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar,
                 DataSource ds = buildDataSource("spring.datasource."+prefix,env);
                 DynamicDataSource.addDataSource(prefix, ds);
                 DataSourceHolder.reg(prefix);
-                log.warn("[创建数据源][prefix:{}]",prefix);
+                log.info("[创建数据源][prefix:{}]",prefix);
             }
         }
     }

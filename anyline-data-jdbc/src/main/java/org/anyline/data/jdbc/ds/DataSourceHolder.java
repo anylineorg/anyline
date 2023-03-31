@@ -200,8 +200,8 @@ public class DataSourceHolder {
 		if(!over && dataSources.contains(key)){
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 		}
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
 		}
 		DynamicDataSource.addDataSource(key, ds);
 		if(!dataSources.contains(key)) {
