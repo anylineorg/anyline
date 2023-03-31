@@ -219,7 +219,7 @@ public class ConfigTable {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		log.warn("path={}",path);
+		log.debug("path={}",path);
 		Properties props=System.getProperties();
 		String osName = props.getProperty("os.name");
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
@@ -228,7 +228,7 @@ public class ConfigTable {
 		}
 		path = path.replace("file:", "");//jar项目
 		// file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
-		// log.warn("root={}",root);
+		// log.debug("root={}",root);
 		if(null == root && null != path){
 			root = path;
 			if(root.contains(".jar")){
@@ -242,7 +242,7 @@ public class ConfigTable {
 				root = path.substring(0,path.indexOf("target")-1);
 			}
 		}
-		// log.warn("root={}",root);
+		// log.debug("root={}",root);
 		if(null == webRoot && null != path){
 			webRoot = path;
 			if(path.indexOf("WEB-INF") > 0){
@@ -375,7 +375,7 @@ public class ConfigTable {
 				String value = propertyElement.getTextTrim();
 				put(key.toUpperCase().trim(), value);
 				if (IS_DEBUG) {
-					log.info("[解析配置文件][{}={}]", key, value);
+					log.debug("[解析配置文件][{}={}]", key, value);
 				}
 			}
 			map2field();
