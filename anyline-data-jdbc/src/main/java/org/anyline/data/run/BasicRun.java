@@ -196,19 +196,36 @@ public abstract class BasicRun implements Run {
 
 	/**
 	 * 添加参数值
+	 * @param compare  compare
 	 * @param obj  obj
+	 * @param key  key
 	 * @return Run
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Run addValues(String key, Object obj){
+	public Run addValues(Compare compare, String key, Object obj){
 		if(null == key){
 			key = "none";
 		}
-		if(null != obj && obj instanceof Collection){
-			Collection list = (Collection)obj;
-			for(Object item:list){
-				addValues(new RunValue(key, item));
+		if(null != obj){
+			if(obj instanceof Object[]){
+				Object[] list = (Object[]) obj;
+				for(Object item:list){
+					addValues(new RunValue(key, item));
+					if(Compare.EQUAL == compare){
+						break;
+					}
+				}
+			}else if(obj instanceof Collection){
+				Collection list = (Collection)obj;
+				for(Object item:list){
+					addValues(new RunValue(key, item));
+					if(Compare.EQUAL == compare){
+						break;
+					}
+				}
+			}else{
+				addValues(new RunValue(key, obj));
 			}
 
 		}else{

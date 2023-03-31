@@ -94,11 +94,12 @@ public interface Run {
 
 	/** 
 	 * 添加参数值 
+	 * @param compare  compare
 	 * @param column  column
 	 * @param obj  obj
 	 * @return Run
 	 */ 
-	public Run addValues(String column, Object obj);
+	public Run addValues(Compare compare, String column, Object obj);
 
 	public Run addOrders(OrderStore orderStore);
 	public Run addOrder(Order order);

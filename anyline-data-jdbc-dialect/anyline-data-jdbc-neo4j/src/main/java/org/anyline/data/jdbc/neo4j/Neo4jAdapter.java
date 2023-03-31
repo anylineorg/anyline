@@ -266,7 +266,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 if(value.toString().startsWith("${") && value.toString().endsWith("}")){
                     builder.append("?");
                     insertColumns.add(key);
-                    run.addValues(key, value);
+                    run.addValues(Compare.EQUAL, key, value);
                 }else {
                     builder.append(value);
                 }
@@ -275,10 +275,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 insertColumns.add(key);
                 if("NULL".equals(value)){
                     // values.add(null);
-                    run.addValues(key, null);
+                    run.addValues(Compare.EQUAL, key, null);
                 }else{
                     // values.add(value);
-                    run.addValues(key, value);
+                    run.addValues(Compare.EQUAL, key, value);
                 }
             }
             if(i<size-1){
@@ -812,7 +812,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     }
                     updateColumns.add(key);
                     // values.add(value);
-                    run.addValues(key, value);
+                    run.addValues(Compare.EQUAL, key, value);
                 }
                 if(i<size-1){
                     builder.append(",");
@@ -828,10 +828,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     if (EntityAdapterProxy.hasAdapter()) {
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
                         // values.add(BeanUtil.getFieldValue(obj, field));
-                        run.addValues(pk, BeanUtil.getFieldValue(obj, field));
+                        run.addValues(Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, field));
                     } else {
                         // values.add(BeanUtil.getFieldValue(obj, pk));
-                        run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
+                        run.addValues(Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, pk));
                     }
                 }
             }else{
@@ -889,7 +889,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     }
                     updateColumns.add(key);
                     // values.add(value);
-                    run.addValues(key, value);
+                    run.addValues(Compare.EQUAL, key, value);
                 }
                 if(i<size-1){
                     builder.append(",");
@@ -903,7 +903,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                     updateColumns.add(pk);
                     // values.add(row.get(pk));
-                    run.addValues(pk, row.get(pk));
+                    run.addValues(Compare.EQUAL, pk, row.get(pk));
                 }
             }else{
                 run.setConfigStore(configs);
@@ -990,7 +990,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
             builder.append("=?");
         }
-        run.addValues(key, values);
+        run.addValues(Compare.IN, key, values);
         run.setBuilder(builder);
 
         return run;
@@ -1039,7 +1039,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                         value = BeanUtil.getFieldValue(obj, key);
                     }
                 }
-                run.addValues(key,value);
+                run.addValues(Compare.EQUAL, key,value);
             }
         }else{
             throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");

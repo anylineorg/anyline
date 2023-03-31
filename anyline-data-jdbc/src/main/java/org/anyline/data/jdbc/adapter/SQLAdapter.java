@@ -280,9 +280,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 if(supportInsertPlaceholder()) {
                     valuesBuilder.append("?");
                     if ("NULL".equals(value)) {
-                        addRunValue(run, key, null);
+                        addRunValue(run, Compare.EQUAL,  key, null);
                     } else {
-                        addRunValue(run, key, value);
+                        addRunValue(run, Compare.EQUAL, key, value);
                     }
                 }else{
                     format(valuesBuilder, value);
@@ -383,7 +383,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
             if(place){
                 builder.append("?");
-                addRunValue(run, key, value);
+                addRunValue(run, Compare.EQUAL, key, value);
             }else {
                 value(builder, obj, key);
             }
@@ -598,7 +598,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         first = false;
                         SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
                         updateColumns.add(key);
-                        addRunValue(run, key, value);
+                        addRunValue(run, Compare.EQUAL, key, value);
                     }
                 }
             }
@@ -611,9 +611,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     updateColumns.add(pk);
                     if (EntityAdapterProxy.hasAdapter()) {
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
-                        addRunValue(run, pk, BeanUtil.getFieldValue(obj, field));
+                        addRunValue(run, Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, field));
                     } else {
-                        addRunValue(run, pk, BeanUtil.getFieldValue(obj, pk));
+                        addRunValue(run, Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, pk));
                     }
                 }
             }else{
@@ -666,7 +666,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         value = null;
                     }
                     updateColumns.add(key);
-                    addRunValue(run, key, value);
+                    addRunValue(run, Compare.EQUAL, key, value);
                 }
                 if(i<size-1){
                     builder.append(",");
@@ -679,7 +679,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     builder.append(" AND ");
                     SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                     updateColumns.add(pk);
-                    addRunValue(run, pk,  row.get(pk));
+                    addRunValue(run, Compare.EQUAL, pk, row.get(pk));
                 }
             }else{
                 run.setConfigStore(configs);
@@ -838,9 +838,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                             // 多个值IN
                             String replaceDst = "";
                             for(Object tmp:varValues){
-                                addRunValue(run, var.getKey(), tmp);
                                 replaceDst += " ?";
                             }
+                            addRunValue(run, Compare.IN, var.getKey(), varValues);
                             replaceDst = replaceDst.trim().replace(" ", ",");
                             result = result.replace(":"+var.getKey(), replaceDst);
                             result = result.replace("{"+var.getKey()+"}", replaceDst);
@@ -848,7 +848,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                             // 单个值
                             result = result.replace(":"+var.getKey(), "?");
                             result = result.replace("{"+var.getKey()+"}", "?");
-                            addRunValue(run, var.getKey(), varValues.get(0));
+                            addRunValue(run, Compare.EQUAL, var.getKey(), varValues.get(0));
                         }
                     }else{
                         //没有提供参数值
@@ -869,7 +869,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     if(BasicUtil.isNotEmpty(true, varValues)){
                         value = (String)varValues.get(0);
                     }
-                    addRunValue(run, var.getKey(), value);
+                    addRunValue(run, Compare.EQUAL, var.getKey(), value);
                 }
             }
         }
@@ -1079,11 +1079,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }else{
                 throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
             }
+            addRunValue(run, Compare.IN, key, values);
         }else{
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
             builder.append("=?");
+            addRunValue(run, Compare.EQUAL, key, values);
         }
-        addRunValue(run, key, values);
 
         run.setBuilder(builder);
 
@@ -1128,7 +1129,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         value = BeanUtil.getFieldValue(obj, key);
                     }
                 }
-                addRunValue(run, key,value);
+                addRunValue(run, Compare.EQUAL, key,value);
             }
         }else{
             throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
@@ -1146,7 +1147,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected String concatAdd(String ... args)
      ******************************************************************************************************************/
 
-    protected void addRunValue(Run run, String key, Object value){
+    protected void addRunValue(Run run, Compare compare, String key, Object value){
         /*if(null != value && value instanceof SQL_BUILD_IN_VALUE){
             value = buildInValue((SQL_BUILD_IN_VALUE)value);
             if(null != value){
@@ -1176,7 +1177,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
         }
 
-        run.addValues(key, value);
+        run.addValues(compare, key, value);
     }
     /* ************** 拼接字符串 *************** */
     protected String concatFun(String ... args){

@@ -224,26 +224,26 @@ public class XMLRun extends BasicRun implements Run {
 						if(var.getCompare() == Compare.LIKE){ 
 							// CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
 							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
-							addValues(var.getKey(), varValues.get(0));
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == Compare.LIKE_SUFFIX){ 
 							result = result.replace("'%"+replaceKey+"'", adapter.concat("'%'","?"));
-							addValues(var.getKey(), varValues.get(0));
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == Compare.LIKE_PREFIX){ 
 							result = result.replace("'"+replaceKey+"%'", adapter.concat("?","'%'"));
-							addValues(var.getKey(), varValues.get(0));
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == Compare.IN){ 
 							// 多个值IN 
 							String replaceDst = "";  
-							for(Object tmp:varValues){ 
-								addValues(var.getKey(), tmp);
+							for(Object tmp:varValues){
 								replaceDst += " ?"; 
-							} 
+							}
+							addValues(Compare.IN, var.getKey(), varValues);
 							replaceDst = replaceDst.trim().replace(" ", ","); 
 							result = result.replace(replaceKey, replaceDst); 
 						}else{ 
 							// 单个值 
 							result = result.replace(replaceKey, "?"); 
-							addValues(var.getKey(), varValues.get(0));
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0));
 						} 
 					} 
 				} 
@@ -260,7 +260,7 @@ public class XMLRun extends BasicRun implements Run {
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
 						value = (String)varValues.get(0); 
 					} 
-					addValues(var.getKey(), value);
+					addValues(Compare.EQUAL, var.getKey(), value);
 				} 
 			} 
 		}
