@@ -228,7 +228,7 @@ public class WechatPayUtil {
             result = BeanUtil.xml2object(txt, WechatRefundResult.class);
         }catch(Exception e){
             e.printStackTrace();
-            return new WechatRefundResult(false,e.getMessage());
+            return new WechatRefundResult(false,e.toString());
         }
         return result;
     }
@@ -295,7 +295,7 @@ public class WechatPayUtil {
             result = BeanUtil.xml2object(txt, WechatRedpackResult.class);
         }catch(Exception e){
             e.printStackTrace();
-            return new WechatRedpackResult(false,e.getMessage());
+            return new WechatRedpackResult(false,e.toString());
         }
         return result;
     }
@@ -361,7 +361,7 @@ public class WechatPayUtil {
             result = BeanUtil.xml2object(txt, WechatFissionRedpackResult.class);
         }catch(Exception e){
             e.printStackTrace();
-            return new WechatFissionRedpackResult(false,e.getMessage());
+            return new WechatFissionRedpackResult(false,e.toString());
         }
         return result;
     }
@@ -421,7 +421,7 @@ public class WechatPayUtil {
             result = BeanUtil.xml2object(txt, WechatEnterpriseTransferResult.class);
         }catch(Exception e){
             e.printStackTrace();
-            return new WechatEnterpriseTransferResult(false,e.getMessage());
+            return new WechatEnterpriseTransferResult(false,e.toString());
         }
         return result;
     }
@@ -495,7 +495,7 @@ public class WechatPayUtil {
             result = BeanUtil.xml2object(txt, WechatEnterpriseTransferBankResult.class);
         }catch(Exception e){
             e.printStackTrace();
-            return new WechatEnterpriseTransferBankResult(false,e.getMessage());
+            return new WechatEnterpriseTransferBankResult(false,e.toString());
         }
         return result;
     }

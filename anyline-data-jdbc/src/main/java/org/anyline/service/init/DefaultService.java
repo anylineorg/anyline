@@ -154,7 +154,7 @@ public class DefaultService<E> implements AnylineService<E> {
         src = BasicUtil.compress(src);
         conditions = BasicUtil.compress(conditions);
         if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", src);
+            log.debug("[解析SQL][src:{}]", src);
         }
         try {
             RunPrepare prepare = createRunPrepare(src);
@@ -1492,7 +1492,7 @@ public class DefaultService<E> implements AnylineService<E> {
     protected DataSet queryFromDao(RunPrepare prepare, ConfigStore configs, String... conditions){
         DataSet set = null;
         if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", prepare.getText());
+            log.debug("[解析SQL][src:{}]", prepare.getText());
         }
         try {
             setPageLazy(prepare.getText(), configs, conditions);
@@ -1513,7 +1513,7 @@ public class DefaultService<E> implements AnylineService<E> {
     protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
         DataSet set = null;
         if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", src);
+            log.debug("[解析SQL][src:{}]", src);
         }
         try {
             setPageLazy(src, configs, conditions);
@@ -1536,7 +1536,7 @@ public class DefaultService<E> implements AnylineService<E> {
     protected <T> EntitySet<T> queryFromDao(String src, Class<T> clazz, ConfigStore configs, String... conditions){
         EntitySet<T> list = null;
         if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", clazz);
+            log.debug("[解析SQL][src:{}]", clazz);
         }
         try {
             setPageLazy(src, configs, conditions);
@@ -1557,7 +1557,7 @@ public class DefaultService<E> implements AnylineService<E> {
     protected <T> EntitySet<T> queryFromDao(Class<T> clazz, ConfigStore configs, String... conditions){
         EntitySet<T> list = null;
         if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", clazz);
+            log.debug("[解析SQL][src:{}]", clazz);
         }
         try {
             setPageLazy(clazz.getName(), configs, conditions);
@@ -1595,7 +1595,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 for(String tmp:tmps){
                     pks.add(tmp);
                     if(ConfigTable.isSQLDebug()){
-                        log.warn("[解析SQL主键] [KEY:{}]",tmp);
+                        log.debug("[解析SQL主键] [KEY:{}]",tmp);
                     }
                 }
             }
@@ -1610,7 +1610,7 @@ public class DefaultService<E> implements AnylineService<E> {
         // 文本sql
         if (src.startsWith("${") && src.endsWith("}")) {
             if(ConfigTable.isSQLDebug()){
-                log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
+                log.debug("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
             }
             src = src.substring(2,src.length()-1);
             src = DataSourceHolder.parseDataSource(src);//解析数据源
@@ -1621,13 +1621,13 @@ public class DefaultService<E> implements AnylineService<E> {
             src = parsePrimaryKey(src, pks);//解析主键
             if(src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")){
                 if(ConfigTable.isSQLDebug()){
-                    log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
+                    log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
                 prepare = new DefaultTextPrepare(src);
             }else if (RegularUtil.match(src, RunPrepare.XML_SQL_ID_STYLE)) {
                 /* XML定义 */
                 if(ConfigTable.isSQLDebug()){
-                    log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
+                    log.debug("[解析SQL类型] [类型:XML定义] [src:{}]", src);
                 }
                 prepare = DefaultSQLStore.parseSQL(src);
                 if(null == prepare){
@@ -1636,7 +1636,7 @@ public class DefaultService<E> implements AnylineService<E> {
             } else {
                 /* 自动生成 */
                 if(ConfigTable.isSQLDebug()){
-                    log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
+                    log.debug("[解析SQL类型] [类型:auto] [src:{}]", src);
                 }
                 prepare = new DefaultTablePrepare();
                 prepare.setDataSource(src);
@@ -1649,7 +1649,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
     protected DataSet queryFromCache(String cache, String src, ConfigStore configs, String ... conditions){
         if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-            log.warn("[cache from][cache:{}][src:{}]", cache, src);
+            log.debug("[cache from][cache:{}][src:{}]", cache, src);
         }
         DataSet set = null;
         String key = "SET:";
@@ -1679,7 +1679,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 final int _max = cacheElement.getExpires();
                 if (age > _max * 0.9) {
                     if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-                        log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]", src, age, _max);
+                        log.debug("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]", src, age, _max);
                     }
                     final String _key = key;
                     final String _cache = cache;

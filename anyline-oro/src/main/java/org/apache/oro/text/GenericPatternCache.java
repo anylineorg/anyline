@@ -197,7 +197,7 @@ public abstract class GenericPatternCache implements PatternCache {
     } catch(MalformedPatternException e) {
       throw new MalformedCachePatternException("Invalid expression: " +
 					       expression + "\n" + 
-					       e.getMessage());
+					       e.toString());
     }
 
     return result;

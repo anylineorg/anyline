@@ -714,7 +714,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	  } catch(NumberFormatException e) {
 	    throw new MalformedPatternException(
 	   "Unexpected number format exception.  Please report this bug." +
-	   "NumberFormatException message: " + e.getMessage());
+	   "NumberFormatException message: " + e.toString());
 	  }
 
 	  if(num > 9 && num >= __numParentheses) {
@@ -859,7 +859,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	      } catch(NumberFormatException e) {
 		throw new MalformedPatternException(
 	     "Unexpected number format exception.  Please report this bug." +
-	     "NumberFormatException message: " + e.getMessage());
+	     "NumberFormatException message: " + e.toString());
 	      }
 
 	      if(!doOctal)
@@ -1417,7 +1417,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	} catch(NumberFormatException e) {
 	  throw new MalformedPatternException(
 	 "Unexpected number format exception.  Please report this bug." +
-	   "NumberFormatException message: " + e.getMessage());
+	   "NumberFormatException message: " + e.toString());
 	}
 
 	value = __input._getValue(pos);
@@ -1443,7 +1443,7 @@ public final class Perl5Compiler implements PatternCompiler {
 	} catch(NumberFormatException e) {
 	  throw new MalformedPatternException(
 	 "Unexpected number format exception.  Please report this bug." +
-	   "NumberFormatException message: " + e.getMessage());
+	   "NumberFormatException message: " + e.toString());
 	}
 
 	if(max == 0 && __input._getValue(pos) != '0')

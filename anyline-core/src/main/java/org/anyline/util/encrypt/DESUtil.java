@@ -61,7 +61,7 @@ public class DESUtil {
 			instance = new DESUtil();
 			instances.put(DEFAULT_SECRET_KEY, instance); 
 		}catch(Exception e){ 
-			 log.warn("[des insance][result:fail][msg:{}]",e.getMessage());
+			 log.warn("[des insance][result:fail][msg:{}]",e.toString());
 		} 
 		return instance; 
 	} 

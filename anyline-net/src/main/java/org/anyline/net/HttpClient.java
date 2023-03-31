@@ -327,8 +327,8 @@ public class HttpClient {
 			}
 			result = true;
 		} catch (Exception e) {
-			// progress.error(url, "", 0, e.getMessage());
-			task.error(-1, e.getMessage());
+			// progress.error(url, "", 0, e.toString());
+			task.error(-1, e.toString());
 			log.warn("[http download][下载异常][url:{}]",url);
 			e.printStackTrace();
 		}finally{

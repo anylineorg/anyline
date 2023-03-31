@@ -63,7 +63,7 @@ public class LdapUtil {
 		try{
 			connect(account, password).close();
 		}catch(Exception e){
-			log.warn("[ldap login][result:false][msg:{}]", e.getMessage());
+			log.warn("[ldap login][result:false][msg:{}]", e.toString());
 			throw e;
 		}
 		return true;
@@ -94,7 +94,7 @@ public class LdapUtil {
 		try{
 			dc = new InitialLdapContext(env, null);//连接
 		}catch(Exception e){
-			log.warn("[ldap connect][result:false][msg:{}]", e.getMessage());
+			log.warn("[ldap connect][result:false][msg:{}]", e.toString());
 			throw e;
 		}
 		return dc;

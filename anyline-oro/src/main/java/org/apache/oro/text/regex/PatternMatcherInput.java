@@ -88,7 +88,7 @@ package org.apache.oro.text.regex;
  *   pattern = compiler.compile(somePatternString);
  * } catch(MalformedPatternException e) {
  *   System.out.println("Bad pattern.");
- *   System.out.println(e.getMessage());
+ *   System.out.println(e.toString());
  *   return;
  * }
  *

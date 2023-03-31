@@ -851,7 +851,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			con = DataSourceUtils.getConnection(ds);
 			checkSchema(con, table);
 		}catch (Exception e){
-			log.warn("check table exception");
+			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -1336,68 +1336,68 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			try {
 				column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getCatalogName]");
+				log.debug("[获取MetaData失败][驱动未实现:getCatalogName]");
 			}
 			try {
 				column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getSchemaName]");
+				log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
 			}
 			try {
 				column.setClassName(rsm.getColumnClassName(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getColumnClassName]");
+				log.debug("[获取MetaData失败][驱动未实现:getColumnClassName]");
 			}
 			try {
 				column.setCurrency(rsm.isCurrency(index));
 			} catch (Exception e) {
 				column.setCaseSensitive(rsm.isCaseSensitive(index));
-				log.warn("[获取MetaData失败][驱动未实现:isCurrency]");
+				log.debug("[获取MetaData失败][驱动未实现:isCurrency]");
 			}
 			try {
 				column.setOriginalName(rsm.getColumnName(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getColumnName]");
+				log.debug("[获取MetaData失败][驱动未实现:getColumnName]");
 			}
 			try {
 				column.setName(rsm.getColumnLabel(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getColumnLabel]");
+				log.debug("[获取MetaData失败][驱动未实现:getColumnLabel]");
 			}
 			try {
 				column.setPrecision(rsm.getPrecision(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getPrecision]");
+				log.debug("[获取MetaData失败][驱动未实现:getPrecision]");
 			}
 			try {
 				column.setScale(rsm.getScale(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getScale]");
+				log.debug("[获取MetaData失败][驱动未实现:getScale]");
 			}
 			try {
 				column.setDisplaySize(rsm.getColumnDisplaySize(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
+				log.debug("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
 			}
 			try {
 				column.setSigned(rsm.isSigned(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:isSigned]");
+				log.debug("[获取MetaData失败][驱动未实现:isSigned]");
 			}
 			try {
 				column.setTableName(rsm.getTableName(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getTableName]");
+				log.debug("[获取MetaData失败][驱动未实现:getTableName]");
 			}
 			try {
 				column.setType(rsm.getColumnType(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getColumnType]");
+				log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
 			}
 			try {
 				column.setTypeName(rsm.getColumnTypeName(index));
 			} catch (Exception e) {
-				log.warn("[获取MetaData失败][驱动未实现:getColumnTypeName]");
+				log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 			}
 		}
 		return column;
@@ -1410,72 +1410,72 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		try{
 			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getCatalogName]");
+			log.debug("[获取MetaData失败][驱动未实现:getCatalogName]");
 		}
 		try{
 			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getSchemaName]");
+			log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
 		}
 		try{
 			column.setClassName(rsm.getColumnClassName(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getColumnClassName]");
+			log.debug("[获取MetaData失败][驱动未实现:getColumnClassName]");
 		}
 		try{
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:isCaseSensitive]");
+			log.debug("[获取MetaData失败][驱动未实现:isCaseSensitive]");
 		}
 		try{
 			column.setCurrency(rsm.isCurrency(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:isCurrency]");
+			log.debug("[获取MetaData失败][驱动未实现:isCurrency]");
 		}
 		try{
 			column.setOriginalName(rsm.getColumnName(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getColumnName]");
+			log.debug("[获取MetaData失败][驱动未实现:getColumnName]");
 		}
 		try{
 			column.setName(rsm.getColumnLabel(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getColumnLabel]");
+			log.debug("[获取MetaData失败][驱动未实现:getColumnLabel]");
 		}
 		try{
 			column.setPrecision(rsm.getPrecision(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getPrecision]");
+			log.debug("[获取MetaData失败][驱动未实现:getPrecision]");
 		}
 		try{
 			column.setScale(rsm.getScale(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getScale]");
+			log.debug("[获取MetaData失败][驱动未实现:getScale]");
 		}
 		try{
 			column.setDisplaySize(rsm.getColumnDisplaySize(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
+			log.debug("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
 		}
 		try{
 			column.setSigned(rsm.isSigned(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:isSigned]");
+			log.debug("[获取MetaData失败][驱动未实现:isSigned]");
 		}
 		try{
 			column.setTableName(rsm.getTableName(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getTableName]");
+			log.debug("[获取MetaData失败][驱动未实现:getTableName]");
 		}
 		try {
 			column.setType(rsm.getColumnType(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getColumnType]");
+			log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
 		}
 		try {
 			column.setTypeName(rsm.getColumnTypeName(index));
 		}catch (Exception e){
-			log.warn("[获取MetaData失败][驱动未实现:getColumnTypeName]");
+			log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 		}
 		return column;
 	}

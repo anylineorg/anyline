@@ -84,7 +84,7 @@ package org.apache.oro.text.regex;
  *   pattern = compiler.compile("\\d+");
  * } catch(MalformedPatternException e) {
  *   System.out.println("Bad pattern.");
- *   System.out.println(e.getMessage());
+ *   System.out.println(e.toString());
  *   System.exit(1);
  * }
  * 

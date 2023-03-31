@@ -1607,7 +1607,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.getMessage());
+					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
 				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -1699,7 +1699,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
+					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
 
@@ -1707,7 +1707,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				tables = adapter.tables(true,tables, con.getMetaData(), catalog, schema, pattern, tps);
 			}catch (Exception e){
-				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
+				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
@@ -1807,7 +1807,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
+					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
 
@@ -1815,7 +1815,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				tables = adapter.mtables(false, tables, con.getMetaData(), catalog, schema, pattern, tps);
 			}catch (Exception e){
-				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
+				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
@@ -1911,7 +1911,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.getMessage());
+					log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.toString());
 				}
 			}
 
@@ -1973,7 +1973,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
 			}
 		}
 		qty1 = columns.size();
@@ -1992,7 +1992,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.getMessage());
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 			}
 		}
 		qty2 = columns.size() - qty1;
@@ -2069,7 +2069,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
 			}
 		}
 
@@ -2088,7 +2088,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.getMessage());
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
 			}
 		}
 
@@ -2800,7 +2800,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
-			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.getMessage());
+			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.toString());
 			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
 				boolean exe = false;
 				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
@@ -2944,7 +2944,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
-			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改tag执行异常", 33), e.getMessage());
+			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改tag执行异常", 33), e.toString());
 			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
 				boolean exe = false;
 				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {

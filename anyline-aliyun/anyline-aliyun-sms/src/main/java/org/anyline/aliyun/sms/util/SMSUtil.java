@@ -116,7 +116,7 @@ public class SMSUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.setResult(false);
-			result.setMsg(e.getMessage());
+			result.setMsg(e.toString());
 		}
 		if(null != listener){
 			listener.after(result, config.INSTANCE_KEY, sign, template, extend, out, mobile, params);

@@ -169,7 +169,7 @@ public class WebUtil {
 			try {
 				set = DataSet.parseJson(KEY_CASE.SRC, body);
 			}catch(Exception e){
-				log.error("[json parse error][{}]", e.getMessage());
+				log.error("[json parse error][{}]", e.toString());
 			}
 		}
 		return set;

@@ -260,7 +260,7 @@ public final class Perl5Util implements MatchResult {
     } catch(MalformedPatternException e) {
       // This should only happen during debugging.
       // e.printStackTrace();
-      throw new RuntimeException(e.getMessage());
+      throw new RuntimeException(e.toString());
     }
   }
 

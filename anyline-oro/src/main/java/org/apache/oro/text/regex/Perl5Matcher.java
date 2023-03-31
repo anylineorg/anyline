@@ -1799,7 +1799,7 @@ public final class Perl5Matcher implements PatternMatcher {
    *   pattern = compiler.compile(somePatternString);
    * } catch(MalformedPatternException e) {
    *   System.err.println("Bad pattern.");
-   *   System.err.println(e.getMessage());
+   *   System.err.println(e.toString());
    *   return;
    * }
    *

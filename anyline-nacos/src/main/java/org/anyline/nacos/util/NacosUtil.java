@@ -76,7 +76,7 @@ public class NacosUtil {
 		try {
 			config(null, ConfigTable.CONFIG_NAME, listener);
 		}catch (Exception e){
-			log.warn("[nacos config][result:false][group:{}][namespace:{}][class:{}][msg:{}]", config.GROUP, config.NAMESPACE, ConfigTable.class.getSimpleName(),e.getMessage());
+			log.warn("[nacos config][result:false][group:{}][namespace:{}][class:{}][msg:{}]", config.GROUP, config.NAMESPACE, ConfigTable.class.getSimpleName(),e.toString());
 		}
 
 		// AnylineConfig子类
@@ -90,7 +90,7 @@ public class NacosUtil {
 			try {
 				config(null, file.getName(), clazz);
 			} catch (NacosException e) {
-				log.warn("[nacos config][result:false][class:{}][msg:{}]",clazz.getSimpleName(),e.getMessage());
+				log.warn("[nacos config][result:false][class:{}][msg:{}]",clazz.getSimpleName(),e.toString());
 			}
 		}
 		// 自动扫描
@@ -126,7 +126,7 @@ public class NacosUtil {
 						String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
 						config(null, configName, configClass);
 					}catch (Exception e){
-						log.warn("[nacos config][result:false][class:{}][msg:{}]", c,e.getMessage());
+						log.warn("[nacos config][result:false][class:{}][msg:{}]", c,e.toString());
 					}
 				}
 			}

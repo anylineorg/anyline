@@ -352,7 +352,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[本地搜索失败][info:{}]",e.getMessage()); 
+			log.warn("[本地搜索失败][info:{}]",e.toString()); 
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
@@ -430,7 +430,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[周边搜索失败][error:{}]",e.getMessage()); 
+			log.warn("[周边搜索失败][error:{}]",e.toString()); 
 			e.printStackTrace(); 
 			set = new DataSet(); 
 			set.setException(e); 
@@ -520,7 +520,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[条件搜索失败][error:{}]",e.getMessage()); 
+			log.warn("[条件搜索失败][error:{}]",e.toString()); 
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
@@ -557,7 +557,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				log.warn("[周边搜索失败][params:{}]",BeanUtil.map2string(params)); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[周边搜索失败][error:{}]",e.getMessage()); 
+			log.warn("[周边搜索失败][error:{}]",e.toString()); 
 			e.printStackTrace(); 
 		} 
 		return row; 
@@ -594,7 +594,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[数据分布检索失败][error:{}]",e.getMessage()); 
+			log.warn("[数据分布检索失败][error:{}]",e.toString()); 
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
@@ -633,7 +633,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[数据分布检索失败][error:{}]",e.getMessage()); 
+			log.warn("[数据分布检索失败][error:{}]",e.toString()); 
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
@@ -673,7 +673,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[数据分布检索失败][error:{}]",e.getMessage()); 
+			log.warn("[数据分布检索失败][error:{}]",e.toString()); 
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
@@ -711,7 +711,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
-			log.warn("[附近检索失败][error:{}]",e.getMessage()); 
+			log.warn("[附近检索失败][error:{}]",e.toString()); 
 			set = new DataSet(); 
 			set.setException(e); 
 		} 
@@ -895,7 +895,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 				} 
 			} 
 		}catch(Exception e){ 
-			log.warn("[线路规划失败][error:{}]",e.getMessage()); 
+			log.warn("[线路规划失败][error:{}]",e.toString()); 
 		} 
 		return row; 
 	} 

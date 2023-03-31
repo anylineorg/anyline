@@ -140,7 +140,7 @@ public class SFTPUtil {
 			size = files.size(); 
 		} catch (Exception e) {
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-            	log.warn("[检测文件数量][result:fail][msg:{}]", e.getMessage()); 
+            	log.warn("[检测文件数量][result:fail][msg:{}]", e.toString()); 
             } 
 		} 
     	return size; 
@@ -296,7 +296,7 @@ public class SFTPUtil {
 				list.add(nm); 
 			} 
 		} catch (Exception e) { 
-			log.warn("[scan dir error][dir:{}][error:{}]",dir,e.getMessage()); 
+			log.warn("[scan dir error][dir:{}][error:{}]",dir,e.toString()); 
 		} 
     	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
     		log.warn("[scan dir][dir:{}][file size:{}]",dir,list.size()); 

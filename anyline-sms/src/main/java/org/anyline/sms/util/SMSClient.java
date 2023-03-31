@@ -72,7 +72,7 @@ public class SMSClient {
 			} 
 		}catch(Exception e){ 
 			result = new SMSResult(); 
-			result.setMsg(e.getMessage()); 
+			result.setMsg(e.toString()); 
 			e.printStackTrace(); 
 		} 
 		return result; 
