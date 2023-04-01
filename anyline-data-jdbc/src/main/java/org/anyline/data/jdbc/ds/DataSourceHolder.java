@@ -33,7 +33,8 @@ import javax.sql.DataSource;
 import java.util.*;
 
 public class DataSourceHolder { 
-	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class); 
+	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class);
+
 	// 切换前数据源 
     private static final ThreadLocal<String> THREAD_RECALL_SOURCE = new ThreadLocal<String>(); 
 	// 当前数据源 
@@ -45,8 +46,7 @@ public class DataSourceHolder {
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
     } 
-    public static String getDataSource() { 
-        return THREAD_CUR_SOURCE.get(); 
+    public static String getDataSource()  THREAD_CUR_SOURCE.get();
     }
 
 	public static JDBCAdapter.DB_TYPE dialect(){
@@ -207,6 +207,7 @@ public class DataSourceHolder {
 		if(!dataSources.contains(key)) {
 			dataSources.add(key);
 		}
+		JDBCHolder.reg(key, ds);
 		return ds;
 	}
 
