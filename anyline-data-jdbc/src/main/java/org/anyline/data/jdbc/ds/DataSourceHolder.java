@@ -46,7 +46,8 @@ public class DataSourceHolder {
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
     } 
-    public static String getDataSource()  THREAD_CUR_SOURCE.get();
+    public static String getDataSource() {
+        return THREAD_CUR_SOURCE.get();
     }
 
 	public static JDBCAdapter.DB_TYPE dialect(){
