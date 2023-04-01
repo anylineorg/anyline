@@ -24,6 +24,7 @@ import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.jdbc.ds.JDBCHolder;
 import org.anyline.data.jdbc.util.SQLAdapterUtil;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -65,15 +66,15 @@ import java.util.*;
 @Repository("anyline.dao")
 public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
-
+/*
 	@Autowired(required=false)
-	protected JdbcTemplate jdbc;
+	protected JdbcTemplate jdbc;*/
 
 	@Autowired(required=false)
 	protected DMListener listener;
 
 	public JdbcTemplate getJdbc(){
-		return jdbc;
+		return JDBCHolder.getJdbc();
 	}
 
 
@@ -2151,7 +2152,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSource ds = null;
 		Connection con = null;
 		try {
-			ds = jdbc.getDataSource();
+			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			indexs = adapter.indexs(true, indexs, con.getMetaData(), table, false, false);
 			table.setIndexs(indexs);
