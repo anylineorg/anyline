@@ -28,6 +28,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 	protected DataSource determineTargetDataSource() { 
 		DataSource dataSource = null; 
 		Object lookupKey = determineCurrentLookupKey();
+		log.debug("[determine target data source][key:{}]", lookupKey);
 		if(null == lookupKey || "default".equalsIgnoreCase(lookupKey.toString()) || "datasource".equalsIgnoreCase(lookupKey.toString()) || "defaultDatasource".equalsIgnoreCase(lookupKey.toString())){
 			dataSource = super.determineTargetDataSource();
 		}else {
@@ -53,6 +54,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 		reg(key,ds);
 	}
 	public static void setDefaultDatasource(DataSource ds){
+		System.out.println("-------------------------------DynamicDataSource");
 		defaultDatasource = ds;
 		reg("dataSource",ds);
 	}
