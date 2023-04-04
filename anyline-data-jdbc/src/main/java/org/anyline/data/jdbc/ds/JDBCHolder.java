@@ -1,10 +1,12 @@
 package org.anyline.data.jdbc.ds;
 
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,7 +21,8 @@ import java.util.Map;
 @Component
 public class JDBCHolder implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(JDBCHolder.class);
-    private static Map<String, JdbcTemplate> jdbcs = new Hashtable<>();
+    private static Map<String, JdbcTemplate> templates = new Hashtable<>();
+    private static Map<String, JDBCAdapter> adapters = new Hashtable<>();
     private static ApplicationContext context;
     private static boolean init = false;
 
@@ -60,33 +63,42 @@ public class JDBCHolder implements ApplicationContextAware {
         init = true;
     }
     public static void reg(String key, DataSource ds){
-        JdbcTemplate jdbc = new JdbcTemplate(ds);
-        jdbcs.put(key, jdbc);
+        JdbcTemplate template = new JdbcTemplate(ds);
+        templates.put(key, template);
+        RuntimeHolder.reg(key, template, null);
         String bean_name = "jdbc." + key;
-        if (null != context && !context.containsBean(bean_name)) {
-            ((ConfigurableApplicationContext) context).getBeanFactory().registerSingleton(bean_name, ds);
+        if (null != context) {
+            try {
+                ConfigurableListableBeanFactory factory = ((ConfigurableApplicationContext) context).getBeanFactory();
+                if(factory.containsBean(bean_name)) {
+                    factory.destroyBean(bean_name, template);
+                }
+                factory.registerSingleton(bean_name, template);
+            }catch (Exception e){
+                log.warn("[destroy bean][msg:{}]", e.toString());
+            }
         }
         log.info("[创建JDBC][key:{}]", bean_name);
     }
-    public static JdbcTemplate getJdbc(){
+    public static JdbcTemplate getTemplate(){
         if(DynamicDataSourceRegister.ACTIVE){
-            return getJdbc("default");
+            return getTemplate("default");
         }
-        return getJdbc(DataSourceHolder.getDataSource());
+        return getTemplate(DataSourceHolder.getDataSource());
     }
-    public static JdbcTemplate getJdbc(String key){
+    public static JdbcTemplate getTemplate(String key){
         if(!init){
             init();
         }
         if(null == key || "dataSources".equals(key)){
-            return jdbcs.get("default");
+            return templates.get("default");
         }
-        JdbcTemplate jdbc = jdbcs.get(key);
-        return jdbc;
+        JdbcTemplate template = templates.get(key);
+        return template;
     }
     @Autowired(required=false)
-    public void setJdbc(JdbcTemplate jdbc){
-        jdbcs.put("default", jdbc);
+    public void setTemplate(JdbcTemplate template){
+        templates.put("default", template);
         log.info("[创建JDBC][key:default]");
     }
 }

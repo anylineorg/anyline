@@ -3,6 +3,7 @@ package org.anyline.data.jdbc.ds;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
  
 public class DynamicDataSource extends AbstractRoutingDataSource { 
-	private Logger log = LoggerFactory.getLogger(DynamicDataSource.class); 
+	private static Logger log = LoggerFactory.getLogger(DynamicDataSource.class);
     // 保存动态创建的数据源
     private static final Map<String,DataSource> dataSources = new HashMap<String,DataSource>();
 	private static DataSource defaultDatasource;
@@ -70,9 +71,19 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 	private static void reg(String key, DataSource ds){
 		//注意 解析配置文件时 不要调用 这时上下文还没有初始化完成
 		ApplicationContext context = SpringContextUtil.getApplicationContext();
-		if(null != context && !context.containsBean(key)){
-			((ConfigurableApplicationContext)context).getBeanFactory().registerSingleton(key, ds);
+
+		if (null != context) {
+			ConfigurableListableBeanFactory factory = ((ConfigurableApplicationContext) context).getBeanFactory();
+			try {
+				if(factory.containsBean(key)) {
+					factory.destroyBean(key, ds);
+				}
+				factory.registerSingleton(key, ds);
+			}catch (Exception e){
+				log.warn("[destroy bean][msg:{}]", e.toString());
+			}
 		}
+		JDBCHolder.reg(key, ds);
 	}
 
 }

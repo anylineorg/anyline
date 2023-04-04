@@ -42,6 +42,7 @@ public class DataSourceHolder {
     // 是否还原默认数据源,执行一次操作后还原回  切换之前的数据源
     private static final ThreadLocal<Boolean> THREAD_AUTO_RECOVER = new ThreadLocal<Boolean>(); 
     private static List<String> dataSources = new ArrayList<>();
+	//数据源对应的数据库类型
 	private static Map<String, JDBCAdapter.DB_TYPE> types = new HashMap<>();
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
@@ -202,7 +203,7 @@ public class DataSourceHolder {
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
-			log.info("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
+			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
 		DynamicDataSource.addDataSource(key, ds);
 		if(!dataSources.contains(key)) {

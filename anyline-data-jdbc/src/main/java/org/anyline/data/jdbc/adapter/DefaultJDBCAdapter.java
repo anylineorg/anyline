@@ -66,9 +66,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected PrimaryGenerator primaryGenerator;
 
 	@Autowired(required = false)
-	protected JdbcTemplate jdbc;
-
-	@Autowired(required = false)
 	@Qualifier("anyline.service")
 	protected AnylineService service;
 
@@ -120,11 +117,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 	}
 
-	@Override
-	public void setJdbc(JdbcTemplate jdbc){
-		this.jdbc = jdbc;
-	}
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -154,11 +146,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 *
 	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
 	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
-	 * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
+	 * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
 	 ******************************************************************************************************************/
 
 	/**
 	 * 创建INSERT RunPrepare
+	 * @param template JdbcTemplate
 	 * @param dest 表
 	 * @param obj 实体
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
@@ -166,7 +159,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	@Override
-	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
+	public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
 		if(null == obj){
 			return null;
 		}
@@ -177,35 +170,37 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
 			if(list.size() >0){
-				return createInsertRunFromCollection(dest, list, checkPrimary,columns);
+				return createInsertRunFromCollection(template, dest, list, checkPrimary,columns);
 			}
 			return null;
 		}else {
-			return createInsertRunFromEntity(dest, obj, checkPrimary,columns);
+			return createInsertRunFromEntity(template, dest, obj, checkPrimary,columns);
 		}
 
 	}
 
 	/**
 	 * 根据DataSet创建批量INSERT RunPrepare
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(Run run, String dest, DataSet set,  List<String> keys){
+	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set,  List<String> keys){
 	}
 
 	/**
 	 * 根据Collection创建批量INSERT RunPrepare
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param list 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(Run run, String dest, Collection list,  List<String> keys){
+	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
 	}
 
 	/**
@@ -385,25 +380,27 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	/**
 	 * 根据entity创建 INSERT RunPrepare
+	 * @param template JdbcTemplate
 	 * @param dest 表
 	 * @param obj 数据
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 列
 	 * @return Run
 	 */
-	protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
+	protected Run createInsertRunFromEntity(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 
 	/**
 	 * 根据collection创建 INSERT RunPrepare
+	 * @param template JdbcTemplate
 	 * @param dest 表
 	 * @param list 对象集合
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要插入的列,如果不指定则全部插入
 	 * @return Run
 	 */
-	protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns){
+	protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 
@@ -834,30 +831,24 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 *
 	 ******************************************************************************************************************/
 
-
-	/**
-	 * 检测 schema与catalog
-	 * @param table table
-	 */
 	@Override
-	public void checkSchema(Table table){
+	public void checkSchema(DataSource dataSource, Table table){
 		if(null == table || null != table.getCheckSchemaTime()){
 			return;
 		}
-		DataSource ds = null;
 		Connection con = null;
 		try {
-			ds = jdbc.getDataSource();
-			con = DataSourceUtils.getConnection(ds);
+			con = DataSourceUtils.getConnection(dataSource);
 			checkSchema(con, table);
 		}catch (Exception e){
 			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
+			if(!DataSourceUtils.isConnectionTransactional(con, dataSource)){
+				DataSourceUtils.releaseConnection(con, dataSource);
 			}
 		}
 	}
+
 	@Override
 	public void checkSchema(Connection con, Table table){
 		try {
@@ -871,34 +862,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		table.setCheckSchemaTime(new Date());
 	}
-	@Override
-	public void checkSchema(Column column){
-		Table table = column.getTable();
-		if(null != table){
-			checkSchema(table);
-			column.setCatalog(table.getCatalog());
-			column.setSchema(table.getSchema());
-		}
-	}
-	@Override
-	public void checkSchema(Index index){
-		Table table = index.getTable();
-		if(null != table){
-			checkSchema(table);
-			index.setCatalog(table.getCatalog());
-			index.setSchema(table.getSchema());
-		}
-	}
-	@Override
-	public void checkSchema(Constraint constraint){
-		Table table = constraint.getTable();
-		if(null != table){
-			checkSchema(table);
-			constraint.setCatalog(table.getCatalog());
-			constraint.setSchema(table.getSchema());
-		}
-	}
-
 	/* *****************************************************************************************************************
 	 * 													database
 	 * -----------------------------------------------------------------------------------------------------------------

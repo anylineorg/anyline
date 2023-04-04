@@ -31,6 +31,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -97,7 +98,6 @@ public interface JDBCAdapter {
 	 */
 	public String getDelimiterFr();
 	public String getDelimiterTo();
-	public void setJdbc(JdbcTemplate jdbc);
 
 	/* *****************************************************************************************************************
 	 *
@@ -121,31 +121,34 @@ public interface JDBCAdapter {
 
 	/**
 	 * 创建insert RunPrepare
+	 * @param template JdbcTemplate
 	 * @param dest 表
 	 * @param obj 实体
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
-	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns);
+	public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
 	/**
 	 * 根据Collection创建批量插入SQL
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param list 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInserts(Run run, String dest, Collection list, List<String> keys);
+	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInserts(Run run, String dest, DataSet set, List<String> keys);
+	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys);
 
 	/**
 	 * 确认需要插入的列
@@ -183,6 +186,7 @@ public interface JDBCAdapter {
 
 	/**
 	 * 执行 insert
+	 * @param template JdbcTemplate
 	 * @param random random
 	 * @param data data
 	 * @param sql sql
@@ -191,7 +195,7 @@ public interface JDBCAdapter {
 	 * @return int
 	 * @throws Exception 异常
 	 */
-	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
+	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
 
 	/**
 	 * insert执行后 通过KeyHolder获取主键值赋值给data
@@ -374,15 +378,8 @@ public interface JDBCAdapter {
 	 *
 	 ******************************************************************************************************************/
 
-	/**
-	 * 检测 schema与catalog
-	 * @param table table
-	 */
-	public void checkSchema(Table table);
+	public void checkSchema(DataSource dataSource, Table table);
 	public void checkSchema(Connection con, Table table);
-	public void checkSchema(Column table);
-	public void checkSchema(Index index);
-	public void checkSchema(Constraint constraint);
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/

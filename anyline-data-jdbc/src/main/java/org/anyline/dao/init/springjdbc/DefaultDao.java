@@ -24,8 +24,8 @@ import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
-import org.anyline.data.jdbc.ds.JDBCHolder;
-import org.anyline.data.jdbc.util.SQLAdapterUtil;
+import org.anyline.data.jdbc.ds.JDBCRuntime;
+import org.anyline.data.jdbc.ds.RuntimeHolder;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.param.ConfigParser;
@@ -53,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -61,21 +60,16 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Date;
 import java.util.*;
 
 @Repository("anyline.dao")
 public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
-/*
-	@Autowired(required=false)
-	protected JdbcTemplate jdbc;*/
+
 
 	@Autowired(required=false)
 	protected DMListener listener;
-
-	public JdbcTemplate getJdbc(){
-		return JDBCHolder.getJdbc();
-	}
 
 
 	protected static boolean isBatchInsertRun = false;
@@ -93,7 +87,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
-			JDBCAdapter adapter = adapter();
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 			/*if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
@@ -118,7 +113,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.beforeQuery(run, -1);
 				}
 				Long fr = System.currentTimeMillis();
-				maps = maps(adapter, run.getFinalQuery(), run.getValues());
+				maps = maps(runtime, run.getFinalQuery(), run.getValues());
 				if (null != adapter) {
 					maps = adapter.process(maps);
 				}
@@ -150,7 +145,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
-			JDBCAdapter adapter = adapter();/*
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
+			/*
 			if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
@@ -203,7 +200,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(null != listener){
 						listener.beforeQuery(run, total);
 					}
-					set = select(adapter, prepare.getTable(), run.getFinalQuery(), run.getValues());
+					set = select(runtime, prepare.getTable(), run.getFinalQuery(), run.getValues());
 					if(null != listener){
 						listener.afterQuery(run, set, System.currentTimeMillis() - fr);
 					}
@@ -243,7 +240,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(EntityAdapterProxy.hasAdapter()){
 				prepare.setDataSource(EntityAdapterProxy.table(clazz));
 			}
-			JDBCAdapter adapter = adapter();/*
+
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
+			/*
 			if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
@@ -292,7 +292,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						listener.beforeQuery(run, total);
 					}
 					fr = System.currentTimeMillis();
-					list = select(adapter, clazz, run.getTable(), run.getFinalQuery(), run.getValues());
+					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues());
 					if (null != listener) {
 						listener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
@@ -336,7 +336,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
-			JDBCAdapter adapter = adapter();/*
+			
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();/*
 			if(null != queryInterceptor){
 				int exe = queryInterceptor.before(adapter, prepare, configs, conditions);
 				if(exe == -1){
@@ -371,7 +373,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		try {
-			JDBCAdapter adapter = adapter();
+			
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			String txt = run.getFinalExists();
 			List<Object> values = run.getValues();
@@ -389,9 +393,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Map<String, Object> map = null;
 				if (null != values && values.size() > 0) {
-					map = getJdbc().queryForMap(txt, values.toArray());
+					map = runtime.getTemplate().queryForMap(txt, values.toArray());
 				} else {
-					map = getJdbc().queryForMap(txt);
+					map = runtime.getTemplate().queryForMap(txt);
 				}
 				if (null == map) {
 					result = false;
@@ -441,8 +445,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
-		JDBCAdapter adapter = adapter();
-		DataSet set = select(adapter, (String)null, sql,values);
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		DataSet set = select(runtime, (String)null, sql,values);
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
@@ -471,7 +475,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			return result;
 		}
-		JDBCAdapter adapter = adapter();
+		
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
 		String sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
@@ -492,7 +498,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				listenerResult = listener.beforeUpdate(run, dest, data, columns);
 			}
 			if(listenerResult) {
-				result = getJdbc().update(sql, values.toArray());
+				result = runtime.getTemplate().update(sql, values.toArray());
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
 					listener.afterUpdate(run, result, dest, data, columns, millis);
@@ -682,7 +688,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		if(null != data && data instanceof DataSet){
 			DataSet set = (DataSet)data;
 			Map<String,Object> tags = set.getTags();
@@ -694,7 +702,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				dest = ptables.values().iterator().next().getName();
 			}
 		}
-		Run run = adapter.buildInsertRun(dest, data, checkPrimary, columns);
+		Run run = adapter.buildInsertRun(runtime.getTemplate(), dest, data, checkPrimary, columns);
 
 		if(null == run){
 			return 0;
@@ -715,7 +723,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(listenerResult) {
 
-				cnt = adapter.insert(random, data, sql, values, null);
+				cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
 					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
@@ -794,7 +802,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param values  values
 	 * @return List
 	 */
-	protected List<Map<String,Object>> maps(JDBCAdapter adapter, String sql, List<Object> values){
+	protected List<Map<String,Object>> maps(JDBCRuntime runtime, String sql, List<Object> values){
+		JDBCAdapter adapter = runtime.getAdapter();
 		List<Map<String,Object>> maps = null;
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
@@ -807,9 +816,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		try{
 			if(null != values && values.size()>0){
-				maps = getJdbc().queryForList(sql, values.toArray());
+				maps = runtime.getTemplate().queryForList(sql, values.toArray());
 			}else{
-				maps = getJdbc().queryForList(sql);
+				maps = runtime.getTemplate().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
@@ -845,7 +854,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return maps;
 	}/*
-	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
+	protected DataSet select(JDBCRuntime runtime, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -868,9 +877,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			List<Map<String,Object>> list = null;
 			if(null != values && values.size()>0){
-				list = getJdbc().queryForList(sql, values.toArray());
+				list = adapter.getJdbc().queryForList(sql, values.toArray());
 			}else{
-				list = getJdbc().queryForList(sql);
+				list = adapter.getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
@@ -913,9 +922,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return set;
 	}
 */
-	protected static DataRow row(JDBCAdapter adapter, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
+	protected static DataRow row(JDBCRuntime runtime, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
 		DataRow row = new DataRow();
 		try {
+			JDBCAdapter adapter = runtime.getAdapter();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int qty = rsmd.getColumnCount();
 			if (metadatas.isEmpty()) {
@@ -936,7 +946,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return row;
 	}
 
-	protected DataSet select(JDBCAdapter adapter, String table, String sql, List<Object> values){
+	protected DataSet select(JDBCRuntime runtime, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -961,25 +971,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			final boolean[] process = {false};
 			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
 			if(null != values && values.size()>0){
-				getJdbc().query(sql, values.toArray(), new RowCallbackHandler() {
+				runtime.getTemplate().query(sql, values.toArray(), new RowCallbackHandler() {
 					@Override
 					public void processRow(ResultSet rs) throws SQLException {
 						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
-						DataRow row = row(adapter, metadatas, rs);
+						DataRow row = row(runtime, metadatas, rs);
 						set.add(row);
 						process[0] = true;
 					}
 				});
 			}else {
-				getJdbc().query(sql, new RowCallbackHandler() {
+				runtime.getTemplate().query(sql, new RowCallbackHandler() {
 					@Override
 					public void processRow(ResultSet rs) throws SQLException {
 						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
-						DataRow row = row(adapter, metadatas, rs);
+						DataRow row = row(runtime, metadatas, rs);
 						set.add(row);
 						process[0] = true;
 					}
@@ -1020,10 +1030,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return set;
 	}
 
-	protected <T> EntitySet<T> select(JDBCAdapter adapter, Class<T> clazz, String table,  String sql, List<Object> values){
+	protected <T> EntitySet<T> select(JDBCRuntime runtime, Class<T> clazz, String table,  String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -1043,9 +1054,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			List<Map<String,Object>> list = null;
 			if(null != values && values.size()>0){
-				list = getJdbc().queryForList(sql, values.toArray());
+				list = runtime.getTemplate().queryForList(sql, values.toArray());
 			}else{
-				list = getJdbc().queryForList(sql);
+				list = runtime.getTemplate().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
@@ -1093,7 +1104,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
-		JDBCAdapter adapter = adapter();
+		
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildExecuteRun(prepare, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -1117,9 +1130,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(listenerResult) {
 				if (null != values && values.size() > 0) {
-					result = getJdbc().update(txt, values.toArray());
+					result = runtime.getTemplate().update(txt, values.toArray());
 				} else {
-					result = getJdbc().update(txt);
+					result = runtime.getTemplate().update(txt);
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				boolean slow = false;
@@ -1191,13 +1204,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn("{}[sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, paramLogFormat(inputs), paramLogFormat(outputs));
 		}
 		try{
-
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
 			boolean listenerResult = true;
 			if(null != listener){
 				listenerResult = listener.beforeExecute(procedure);
 			}
 			if(listenerResult) {
-				list = (List<Object>) getJdbc().execute(sql, new CallableStatementCallback<Object>() {
+				list = (List<Object>) runtime.getTemplate().execute(sql, new CallableStatementCallback<Object>() {
 					public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
 						final List<Object> result = new ArrayList<Object>();
 
@@ -1297,6 +1310,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		final String rdm = random;
 		DataSet set = null;
 		try{
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
 			/*if(null != queryInterceptor){
 				int exe = queryInterceptor.before(procedure);
 				if(exe == -1){
@@ -1306,7 +1320,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != listener){
 				listener.beforeQuery(procedure);
 			}
-			set = (DataSet)getJdbc().execute(new CallableStatementCreator(){
+			set = (DataSet) runtime.getTemplate().execute(new CallableStatementCreator(){
 				public CallableStatement createCallableStatement(Connection conn) throws SQLException {
 					String sql = "{call " +procedure.getName()+"(";
 					final int sizeIn = inputs.size();
@@ -1438,9 +1452,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public int deletes(String table, String key, Collection<Object> values){
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, values);
-		int result = exeDelete(run);
+		int result = exeDelete(runtime, run);
 		return result;
 	}
 	public int deletes(String table, String key, String ... values){
@@ -1450,9 +1466,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				list.add(value);
 			}
 		}
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, list);
-		int result = exeDelete(run);
+		int result = exeDelete(runtime, run);
 		return result;
 	}
 	@Override
@@ -1468,9 +1486,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.warn("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 				}
 			}else{
-				JDBCAdapter adapter = adapter();
+				
+				JDBCRuntime runtime = RuntimeHolder.getRuntime();
+				JDBCAdapter adapter = runtime.getAdapter();
 				Run run = adapter.buildDeleteRun(dest, obj, columns);
-				size = exeDelete(run);
+				size = exeDelete(runtime, run);
 
 			}
 		}
@@ -1479,13 +1499,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, configs, conditions);
-		int result = exeDelete(run);
+		int result = exeDelete(runtime, run);
 		return result;
 	}
 
-	protected int exeDelete(Run run){
+	protected int exeDelete(JDBCRuntime runtime, Run run){
 		int result = 0;
 		final String sql = run.getFinalDelete();
 		final List<Object> values = run.getValues();
@@ -1502,9 +1524,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(listenerResult) {
 				if(null == values) {
-					result = getJdbc().update(sql);
+					result = runtime.getTemplate().update(sql);
 				}else{
-					result = getJdbc().update(sql, values.toArray());
+					result = runtime.getTemplate().update(sql, values.toArray());
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				boolean slow = false;
@@ -1549,7 +1571,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public int truncate(String table){
-		JDBCAdapter adapter = adapter();
+		
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 		String sql = adapter.buildTruncateSQL(table);
 		RunPrepare prepare = new DefaultTextPrepare(sql);;
 		return execute(prepare);
@@ -1585,11 +1609,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		DataSource ds = null;
 		Connection con = null;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		String random = random();
 		try{
 			long fr = System.currentTimeMillis();
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			Map<String,String> table_map = table_maps.get(DataSourceHolder.getDataSource()+"");
 			if(null == table_map){
@@ -1603,7 +1629,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
+							DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
 							databases = adapter.databases(idx++, true, databases, set);
 						}
 					}
@@ -1650,11 +1676,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		String random = random();
 		try{
 			long fr = System.currentTimeMillis();
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 
 			if(null == catalog || null == schema){
@@ -1695,7 +1723,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
+							DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
 							tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1758,11 +1786,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String, MasterTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
-		JDBCAdapter adapter = adapter();
+		
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 		String random = random();
 		try{
 			long fr = System.currentTimeMillis();
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog || null == schema){
 				Table tmp = new Table();
@@ -1803,7 +1833,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
+							DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
 							tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -1893,11 +1923,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
-		JDBCAdapter adapter = adapter();
+		
+			JDBCRuntime runtime = RuntimeHolder.getRuntime();
+			JDBCAdapter adapter = runtime.getAdapter();
 		String random = random();
 		try{
 			long fr = System.currentTimeMillis();
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
 			try{
@@ -1907,7 +1939,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int total = sqls.size();
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
+							DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
 							tables = adapter.ptables(total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 						}
 					}
@@ -1953,12 +1985,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			metadata = con.getMetaData();;
 		}catch (Exception e){}
@@ -1969,7 +2003,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != sqls){
 				for(String sql:sqls) {
 					if (BasicUtil.isNotEmpty(sql)) {
-						SqlRowSet set = getJdbc().queryForRowSet(sql);
+						SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
 						columns = adapter.columns(true, columns, table, set);
 					}
 				}
@@ -1987,7 +2021,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(adapter, (String)null, sql, null);
+						DataSet set = select(runtime, (String)null, sql, null);
 						columns = adapter.columns(idx, true, table, columns, set);
 					}
 					idx ++;
@@ -2049,12 +2083,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		checkSchema(runtime, table);
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			metadata = con.getMetaData();
 		}catch (Exception e){}
@@ -2065,7 +2101,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != sqls){
 				for(String sql:sqls) {
 					if (BasicUtil.isNotEmpty(sql)) {
-						SqlRowSet set = getJdbc().queryForRowSet(sql);
+						SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
 						tags = adapter.tags(true, table, tags, set);
 					}
 				}
@@ -2083,7 +2119,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(adapter, (String)null, sql, null).toUpperKey();
+						DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
 						tags = adapter.tags(idx, true, table, tags, set);
 					}
 					idx ++;
@@ -2146,13 +2182,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public LinkedHashMap<String, Index> indexs(Table table){
 		LinkedHashMap<String,Index> indexs = null;
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		String tab = table.getName();
 		DataSource ds = null;
 		Connection con = null;
 		try {
-			ds = getJdbc().getDataSource();
+			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			indexs = adapter.indexs(true, indexs, con.getMetaData(), table, false, false);
 			table.setIndexs(indexs);
@@ -2236,8 +2274,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean result = false;
 		long fr = System.currentTimeMillis();
 
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		List<String> sqls = adapter.buildCreateRunSQL(table);
 		DDListener listener = table.getListener();
 		boolean exe = true;
@@ -2251,7 +2291,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					random = random();
 					log.warn("{}[sql:\n{}\n]", random, sql);
 				}
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[create table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 				}
@@ -2274,10 +2314,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String name = table.getName();
 		String uname = update.getName();
 
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(table);
-		adapter.checkSchema(update);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), update);
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
 			String sql = adapter.buildRenameRunSQL(table);
@@ -2293,7 +2335,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				exe = listener.beforeRename(table);
 			}
 			if(exe) {
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				result = true;
 			}
 
@@ -2342,8 +2384,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Table table) throws Exception{
 		boolean result = false;
 		long fr = System.currentTimeMillis();
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		String sql = adapter.buildDropRunSQL(table);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2356,7 +2400,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(table);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -2380,9 +2424,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(MasterTable table) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(table);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		List<String> sqls = adapter.buildCreateRunSQL(table);
 		String random = null;
 
@@ -2397,7 +2443,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					random = random();
 					log.warn("{}[sql:\n{}\n]", random, sql);
 				}
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 				}
@@ -2412,8 +2458,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(MasterTable table) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		Table update = table.getUpdate();
 		LinkedHashMap<String, Column> columns = table.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
@@ -2437,7 +2485,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				exe = listener.beforeRename(table);
 			}
 			if(exe) {
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				result = true;
 			}
 
@@ -2512,9 +2560,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(MasterTable table) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(table);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		String sql = adapter.buildDropRunSQL(table);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2527,7 +2577,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(table);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -2551,9 +2601,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(PartitionTable table) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(table);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 
 		List<String> sqls = adapter.buildCreateRunSQL(table);
 
@@ -2569,7 +2621,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					random = random();
 					log.warn("{}[sql:\n{}\n]", random, sql);
 				}
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 				}
@@ -2585,8 +2637,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(PartitionTable table) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
-		adapter.checkSchema(table);
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		Table update = table.getUpdate();
 		LinkedHashMap<String, Column> columns = table.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
@@ -2608,7 +2662,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				exe = listener.beforeRename(table);
 			}
 			if(exe) {
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				result = true;
 			}
 
@@ -2656,9 +2710,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(PartitionTable table) throws Exception{
 
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(table);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		String sql = adapter.buildDropRunSQL(table);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2671,7 +2727,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(table);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -2697,9 +2753,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Column column) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(column);
+		checkSchema(runtime, column);
 		String random = null;
 		String sql = adapter.buildAddRunSQL(column);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2713,7 +2771,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeAdd(column);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -2743,9 +2801,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Column column) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(column);
+		checkSchema(runtime, column);
 		String sql = adapter.buildDropRunSQL(column);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2758,7 +2818,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(column);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -2779,10 +2839,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
 		boolean result = true;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(column);
+		checkSchema(runtime, column);
 		List<String> sqls = adapter.buildAlterRunSQL(column);
 
 		random = random();
@@ -2797,7 +2859,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					exe = listener.beforeAlter(column);
 				}
 				if (exe) {
-					getJdbc().update(sql);
+					runtime.getTemplate().update(sql);
 					result = true;
 				}
 			}
@@ -2841,10 +2903,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Tag tag) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(tag);
+		checkSchema(runtime, tag);
 		String sql = adapter.buildAddRunSQL(tag);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
@@ -2857,7 +2921,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeAdd(tag);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -2887,9 +2951,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Tag tag) throws Exception{
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(tag);
+		checkSchema(runtime, tag);
 		String sql = adapter.buildDropRunSQL(tag);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -2902,7 +2968,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(tag);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -2923,10 +2989,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	private boolean alter(Table table, Tag tag, boolean trigger) throws Exception{
 		boolean result = true;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(tag);
+		checkSchema(runtime, tag);
 		List<String> sqls = adapter.buildAlterRunSQL(tag);
 
 		random = random();
@@ -2941,7 +3009,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					exe = listener.beforeAlter(tag);
 				}
 				if (exe) {
-					getJdbc().update(sql);
+					runtime.getTemplate().update(sql);
 					result = true;
 				}
 			}
@@ -2981,10 +3049,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Index index) throws Exception {
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(index);
+		checkSchema(runtime, index);
 		String sql = adapter.buildAddRunSQL(index);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
@@ -2997,7 +3067,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeAdd(index);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -3023,10 +3093,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, Index index) throws Exception{
 		boolean result = true;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(index);
+		checkSchema(runtime, index);
 		List<String> sqls = adapter.buildAlterRunSQL(index);
 
 		random = random();
@@ -3040,7 +3112,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				exe = listener.beforeAlter(index);
 			}
 			if (exe) {
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				result = true;
 			}
 		}
@@ -3054,9 +3126,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Index index) throws Exception {
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(index);
+		checkSchema(runtime, index);
 		String sql = adapter.buildDropRunSQL(index);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -3069,7 +3143,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(index);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -3091,10 +3165,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Constraint constraint) throws Exception {
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(constraint);
+		checkSchema(runtime, constraint);
 		String sql = adapter.buildAddRunSQL(constraint);
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
@@ -3107,7 +3183,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeAdd(constraint);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 
@@ -3133,10 +3209,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, Constraint constraint) throws Exception{
 		boolean result = true;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
-		adapter.checkSchema(constraint);
+		checkSchema(runtime, constraint);
 		List<String> sqls = adapter.buildAlterRunSQL(constraint);
 
 		random = random();
@@ -3150,7 +3228,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				exe = listener.beforeAlter(constraint);
 			}
 			if (exe) {
-				getJdbc().update(sql);
+				runtime.getTemplate().update(sql);
 				result = true;
 			}
 		}
@@ -3164,9 +3242,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Constraint constraint) throws Exception {
 		boolean result = false;
-		JDBCAdapter adapter = adapter();
+		
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		adapter.checkSchema(constraint);
+		checkSchema(runtime, constraint);
 		String sql = adapter.buildDropRunSQL(constraint);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -3179,7 +3259,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			exe = listener.beforeDrop(constraint);
 		}
 		if(exe) {
-			getJdbc().update(sql);
+			runtime.getTemplate().update(sql);
 			result = true;
 		}
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -3190,9 +3270,38 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	private JDBCAdapter adapter(){
-		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
-		return adapter;
+
+	public void checkSchema(JDBCRuntime runtime, Table table){
+		if(null != table){
+			JDBCAdapter adapter = runtime.getAdapter();
+			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+			table.setCatalog(table.getCatalog());
+			table.setSchema(table.getSchema());
+		}
+	}
+	public void checkSchema(JDBCRuntime runtime, Column column){
+		Table table = column.getTable();
+		if(null != table){
+			checkSchema(runtime, table);
+			column.setCatalog(table.getCatalog());
+			column.setSchema(table.getSchema());
+		}
+	}
+	public void checkSchema(JDBCRuntime runtime, Index index){
+		Table table = index.getTable();
+		if(null != table){
+			checkSchema(runtime, table);
+			index.setCatalog(table.getCatalog());
+			index.setSchema(table.getSchema());
+		}
+	}
+	public void checkSchema(JDBCRuntime runtime, Constraint constraint){
+		Table table = constraint.getTable();
+		if(null != table){
+			checkSchema(runtime, table);
+			constraint.setCatalog(table.getCatalog());
+			constraint.setSchema(table.getSchema());
+		}
 	}
 	/* *****************************************************************************************************************
 	 *

@@ -21,6 +21,7 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -71,12 +72,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
      *
      * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
-     * protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns)
-     *  public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception
+     * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
+     *  public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception
      ******************************************************************************************************************/
 
     /**
      * 创建INSERT RunPrepare
+     * @param template JdbcTemplate
      * @param dest 表
      * @param obj 实体
      * @param checkPrimary 是否检测主键
@@ -84,20 +86,21 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run
      */
     @Override
-    public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
-        return super.buildInsertRun(dest, obj, checkPrimary, columns);
+    public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+        return super.buildInsertRun(template, dest, obj, checkPrimary, columns);
     }
 
     /**
      * 根据DataSet创建批量INSERT RunPrepare
      * CREATE (:Dept{name:1}),(:Dept{name:2}),(:Dept{name:3})
+     * @param template JdbcTemplate
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(Run run, String dest, DataSet set,  List<String> keys){
+    public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set,  List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -129,13 +132,14 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /**
      * 根据Collection创建批量INSERT
      * create(:Dept{name:1}),(:Dept{name:2}),(:Dept{name:3})
+     * @param template JdbcTemplate
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(Run run, String dest, Collection list,  List<String> keys){
+    public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -143,7 +147,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(run, dest, set, keys);
+            createInserts(template, run, dest, set, keys);
             return;
         }
         builder.append("CREATE ");
@@ -167,14 +171,15 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param dest
-     * @param obj
-     * @param checkPrimary
-     * @param columns
+     * @param template JdbcTemplate
+     * @param dest dest
+     * @param obj obj
+     * @param checkPrimary 是否检测主键
+     * @param columns 列
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromEntity(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this, dest);
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
@@ -190,6 +195,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 根据collection创建 INSERT RunPrepare
+     * @param template JdbcTemplate
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否检测主键
@@ -197,12 +203,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromCollection(String dest, Collection list, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
         }
-        createInserts(run, dest, list, columns);
+        createInserts(template, run, dest, list, columns);
 
         return run;
     }
@@ -291,6 +297,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 执行 insert
+     * @param template JdbcTemplate
      * @param random random
      * @param data data
      * @param sql sql
@@ -298,12 +305,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return int
      */
     @Override
-    public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+    public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         DataSource ds = null;
         Connection con = null;
         try{
-            ds = jdbc.getDataSource();
+            ds = template.getDataSource();
             con = DataSourceUtils.getConnection(ds);
             PreparedStatement ps = con.prepareStatement(sql);
             int idx = 0;

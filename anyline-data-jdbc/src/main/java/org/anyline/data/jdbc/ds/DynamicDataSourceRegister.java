@@ -37,6 +37,7 @@ public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar,
         // 读取主数据源
         DataSource ds = DataSourceUtil.buildDataSource("spring.datasource",env);
         DynamicDataSource.setDefaultDatasource(ds);
+        JDBCHolder.reg("default", ds);
         log.warn("[加载默认数据源]");
     }
     private void initSpringDataSources(Environment env) {

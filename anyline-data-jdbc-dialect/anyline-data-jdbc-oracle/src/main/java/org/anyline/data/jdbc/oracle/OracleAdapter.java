@@ -15,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -98,7 +99,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return concatOr(args);
 	}
 
-	protected void creratePrimaryValue(Collection list, String seq){
+	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
 		int size = list.size();
@@ -109,7 +110,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			}
 		}
 		builder.append(") M");
-		List<Map<String,Object>> ids = jdbc.queryForList(builder.toString());
+		List<Map<String,Object>> ids = template.queryForList(builder.toString());
 		int i=0;
 		for(Object obj:list){
 			Object value = ids.get(i++).get("ID");
@@ -127,12 +128,13 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * 		UNION ALL SELECT    'A2' FROM DUAL
 	 * 		UNION ALL SELECT    'A3' FROM DUAL
 	 * ) M
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest dest
 	 * @param keys keys
 	 */
 	@Override
-	public void createInserts(Run run, String dest, DataSet set, List<String> keys){
+	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
 		if(null == set || set.size() ==0){
 			return;
 		}
@@ -148,7 +150,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 						str = str.substring(2, str.length() - 1);
 					}
 					if(OracleAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						creratePrimaryValue(set, str);
+						createPrimaryValue(template, set, str);
 					}else {
 						seqs.put(key, str);
 					}
@@ -192,14 +194,14 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				builder.append("\n\tUNION ALL");
 			}
 			builder.append("\n\tSELECT ");
-			insertValue(run, row, true, true,false, keys);
+			insertValue(template, run, row, true, true,false, keys);
 			builder.append(" FROM DUAL ");
 			col ++;
 		}
 		builder.append(") M ");
 	}
 	@Override
-	public void createInserts(Run run, String dest, Collection list, List<String> keys){
+	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -210,7 +212,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInserts(run, dest, set, keys);
+			createInserts(template, run, dest, set, keys);
 			return;
 		}
 
@@ -225,7 +227,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 						str = str.substring(2, str.length() - 1);
 					}
 					if(OracleAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						creratePrimaryValue(list, str);
+						createPrimaryValue(template, list, str);
 					}else {
 						seqs.put(key, str);
 					}
@@ -286,7 +288,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				builder.append("\n\tUNION ALL");
 			}
 			builder.append("\n\tSELECT ");
-			insertValue(run, obj, true, true,false, keys);
+			insertValue(template, run, obj, true, true,false, keys);
 			builder.append(" FROM DUAL ");
 			col ++;
 		}
@@ -295,6 +297,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 	/**
 	 * 执行 insert
+	 * @param template JdbcTemplate
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
 	 * @param sql sql
@@ -303,23 +306,23 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
 		int cnt = 0;
 		if(data instanceof Collection) {
 			if (null == values || values.isEmpty()) {
-				cnt = jdbc.update(sql);
+				cnt = template.update(sql);
 			} else {
 				int size = values.size();
 				Object[] params = new Object[size];
 				for (int i = 0; i < size; i++) {
 					params[i] = values.get(i);
 				}
-				cnt = jdbc.update(sql, params);
+				cnt = template.update(sql, params);
 			}
 		}else{
 			//单行的可以返回序列号
 			pks = new String[]{getPrimayKey(data)};
-			cnt = super.insert(random, data, sql, values, pks);
+			cnt = super.insert(template, random, data, sql, values, pks);
 		}
 		return cnt;
 	}

@@ -9,6 +9,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -86,6 +87,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 * 执行 insert
+	 * @param template JdbcTemplate
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
 	 * @param sql sql
@@ -95,12 +97,12 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception 异常
 	 */
 	@Override
-	public int insert(String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
 		int cnt = 0;
 		if(null == values || values.size() ==0) {
-			cnt = jdbc.update(sql);
+			cnt = template.update(sql);
 		}else{
-			cnt = jdbc.update(new PreparedStatementCreator() {
+			cnt = template.update(new PreparedStatementCreator() {
 				@Override
 				public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
 					PreparedStatement ps = null;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,14 +32,13 @@ public class SQLAdapterUtil {
 	}
 
 	private static JDBCAdapter defaultAdapter = null;	// 如果当前项目只有一个adapter则不需要多次识别
-	public static JDBCAdapter getAdapter(JdbcTemplate jdbc){
+
+	public static JDBCAdapter getAdapter(JdbcTemplate template){
 		if(null != defaultAdapter){
-			defaultAdapter.setJdbc(jdbc);
 			return defaultAdapter;
 		}
 		if(adapters.size() ==1){
 			defaultAdapter = adapters.values().iterator().next();
-			defaultAdapter.setJdbc(jdbc);
 			return defaultAdapter;
 		}
 		JDBCAdapter adapter = null;
@@ -47,7 +47,6 @@ public class SQLAdapterUtil {
 			// 根据 别名
 			adapter = getAdapter(type.getName());
 			if(null != adapter){
-				adapter.setJdbc(jdbc);
 				return adapter;
 			}
 		}
@@ -56,13 +55,16 @@ public class SQLAdapterUtil {
 		Connection con = null;
 		try {
 			String name = null;
-			if(null != jdbc){
-				ds = jdbc.getDataSource();
+			if(null != template){
+				ds = template.getDataSource();
 				con = DataSourceUtils.getConnection(ds);
-				name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
-				name += " " + con.getMetaData().getURL().toLowerCase();
-				// 根据url中关键字
+				DatabaseMetaData meta = con.getMetaData();
+				name = meta.getDatabaseProductName().toLowerCase().replace(" ", "");
 				adapter = getAdapter(name);
+				if(null == adapter) {
+					// 根据url中关键字
+					adapter = getAdapter(meta.getURL().toLowerCase());
+				}
 			}
 			if(null == adapter){
 				log.warn("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
@@ -77,8 +79,6 @@ public class SQLAdapterUtil {
 		}
 		if(null == adapter){
 			log.error("[检测数据库适配器][检测其他可用的适配器失败][可用适配器数量:{}][{}]", adapters.size(), LogUtil.format("可能没有依赖anyline-data-jdbc-*(如mysql,neo4j)或没有扫描org.anyline包", 31));
-		}else {
-			adapter.setJdbc(jdbc);
 		}
 		return adapter;
 	}

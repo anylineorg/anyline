@@ -139,20 +139,14 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 *
 	 ******************************************************************************************************************/
 
-	/**
-	 * 检测 schema与catalog
-	 * @param table table
-	 */
 	@Override
-	public void checkSchema(Table table){
+	public void checkSchema(DataSource dataSource, Table table){
 		if(null == table || null != table.getCheckSchemaTime()){
 			return;
 		}
-		DataSource ds = null;
 		Connection con = null;
 		try {
-			ds = jdbc.getDataSource();
-			con = DataSourceUtils.getConnection(ds);
+			con = DataSourceUtils.getConnection(dataSource);
 			//注意这里与数据库不一致
 			if (null == table.getSchema()) {
 				table.setSchema(con.getCatalog());
@@ -161,8 +155,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}catch (Exception e){
 			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
+			if(!DataSourceUtils.isConnectionTransactional(con, dataSource)){
+				DataSourceUtils.releaseConnection(con, dataSource);
 			}
 		}
 	}

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
@@ -149,16 +150,17 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	/**
 	 * 根据DataSet创建批量INSERT RunPrepare
-	 * 2000版本单独处理  insert into tab(nm) select 1 untion all select 2
+	 * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(Run run, String dest, DataSet set,  List<String> keys){
+	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
 		if(!"2000".equals(getDbVersion())){
-			super.createInserts(run, dest, set, keys);
+			super.createInserts(template, run, dest, set, keys);
 			return;
 		}
 		StringBuilder builder = run.getBuilder();
@@ -195,7 +197,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
 			builder.append("\n SELECT ");
-			insertValue(run, row, true, false,false, keys);
+			insertValue(template, run, row, true, false,false, keys);
 			if(i<dataSize-1){
 				//多行数据之间的分隔符
 				builder.append("\n UNION ALL ");
@@ -205,16 +207,17 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	/**
 	 * 根据Collection创建批量INSERT RunPrepare
-	 * 2000版本单独处理  insert into tab(nm) select 1 untion all select 2
+	 * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
+	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param list 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(Run run, String dest, Collection list,  List<String> keys){
+	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
 		if(!"2000".equals(getDbVersion())){
-			super.createInserts(run, dest, list, keys);
+			super.createInserts(template, run, dest, list, keys);
 			return;
 		}
 		StringBuilder builder = run.getBuilder();
@@ -224,7 +227,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInserts(run, dest, set, keys);
+			createInserts(template, run, dest, set, keys);
 			return;
 		}
 		builder.append("INSERT INTO ").append(parseTable(dest));
@@ -248,14 +251,14 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
 					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				}
-				insertValue(run, row, true, false,false, keys);
+				insertValue(template, run, row, true, false,false, keys);
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
 					EntityAdapterProxy.createPrimaryValue(obj);
 				}else{
 					createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 				}
-				insertValue(run, obj, true, false, false, keys);
+				insertValue(template, run, obj, true, false, false, keys);
 			}
 			if(idx<dataSize-1){
 				//多行数据之间的分隔符

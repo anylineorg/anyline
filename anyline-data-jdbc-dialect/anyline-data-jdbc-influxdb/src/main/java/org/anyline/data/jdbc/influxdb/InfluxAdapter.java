@@ -1,16 +1,17 @@
  
 package org.anyline.data.jdbc.influxdb;
 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 
 	@Override
-	public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
+	public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
