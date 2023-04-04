@@ -80,7 +80,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 				}
 				factory.registerSingleton(key, ds);
 			}catch (Exception e){
-				log.warn("[destroy bean][msg:{}]", e.toString());
+				log.warn("[override bean fail][msg:{}]", e.toString());
 			}
 		}
 		JDBCHolder.reg(key, ds);

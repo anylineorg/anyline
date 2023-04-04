@@ -75,7 +75,7 @@ public class JDBCHolder implements ApplicationContextAware {
                 }
                 factory.registerSingleton(bean_name, template);
             }catch (Exception e){
-                log.warn("[destroy bean][msg:{}]", e.toString());
+                log.warn("[override bean fail][msg:{}]", e.toString());
             }
         }
         log.info("[创建JDBC][key:{}]", bean_name);
