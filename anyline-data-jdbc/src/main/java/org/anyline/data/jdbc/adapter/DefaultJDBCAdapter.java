@@ -2099,6 +2099,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if(null != list){
 					sqls.addAll(list);
 				}
+			}else{
+				//数据类型没变但长度变了
+				if(column.getPrecision() != update.getPrecision() || column.getScale() != update.getScale()){
+					List<String> list = buildChangeTypeRunSQL(column);
+					if(null != list){
+						sqls.addAll(list);
+					}
+				}
 			}
 			// 修改默认值
 			Object def = column.getDefaultValue();
@@ -2490,6 +2498,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				List<String> list = buildChangeTypeRunSQL(tag);
 				if(null != list){
 					sqls.addAll(list);
+				}
+			}else{
+				//数据类型没变但长度变了
+				if(tag.getPrecision() != update.getPrecision() || tag.getScale() != update.getScale()){
+					List<String> list = buildChangeTypeRunSQL(tag);
+					if(null != list){
+						sqls.addAll(list);
+					}
 				}
 			}
 			// 修改默认值
