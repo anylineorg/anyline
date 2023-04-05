@@ -205,11 +205,10 @@ public class DataSourceHolder {
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
-		DynamicDataSource.addDataSource(key, ds);
 		if(!dataSources.contains(key)) {
 			dataSources.add(key);
 		}
-		JDBCHolder.reg(key, ds);
+		RuntimeHolder.reg(key, ds);
 		return ds;
 	}
 
