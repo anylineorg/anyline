@@ -1,13 +1,16 @@
 package org.anyline.data.jdbc.ds;
 
+import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.util.DataSourceUtil;
-import org.anyline.data.jdbc.util.SQLAdapterUtil;
+import org.anyline.data.listener.DMListener;
+import org.anyline.service.init.DefaultService;
+import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,21 +29,22 @@ public class RuntimeHolder  implements ApplicationContextAware {
     private static Map<String, JDBCRuntime> runtimes = new Hashtable();
     private static ApplicationContext context;
     private static DefaultListableBeanFactory factory;
-    //默认数据源
-    @Autowired(required = false)
-    @Qualifier("jdbcTemplate")
-    public void setTemplate(JdbcTemplate template){
-        reg("default", template, null);
-    }
     @Override
-    public void setApplicationContext(ApplicationContext ac) throws BeansException {
-        RuntimeHolder.context = ac;
-        factory = (DefaultListableBeanFactory)ac.getAutowireCapableBeanFactory();
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
+        factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
+        SpringContextUtil.applicationContext = context;
         load();
     }
+
     //加载配置文件
     private void load(){
         Environment env = context.getEnvironment();
+        //默认数据源
+        JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
+        if(null != template){
+            reg("default", template, null);
+        }
         // 读取配置文件获取更多数据源
         String prefixs = env.getProperty("spring.datasource.list");
         if(null != prefixs){
@@ -52,9 +56,17 @@ public class RuntimeHolder  implements ApplicationContextAware {
             }
         }
     }
+
     public static void reg(String key, DataSource ds){
         DataSourceHolder.reg(key);
-        JdbcTemplate template = new JdbcTemplate(ds);
+        String template_key = "anyline.jdbc.template." + key;
+
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
+        builder.addPropertyValue("dataSource", ds);
+        BeanDefinition definition = builder.getBeanDefinition();
+        factory.registerBeanDefinition(template_key, definition);
+
+        JdbcTemplate template = factory.getBean(template_key, JdbcTemplate.class);
         reg(key, template, null);
     }
 
@@ -62,6 +74,22 @@ public class RuntimeHolder  implements ApplicationContextAware {
         log.warn("[create jdbc runtime][key:{}]", datasource);
         JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
         runtimes.put(datasource, runtime);
+        String dao_key = "anyline.dao." + datasource;
+        String service_key = "anyline.service." + datasource;
+        log.warn("[instance service][data source:{}][instance id:{}]", datasource, service_key);
+
+        BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultDao.class);
+        daoBuilder.addPropertyValue("runtime", runtime);
+        //daoBuilder.addAutowiredProperty("listener");
+        daoBuilder.addPropertyValue("listener", SpringContextUtil.getBean(DMListener.class));
+        BeanDefinition daoDefinition = daoBuilder.getBeanDefinition();
+        factory.registerBeanDefinition(dao_key, daoDefinition);
+
+        BeanDefinitionBuilder serviceBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultService.class);
+        serviceBuilder.addPropertyReference("dao", dao_key);
+        serviceBuilder.addPropertyValue("cacheProvider", SpringContextUtil.getBean("anyline.cache.provider"));
+        BeanDefinition serviceDefinition = serviceBuilder.getBeanDefinition();
+        factory.registerBeanDefinition(service_key, serviceDefinition);
     }
     public static JDBCRuntime getRuntime(){
         return getRuntime(DataSourceHolder.curDataSource());
@@ -71,11 +99,7 @@ public class RuntimeHolder  implements ApplicationContextAware {
             return getRuntime("default");
         }
         JDBCRuntime runtime = runtimes.get(datasource);
-        if(null != runtime){
-            if(null == runtime.getAdapter()){
-                runtime.setAdapter(SQLAdapterUtil.getAdapter(runtime.getTemplate()));
-            }
-        }else{
+        if(null == runtime){
             throw new RuntimeException("未注册数据源:"+datasource);
         }
         return runtime;
@@ -109,4 +133,5 @@ public class RuntimeHolder  implements ApplicationContextAware {
         }
         return null;
     }
+
 }
