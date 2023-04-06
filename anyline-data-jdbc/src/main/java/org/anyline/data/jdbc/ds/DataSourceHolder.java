@@ -186,7 +186,7 @@ public class DataSourceHolder {
 		return addDefaultDataSource( ds);
 	}
 	public static DataSource addDefaultDataSource(DataSource ds) throws Exception{
-		return addDataSource("dataSource", ds,true);
+		return addDataSource("default", ds,true);
 	}
 
 
@@ -205,9 +205,7 @@ public class DataSourceHolder {
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
-		if(!dataSources.contains(key)) {
-			dataSources.add(key);
-		}
+		reg(key);
 		RuntimeHolder.reg(key, ds);
 		return ds;
 	}
