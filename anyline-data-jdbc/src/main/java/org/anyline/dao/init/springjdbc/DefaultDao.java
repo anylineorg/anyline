@@ -60,7 +60,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.Date;
 import java.util.*;
 
 @Repository("anyline.dao")
@@ -105,7 +104,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				} else {
 					src = prepare.getText();
 				}
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.curDataSource() + "]";
 				log.warn(tmp);
 			}
 			if (run.isValid()) {
@@ -163,7 +162,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				} else {
 					src = prepare.getText();
 				}
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.curDataSource() + "]";
 				log.warn(tmp);
 			}
 			PageNavi navi = run.getPageNavi();
@@ -253,7 +252,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.curDataSource() + "]";
 				log.warn(tmp);
 			}
 			PageNavi navi = run.getPageNavi();
@@ -1011,7 +1010,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[执行耗时:{}ms]", random, mid[0] - fr);
 			}
-			set.setDatalink(DataSourceHolder.getDataSource());
+			set.setDatalink(DataSourceHolder.curDataSource());
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
 			}
@@ -1110,7 +1109,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		Run run = adapter.buildExecuteRun(prepare, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]");
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.curDataSource() + "]");
 			}
 			return -1;
 		}
@@ -1397,7 +1396,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						set.setNavi(navi);
 					}
 
-					set.setDatalink(DataSourceHolder.getDataSource());
+					set.setDatalink(DataSourceHolder.curDataSource());
 					if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 						log.warn("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());
 					}
@@ -1617,10 +1616,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			Map<String,String> table_map = table_maps.get(DataSourceHolder.getDataSource()+"");
+			Map<String,String> table_map = table_maps.get(DataSourceHolder.curDataSource()+"");
 			if(null == table_map){
 				table_map = new HashMap<>();
-				table_maps.put(DataSourceHolder.getDataSource()+"", table_map);
+				table_maps.put(DataSourceHolder.curDataSource()+"", table_map);
 			}
 			// 根据系统表查询
 			try{
@@ -1699,10 +1698,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			Map<String,String> table_map = table_maps.get(DataSourceHolder.getDataSource()+"");
+			Map<String,String> table_map = table_maps.get(DataSourceHolder.curDataSource()+"");
 			if(null == table_map){
 				table_map = new HashMap<>();
-				table_maps.put(DataSourceHolder.getDataSource()+"", table_map);
+				table_maps.put(DataSourceHolder.curDataSource()+"", table_map);
 			}
 			if(null != pattern){
 				if(table_map.isEmpty()){
@@ -1808,10 +1807,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			Map<String,String> table_map = table_maps.get(DataSourceHolder.getDataSource()+"");
+			Map<String,String> table_map = table_maps.get(DataSourceHolder.curDataSource()+"");
 			if(null == table_map){
 				table_map = new HashMap<>();
-				table_maps.put(DataSourceHolder.getDataSource()+"", table_map);
+				table_maps.put(DataSourceHolder.curDataSource()+"", table_map);
 			}
 			if(null != pattern){
 				if(table_map.isEmpty()){
@@ -3366,7 +3365,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
 				.append("][thread:")
-				.append(Thread.currentThread().getId()).append("][ds:").append(DataSourceHolder.getDataSource()).append("]");
+				.append(Thread.currentThread().getId()).append("][ds:").append(DataSourceHolder.curDataSource()).append("]");
 		return builder.toString();
 	}
 }
