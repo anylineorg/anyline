@@ -63,7 +63,7 @@ public class ServiceProxy {
         return service;
     }
     public static String getDataSource(){
-        return DataSourceHolder.getDataSource();
+        return DataSourceHolder.curDataSource();
     }
 
 

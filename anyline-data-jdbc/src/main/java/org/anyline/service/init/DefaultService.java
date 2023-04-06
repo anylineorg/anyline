@@ -89,7 +89,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return this;
     }
     public String getDataSource(){
-        return DataSourceHolder.getDataSource();
+        return DataSourceHolder.curDataSource();
     }
     /**
      * 按条件查询
