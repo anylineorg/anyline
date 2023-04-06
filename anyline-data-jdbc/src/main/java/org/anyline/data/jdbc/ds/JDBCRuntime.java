@@ -1,6 +1,7 @@
 package org.anyline.data.jdbc.ds;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.util.SQLAdapterUtil;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -38,6 +39,9 @@ public class JDBCRuntime {
     }
 
     public JDBCAdapter getAdapter() {
+        if(null == adapter){
+            adapter = SQLAdapterUtil.getAdapter(template);
+        }
         return adapter;
     }
 
