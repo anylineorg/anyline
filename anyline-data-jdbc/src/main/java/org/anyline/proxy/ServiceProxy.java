@@ -1,7 +1,12 @@
 package org.anyline.proxy;
 
+import org.anyline.cache.CacheProvider;
+import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.jdbc.ds.JDBCRuntime;
+import org.anyline.data.jdbc.ds.RuntimeHolder;
+import org.anyline.data.listener.DMListener;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Procedure;
@@ -11,27 +16,47 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.service.AnylineService;
+import org.anyline.service.init.DefaultService;
+import org.anyline.util.SpringContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("anyline.service.proxy")
 public class ServiceProxy {
-    public static AnylineService service;
-    public static AnylineService.DDLService ddl;
-    public static AnylineService.MetaDataService metadata;
+    private static Logger log = LoggerFactory.getLogger(ServiceProxy.class);
+
+    private static AnylineService service;
+    private static AnylineService.DDLService ddl;
+    private static AnylineService.MetaDataService metadata;
     public ServiceProxy(){}
+
     @Autowired(required = true)
     @Qualifier("anyline.service")
     public void init(AnylineService service) {
         ServiceProxy.service = service;
         ServiceProxy.ddl = service.ddl();
         ServiceProxy.metadata = service.metadata();
+    }
+
+    public static AnylineService service(){
+        return service(null);
+    }
+    public static AnylineService service(String key){
+        if(null == key){
+            key = "default";
+        }
+        AnylineService service = (AnylineService)SpringContextUtil.getBean("anyline.service."+key);
+        return service;
     }
 
     public static ConfigStore condition(){
