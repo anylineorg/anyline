@@ -12,8 +12,6 @@ import org.springframework.core.type.AnnotationMetadata;
  * 需要在启动类上注解 @org.springframework.context.annotation.Import(DynamicDataSourceRegister.class)
  * 注意这时spring上下文还没有初始化完成,不要调用spring context BeanFactory
  */
-//@Component
-//@Import(DynamicDataSourceRegister.class)
 public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar {
     private Logger log = LoggerFactory.getLogger(DynamicDataSourceRegister.class);
 
