@@ -294,32 +294,10 @@ public class DataSourceHolder {
     }
 
 	public static DataSource getDataSource(){
-		JDBCRuntime runtime = RuntimeHolder.getRuntime();
-		if(null != runtime){
-			return runtime.getDatasource();
-		}
-		return null;
+		return RuntimeHolder.getDataSource();
 	}
 	public static DataSource getDataSource(String key){
-		JDBCRuntime runtime = RuntimeHolder.getRuntime(key);
-		if(null != runtime){
-			return runtime.getDatasource();
-		}
-		return null;
+		return RuntimeHolder.getDataSource(key);
 	}
 
-	public static JDBCAdapter getJDBCAdapter(){
-		JDBCRuntime runtime = RuntimeHolder.getRuntime();
-		if(null != runtime){
-			return runtime.getAdapter();
-		}
-		return null;
-	}
-	public static JDBCAdapter getJDBCAdapter(String key){
-		JDBCRuntime runtime = RuntimeHolder.getRuntime(key);
-		if(null != runtime){
-			return runtime.getAdapter();
-		}
-		return null;
-	}
 }
