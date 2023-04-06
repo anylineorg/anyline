@@ -63,6 +63,22 @@ public class DefaultService<E> implements AnylineService<E> {
     @Qualifier("anyline.cache.provider")
     protected CacheProvider cacheProvider;
 
+    public CacheProvider getCacheProvider() {
+        return cacheProvider;
+    }
+
+    public void setCacheProvider(CacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
+    }
+
+    public AnylineDao getDao() {
+        return dao;
+    }
+
+    public void setDao(AnylineDao dao) {
+        this.dao = dao;
+    }
+
     public AnylineService datasource(String datasource){
         DataSourceHolder.setDataSource(datasource);
         return this;
