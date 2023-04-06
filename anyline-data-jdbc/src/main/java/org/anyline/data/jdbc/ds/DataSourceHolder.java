@@ -47,12 +47,12 @@ public class DataSourceHolder {
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
     } 
-    public static String getDataSource() {
+    public static String curDataSource() {
         return THREAD_CUR_SOURCE.get();
     }
 
 	public static JDBCAdapter.DB_TYPE dialect(){
-		String ds = getDataSource();
+		String ds = curDataSource();
 		return types.get(ds);
 	}
 	public static void dialect(String ds, JDBCAdapter.DB_TYPE type){
@@ -293,4 +293,18 @@ public class DataSourceHolder {
         return null;
     }
 
+	public static DataSource getDataSource(){
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		if(null != runtime){
+			return runtime.getDatasource();
+		}
+		return null;
+	}
+	public static DataSource getDataSource(String key){
+		JDBCRuntime runtime = RuntimeHolder.getRuntime(key);
+		if(null != runtime){
+			return runtime.getDatasource();
+		}
+		return null;
+	}
 }

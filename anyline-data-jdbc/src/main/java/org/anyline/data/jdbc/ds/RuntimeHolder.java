@@ -58,15 +58,13 @@ public class RuntimeHolder  implements ApplicationContextAware {
         reg(key, template, null);
     }
 
-
-
     public static void reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
         log.warn("[create jdbc runtime][key:{}]", datasource);
         JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
         runtimes.put(datasource, runtime);
     }
     public static JDBCRuntime getRuntime(){
-        return getRuntime(DataSourceHolder.getDataSource());
+        return getRuntime(DataSourceHolder.curDataSource());
     }
     public static JDBCRuntime getRuntime(String datasource){
         if(null == datasource){
@@ -81,5 +79,34 @@ public class RuntimeHolder  implements ApplicationContextAware {
             throw new RuntimeException("未注册数据源:"+datasource);
         }
         return runtime;
+    }
+
+    public static JdbcTemplate getJdbcTemplate(){
+        JDBCRuntime runtime = getRuntime();
+        if(null != runtime){
+            return runtime.getTemplate();
+        }
+        return null;
+    }
+    public static DataSource getDataSource(){
+        JDBCRuntime runtime = getRuntime();
+        if(null != runtime){
+            return runtime.getDatasource();
+        }
+        return null;
+    }
+    public static JdbcTemplate getJdbcTemplate(String key){
+        JDBCRuntime runtime = getRuntime(key);
+        if(null != runtime){
+            return runtime.getTemplate();
+        }
+        return null;
+    }
+    public static DataSource getDataSource(String key){
+        JDBCRuntime runtime = getRuntime(key);
+        if(null != runtime){
+            return runtime.getDatasource();
+        }
+        return null;
     }
 }
