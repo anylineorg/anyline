@@ -645,8 +645,11 @@ public class BasicUtil {
 	public static List<String> getMapKeys(Map<?, ?> map) { 
 		List<String> keys = new ArrayList<>();
 		Iterator<?> it = map.keySet().iterator(); 
-		while (it.hasNext()) { 
-			keys.add(it.next().toString()); 
+		while (it.hasNext()) {
+			Object value = it.next();
+			if(null != value){
+				keys.add(value.toString());
+			}
 		} 
 		return keys; 
 	}
