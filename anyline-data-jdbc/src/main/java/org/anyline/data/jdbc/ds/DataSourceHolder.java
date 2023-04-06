@@ -307,4 +307,19 @@ public class DataSourceHolder {
 		}
 		return null;
 	}
+
+	public static JDBCAdapter getJDBCAdapter(){
+		JDBCRuntime runtime = RuntimeHolder.getRuntime();
+		if(null != runtime){
+			return runtime.getAdapter();
+		}
+		return null;
+	}
+	public static JDBCAdapter getJDBCAdapter(String key){
+		JDBCRuntime runtime = RuntimeHolder.getRuntime(key);
+		if(null != runtime){
+			return runtime.getAdapter();
+		}
+		return null;
+	}
 }
