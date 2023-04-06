@@ -36,7 +36,6 @@ public class RuntimeHolder  implements ApplicationContextAware {
         SpringContextUtil.applicationContext = context;
         load();
     }
-
     //加载配置文件
     private void load(){
         Environment env = context.getEnvironment();
