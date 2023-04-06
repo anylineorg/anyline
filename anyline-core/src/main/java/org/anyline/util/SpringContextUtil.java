@@ -27,7 +27,7 @@ public class SpringContextUtil implements ApplicationContextAware {
     }   
 	 
     public static Object getBean(String name) throws BeansException {
-		if(applicationContext.containsBean("name")) {
+		if(applicationContext.containsBean(name)) {
 			return applicationContext.getBean(name);
 		}else{
 			return null;
