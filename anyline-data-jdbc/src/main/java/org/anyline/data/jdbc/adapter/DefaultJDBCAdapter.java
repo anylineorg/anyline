@@ -2964,8 +2964,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			return ((DataRow)obj).getPrimaryKey();
 		}else{
-			return null;
+			if(EntityAdapterProxy.hasAdapter()){
+				return EntityAdapterProxy.primaryKey(obj.getClass());
+			}
 		}
+		return null;
 	}
 	@Override
 	public Object getPrimaryValue(Object obj){
@@ -2975,6 +2978,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			return ((DataRow)obj).getPrimaryValue();
 		}else{
+			if(EntityAdapterProxy.hasAdapter()){
+				return EntityAdapterProxy.primaryValue(obj);
+			}
 			return null;
 		}
 	}
