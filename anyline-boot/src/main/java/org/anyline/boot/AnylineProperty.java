@@ -58,6 +58,8 @@ public class AnylineProperty {
     protected int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
     protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
     protected String sqlStoreDir								= null		;	// 自定义sql目录 默认${classpath}/sql
+
+    protected boolean openParseMybatis							= true		; 	// 是否开始解析mybatis定义的SQL
     protected String entityFieldColumnMap                       = "camel_"  ;   // 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
     protected String entityTableAnnotation						= null		;   // 表名注解
     protected String entityColumnAnnotation					    = null		;	// 列名注解
@@ -320,6 +322,15 @@ public class AnylineProperty {
         ConfigTable.SQL_STORE_DIR = sqlStoreDir;
     }
 
+    public boolean isOpenParseMybatis() {
+        return openParseMybatis;
+    }
+
+    public void setOpenParseMybatis(boolean openParseMybatis) {
+        this.openParseMybatis = openParseMybatis;
+        ConfigTable.IS_OPEN_PARSE_MYBATIS = openParseMybatis;
+    }
+
     public String getEntityTableAnnotation() {
         return entityTableAnnotation;
     }
@@ -478,7 +489,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorWorkerId(int primaryGeneratorWorkerId) {
-        primaryGeneratorWorkerId = primaryGeneratorWorkerId;
+        this.primaryGeneratorWorkerId = primaryGeneratorWorkerId;
         ConfigTable.PRIMARY_GENERATOR_WORKER_ID = primaryGeneratorWorkerId;
     }
 
@@ -487,7 +498,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorPrefix(String primaryGeneratorPrefix) {
-        primaryGeneratorPrefix = primaryGeneratorPrefix;
+        this.primaryGeneratorPrefix = primaryGeneratorPrefix;
         ConfigTable.PRIMARY_GENERATOR_PREFIX = primaryGeneratorPrefix;
     }
 
@@ -496,7 +507,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorRandomLength(int primaryGeneratorRandomLength) {
-        primaryGeneratorRandomLength = primaryGeneratorRandomLength;
+        this.primaryGeneratorRandomLength = primaryGeneratorRandomLength;
         ConfigTable.PRIMARY_GENERATOR_RANDOM_LENGTH = primaryGeneratorRandomLength;
     }
 
@@ -505,7 +516,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorUpper(boolean primaryGeneratorUpper) {
-        primaryGeneratorUpper = primaryGeneratorUpper;
+        this.primaryGeneratorUpper = primaryGeneratorUpper;
         ConfigTable.PRIMARY_GENERATOR_UPPER = primaryGeneratorUpper;
     }
 
@@ -514,7 +525,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorLower(boolean primaryGeneratorLower) {
-        primaryGeneratorLower = primaryGeneratorLower;
+        this.primaryGeneratorLower = primaryGeneratorLower;
         ConfigTable.PRIMARY_GENERATOR_LOWER = primaryGeneratorLower;
     }
 
@@ -523,7 +534,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorUuidActive(boolean primaryGeneratorUuidActive) {
-        primaryGeneratorUuidActive = primaryGeneratorUuidActive;
+        this.primaryGeneratorUuidActive = primaryGeneratorUuidActive;
         ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE = primaryGeneratorUuidActive;
     }
 
@@ -532,7 +543,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorSnowflakeActive(boolean primaryGeneratorSnowflakeActive) {
-        primaryGeneratorSnowflakeActive = primaryGeneratorSnowflakeActive;
+        this.primaryGeneratorSnowflakeActive = primaryGeneratorSnowflakeActive;
         ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE = primaryGeneratorSnowflakeActive;
     }
 
@@ -541,7 +552,7 @@ public class AnylineProperty {
     }
 
     public void setPrimaryGeneratorRandomActive(boolean primaryGeneratorRandomActive) {
-        primaryGeneratorRandomActive = primaryGeneratorRandomActive;
+        this.primaryGeneratorRandomActive = primaryGeneratorRandomActive;
         ConfigTable.PRIMARY_GENERATOR_RANDOM_ACTIVE = primaryGeneratorRandomActive;
     }
 
