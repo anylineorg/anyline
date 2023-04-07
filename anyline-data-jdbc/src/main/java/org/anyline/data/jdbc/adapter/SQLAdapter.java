@@ -468,8 +468,17 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 id_key = key.keySet().iterator().next();
             }
             if(data instanceof Collection){
+                //批量插入
                 List<Object> ids = new ArrayList<>();
                 Collection list = (Collection) data;
+                //检测是否有主键值
+                for(Object item:list){
+                    if(BasicUtil.isNotEmpty(getPrimaryValue(item))){
+                        //已经有主键值了
+                        return true;
+                    }
+                    break;
+                }
                 if(BasicUtil.isEmpty(id_key)){
                     return false;
                 }
@@ -502,10 +511,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
             }else{
                 if(null != keys && keys.size() > 0) {
-                    Object id = keys.get(0).get(id_key);
-                    setPrimaryValue(data, id);
-                    if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-                        log.warn("{}[exe insert][生成主键:{}]", random, id);
+                    if(BasicUtil.isEmpty(getPrimaryValue(data))){
+                        Object id = keys.get(0).get(id_key);
+                        setPrimaryValue(data, id);
+                        if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+                            log.warn("{}[exe insert][生成主键:{}]", random, id);
+                        }
                     }
                 }
             }
