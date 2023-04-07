@@ -57,6 +57,7 @@ public class DefaultSQLStore extends SQLStore {
 
 	static {
 		loadSQL();
+		loadMyBatis();
 	}
 
 	public static synchronized void loadSQL() {
@@ -126,7 +127,11 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		lastLoadTime = System.currentTimeMillis();
 	}
-
+	public static synchronized void loadMyBatis(){
+		if(!ConfigTable.IS_OPEN_PARSE_MYBATIS){
+			return;
+		}
+	}
 
 	/**
 	 * 解析sql.xml文件
