@@ -64,22 +64,23 @@ public class ConfigTable {
 	public static boolean IS_HTTP_LOG 									= true		;	// 调用HTTP接口时是否出输出日志
 	public static boolean IS_HTTP_PARAM_AUTO_TRIM						= true		;   // http参数值是否自动trim
 	public static boolean IS_IGNORE_EMPTY_HTTP_KEY						= true		;	// AnylineController.entity(String ck)是否忽略http未提交的key
-	public static int HTTP_PARAM_ENCODE									= 0			;   // 0:自动识别 1:确认编码 -1:确认未编码
-	public static boolean IS_UPPER_KEY 									= true		;	// 是否自动转换成大写
-	public static boolean IS_LOWER_KEY 									= false		;	// 是否自动转换成小写
-	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// 是否忽略大小写
-	public static boolean IS_THROW_SQL_QUERY_EXCEPTION 					= true		;	// SQL执行异常时是否抛出
+	public static int HTTP_PARAM_ENCODE									= 0			;   // http参数是否解码0:自动识别 1:确认编码 -1:确认未编码
+	public static boolean IS_UPPER_KEY 									= true		;	// DataRow是否自动转换成大写
+	public static boolean IS_LOWER_KEY 									= false		;	// DataRow是否自动转换成小写
+	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// DataRow是否忽略大小写
+	public static boolean IS_THROW_SQL_QUERY_EXCEPTION 					= true		;	// SQL查询异常时是否抛出
 	public static boolean IS_THROW_SQL_UPDATE_EXCEPTION 				= true		;	// SQL执行异常时是否抛出
-	public static boolean IS_UPDATE_NULL_COLUMN							= false		;	// 是否更新nul值的列(针对DataRow)
-	public static boolean IS_UPDATE_EMPTY_COLUMN						= false		;	// 是否更新空值的列
-	public static boolean IS_INSERT_NULL_COLUMN							= false		;	// 是否更新nul值的列
-	public static boolean IS_INSERT_EMPTY_COLUMN						= false		;	// 是否更新空值的列
-	public static boolean IS_UPDATE_NULL_FIELD							= false		;	// 是否更新nul值的属性(针对Entity)
-	public static boolean IS_UPDATE_EMPTY_FIELD							= false		;	// 是否更新空值的属性
-	public static boolean IS_INSERT_NULL_FIELD							= false		;	// 是否更新nul值的属性
-	public static boolean IS_INSERT_EMPTY_FIELD							= false		;	// 是否更新空值的属性
+	public static boolean IS_UPDATE_NULL_COLUMN							= false		;	// DataRow是否更新nul值的列(针对DataRow)
+	public static boolean IS_UPDATE_EMPTY_COLUMN						= false		;	// DataRow是否更新空值的列
+	public static boolean IS_INSERT_NULL_COLUMN							= false		;	// DataRow是否更新nul值的列
+	public static boolean IS_INSERT_EMPTY_COLUMN						= false		;	// DataRow是否更新空值的列
+	public static boolean IS_UPDATE_NULL_FIELD							= false		;	// Entity是否更新nul值的属性(针对Entity)
+	public static boolean IS_UPDATE_EMPTY_FIELD							= false		;	// Entity是否更新空值的属性
+	public static boolean IS_INSERT_NULL_FIELD							= false		;	// Entity是否更新nul值的属性
+	public static boolean IS_INSERT_EMPTY_FIELD							= false		;	// Entity是否更新空值的属性
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false		;	// 是否开启 界定符
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false		;	// 是否开启 界定符的占位符
+	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;	// 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false		; 	// 禁用默认的entity adapter
@@ -113,7 +114,6 @@ public class ConfigTable {
 	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
 	public static String MIX_DEFAULT_SEED								= "al"		;   // MixUti.mix默认seed
 	public static String EL_ATTRIBUTE_PREFIX							= "al"		;
-	public static String SQL_DELIMITER_PLACEHOLDER						= "`"		;
 
 	public static String CONFIG_NAME = "anyline-config.xml";
 
