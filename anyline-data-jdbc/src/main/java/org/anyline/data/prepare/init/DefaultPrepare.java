@@ -38,6 +38,7 @@ import java.util.Vector;
 public abstract class DefaultPrepare implements RunPrepare{
 
 	protected static final Logger log = LoggerFactory.getLogger(DefaultPrepare.class);
+	protected String id 									;
 	protected ConditionChain chain							; // 查询条件
 	protected OrderStore orders								; // 排序
 	protected GroupStore groups								; // 分组条件
@@ -46,6 +47,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected List<String> fetchKeys   = new ArrayList<>()	; // 最终需要封装的列
 	protected boolean valid 		   = true				;
 	protected String alias									;
+	protected boolean multiple		   = false				;
 
 
 	// 运行时参数值 
@@ -413,4 +415,26 @@ public abstract class DefaultPrepare implements RunPrepare{
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-} 
+
+	@Override
+	public boolean isMultiple() {
+		return false;
+	}
+
+	@Override
+	public RunPrepare setMultiple(boolean multiple) {
+		this.multiple = multiple;
+		return this;
+	}
+
+	@Override
+	public String getId() {
+		return this.id;
+	}
+
+	@Override
+	public RunPrepare setId(String id) {
+		this.id = id;
+		return this;
+	}
+}
