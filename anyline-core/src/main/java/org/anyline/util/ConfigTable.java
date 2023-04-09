@@ -103,7 +103,7 @@ public class ConfigTable {
 
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   // DDL执行时是否自动删除定义中不存在的列
-	public static String SQL_STORE_DIR									= null		;	// 自定义SQL目录 默认${classpath}/sql
+	public static String SQL_STORE_DIR									= null		;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
 	public static boolean IS_OPEN_PARSE_MYBATIS							= true		; 	// 是否开始解析mybatis定义的SQL
 	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  ;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
 	public static String ENTITY_TABLE_ANNOTATION						= null		;   // 表名注解

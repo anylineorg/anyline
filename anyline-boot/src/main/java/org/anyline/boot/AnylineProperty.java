@@ -198,7 +198,10 @@ public class AnylineProperty {
      * ddl执行时是否自动删除定义中不存在的列
      */
     protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
-    protected String sqlStoreDir								= null		;	// 自定义sql目录 默认${classpath}/sql
+    /**
+     * 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
+     */
+    protected String sqlStoreDir								= null		;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
     /**
      * 是否开始解析mybatis定义的SQL
      */
