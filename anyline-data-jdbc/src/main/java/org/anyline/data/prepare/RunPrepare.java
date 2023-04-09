@@ -52,8 +52,10 @@ public interface RunPrepare extends Cloneable {
 	public static final String SQL_PARAM_VAIRABLE_REGEX_EL = "([^\\s$]+)\\s*\\(?(\\s*\\$*{\\w+})(\\+|\\s|'|\\)|%)?";
 	
 	// 自定义SQL.id格式 文件名:id
-	public static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+"; 
- 
+	public static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
+
+	public String getId();
+	public RunPrepare setId(String id);
 	/** 
 	 * 设置数据源 
 	 * <p> 
@@ -166,5 +168,12 @@ public interface RunPrepare extends Cloneable {
 	public List<Join> getJoins();
 	public void setAlias(String alias);
 	public String getAlias();
+
+	/**
+	 * 相同ID是否有多个
+	 * @return boolean
+	 */
+	public boolean isMultiple();
+	public RunPrepare setMultiple(boolean multiple);
 	
 } 
