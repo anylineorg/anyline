@@ -45,6 +45,7 @@ public class ConfigTable {
 	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
+	protected static String libpath;
 	protected static Hashtable<String,Object> configs;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
@@ -191,6 +192,9 @@ public class ConfigTable {
 	public static String getClassPath(){
 		return classpath;
 	}
+	public static String getLibPath(){
+		return libpath;
+	}
 	public static void init(){
 		init("anyline");
 	}
@@ -269,7 +273,7 @@ public class ConfigTable {
 				classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
 			}
 		}
-
+		libpath = new File(new File(classpath).getParent(), "lib").getAbsolutePath();
 		// 加载配置文件
 		loadConfig(flag);
 	}
