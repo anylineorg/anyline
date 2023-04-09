@@ -18,7 +18,7 @@ public class AnylineProperty {
      */
     protected boolean showSql									= true		;	// 执行sql时是否输出日志
     /**
-     * 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
+     * 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用DMListener.slow
      */
     protected long slowSqlMillis								= 0			; 	// 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
     /**
