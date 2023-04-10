@@ -92,7 +92,7 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-core</artifactId>
-				<version>    ${anyline.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
