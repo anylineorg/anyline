@@ -5,8 +5,7 @@ import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
  
 public class SyntaxHelper {
- 
-	/** 
+/**
 0.[ID=:ID ]				1.[ID=]				2.[:ID]			3.[ ]		 <br/>
 0.[IN(:TYPE)]			1.[IN(]				2.[:TYPE]		3.[)]		 <br/>
 0.[= ::SORT ]			1.[=]				2.[::SORT]		3.[ ]		 <br/>
@@ -22,7 +21,7 @@ public class SyntaxHelper {
  
 	   @param signType 1:以:区分 2:以{}区分
 	 * @param all  all
-	 * @param prefix  prefix CODE = 'A:1' prefix = "A"(因为这个规则，所以吸用来解析SQL体不要用来解析查询条件)
+	 * @param prefix  prefix CODE = 'A:1' prefix = "A"(因为这个规则，所以只用来解析SQL体不要用来解析查询条件)
 	 * @param fullKey  fullKey
 	 * @param afterChar  afterChar
 	 * @return Variable
@@ -40,18 +39,15 @@ public class SyntaxHelper {
 			afterChar = ""; 
 		} 
 		Variable var = new DefaultVariable();
-		String key = null; 
-		if(signType ==1){ 
-			key = fullKey.replace(":", ""); 
-		}else if(signType ==2){ 
-			key = fullKey.replace("${", "").replace("#{", "").replace("{", "").replace("}", "");
-		} 
 		 
 		if(fullKey.startsWith("$") || fullKey.startsWith("::")){ 
 			// AND CD = ${CD}  
 			// AND CD = ::CD 
 			varType = Variable.VAR_TYPE_REPLACE;
-		}else if("'".equals(afterChar)){ 
+		}else if(fullKey.startsWith("#")){
+			// AND CD = #{CD}
+			varType = Variable.VAR_TYPE_REPLACE;
+		}else if("'".equals(afterChar)){
 			// AND CD = '{CD}' 
 			// AND CD = ':CD' 
 			varType = Variable.VAR_TYPE_KEY_REPLACE;
@@ -68,13 +64,13 @@ public class SyntaxHelper {
 			} 
 		}else{ 
 			varType = Variable.VAR_TYPE_KEY;
-			if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
-				// AND CD IN({CD}) 
-				compare = Compare.IN;
-			} 
-		} 
-		var.setSignType(signType); 
-		var.setKey(key); 
+		}
+		if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
+			//  AND CD IN(#{CD})  AND CD IN(${CD}) AND CD IN(:CD)
+			compare = Compare.IN;
+		}
+		var.setFullKey(fullKey);
+		var.setSignType(signType);
 		var.setType(varType); 
 		var.setCompare(compare); 
 		return var; 
