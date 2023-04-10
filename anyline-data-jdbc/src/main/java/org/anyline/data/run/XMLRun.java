@@ -161,12 +161,7 @@ public class XMLRun extends BasicRun implements Run {
 							value = value.replace("'", "").replace("%", ""); 
 						} 
 					} 
-					String replaceKey = ""; 
-					if(var.getSignType() == Variable.KEY_TYPE_SIGN_V1){
-						replaceKey = "::" + var.getKey(); 
-					}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
-						replaceKey = "${" + var.getKey() + "}"; 
-					} 
+					String replaceKey = var.getFullKey();
 					if(null != value){ 
 						result = result.replace(replaceKey, value); 
 					}else{ 
@@ -177,7 +172,8 @@ public class XMLRun extends BasicRun implements Run {
 			for(Variable var:variables){
 				if(null == var){ 
 					continue; 
-				} 
+				}
+				// 符合占位需要替换如在''内
 				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
 					// CD = ':CD'
 					// CD = '::CD'
@@ -190,7 +186,6 @@ public class XMLRun extends BasicRun implements Run {
 							value = value.replace("'", "").replace("%", ""); 
 						} 
 					}
-					String replaceKey = "";
 					if(null == value){
 						value = "";
 					}
@@ -198,8 +193,8 @@ public class XMLRun extends BasicRun implements Run {
 						result = result.replace("::" + var.getKey(), value);
 						result = result.replace(":" + var.getKey(), value);
 					}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
-						replaceKey = "${" + var.getKey() + "}";
 						result = result.replace( "${" + var.getKey() + "}", value);
+						result = result.replace( "#{" + var.getKey() + "}", value);
 					}
 				} 
 			} 
@@ -215,12 +210,7 @@ public class XMLRun extends BasicRun implements Run {
 					List<Object> varValues = var.getValues(); 
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
  
-						String replaceKey = ""; 
-						if(var.getSignType() == Variable.KEY_TYPE_SIGN_V1){
-							replaceKey = ":" + var.getKey(); 
-						}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
-							replaceKey = "${" + var.getKey() + "}";
-						} 
+						String replaceKey = var.getFullKey();
 						if(var.getCompare() == Compare.LIKE){ 
 							// CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
 							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
