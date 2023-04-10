@@ -179,7 +179,8 @@ public class XMLRun extends BasicRun implements Run {
 					continue; 
 				} 
 				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-					// CD = ':CD' 
+					// CD = ':CD'
+					// CD = '::CD'
 					// CD = '{CD}' 
 					List<Object> varValues = var.getValues(); 
 					String value = null; 
@@ -188,19 +189,18 @@ public class XMLRun extends BasicRun implements Run {
 						if(null != value){ 
 							value = value.replace("'", "").replace("%", ""); 
 						} 
-					} 
- 
-					String replaceKey = ""; 
+					}
+					String replaceKey = "";
+					if(null == value){
+						value = "";
+					}
 					if(var.getSignType() == Variable.KEY_TYPE_SIGN_V1){
-						replaceKey = ":" + var.getKey(); 
+						result = result.replace("::" + var.getKey(), value);
+						result = result.replace(":" + var.getKey(), value);
 					}else if(var.getSignType() == Variable.KEY_TYPE_SIGN_V2){
 						replaceKey = "${" + var.getKey() + "}";
-					} 
-					if(null != value){ 
-						result = result.replace(replaceKey, value); 
-					}else{ 
-						result = result.replace(replaceKey, ""); 
-					} 
+						result = result.replace( "${" + var.getKey() + "}", value);
+					}
 				} 
 			} 
 			for(Variable var:variables){
@@ -209,7 +209,7 @@ public class XMLRun extends BasicRun implements Run {
 				} 
 				if(var.getType() == Variable.VAR_TYPE_KEY){
 					// CD = :CD 
-					// CD = {CD} 
+					// CD = {CD} (弃用)
 					// CD like '%:CD%' 
 					// CD like '%${CD}%'
 					List<Object> varValues = var.getValues(); 
