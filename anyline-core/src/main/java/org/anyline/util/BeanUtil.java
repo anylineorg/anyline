@@ -2454,6 +2454,25 @@ public class BeanUtil {
 		}
 		return list;
 	}
+	public static List object2list(Object obj){
+		List list = null;
+		if(null == obj){
+			return new ArrayList();
+		}
+		if(obj instanceof List){
+			return (List)obj;
+		}
+		list = new ArrayList();
+		if(obj instanceof Object[]){
+			Object[] objs = (Object[]) obj;
+			for(Object item:objs){
+				list.add(item);
+			}
+		}else if(obj instanceof Collection){
+			list.addAll((Collection) obj);
+		}
+		return list;
+	}
 	/**
 	 * 合成笛卡尔组合
 	 *
