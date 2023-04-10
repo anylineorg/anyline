@@ -1458,6 +1458,21 @@ public class BeanUtil {
 		return concat(list,false);
 	}
 
+	public static List wrap(Collection list, String wrap){
+		List result = new ArrayList<>();
+		for(Object obj:list){
+			if(null == obj){
+				result.add(null);
+			}else{
+				if(BasicUtil.isNumber(obj)){
+					result.add(obj);
+				}else{
+					result.add(wrap+obj+wrap);
+				}
+			}
+		}
+		return result;
+	}
 	public static List<String> toUpperCase(List<String> list){
 		if(null != list){
 			int size = list.size();
@@ -1482,6 +1497,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
