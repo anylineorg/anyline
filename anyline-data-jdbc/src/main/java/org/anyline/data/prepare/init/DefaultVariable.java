@@ -49,11 +49,13 @@ public class DefaultVariable implements Variable {
 		return str;
 	} 
  
-	private String key;				// 变量KEY 
+	private String key;				// 变量KEY
+	private String fullKey;			// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
 	private List<Object> values;	// 变量值 
 	private int type;				// 变量替换方式
 	private int signType = 1;		// 变量区分方式
-	private Compare compare;	// 比较方式
+	private String keyPrefix;		// 变量前缀
+	private Compare compare;		// 比较方式
 	private boolean required;
 	private boolean strictRequired;
 	 
@@ -147,6 +149,48 @@ public class DefaultVariable implements Variable {
 
 	public void setStrictRequired(boolean strictRequired) {
 		this.strictRequired = strictRequired;
-	} 
-	 
-} 
+	}
+
+	public void setValues(List<Object> values) {
+		this.values = values;
+	}
+
+	@Override
+	public String getKeyPrefix() {
+		return keyPrefix;
+	}
+
+	@Override
+	public void setKeyPrefix(String keyPrefix) {
+		this.keyPrefix = keyPrefix;
+	}
+
+	@Override
+	public String getFullKey() {
+		return fullKey;
+	}
+
+	@Override
+	public void setFullKey(String fullKey) {
+		this.fullKey = fullKey;
+		if(null != fullKey) {
+			if (null == key) {
+				key = fullKey.replace(":", "")
+						.replace("${", "")
+						.replace("#{", "")
+						.replace("}", "");
+			}
+			if (null == keyPrefix) {
+				if(fullKey.startsWith("#{")){
+					setKeyPrefix("#");
+				}else if(fullKey.startsWith("${")){
+					setKeyPrefix("$");
+				}if(fullKey.startsWith("::")){
+					setKeyPrefix("::");
+				}if(fullKey.startsWith(":")){
+					setKeyPrefix(":");
+				}
+			}
+		}
+	}
+}
