@@ -28,6 +28,7 @@ import org.anyline.entity.Compare;
 import org.anyline.data.prepare.init.DefaultCondition;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
@@ -115,7 +116,8 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 			// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD 
 			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			if(keys.size() ==0){
-				// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD}
+				// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
+				//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
@@ -128,22 +130,24 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
 					String typeChar = keyItem.get(3);	// null || "'" || ")" 
 					// String key = fullKey.replace(":", "").replace(" {", "").replace("}", "").replace("$", "");
-					String key = fullKey.replace(":", "").replace("${", "").replace("#{", "").replace("}", "");
 					if(fullKey.startsWith("::") || fullKey.startsWith("${")){
-						// AND CD = ::CD 
+						//替换
+						// AND CD = ::CD  AND CD = ${CD}
 						varType = Variable.VAR_TYPE_REPLACE;
-					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){ 
+					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){
+						//符合占位  但需要替换 如在''内
 						// AND CD = ':CD' 
 						varType = Variable.VAR_TYPE_KEY_REPLACE;
 					}else{ 
 						// AND CD = :CD 
 						varType = Variable.VAR_TYPE_KEY;
-						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
-							compare = Compare.IN;
-						} 
-					} 
+					}
+
+					if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
+						compare = Compare.IN;
+					}
 					Variable var = new DefaultVariable();
-					var.setKey(key); 
+					var.setFullKey(fullKey);
 					var.setType(varType); 
 					var.setCompare(compare); 
 					addVariable(var); 
@@ -203,15 +207,17 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				// CD = ::CD 
 				List<Object> values = var.getValues(); 
 				String value = null; 
-				if(BasicUtil.isNotEmpty(true,values)){ 
-					value = values.get(0).toString();
+				if(BasicUtil.isNotEmpty(true,values)){
+					if(var.getCompare() == Compare.IN){
+						value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+					}else {
+						value = values.get(0).toString();
+					}
 				} 
 				if(BasicUtil.isNotEmpty(value)){
-					result = result.replace("::"+var.getKey(), value);
-					result = result.replace("${"+var.getKey()+"}", value); 
+					result = result.replace(var.getFullKey(), value);
 				}else{
-					result = result.replace("::"+var.getKey(), "NULL");
-					result = result.replace("${"+var.getKey()+"}", "NULL"); 
+					result = result.replace(var.getFullKey(), "NULL");
 				} 
 			} 
 		} 
@@ -227,15 +233,9 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 					value = (String)values.get(0); 
 				} 
 				if(null != value){
-					result = result.replace("::"+var.getKey(), value);
-					result = result.replace(":"+var.getKey(), value);
-					result = result.replace("${"+var.getKey()+"}", value);
-					result = result.replace("#{"+var.getKey()+"}", value);
+					result = result.replace(var.getFullKey(), value);
 				}else{
-					result = result.replace("::"+var.getKey(), "");
-					result = result.replace(":"+var.getKey(), "");
-					result = result.replace("${"+var.getKey()+"}", "");
-					result = result.replace("#{"+var.getKey()+"}", "");
+					result = result.replace(var.getFullKey(), "NULL");
 				} 
 			} 
 		} 
@@ -244,7 +244,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				continue;
 			} 
 			if(var.getType() == Variable.VAR_TYPE_KEY){
-				// CD=:CD 
+				// CD=:CD    ID IN(#{ID})
 				List<Object> varValues = var.getValues(); 
 				if(Compare.IN == var.getCompare()){
 					String replaceDst = "";
@@ -254,14 +254,12 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 							replaceDst += ",";
 						} 
 					}
-					result = result.replace(":"+var.getKey(), replaceDst);
-					result = result.replace("{"+var.getKey()+"}", replaceDst);
+					result = result.replace(var.getFullKey(), replaceDst);
 					for(Object obj:varValues){
 						runValues.add(new RunValue(var.getKey(), obj));
 					}
 				}else{
-					result = result.replace(":"+var.getKey(), "?");
-					result = result.replace("{"+var.getKey()+"}", "?");
+					result = result.replace(var.getFullKey(), "?");
 					String value = null; 
 					if(BasicUtil.isNotEmpty(true,varValues)){ 
 						value = varValues.get(0).toString(); 
