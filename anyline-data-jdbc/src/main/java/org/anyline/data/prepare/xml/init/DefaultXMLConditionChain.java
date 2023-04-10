@@ -42,11 +42,9 @@ public class DefaultXMLConditionChain extends DefaultConditionChain implements C
 					continue;
 				}
 				String txt = ""; 
-				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){ 
-					builder.append("\n\t");
+				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){
 					txt = condition.getRunText(prefix, adapter);
-				}else if(condition.isActive()){ 
-					builder.append("\n\t");
+				}else if(condition.isActive()){
 					txt = condition.getRunText(prefix, adapter);
 					List<RunValue> values = condition.getRunValues();
 					if(BasicUtil.isEmpty(true, values)){
@@ -60,9 +58,10 @@ public class DefaultXMLConditionChain extends DefaultConditionChain implements C
 				}
 				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition){
 					txt = condition.getJoin() + txt;
-				} 
+				}
 				if(condition.isActive()){
-					builder.append(txt); 
+					builder.append("\n\t");
+					builder.append(txt.trim());
 				}
 			} 
 		} 
