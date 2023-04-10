@@ -235,7 +235,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				if(null != value){
 					result = result.replace(var.getFullKey(), value);
 				}else{
-					result = result.replace(var.getFullKey(), "NULL");
+					result = result.replace(var.getFullKey(), "");
 				} 
 			} 
 		} 

@@ -814,14 +814,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     List<Object> values = var.getValues();
                     String value = null;
                     if(BasicUtil.isNotEmpty(true,values)){
-                        value = values.get(0).toString();
+                        if(var.getCompare() == Compare.IN){
+                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+                        }else {
+                            value = values.get(0).toString();
+                        }
                     }
                     if(null != value){
-                        result = result.replace("::"+var.getKey(), value);
-                        result = result.replace("${"+var.getKey()+"}", value);
+                        result = result.replace(var.getFullKey(), value);
                     }else{
-                        result = result.replace("::"+var.getKey(), "NULL");
-                        result = result.replace("${"+var.getKey()+"}", "NULL");
+                        result = result.replace(var.getFullKey(), "NULL");
                     }
                 }
             }
@@ -831,17 +833,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
                     // CD = ':CD'
-                    List<Object> varValues = var.getValues();
+                    List<Object> values = var.getValues();
                     String value = null;
-                    if(BasicUtil.isNotEmpty(true,varValues)){
-                        value = (String)varValues.get(0);
+                    if(BasicUtil.isNotEmpty(true,values)){
+                        if(var.getCompare() == Compare.IN){
+                            value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+                        }else {
+                            value = values.get(0).toString();
+                        }
                     }
                     if(null != value){
-                        result = result.replace(":"+var.getKey(), value);
-                        result = result.replace("${"+var.getKey()+"}", value);
+                        result = result.replace(var.getFullKey(), value);
                     }else{
-                        result = result.replace(":"+var.getKey(), "");
-                        result = result.replace("${"+var.getKey()+"}", "");
+                        result = result.replace(var.getFullKey(), "");
                     }
                 }
             }
@@ -861,18 +865,15 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                             }
                             addRunValue(run, Compare.IN, var.getKey(), varValues);
                             replaceDst = replaceDst.trim().replace(" ", ",");
-                            result = result.replace(":"+var.getKey(), replaceDst);
-                            result = result.replace("{"+var.getKey()+"}", replaceDst);
+                            result = result.replace(var.getFullKey(), replaceDst);
                         }else{
                             // 单个值
-                            result = result.replace(":"+var.getKey(), "?");
-                            result = result.replace("{"+var.getKey()+"}", "?");
+                            result = result.replace(var.getFullKey(), "?");
                             addRunValue(run, Compare.EQUAL, var.getKey(), varValues.get(0));
                         }
                     }else{
                         //没有提供参数值
-                        result = result.replace(":" + var.getKey(), "NULL");
-                        result = result.replace("{" + var.getKey() + "}", "NULL");
+                        result = result.replace(var.getFullKey(), "NULL");
                     }
                 }
             }
