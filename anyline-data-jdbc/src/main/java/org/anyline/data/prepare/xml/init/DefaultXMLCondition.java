@@ -124,12 +124,12 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				Compare compare = Compare.EQUAL;
 				for(int i=0; i<keys.size(); i++){ 
 					List<String> keyItem = keys.get(i); 
-					String prefix = keyItem.get(1).trim();		// 前缀 
-					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} 8.5之后不用{CD}避免与json冲突
+					String prefix = keyItem.get(1).trim();		// 前缀 空或#或$
+					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
 					String typeChar = keyItem.get(3);	// null || "'" || ")" 
 					// String key = fullKey.replace(":", "").replace(" {", "").replace("}", "").replace("$", "");
-					String key = fullKey.replace(":", "").replace("${", "").replace("}", "");
-					if(fullKey.startsWith("::")){ 
+					String key = fullKey.replace(":", "").replace("${", "").replace("#{", "").replace("}", "");
+					if(fullKey.startsWith("::") || fullKey.startsWith("${")){
 						// AND CD = ::CD 
 						varType = Variable.VAR_TYPE_REPLACE;
 					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){ 

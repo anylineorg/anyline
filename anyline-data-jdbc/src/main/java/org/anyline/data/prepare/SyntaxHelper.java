@@ -20,7 +20,7 @@ public class SyntaxHelper {
 0.['%${NM}%]			1.['%]				2.[${NM}]		3.[%]		 <br/>
 0.[CONTAT('%',{CODE}]	1.[CONTAT('%',]		2.[{CODE}]		3.[null]	 <br/>
  
-	   @param signType 1:已:区分 2:已{}区分	 
+	   @param signType 1:以:区分 2:以{}区分
 	 * @param all  all
 	 * @param prefix  prefix CODE = 'A:1' prefix = "A"(因为这个规则，所以吸用来解析SQL体不要用来解析查询条件)
 	 * @param fullKey  fullKey
@@ -44,7 +44,7 @@ public class SyntaxHelper {
 		if(signType ==1){ 
 			key = fullKey.replace(":", ""); 
 		}else if(signType ==2){ 
-			key = fullKey.replace("${", "").replace("{", "").replace("}", "");
+			key = fullKey.replace("${", "").replace("#{", "").replace("{", "").replace("}", "");
 		} 
 		 
 		if(fullKey.startsWith("$") || fullKey.startsWith("::")){ 

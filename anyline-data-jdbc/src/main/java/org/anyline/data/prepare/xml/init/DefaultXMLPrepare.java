@@ -128,13 +128,13 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 		} 
 		try{
 			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
-			int type = 1 ;
+			int type = Variable.KEY_TYPE_SIGN_V1 ;
 			if(keys.size() == 0){
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
-				type = 2;
+				type = Variable.KEY_TYPE_SIGN_V2 ;
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
-				// AND CD = :CD 
+				// AND CD = :CD AND CD = {CD} AND CD = ${CD} AND CD = ${CD}
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i); 
 					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
