@@ -220,18 +220,22 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				continue;
 			} 
 			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-				// CD = ':CD' 
+				// CD = ':CD' CD = '::CD'
 				List<Object> values = var.getValues(); 
 				String value = null; 
 				if(BasicUtil.isNotEmpty(true,values)){ 
 					value = (String)values.get(0); 
 				} 
 				if(null != value){
+					result = result.replace("::"+var.getKey(), value);
 					result = result.replace(":"+var.getKey(), value);
 					result = result.replace("${"+var.getKey()+"}", value);
-				}else{ 
+					result = result.replace("#{"+var.getKey()+"}", value);
+				}else{
+					result = result.replace("::"+var.getKey(), "");
 					result = result.replace(":"+var.getKey(), "");
 					result = result.replace("${"+var.getKey()+"}", "");
+					result = result.replace("#{"+var.getKey()+"}", "");
 				} 
 			} 
 		} 
