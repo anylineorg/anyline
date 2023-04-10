@@ -232,7 +232,7 @@ public class DefaultSQLStore extends SQLStore {
 					|| "delete".equalsIgnoreCase(elementName)
 			){
 				String id = element.attributeValue("id");
-				String sqlText = element.getText();
+				String sqlText = element.getText().trim();
 				sqlText = RegularUtil.removeTag(sqlText);
 				RunPrepare prepare = new DefaultXMLPrepare();
 				prepare.setText(sqlText);
@@ -265,7 +265,7 @@ public class DefaultSQLStore extends SQLStore {
 			Element sqlElement = (Element) itrSql.next();
 			String id = sqlElement.attributeValue("id");
 			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);    // 是否严格格式  true:java中不允许添加XML定义之外的临时条件
-			String sqlText = sqlElement.elementText("text");                                    // RunPrepare 文本
+			String sqlText = sqlElement.elementText("text").trim();                                    // RunPrepare 文本
 			RunPrepare prepare = new DefaultXMLPrepare();
 			prepare.setText(sqlText);
 			prepare.setStrict(strict);
