@@ -104,9 +104,9 @@ public class RuntimeHolder  implements ApplicationContextAware {
     public static JDBCRuntime getRuntime(String datasource){
         JDBCRuntime runtime = null;
         if(null == datasource){
-            runtime = getRuntime("default");
+            runtime = runtimes.get("default");
             if(null == runtime){
-                runtime = getRuntime("common");
+                runtime = runtimes.get("common");
             }
         }else {
             runtime = runtimes.get(datasource);
