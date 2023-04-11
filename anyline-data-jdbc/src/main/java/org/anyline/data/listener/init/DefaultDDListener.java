@@ -31,6 +31,16 @@ public class DefaultDDListener implements DDListener {
 
 
     @Override
+    public boolean beforeCreate(Table table) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(Table table, boolean result) {
+
+    }
+
+    @Override
     public boolean beforeAdd(Column column) {
         return true;
     }
