@@ -2714,6 +2714,66 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return builder;
 	}
 
+
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String buildAddRunSQL(PrimaryKey primary) throws Exception
+	 * public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
+	 * public String buildDropRunSQL(PrimaryKey primary) throws Exception
+	 * public String buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 添加主键
+	 * @param primary 主键
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(PrimaryKey primary) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
+	/**
+	 * 修改主键
+	 * 有可能生成多条SQL
+	 * @param primary 主键
+	 * @return List
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAlterRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
+
+	/**
+	 * 删除主键
+	 * @param primary 主键
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildDropRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
+	/**
+	 * 修改主键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param primary 主键
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(PrimaryKey primary) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------

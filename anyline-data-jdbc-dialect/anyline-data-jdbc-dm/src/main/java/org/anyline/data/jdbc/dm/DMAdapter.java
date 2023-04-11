@@ -1106,6 +1106,55 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
 		return super.checkTagExists(builder, exists);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String buildAddRunSQL(PrimaryKey primary) throws Exception
+	 * public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
+	 * public String buildDropRunSQL(PrimaryKey primary) throws Exception
+	 * public String buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 添加主键
+	 * @param primary 主键
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(PrimaryKey primary) throws Exception{
+		return super.buildAddRunSQL(primary);
+	}
+	/**
+	 * 修改主键
+	 * 有可能生成多条SQL
+	 * @param primary 主键
+	 * @return List
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception{
+		return super.buildAlterRunSQL(primary);
+	}
+
+	/**
+	 * 删除主键
+	 * @param primary 主键
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
+		return super.buildDropRunSQL(primary);
+	}
+	/**
+	 * 修改主键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param primary 主键
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(PrimaryKey primary) throws Exception{
+		return super.buildRenameRunSQL(primary);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------

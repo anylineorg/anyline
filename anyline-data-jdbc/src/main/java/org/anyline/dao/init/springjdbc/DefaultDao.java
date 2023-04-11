@@ -2416,6 +2416,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			//添加主键
 			index = new Index();
 			index.setTable(update);
+			index.setPrimary(true);
 			for(Column column:upks) {
 				index.addColumn(column);
 			}

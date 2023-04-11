@@ -373,6 +373,7 @@ public interface JDBCAdapter {
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary			: 主键
 	 * index			: 索引
 	 * constraint		: 约束
 	 *
@@ -1161,6 +1162,41 @@ public interface JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder checkTagExists(StringBuilder builder, boolean exists);
+
+
+	/* *****************************************************************************************************************
+	 * 													primary
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加主键
+	 * @param primary 主键
+	 * @return String
+	 */
+	public String buildAddRunSQL(PrimaryKey primary) throws Exception;
+
+	/**
+	 * 修改主键
+	 * 有可能生成多条SQL
+	 * @param primary 主键
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception;
+
+	/**
+	 * 删除主键
+	 * @param primary 主键
+	 * @return String
+	 */
+	public String buildDropRunSQL(PrimaryKey primary) throws Exception;
+
+	/**
+	 * 修改主键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param primary 主键
+	 * @return String
+	 */
+	public String buildRenameRunSQL(PrimaryKey primary) throws Exception;
 
 
 	/* *****************************************************************************************************************
