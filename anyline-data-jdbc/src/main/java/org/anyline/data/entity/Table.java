@@ -30,6 +30,7 @@ public class Table implements org.anyline.entity.data.Table{
     protected Date checkSchemaTime                ;
 
 
+    protected PrimaryKey primaryKey;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
     protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
@@ -299,13 +300,30 @@ public class Table implements org.anyline.entity.data.Table{
         }
         return indexs;
     }
-    public Index getPrimaryIndex(){
-        for(Index index: indexs.values()){
-            if(index.isPrimary()){
-                return index;
+    public PrimaryKey getPrimaryKey(){
+        if(null == primaryKey){
+            for(Index index: indexs.values()){
+                if(index.isPrimary()){
+                    primaryKey = new PrimaryKey();
+                    primaryKey.setName(index.getName());
+                    primaryKey.setTable(this);
+                    primaryKey.setColumns(index.getColumns());
+                }
             }
         }
-        return null;
+        if(null == primaryKey){
+            for(Column column: columns.values()){
+                if(column.isPrimaryKey() ==1){
+                    if(null == primaryKey){
+                        primaryKey = new PrimaryKey();
+                        primaryKey.setName(getName()+"_PK");
+                        primaryKey.setTable(this);
+                    }
+                    primaryKey.addColumn(column);
+                }
+            }
+        }
+        return primaryKey;
     }
 
     public Table setIndexs(LinkedHashMap<String, Index> indexs) {
