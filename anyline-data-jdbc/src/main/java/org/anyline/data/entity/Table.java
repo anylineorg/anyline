@@ -299,6 +299,14 @@ public class Table implements org.anyline.entity.data.Table{
         }
         return indexs;
     }
+    public Index getPrimaryIndex(){
+        for(Index index: indexs.values()){
+            if(index.isPrimary()){
+                return index;
+            }
+        }
+        return null;
+    }
 
     public Table setIndexs(LinkedHashMap<String, Index> indexs) {
         this.indexs = indexs;
