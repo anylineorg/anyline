@@ -1015,7 +1015,7 @@ public class ConfigParser {
 						}
 					}
 				}else{
-					result.add("");
+					//result.add("");
 				}
 			}
 		}
