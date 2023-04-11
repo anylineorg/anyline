@@ -39,7 +39,10 @@ public class Constraint {
     }
 
     public String getTableName() {
-        return tableName;
+        if(null != table){
+            return table.getName();
+        }
+        return table.getName();
     }
 
     public Table getTable() {
