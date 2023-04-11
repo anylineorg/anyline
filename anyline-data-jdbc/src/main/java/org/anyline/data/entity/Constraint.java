@@ -46,6 +46,9 @@ public class Constraint {
     }
 
     public Table getTable() {
+        if(null == table && null != tableName){
+            return new Table(tableName);
+        }
         return table;
     }
 
