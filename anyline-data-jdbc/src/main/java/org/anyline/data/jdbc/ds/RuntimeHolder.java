@@ -53,9 +53,15 @@ public class RuntimeHolder  implements ApplicationContextAware {
         }
         //默认数据源 有多个数据源的情况下 再注册anyline.service.default
         JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
-        if(multiple && null != template){
-            reg("default", template, null);
+        if(null != template) {
+            if(multiple) {
+                reg("default", template, null);
+            }
+            JDBCRuntime runtime = new JDBCRuntime("common", template, null);
+            runtimes.put("common", runtime);
         }
+
+
     }
 
     public static void reg(String key, DataSource ds){
@@ -96,10 +102,15 @@ public class RuntimeHolder  implements ApplicationContextAware {
         return getRuntime(DataSourceHolder.curDataSource());
     }
     public static JDBCRuntime getRuntime(String datasource){
+        JDBCRuntime runtime = null;
         if(null == datasource){
-            return getRuntime("default");
+            runtime = getRuntime("default");
+            if(null == runtime){
+                runtime = getRuntime("common");
+            }
+        }else {
+            runtime = runtimes.get(datasource);
         }
-        JDBCRuntime runtime = runtimes.get(datasource);
         if(null == runtime){
             throw new RuntimeException("未注册数据源:"+datasource);
         }
