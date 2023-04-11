@@ -817,6 +817,7 @@ public interface AnylineService<E>{
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary			: 主键
 	 * index			: 索引
 	 * constraint		: 约束
 	 *
@@ -879,6 +880,14 @@ public interface AnylineService<E>{
 		public boolean alter(Tag tag) throws Exception;
 		public boolean drop(Tag tag) throws Exception;
 
+
+		/* *****************************************************************************************************************
+		 * 													primary
+		 ******************************************************************************************************************/
+
+		public boolean add(PrimaryKey primary) throws Exception;
+		public boolean alter(PrimaryKey primary) throws Exception;
+		public boolean drop(PrimaryKey primary) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													index

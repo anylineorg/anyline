@@ -268,6 +268,14 @@ public interface AnylineDao<E>{
 	public boolean drop(Tag tag) throws Exception;
 
 	/* *****************************************************************************************************************
+	 * 													primary
+	 ******************************************************************************************************************/
+	public boolean add(PrimaryKey primary) throws Exception;
+	public boolean alter(PrimaryKey primary) throws Exception;
+	public boolean alter(Table table, PrimaryKey primary) throws Exception;
+	public boolean drop(PrimaryKey primary) throws Exception;
+
+	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
 	public boolean add(Index index) throws Exception;
