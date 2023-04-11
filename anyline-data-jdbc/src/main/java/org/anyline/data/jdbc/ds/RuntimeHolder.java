@@ -39,20 +39,22 @@ public class RuntimeHolder  implements ApplicationContextAware {
     //加载配置文件
     private void load(){
         Environment env = context.getEnvironment();
-        //默认数据源
-        JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
-        if(null != template){
-            reg("default", template, null);
-        }
         // 读取配置文件获取更多数据源
         String prefixs = env.getProperty("spring.datasource.list");
+        boolean multiple = false;
         if(null != prefixs){
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 DataSource ds = DataSourceUtil.buildDataSource("spring.datasource."+prefix,env);
                 reg(prefix, ds);
+                multiple = true;
                 log.info("[创建数据源][prefix:{}]",prefix);
             }
+        }
+        //默认数据源 有多个数据源的情况下 再注册anyline.service.default
+        JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
+        if(multiple && null != template){
+            reg("default", template, null);
         }
     }
 
@@ -70,7 +72,7 @@ public class RuntimeHolder  implements ApplicationContextAware {
     }
 
     public static void reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
-        log.warn("[create jdbc runtime][key:{}]", datasource);
+        log.info("[create jdbc runtime][key:{}]", datasource);
         JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
         runtimes.put(datasource, runtime);
         String dao_key = "anyline.dao." + datasource;

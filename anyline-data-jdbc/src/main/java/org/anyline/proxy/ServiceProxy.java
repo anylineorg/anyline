@@ -56,6 +56,9 @@ public class ServiceProxy {
             key = "default";
         }
         AnylineService service = (AnylineService)SpringContextUtil.getBean("anyline.service."+key);
+        if(null == service){
+            service = (AnylineService)SpringContextUtil.getBean("anyline.service");
+        }
         return service;
     }
 
