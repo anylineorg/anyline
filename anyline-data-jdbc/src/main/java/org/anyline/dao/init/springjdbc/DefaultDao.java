@@ -2403,6 +2403,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}
+		//主键
+		List<Column> pks = table.primarys();
+		List<Column> upks = update.primarys();
+
+		if(!BeanUtil.concat(pks,"name", ",").equalsIgnoreCase(BeanUtil.concat(upks,"name", ","))){
+			//删除主键
+			Index index = table.getPrimaryIndex();
+			if(null != index){
+				drop(index);
+			}
+			//添加主键
+			index = new Index();
+			index.setTable(update);
+			for(Column column:upks) {
+				index.addColumn(column);
+			}
+			add(index);
+		}
 		return result;
 	}
 
