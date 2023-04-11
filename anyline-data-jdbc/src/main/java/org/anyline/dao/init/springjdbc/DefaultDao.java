@@ -2308,7 +2308,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DDListener listener = table.getListener();
 		boolean exe = true;
 		if(null != listener){
-			exe = listener.beforeDrop(table);
+			exe = listener.beforeCreate(table);
 		}
 		if(exe) {
 			for(String sql:sqls) {
@@ -2319,14 +2319,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				runtime.getTemplate().update(sql);
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[create table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+					log.warn("{}[create table][table:{}][执行耗时:{}ms]", random, table.getName(), System.currentTimeMillis() - fr);
 				}
 			}
 			result = true;
 		}
 
 		if(null != listener){
-			listener.afterDrop(table, result);
+			listener.afterCreate(table, result);
 		}
 		return result;
 	}
@@ -2409,18 +2409,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if(!BeanUtil.concat(pks,"name", ",").equalsIgnoreCase(BeanUtil.concat(upks,"name", ","))){
 			//删除主键
-			Index index = table.getPrimaryIndex();
-			if(null != index){
-				drop(index);
+			PrimaryKey primaryKey = table.getPrimaryKey();
+			if(null != primaryKey){
+				drop(primaryKey);
 			}
 			//添加主键
-			index = new Index();
-			index.setTable(update);
-			index.setPrimary(true);
-			for(Column column:upks) {
-				index.addColumn(column);
-			}
-			add(index);
+			primaryKey = update.getPrimaryKey();
+			if(null != primaryKey)
+			add(primaryKey);
 		}
 		return result;
 	}
@@ -2446,6 +2442,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(exe) {
 			runtime.getTemplate().update(sql);
+			table_maps.remove(DataSourceHolder.curDataSource()+"");
 			result = true;
 		}
 
@@ -3085,6 +3082,122 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean add(PrimaryKey primary) throws Exception
+	 * public boolean alter(PrimaryKey primary) throws Exception
+	 * public boolean drop(PrimaryKey primary) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean add(PrimaryKey primary) throws Exception {
+		boolean result = false;
+		
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, primary);
+		String sql = adapter.buildAddRunSQL(primary);
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[sql:\n{}\n]", random,sql);
+		}
+		DDListener listener = primary.getListener();
+
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeAdd(primary);
+		}
+		if(exe) {
+			runtime.getTemplate().update(sql);
+			result = true;
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[add primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean alter(PrimaryKey primary) throws Exception {
+		Table table = primary.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(primary.getCatalog(), primary.getSchema(), primary.getTableName(), "TABLE");
+			if(tables.size() ==0){
+				throw new AnylineException("表不存在:"+primary.getTableName());
+			}else {
+				table = tables.values().iterator().next();
+			}
+		}
+		return alter(table, primary);
+	}
+	@Override
+	public boolean alter(Table table, PrimaryKey primary) throws Exception{
+		boolean result = true;
+		
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, primary);
+		List<String> sqls = adapter.buildAlterRunSQL(primary);
+
+		random = random();
+		DDListener listener = primary.getListener();
+		for(String sql:sqls) {
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[sql:\n{}\n]", random, sql);
+			}
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeAlter(primary);
+			}
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[update primary][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, primary.getTableName(), primary.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+	@Override
+	public boolean drop(PrimaryKey index) throws Exception {
+		boolean result = false;
+		
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		checkSchema(runtime, index);
+		String sql = adapter.buildDropRunSQL(index);
+		String random = null;
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[sql:\n{}\n]", random,sql);
+		}
+		DDListener listener = index.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(index);
+		}
+		if(exe) {
+			runtime.getTemplate().update(sql);
+			result = true;
+		}
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(index, result);
+		}
+		return result;
+	}
+
+	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public boolean add(Index index) throws Exception
@@ -3094,7 +3207,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Index index) throws Exception {
 		boolean result = false;
-		
+
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
@@ -3138,7 +3251,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, Index index) throws Exception{
 		boolean result = true;
-		
+
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
@@ -3171,7 +3284,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Index index) throws Exception {
 		boolean result = false;
-		
+
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
@@ -3199,7 +3312,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
