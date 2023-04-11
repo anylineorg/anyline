@@ -2693,10 +2693,33 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         /* *****************************************************************************************************************
+         * 													primary
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean add(PrimaryKey primary) throws Exception
+         * public boolean alter(PrimaryKey primary) throws Exception
+         * public boolean drop(PrimaryKey primary) throws Exception
+         ******************************************************************************************************************/
+
+        @Override
+        public boolean add(PrimaryKey primary) throws Exception{
+            primary.setService(DefaultService.this);
+            return dao.add(primary);
+        }
+
+        @Override
+        public boolean alter(PrimaryKey primary) throws Exception {
+            return false;
+        }
+
+        public boolean drop(PrimaryKey primary) throws Exception{
+            primary.setService(DefaultService.this);
+            return dao.drop(primary);
+        }
+        /* *****************************************************************************************************************
          * 													index
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean add(Index index) throws Exception
-		 * public boolean alter(Index index) throws Exception
+         * public boolean add(Index index) throws Exception
+         * public boolean alter(Index index) throws Exception
          * public boolean drop(Index index) throws Exception
          ******************************************************************************************************************/
 
