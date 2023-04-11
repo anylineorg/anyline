@@ -387,7 +387,10 @@ public class ConfigParser {
 			e.printStackTrace();
 		}
 		if(BasicUtil.isEmpty(true, list)){
-			list = getDefValues(values, parser);
+			List<Object> defs = getDefValues(values, parser);
+			if(defs.size()>0){
+				list = defs;
+			}
 		}
 		return list;
 	}
