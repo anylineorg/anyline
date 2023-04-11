@@ -2418,6 +2418,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != primaryKey)
 			add(primaryKey);
 		}
+		table_maps.remove(DataSourceHolder.curDataSource()+"");
 		return result;
 	}
 
