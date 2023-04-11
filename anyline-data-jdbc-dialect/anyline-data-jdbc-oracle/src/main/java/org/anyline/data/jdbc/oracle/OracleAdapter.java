@@ -1379,7 +1379,24 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public String buildAddRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildAddRunSQL(primary);
+		StringBuilder builder = new StringBuilder();
+		Map<String,Column> columns = primary.getColumns();
+		if(columns.size()>0) {
+			builder.append("ALTER TABLE ");
+			name(builder, primary.getTable());
+			builder.append(" ADD CONSTRAINT ").append(primary.getTableName()).append("_PK").append(" PRIMARY KEY(");
+			boolean first = true;
+			for(Column column:columns.values()){
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+			}
+			builder.append(")");
+
+		}
+		return builder.toString();
 	}
 	/**
 	 * 修改主键
@@ -1399,7 +1416,11 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildDropRunSQL(primary);
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, primary.getTable());
+		builder.append(" DROP PRIMARY KEY");
+		return builder.toString();
 	}
 	/**
 	 * 修改主键名
