@@ -2347,6 +2347,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean save(Table table) throws Exception{
             boolean result = false;
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             Table otable = metadata.table(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
                 otable.setAutoDropColumn(table.isAutoDropColumn());
