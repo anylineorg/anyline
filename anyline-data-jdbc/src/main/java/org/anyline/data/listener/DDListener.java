@@ -9,6 +9,8 @@ import org.anyline.service.AnylineService;
 
 public interface DDListener {
 
+    public boolean beforeCreate(Table table);
+    public void afterCreate(Table table, boolean result);
     public boolean beforeAdd(Column column);
 
     public void afterAdd(Column column, boolean result);
