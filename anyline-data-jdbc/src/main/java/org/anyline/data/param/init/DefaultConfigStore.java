@@ -294,7 +294,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, var, var, overCondition, overValue);
+		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore and(Config conf) {
