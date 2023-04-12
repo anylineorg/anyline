@@ -6,11 +6,13 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -317,6 +319,60 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		return super.tags(create, tags, dbmd, table, pattern);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * public PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的主键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		//test_pk_pkey	| p	| {2,1}	| 	PRIMARY KEY (id, name)
+		builder.append("SELECT  m.conname,  pg_get_constraintdef(m.oid, true) AS define\n");
+		builder.append("FROM pg_constraint m \n");
+		builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
+		builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
+		builder.append("WHERE ft.relname = '").append(table.getName()).append("'");
+		String schema = table.getSchema();
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND ns.nspname = '").append(schema).append("'");
+		}
+		list.add(builder.toString());
+		return list;
+	}
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+		PrimaryKey primary = null;
+		if(set.size()>0){
+			DataRow row = set.getRow(0);
+			primary = new PrimaryKey();
+			//con_name 	    |con_type	|con_key |  define
+			//test_pk_pkey	| p			| {2,1}	| 	PRIMARY KEY (id, name)
+			primary.setName(row.getString("conname"));
+			String define = row.getString("define");
+			String[] cols = RegularUtil.cut(define, "(",")").split(",");
+			for(String col:cols){
+				Column column = new Column(col.trim());
+				column.setTable(table);
+				primary.addColumn(column);
+			}
+		}
+		return primary;
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
