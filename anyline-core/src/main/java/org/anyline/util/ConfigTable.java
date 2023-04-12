@@ -66,6 +66,7 @@ public class ConfigTable {
 	public static boolean IS_HTTP_PARAM_AUTO_TRIM						= true		;   // http参数值是否自动trim
 	public static boolean IS_IGNORE_EMPTY_HTTP_KEY						= true		;	// AnylineController.entity(String ck)是否忽略http未提交的key
 	public static int HTTP_PARAM_ENCODE									= 0			;   // http参数是否解码0:自动识别 1:确认编码 -1:确认未编码
+	public static boolean IS_MULTIPLE_SERVICE							= true		;	// 如果有多数据源为每个数据源生成独立的service
 	public static boolean IS_UPPER_KEY 									= true		;	// DataRow是否自动转换成大写
 	public static boolean IS_LOWER_KEY 									= false		;	// DataRow是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true		;	// DataRow是否忽略大小写

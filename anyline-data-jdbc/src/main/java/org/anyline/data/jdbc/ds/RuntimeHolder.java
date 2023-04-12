@@ -5,6 +5,7 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.anyline.data.listener.DMListener;
 import org.anyline.service.init.DefaultService;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,9 @@ public class RuntimeHolder  implements ApplicationContextAware {
         log.info("[create jdbc runtime][key:{}]", datasource);
         JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
         runtimes.put(datasource, runtime);
+        if(!ConfigTable.IS_MULTIPLE_SERVICE){
+            return;
+        }
         String dao_key = "anyline.dao." + datasource;
         String service_key = "anyline.service." + datasource;
         log.warn("[instance service][data source:{}][instance id:{}]", datasource, service_key);

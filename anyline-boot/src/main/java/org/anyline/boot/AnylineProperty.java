@@ -46,6 +46,10 @@ public class AnylineProperty {
      */
     protected int httpParamEncode								= 0			;   // http参数是否需要解码 0:自动识别 1:确认编码 -1:确认未编码
     /**
+     * 如果有多数据源为每个数据源生成独立的service
+     */
+    protected boolean multipleService                            = true     ;   // 如果有多数据源为每个数据源生成独立的service
+    /**
      * DataRow是否自动转换成大写
      */
     protected boolean upperKey 								    = true		;	// DataRow是否自动转换成大写
@@ -327,6 +331,15 @@ public class AnylineProperty {
     public void setHttpParamEncode(int httpParamEncode) {
         this.httpParamEncode = httpParamEncode;
         ConfigTable.HTTP_PARAM_ENCODE = httpParamEncode;
+    }
+
+    public boolean isMultipleService() {
+        return multipleService;
+    }
+
+    public void setMultipleService(boolean multipleService) {
+        this.multipleService = multipleService;
+        ConfigTable.IS_MULTIPLE_SERVICE = multipleService;
     }
 
     public boolean isUpperKey() {
