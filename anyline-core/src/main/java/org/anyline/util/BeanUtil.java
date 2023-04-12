@@ -206,7 +206,7 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error("[set field value][result:fail][msg:{}]", e.toString());
+			log.error("[set field value][result:fail][field:{}][value:{}][msg:{}]", field, value, e.toString());
 			return false;
 		}
 		return true;
