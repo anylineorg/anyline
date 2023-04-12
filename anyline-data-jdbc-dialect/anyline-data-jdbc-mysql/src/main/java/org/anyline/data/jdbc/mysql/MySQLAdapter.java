@@ -566,6 +566,48 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return null;
 	}
 
+
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * public PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的主键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SHOW INDEX FROM ");
+		name(builder, table);
+		list.add(builder.toString());
+		return list;
+	}
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+		PrimaryKey primary = null;
+		set = set.getRows("Key_name", "PRIMARY");
+		if(set.size() > 0){
+			primary = new PrimaryKey();
+			for(DataRow row:set){
+				Column column = new Column(row.getString("Column_name"));
+				primary.addColumn(column);
+			}
+		}
+		return primary;
+	}
+
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
