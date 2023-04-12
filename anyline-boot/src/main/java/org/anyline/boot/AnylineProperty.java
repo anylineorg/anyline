@@ -50,6 +50,11 @@ public class AnylineProperty {
      */
     protected boolean multipleService                            = true     ;   // 如果有多数据源为每个数据源生成独立的service
     /**
+     * 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
+     */
+    protected boolean autoConvertBytes 							 = true		;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
+
+    /**
      * DataRow是否自动转换成大写
      */
     protected boolean upperKey 								    = true		;	// DataRow是否自动转换成大写
@@ -772,5 +777,14 @@ public class AnylineProperty {
     public void setPrimaryGeneratorTimeActive(boolean primaryGeneratorTimeActive) {
         this.primaryGeneratorTimeActive = primaryGeneratorTimeActive;
         ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE = primaryGeneratorTimeActive;
+    }
+
+    public boolean isAutoConvertBytes() {
+        return autoConvertBytes;
+    }
+
+    public void setAutoConvertBytes(boolean autoConvertBytes) {
+        this.autoConvertBytes = autoConvertBytes;
+        ConfigTable.IS_AUTO_CONVERT_BYTES = autoConvertBytes;
     }
 }
