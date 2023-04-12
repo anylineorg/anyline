@@ -1217,7 +1217,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setTableName(BasicUtil.evl(string(keys,"TABLE_NAME", set, table.getName()), column.getTableName()));
 			column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
 			column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));
-			column.setTypeName(string(keys, "TYPE_NAME", set, column.getTypeName()));
+			String jdbcType = string(keys, "TYPE_NAME", set, column.getTypeName());
+			if(BasicUtil.isEmpty(column.getTypeName())) {
+				//数据库中 有jdbc是支持的类型 如果数据库中有了就不用jdbc的了
+				column.setTypeName(jdbcType);
+			}
+			column.setJdbcType(jdbcType);
 			column.setPrecision(integer(keys, "COLUMN_SIZE", set, column.getPrecision()));
 			column.setScale(integer(keys, "DECIMAL_DIGITS", set, column.getScale()));
 			column.setNullable(bool(keys, "NULLABLE", set, column.isNullable()));
