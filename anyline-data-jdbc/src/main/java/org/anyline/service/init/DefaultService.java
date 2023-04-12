@@ -2274,6 +2274,28 @@ public class DefaultService<E> implements AnylineService<E> {
             return tags;
         }
         /* *****************************************************************************************************************
+         * 													primary
+         * -----------------------------------------------------------------------------------------------------------------
+         * public PrimaryKey primary(Table table)
+         * public PrimaryKey primary(String table)
+         * public PrimaryKey primary(String catalog, String schema, String table)
+         ******************************************************************************************************************/
+        @Override
+        public PrimaryKey primary(Table table) {
+            return dao.primary(table);
+        }
+
+        @Override
+        public PrimaryKey primary(String table) {
+            return primary(new Table(table));
+        }
+
+        @Override
+        public PrimaryKey primary(String catalog, String schema, String table) {
+            return primary(new Table(catalog, schema, table));
+        }
+
+        /* *****************************************************************************************************************
          * 													index
          * -----------------------------------------------------------------------------------------------------------------
          * public LinkedHashMap<String, Index> indexs(Table table)
