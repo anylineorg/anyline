@@ -357,7 +357,7 @@ public abstract class AnylineConfig {
 				Object val = value;
 				Type type = field.getGenericType();
 				String typeName = type.getTypeName();
-				if (typeName.contains("int") || typeName.contains("Integer")) {
+				if (typeName.startsWith("int") || typeName.contains("Integer")) {
 					val = BasicUtil.parseInt(value, 0);
 				}else if (typeName.contains("long") || typeName.contains("Long")) {
 					val = BasicUtil.parseLong(value, 0L);

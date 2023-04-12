@@ -3569,14 +3569,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 String vc = value.getClass().getSimpleName().toUpperCase();
                 if(null != value){
                     boolean exe = false;
-                    if(vc.contains("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
+                    if(vc.startsWith("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
                         exe = true;
                     }
                     if(!exe){
                         Column column = getMetadata(key);
                         if(null != column){
                             vc = column.getTypeName().toUpperCase();
-                            if(vc.contains("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
+                            if(vc.startsWith("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
                                 exe = true;
                             }
                         }

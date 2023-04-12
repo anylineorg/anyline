@@ -3013,7 +3013,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null != clazz){
 			clazz = clazz.toLowerCase();
 			if(
-					clazz.contains("int")
+					clazz.startsWith("int")
 							|| clazz.contains("integer")
 							|| clazz.contains("long")
 							|| clazz.contains("decimal")
@@ -3030,7 +3030,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			String type = column.getTypeName();
 			if(null != type){
 				type = type.toLowerCase();
-				if(type.contains("int")
+				if(type.startsWith("int")
 						||type.contains("float")
 						||type.contains("double")
 						||type.contains("short")
@@ -3268,7 +3268,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					}else{
 						run.setValue(BasicUtil.parseLong(value, null));
 					}
-				}else if(typeName.contains("INT")){
+				}else if(typeName.equals("POINT")){
+					if(value instanceof double[]){
+						double[] ds = (double[]) value;
+						if(ds.length>=2){
+							value = NumberUtil.double2point(ds[0], ds[1]);
+							run.setValue(value);
+						}
+					}
+				}else if(typeName.startsWith("INT")){
 					if(value instanceof Integer){
 					}else{
 						run.setValue(BasicUtil.parseInt(value, null));

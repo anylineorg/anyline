@@ -1171,7 +1171,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			if(type.contains("CHAR")){
 				return "TEXT";
 			}
-			if(type.contains("INT")){
+			if(type.startsWith("INT")){
 				return "INTEGER";
 			}
 			if(type.contains("BLOB")){

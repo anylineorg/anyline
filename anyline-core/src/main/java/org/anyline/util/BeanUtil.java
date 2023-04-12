@@ -173,6 +173,15 @@ public class BeanUtil {
 							v = json2oject(v.toString(), field.getType());
 						}else if(columnType.contains("XML")){
 							v = xml2object(v.toString(), field.getType());
+						}else {
+							//根据数据库类型
+							if("POINT".equals(columnType)){
+								if("double[]".equals(type)){
+									if(v instanceof byte[]){
+										v = NumberUtil.byte2point((byte[]) v);
+									}
+								}
+							}
 						}
 					} else if (type.equals("string")) {
 						if(v instanceof byte[]){
@@ -180,16 +189,6 @@ public class BeanUtil {
 						}else {
 							v = v.toString();
 						}
-					}else{
-						//根据数据库类型
-						if("POINT".equals(columnType)){
-							if("double[]".equals(type)){
-								if(v instanceof byte[]){
-									v = NumberUtil.byte2point((byte[]) v);
-								}
-							}
-						}
-
 					}
 				}
 			}else{
@@ -232,7 +231,7 @@ public class BeanUtil {
 			if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
 				if (type.equals("bigint") || type.equals("long")) {
 					v = Long.parseLong(value.toString());
-				}else if (type.contains("int")) {
+				}else if (type.startsWith("int") || type.equals("integer")) {
 					v = Integer.parseInt(value.toString());
 				} else if (type.equals("double")) {
 					v = Double.parseDouble(value.toString());
