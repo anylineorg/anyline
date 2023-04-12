@@ -221,6 +221,12 @@ public class BeanUtil {
 		return true;
 	}
 
+	/**
+	 * 根据数据类型转换成Java值
+	 * @param type 数据库类型
+	 * @param value 值
+	 * @return Object
+	 */
 	public static Object value(String type, Object value){
 		Object v = value;
 		if(null == type){
@@ -275,6 +281,11 @@ public class BeanUtil {
 						v = Base64Util.encode((byte[]) v);
 					}else {
 						v = v.toString();
+					}
+				}else if(type.equals("point")){
+					if(v instanceof byte[]){
+						byte[] bytes = (byte[]) v;
+						v = NumberUtil.byte2point(bytes);
 					}
 				}
 			}
