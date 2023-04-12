@@ -639,11 +639,32 @@ public interface JDBCAdapter {
 
 
 	/* *****************************************************************************************************************
+	 * 													primary
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的主键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception;
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception;
+
+
+	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
 
 	/**
-	 * 查询表上的所引
+	 * 查询表上的索引
 	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
