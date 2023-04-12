@@ -160,13 +160,13 @@ public class BeanUtil {
 					} else if (type.equals("date")) {
 						v = DateUtil.parse(v);
 					} else if(type.equals("localtime")){
-						Date date = DateUtil.parse(v);
+						Date date = new Date(DateUtil.parse(v).getTime());
 						v = DateUtil.localTime(date);
 					} else if(type.equals("localdate")){
-						Date date = DateUtil.parse(v);
+						Date date = new Date(DateUtil.parse(v).getTime());
 						v = DateUtil.localDate(date);
 					} else if(type.equals("localdatetime")){
-						Date date = DateUtil.parse(v);
+						Date date = new Date(DateUtil.parse(v).getTime());
 						v = DateUtil.localDateTime(date);
 					}else if(!type.equals("string") && null != columnType){
 						if(columnType.contains("JSON")) {
@@ -180,6 +180,16 @@ public class BeanUtil {
 						}else {
 							v = v.toString();
 						}
+					}else{
+						//根据数据库类型
+						if("POINT".equals(columnType)){
+							if("double[]".equals(type)){
+								if(v instanceof byte[]){
+									v = NumberUtil.byte2point((byte[]) v);
+								}
+							}
+						}
+
 					}
 				}
 			}else{
