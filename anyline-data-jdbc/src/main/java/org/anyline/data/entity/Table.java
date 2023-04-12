@@ -145,6 +145,10 @@ public class Table implements org.anyline.entity.data.Table{
         return this;
     }
 
+    public Table setPrimaryKey(PrimaryKey primaryKey){
+        this.primaryKey = primaryKey;
+        return this;
+    }
 
     public Table addTag(Tag tag){
         tag.setTable(this);
