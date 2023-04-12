@@ -30,6 +30,29 @@ public class CacheProxy {
 
     private static Map<String,DataRow> cache_metadata = new HashMap<>();
     private static Map<String,DataRow> cache_metadatas = new HashMap<>();
+    private static Map<String,DataRow> cache_table_maps = new HashMap<>();
+
+    public static String tableName(String datasource, String name){
+        DataRow row = cache_table_maps.get(datasource);
+        if(null != row){
+            return row.getString(name);
+        }
+        return name;
+    }
+    public static void clearTableMaps(String datasource){
+        cache_table_maps.remove(datasource);
+    }
+    public static void setTableMaps(String datasource, DataRow maps){
+        cache_table_maps.put(datasource, maps);
+    }
+    public static DataRow getTableMaps(String datasource){
+        DataRow row = cache_table_maps.get(datasource);
+        if(null == row){
+            row = new DataRow();
+            cache_table_maps.put(datasource, row);
+        }
+        return row;
+    }
 
     public static LinkedHashMap<String, Column> columns(String table){
         if(null == table){

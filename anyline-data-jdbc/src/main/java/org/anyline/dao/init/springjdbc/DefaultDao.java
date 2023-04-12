@@ -1643,11 +1643,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			Map<String,String> table_map = table_maps.get(DataSourceHolder.curDataSource()+"");
-			if(null == table_map){
-				table_map = new HashMap<>();
-				table_maps.put(DataSourceHolder.curDataSource()+"", table_map);
-			}
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
+			
 			// 根据系统表查询
 			try{
 				List<String> sqls = adapter.buildQueryDatabaseRunSQL();
@@ -1688,7 +1685,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Table> tables()
 	 ******************************************************************************************************************/
 
-	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
 	/**
 	 * tables
 	 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -1725,11 +1721,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			Map<String,String> table_map = table_maps.get(DataSourceHolder.curDataSource()+"");
-			if(null == table_map){
-				table_map = new HashMap<>();
-				table_maps.put(DataSourceHolder.curDataSource()+"", table_map);
-			}
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
+			
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -1739,7 +1732,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 				if(table_map.containsKey(pattern.toUpperCase())){
-					pattern = table_map.get(pattern.toUpperCase());
+					pattern = table_map.getString(pattern.toUpperCase());
 				}
 			}
 			// 根据系统表查询
@@ -1834,11 +1827,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			Map<String,String> table_map = table_maps.get(DataSourceHolder.curDataSource()+"");
-			if(null == table_map){
-				table_map = new HashMap<>();
-				table_maps.put(DataSourceHolder.curDataSource()+"", table_map);
-			}
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -1848,7 +1837,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 				if(table_map.containsKey(pattern.toUpperCase())){
-					pattern = table_map.get(pattern.toUpperCase());
+					pattern = table_map.getString(pattern.toUpperCase());
 				}
 			}
 
@@ -2418,7 +2407,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != primaryKey)
 			add(primaryKey);
 		}
-		table_maps.remove(DataSourceHolder.curDataSource()+"");
+		CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
 		return result;
 	}
 
@@ -2443,7 +2432,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(exe) {
 			runtime.getTemplate().update(sql);
-			table_maps.remove(DataSourceHolder.curDataSource()+"");
+			CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
 			result = true;
 		}
 
