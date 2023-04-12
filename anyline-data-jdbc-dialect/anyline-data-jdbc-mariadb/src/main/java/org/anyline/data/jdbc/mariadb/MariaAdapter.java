@@ -1175,10 +1175,10 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append(" ADD PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
-				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 				if(!first){
 					builder.append(",");
 				}
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 				first = false;
 			}
 			builder.append(")");

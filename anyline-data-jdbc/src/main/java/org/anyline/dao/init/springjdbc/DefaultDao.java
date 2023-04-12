@@ -2219,6 +2219,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(BasicUtil.isNotEmpty(sql)) {
 						DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
 						primary = adapter.primary(idx, table, set);
+						if(null != primary){
+							primary.setTable(table);
+						}
 					}
 					idx ++;
 				}
@@ -3228,33 +3231,33 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public boolean drop(PrimaryKey index) throws Exception {
+	public boolean drop(PrimaryKey primary) throws Exception {
 		boolean result = false;
 		
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		checkSchema(runtime, index);
-		String sql = adapter.buildDropRunSQL(index);
+		checkSchema(runtime, primary);
+		String sql = adapter.buildDropRunSQL(primary);
 		String random = null;
 		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 			random = random();
 			log.warn("{}[sql:\n{}\n]", random,sql);
 		}
-		DDListener listener = index.getListener();
+		DDListener listener = primary.getListener();
 		boolean exe = true;
 		if(null != listener){
-			exe = listener.beforeDrop(index);
+			exe = listener.beforeDrop(primary);
 		}
 		if(exe) {
 			runtime.getTemplate().update(sql);
 			result = true;
 		}
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
+			log.warn("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
-			listener.afterDrop(index, result);
+			listener.afterDrop(primary, result);
 		}
 		return result;
 	}
