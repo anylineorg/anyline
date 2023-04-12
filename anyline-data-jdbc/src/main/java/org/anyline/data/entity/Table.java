@@ -147,6 +147,9 @@ public class Table implements org.anyline.entity.data.Table{
 
     public Table setPrimaryKey(PrimaryKey primaryKey){
         this.primaryKey = primaryKey;
+        if(null != primaryKey){
+            primaryKey.setTable(this);
+        }
         return this;
     }
 
@@ -306,16 +309,6 @@ public class Table implements org.anyline.entity.data.Table{
     }
     public PrimaryKey getPrimaryKey(){
         if(null == primaryKey){
-            for(Index index: indexs.values()){
-                if(index.isPrimary()){
-                    primaryKey = new PrimaryKey();
-                    primaryKey.setName(index.getName());
-                    primaryKey.setTable(this);
-                    primaryKey.setColumns(index.getColumns());
-                }
-            }
-        }
-        if(null == primaryKey){
             for(Column column: columns.values()){
                 if(column.isPrimaryKey() ==1){
                     if(null == primaryKey){
@@ -324,6 +317,16 @@ public class Table implements org.anyline.entity.data.Table{
                         primaryKey.setTable(this);
                     }
                     primaryKey.addColumn(column);
+                }
+            }
+        }
+        if(null == primaryKey){
+            for(Index index: indexs.values()){
+                if(index.isPrimary()){
+                    primaryKey = new PrimaryKey();
+                    primaryKey.setName(index.getName());
+                    primaryKey.setTable(this);
+                    primaryKey.setColumns(index.getColumns());
                 }
             }
         }
