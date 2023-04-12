@@ -22,6 +22,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected String comment                      ; // 备注
     protected Integer type                        ; // 类型
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
@@ -179,6 +180,13 @@ public class Column implements org.anyline.entity.data.Column{
         return typeName;
     }
 
+    public String getJdbcType() {
+        return jdbcType;
+    }
+
+    public void setJdbcType(String jdbcType) {
+        this.jdbcType = jdbcType;
+    }
 
     /**
      * 设置数据类型 根据数据库定义的数据类型
