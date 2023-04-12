@@ -1458,6 +1458,158 @@ public class BeanUtil {
 		return concat(list,false);
 	}
 
+
+	public static String concat(int[] list, String split, boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(int[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(int[] list, boolean required) {
+		return concat(list, ",", required);
+	}
+	public static String concat(int[] list) {
+		return concat(list, false);
+	}
+
+	public static String concat(long[] list, String split, boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(long[] list, String split) {
+		return concat(list, split);
+	}
+	public static String concat(long[] list, boolean required) {
+		return concat(list, ",", required);
+	}
+	public static String concat(long[] list) {
+		return concat(list,false);
+	}
+
+	public static String concat(double[] list, String split, boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required &&BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(double[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(double[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(double[] list) {
+		return concat(list, false);
+	}
+
+	public static String concat(float[] list, String split,  boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(float[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(float[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(float[] list) {
+		return concat(list, false);
+	}
+
+	public static String concat(short[] list, String split, boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(short[] list, String split){
+		return concat(list, split, false);
+	}
+	public static String concat(short[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(short[] list) {
+		return concat(list, false);
+	}
+
+	public static String concat(byte[] list, String split, boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+
+	public static String concat(byte[] list, String split) {
+		return concat(list, split, false);
+	}
+	public static String concat(byte[] list, boolean required) {
+		return concat(list,",", required);
+	}
+	public static String concat(byte[] list) {
+		return concat(list,false);
+	}
+
 	public static List wrap(Collection list, String wrap){
 		List result = new ArrayList<>();
 		for(Object obj:list){
