@@ -203,6 +203,12 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
 
 	/* *****************************************************************************************************************
+	 * 													primary
+	 ******************************************************************************************************************/
+	public PrimaryKey primary(Table table);
+	public PrimaryKey primary(String table);
+	public PrimaryKey primary(String catalog, String schema, String table);
+	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Index> indexs(Table table);
