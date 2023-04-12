@@ -807,18 +807,18 @@ public class NumberUtil {
 		if(bytes==null){
 			return null;
 		}
-		return new double[]{bytes2double(bytes,9),bytes2double(bytes,17)};
+		return new double[]{byte2double(bytes,9),byte2double(bytes,17)};
 	}
 
 	public static double[] byte2points(byte[] arr){
 		int len=(arr.length-13)/8;
 		double[] result=new double[len];
 		for(int i=0;i<len; i++){
-			result[i]=bytes2double(arr,13+i*8);
+			result[i]=byte2double(arr,13+i*8);
 		}
 		return result;
 	}
-	public static double bytes2double(byte[] arr,int start) {
+	public static double byte2double(byte[] arr,int start) {
 		long value = 0;
 		for (int i = 0; i < 8; i++) {
 			value |= ((long) (arr[start+i] & 0xff)) << (8 * i);
