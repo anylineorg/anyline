@@ -1359,7 +1359,12 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildDropRunSQL(primary);
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, primary.getTable());
+		builder.append(" DROP CONSTRAINT ");
+		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 	/**
 	 * 修改主键名
