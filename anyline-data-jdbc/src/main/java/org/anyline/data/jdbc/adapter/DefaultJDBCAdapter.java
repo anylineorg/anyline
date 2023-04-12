@@ -1555,6 +1555,40 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * public PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的主键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryPrimaryRunSQL(Table table)", 37));
+		}
+		return null;
+	}
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 PrimaryKey primary(int index, Table table, DataSet set)", 37));
+		}
+		return null;
+	}
+
+
+	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata)
