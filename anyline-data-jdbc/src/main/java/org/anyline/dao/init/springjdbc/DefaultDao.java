@@ -2181,6 +2181,71 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return tags(tab);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public PrimaryKey primary(Table table)
+	 * public PrimaryKey primary(String table)
+	 * public PrimaryKey primary(String catalog, String schema, String table)
+	 ******************************************************************************************************************/
+	/**
+	 * 索引
+	 * @param table 表
+	 * @return map
+	 */
+	@Override
+	public PrimaryKey primary(Table table){
+		PrimaryKey primary = null;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		String tab = table.getName();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		DataSource ds = null;
+		Connection con = null;
+		String random = null;
+		DatabaseMetaData metadata = null;
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			random = random();
+		}
+
+		try{
+			List<String> sqls = adapter.buildQueryPrimaryRunSQL(table);
+			if(null != sqls){
+				int idx = 0;
+				for(String sql:sqls){
+					if(BasicUtil.isNotEmpty(sql)) {
+						DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+						primary = adapter.primary(idx, table, set);
+					}
+					idx ++;
+				}
+			}
+		}catch (Exception e){
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
+			}
+		}
+		return primary;
+	}
+
+	@Override
+	public PrimaryKey primary(String table) {
+		Table tab = new Table();
+		tab.setName(table);
+		return primary(tab);
+	}
+
+	@Override
+	public PrimaryKey primary(String catalog, String schema, String table) {
+		Table tab = new Table();
+		tab.setCatalog(catalog);
+		tab.setSchema(schema);
+		tab.setName(table);
+		return primary(tab);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													index
@@ -2190,7 +2255,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	/**
-	 * 所引
+	 * 索引
 	 * @param table 表
 	 * @return map
 	 */
@@ -2393,19 +2458,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		//主键
-		List<Column> pks = table.primarys();
-		List<Column> upks = update.primarys();
+		PrimaryKey src_primary = primary(table);
+		PrimaryKey cur_primary = update.getPrimaryKey();
+		String src_define = "";
+		String cur_define = "";
+		if(null != src_primary){
+			src_define= BeanUtil.concat(src_primary.getColumns().values(),"name", ",");
+		}
+		if(null != cur_primary){
+			cur_define= BeanUtil.concat(cur_primary.getColumns().values(),"name", ",");
+		}
 
-		if(!BeanUtil.concat(pks,"name", ",").equalsIgnoreCase(BeanUtil.concat(upks,"name", ","))){
+		if(!cur_define.equalsIgnoreCase(src_define)){
 			//删除主键
-			PrimaryKey primaryKey = table.getPrimaryKey();
-			if(null != primaryKey){
-				drop(primaryKey);
+			if(null != src_primary){
+				drop(src_primary);
 			}
 			//添加主键
-			primaryKey = update.getPrimaryKey();
-			if(null != primaryKey)
-			add(primaryKey);
+			if(null != cur_primary) {
+				add(cur_primary);
+			}
 		}
 		CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
 		return result;
