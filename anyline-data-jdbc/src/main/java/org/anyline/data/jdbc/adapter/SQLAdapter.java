@@ -1176,12 +1176,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }*/
         if(null != value){
             String type = null;
+            Column column = null;
             if(ConfigTable.IS_AUTO_CHECK_METADATA) {
                 String table = run.getTable();
                 if (null != table) {
                     LinkedHashMap<String, Column> columns = ServiceProxy.metadata().columns(table);
                     if(null != columns){
-                        Column column = columns.get(key.toUpperCase());
+                        column = columns.get(key.toUpperCase());
                         if(null != column){
                             type = column.getTypeName().toUpperCase();
                         }
