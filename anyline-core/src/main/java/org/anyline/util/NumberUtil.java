@@ -796,4 +796,64 @@ public class NumberUtil {
 	public static String compress(String src) {
 		return compress(src, false);
 	}
+
+
+	/**
+	 * byte转坐标
+	 * @param bytes bytes
+	 * @return double[]
+	 */
+	public static double[] byte2point(byte[] bytes){
+		if(bytes==null){
+			return null;
+		}
+		return new double[]{bytes2double(bytes,9),bytes2double(bytes,17)};
+	}
+
+	public static double[] byte2points(byte[] arr){
+		int len=(arr.length-13)/8;
+		double[] result=new double[len];
+		for(int i=0;i<len; i++){
+			result[i]=bytes2double(arr,13+i*8);
+		}
+		return result;
+	}
+	public static double bytes2double(byte[] arr,int start) {
+		long value = 0;
+		for (int i = 0; i < 8; i++) {
+			value |= ((long) (arr[start+i] & 0xff)) << (8 * i);
+		}
+		return Double.longBitsToDouble(value);
+
+	}
+	/**
+	 * 将double型经纬度转成mysql的point类型数据
+	 * @param ds doubles
+	 * @return byte[]
+	 */
+	public static byte[] double2point(double[] ds){
+		return double2point(ds[0], ds[1]);
+	}
+	public static byte[] double2point(double d1,double d2){
+		byte[] b1=double2bytes(d1);
+		byte[] b2=double2bytes(d2);
+		byte[] bpoint=new byte[25];
+		bpoint[4]=0x01;
+		bpoint[5]=0x01;
+		for(int i=0;i<8;++i){
+			bpoint[9+i]=b2[i];
+			bpoint[17+i]=b1[i];
+		}
+		return bpoint;
+	}
+
+	public static byte[] double2bytes(double d) {
+		long value = Double.doubleToRawLongBits(d);
+		byte[] byteRet = new byte[8];
+		for (int i = 0; i < 8; i++) {
+			byteRet[i] = (byte) ((value >> 8 * i) & 0xff);
+		}
+		return byteRet;
+
+	}
 } 
