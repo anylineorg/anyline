@@ -956,7 +956,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			int qty = rsmd.getColumnCount();
 			if (metadatas.isEmpty()) {
 				for (int i = 1; i <= qty; i++) {
-					Column column = adapter.column(null, rsmd, i);
+					org.anyline.entity.data.Column column = metadatas.get(rsmd.getColumnName(i)) ;
+					column = adapter.column(null, rsmd, i);
 					metadatas.put(column.getName().toUpperCase(), column);
 				}
 			}
@@ -983,7 +984,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
 		DataSet set = new DataSet();
-		LinkedHashMap<String,Column> columns = null;
+		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
 			columns = CacheProxy.columns(table);
 			if(null == columns){
@@ -996,6 +997,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			final long[] mid = {System.currentTimeMillis()};
 			final boolean[] process = {false};
 			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
+			metadatas.putAll(columns);
 			if(null != values && values.size()>0){
 				runtime.getTemplate().query(sql, values.toArray(), new RowCallbackHandler() {
 					@Override
