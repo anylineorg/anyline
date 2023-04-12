@@ -1295,7 +1295,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				column.setType(BasicUtil.parseInt(string(keys, "SQL_DATA_TYPE", rs), null));
 			}
 			if(null == column.getTypeName()){
-				column.setTypeName(string(keys, "TYPE_NAME", rs));
+				String jdbcType = string(keys, "TYPE_NAME", rs);
+				column.setJdbcType(jdbcType);
+				if(BasicUtil.isEmpty(column.getTypeName())) {
+					column.setTypeName(jdbcType);
+				}
 			}
 			if(null == column.getPrecision()) {
 				column.setPrecision(integer(keys, "COLUMN_SIZE", rs, null));
@@ -1394,7 +1398,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
 			}
 			try {
-				column.setTypeName(rsm.getColumnTypeName(index));
+				String jdbcType = rsm.getColumnTypeName(index);
+				column.setJdbcType(jdbcType);
+				if(BasicUtil.isEmpty(column.getTypeName())) {
+					column.setTypeName(jdbcType);
+				}
 			} catch (Exception e) {
 				log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 			}
@@ -1472,7 +1480,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
 		}
 		try {
-			column.setTypeName(rsm.getColumnTypeName(index));
+			String jdbcType = rsm.getColumnTypeName(index);
+			column.setJdbcType(jdbcType);
+			if(BasicUtil.isEmpty(column.getTypeName())) {
+				column.setTypeName(jdbcType);
+			}
 		}catch (Exception e){
 			log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 		}
