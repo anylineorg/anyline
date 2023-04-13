@@ -180,14 +180,20 @@ public class BeanUtil {
 								if("double[]".equals(fieldType)){
 									if(v instanceof byte[]){
 										v = BeanUtil.Double2double(new Point((byte[])v).getArray(), 0d);
+									}else if(v instanceof Point){
+										Double[] ds = ((Point)v).getArray();
+										v = BeanUtil.Double2double(ds, 0);
 									}
 								}else if("Double[]".equals(fieldType)){
 									if(v instanceof byte[]){
 										v = new Point((byte[])v).getArray();
+									}else if(v instanceof Point){
+										v = ((Point)v).getArray();
 									}
 								}else if("Point".equals(fieldType)){
 									if(v instanceof byte[]){
 										v = new Point((byte[])v);
+									}else if(v instanceof Point){
 									}
 								}
 							}
@@ -314,6 +320,10 @@ public class BeanUtil {
 						v = Base64Util.encode((byte[]) v);
 					}else {
 						v = v.toString();
+					}
+				}else if (type.equals("point")) {
+					if(v instanceof byte[]){
+						v = new Point((byte[]) v);
 					}
 				}
 			}
