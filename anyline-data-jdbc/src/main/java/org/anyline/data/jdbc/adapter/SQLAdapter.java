@@ -83,7 +83,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
      * public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values) throws Exception
      *
-     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
      * protected void insertValue(Run run, Object obj, boolean placeholder , List<String> keys)
      ******************************************************************************************************************/
@@ -219,13 +219,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromEntity(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
         if(BasicUtil.isEmpty(dest)){
             throw new SQLException("未指定表");
         }
+        int from = 1;
         StringBuilder valuesBuilder = new StringBuilder();
         DataRow row = null;
         if(obj instanceof DataRow){
@@ -234,6 +235,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                  createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
+            from = 2;
             String pk = null;
             Object pv = null;
             if(EntityAdapterProxy.hasAdapter()){
@@ -242,7 +244,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""),  null, null);
             }
         }
-
+        run.setFrom(from);
         /*确定需要插入的列*/
 
         List<String> keys = confirmInsertColumns(dest, obj, columns, false);
@@ -369,6 +371,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(scope) {
             builder.append("(");
         }
+        int from = 1;
+        if(obj instanceof DataRow){
+            from = 1;
+        }
+        run.setFrom(from);
         for(int i=0; i<keySize; i++){
             boolean place = placeholder;
             String key = keys.get(i);
@@ -533,7 +540,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													UPDATE
      * -----------------------------------------------------------------------------------------------------------------
-     * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+     * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
      ******************************************************************************************************************/
 
@@ -564,8 +571,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
         return false;
     }
-    protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+    protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         TableRun run = new TableRun(this,dest);
+        run.setFrom(2);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
@@ -678,6 +686,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
     protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
         TableRun run = new TableRun(this,dest);
+        run.setFrom(1);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
@@ -1144,6 +1153,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
     protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
         TableRun run = new TableRun(this,dest);
+        run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         builder.append("DELETE FROM ");
         SQLUtil.delimiter(builder, parseTable(dest), delimiterFr, delimiterTo);
@@ -1198,6 +1208,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected String concatOr(String ... args)
      * protected String concatAdd(String ... args)
      ******************************************************************************************************************/
+
+    /**
+     * 设置参数值
+     * @param run fun
+     * @param compare compare
+     * @param key key
+     * @param value value
+     */
     protected void addRunValue(Run run, Compare compare, String key, Object value){
         /*if(null != value && value instanceof SQL_BUILD_IN_VALUE){
             value = buildInValue((SQL_BUILD_IN_VALUE)value);

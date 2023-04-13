@@ -21,14 +21,11 @@ package org.anyline.data.run;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.entity.Compare;
+import org.anyline.entity.*;
 
 import java.util.List;
 
@@ -93,7 +90,7 @@ public interface Run {
 	public ConditionChain getConditionChain() ; 
 
 	/** 
-	 * 添加参数值 
+	 * 添加参数值
 	 * @param compare  compare
 	 * @param column  column
 	 * @param obj  obj
@@ -132,4 +129,7 @@ public interface Run {
 	public boolean isValid();
 	public StringBuilder getBuilder();
 	public void setBuilder(StringBuilder builder);
-} 
+	//1-DataRow 2-Entity
+	public int getFrom();
+	public void setFrom(int from);
+}

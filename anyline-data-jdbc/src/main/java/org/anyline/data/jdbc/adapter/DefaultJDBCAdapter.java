@@ -146,7 +146,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public List<Map<String,Object>> process(List<Map<String,Object>> list)
 	 *
 	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
-	 * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
+	 * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
 	 * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
 	 ******************************************************************************************************************/
 
@@ -175,7 +175,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			return null;
 		}else {
-			return createInsertRunFromEntity(template, dest, obj, checkPrimary,columns);
+			return createInsertRun(template, dest, obj, checkPrimary,columns);
 		}
 
 	}
@@ -395,7 +395,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param columns 列
 	 * @return Run
 	 */
-	protected Run createInsertRunFromEntity(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+	protected Run createInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 
@@ -422,7 +422,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
 	 * public List<String> checkMetadata(String table, List<String> columns)
 	 *
-	 * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+	 * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
 	 * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
 	 * protected List<String> confirmUpdateColumns(String dest, DataRow row, List<String> columns)
 	 ******************************************************************************************************************/
@@ -439,11 +439,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			return buildUpdateRunFromDataRow(dest, (DataRow)obj, configs, checkPrimary, columns);
 		}else{
-			return buildUpdateRunFromObject(dest, obj, configs, checkPrimary, columns);
+			return buildUpdateRunFromEntity(dest, obj, configs, checkPrimary, columns);
 		}
 	}
 
-	protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+	protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		return null;
 	}
 	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){

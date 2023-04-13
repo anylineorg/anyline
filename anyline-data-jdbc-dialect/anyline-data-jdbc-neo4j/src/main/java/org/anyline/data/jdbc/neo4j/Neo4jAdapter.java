@@ -71,7 +71,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
      * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
      *
-     * protected Run createInsertRunFromEntity(String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
      *  public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception
      ******************************************************************************************************************/
@@ -179,7 +179,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromEntity(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this, dest);
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
@@ -755,14 +755,15 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													UPDATE
      * -----------------------------------------------------------------------------------------------------------------
-     * protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+     * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildDeleteRunContent(TableRun run)
      * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
      * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
-    protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+    protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         TableRun run = new TableRun(this,dest);
+        run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         // List<Object> values = new ArrayList<Object>();
         List<String> keys = null;
@@ -1005,6 +1006,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
         TableRun run = new TableRun(this,dest);
+        run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         builder.append("MATCH (d");
         String table = parseTable(dest);
