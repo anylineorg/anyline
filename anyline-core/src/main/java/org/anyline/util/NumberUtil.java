@@ -799,7 +799,7 @@ public class NumberUtil {
 
 
 	/**
-	 * byte转坐标
+	 * byte转double[],可用于把数据库中的point(坐标 JDBC取出byte[])转成double[]
 	 * @param bytes bytes
 	 * @return double[]
 	 */
@@ -810,11 +810,16 @@ public class NumberUtil {
 		return new double[]{byte2double(bytes,9),byte2double(bytes,17)};
 	}
 
-	public static double[] byte2points(byte[] arr){
-		int len=(arr.length-13)/8;
+	/**
+	 * byte转double[],可用于把数据库中的point(JDBC取出byte[])转成double[]
+	 * @param bytes bytes
+	 * @return double[]
+	 */
+	public static double[] byte2points(byte[] bytes){
+		int len=(bytes.length-13)/8;
 		double[] result=new double[len];
 		for(int i=0;i<len; i++){
-			result[i]=byte2double(arr,13+i*8);
+			result[i]=byte2double(bytes,13+i*8);
 		}
 		return result;
 	}

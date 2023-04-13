@@ -283,7 +283,7 @@ public class BeanUtil {
 						v = v.toString();
 					}
 				}else if(type.equals("point")){
-					if(v instanceof byte[]){
+					if(v instanceof byte[] || v instanceof Byte[]){
 						byte[] bytes = (byte[]) v;
 						v = NumberUtil.byte2point(bytes);
 					}

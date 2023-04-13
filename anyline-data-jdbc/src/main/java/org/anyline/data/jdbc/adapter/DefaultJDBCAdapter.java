@@ -3281,11 +3281,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 						run.setValue(BasicUtil.parseLong(value, null));
 					}
 				}else if(typeName.equals("POINT")){
-					if(value instanceof double[]){
-						double[] ds = (double[]) value;
-						if(ds.length>=2){
-							value = NumberUtil.double2point(ds[0], ds[1]);
-							run.setValue(value);
+					if(value instanceof double[] || value instanceof Double[]){
+						Double[] ds = (Double[]) value;
+						if(ds.length < 2 || null == ds[0] || null == ds[1]){
+							run.setValue(null);
+						}else {
+							if (ds.length >= 2) {
+								value = NumberUtil.double2point(ds[0], ds[1]);
+								run.setValue(value);
+							}
 						}
 					}
 				}else if(typeName.startsWith("INT")){
