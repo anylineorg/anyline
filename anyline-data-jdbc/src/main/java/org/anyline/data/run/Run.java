@@ -97,9 +97,10 @@ public interface Run {
 	 * @param compare  compare
 	 * @param column  column
 	 * @param obj  obj
+	 * @param split 遇到集合/数组类型是否拆分处理
 	 * @return Run
 	 */ 
-	public Run addValues(Compare compare, String column, Object obj);
+	public Run addValues(Compare compare, String column, Object obj, boolean split);
 
 	public Run addOrders(OrderStore orderStore);
 	public Run addOrder(Order order);
