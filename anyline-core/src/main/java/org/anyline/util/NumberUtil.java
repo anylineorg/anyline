@@ -798,17 +798,6 @@ public class NumberUtil {
 	}
 
 
-	/**
-	 * byte转double[],可用于把数据库中的point(坐标 JDBC取出byte[])转成double[]
-	 * @param bytes bytes
-	 * @return double[]
-	 */
-	public static double[] byte2point(byte[] bytes){
-		if(bytes==null){
-			return null;
-		}
-		return new double[]{byte2double(bytes,9),byte2double(bytes,17)};
-	}
 
 	/**
 	 * byte转double[],可用于把数据库中的point(JDBC取出byte[])转成double[]
@@ -831,27 +820,6 @@ public class NumberUtil {
 		return Double.longBitsToDouble(value);
 
 	}
-	/**
-	 * 将double型经纬度转成mysql的point类型数据
-	 * @param ds doubles
-	 * @return byte[]
-	 */
-	public static byte[] double2point(double[] ds){
-		return double2point(ds[0], ds[1]);
-	}
-	public static byte[] double2point(double d1,double d2){
-		byte[] b1=double2bytes(d1);
-		byte[] b2=double2bytes(d2);
-		byte[] bpoint=new byte[25];
-		bpoint[4]=0x01;
-		bpoint[5]=0x01;
-		for(int i=0;i<8;++i){
-			bpoint[9+i]=b2[i];
-			bpoint[17+i]=b1[i];
-		}
-		return bpoint;
-	}
-
 	public static byte[] double2bytes(double d) {
 		long value = Double.doubleToRawLongBits(d);
 		byte[] byteRet = new byte[8];
@@ -859,6 +827,5 @@ public class NumberUtil {
 			byteRet[i] = (byte) ((value >> 8 * i) & 0xff);
 		}
 		return byteRet;
-
 	}
 } 
