@@ -1549,6 +1549,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+    public Point getPoint(String key) {
+        if (null == key) {
+            if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+                return new Point();
+            }
+            return null;
+        }
+        Object obj = get(key);
+        if (null != obj && obj instanceof Point) {
+            return (Point) obj;
+        }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new Point();
+        }
+        return null;
+    }
     public DataRow getRow(String ... keys) {
         if (null == keys || keys.length == 0) {
             if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){

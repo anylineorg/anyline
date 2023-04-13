@@ -672,6 +672,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return row;
     }
+
     public boolean exists(String ... params){
         DataRow row = getRow(0, params);
         return row != null;
@@ -1904,6 +1905,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return def;
         }
     }
+    public Point getPoint(int index, String key, Point def) {
+        try {
+            return getPoint(index, key);
+        } catch (Exception e) {
+            return def;
+        }
+    }
+    public Point getPoint(int index, String key) throws Exception {
+        return getRow(index).getPoint(key);
+    }
+
 
     public String getString(String key) throws Exception {
         return getString(0, key);
