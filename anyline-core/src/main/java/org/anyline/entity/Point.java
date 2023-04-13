@@ -45,4 +45,11 @@ public class Point {
     public void setY(Double y) {
         this.y = y;
     }
+
+    public String toString(){
+        return "Point(" + x + "," + y + ")";
+    }
+    public String toSql(){
+        return "Point(" + x + " " + y + ")";
+    }
 }
