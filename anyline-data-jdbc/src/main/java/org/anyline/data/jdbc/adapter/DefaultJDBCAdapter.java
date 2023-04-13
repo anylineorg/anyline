@@ -20,20 +20,21 @@
 package org.anyline.data.jdbc.adapter;
 
 
+import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
-import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
-import org.anyline.service.AnylineService;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.xml.XMLPrepare;
+import org.anyline.entity.Point;
+import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 
 
 /**
@@ -3281,13 +3282,28 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 						run.setValue(BasicUtil.parseLong(value, null));
 					}
 				}else if(typeName.equals("POINT")){
-					if(value instanceof double[] || value instanceof Double[]){
+					if(value instanceof byte[]){
+					}else if(value instanceof Point){
+						value = ((Point)value).bytes();
+						run.setValue(value);
+					}
+					if(value instanceof double[]){
+						double[] ds = (double[]) value;
+						if(ds.length < 2){
+							run.setValue(null);
+						}else {
+							if (ds.length >= 2) {
+								value = new Point(ds[0], ds[1]).bytes();
+								run.setValue(value);
+							}
+						}
+					}else if(value instanceof Double[]){
 						Double[] ds = (Double[]) value;
 						if(ds.length < 2 || null == ds[0] || null == ds[1]){
 							run.setValue(null);
 						}else {
 							if (ds.length >= 2) {
-								value = NumberUtil.double2point(ds[0], ds[1]);
+								value = new Point(ds[0], ds[1]).bytes();
 								run.setValue(value);
 							}
 						}

@@ -537,6 +537,33 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
      ******************************************************************************************************************/
 
+    /**
+     * 是否是可以接收数组类型的值
+     * @param run run
+     * @param key key
+     * @return boolean
+     */
+    protected boolean isMultipleValue(TableRun run, String key){
+        String table = run.getTable();
+        if (null != table) {
+            LinkedHashMap<String, Column> columns = ServiceProxy.metadata().columns(table);
+            if(null != columns){
+                Column column = columns.get(key.toUpperCase());
+                return isMultipleValue(column);
+            }
+        }
+        return false;
+    }
+
+    protected boolean isMultipleValue(Column column){
+        if(null != column){
+            String type = column.getTypeName().toUpperCase();
+            if(type.contains("POINT") || type.contains("GEOMETRY") || type.contains("POLYGON")){
+                return true;
+            }
+        }
+        return false;
+    }
     protected Run buildUpdateRunFromObject(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
         TableRun run = new TableRun(this,dest);
         StringBuilder builder = run.getBuilder();
@@ -617,7 +644,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         first = false;
                         SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
                         updateColumns.add(key);
-                        addRunValue(run, Compare.EQUAL, key, value);
+                        Compare compare = Compare.EQUAL;
+                        if(isMultipleValue(run, key)){
+                            compare = Compare.IN;
+                        }
+                        addRunValue(run, compare, key, value);
                     }
                 }
             }
@@ -685,7 +716,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         value = null;
                     }
                     updateColumns.add(key);
-                    addRunValue(run, Compare.EQUAL, key, value);
+                    Compare compare = Compare.EQUAL;
+                    addRunValue(run, compare, key, value);
                 }
                 if(i<size-1){
                     builder.append(",");
@@ -1166,7 +1198,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected String concatOr(String ... args)
      * protected String concatAdd(String ... args)
      ******************************************************************************************************************/
-
     protected void addRunValue(Run run, Compare compare, String key, Object value){
         /*if(null != value && value instanceof SQL_BUILD_IN_VALUE){
             value = buildInValue((SQL_BUILD_IN_VALUE)value);
@@ -1198,7 +1229,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
         }
 
-        run.addValues(compare, key, value);
+        run.addValues(compare, key, value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
     }
     /* ************** 拼接字符串 *************** */
     protected String concatFun(String ... args){
