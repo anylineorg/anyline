@@ -29,6 +29,9 @@ public enum Compare {
         public String getName() {
             return null;
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     //根据参数格式判断
     AUTO{
@@ -51,6 +54,9 @@ public enum Compare {
         public String getName() {
             return null;
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     EQUAL			{
         public int getCode(){return 10;}
@@ -65,6 +71,9 @@ public enum Compare {
                 }
             }
             return target.toString().equalsIgnoreCase(value.toString());
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     GREAT			{
@@ -81,6 +90,9 @@ public enum Compare {
                 return false;
             }
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     GREAT_EQUAL		{
         public int getCode(){return 21;}
@@ -91,6 +103,9 @@ public enum Compare {
                 return false;
             }
             return new BigDecimal(value.toString()).compareTo(new BigDecimal(target.toString())) >= 0;
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     LESS			{
@@ -107,6 +122,9 @@ public enum Compare {
                 return false;
             }
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     LESS_EQUAL		{
         public int getCode(){return 31;}
@@ -121,6 +139,9 @@ public enum Compare {
             }catch (Exception e){
                 return false;
             }
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     IN				{
@@ -138,6 +159,9 @@ public enum Compare {
             }
             return false;
         }
+        public boolean isMultipleValue(){
+            return true;
+        }
     },
     LIKE			{
         public int getCode(){return 50;}
@@ -148,6 +172,9 @@ public enum Compare {
                 return false;
             }
             return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     LIKE_PREFIX		{
@@ -160,6 +187,9 @@ public enum Compare {
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     START_WITH		{
         public int getCode(){return 51;}
@@ -170,6 +200,9 @@ public enum Compare {
                 return false;
             }
             return value.toString().toUpperCase().startsWith(target.toString().toUpperCase());
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     LIKE_SUFFIX		{
@@ -182,6 +215,9 @@ public enum Compare {
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     END_WITH		{
         public int getCode(){return 52;}
@@ -192,6 +228,9 @@ public enum Compare {
                 return false;
             }
             return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     FIND_IN_SET{
@@ -205,6 +244,9 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     FIND_IN_SET_OR{
         public int getCode(){return 61;}
@@ -217,6 +259,9 @@ public enum Compare {
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
+        public boolean isMultipleValue(){
+            return false;
+        }
     },
     FIND_IN_SET_AND{
         public int getCode(){return 62;}
@@ -228,6 +273,9 @@ public enum Compare {
             }
             String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     BETWEEN			{
@@ -260,6 +308,9 @@ public enum Compare {
             }
             return false;
         }
+        public boolean isMultipleValue(){
+            return true;
+        }
     },
     NOT_EQUAL		{
         public int getCode(){return 110;}
@@ -270,6 +321,9 @@ public enum Compare {
                 return false;
             }
             return !value.toString().toUpperCase().equals(target.toString().toUpperCase());
+        }
+        public boolean isMultipleValue(){
+            return false;
         }
     },
     NOT_IN			{
@@ -286,10 +340,15 @@ public enum Compare {
             }
             return false;
         }
+        public boolean isMultipleValue(){
+            return true;
+        }
     };
 
     public abstract boolean compare(Object value, Object target);
+    public abstract boolean isMultipleValue();
     public abstract String getSQL();
     public abstract int getCode();
     public abstract String getName();
+
 }
