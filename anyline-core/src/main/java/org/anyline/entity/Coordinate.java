@@ -18,8 +18,8 @@ public class Coordinate {
 		public abstract String getRemark();
 	}
 
-	private Double[] point = new Double[2]	; // 坐标点[lng,lat][经度,纬度]
-	private Double[] center= new Double[2]	; // 最小级别行政区中心坐标点[lng,lat][经度,纬度]
+	private Point point						; // 坐标点[lng,lat][经度,纬度]
+	private Point center 					; // 最小级别行政区中心坐标点[lng,lat][经度,纬度]
 	private TYPE type						; // 坐标系
 	private String provinceCode				; // 省编号
 	private String provinceName				; // 省中文名
@@ -48,8 +48,7 @@ public class Coordinate {
 		if(BasicUtil.isNotEmpty(location)){
 			String[] tmps = location.split(",");
 			if(tmps.length > 1){
-				point[0] = BasicUtil.parseDouble(tmps[0],null);
-				point[1] = BasicUtil.parseDouble(tmps[1],null);
+				point = new Point(BasicUtil.parseDouble(tmps[0],null), BasicUtil.parseDouble(tmps[1],null));
 			}
 		}
 	}
@@ -57,29 +56,26 @@ public class Coordinate {
 	}
 	public Coordinate(TYPE type, String lng, String lat){
 		this.type = type;
-		point[0] = BasicUtil.parseDouble(lng, null);
-		point[1] = BasicUtil.parseDouble(lat, null);
+		point = new Point(BasicUtil.parseDouble(lng, null),BasicUtil.parseDouble(lat, null));
 	}
 	public Coordinate(TYPE type, Double lng, Double lat){
 		this.type = type;
-		point[0] = lng;
-		point[1] = lat;
+		point = new Point(lng, lat);
 	}
 	public Coordinate(String lng, String lat){
-		point[0] = BasicUtil.parseDouble(lng,null);
-		point[1] = BasicUtil.parseDouble(lat,null);
+		point = new Point(BasicUtil.parseDouble(lng,null),BasicUtil.parseDouble(lat,null));
 	}
 	public Coordinate(Double lng, Double lat){
-		point[0] = lng;
-		point[1] = lat;
+		point = new Point(lng,lat);
 	}
 	public Coordinate convert(TYPE type){
-		this.point = GISUtil.convert(this.type, this.point[0], this.point[1], type);
+		Double[] loc = GISUtil.convert(this.type, point.getX(), point.getY(), type);
+		point = new Point(loc[0], loc[1]);
 		this.setType(type);
 		return this;
 	}
 	public boolean isEmpty(){ 
-		if(point.length != 2 || null == point[0] || null == point[1]){
+		if(null == point || null == point.getX() || null == point.getY()){
 			return true; 
 		} 
 		return false; 
@@ -88,8 +84,7 @@ public class Coordinate {
 		if(BasicUtil.isNotEmpty(location)){
 			String[] tmps = location.split(",");
 			if(tmps.length > 1){
-				point[0] = BasicUtil.parseDouble(tmps[0],null);
-				point[1] = BasicUtil.parseDouble(tmps[1],null);
+				point = new Point(BasicUtil.parseDouble(tmps[0],null),BasicUtil.parseDouble(tmps[1],null));
 			}
 		}
 	}
@@ -134,25 +129,31 @@ public class Coordinate {
 	}
 
 	public Double getLng() {
-		return this.point[0];
+		return this.point.getX();
 	}
 
 	public void setLng(Double lng) {
-		this.point[0] = lng;
+		if(null == point){
+			point = new Point();
+		}
+		this.point.setX(lng);
 	}
 	public void setLng(String lng) {
-		this.point[0] = BasicUtil.parseDouble(lng, null);
+		setLng(BasicUtil.parseDouble(lng, null));
 	}
 
 	public Double getLat() {
-		return this.point[1];
+		return this.point.getY();
 	}
 
 	public void setLat(Double lat) {
-		this.point[1] = lat;
+		if(null == point){
+			point = new Point();
+		}
+		point.setY(lat);
 	}
 	public void setLat(String lat) {
-		this.point[1] = BasicUtil.parseDouble(lat, null);
+		setLat(BasicUtil.parseDouble(lat, null));
 	}
 
 	public String getProvinceCode() {
@@ -206,7 +207,7 @@ public class Coordinate {
 		this.address = address;
 	}
 	public String toString(){
-		return "["+point[0]+","+point[1]+"]";
+		return "["+point.getX()+","+point.getY()+"]";
 	}
 
 	public TYPE getType() {
@@ -217,11 +218,11 @@ public class Coordinate {
 		this.type = type;
 	}
 
-	public Double[] getPoint() {
+	public Point getPoint() {
 		return point;
 	}
 
-	public void setPoint(Double[] point) {
+	public void setPoint(Point point) {
 		this.point = point;
 	}
 
@@ -241,11 +242,11 @@ public class Coordinate {
 		this.message = message;
 	}
 
-	public Double[] getCenter() {
+	public Point getCenter() {
 		return center;
 	}
 
-	public void setCenter(Double[] center) {
+	public void setCenter(Point center) {
 		this.center = center;
 	}
 
