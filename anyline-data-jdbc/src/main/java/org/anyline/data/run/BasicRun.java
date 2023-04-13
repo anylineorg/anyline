@@ -199,32 +199,78 @@ public abstract class BasicRun implements Run {
 	 * @param compare  compare
 	 * @param obj  obj
 	 * @param key  key
+	 * @param split  遇到集合/数组类型是否拆分处理
 	 * @return Run
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Run addValues(Compare compare, String key, Object obj){
+	public Run addValues(Compare compare, String key, Object obj, boolean split){
 		if(null == key){
 			key = "none";
 		}
 		if(null != obj){
-			if(obj instanceof Object[]){
-				Object[] list = (Object[]) obj;
-				for(Object item:list){
-					addValues(new RunValue(key, item));
-					if(Compare.EQUAL == compare){
-						break;
+			if(split){
+				if(obj instanceof Object[]){
+					Object[] list = (Object[]) obj;
+					for(Object item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
 					}
-				}
-			}else if(obj instanceof Collection){
-				Collection list = (Collection)obj;
-				for(Object item:list){
-					addValues(new RunValue(key, item));
-					if(Compare.EQUAL == compare){
-						break;
+				}else if(obj instanceof double[]){
+					double[] list = (double[]) obj;
+					for(double item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
 					}
+				}else if(obj instanceof int[]){
+					int[] list = (int[]) obj;
+					for(int item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
+					}
+				}else if(obj instanceof float[]){
+					float[] list = (float[]) obj;
+					for(float item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
+					}
+				}else if(obj instanceof short[]){
+					short[] list = (short[]) obj;
+					for(short item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
+					}
+				}else if(obj instanceof Object[]){
+					Object[] list = (Object[]) obj;
+					for(Object item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
+					}
+				}else if(obj instanceof Collection){
+					Collection list = (Collection)obj;
+					for(Object item:list){
+						addValues(new RunValue(key, item));
+						if(Compare.EQUAL == compare){
+							break;
+						}
+					}
+				}else{
+					addValues(new RunValue(key, obj));
 				}
-			}else{
+			}
+			else{
 				addValues(new RunValue(key, obj));
 			}
 
