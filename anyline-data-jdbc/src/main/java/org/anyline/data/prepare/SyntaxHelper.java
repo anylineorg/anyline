@@ -46,9 +46,15 @@ public class SyntaxHelper {
 			varType = Variable.VAR_TYPE_REPLACE;
 		}else if(fullKey.startsWith("#")){
 			// AND CD = #{CD}
-			varType = Variable.VAR_TYPE_KEY;
+			if("'".equals(afterChar)){
+				// AND CD = '#{CD}'
+				varType = Variable.VAR_TYPE_KEY_REPLACE;
+			}else {
+				varType = Variable.VAR_TYPE_KEY;
+			}
 		}else if("'".equals(afterChar)){
-			// AND CD = '{CD}' 
+			// AND CD = '#{CD}'
+			// AND CD = '${CD}'
 			// AND CD = ':CD' 
 			varType = Variable.VAR_TYPE_KEY_REPLACE;
 		}else if(prefix.endsWith("%") || afterChar.startsWith("%")){ 
