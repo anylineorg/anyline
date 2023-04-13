@@ -35,6 +35,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
@@ -53,7 +54,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,7 +67,6 @@ import java.util.regex.Pattern;
 @SuppressWarnings("ProblematicWhitespace")
 public class BeanUtil {
 	public static ObjectMapper JSON_MAPPER = new ObjectMapper();
-
 
 	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class);
 	static{
@@ -131,14 +130,16 @@ public class BeanUtil {
 			//对象不处理静态属性
 			return false;
 		}
+		Object v = value;
+
+		boolean compatible = true;//是否兼容 int long等不能设置null值
+		String fieldType = field.getType().getSimpleName();
+		String type = fieldType.toLowerCase();		//属性类型
+		String columnType = null;
+		if(null != column){
+			columnType = column.getTypeName().toUpperCase();
+		}
 		try{
-			Object v = value;
-			boolean compatible = true;//是否兼容 int long等不能设置null值
-			String type = field.getType().getSimpleName().toLowerCase();		//属性类型
-			String columnType = null;
-			if(null != column){
-				columnType = column.getTypeName().toUpperCase();
-			}
 			if(null != v){
 				if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
 					if (type.equals("int") || type.equals("integer")) {
@@ -176,9 +177,17 @@ public class BeanUtil {
 						}else {
 							//根据数据库类型
 							if("POINT".equals(columnType)){
-								if("double[]".equals(type)){
+								if("double[]".equals(fieldType)){
 									if(v instanceof byte[]){
-										v = NumberUtil.byte2point((byte[]) v);
+										v = BeanUtil.Double2double(new Point((byte[])v).getArray(), 0d);
+									}
+								}else if("Double[]".equals(fieldType)){
+									if(v instanceof byte[]){
+										v = new Point((byte[])v).getArray();
+									}
+								}else if("Point".equals(fieldType)){
+									if(v instanceof byte[]){
+										v = new Point((byte[])v);
 									}
 								}
 							}
@@ -215,12 +224,36 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error("[set field value][result:fail][field:{}][value:{}][msg:{}]", field, value, e.toString());
+			log.error("[set field value][result:fail][field:{}][column:{}][value:{}][msg:{}]", field, columnType, v, e.toString());
 			return false;
 		}
 		return true;
 	}
-
+	public static Double[] double2Double(double[] array){
+		if(null == array){
+			return null;
+		}
+		Double[] result = new Double[array.length];
+		int idx = 0;
+		for(double item:array){
+			result[idx++] = item;
+		}
+		return result;
+	}
+	public static double[] Double2double(Double[] array, double def){
+		if(null == array){
+			return null;
+		}
+		double[] result = new double[array.length];
+		int idx = 0;
+		for(Double item:array){
+			if(null == item){
+				item = def;
+			}
+			result[idx++] = item;
+		}
+		return result;
+	}
 	/**
 	 * 根据数据类型转换成Java值
 	 * @param type 数据库类型
@@ -281,11 +314,6 @@ public class BeanUtil {
 						v = Base64Util.encode((byte[]) v);
 					}else {
 						v = v.toString();
-					}
-				}else if(type.equals("point")){
-					if(v instanceof byte[] || v instanceof Byte[]){
-						byte[] bytes = (byte[]) v;
-						v = NumberUtil.byte2point(bytes);
 					}
 				}
 			}
