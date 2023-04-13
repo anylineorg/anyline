@@ -139,6 +139,11 @@ public class AnylineProperty {
      */
     protected boolean returnEmptyInstanceReplaceNull			= false		;	// service.query() dataset.getRow()返回null时,是否替换成new DataRow(), new entity()
     /**
+     * 更新数据库时，是把自动把数组/集合类型拆分
+     */
+    protected boolean autoSplitArray						    = true		;	// 更新数据库时，是把自动把数组/集合类型拆分
+
+    /**
      * insert update 时是否自动检测表结构(删除表中不存在的属性)
      */
     protected boolean autoCheckMetadata						    = false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
@@ -786,5 +791,14 @@ public class AnylineProperty {
     public void setAutoConvertBytes(boolean autoConvertBytes) {
         this.autoConvertBytes = autoConvertBytes;
         ConfigTable.IS_AUTO_CONVERT_BYTES = autoConvertBytes;
+    }
+
+    public boolean isAutoSplitArray() {
+        return autoSplitArray;
+    }
+
+    public void setAutoSplitArray(boolean autoSplitArray) {
+        this.autoSplitArray = autoSplitArray;
+        ConfigTable.IS_AUTO_SPLIT_ARRAY = autoSplitArray;
     }
 }
