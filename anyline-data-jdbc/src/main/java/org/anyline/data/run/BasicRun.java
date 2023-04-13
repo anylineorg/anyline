@@ -65,6 +65,7 @@ public abstract class BasicRun implements Run {
 	protected boolean valid = true;
 	protected List<String> insertColumns;
 	protected List<String> updateColumns;
+	protected int from = 1;
 	 
 	 
 	protected JDBCAdapter adapter;
@@ -74,6 +75,16 @@ public abstract class BasicRun implements Run {
 	 
 	public void setAdapter(JDBCAdapter adapter){
 		this.adapter = adapter; 
+	}
+
+	@Override
+	public int getFrom() {
+		return from;
+	}
+
+	@Override
+	public void setFrom(int from) {
+		this.from = from;
 	}
 
 	@Override
@@ -209,7 +220,8 @@ public abstract class BasicRun implements Run {
 			key = "none";
 		}
 		if(null != obj){
-			if(split){
+			// from:1-DataRow 2-Entity
+			if(split && getFrom() != 2){
 				if(obj instanceof Object[]){
 					Object[] list = (Object[]) obj;
 					for(Object item:list){
