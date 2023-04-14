@@ -609,6 +609,30 @@ public class Column implements org.anyline.entity.data.Column{
             if (chk.contains("time")) {
                 return true;
             }
+            if (chk.contains("year")) {
+                return true;
+            }
+            if (chk.contains("text")) {
+                return true;
+            }
+            if (chk.contains("blob")) {
+                return true;
+            }
+            if (chk.contains("json")) {
+                return true;
+            }
+            if (chk.contains("point")) {
+                return true;
+            }
+            if (chk.contains("line")) {
+                return true;
+            }
+            if (chk.contains("polygon")) {
+                return true;
+            }
+            if (chk.contains("geometry")) {
+                return true;
+            }
         }
         return false;
     }
