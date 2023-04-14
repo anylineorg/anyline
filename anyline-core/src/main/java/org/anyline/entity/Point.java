@@ -16,14 +16,14 @@ public class Point {
     }
 
     public byte[] bytes(){
-        byte[] b1= NumberUtil.double2bytes(x);
-        byte[] b2= NumberUtil.double2bytes(y);
+        byte[] bx= NumberUtil.double2bytes(x);
+        byte[] by= NumberUtil.double2bytes(y);
         byte[] bytes =new byte[25];
         bytes[4]=0x01;
         bytes[5]=0x01;
         for(int i=0;i<8;++i){
-            bytes[9+i]=b2[i];
-            bytes[17+i]=b1[i];
+            bytes[9+i]=bx[i];
+            bytes[17+i]=by[i];
         }
         return bytes;
     }
