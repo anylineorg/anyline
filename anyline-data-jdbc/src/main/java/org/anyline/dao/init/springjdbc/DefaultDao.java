@@ -1568,13 +1568,23 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(obj instanceof Collection){
 				Collection list = (Collection) obj;
 				for(Object item:list){
-					size += delete(dest, item, columns);
+					int qty = delete(dest, item, columns);
+					//如果不执行会返回-1
+					if(qty > 0){
+						size += qty;
+					}
 				}
 				if(log.isWarnEnabled()) {
 					log.warn("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 				}
 			}else{
-				
+				boolean exe = true;
+				if(null != listener){
+					exe = listener.beforeBuildDelete(dest, obj, columns);
+				}
+				if(!exe){
+					return -1;
+				}
 				JDBCRuntime runtime = runtime();
 				JDBCAdapter adapter = runtime.getAdapter();
 				Run run = adapter.buildDeleteRun(dest, obj, columns);
