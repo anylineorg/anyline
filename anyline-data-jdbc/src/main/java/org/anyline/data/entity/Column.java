@@ -578,9 +578,12 @@ public class Column implements org.anyline.entity.data.Column{
         return getFullType(typeName);
     }
     public String getFullType(String typeName){
+        return getFullType(typeName, ignorePrecision());
+    }
+    public String getFullType(String typeName, boolean ignorePrecision){
         StringBuilder builder = new StringBuilder();
         builder.append(typeName);
-        if(!ignorePrecision()) {
+        if(!ignorePrecision) {
             if (null != precision) {
                 if (precision > 0) {
                     builder.append("(").append(precision);
@@ -598,6 +601,7 @@ public class Column implements org.anyline.entity.data.Column{
 
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
+     * 精确判断通过adapter
      * @return boolean
      */
     public boolean ignorePrecision(){
