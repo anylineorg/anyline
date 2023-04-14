@@ -17,7 +17,9 @@
  */
 package org.anyline.data.listener;
 
+import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Procedure;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -25,6 +27,17 @@ import org.anyline.entity.EntitySet;
 import java.util.List;
 
 public interface DMListener {
+
+    /**
+     * 创建查相关的SQL之前调用,包括slect exists count等<br/>
+     * 要修改查询条件可以在这一步实现,注意不是在beforeQuery
+     * @param prepare  prepare
+     * @param configs 查询条件配置
+     * @param conditions 查询条件
+     * @return 如果返回false 则中断执行
+     */
+    public boolean beforeBuildQuery(RunPrepare prepare, ConfigStore configs, String ... conditions);
+
 
     /**
      * 统计总记录数之前调用
@@ -41,8 +54,10 @@ public interface DMListener {
      */
     public void afterTotal(Run run, int total, long millis);
     /**
-     * 查询之前调用
-     *
+     * 查询之前调用<br/>
+     * 不满足查询条件的不会走到这一步(如必须参数未提供)
+     * 只有确定执行查询时才会到这一步，到了这一步已经不能修改查询条件<br/>
+     * 要修改查询条件可以在afterCreateQuery实现
      * @param run sql
      * @param total 上一步合计的总行数
      */
@@ -94,6 +109,20 @@ public interface DMListener {
      */
     public void afterExists(Run run, boolean exists, long millis);
 
+
+    /**
+     * 创建更新相关的SQL之前调用<br/>
+     * 要修改更新内容或条件可以在这一步实现,注意不是在beforeUpdate
+     * @param dest 表
+     * @param obj Entity或DtaRow
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
+     * @param columns 需要更新的列
+     * @param configs 更新条件
+     * @return 如果返回false 则中断执行
+     */
+    public boolean beforeBuildUpdate(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+
+
     /**
      * 更新之前调用
      * 
@@ -116,8 +145,19 @@ public interface DMListener {
      */
     public void afterUpdate(Run run, int count, String dest, Object obj, List<String> columns, long millis);
 
+
     /**
-     * 插入之前调用
+     * 创建插入相关的SQL之前调用<br/>
+     * 要修改插入内容可以在这一步实现,注意不是在beforeInsert
+     * @param dest 表
+     * @param obj 实体
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
+     * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
+     * @return 如果返回false 则中断执行
+     */
+    public boolean beforeBuildInsert(String dest, Object obj, boolean checkPrimary, List<String> columns);
+    /**
+     * 创建insert sql之前调用
      * 
      * @param run sql
      * @param dest 需要插入的表
@@ -191,6 +231,22 @@ public interface DMListener {
      */
     public void afterQuery(Procedure procedure, DataSet set, long millis);
 
+    /**
+     * 创建删除SQL前调用(根据Entity/DataRow),修改删除条件可以在这一步实现,注意不是beforeDelete
+     * @param dest 表
+     * @param obj entity或DataRow
+     * @param columns 删除条件的我
+     * @return 如果返回false 则中断执行
+     */
+    public boolean beforeBuildDelete(String dest, Object obj, String ... columns);
+    /**
+     * 创建删除SQL前调用(根据key values删除),修改删除条件可以在这一步实现,注意不是beforeDelete
+     * @param table 表
+     * @param key key
+     * @param values values
+     * @return 如果返回false 则中断执行
+     */
+    public boolean beforeBuildDelete(String table, String key, Object values);
     /**
      * 执行删除前调用
      * 
