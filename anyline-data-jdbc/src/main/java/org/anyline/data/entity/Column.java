@@ -575,16 +575,42 @@ public class Column implements org.anyline.entity.data.Column{
         return this;
     }
     public String getFullType(){
+        return getFullType(typeName);
+    }
+    public String getFullType(String typeName){
         StringBuilder builder = new StringBuilder();
         builder.append(typeName);
-        if(null != precision && precision > 0){
-            builder.append("(").append(precision);
-            if(null != scale && scale > 0){
-                builder.append(",").append(scale);
+        if(!ignorePrecision()) {
+            if (null != precision) {
+                if (precision > 0) {
+                    builder.append("(").append(precision);
+                    if (null != scale && scale > 0) {
+                        builder.append(",").append(scale);
+                    }
+                    builder.append(")");
+                } else if (precision == -1) {
+                    builder.append("(max)");
+                }
             }
-            builder.append(")");
         }
         return builder.toString();
+    }
+
+    /**
+     * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
+     * @return boolean
+     */
+    public boolean ignorePrecision(){
+        if(null != typeName) {
+            String chk = typeName.toLowerCase();
+            if (chk.contains("date")) {
+                return true;
+            }
+            if (chk.contains("time")) {
+                return true;
+            }
+        }
+        return false;
     }
     public String toString(){
         StringBuilder builder = new StringBuilder();
