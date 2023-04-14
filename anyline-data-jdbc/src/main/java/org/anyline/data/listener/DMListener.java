@@ -232,8 +232,10 @@ public interface DMListener {
     public void afterQuery(Procedure procedure, DataSet set, long millis);
 
     /**
-     * 创建删除SQL前调用(根据Entity/DataRow),修改删除条件可以在这一步实现,注意不是beforeDelete<br/>
+     * 创建删除SQL前调用(根据Entity/DataRow),修改删除条件可以在这一步实现<br/>
+     * 注意不是beforeDelete<br/>
      * 注意beforeBuildDelete有两个函数需要实现
+     * service.delete(DataRow/Entity);
      * @param dest 表
      * @param obj entity或DataRow
      * @param columns 删除条件的我
@@ -241,8 +243,10 @@ public interface DMListener {
      */
     public boolean beforeBuildDelete(String dest, Object obj, String ... columns);
     /**
-     * 创建删除SQL前调用(根据key values删除),修改删除条件可以在这一步实现,注意不是beforeDelete<br/>
+     * 创建删除SQL前调用(根据条件),修改删除条件可以在这一步实现<br/>
+     * 注意不是beforeDelete<br/>
      * 注意beforeBuildDelete有两个函数需要实现
+     * service.delete("CRM_USER", "ID", "1", "2", "3");
      * @param table 表
      * @param key key
      * @param values values
