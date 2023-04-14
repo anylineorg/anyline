@@ -3,12 +3,18 @@ package org.anyline.entity;
 import org.anyline.util.NumberUtil;
 
 public class Point {
+    boolean isInt = false;
     private Double x;
     private Double y;
     public Point(){}
     public Point(Double x, Double y){
         this.x = x ;
         this.y = y;
+    }
+    public Point(int x, int y){
+        this.x = new Double(x) ;
+        this.y = new Double(y);
+        isInt = true;
     }
     public Point(byte[] bytes){
         x = NumberUtil.byte2double(bytes,9);
@@ -47,7 +53,27 @@ public class Point {
     }
 
     public String toString(){
-        return "Point(" + x + "," + y + ")";
+        return toString(true);
+    }
+    public String toString(boolean tag){
+        StringBuilder builder = new StringBuilder();
+        if(tag){
+            builder.append("point");
+        }
+        builder.append("(");
+        if (isInt) {
+            builder.append(x.intValue());
+        }else{
+            builder.append(x);
+        }
+        builder.append(",");
+        if (isInt) {
+            builder.append(y.intValue());
+        }else{
+            builder.append(y);
+        }
+        builder.append(")");
+        return builder.toString();
     }
 
     /**

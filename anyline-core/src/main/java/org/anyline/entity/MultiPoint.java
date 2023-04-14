@@ -30,7 +30,22 @@ public class MultiPoint {
     public List<Point> getPoints(){
         return points;
     }
+    public String toString(){
 
+        StringBuilder builder = new StringBuilder();
+        builder.append("MULTIPOINT");
+        builder.append("(");
+        boolean first = true;
+        for(Point point:points){
+            if(!first){
+                builder.append(",");
+            }
+            first = false;
+            builder.append(point.toString(false));
+        }
+        builder.append(")");
+        return builder.toString();
+    }
     /**
      * sql格式
      * @param tag 是否包含tag<br/>
@@ -44,7 +59,12 @@ public class MultiPoint {
             builder.append("MULTIPOINT");
         }
         builder.append("(");
+        boolean first = true;
         for(Point point:points){
+            if(!first){
+                builder.append(",");
+            }
+            first = false;
             builder.append(point.sql(false));
         }
         builder.append(")");
