@@ -2428,12 +2428,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public StringBuilder charset(StringBuilder builder, Column column){
 		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
-		String charset = column.getCharset();
-		if(BasicUtil.isNotEmpty(charset)){
-			builder.append(" CHARACTER SET ").append(charset);
-			String collate = column.getCollate();
-			if(BasicUtil.isNotEmpty(collate)){
-				builder.append(" COLLATE ").append(collate);
+		String typeName = column.getTypeName();
+		if(null != typeName && typeName.toLowerCase().contains("char")) {
+			String charset = column.getCharset();
+			if (BasicUtil.isNotEmpty(charset)) {
+				builder.append(" CHARACTER SET ").append(charset);
+				String collate = column.getCollate();
+				if (BasicUtil.isNotEmpty(collate)) {
+					builder.append(" COLLATE ").append(collate);
+				}
 			}
 		}
 		return builder;
