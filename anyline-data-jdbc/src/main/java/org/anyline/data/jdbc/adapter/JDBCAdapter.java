@@ -212,10 +212,10 @@ public interface JDBCAdapter {
 
 	/**
 	 * 创建更新SQL
-	 * @param dest dest
-	 * @param obj obj
+	 * @param dest 表
+	 * @param obj Entity或DtaRow
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
-	 * @param columns columns
+	 * @param columns 需要更新的列
 	 * @param configs 更新条件
 	 * @return Run
 	 */
