@@ -1192,13 +1192,25 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
-		ResultSet set = dbmd.getColumns(table.getCatalog(), table.getSchema(), table.getName(), pattern);
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		ResultSet set = dbmd.getColumns(catalog, schema, table.getName(), pattern);
 		Map<String,Integer> keys = keys(set);
 		while (set.next()){
 			String name = set.getString("COLUMN_NAME");
 			if(null == name){
 				continue;
 			}
+			String columnCatalog = string(keys,"TABLE_CAT", set, null);
+			String columnSchema = string(keys,"TABLE_SCHEM", set, null);
+			if(!BasicUtil.equalsIgnoreCase(catalog, columnCatalog)){
+				continue;
+			}
+			if(!BasicUtil.equalsIgnoreCase(schema, columnSchema)){
+				continue;
+			}
+
+
 			Column column = columns.get(name.toUpperCase());
 			if(null == column){
 				if(create) {
@@ -1212,9 +1224,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if("TAG".equals(remark)){
 				column = new Tag();
 			}
+			column.setCatalog(columnCatalog);
+			column.setSchema(columnSchema);
 			column.setComment(remark);
-			column.setCatalog(BasicUtil.evl(string(keys,"TABLE_CAT", set, table.getCatalog())));
-			column.setSchema(BasicUtil.evl(string(keys,"TABLE_SCHEM", set, table.getSchema())));
 			column.setTableName(BasicUtil.evl(string(keys,"TABLE_NAME", set, table.getName()), column.getTableName()));
 			column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
 			column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));
@@ -2384,22 +2396,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
-
-		builder.append(type2type(column.getTypeName()));
-		// 精度
-		Integer precision = column.getPrecision();
-		Integer scale = column.getScale();
-		if(null != precision) {
-			if (precision > 0) {
-				builder.append("(").append(precision);
-				if (null != scale && scale > 0) {
-					builder.append(",").append(scale);
-				}
-				builder.append(")");
-			} else if (precision == -1) {
-				builder.append("(max)");
-			}
-		}
+		String typeName = type2type(column.getTypeName());
+		builder.append(column.getFullType(typeName));
 		return builder;
 	}
 	/**
