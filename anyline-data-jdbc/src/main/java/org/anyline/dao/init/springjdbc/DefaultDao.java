@@ -53,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -113,6 +112,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
+
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			}
+			if(!exe){
+				return new ArrayList<>();
+			}
 			JDBCRuntime runtime = runtime();
 			JDBCAdapter adapter = runtime.getAdapter();
 			/*if(null != queryInterceptor){
@@ -121,8 +128,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					return new ArrayList<>();
 				}
 			}*/
-
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
+
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
 				String src = "";
@@ -171,6 +178,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			}
+			if(!exe){
+				return new DataSet();
+			}
 			JDBCRuntime runtime = runtime();
 			JDBCAdapter adapter = runtime.getAdapter();
 			/*
@@ -181,6 +195,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}*/
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
+
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
 				String src = "";
@@ -263,6 +278,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
+
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			}
+			if(!exe){
+				return new EntitySet();
+			}
 			if(EntityAdapterProxy.hasAdapter()){
 				prepare.setDataSource(EntityAdapterProxy.table(clazz));
 			}
@@ -276,6 +299,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					return new EntitySet<>();
 				}
 			}*/
+
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
@@ -362,7 +386,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
-			
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			}
+			if(!exe){
+				return -1;
+			}
 			JDBCRuntime runtime = runtime();
 			JDBCAdapter adapter = runtime.getAdapter();/*
 			if(null != queryInterceptor){
@@ -399,7 +429,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		try {
-			
+
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			}
+			if(!exe){
+				return false;
+			}
+
 			JDBCRuntime runtime = runtime();
 			JDBCAdapter adapter = runtime.getAdapter();
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
@@ -486,6 +524,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeBuildUpdate(dest, data, configs, false, columns);
+		}
+		if(!exe){
+			return -1;
+		}
 		if(null == data){
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				throw new SQLUpdateException("更新空数据");
@@ -502,8 +547,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			return result;
 		}
 		
-			JDBCRuntime runtime = runtime();
-			JDBCAdapter adapter = runtime.getAdapter();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
 		String sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
@@ -714,7 +759,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
-		
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeBuildInsert(dest, data, checkPrimary, columns);
+		}
+		if(!exe){
+			return -1;
+		}
+
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		if(null != data && data instanceof DataSet){
@@ -1488,13 +1540,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 	public int deletes(String table, String key, String ... values){
+
 		List<String> list = new ArrayList<>();
 		if(null != values){
 			for(String value:values){
 				list.add(value);
 			}
 		}
-		
+
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeBuildDelete(table, key, list);
+		}
+		if(!exe){
+			return -1;
+		}
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, list);
@@ -1527,7 +1587,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
-		
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeBuildDelete(table, configs, conditions);
+		}
+		if(!exe){
+			return -1;
+		}
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, configs, conditions);
