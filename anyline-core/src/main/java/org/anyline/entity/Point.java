@@ -49,7 +49,23 @@ public class Point {
     public String toString(){
         return "Point(" + x + "," + y + ")";
     }
-    public String toSql(){
-        return "Point(" + x + " " + y + ")";
+
+    /**
+     * sql格式
+     * @param tag 是否包含tag<br/>
+     *             false:(120 36)<br/>
+     *             true: Point(120 36)
+     * @return String
+     */
+    public String sql(boolean tag){
+        StringBuilder builder = new StringBuilder();
+        if(tag){
+            builder.append("Point");
+        }
+        builder.append("(").append(x).append(" ").append(y).append(")");
+        return builder.toString();
+    }
+    public String sql(){
+        return sql(true);
     }
 }
