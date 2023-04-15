@@ -76,6 +76,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
+	protected static enum DATA_TYPE{
+		CHAR {public String getName(){return "CHAR";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BIGINT;	           }};
+		public abstract Column.STANDARD_DATA_TYPE getStandard();
+		public abstract String getName();
+		public abstract boolean isIgnorePrecision();
+		public abstract boolean isIgnoreScale();
+	}
 	@Override
 	public String getDelimiterFr(){
 		return this.delimiterFr;
@@ -2397,9 +2404,53 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
 		String typeName = type2type(column.getTypeName());
+		builder.append(typeName);
+		if(!isIgnorePrecision(column)) {
+			Integer precision =  column.getPrecision();
+			if (null != precision) {
+				if (precision > 0) {
+					builder.append("(").append(precision);
+					Integer scale = column.getScale();
+					if (null != scale && scale > 0 && !isIgnoreScale(column)) {
+						builder.append(",").append(scale);
+					}
+					builder.append(")");
+				} else if (precision == -1) {
+					builder.append("(max)");
+				}
+			}
+		}
+		boolean ignorePrecision = isIgnorePrecision(column);
 		builder.append(column.getFullType(typeName));
 		return builder;
 	}
+
+	@Override
+	public boolean isIgnorePrecision(Column column) {
+		String name = column.getTypeName();
+		if(null != name){
+			name = name.toUpperCase();
+			DATA_TYPE type = DATA_TYPE.valueOf(name);
+			if(null == type){
+				return type.isIgnorePrecision();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isIgnoreScale(Column column) {
+		String name = column.getTypeName();
+		if(null != name){
+			name = name.toUpperCase();
+			DATA_TYPE type = DATA_TYPE.valueOf(name);
+			if(null == type){
+				return type.isIgnorePrecision();
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 编码
 	 * @param builder builder
