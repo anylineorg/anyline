@@ -304,13 +304,17 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			Table table = new Table();
+			String name = row.getString("TABLE_NAME");
+			Table table = tables.get(name.toUpperCase());
+			if(null == table){
+				table = new Table();
+			}
 			table.setCatalog(row.getString("TABLE_CATALOG"));
 			table.setSchema(row.getString("TABLE_SCHEMA"));
-			table.setName(row.getString("TABLE_NAME"));
+			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT"));
-			tables.put(table.getName().toUpperCase(), table);
+			tables.put(name.toUpperCase(), table);
 		}
 		return tables;
 	}
