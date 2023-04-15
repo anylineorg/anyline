@@ -1043,6 +1043,8 @@ public interface JDBCAdapter {
 	 */
 	public StringBuilder type(StringBuilder builder, Column column);
 
+	public boolean isIgnorePrecision(Column column);
+	public boolean isIgnoreScale(Column column);
 	/**
 	 * 非空
 	 * @param builder builder
