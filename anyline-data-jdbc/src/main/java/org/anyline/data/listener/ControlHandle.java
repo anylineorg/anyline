@@ -1,15 +1,28 @@
 package org.anyline.data.listener;
 
 import org.anyline.data.run.Run;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.util.ConfigTable;
 
 import java.util.List;
 
-public class RuntimeHolder {
-    public List<Run> runs;
+public class ControlHandle {
+    /**
+     * 执行后返回结果
+     */
+    private DataSet set;
+    private DataRow row;
+    private int count;
+    private boolean exists;
+    private List<Run> runs;
+
+
+    /**
+     * 执行配置
+     */
     public DMListener dmlistener;
     public DDListener ddlistener;
-
     public  boolean IS_SHOW_SQL									= ConfigTable.IS_SHOW_SQL								;		// true		;	// 执行SQL时是否输出日志
     public  long SLOW_SQL_MILLIS								= ConfigTable.SLOW_SQL_MILLIS							;		// 0		; 	// 慢SQL,如果配置了>0的毫秒数,在SQL执行超出时限后会输出日志,并调用DMListener.slow
     public  boolean IS_SHOW_SQL_PARAM							= ConfigTable.IS_SHOW_SQL_PARAM							;		// true		;	// 执行SQL时是否输出日志
@@ -71,4 +84,60 @@ public class RuntimeHolder {
     public  int TABLE_METADATA_CACHE_SECOND						= ConfigTable.TABLE_METADATA_CACHE_SECOND				;		// 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
     public  String MIX_DEFAULT_SEED								= ConfigTable.MIX_DEFAULT_SEED							;		// "al"		;   // MixUti.mix默认seed
     public  String EL_ATTRIBUTE_PREFIX							= ConfigTable.EL_ATTRIBUTE_PREFIX						;		// "al"		;
+
+    public DataSet getSet() {
+        return set;
+    }
+
+    public void setSet(DataSet set) {
+        this.set = set;
+    }
+
+    public DataRow getRow() {
+        return row;
+    }
+
+    public void setRow(DataRow row) {
+        this.row = row;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean isExists() {
+        return exists;
+    }
+
+    public void setExists(boolean exists) {
+        this.exists = exists;
+    }
+
+    public List<Run> getRuns() {
+        return runs;
+    }
+
+    public void setRuns(List<Run> runs) {
+        this.runs = runs;
+    }
+
+    public DMListener getDmlistener() {
+        return dmlistener;
+    }
+
+    public void setDmlistener(DMListener dmlistener) {
+        this.dmlistener = dmlistener;
+    }
+
+    public DDListener getDdlistener() {
+        return ddlistener;
+    }
+
+    public void setDdlistener(DDListener ddlistener) {
+        this.ddlistener = ddlistener;
+    }
 }
