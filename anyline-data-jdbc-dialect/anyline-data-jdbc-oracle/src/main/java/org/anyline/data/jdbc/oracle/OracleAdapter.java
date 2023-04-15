@@ -403,12 +403,39 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRunSQL(catalog, schema, pattern, types);
+
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
+		builder.append("FROM SYS.ALL_ALL_TABLES T \n");
+		builder.append("LEFT JOIN SYS.ALL_TAB_COMMENTS TC  ON  TC.OWNER  = T.OWNER  AND TC.TABLE_NAME  = T.TABLE_NAME \n");
+		builder.append("WHERE T.IOT_NAME IS NULL  AND T.NESTED = 'NO'  AND T.SECONDARY = 'N' ");
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append("AND T.OWNER = '").append(schema).append("'");
+		}
+
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		return super.tables(index, create, catalog, schema, tables, set);
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			Table table = tables.get(name.toUpperCase());
+			if(null == table){
+				table = new Table();
+			}
+			table.setCatalog(catalog);
+			table.setSchema(schema);
+			table.setName(name);
+			table.setComment(row.getString("COMMENTS"));
+			tables.put(name.toUpperCase(), table);
+		}
+		return tables;
 	}
 	@Override
 	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
