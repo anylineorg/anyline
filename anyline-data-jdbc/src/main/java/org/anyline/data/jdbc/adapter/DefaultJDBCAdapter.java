@@ -2427,12 +2427,42 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	@Override
 	public boolean isIgnorePrecision(Column column) {
-		String name = column.getTypeName();
-		if(null != name){
-			name = name.toUpperCase();
-			DATA_TYPE type = DATA_TYPE.valueOf(name);
+		String typeName = column.getTypeName();
+		if(null != typeName){
+			String chk = typeName.toUpperCase();
+			DATA_TYPE type = DATA_TYPE.valueOf(typeName);
 			if(null == type){
 				return type.isIgnorePrecision();
+			}
+			if (chk.contains("DATE")) {
+				return true;
+			}
+			if (chk.contains("TIME")) {
+				return true;
+			}
+			if (chk.contains("YEAR")) {
+				return true;
+			}
+			if (chk.contains("TEXT")) {
+				return true;
+			}
+			if (chk.contains("BLOB")) {
+				return true;
+			}
+			if (chk.contains("JSON")) {
+				return true;
+			}
+			if (chk.contains("POINT")) {
+				return true;
+			}
+			if (chk.contains("LINE")) {
+				return true;
+			}
+			if (chk.contains("POLYGON")) {
+				return true;
+			}
+			if (chk.contains("GEOMETRY")) {
+				return true;
 			}
 		}
 		return false;
