@@ -76,13 +76,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
-	protected static enum DATA_TYPE{
-		CHAR {public String getName(){return "CHAR";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BIGINT;	           }};
-		public abstract Column.STANDARD_DATA_TYPE getStandard();
-		public abstract String getName();
-		public abstract boolean isIgnorePrecision();
-		public abstract boolean isIgnoreScale();
-	}
 	@Override
 	public String getDelimiterFr(){
 		return this.delimiterFr;
@@ -2141,6 +2134,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public String buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
+	 * public boolean isIgnorePrecision(Column column);
+	 * public boolean isIgnoreScale(Column column);
+	 * public Boolean checkIgnorePrecision(String datatype);
+	 * public Boolean checkIgnoreScale(String datatype);
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
 	 * public StringBuilder charset(StringBuilder builder, Column column)
 	 * public StringBuilder defaultValue(StringBuilder builder, Column column)
@@ -2420,9 +2417,17 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 		}
-		boolean ignorePrecision = isIgnorePrecision(column);
-		builder.append(column.getFullType(typeName));
 		return builder;
+	}
+
+	@Override
+	public Boolean checkIgnorePrecision(String datatype) {
+		return null;
+	}
+
+	@Override
+	public Boolean checkIgnoreScale(String datatype) {
+		return null;
 	}
 
 	@Override
@@ -2430,9 +2435,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		String typeName = column.getTypeName();
 		if(null != typeName){
 			String chk = typeName.toUpperCase();
-			DATA_TYPE type = DATA_TYPE.valueOf(typeName);
-			if(null == type){
-				return type.isIgnorePrecision();
+			Boolean chkResult = checkIgnorePrecision(chk);
+			if(null != chkResult){
+				return chkResult;
+			}
+			if (chk.contains("INT")) {
+				return true;
 			}
 			if (chk.contains("DATE")) {
 				return true;
@@ -2472,10 +2480,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public boolean isIgnoreScale(Column column) {
 		String name = column.getTypeName();
 		if(null != name){
-			name = name.toUpperCase();
-			DATA_TYPE type = DATA_TYPE.valueOf(name);
-			if(null == type){
-				return type.isIgnorePrecision();
+			String chk = name.toUpperCase();
+			Boolean chkResult = checkIgnoreScale(chk);
+			if(null != chkResult){
+				return chkResult;
 			}
 		}
 		return false;

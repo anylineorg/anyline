@@ -1,6 +1,8 @@
-package org.anyline.entity.adapter;
+package org.anyline.entity.adapter.init;
 
-public class UpperKeyAdapter implements KeyAdapter{
+import org.anyline.entity.adapter.KeyAdapter;
+
+public class UpperKeyAdapter implements KeyAdapter {
 
     private static KeyAdapter instance = new UpperKeyAdapter();
     @Override

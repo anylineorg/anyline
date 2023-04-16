@@ -42,7 +42,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-	protected static enum DATA_TYPE{
+	public enum DATA_TYPE{
 		BFILE	        {public String getName(){return "BFILE";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BFILE;	           }},
 		BINARY_DOUBLE	{public String getName(){return "BINARY_DOUBLE";}   public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BINARY_DOUBLE;	           }},
 		BINARY_FLOAT	{public String getName(){return "BINARY_FLOAT";}    public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BINARY_FLOAT;	           }},
@@ -978,6 +978,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public String buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
+	 * public boolean isIgnorePrecision(Column column);
+	 * public boolean isIgnoreScale(Column column);
+	 * public Boolean checkIgnorePrecision(String datatype);
+	 * public Boolean checkIgnoreScale(String datatype);
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
 	 * public StringBuilder charset(StringBuilder builder, Column column)
 	 * public StringBuilder defaultValue(StringBuilder builder, Column column)

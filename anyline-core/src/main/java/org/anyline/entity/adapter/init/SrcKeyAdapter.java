@@ -1,6 +1,8 @@
-package org.anyline.entity.adapter;
+package org.anyline.entity.adapter.init;
 
-public class SrcKeyAdapter implements KeyAdapter{
+import org.anyline.entity.adapter.KeyAdapter;
+
+public class SrcKeyAdapter implements KeyAdapter {
     private static KeyAdapter instance = new SrcKeyAdapter();
     @Override
     public String key(String key) {

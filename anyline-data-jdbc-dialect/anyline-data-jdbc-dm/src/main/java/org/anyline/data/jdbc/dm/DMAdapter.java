@@ -658,6 +658,10 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * public String buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
+	 * public boolean isIgnorePrecision(Column column);
+	 * public boolean isIgnoreScale(Column column);
+	 * public Boolean checkIgnorePrecision(String datatype);
+	 * public Boolean checkIgnoreScale(String datatype);
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
 	 * public StringBuilder charset(StringBuilder builder, Column column)
 	 * public StringBuilder defaultValue(StringBuilder builder, Column column)

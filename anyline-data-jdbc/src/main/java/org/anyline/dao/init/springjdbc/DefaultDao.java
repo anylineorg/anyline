@@ -286,8 +286,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(!exe){
 				return new EntitySet();
 			}
-			if(EntityAdapterProxy.hasAdapter()){
-				prepare.setDataSource(EntityAdapterProxy.table(clazz));
+			if(BasicUtil.isEmpty(prepare.getDataSource())) {
+				if (EntityAdapterProxy.hasAdapter()) {
+					prepare.setDataSource(EntityAdapterProxy.table(clazz));
+				}
 			}
 
 			JDBCRuntime runtime = runtime();
@@ -2512,11 +2514,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			Column column = columns.get(ucolumn.getName().toUpperCase());
 			if(null != column){
 				// 修改列
-				column.setTable(update);
-				column.setUpdate(ucolumn);
-				column.setService(table.getService());
-				alter(column);
-				result = true;
+				if(column.equals(ucolumn)){
+					column.setTable(update);
+					column.setUpdate(ucolumn);
+					column.setService(table.getService());
+					alter(column);
+					result = true;
+				}
 			}else{
 				// 添加列
 				ucolumn.setTable(update);
@@ -2539,7 +2543,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		//主键
-		PrimaryKey src_primary = primary(table);
+		PrimaryKey src_primary = primary(update);
 		PrimaryKey cur_primary = update.getPrimaryKey();
 		String src_define = "";
 		String cur_define = "";

@@ -649,7 +649,7 @@ public class Column implements org.anyline.entity.data.Column{
         }
         return builder.toString();
     }
-    public Object clone(){
+    public Column clone(){
         Column copy = new Column();
         copy.setName(name);
         copy.setOriginalName(originalName);
@@ -683,5 +683,40 @@ public class Column implements org.anyline.entity.data.Column{
         return this.keyword;
     }
 
+    @Override
+    public boolean equals(org.anyline.entity.data.Column column) {
+        if(null == column){
+            return false;
+        }
+        if(BasicUtil.equals(typeName, column.getTypeName())){
+            return false;
+        }
+        if(BasicUtil.equals(precision, column.getPrecision())){
+            return false;
+        }
+        if(BasicUtil.equals(scale, column.getScale())){
+            return false;
+        }
+        if(BasicUtil.equals(defaultValue, column.getDefaultValue())){
+            return false;
+        }
+        if(BasicUtil.equals(comment, column.getComment())){
+            return false;
+        }
+        if(BasicUtil.equals(nullable, column.isNullable())){
+            return false;
+        }
+        if(BasicUtil.equals(isAutoIncrement, column.isAutoIncrement())){
+            return false;
+        }
+        if(BasicUtil.equals(charset, column.getCharset())){
+            return false;
+        }
+        if(BasicUtil.equals(isPrimaryKey, column.isPrimaryKey())){
+            return false;
+        }
+
+        return true;
+    }
 }
 

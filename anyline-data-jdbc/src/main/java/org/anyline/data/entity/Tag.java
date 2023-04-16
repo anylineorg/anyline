@@ -51,7 +51,7 @@ public class Tag extends Column{
         }
         return builder.toString();
     }
-    public Object clone(){
+    public Tag clone(){
         Tag copy = new Tag();
         copy.setName(name);
         copy.setOriginalName(originalName);

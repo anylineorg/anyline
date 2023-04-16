@@ -1,5 +1,9 @@
 package org.anyline.entity.adapter;
 
+import org.anyline.entity.adapter.init.LowerKeyAdapter;
+import org.anyline.entity.adapter.init.SrcKeyAdapter;
+import org.anyline.entity.adapter.init.UpperKeyAdapter;
+
 import java.io.Serializable;
 
 public interface KeyAdapter extends Serializable {

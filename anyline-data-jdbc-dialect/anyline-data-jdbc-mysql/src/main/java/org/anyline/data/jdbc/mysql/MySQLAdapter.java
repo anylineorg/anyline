@@ -21,7 +21,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-	protected static enum DATA_TYPE{
+	public enum DATA_TYPE{
 		BIGINT	            {public String getName(){return "bigint";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BIGINT;	           }},
 		BINARY	            {public String getName(){return "binary";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BINARY;	           }},
 		BIT	                {public String getName(){return "bit";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BIT;	           }},
@@ -986,6 +986,14 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * public String buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
+	 * public boolean isIgnorePrecision(Column column);
+	 * public boolean isIgnoreScale(Column column);
+	 * public Boolean checkIgnorePrecision(String datatype);
+	 * public Boolean checkIgnoreScale(String datatype);
+	 * public boolean isIgnorePrecision(Column column);
+	 * public boolean isIgnoreScale(Column column);
+	 * public Boolean checkIgnorePrecision(String datatype);
+	 * public Boolean checkIgnoreScale(String datatype);
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
 	 * public StringBuilder charset(StringBuilder builder, Column column)
 	 * public StringBuilder defaultValue(StringBuilder builder, Column column)
@@ -1145,6 +1153,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public StringBuilder define(StringBuilder builder, Column column){
 		return super.define(builder, column);
 	}
+
+
 	/**
 	 * 数据类型
 	 * @param builder builder
@@ -1154,6 +1164,40 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
 		return super.type(builder, column);
+	}
+
+	@Override
+	public boolean isIgnorePrecision(Column column) {
+		return super.isIgnorePrecision(column);
+	}
+
+	@Override
+	public boolean isIgnoreScale(Column column) {
+		return super.isIgnoreScale(column);
+	}
+	@Override
+	public Boolean checkIgnorePrecision(String datatype) {
+		try {
+			DATA_TYPE type = DATA_TYPE.valueOf(datatype);
+			if (null == type) {
+				return type.isIgnorePrecision();
+			}
+		}catch (Exception e){
+
+		}
+		return null;
+	}
+	@Override
+	public Boolean checkIgnoreScale(String datatype) {
+		try {
+			DATA_TYPE type = DATA_TYPE.valueOf(datatype);
+			if (null == type) {
+				return type.isIgnoreScale();
+			}
+		}catch (Exception e){
+
+		}
+		return null;
 	}
 
 	/**

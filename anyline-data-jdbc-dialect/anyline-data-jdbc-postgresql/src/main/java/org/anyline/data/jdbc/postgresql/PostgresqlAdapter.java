@@ -34,7 +34,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		return DB_TYPE.PostgreSQL; 
 	}
 
-	protected static enum DATA_TYPE{
+	public enum DATA_TYPE{
 		BIT	            {public String getName(){return "bit";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BIT;	           }},
 		BOOL	        {public String getName(){return "bool";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BOOL;	           }},
 		BOX		        {public String getName(){return "box";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public Column.STANDARD_DATA_TYPE getStandard(){return Column.STANDARD_DATA_TYPE.BOX;	           }},
@@ -767,6 +767,10 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * public String buildCreateCommentRunSQL(Column column)
 	 * public StringBuilder define(StringBuilder builder, Column column)
 	 * public StringBuilder type(StringBuilder builder, Column column)
+	 * public boolean isIgnorePrecision(Column column);
+	 * public boolean isIgnoreScale(Column column);
+	 * public Boolean checkIgnorePrecision(String datatype);
+	 * public Boolean checkIgnoreScale(String datatype);
 	 * public StringBuilder nullable(StringBuilder builder, Column column)
 	 * public StringBuilder charset(StringBuilder builder, Column column)
 	 * public StringBuilder defaultValue(StringBuilder builder, Column column)

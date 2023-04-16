@@ -135,4 +135,5 @@ public interface Column extends Serializable {
     public String getCollate();
     //完整的数据类型 varchar(32)
     public String getFullType();
+    public boolean equals(Column column);
 }

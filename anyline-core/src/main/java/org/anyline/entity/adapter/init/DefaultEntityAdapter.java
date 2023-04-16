@@ -1,4 +1,4 @@
-package org.anyline.init;
+package org.anyline.entity.adapter.init;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.EntityAdapter;
@@ -151,7 +151,18 @@ public class DefaultEntityAdapter implements EntityAdapter {
 
     @Override
     public Field field(Class clazz, String column) {
-        return column2field.get(clazz.getName()+":"+column.toUpperCase());
+        Field field = column2field.get(clazz.getName()+":"+column.toUpperCase());
+        if(null == field){
+            fields(clazz);
+            field = column2field.get(clazz.getName()+":"+column.toUpperCase());
+        }
+        return field;
+    }
+    public void fields(Class clazz){
+        List<Field> fields = ClassUtil.getFields(clazz);
+        for(Field field:fields){
+            column(clazz, field);
+        }
     }
 
     @Override

@@ -51,7 +51,7 @@ public interface JDBCAdapter {
 	}
 
 
-	public static enum DB_TYPE{
+	public enum DB_TYPE{
 		Cassandra			{public String getCode(){return "DB_TYPE_CASSANDRA";}			public String getName(){return "Cassandra";}			public String getDriver(){return "";}},
 		ClickHouse			{public String getCode(){return "DB_TYPE_CLICKHOUSE";}			public String getName(){return "ClickHouse";}			public String getDriver(){return "ru.yandex.clickhouse.ClickHouseDriver";}},
 		CockroachDB			{public String getCode(){return "DB_TYPE_COCKROACHDB";}			public String getName(){return "CockroachDB";}			public String getDriver(){return "";}},
@@ -1045,6 +1045,8 @@ public interface JDBCAdapter {
 
 	public boolean isIgnorePrecision(Column column);
 	public boolean isIgnoreScale(Column column);
+	public Boolean checkIgnorePrecision(String datatype);
+	public Boolean checkIgnoreScale(String datatype);
 	/**
 	 * 非空
 	 * @param builder builder
