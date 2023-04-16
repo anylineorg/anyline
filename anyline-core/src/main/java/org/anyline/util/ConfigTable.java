@@ -110,6 +110,7 @@ public class ConfigTable {
 	public static String SQL_STORE_DIR									= null		;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
 	public static boolean IS_OPEN_PARSE_MYBATIS							= true		; 	// 是否开始解析mybatis定义的SQL
 	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  ;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
+	public static String ENTITY_CLASS_TABLE_MAP							= "Camel_"  ;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
 	public static String ENTITY_TABLE_ANNOTATION						= null		;   // 表名注解
 	public static String ENTITY_COLUMN_ANNOTATION						= null		;	// 列名注解
 	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)

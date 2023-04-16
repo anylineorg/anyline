@@ -52,9 +52,15 @@ public class DefaultEntityAdapter implements EntityAdapter {
                 return name;
             }
         }
-        // 3.类名
+        // 3.类名转成表名
+        if("Camel_".equalsIgnoreCase(ConfigTable.ENTITY_CLASS_TABLE_MAP)){
+            name = BeanUtil.camel_(clazz.getSimpleName());
+            class2table.put(key, name);
+            return name;
+        }
+        // 4.类名
         name = clazz.getSimpleName();
-        class2table.put(key, name.toString());
+        class2table.put(key, name);
         return name;
     }
 

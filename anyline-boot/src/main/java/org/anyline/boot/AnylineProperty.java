@@ -225,6 +225,10 @@ public class AnylineProperty {
      */
     protected String entityFieldColumnMap                       = "camel_"  ;   // 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
     /**
+     * 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
+     */
+    protected String entityClassTableMap						= "Camel_"  ;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
+    /**
      * 表名注解
      */
     protected String entityTableAnnotation						= null		;   // 表名注解
@@ -800,5 +804,14 @@ public class AnylineProperty {
     public void setAutoSplitArray(boolean autoSplitArray) {
         this.autoSplitArray = autoSplitArray;
         ConfigTable.IS_AUTO_SPLIT_ARRAY = autoSplitArray;
+    }
+
+    public String getEntityClassTableMap() {
+        return entityClassTableMap;
+    }
+
+    public void setEntityClassTableMap(String entityClassTableMap) {
+        this.entityClassTableMap = entityClassTableMap;
+        ConfigTable.ENTITY_CLASS_TABLE_MAP = entityClassTableMap;
     }
 }
