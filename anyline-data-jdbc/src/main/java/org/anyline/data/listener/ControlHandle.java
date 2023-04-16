@@ -3,6 +3,7 @@ package org.anyline.data.listener;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.listener.EntityListener;
 import org.anyline.util.ConfigTable;
 
 import java.util.List;
@@ -17,12 +18,14 @@ public class ControlHandle {
     private boolean exists;
     private List<Run> runs;
 
-
     /**
      * 执行配置
      */
-    public DMListener dmlistener;
-    public DDListener ddlistener;
+    public DMListener dmListener;
+    public DDListener ddListener;
+    public EntityListener entityListener;
+
+
     public  boolean IS_SHOW_SQL									= ConfigTable.IS_SHOW_SQL								;		// true		;	// 执行SQL时是否输出日志
     public  long SLOW_SQL_MILLIS								= ConfigTable.SLOW_SQL_MILLIS							;		// 0		; 	// 慢SQL,如果配置了>0的毫秒数,在SQL执行超出时限后会输出日志,并调用DMListener.slow
     public  boolean IS_SHOW_SQL_PARAM							= ConfigTable.IS_SHOW_SQL_PARAM							;		// true		;	// 执行SQL时是否输出日志
@@ -76,6 +79,7 @@ public class ControlHandle {
     public  String SQL_STORE_DIR								= ConfigTable.SQL_STORE_DIR								;		// null		;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
     public  boolean IS_OPEN_PARSE_MYBATIS						= ConfigTable.IS_OPEN_PARSE_MYBATIS						;		// true		; 	// 是否开始解析mybatis定义的SQL
     public  String ENTITY_FIELD_COLUMN_MAP						= ConfigTable.ENTITY_FIELD_COLUMN_MAP					;		// "camel_" ;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
+    public  String ENTITY_CLASS_TABLE_MAP						= ConfigTable.ENTITY_CLASS_TABLE_MAP                    ;	    // 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
     public  String ENTITY_TABLE_ANNOTATION						= ConfigTable.ENTITY_TABLE_ANNOTATION					;		// null		;   // 表名注解
     public  String ENTITY_COLUMN_ANNOTATION						= ConfigTable.ENTITY_COLUMN_ANNOTATION					;		// null		;	// 列名注解
     public  String ENTITY_PRIMARY_KEY_ANNOTATION				= ConfigTable.ENTITY_PRIMARY_KEY_ANNOTATION				;		// null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
@@ -125,19 +129,27 @@ public class ControlHandle {
         this.runs = runs;
     }
 
-    public DMListener getDmlistener() {
-        return dmlistener;
+    public DMListener getDmListener() {
+        return dmListener;
     }
 
-    public void setDmlistener(DMListener dmlistener) {
-        this.dmlistener = dmlistener;
+    public void setDmListener(DMListener dmListener) {
+        this.dmListener = dmListener;
     }
 
-    public DDListener getDdlistener() {
-        return ddlistener;
+    public DDListener getDdListener() {
+        return ddListener;
     }
 
-    public void setDdlistener(DDListener ddlistener) {
-        this.ddlistener = ddlistener;
+    public void setDdListener(DDListener ddListener) {
+        this.ddListener = ddListener;
+    }
+
+    public EntityListener getEntityListener() {
+        return entityListener;
+    }
+
+    public void setEntityListener(EntityListener entityListener) {
+        this.entityListener = entityListener;
     }
 }
