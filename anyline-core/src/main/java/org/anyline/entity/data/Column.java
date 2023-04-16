@@ -133,6 +133,8 @@ public interface Column extends Serializable {
     public String getCharset();
 
     public String getCollate();
+    public void delete();
+    public boolean isDelete();
     //完整的数据类型 varchar(32)
     public String getFullType();
     public boolean equals(Column column);

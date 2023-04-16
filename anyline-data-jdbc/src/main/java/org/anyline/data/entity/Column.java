@@ -47,8 +47,9 @@ public class Column implements org.anyline.entity.data.Column{
     protected Object value                        ;
 
     protected Column update                       ;
+    protected boolean delete = false              ;
 
-    protected transient DDListener listener                 ;
+    protected transient DDListener listener       ;
 
 
     public Column(){
@@ -599,6 +600,16 @@ public class Column implements org.anyline.entity.data.Column{
         return builder.toString();
     }
 
+    @Override
+    public void delete() {
+        this.delete = true;
+    }
+
+    @Override
+    public boolean isDelete() {
+        return delete;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -718,5 +729,6 @@ public class Column implements org.anyline.entity.data.Column{
 
         return true;
     }
+
 }
 
