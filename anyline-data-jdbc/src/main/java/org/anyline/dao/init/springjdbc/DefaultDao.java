@@ -2528,12 +2528,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 		}
-		// 删除列
+		List<String> deletes = new ArrayList<>();
+		// 删除列(根据删除标记)
+		for(Column column : ucolumns.values()){
+			if(column.isDelete()){
+				drop(column);
+				deletes.add(column.getName().toUpperCase());
+			}
+		}
+		// 删除列(根据新旧对比)
 		if(table.isAutoDropColumn()) {
 			for (Column column : columns.values()) {
 				if(column instanceof Tag){
 					continue;
 				}
+				if(column.isDelete() || deletes.contains(column.getName().toUpperCase())){
+					//上一步已删除
+					continue;
+				}
+
 				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
 				if (null == ucolumn) {
 					column.setTable(update);

@@ -610,6 +610,11 @@ public class Column implements org.anyline.entity.data.Column{
         return delete;
     }
 
+    @Override
+    public void setDelete(boolean delete) {
+        this.delete = delete;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
