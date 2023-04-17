@@ -413,6 +413,9 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		if(BasicUtil.isNotEmpty(schema)){
 			builder.append("AND T.OWNER = '").append(schema).append("'");
 		}
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND T.TABLE_NAME = '").append(pattern).append("'");
+		}
 
 		sqls.add(builder.toString());
 		return sqls;
