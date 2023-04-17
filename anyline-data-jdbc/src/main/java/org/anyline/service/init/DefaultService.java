@@ -2611,6 +2611,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 BeanUtil.copyFieldValue(column, original);
                 columns.put(original.getName(), original);
             }
+            column.setTable(table);
             return result;
         }
 
