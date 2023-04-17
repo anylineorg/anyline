@@ -31,6 +31,17 @@ public class JDBCHandle {
     public Map<String, Column.STANDARD_DATA_TYPE> columnTypes = new LinkedHashMap<>(); //列(属性)对应的DB数据类型
 
 
+    private static final ThreadLocal<JDBCHandle> THREAD_JDBC_HANDLE = new ThreadLocal<JDBCHandle>();
+
+    public static JDBCHandle build(){
+        JDBCHandle instance = new JDBCHandle();
+        THREAD_JDBC_HANDLE.set(instance);
+        return instance;
+    }
+    public static void clear(){
+        THREAD_JDBC_HANDLE.remove();
+    }
+
     /**
      * 列(属性)的值对应的JAVA数据类型
      * @param column 列名或属性名
