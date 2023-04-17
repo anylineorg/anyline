@@ -190,6 +190,13 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(null == table || null != table.getCheckSchemaTime()){
 			return;
 		}
+		/*
+		* mysql不支付catalog
+		*
+		* con.getCatalog:数据库名 赋值给table.schema
+		* con.getSchema:null
+		* 查表时 SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '数据库名'
+		*/
 		Connection con = null;
 		try {
 			con = DataSourceUtils.getConnection(dataSource);
@@ -260,12 +267,12 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 		builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
 		// 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
-		if(BasicUtil.isNotEmpty(catalog)){
+		/*if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
-		}
-		/*if(BasicUtil.isNotEmpty(schema)){
-			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 		}*/
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+		}
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
 		}
@@ -309,7 +316,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			if(null == table){
 				table = new Table();
 			}
-			table.setCatalog(row.getString("TABLE_CATALOG"));
+			//MYSQL不支付TABLE_CATALOG
+			//table.setCatalog(row.getString("TABLE_CATALOG"));
 			table.setSchema(row.getString("TABLE_SCHEMA"));
 			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
@@ -514,9 +522,9 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			String catalog = table.getCatalog();
 			String schema = table.getSchema();
 			builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
-			if(BasicUtil.isNotEmpty(catalog)){
+			/*if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-			}
+			}*/
 			if(BasicUtil.isNotEmpty(schema)){
 				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 			}
