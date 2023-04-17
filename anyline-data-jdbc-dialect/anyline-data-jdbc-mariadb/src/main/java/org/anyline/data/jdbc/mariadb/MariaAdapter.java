@@ -123,12 +123,12 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 		builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
 		// 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
-		if(BasicUtil.isNotEmpty(catalog)){
+		/*if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
-		}
-		/*if(BasicUtil.isNotEmpty(schema)){
-			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 		}*/
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+		}
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
 		}
@@ -333,9 +333,9 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			String catalog = table.getCatalog();
 			String schema = table.getSchema();
 			builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
-			if(BasicUtil.isNotEmpty(catalog)){
+			/*if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-			}
+			}*/
 			if(BasicUtil.isNotEmpty(schema)){
 				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 			}
