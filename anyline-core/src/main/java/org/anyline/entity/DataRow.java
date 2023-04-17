@@ -2513,6 +2513,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public DataRow changeKey(String key, String target, boolean remove) {
+        if(null == key || null == target){
+            return this;
+        }
+        if(keyAdapter.key(key).equals(keyAdapter.key(target))){
+            return this;
+        }
         put(target, get(key));
         if (remove && !target.equalsIgnoreCase(key)) {
             remove(keyAdapter.key(key));

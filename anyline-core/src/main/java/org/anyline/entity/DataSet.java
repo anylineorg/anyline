@@ -3754,6 +3754,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet changeKey(String key, String target, boolean remove) {
+        if(null == key || null == target){
+            return this;
+        }
+        if(key.equals(target)){
+            return this;
+        }
         for(DataRow row:rows){
             row.changeKey(key, target, remove);
         }
