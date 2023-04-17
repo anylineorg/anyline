@@ -403,7 +403,6 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
