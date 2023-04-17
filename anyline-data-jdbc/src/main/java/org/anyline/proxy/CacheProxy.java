@@ -91,6 +91,9 @@ public class CacheProxy {
     }
 
     public static void clearColumnCache(String catalog, String schema, String table){
+        if(null == table){
+            return;
+        }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.curDataSource()+"_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
