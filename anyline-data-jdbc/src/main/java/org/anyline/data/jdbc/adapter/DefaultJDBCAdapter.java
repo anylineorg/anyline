@@ -633,15 +633,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 创建查询序列SQL
-	 * @param prepare  prepare
-	 * @param configs 查询条件配置(NULL)
-	 * @param conditions 查询条件(NULL)
-	 * @return Run
+	 * 查询序列cur 或 next value
+	 * @param next  是否生成返回下一个序列 false:cur true:next
+	 * @param names 序列名
+	 * @return String
 	 */
-	public Run buildQuerySequenceRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public String buildQuerySequence(boolean next, String ... names){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 Run buildQuerySequenceRun(RunPrepare prepare, ConfigStore configs, String ... conditions)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildQuerySequence(boolean next, String ... names)", 37));
 		}
 		return null;
 	}
