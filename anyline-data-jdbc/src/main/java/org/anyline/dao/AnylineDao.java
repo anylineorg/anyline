@@ -20,13 +20,15 @@
 package org.anyline.dao;
 
 import org.anyline.data.entity.*;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
-import org.anyline.entity.PageNavi;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
+import org.anyline.entity.PageNavi;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,6 +47,7 @@ public interface AnylineDao<E>{
 	public DataSet querys(RunPrepare prepare, String ... conditions);
 	public DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	public DataSet selects(RunPrepare prepare, String ... conditions);
+	public DataRow sequence(boolean next, String ... names);
 
 
 	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions);
