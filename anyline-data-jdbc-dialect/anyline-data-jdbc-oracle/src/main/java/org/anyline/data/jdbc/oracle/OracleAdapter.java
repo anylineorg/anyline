@@ -5,7 +5,12 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.TableRun;
+import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -48,152 +53,127 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			public String getName(){return "BFILE";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BFILE;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		BINARY_DOUBLE{
 			public String getName(){return "BINARY_DOUBLE";}   public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY_DOUBLE;}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		BINARY_FLOAT{
 			public String getName(){return "BINARY_FLOAT";}    public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY_FLOAT;}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		BLOB{
 			public String getName(){return "BLOB";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BLOB;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		CHAR{
 			public String getName(){return "CHAR";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CHAR;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		CLOB{
 			public String getName(){return "CLOB";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CLOB;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		DATE{
 			public String getName(){return "DATE";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATE;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		DECIMAL{
 			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		FLOAT{
 			public String getName(){return "FLOAT";}           public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		INT{
 			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		INTEGER{
 			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		LONG{
 			public String getName(){return "LONG";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		NCHAR{
 			public String getName(){return "NCHAR";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NCHAR;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		NCLOB{
 			public String getName(){return "NCLOB";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NCLOB;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		NUMBER{
 			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		NUMERIC{
 			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		NVARCHAR2{
 			public String getName(){return "NVARCHAR2";}     	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NVARCHAR2;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		RAW{
 			public String getName(){return "RAW";}           	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.RAW;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		REAL{
 			public String getName(){return "FLOAT";}           public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		ROWID{
 			public String getName(){return "ROWID";}         	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.ROWID;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		SMALINT{
 			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		TIMESTAMP{
 			public String getName(){return "TIMESTAMP";}       public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIMESTAMP;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		UROWID{
 			public String getName(){return "UROWID";}      	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.UROWID;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		VARCHAR{
 			public String getName(){return "VARCHAR";}         public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		},
+			}},
 		VARCHAR2{
 			public String getName(){return "VARCHAR2";}        public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR2;	}
 			public Object convert(Object value, boolean string){
 				return value;
-			}
-		};
+			}};
 
 		/**
 		 * 格式转换
@@ -226,6 +206,35 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * 														DML
 	 *
 	 *  *****************************************************************************************************************/
+
+	/**
+	 * 查询序列cur 或 next value
+	 * @param next  是否生成返回下一个序列 false:cur true:next
+	 * @param names 序列名
+	 * @return String
+	 */
+	public String buildQuerySequence(boolean next, String ... names){
+		String key = "CURRVAL";
+		if(next){
+			key = "NEXTVAL";
+		}
+		StringBuilder builder = new StringBuilder();
+		Run run = null;
+		if(null != names && names.length>0) {
+			run = new TextRun();
+			builder.append("SELECT ");
+			boolean first = true;
+			for (String name : names) {
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+				builder.append(name).append(".").append(key).append(" AS ").append(name);
+			}
+			builder.append(" FROM DUAL");
+		}
+		return builder.toString();
+	}
 	@Override 
 	public String parseFinalQuery(Run run){
 		StringBuilder builder = new StringBuilder(); 
@@ -243,7 +252,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			first = navi.getFirstRow(); 
 			last = navi.getLastRow(); 
 		} 
-		if(null == navi){ 
+		if(null == navi){
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
 			// 分页 
