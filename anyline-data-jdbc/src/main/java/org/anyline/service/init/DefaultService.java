@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service("anyline.service")
@@ -291,43 +292,25 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public Long sequence(String name) {
-        Long next = null;
-        if(null != name) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("DUAL(").append(name).append(".NEXTVAL)");
-            DataRow row = query(builder.toString());
-            if (null != row) {
-                try {
-                    next = row.getLong("NEXTVAL");
-                } catch (Exception e) {
-                }
-            }
+    public BigDecimal sequence(boolean next, String name) {
+        DataRow row = sequences(next, name);
+        if(null != row){
+            return row.getDecimal(name, (BigDecimal) null);
         }
-        return next;
+        return null;
+    }
+    @Override
+    public BigDecimal sequence(String name) {
+        return sequence(true, name);
     }
 
     @Override
+    public DataRow sequences(boolean next, String... names) {
+        return dao.sequence(next, names);
+    }
+    @Override
     public DataRow sequences(String... names) {
-        DataRow values = null;
-        if(null != names && names.length>0) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("DUAL(");
-            boolean first = true;
-            for (String name : names) {
-                if(!first){
-                    builder.append(",");
-                }
-                first = false;
-                builder.append(name).append(".NEXTVAL AS ").append(name);
-            }
-            builder.append(")");
-            values = query(builder.toString());
-        }
-        if(null == values){
-            values = new DataRow();
-        }
-        return values;
+        return sequences(true, names);
     }
 
     @Override
@@ -1574,14 +1557,6 @@ public class DefaultService<E> implements AnylineService<E> {
         try {
             setPageLazy(src, configs, conditions);
             RunPrepare prepare = createRunPrepare(src);
-            if(src.toUpperCase().trim().endsWith(" DUAL")){
-                configs.setPageNavi(null);
-            }else {
-                String table = prepare.getTable();
-                if(null != table && table.toUpperCase().equals("DUAL")){
-                    configs.setPageNavi(null);
-                }
-            }
 
             set = dao.querys(prepare, configs, conditions);
 
