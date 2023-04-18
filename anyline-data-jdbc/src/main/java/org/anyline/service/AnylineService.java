@@ -260,6 +260,11 @@ public interface AnylineService<E>{
 	 * @return long 查询失败返回null
 	 */
 	public Long sequence(String name);
+	/**
+	 * 查询序列next value
+	 * @param names 序列名
+	 * @return DataRow 查询结果按序列名保存到DataRow中，查询失败返回null
+	 */
 	public DataRow sequences(String ... names);
 
 	/**
