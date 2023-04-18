@@ -22,6 +22,7 @@ import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
@@ -61,7 +62,36 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													DML
 	 *
 	 ******************************************************************************************************************/
-	@Override 
+
+	/**
+	 * 查询序列cur 或 next value
+	 * @param next  是否生成返回下一个序列 false:cur true:next
+	 * @param names 序列名
+	 * @return String
+	 */
+	public String buildQuerySequence(boolean next, String ... names){
+		String key = "CURRVAL";
+		if(next){
+			key = "NEXTVAL";
+		}
+		StringBuilder builder = new StringBuilder();
+		Run run = null;
+		if(null != names && names.length>0) {
+			run = new TextRun();
+			builder.append("SELECT ");
+			boolean first = true;
+			for (String name : names) {
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+				builder.append(name).append(".").append(key).append(" AS ").append(name);
+			}
+			builder.append(" FROM SYSIBM.SYSDUMMY1");
+		}
+		return builder.toString();
+	}
+	@Override
 	public String parseFinalQuery(Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
