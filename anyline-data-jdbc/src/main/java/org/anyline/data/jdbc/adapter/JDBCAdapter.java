@@ -237,12 +237,11 @@ public interface JDBCAdapter {
 	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 创建查询序列SQL
-	 * @param prepare  prepare
-	 * @param configs 查询条件配置(NULL)
-	 * @param conditions 查询条件(NULL)
-	 * @return Run
+	 * @param next  是否生成返回下一个序列 false:cur true:next
+	 * @param names names
+	 * @return String
 	 */
-	public Run buildQuerySequenceRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public String buildQuerySequence(boolean next, String ... names);
 
 	/**
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
