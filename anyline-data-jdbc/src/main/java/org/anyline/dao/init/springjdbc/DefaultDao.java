@@ -59,6 +59,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -385,6 +386,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public DataSet selects(RunPrepare prepare, String ... conditions){
 		return querys(prepare, null, conditions);
 	}
+
+	public DataRow sequence(boolean next, String ... names){
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		String sql = adapter.buildQuerySequence(next, names);
+		DataSet set = select(runtime, "",  sql, null);
+		if(set.size()>0) {
+			return set.getRow(0);
+		}else{
+			return new DataRow();
+		}
+	}
+
 	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
