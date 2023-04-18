@@ -1534,6 +1534,15 @@ public class DefaultService<E> implements AnylineService<E> {
         try {
             setPageLazy(src, configs, conditions);
             RunPrepare prepare = createRunPrepare(src);
+            if(src.toUpperCase().trim().endsWith(" DUAL")){
+                configs.setPageNavi(null);
+            }else {
+                String table = prepare.getTable();
+                if(null != table && table.toUpperCase().equals("DUAL")){
+                    configs.setPageNavi(null);
+                }
+            }
+
             set = dao.querys(prepare, configs, conditions);
 
          } catch (Exception e) {
