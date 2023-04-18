@@ -30,6 +30,7 @@ import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.proxy.CacheProxy;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -255,16 +256,26 @@ public interface AnylineService<E>{
 	public DataRow query(String src, String ... conditions);
 
 	/**
-	 * 查询序列next value
+	 * 查询序列cur 或 next value
+	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param name 序列名
 	 * @return long 查询失败返回null
 	 */
-	public Long sequence(String name);
+	public BigDecimal sequence(boolean next, String name);
 	/**
 	 * 查询序列next value
+	 * @param next  是否生成返回下一个序列
+	 * @param name 序列名
+	 * @return long 查询失败返回null
+	 */
+	public BigDecimal sequence(String name);
+	/**
+	 * 查询序列cur 或 next value
 	 * @param names 序列名
+	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @return DataRow 查询结果按序列名保存到DataRow中，查询失败返回null
 	 */
+	public DataRow sequences(boolean next, String ... names);
 	public DataRow sequences(String ... names);
 
 	/**
