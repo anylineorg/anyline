@@ -254,6 +254,13 @@ public interface AnylineService<E>{
 	public DataRow query(String src, ConfigStore configs,  String ... conditions);
 	public DataRow query(String src, String ... conditions);
 
+	/**
+	 * 查询序列next value
+	 * @param name 序列名
+	 * @return long 查询失败返回null
+	 */
+	public Long sequence(String name);
+	public DataRow sequences(String ... names);
 
 	/**
 	 * 根据calzz返回实体集合
