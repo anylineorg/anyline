@@ -235,16 +235,24 @@ public interface JDBCAdapter {
 	 * @return Run
 	 */
 	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	/**
+	 * 创建查询序列SQL
+	 * @param prepare  prepare
+	 * @param configs 查询条件配置(NULL)
+	 * @param conditions 查询条件(NULL)
+	 * @return Run
+	 */
+	public Run buildQuerySequenceRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
-	 * 构造查询主体
+	 * 构造查询主体 拼接where group等(不含分页 ORDER)
 	 * @param run run
 	 */
 	public void buildQueryRunContent(Run run);
 
 
 	/**
-	 * 创建最终执行查询SQL
+	 * 创建最终执行查询SQL 包含分页 ORDER
 	 * @param run  run
 	 * @return String
 	 */
