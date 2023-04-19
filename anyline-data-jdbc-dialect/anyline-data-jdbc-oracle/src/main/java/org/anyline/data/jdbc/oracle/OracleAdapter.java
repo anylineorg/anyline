@@ -800,7 +800,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name name
 	 * @return sql
 	 */
 	@Override
