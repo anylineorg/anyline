@@ -2347,6 +2347,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Index> indexs(Table table, String name)
+	 * public LinkedHashMap<String, Index> indexs(String table, String name)
 	 * public LinkedHashMap<String, Index> indexs(Table table)
 	 * public LinkedHashMap<String, Index> indexs(String table)
 	 * public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table)
@@ -2354,75 +2356,102 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 索引
 	 * @param table 表
+	 * @param name name
 	 * @return map
 	 */
 	@Override
-	public LinkedHashMap<String, Index> indexs(Table table){
+	public LinkedHashMap<String, Index> indexs(Table table, String name){
 		LinkedHashMap<String,Index> indexs = null;
-		
+		if(null == table){
+			table = new Table();
+		}
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
-		String tab = table.getName();
-		DataSource ds = null;
-		Connection con = null;
-		try {
-			ds = runtime.getTemplate().getDataSource();
-			con = DataSourceUtils.getConnection(ds);
-			indexs = adapter.indexs(true, indexs, con.getMetaData(), table, false, false);
-			table.setIndexs(indexs);
-		}catch (Exception e){
-			e.printStackTrace();
-		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
+		if(null != table.getName()) {
+			DataSource ds = null;
+			Connection con = null;
+			try {
+				ds = runtime.getTemplate().getDataSource();
+				con = DataSourceUtils.getConnection(ds);
+				indexs = adapter.indexs(true, indexs, con.getMetaData(), table, false, false);
+				table.setIndexs(indexs);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
+					DataSourceUtils.releaseConnection(con, ds);
+				}
+			}
+		}
+		List<String> sqls = adapter.buildQueryIndexRunSQL(table, name);
+
+		if(null != sqls){
+			int idx = 0;
+			for(String sql:sqls){
+				if(BasicUtil.isNotEmpty(sql)) {
+					DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+					try {
+						indexs = adapter.indexs(idx, true, table, indexs, set);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+				}
+				idx ++;
 			}
 		}
 		return indexs;
 	}
 
 	@Override
+	public LinkedHashMap<String, Index> indexs(Table table){
+		return indexs(table, null);
+	}
+	@Override
+	public LinkedHashMap<String, Index> indexs(String table, String name) {
+		return indexs(new Table(table), name);
+	}
+	@Override
 	public LinkedHashMap<String, Index> indexs(String table) {
-		Table tab = new Table();
-		tab.setName(table);
-		return indexs(tab);
+		return indexs(new Table(table), null);
 	}
 
 	@Override
 	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
-		Table tab = new Table();
-		tab.setCatalog(catalog);
-		tab.setSchema(schema);
-		tab.setName(table);
-		return indexs(tab);
+		return indexs(new Table(catalog, schema, table), null);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Constraint> constraints(Table table, String name)
+	 * public LinkedHashMap<String, Constraint> constraints(String table, String name)
 	 * public LinkedHashMap<String, Constraint> constraints(Table table)
 	 * public LinkedHashMap<String, Constraint> constraints(String table)
 	 * public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(Table table) {
+	public LinkedHashMap<String, Constraint> constraints(Table table, String name) {
 		return null;
+	}
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(Table table) {
+		return constraints(table, null);
 	}
 
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(String table) {
-		Table tab = new Table();
-		tab.setName(table);
-		return constraints(tab);
+		return constraints(new Table(table));
+	}
+
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(String table, String name) {
+		return constraints(new Table(table), name);
 	}
 
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
-		Table tab = new Table();
-		tab.setCatalog(catalog);
-		tab.setSchema(schema);
-		tab.setName(table);
-		return constraints(tab);
+		return constraints(new Table(catalog, schema, table));
 	}
 	/* *****************************************************************************************************************
 	 *

@@ -28,7 +28,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -214,6 +213,8 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Index> indexs(Table table, String name);
+	public LinkedHashMap<String, Index> indexs(String table, String name);
 	public LinkedHashMap<String, Index> indexs(Table table);
 	public LinkedHashMap<String, Index> indexs(String table);
 	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table);
@@ -221,6 +222,8 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Constraint> constraints(Table table, String name);
+	public LinkedHashMap<String, Constraint> constraints(String table, String name);
 	public LinkedHashMap<String, Constraint> constraints(Table table);
 	public LinkedHashMap<String, Constraint> constraints(String table);
 	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table);
