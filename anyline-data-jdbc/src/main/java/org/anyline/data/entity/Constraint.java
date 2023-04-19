@@ -56,9 +56,14 @@ public class Constraint {
         this.table = table;
         return this;
     }
+    public Constraint setTable(String table) {
+        this.table = new Table(table);
+        return this;
+    }
 
     public Constraint setTableName(String tableName) {
         this.tableName = tableName;
+        this.table = new Table(tableName);
         return this;
     }
 
@@ -104,6 +109,11 @@ public class Constraint {
         columns.put(column.getName().toUpperCase(), column);
         return this;
     }
+
+    public Constraint addColumn(String column){
+        return addColumn(new Column(column));
+    }
+
 
     public Index getUpdate() {
         return update;
