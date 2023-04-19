@@ -2325,6 +2325,9 @@ public class DefaultService<E> implements AnylineService<E> {
          * public LinkedHashMap<String, Index> indexs(Table table)
          * public LinkedHashMap<String, Index> indexs(String table)
          * public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table)
+         * public Index index(Table table, String name);
+		 * public Index index(String table, String name);
+         * public Index index(String name);
          ******************************************************************************************************************/
         @Override
         public LinkedHashMap<String, Index> indexs(Table table) {
@@ -2339,6 +2342,25 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
             return indexs(new Table(catalog, schema, table));
+        }
+
+        @Override
+        public Index index(Table table, String name) {
+            LinkedHashMap<String, Index> all = indexs(table);
+            if(null != all && null != name){
+                return all.get(name.toUpperCase());
+            }
+            return null;
+        }
+
+        @Override
+        public Index index(String table, String name) {
+            return index(new Table(table), name);
+        }
+
+        @Override
+        public Index index(String name) {
+            return index((Table)null, name);
         }
 
         /* *****************************************************************************************************************
