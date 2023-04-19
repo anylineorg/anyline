@@ -824,6 +824,9 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String, Index> indexs(Table table);
 		public LinkedHashMap<String,Index> indexs(String table);
 		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
+		public Index index(Table table, String name);
+		public Index index(String table, String name);
+		public Index index(String name);
 
 
 		/* *****************************************************************************************************************
