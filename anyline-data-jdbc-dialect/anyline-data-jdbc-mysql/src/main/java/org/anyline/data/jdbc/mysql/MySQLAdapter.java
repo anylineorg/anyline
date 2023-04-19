@@ -636,7 +636,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sql
 	 */
 	@Override
@@ -721,7 +721,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 不支持
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sqls
 	 */
 	@Override
@@ -806,12 +806,30 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryIndexRunSQL(table, metadata);
+	public List<String> buildQueryIndexRunSQL(Table table, String name){
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT A.TABLE_SCHEMA, A.TABLE_NAME, A.INDEX_NAME, A.INDEX_TYPE, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS COLS\n");
+		builder.append("FROM INFORMATION_SCHEMA.STATISTICS A\n");
+		builder.append("WHERE 1=1\n");
+		if(null != table) {
+			if (null != table.getSchema()) {
+				builder.append("AND TABLE_SCHEMA='").append(table.getSchema()).append("'\n");
+			}
+			if (null != table.getName()) {
+				builder.append("AND TABLE_NAME='").append(table.getName()).append("'\n");
+			}
+		}
+		if(BasicUtil.isNotEmpty(name)){
+			builder.append("AND INDEX_NAME='").append(name).append("'\n");
+		}
+		builder.append("GROUP BY A.TABLE_SCHEMA,A.TABLE_NAME,A.INDEX_NAME,A.INDEX_TYPE");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -826,7 +844,37 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
-		return super.indexs(index, create, table, indexs, set);
+		if(null == indexs){
+			indexs = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("INDEX_NAME");
+			if(null == name){
+				continue;
+			}
+			String schema = row.getString("TABLE_SCHEMA");
+			String tableName = row.getString("TABLE_NAME");
+			Index idx = indexs.get(name.toUpperCase());
+			if(null == idx && create){
+				idx = new Index();
+			}
+			idx.setTableName(tableName);
+			idx.setName(name);
+			if(null == table){
+				table = new Table(tableName);
+				table.setSchema(schema);
+			}
+			idx.setTable(table);
+			if(name.equals("PRIMARY")){
+				idx.setPrimary(true);
+			}
+			if("0".equals(row.getString("NON_UNIQUE"))){
+				idx.setUnique(true);
+			}
+
+			indexs.put(name.toUpperCase(), idx);
+		}
+		return indexs;
 	}
 	@Override
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
@@ -849,7 +897,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的约束
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sqls
 	 */
 	@Override

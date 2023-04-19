@@ -603,7 +603,7 @@ public interface JDBCAdapter {
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sqls
 	 */
 	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception;
@@ -673,10 +673,10 @@ public interface JDBCAdapter {
 	/**
 	 * 查询表上的索引
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sqls
 	 */
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception;
+	public List<String> buildQueryIndexRunSQL(Table table, String name);
 
 	/**
 	 *  根据查询结果集构造Index
@@ -719,7 +719,7 @@ public interface JDBCAdapter {
 	/**
 	 * 查询表上的约束
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sqls
 	 */
 	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception;
