@@ -836,7 +836,9 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String, Constraint> constraints(Table table);
 		public LinkedHashMap<String,Constraint> constraints(String table);
 		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
-
+		public Constraint constraint(Table table, String name);
+		public Constraint constraint(String table, String name);
+		public Constraint constraint(String name);
 
 	}
 

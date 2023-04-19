@@ -2377,14 +2377,32 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public LinkedHashMap<String, Constraint> constraints(String table) {
-            return null;
+            return constraints(new Table(table));
         }
 
         @Override
         public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
+            return constraints(new Table(catalog, schema, table));
+        }
+
+        @Override
+        public Constraint constraint(Table table, String name) {
+            LinkedHashMap<String, Constraint> constraints = constraints(table);
+            if(null != constraints && null != name){
+                return  constraints.get(name.toUpperCase());
+            }
             return null;
         }
 
+        @Override
+        public Constraint constraint(String table, String name) {
+            return constraint(new Table(table), name);
+        }
+
+        @Override
+        public Constraint constraint(String name) {
+            return constraint((Table) null, name);
+        }
     };
 
 
