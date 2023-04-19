@@ -636,7 +636,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param name 名称
+	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
 	 */
 	@Override
@@ -721,7 +721,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 不支持
 	 * @param table 表
-	 * @param name 名称
+	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
 	@Override
@@ -872,6 +872,14 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				idx.setUnique(true);
 			}
 
+			if(row.isNotEmpty("COLS")){
+				String[] cols = row.getString("COLS").split(",");
+				for(String col:cols){
+					if(null == idx.getColumn(col)){
+						idx.addColumn(col);
+					}
+				}
+			}
 			indexs.put(name.toUpperCase(), idx);
 		}
 		return indexs;
@@ -897,7 +905,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的约束
 	 * @param table 表
-	 * @param name 名称
+	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
 	@Override

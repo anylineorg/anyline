@@ -330,12 +330,12 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name name
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryIndexRunSQL(table, metadata);
+	public List<String> buildQueryIndexRunSQL(Table table, String name){
+		return super.buildQueryIndexRunSQL(table, name);
 	}
 
 	/**

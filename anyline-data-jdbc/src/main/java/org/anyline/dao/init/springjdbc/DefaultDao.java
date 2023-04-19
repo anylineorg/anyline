@@ -2383,6 +2383,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					DataSourceUtils.releaseConnection(con, ds);
 				}
 			}
+			if(BasicUtil.isNotEmpty(name)){
+				Index index = indexs.get(name.toUpperCase());
+				indexs = new LinkedHashMap<>();
+				indexs.put(name.toUpperCase(), index);
+			}
 		}
 		List<String> sqls = adapter.buildQueryIndexRunSQL(table, name);
 

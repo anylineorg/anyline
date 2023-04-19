@@ -2346,7 +2346,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public Index index(Table table, String name) {
-            LinkedHashMap<String, Index> all = indexs(table);
+            LinkedHashMap<String, Index> all = dao.indexs(table, name);
             if(null != all && null != name){
                 return all.get(name.toUpperCase());
             }

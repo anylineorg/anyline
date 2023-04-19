@@ -1652,7 +1652,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public List<String> buildQueryIndexRunSQL(Table table, String name){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryIndexRunSQL(Table table, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryIndexRunSQL(Table table, String name)", 37));
 		}
 		return null;
 	}

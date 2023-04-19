@@ -559,8 +559,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryIndexRunSQL(table, metadata);
+	public List<String> buildQueryIndexRunSQL(Table table, String name){
+		return super.buildQueryIndexRunSQL(table, name);
 	}
 
 	/**

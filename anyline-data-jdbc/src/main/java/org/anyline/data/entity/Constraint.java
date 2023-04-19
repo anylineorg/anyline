@@ -97,6 +97,12 @@ public class Constraint {
     public LinkedHashMap<String, Column> getColumns() {
         return columns;
     }
+    public Column getColumn(String name) {
+        if(null != columns && null != name){
+            return columns.get(name.toUpperCase());
+        }
+        return null;
+    }
 
     public Constraint setColumns(LinkedHashMap<String, Column> columns) {
         this.columns = columns;

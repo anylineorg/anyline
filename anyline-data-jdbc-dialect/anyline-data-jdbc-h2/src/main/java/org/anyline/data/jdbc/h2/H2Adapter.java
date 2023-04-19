@@ -330,8 +330,8 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryIndexRunSQL(table, metadata);
+	public List<String> buildQueryIndexRunSQL(Table table, String name){
+		return super.buildQueryIndexRunSQL(table, name);
 	}
 
 	/**
