@@ -2346,11 +2346,19 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public Index index(Table table, String name) {
+            Index index = null;
             LinkedHashMap<String, Index> all = dao.indexs(table, name);
             if(null != all && null != name){
-                return all.get(name.toUpperCase());
+                index = all.get(name.toUpperCase());
             }
-            return null;
+            if(null == index){
+                //根据名称查询没有实现的先查所有
+                all = dao.indexs(table);
+                if(null != all && null != name){
+                    index = all.get(name.toUpperCase());
+                }
+            }
+            return index;
         }
 
         @Override
