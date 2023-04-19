@@ -1646,11 +1646,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 查询表上的索引
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
+	public List<String> buildQueryIndexRunSQL(Table table, String name){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryIndexRunSQL(Table table, boolean metadata)", 37));
 		}
@@ -1761,7 +1761,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 查询表上的约束
 	 * @param table 表
-	 * @param metadata 是否根据metadata | 查询系统表
+	 * @param name 名称
 	 * @return sqls
 	 */
 	@Override
