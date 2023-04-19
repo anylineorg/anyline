@@ -274,15 +274,13 @@ public class BeanUtil {
 		type = type.toLowerCase();
 		if(null != v){
 			if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
-				if (type.equals("bigint") || type.equals("long")) {
+				if (type.equals("bigint") || type.equals("long")|| type.equals("int8")) {
 					v = Long.parseLong(value.toString());
-				}else if (type.startsWith("int") || type.equals("integer")) {
+				} else if (type.startsWith("int") || type.equals("integer")) {
 					v = Integer.parseInt(value.toString());
 				} else if (type.equals("double")) {
 					v = Double.parseDouble(value.toString());
-				} else if (type.equals("long")) {
-					v = Long.parseLong(value.toString());
-				} else if (type.equals("float")) {
+				}else if (type.equals("float")) {
 					v = Float.parseFloat(value.toString());
 				} else if (type.equals("boolean")) {
 					v = Boolean.parseBoolean(value.toString());
