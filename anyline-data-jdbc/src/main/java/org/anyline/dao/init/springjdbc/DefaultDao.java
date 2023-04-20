@@ -47,6 +47,7 @@ import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.util.*;
+import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -336,6 +337,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("[查询记录总数][行数:{}]", total);
 				}
+
 			}
 			if (run.isValid()) {
 				Long fr = System.currentTimeMillis();
@@ -788,7 +790,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			DataSet set = (DataSet)data;
 			Map<String,Object> tags = set.getTags();
 			if(null != tags && tags.size()>0){
-				LinkedHashMap<String,PartitionTable> ptables = ptables(new MasterTable(dest), tags);
+				LinkedHashMap<String,PartitionTable> ptables = ptables(false, new MasterTable(dest), tags);
 				if(ptables.size() != 1){
 					throw new SQLUpdateException("分区表定位异常,主表:"+dest+",标签:"+BeanUtil.map2json(tags)+",分区表:"+BeanUtil.object2json(ptables.keySet()));
 				}
@@ -1802,7 +1804,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			if(null == catalog || null == schema){
 				Table tmp = new Table();
-				adapter.checkSchema(con, tmp);
+				if(!greedy) {
+					adapter.checkSchema(con, tmp);
+				}
 				if(null == catalog){
 					catalog = tmp.getCatalog();
 				}
@@ -1814,14 +1818,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
+
 			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
-			
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
-					LinkedHashMap<String,Table> all = tables(catalog, schema, null, types);
-					for(Table table:all.values()){
-						table_map.put(table.getName().toUpperCase(), table.getName());
+					LinkedHashMap<String,Table> all = tables(greedy, catalog, schema, null, types);
+					if(!greedy) {
+						for (Table table : all.values()) {
+							if ((catalog + "_" + schema).equals(table.getCatalog() + "_" + table.getSchema())) {
+								table_map.put(table.getName().toUpperCase(), table.getName());
+							}
+						}
 					}
 				}
 				if(table_map.containsKey(pattern.toUpperCase())){
@@ -1848,12 +1856,34 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				tables = adapter.tables(true,tables, con.getMetaData(), catalog, schema, pattern, tps);
+				tables = adapter.tables(true, tables, con.getMetaData(), catalog, schema, pattern, tps);
+
+				List<String> keys = BeanUtil.getMapKeys(tables);
+				for(String key:keys){
+					Table item = tables.get(key);
+					if(!greedy) {
+						if (!(catalog + "_" + schema).equals(item.getCatalog() + "_" + item.getSchema())) {
+							tables.remove(key);
+						}
+					}
+				}
 			}catch (Exception e){
 				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
+			}
+			if(null != pattern){
+				LinkedHashMap<String,Table> tmps = new LinkedHashMap<>();
+				List<String> keys = BeanUtil.getMapKeys(tables);
+				for(String key:keys){
+					Table item = tables.get(key);
+					String name = item.getName();
+					if(RegularUtil.match(name, pattern)){
+						tmps.put(name.toUpperCase(), item);
+					}
+				}
+				tables = tmps;
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -1927,7 +1957,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog || null == schema){
 				Table tmp = new Table();
-				adapter.checkSchema(con, tmp);
+				if(!greedy) {
+					adapter.checkSchema(con, tmp);
+				}
 				if(null == catalog){
 					catalog = tmp.getCatalog();
 				}
@@ -2167,7 +2199,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
-		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		if(!greedy) {
+			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		}
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
@@ -2277,7 +2311,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, table);
+		if(!greedy) {
+			checkSchema(runtime, table);
+		}
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
@@ -2388,7 +2424,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
-		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		if(!greedy) {
+			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		}
 		String tab = table.getName();
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
@@ -2475,7 +2513,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
-		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		if(!greedy) {
+			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		}
 		if(null != table.getName()) {
 			DataSource ds = null;
 			Connection con = null;
@@ -3342,7 +3382,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Tag tag) throws Exception{
 		Table table = tag.getTable();
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
 			if(tables.size() ==0){
 				throw new AnylineException("表不存在:"+tag.getTableName());
 			}else {
@@ -3484,7 +3524,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(PrimaryKey primary) throws Exception {
 		Table table = primary.getTable();
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(primary.getCatalog(), primary.getSchema(), primary.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(), "TABLE");
 			if(tables.size() ==0){
 				throw new AnylineException("表不存在:"+primary.getTableName());
 			}else {
@@ -3600,7 +3640,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Index index) throws Exception {
 		Table table = index.getTable();
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(index.getCatalog(), index.getSchema(), index.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, index.getCatalog(), index.getSchema(), index.getTableName(), "TABLE");
 			if(tables.size() ==0){
 				throw new AnylineException("表不存在:"+index.getTableName());
 			}else {
@@ -3715,7 +3755,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Constraint constraint) throws Exception {
 		Table table = constraint.getTable();
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(), "TABLE");
 			if(tables.size() ==0){
 				throw new AnylineException("表不存在:"+constraint.getTableName());
 			}else {
