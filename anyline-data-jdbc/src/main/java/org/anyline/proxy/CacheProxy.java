@@ -46,6 +46,7 @@ public class CacheProxy {
         cache_table_maps.put(datasource, maps);
     }
     public static DataRow getTableMaps(String datasource){
+        datasource = datasource.toUpperCase();
         DataRow row = cache_table_maps.get(datasource);
         if(null == row){
             row = new DataRow();
