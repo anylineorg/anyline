@@ -26,17 +26,6 @@ public class ExcelReader {
 			return set;
 		}
 		int fr = 0;
-		if(head != -1){
-			fr = head;
-			if(data == -1){
-				data = head + 1;
-			}
-		}else{
-			if(data == -1){
-				data = 0;
-			}
-			fr = data;
-		}
 
 		List<List<String>> list = null;
 		if(null != is){
@@ -63,12 +52,13 @@ public class ExcelReader {
 		}
 		if(list.size()>0) {
 			if (head != -1) {
-				// 取第head行作为表头
+				// 取第head行作为表头不是head行
 				List<String> headers = list.get(head);
 				int size = headers.size();
-				int rows = 0;
+				int rows = -1;
 				for(List<String> item:list){
-					if(rows ++ < (data-head)){
+					rows ++;
+					if(rows < data || rows == head){
 						continue;
 					}
 					DataRow row = new DataRow();
@@ -80,7 +70,12 @@ public class ExcelReader {
 					set.add(row);
 				}
 			}else{
+				int rows = -1;
 				for(List<String> item:list){
+					rows ++;
+					if(rows < data){
+						continue;
+					}
 					DataRow row = new DataRow();
 					int size = item.size();
 					for(int i=0; i<size; i++){
