@@ -335,17 +335,17 @@ public class ExcelUtil {
 	 * @param foot 到第几行结束(如果负数表示 表尾有多少行不需要读取)
 	 * @return List
 	 */
-	public static List<List<String>> read(Sheet sheet, int rows, int foot) {
+	public static List<List<String>> read(Sheet sheet, int start, int end) {
 		List<List<String>> lists = new ArrayList<List<String>>();
 		if(sheet != null){
 			int max = sheet.getLastRowNum();// 得到excel的总记录条数
 			int last = max;
-			if(foot < 0){
-				last = max + foot;
-			}else if(foot > 0){
-				last = foot;
+			if(end < 0){
+				last = max + end;
+			}else if(end > 0){
+				last = end;
 			}
-			for (int r = rows; r <= last; r++) {// 遍历行
+			for (int r = start; r <= last; r++) {// 遍历行
 				List<String> list = new ArrayList<>();
 				Row row = sheet.getRow(r);
 				if(row != null){
