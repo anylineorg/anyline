@@ -63,8 +63,8 @@ public class ExcelReader {
 		}
 		if(list.size()>0) {
 			if (head != -1) {
-				// 取第一行作为表头
-				List<String> headers = list.get(0);
+				// 取第head行作为表头
+				List<String> headers = list.get(head);
 				int size = headers.size();
 				int rows = 0;
 				for(List<String> item:list){
