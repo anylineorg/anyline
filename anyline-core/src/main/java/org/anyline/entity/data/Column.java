@@ -67,7 +67,7 @@ public interface Column extends Serializable {
         TSVECTOR            {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //     ,pg
         TXID_SNAPSHOT       {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //     ,pg
         UUID                {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //     ,pg
-        UROWID              {public boolean isIgnorePrecision(){return false;}    public boolean isIgnoreScale(){return true;}}, //     ,  ,oracle
+        UROWID              {public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}},  //     ,  ,oracle
         VARBIT              {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //     ,pg
         TINYBLOB	        {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //mysql
         TINYINT	            {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //mysql
@@ -77,6 +77,7 @@ public interface Column extends Serializable {
         VARCHAR2            {public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}},  //     ,  ,oracle
         XML 	            {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}},  //     ,pg
         YEAR	            {public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}};  //mysql
+
 
         public abstract boolean isIgnorePrecision();
         public abstract boolean isIgnoreScale();

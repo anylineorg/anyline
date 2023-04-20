@@ -1360,7 +1360,7 @@ public interface JDBCAdapter {
 	public void value(StringBuilder builder, Object row, String key);
 
 	/**
-	 * 根据数据类型生成SQL(如是否需要'')
+	 * 根据数据类型生成SQL(如是否需要'',是否需要格式转换函数)
 	 * @param builder builder
 	 * @param value value
 	 */
