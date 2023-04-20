@@ -625,11 +625,24 @@ public interface AnylineService<E>{
 	 * 													METADATA
 	 ******************************************************************************************************************/
 
+	public List<String> tables(boolean greedy, String catalog, String schema, String name, String types);
+	public List<String> tables(boolean greedy, String schema, String name, String types);
+	public List<String> tables(boolean greedy, String name, String types);
+	public List<String> tables(boolean greedy, String types);
+	public List<String> tables(boolean greedy);
+
+
 	public List<String> tables(String catalog, String schema, String name, String types);
 	public List<String> tables(String schema, String name, String types);
 	public List<String> tables(String name, String types);
 	public List<String> tables(String types);
 	public List<String> tables();
+
+	public List<String> mtables(boolean greedy, String catalog, String schema, String name, String types);
+	public List<String> mtables(boolean greedy, String schema, String name, String types);
+	public List<String> mtables(boolean greedy, String name, String types);
+	public List<String> mtables(boolean greedy, String types);
+	public List<String> mtables(boolean greedy);
 
 	public List<String> mtables(String catalog, String schema, String name, String types);
 	public List<String> mtables(String schema, String name, String types);
@@ -638,15 +651,24 @@ public interface AnylineService<E>{
 	public List<String> mtables();
 
 
+	public List<String> columns(boolean greedy, Table table);
+	public List<String> columns(boolean greedy, String table);
+	public List<String> columns(boolean greedy, String catalog, String schema, String table);
 	public List<String> columns(Table table);
 	public List<String> columns(String table);
 	public List<String> columns(String catalog, String schema, String table);
 
+	public List<String> tags(boolean greedy,Table table);
+	public List<String> tags(boolean greedy, String catalog, String schema, String table);
+	public List<String> tags(boolean greedy, String table);
 	public List<String> tags(Table table);
 	public List<String> tags(String table);
 	public List<String> tags(String catalog, String schema, String table);
 
 
+	public void clearColumnCache(boolean greedy, String catalog, String schema, String table);
+	public void clearColumnCache(boolean greedy, String table);
+	public void clearColumnCache(boolean greedy);
 	public void clearColumnCache(String catalog, String schema, String table);
 	public void clearColumnCache(String table);
 	public void clearColumnCache();
@@ -695,20 +717,32 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		public boolean exists(Table table);
+		public boolean exists(boolean greedy, Table table);
 		/**
 		 * tables
+		 * @param greedy  如果不指定catalog和schema是否查全局
 		 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
 		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 		 * @return tables
 		 */
+		public LinkedHashMap<String,Table> tables(boolean greedy, String catalog, String schema, String name, String types);
+		public LinkedHashMap<String,Table> tables(boolean greedy, String schema, String name, String types);
+		public LinkedHashMap<String,Table> tables(boolean greedy, String name, String types);
+		public LinkedHashMap<String,Table> tables(boolean greedy, String types);
+		public LinkedHashMap<String,Table> tables(boolean greedy);
+
 		public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types);
 		public LinkedHashMap<String,Table> tables(String schema, String name, String types);
 		public LinkedHashMap<String,Table> tables(String name, String types);
 		public LinkedHashMap<String,Table> tables(String types);
 		public LinkedHashMap<String,Table> tables();
 
+
+		public Table table(boolean greedy, String catalog, String schema, String name);
+		public Table table(boolean greedy, String schema, String name);
+		public Table table(boolean greedy, String name);
 
 		public Table table(String catalog, String schema, String name);
 		public Table table(String schema, String name);
@@ -720,16 +754,29 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		/**
-		 * 主表是否存在
-		 * @param table 表
-		 * @return boolean
+		 * 主表
+		 * @param greedy  如果不指定catalog和schema是否查全局
+		 * @param table 表名
+		 * @return LinkedHashMap
 		 */
+		public boolean exists(boolean greedy,MasterTable table);
+		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String catalog, String schema, String name, String types);
+		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String schema, String name, String types);
+		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String name, String types);
+		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String types);
+		public LinkedHashMap<String, MasterTable> mtables(boolean greedy);
+
+
 		public boolean exists(MasterTable table);
 		public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
 		public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
 		public LinkedHashMap<String, MasterTable> mtables(String name, String types);
 		public LinkedHashMap<String, MasterTable> mtables(String types);
 		public LinkedHashMap<String, MasterTable> mtables();
+
+		public MasterTable mtable(boolean greedy, String catalog, String schema, String name);
+		public MasterTable mtable(boolean greedy, String schema, String name);
+		public MasterTable mtable(boolean greedy, String name);
 
 		public MasterTable mtable(String catalog, String schema, String name);
 		public MasterTable mtable(String schema, String name);
@@ -741,10 +788,18 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		/**
-		 * 主表是否存在
-		 * @param table 表
-		 * @return boolean
+		 * 子表
+		 * @param table 表名
+		 * @return LinkedHashMap
 		 */
+		public boolean exists(boolean greedy, PartitionTable table);
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String catalog, String schema, String master, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String schema, String master, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master);
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master);
+
+
 		public boolean exists(PartitionTable table);
 		public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name);
 		public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name);
@@ -759,13 +814,19 @@ public interface AnylineService<E>{
 		 * @param name 子表名
 		 * @return PartitionTables
 		 */
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
+		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags);
+
+		public PartitionTable ptable(boolean greedy, String catalog, String schema, String master, String name);
+		public PartitionTable ptable(boolean greedy, String schema, String master, String name);
+		public PartitionTable ptable(boolean greedy, String master, String name);
+
 		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags, String name);
 		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
 
 		public PartitionTable ptable(String catalog, String schema, String master, String name);
 		public PartitionTable ptable(String schema, String master, String name);
 		public PartitionTable ptable(String master, String name);
-
 
 		/* *****************************************************************************************************************
 		 * 													column
@@ -776,15 +837,22 @@ public interface AnylineService<E>{
 		 * @param column 列
 		 * @return boolean
 		 */
+		public boolean exists(boolean greedy, Column column);
+		public boolean exists(boolean greedy,Table table, String column);
+		public boolean exists(boolean greedy, String table, String column);
+		public boolean exists(boolean greedy, String catalog, String schema, String table, String column);
 		public boolean exists(Column column);
-		public boolean exists(Table table, String name);
-		public boolean exists(String table, String name);
-		public boolean exists(String catalog, String schema, String table, String name);
+		public boolean exists(String table, String column);
+		public boolean exists(Table table, String column);
+		public boolean exists(String catalog, String schema, String table, String column);
 		/**
 		 * 查询表中所有的表,注意这里的map.KEY全部转大写
 		 * @param table 表
 		 * @return map
 		 */
+		public LinkedHashMap<String,Column> columns(boolean greedy, Table table);
+		public LinkedHashMap<String,Column> columns(boolean greedy, String table);
+		public LinkedHashMap<String,Column> columns(boolean greedy, String catalog, String schema, String table);
 		public LinkedHashMap<String,Column> columns(Table table);
 		public LinkedHashMap<String,Column> columns(String table);
 		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
@@ -795,6 +863,9 @@ public interface AnylineService<E>{
 		 * @param name 列名(不区分大小写)
 		 * @return Column
 		 */
+		public Column column(boolean greedy, Table table, String name);
+		public Column column(boolean greedy, String table, String name);
+		public Column column(boolean greedy, String catalog, String schema, String table, String name);
 		public Column column(Table table, String name);
 		public Column column(String table, String name);
 		public Column column(String catalog, String schema, String table, String name);
@@ -804,15 +875,21 @@ public interface AnylineService<E>{
 		 * 													tag
 		 ******************************************************************************************************************/
 
+		public LinkedHashMap<String, Tag> tags(boolean greedy,Table table);
+		public LinkedHashMap<String, Tag> tags(boolean greedy, String table);
+		public LinkedHashMap<String, Tag> tags(boolean greedy, String catalog, String schema, String table);
 		public LinkedHashMap<String, Tag> tags(Table table);
-		public LinkedHashMap<String,Tag> tags(String table);
-		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
+		public LinkedHashMap<String, Tag> tags(String table);
+		public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
 
 
 		/* *****************************************************************************************************************
 		 * 													primary
 		 ******************************************************************************************************************/
 
+		public PrimaryKey primary(boolean greedy,Table table);
+		public PrimaryKey primary(boolean greedy,String table);
+		public PrimaryKey primary(boolean greedy,String catalog, String schema, String table);
 		public PrimaryKey primary(Table table);
 		public PrimaryKey primary(String table);
 		public PrimaryKey primary(String catalog, String schema, String table);
@@ -821,9 +898,18 @@ public interface AnylineService<E>{
 		 * 													index
 		 ******************************************************************************************************************/
 
+		public LinkedHashMap<String, Index> indexs(boolean greedy,Table table);
+		public LinkedHashMap<String,Index> indexs(boolean greedy,String table);
+		public LinkedHashMap<String,Index> indexs(boolean greedy,String catalog, String schema, String table);
+
 		public LinkedHashMap<String, Index> indexs(Table table);
 		public LinkedHashMap<String,Index> indexs(String table);
 		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
+
+
+		public Index index(boolean greedy,Table table, String name);
+		public Index index(boolean greedy,String table, String name);
+		public Index index(boolean greedy,String name);
 		public Index index(Table table, String name);
 		public Index index(String table, String name);
 		public Index index(String name);
@@ -833,9 +919,15 @@ public interface AnylineService<E>{
 		 * 													constraint
 		 ******************************************************************************************************************/
 
+		public LinkedHashMap<String, Constraint> constraints(boolean greedy,Table table);
+		public LinkedHashMap<String,Constraint> constraints(boolean greedy,String table);
+		public LinkedHashMap<String,Constraint> constraints(boolean greedy,String catalog, String schema, String table);
 		public LinkedHashMap<String, Constraint> constraints(Table table);
 		public LinkedHashMap<String,Constraint> constraints(String table);
 		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
+		public Constraint constraint(boolean greedy,Table table, String name);
+		public Constraint constraint(boolean greedy,String table, String name);
+		public Constraint constraint(boolean greedy,String name);
 		public Constraint constraint(Table table, String name);
 		public Constraint constraint(String table, String name);
 		public Constraint constraint(String name);

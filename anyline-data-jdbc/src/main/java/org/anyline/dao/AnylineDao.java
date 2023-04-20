@@ -164,6 +164,11 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Table> tables(boolean greedy, String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, Table> tables(boolean greedy, String schema, String name, String types);
+	public LinkedHashMap<String, Table> tables(boolean greedy, String name, String types);
+	public LinkedHashMap<String, Table> tables(boolean greedy, String types);
+	public LinkedHashMap<String, Table> tables(boolean greedy);
 	public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types);
 	public LinkedHashMap<String, Table> tables(String schema, String name, String types);
 	public LinkedHashMap<String, Table> tables(String name, String types);
@@ -173,6 +178,11 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String schema, String name, String types);
+	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String name, String types);
+	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String types);
+	public LinkedHashMap<String, MasterTable> mtables(boolean greedy);
 	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
 	public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
 	public LinkedHashMap<String, MasterTable> mtables(String name, String types);
@@ -182,6 +192,13 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String catalog, String schema, String master, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String schema, String master, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags);
 	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name);
 	public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name);
 	public LinkedHashMap<String, PartitionTable> ptables(String master, String name);
@@ -193,6 +210,9 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Column> columns(boolean greedy, Table table);
+	public LinkedHashMap<String, Column> columns(boolean greedy, String table);
+	public LinkedHashMap<String, Column> columns(boolean greedy, String catalog, String schema, String table);
 	public LinkedHashMap<String, Column> columns(Table table);
 	public LinkedHashMap<String, Column> columns(String table);
 	public LinkedHashMap<String, Column> columns(String catalog, String schema, String table);
@@ -200,6 +220,9 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Tag> tags(boolean greedy, Table table);
+	public LinkedHashMap<String, Tag> tags(boolean greedy, String table);
+	public LinkedHashMap<String, Tag> tags(boolean greedy, String catalog, String schema, String table);
 	public LinkedHashMap<String, Tag> tags(Table table);
 	public LinkedHashMap<String, Tag> tags(String table);
 	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
@@ -207,12 +230,20 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
+	public PrimaryKey primary(boolean greedy, Table table);
+	public PrimaryKey primary(boolean greedy, String table);
+	public PrimaryKey primary(boolean greedy, String catalog, String schema, String table);
 	public PrimaryKey primary(Table table);
 	public PrimaryKey primary(String table);
 	public PrimaryKey primary(String catalog, String schema, String table);
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Index> indexs(boolean greedy, Table table, String name);
+	public LinkedHashMap<String, Index> indexs(boolean greedy, String table, String name);
+	public LinkedHashMap<String, Index> indexs(boolean greedy, Table table);
+	public LinkedHashMap<String, Index> indexs(boolean greedy, String table);
+	public LinkedHashMap<String, Index> indexs(boolean greedy, String catalog, String schema, String table);
 	public LinkedHashMap<String, Index> indexs(Table table, String name);
 	public LinkedHashMap<String, Index> indexs(String table, String name);
 	public LinkedHashMap<String, Index> indexs(Table table);
@@ -222,6 +253,11 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
+	public LinkedHashMap<String, Constraint> constraints(boolean greedy, Table table, String name);
+	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String table, String name);
+	public LinkedHashMap<String, Constraint> constraints(boolean greedy, Table table);
+	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String table);
+	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String catalog, String schema, String table);
 	public LinkedHashMap<String, Constraint> constraints(Table table, String name);
 	public LinkedHashMap<String, Constraint> constraints(String table, String name);
 	public LinkedHashMap<String, Constraint> constraints(Table table);

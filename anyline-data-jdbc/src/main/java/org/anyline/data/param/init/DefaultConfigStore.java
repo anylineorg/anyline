@@ -271,6 +271,8 @@ public class DefaultConfigStore implements ConfigStore {
 				chain.addConfig(conf);
 			}
 			if(null != conf) {
+				conf.setOverCondition(overCondition);
+				conf.setOverValue(overValue);
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
 				conf.setRequire(require);

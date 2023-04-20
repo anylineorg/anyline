@@ -90,7 +90,7 @@ public class CacheProxy {
         }
     }
 
-    public static void clearColumnCache(String catalog, String schema, String table){
+    public static void clearColumnCache(boolean greedy, String catalog, String schema, String table){
         if(null == table){
             return;
         }
@@ -102,10 +102,10 @@ public class CacheProxy {
             cache_metadatas.remove(key);
         }
     }
-    public static void clearColumnCache(String table){
-        clearColumnCache(null, null, table);
+    public static void clearColumnCache(boolean greedy, String table){
+        clearColumnCache(greedy, null, null, table);
     }
-    public static void clearColumnCache(){
+    public static void clearColumnCache(boolean greedy){
         if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
             if(BasicUtil.isNotEmpty(cache)) {
@@ -116,6 +116,15 @@ public class CacheProxy {
         }
     }
 
+    public static void clearColumnCache(String catalog, String schema, String table){
+        clearColumnCache(false, catalog, schema, table);
+    }
+    public static void clearColumnCache(String table){
+        clearColumnCache(false, table);
+    }
+    public static void clearColumnCache(){
+        clearColumnCache(false);
+    }
 
 
     public static LinkedHashMap<String, Tag> tags(String table){
@@ -153,7 +162,7 @@ public class CacheProxy {
             cache_metadatas.put(key, static_cache);
         }
     }
-    public static void clearTagCache(String catalog, String schema, String table){
+    public static void clearTagCache(boolean greedy, String catalog, String schema, String table){
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.curDataSource()+"_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
@@ -161,5 +170,8 @@ public class CacheProxy {
         }else{
             cache_metadatas.remove(key);
         }
+    }
+    public static void clearTagCache(String catalog, String schema, String table){
+        clearTagCache(false, catalog, schema, table);
     }
 }

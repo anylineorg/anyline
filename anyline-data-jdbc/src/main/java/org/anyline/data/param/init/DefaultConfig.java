@@ -42,6 +42,9 @@ public class DefaultConfig implements Config {
 	protected List<Object> orValues		; // OR VALUE
 	protected boolean empty				; // 是否值为空
 	protected ParseResult parser;
+	protected boolean overCondition  = true;
+	protected boolean overValue		 = true;
+
 	@Override
 	public Object clone(){
 		DefaultConfig config = new DefaultConfig();
@@ -267,5 +270,25 @@ public class DefaultConfig implements Config {
 	@Override
 	public String getText() {
 		return text;
+	}
+
+	@Override
+	public boolean isOverCondition() {
+		return overCondition;
+	}
+
+	@Override
+	public void setOverCondition(boolean overCondition) {
+		this.overCondition = overCondition;
+	}
+
+	@Override
+	public boolean isOverValue() {
+		return overValue;
+	}
+
+	@Override
+	public void setOverValue(boolean overValue) {
+		this.overValue = overValue;
 	}
 }
