@@ -85,29 +85,41 @@ public class TextRun extends BasicRun implements Run {
 		} 
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-
+				boolean overCondition = conf.isOverCondition();
+				boolean overValue = conf.isOverValue();
+				List<Object> values = conf.getValues();
 				List<Variable> vars = this.getVariables(conf.getVariable());
 				//查询条件赋值
 				List<Condition> cons = getConditions(conf.getVariable());
-				if(vars.size()>0) {
-					for (Condition con : cons) {
-						if (null != con) {
-							//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
-							con.setVariableSlave(true);
+				if(overCondition) {
+					if (vars.size() > 0) {
+						for (Condition con : cons) {
+							if (null != con) {
+								//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+								con.setVariableSlave(true);
+							}
+						}
+						if(overValue) {
+							for (Variable var : vars) {
+								var.setValue(false, values);
+							}
 						}
 					}
-					for (Variable var : vars) {
-						var.setValue(false, conf.getValues());
+					if(overValue) {
+						for (Condition con : cons) {
+							if (null != con) {
+								//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+								setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), values, conf.getCompare());
+							}
+						}
+					}
+					//如果没有对应的查询条件和SQL体变量，新加一个条件
+					if(vars.size()==0 && cons.size()==0){
+						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
 					}
 				}
-				for (Condition con : cons) {
-					if (null != con) {
-						//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
-						setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
-					}
-				}
-				//如果没有对应的查询条件和SQL体变量，新加一个条件
-				if(vars.size()==0 && cons.size()==0){
+				//不覆盖条件 则添加新条件
+				if(!overCondition){
 					conditionChain.addCondition(conf.createAutoCondition(conditionChain));
 				}
 			}

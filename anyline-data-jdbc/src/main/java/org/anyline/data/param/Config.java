@@ -86,4 +86,9 @@ public interface Config {
 
 	public void setText(String text);
 	public String getText();
+
+	public void setOverCondition(boolean over);
+	public void setOverValue(boolean over);
+	public boolean isOverCondition();
+	public boolean isOverValue();
 }
