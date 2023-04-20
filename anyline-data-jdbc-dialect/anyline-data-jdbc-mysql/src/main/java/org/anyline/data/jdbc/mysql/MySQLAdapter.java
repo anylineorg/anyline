@@ -858,6 +858,16 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 ******************************************************************************************************************/
 
 	@Override
+	public void checkSchema(Connection con, Table table){
+		try {
+			if (null == table.getSchema()) {
+				table.setSchema(con.getCatalog());
+			}
+		}catch (Exception e){
+		}
+		table.setCheckSchemaTime(new Date());
+	}
+	@Override
 	public void checkSchema(DataSource dataSource, Table table){
 		if(null == table || null != table.getCheckSchemaTime()){
 			return;
