@@ -5,9 +5,9 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
+import org.anyline.entity.data.Column.STANDARD_DATA_TYPE;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
-import org.anyline.entity.data.Column.STANDARD_DATA_TYPE;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -15,184 +15,727 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	public enum DATA_TYPE{
-		BIGINT	            {public String getName(){return "bigint";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BIGINT;	           }
-			public Object convert(Object value, boolean string){
+		BIGINT	            {public String getName(){return "bigint";}				public Class getJavaClass(){return Long.class;}				public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BIGINT;	           }
+			public Object read(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		BINARY	            {public String getName(){return "binary";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		BIT	                {public String getName(){return "bit";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BIT;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+			},
+		BINARY	            {public String getName(){return "binary";}				public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		BLOB	            {public String getName(){return "blob";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BLOB;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		CHAR	            {public String getName(){return "char";}                public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CHAR;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		BIT	                {public String getName(){return "bit";}					public Class getJavaClass(){return Boolean.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BIT;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		DATE	            {public String getName(){return "date";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATE;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		DATETIME	        {public String getName(){return "datetime";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATETIME;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		BLOB	            {public String getName(){return "blob";}				public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BLOB;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		DECIMAL	            {public String getName(){return "decimal";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DECIMAL;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		DOUBLE	            {public String getName(){return "double";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DOUBLE;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		CHAR	            {public String getName(){return "char";}				public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CHAR;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		ENUM	            {public String getName(){return "enum";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.ENUM;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		FLOAT	            {public String getName(){return "float";}               public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		DATE	            {public String getName(){return "date";} 				public Class getJavaClass(){return java.sql.Date.class;}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATE;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		GEOMETRY	        {public String getName(){return "geometry";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.GEOMETRY;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		GEOMETRYCOLLECTION	{public String getName(){return "geometrycollection";}  public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.GEOMETRYCOLLECTION;}
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		DATETIME	        {public String getName(){return "datetime";}			public Class getJavaClass(){return LocalDateTime.class;}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATETIME;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		INT	                {public String getName(){return "int";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.INT;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		INTEGER	            {public String getName(){return "int";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.INTEGER;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		DECIMAL	            {public String getName(){return "decimal";}				public Class getJavaClass(){return BigDecimal.class;}		public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DECIMAL;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		JSON	            {public String getName(){return "json";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.JSON;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		LINESTRING	        {public String getName(){return "linestring";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LINE;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		DOUBLE	            {public String getName(){return "double";}				public Class getJavaClass(){return Double.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DOUBLE;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		LONGBLOB	        {public String getName(){return "longblob";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LONGBLOB;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		LONGTEXT	        {public String getName(){return "longtext";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LONGTEXT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		ENUM	            {public String getName(){return "enum";}				public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.ENUM;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		MEDIUMBLOB	        {public String getName(){return "mediumblob";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMBLOB;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		MEDIUMINT	        {public String getName(){return "mediumint";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMINT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		FLOAT	            {public String getName(){return "float";}				public Class getJavaClass(){return Float.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		MEDIUMTEXT	        {public String getName(){return "mediumtext";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMTEXT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		MULTILINESTRING	    {public String getName(){return "multilinestring";}     public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTILINESTRING;    }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		GEOMETRY	        {public String getName(){return "geometry";}			public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.GEOMETRY;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		MULTIPOINT	        {public String getName(){return "multipoint";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTIPOINT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		MULTIPOLYGON	    {public String getName(){return "multipolygon";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTIPOLYGON;	   }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		GEOMETRYCOLLECTION	{public String getName(){return "geometrycollection";}	public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.GEOMETRYCOLLECTION;}
+			public Object read(Object value){
 				return value;
-			}},
-		NUMERIC	            {public String getName(){return "numeric";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMERIC;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		POINT	            {public String getName(){return "point";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.POINT;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		INT	                {public String getName(){return "int";}					public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.INT;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		POLYGON	            {public String getName(){return "polygon";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.POLYGON;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		REAL	            {public String getName(){return "double";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.REAL;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		INTEGER	            {public String getName(){return "int";}					public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.INTEGER;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		SET	                {public String getName(){return "set";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.SET;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		SMALLINT	        {public String getName(){return "smallint";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.SMALLINT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		JSON	            {public String getName(){return "json";}				public Class getJavaClass(){return DataRow.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.JSON;	           }
+			public Object read(Object value){
 				return value;
-			}},
-		TEXT	            {public String getName(){return "text";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TEXT;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		TIME	            {public String getName(){return "time";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIME;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		LINESTRING	        {public String getName(){return "linestring";}			public Class getJavaClass(){return byte[].class;} 			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LINE;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		TIMESTAMP	        {public String getName(){return "timestamp";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIMESTAMP;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		TINYBLOB	        {public String getName(){return "tinyblob";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYBLOB;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		LONGBLOB	        {public String getName(){return "longblob";}            public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LONGBLOB;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		TINYINT	            {public String getName(){return "tinyint";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYINT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		TINYTEXT	        {public String getName(){return "tinytext";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYTEXT;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		LONGTEXT	        {public String getName(){return "longtext";}            public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LONGTEXT;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		VARBINARY	        {public String getName(){return "varbinary";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARBINARY;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}},
-		VARCHAR	            {public String getName(){return "varchar";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR;	       }
-			public Object convert(Object value, boolean string){
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		MEDIUMBLOB	        {public String getName(){return "mediumblob";}          public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMBLOB;	       }
+			public Object read(Object value){
 				return value;
-			}},
-		YEAR	            {public String getName(){return "numeric";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.YEAR;	           }
-			public Object convert(Object value, boolean string){
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
 				return value;
-			}};
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		MEDIUMINT	        {public String getName(){return "mediumint";}           public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMINT;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		MEDIUMTEXT	        {public String getName(){return "mediumtext";}          public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMTEXT;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		MULTILINESTRING	    {public String getName(){return "multilinestring";}     public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTILINESTRING;    }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		MULTIPOINT	        {public String getName(){return "multipoint";}          public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTIPOINT;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		MULTIPOLYGON	    {public String getName(){return "multipolygon";}        public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTIPOLYGON;	   }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		NUMERIC	            {public String getName(){return "decimal";}             public Class getJavaClass(){return BigDecimal.class;}		public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMERIC;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		POINT	            {public String getName(){return "point";}               public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.POINT;	           }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		POLYGON	            {public String getName(){return "polygon";}             public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.POLYGON;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		REAL	            {public String getName(){return "double";}              public Class getJavaClass(){return Double.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.REAL;	           }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		SET	                {public String getName(){return "set";}                 public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.SET;	           }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		SMALLINT	        {public String getName(){return "smallint";}            public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.SMALLINT;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		TEXT	            {public String getName(){return "text";}                public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TEXT;	           }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		TIME	            {public String getName(){return "time";}                public Class getJavaClass(){return Time.class;}				public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIME;	           }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		TIMESTAMP	        {public String getName(){return "timestamp";}           public Class getJavaClass(){return Timestamp.class;}		public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIMESTAMP;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		TINYBLOB	        {public String getName(){return "tinyblob";}            public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYBLOB;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		TINYINT	            {public String getName(){return "tinyint";}             public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYINT;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		TINYTEXT	        {public String getName(){return "tinytext";}            public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYTEXT;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		VARBINARY	        {public String getName(){return "varbinary";}           public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARBINARY;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		VARCHAR	            {public String getName(){return "varchar";}             public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR;	       }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		},
+		YEAR	            {public String getName(){return "year";}             	public Class getJavaClass(){return java.sql.Date.class;}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.YEAR;	           }
+			public Object read(Object value){
+				return value;
+			}
+			public Object write(Object value){
+				if(null != value){
+					value = BasicUtil.parseLong(value, null);
+				}
+				return value;
+			}
+			public String format(Object value){
+				if(null == value){
+					return null;
+				}
+				return value.toString();
+			}
+		};
 
 		/**
-		 * 格式转换
+		 * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
 		 * @param value value
-		 * @param string 是否板式化成String, 拼接SQL(不用占位符)情况下需要
 		 * @return Object
 		 */
-		public abstract Object convert(Object value, boolean string);
+		public abstract Object read(Object value);
+		/**
+		 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
+		 * @param value value
+		 * @return Object
+		 */
+		public abstract Object write(Object value);
+		/**
+		 * 拼接SQL时格式化，根据情况添加单引号或类型转换函数
+		 * @param value value
+		 * @return String
+		 */
+		public abstract String format(Object value);
+
+
 		public abstract STANDARD_DATA_TYPE getStandard();
+		public abstract Class getJavaClass();
 		public abstract String getName();
+
+		/**
+		 * 定义列时 数据类型格式
+		 * @return boolean
+		 */
 		public abstract boolean isIgnorePrecision();
 		public abstract boolean isIgnoreScale();
 	}
