@@ -985,20 +985,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
 		DataSet set = new DataSet();
-		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
-			columns = CacheProxy.columns(table);
-			if(null == columns){
-				columns = columns(table);
-				CacheProxy.columns(table, columns);
-			}
-			set.setMetadatas(columns);
-		}
+
 		try{
 			final long[] mid = {System.currentTimeMillis()};
 			final boolean[] process = {false};
 			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
-			metadatas.putAll(columns);
+			set.setMetadatas(metadatas);
 			if(null != values && values.size()>0){
 				runtime.getTemplate().query(sql, values.toArray(), new RowCallbackHandler() {
 					@Override
@@ -1060,7 +1052,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	protected <T> EntitySet<T> select(JDBCRuntime runtime, Class<T> clazz, String table,  String sql, List<Object> values){
-
 		EntitySet<T> set = new EntitySet<>();
 		DataSet rows = select(runtime, table, sql, values);
 		for(DataRow row:rows){
@@ -1074,79 +1065,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return set;
 	}
-/*
-	protected <T> EntitySet<T> select(JDBCRuntime runtime, Class<T> clazz, String table,  String sql, List<Object> values){
-
-		if(BasicUtil.isEmpty(sql)){
-			throw new SQLQueryException("未指定SQL");
-		}
-		JDBCAdapter adapter = runtime.getAdapter();
-		long fr = System.currentTimeMillis();
-		String random = "";
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
-		}
-		EntitySet<T> set = new EntitySet<>();
-		LinkedHashMap<String,Column> columns = null;
-		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
-			columns = CacheProxy.columns(table);
-			if(null == columns){
-				columns = columns(table);
-				CacheProxy.columns(table, columns);
-			}
-			set.setMetadatas(columns);
-		}
-		try{
-			List<Map<String,Object>> list = null;
-			if(null != values && values.size()>0){
-				list = runtime.getTemplate().queryForList(sql, values.toArray());
-			}else{
-				list = runtime.getTemplate().queryForList(sql);
-			}
-			long mid = System.currentTimeMillis();
-			boolean slow = false;
-			if(ConfigTable.SLOW_SQL_MILLIS > 0){
-				if(mid > ConfigTable.SLOW_SQL_MILLIS){
-					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
-					if(null != listener){
-						listener.slow("select", null, sql, values, null, mid);
-					}
-				}
-			}
-			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("{}[执行耗时:{}ms]", random, mid - fr);
-			}
-			if(null != adapter) {
-				list = adapter.process(list);
-			}
-			for(Map<String,Object> map:list){
-				if(EntityAdapterProxy.hasAdapter()){
-					T row = EntityAdapterProxy.entity(clazz, map, columns);
-					set.add(row);
-				}else{
-					T row = BeanUtil.map2object(map, clazz);
-					set.add(row);
-				}
-			}
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid,list.size() );
-			}
-		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]", random, LogUtil.format("查询异常", 33), sql);
-				log.error("{}}[参数:{}]", random,paramLogFormat(values));
-			}
-			e.printStackTrace();
-			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-				SQLQueryException ex = new SQLQueryException("query异常",e);
-				ex.setSql(sql);
-				ex.setValues(values);
-				throw ex;
-			}
-		}
-		return set;
-	}*/
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
