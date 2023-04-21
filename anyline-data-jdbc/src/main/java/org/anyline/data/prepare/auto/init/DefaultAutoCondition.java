@@ -262,10 +262,12 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	} 
 
 	public void setValues(Object values) { 
-		this.values = values; 
+		this.values = values;
+		setValue = true;
 	} 
 	public void setOrValues(Object values) { 
-		this.orValues = values; 
+		this.orValues = values;
+		setValue = true;
 	} 
 	public Compare getCompare() {
 		return compare; 

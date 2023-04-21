@@ -42,8 +42,7 @@ import java.util.List;
  * 
  */ 
 public class DefaultXMLCondition extends DefaultCondition implements Condition {
-	private String text; 
-	private List<Variable> variables;	// 变量
+	private String text;
 	 
 	 
 	public Object clone() throws CloneNotSupportedException{ 
@@ -291,22 +290,6 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 		this.text = text;
 		return this;
 	}
-
-	public Variable getVariable(String var) {
-		if(null == variables || null == var){
-			return null; 
-		} 
-		for(Variable variable:variables){
-			if(null == variable){
-				continue;
-			} 
-			if(var.equalsIgnoreCase(variable.getKey())){
-				return variable; 
-			} 
-		} 
-		return null; 
-	}
-
 	public boolean isValid(){
 		if(!super.isValid()){
 			return false;
@@ -325,7 +308,4 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 		return true;
 	}
 
-	public List<Variable> getVariables(){
-		return variables;
-	} 
 }

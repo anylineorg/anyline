@@ -58,6 +58,7 @@ public interface Variable extends Cloneable,Serializable{
 	public void setFullKey(String gkey);
 	public List<Object> getValues() ;
 	public void setValue(Object value) ;
+	public boolean isSetValue();
 	public void setValue(boolean chkNull, Object value) ; 
 	public int getType() ; 
 	public void setType(int type) ;

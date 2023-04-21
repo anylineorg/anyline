@@ -83,44 +83,49 @@ public class TextRun extends BasicRun implements Run {
 				}
 			} 
 		} 
-		if(null != configStore){ 
-			for(Config conf:configStore.getConfigChain().getConfigs()){
+		if(null != configStore){
+			List<Config> confs = configStore.getConfigChain().getConfigs();
+			for(Config conf:confs){
+				//是否覆盖相同var key的条件
 				boolean overCondition = conf.isOverCondition();
+				//是否相同var key的条件的value
 				boolean overValue = conf.isOverValue();
 				List<Object> values = conf.getValues();
-				List<Variable> vars = this.getVariables(conf.getVariable());
-				//查询条件赋值
-				List<Condition> cons = getConditions(conf.getVariable());
-				if(overCondition) {
-					if (vars.size() > 0) {
-						for (Condition con : cons) {
-							if (null != con) {
-								//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
-								con.setVariableSlave(true);
-							}
+				Compare compare = conf.getCompare();
+				//变量key 如:ID #{ID} 中的ID
+				String varKey = conf.getVariable();
+				//SQL主体变量
+				List<Variable> vars = this.getVariables(varKey);
+				//查询条件
+				List<Condition> cons = getConditions(varKey);
+				//是否已用来赋值
+				boolean isUse = false;
+				for (Condition con : cons) {
+					if (null != con) {
+						//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+
+						//当前条件相就的变量是否赋值过
+						boolean isConVarSetValue = con.isSetValue() || con.isSetValue(varKey);
+						if(!isConVarSetValue || overValue) {
+							isUse = true;
+							con.setVariableSlave(true);
+							setConditionValue(conf.isRequire(), conf.isStrictRequired(), varKey, varKey, values, conf.getCompare());
 						}
-						if(overValue) {
-							for (Variable var : vars) {
-								var.setValue(false, values);
-							}
-						}
-					}
-					if(overValue) {
-						for (Condition con : cons) {
-							if (null != con) {
-								//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
-								setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), values, conf.getCompare());
-							}
-						}
-					}
-					//如果没有对应的查询条件和SQL体变量，新加一个条件
-					if(vars.size()==0 && cons.size()==0){
-						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
 					}
 				}
-				//不覆盖条件 则添加新条件
-				if(!overCondition){
-					conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+
+				for (Variable var : vars) {
+					if(overValue || !var.isSetValue()) {
+						isUse = true;
+						var.setValue(false, values);
+					}
+				}
+				if(compare != Compare.NONE) {
+					//如果没有对应的查询条件和SQL体变量，新加一个条件
+					//不覆盖条件 则添加新条件
+					if(!overCondition && !isUse){
+						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
+					}
 				}
 			}
 			OrderStore orderStore = configStore.getOrders(); 
@@ -242,9 +247,7 @@ public class TextRun extends BasicRun implements Run {
 			 
 		} 
 	} 
- 
- 
- 
+
 	@Override 
 	public Run setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, Compare compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 

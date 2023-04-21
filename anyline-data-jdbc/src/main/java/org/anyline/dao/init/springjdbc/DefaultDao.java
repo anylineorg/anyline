@@ -948,75 +948,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		return maps;
-	}/*
-	protected DataSet select(JDBCRuntime runtime, String table, String sql, List<Object> values){
-		if(BasicUtil.isEmpty(sql)){
-			throw new SQLQueryException("未指定SQL");
-		}
-		long fr = System.currentTimeMillis();
-		String random = "";
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
-		}
-		DataSet set = new DataSet();
-		LinkedHashMap<String,Column> columns = null;
-		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
-			columns = CacheProxy.columns(table);
-			if(null == columns){
-				columns = columns(table);
-				CacheProxy.columns(table, columns);
-			}
-			set.setMetadatas(columns);
-		}
-		try{
-			List<Map<String,Object>> list = null;
-			if(null != values && values.size()>0){
-				list = adapter.getJdbc().queryForList(sql, values.toArray());
-			}else{
-				list = adapter.getJdbc().queryForList(sql);
-			}
-			long mid = System.currentTimeMillis();
-			boolean slow = false;
-			if(ConfigTable.SLOW_SQL_MILLIS > 0){
-				slow = true;
-				if(mid > ConfigTable.SLOW_SQL_MILLIS){
-					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid, sql, paramLogFormat(values));
-					if(null != listener){
-						listener.slow("select", null, sql, values, null, mid);
-					}
-				}
-			}
-			if(!slow && ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("{}[执行耗时:{}ms]", random, mid - fr);
-			}
-			if(null != adapter) {
-				list = adapter.process(list);
-			}
-			for(Map<String,Object> map:list){
-				DataRow row = new DataRow(columns, map);
-				row.clearUpdateColumns();
-				set.add(row);
-			}
-			set.setDatalink(DataSourceHolder.getDataSource());
-			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, list.size());
-			}
-		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常", 33), sql, paramLogFormat(values));
-			}
-			e.printStackTrace();
-			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-				SQLQueryException ex = new SQLQueryException("query异常",e);
-				ex.setSql(sql);
-				ex.setValues(values);
-				throw ex;
-			}
-		}
-		return set;
 	}
-*/
 	protected static DataRow row(JDBCRuntime runtime, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
 		DataRow row = new DataRow();
 		try {

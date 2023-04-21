@@ -413,7 +413,7 @@ public class XMLRun extends BasicRun implements Run {
 		} 
 	} 
  
-	private Variable getVariable(String key){
+	public Variable getVariable(String key){
 		if(null != variables){ 
 			for(Variable v:variables){
 				if(null == v){ 

@@ -114,6 +114,7 @@ public interface Condition extends Cloneable{
 	public String getTest();
 	public Map<String,Object> getRunValuesMap();
 	public List<Variable> getVariables();
+	public Variable getVariable(String name);
 
 	/**
 	 * 是否只是用来给变量赋值的
@@ -122,4 +123,6 @@ public interface Condition extends Cloneable{
 	 */
 	public boolean isVariableSlave();
 	public void setVariableSlave(boolean bol);
+	public boolean isSetValue();
+	public boolean isSetValue(String variable);
 } 

@@ -718,6 +718,41 @@ public abstract class BasicRun implements Run {
 	public void setVariables(List<Variable> variables) {
 		this.variables = variables;
 	}
+
+
+
+	public boolean isSetValue(String condition, String variable){
+		Condition con = getCondition(condition);
+		if(null == con){
+			Variable var = con.getVariable(variable);
+			if(null != var){
+				return var.isSetValue();
+			}
+		}
+		return false;
+	}
+	public boolean isSetValue(String variable){
+		Variable var = getVariable(variable);
+		if(null != var){
+			return var.isSetValue();
+		}
+		return false;
+	}
+
+	public Variable getVariable(String var) {
+		if(null == variables || null == var){
+			return null;
+		}
+		for(Variable variable:variables){
+			if(null == variable){
+				continue;
+			}
+			if(var.equalsIgnoreCase(variable.getKey())){
+				return variable;
+			}
+		}
+		return null;
+	}
 }
  
  

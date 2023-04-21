@@ -52,6 +52,8 @@ public abstract class DefaultCondition implements Condition {
 	protected String id													; 	// ID
 	protected String text												;	// 静态条件
 	protected String test												;	// 判断条件
+	protected List<Variable> variables									;	// 变量
+	protected boolean setValue = false									;   // 是否赋值过
 	public Object clone() throws CloneNotSupportedException{ 
 		DefaultCondition clone = (DefaultCondition)super.clone();
 		if(null != runValues){ 
@@ -75,8 +77,8 @@ public abstract class DefaultCondition implements Condition {
 			runValues = new ArrayList<>();
 		}else{ 
 			runValues.clear(); 
-		} 
- 
+		}
+		setValue = false;
 	}
 	@Override 
 	public void setActive(boolean active){ 
@@ -140,7 +142,12 @@ public abstract class DefaultCondition implements Condition {
 	 * @param variable  variable
 	 * @param values  values
 	 */ 
-	public void setValue(String variable, Object values){ 
+	public void setValue(String variable, Object values){
+		Variable var = getVariable(variable);
+		if(null != var){
+			var.setValue(values);
+			setValue = true;
+		}
 	}
 
 	@Override
@@ -161,10 +168,26 @@ public abstract class DefaultCondition implements Condition {
 		}
 		return true;
 	}
-	public List<Variable> getVariables(){
+
+
+	public Variable getVariable(String var) {
+		if(null == variables || null == var){
+			return null;
+		}
+		for(Variable variable:variables){
+			if(null == variable){
+				continue;
+			}
+			if(var.equalsIgnoreCase(variable.getKey())){
+				return variable;
+			}
+		}
 		return null;
 	}
 
+	public List<Variable> getVariables(){
+		return variables;
+	}
 	@Override
 	public boolean isVariableSlave() {
 		return isVariableSlave;
@@ -174,4 +197,17 @@ public abstract class DefaultCondition implements Condition {
 	public void setVariableSlave(boolean bol) {
 		isVariableSlave = bol;
 	}
-} 
+
+	@Override
+	public boolean isSetValue() {
+		return setValue;
+	}
+	@Override
+	public boolean isSetValue(String variable) {
+		Variable var = getVariable(variable);
+		if(null != var){
+			return var.isSetValue();
+		}
+		return false;
+	}
+}

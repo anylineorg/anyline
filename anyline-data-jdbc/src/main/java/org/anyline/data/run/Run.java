@@ -21,10 +21,7 @@ package org.anyline.data.run;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.GroupStore;
-import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.*;
 import org.anyline.entity.*;
 
 import java.util.List;
@@ -132,4 +129,7 @@ public interface Run {
 	//1-DataRow 2-Entity
 	public int getFrom();
 	public void setFrom(int from);
+	public boolean isSetValue(String condition, String variable);
+	public boolean isSetValue(String variable);
+	public Variable getVariable(String var);
 }

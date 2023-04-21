@@ -58,6 +58,7 @@ public class DefaultVariable implements Variable {
 	private Compare compare;		// 比较方式
 	private boolean required;
 	private boolean strictRequired;
+	private boolean setValue;		//是否赋值过
 	 
 	public Object clone() throws CloneNotSupportedException{ 
 		DefaultVariable clone = (DefaultVariable) super.clone();
@@ -67,7 +68,8 @@ public class DefaultVariable implements Variable {
 				Object tmp = value; 
 				cValues.add(tmp); 
 			} 
-			clone.values = cValues; 
+			clone.values = cValues;
+			clone.setValue = this.setValue;
 		} 
 		return clone; 
 	} 
@@ -75,7 +77,8 @@ public class DefaultVariable implements Variable {
 	public void init(){ 
 		if(null != values){ 
 			values.clear(); 
-		} 
+		}
+		setValue = false;
 	} 
 	public Compare getCompare() { 
 		return compare; 
@@ -87,7 +90,8 @@ public class DefaultVariable implements Variable {
 		if(null == values){ 
 			values = new ArrayList<Object>(); 
 		} 
-		values.add(value); 
+		values.add(value);
+		setValue = true;
 	} 
 	public String getKey() {
 		return key; 
@@ -117,6 +121,7 @@ public class DefaultVariable implements Variable {
 		}else{
 			values.add(value);
 		}
+		setValue = true;
 	} 
 	public int getType() { 
 		return type; 
@@ -153,6 +158,7 @@ public class DefaultVariable implements Variable {
 
 	public void setValues(List<Object> values) {
 		this.values = values;
+		setValue = true;
 	}
 
 	@Override
@@ -192,5 +198,10 @@ public class DefaultVariable implements Variable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean isSetValue() {
+		return setValue;
 	}
 }

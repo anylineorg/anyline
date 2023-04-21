@@ -76,6 +76,12 @@ public class CacheProxy {
         }
         return columns;
     }
+
+    /**
+     * 设置缓存
+     * @param table 表
+     * @param columns 列
+     */
     public static void columns(String table, LinkedHashMap<String, Column> columns){
         if(null == table){
             return;
