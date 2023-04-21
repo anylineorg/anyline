@@ -5,6 +5,7 @@ import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
 import org.anyline.exception.AnylineException;
 import org.anyline.service.AnylineService;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
 import java.util.*;
@@ -227,7 +228,21 @@ public class Table implements org.anyline.entity.data.Table{
     public String getName() {
         return name;
     }
-
+    public String getName(boolean greedy){
+        String result = "";
+        if(greedy){
+            if(BasicUtil.isNotEmpty(catalog)){
+                result = catalog+".";
+            }
+            if(BasicUtil.isNotEmpty(schema)){
+                result = result + schema + ".";
+            }
+            result = result + name;
+        }else{
+            result = name;
+        }
+        return result;
+    }
     public Table setName(String name) {
         this.name = name;
         return this;
