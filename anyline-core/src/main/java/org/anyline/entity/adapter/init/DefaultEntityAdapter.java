@@ -227,19 +227,22 @@ public class DefaultEntityAdapter implements EntityAdapter {
     }
 
     @Override
-    public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map columns) {
+    public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map metadatas) {
         List<Field> fields = ClassUtil.getFields(clazz, false, false);
         Map<Field,String> fk = new HashMap<>();
-        entity = BeanUtil.map2object(entity, map, clazz, columns, false, true, true);
+        entity = BeanUtil.map2object(entity, map, clazz, metadatas, false, true, true);
         for(Field field:fields){
-            String column = column(clazz, field);
+            String column = column(clazz, field);//列名
             Object value = map.get(column);
             if(null != value) {
-                Column col = null;
-                if(null != columns){
-                    col = (Column) columns.get(column.toUpperCase());
+                Column metadata = null;  //列属性
+                if(map instanceof DataRow){
+                    metadata = ((DataRow)map).getMetadata(column);
                 }
-                BeanUtil.setFieldValue(entity, field, col, map.get(column));
+                if(null == metadata && null != metadatas){
+                    metadata = (Column) metadatas.get(column.toUpperCase());
+                }
+                BeanUtil.setFieldValue(entity, field, metadata, map.get(column));
             }
         }
         return entity;
