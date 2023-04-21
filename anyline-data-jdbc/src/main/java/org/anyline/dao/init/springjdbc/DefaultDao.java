@@ -1751,7 +1751,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-
+			Table search = new Table();
 			if(null == catalog || null == schema){
 				Table tmp = new Table();
 				if(!greedy) {
@@ -1764,6 +1764,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					schema = tmp.getSchema();
 				}
 			}
+			search.setName(pattern);
+			search.setCatalog(catalog);
+			search.setSchema(schema);
+
 			String[] tps = null;
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
@@ -1777,13 +1781,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(!greedy) {
 						for (Table table : all.values()) {
 							if ((catalog + "_" + schema).equals(table.getCatalog() + "_" + table.getSchema())) {
-								table_map.put(table.getName().toUpperCase(), table.getName());
+								table_map.put(table.getName(greedy).toUpperCase(), table.getName(greedy));
 							}
 						}
 					}
 				}
-				if(table_map.containsKey(pattern.toUpperCase())){
-					pattern = table_map.getString(pattern.toUpperCase());
+				if(table_map.containsKey(search.getName(greedy).toUpperCase())){
+					pattern = table_map.getString(search.getName(greedy).toUpperCase());
+				}else{
+					pattern = search.getName(greedy);
 				}
 			}
 			// 根据系统表查询
@@ -1826,7 +1832,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				List<String> keys = BeanUtil.getMapKeys(tables);
 				for(String key:keys){
 					Table item = tables.get(key);
-					String name = item.getName();
+					String name = item.getName(greedy);
 					if(RegularUtil.match(name, pattern)){
 						tmps.put(name.toUpperCase(), item);
 					}
