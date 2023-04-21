@@ -1695,7 +1695,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }
             }
         }
-        return null;
+        return result;
     }
 
     /**
