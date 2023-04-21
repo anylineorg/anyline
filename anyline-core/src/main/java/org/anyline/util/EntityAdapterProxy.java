@@ -231,7 +231,7 @@ public class EntityAdapterProxy {
     public static <T> T entity(Class<T> clazz, Map<String,Object> map, LinkedHashMap columns){
         T entity =  entity(adapter, null, clazz, map, columns);
         for(EntityAdapter item : adapters.values()){
-            entity = entity(adapter, entity, clazz, map, columns);
+            entity = entity(item, entity, clazz, map, columns);
         }
         return entity;
     }
