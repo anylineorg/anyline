@@ -25,7 +25,7 @@ import java.util.*;
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	public enum DATA_TYPE{
 		BIGINT	            {public String getName(){return "bigint";}				public Class getJavaClass(){return Long.class;}				public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BIGINT;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				if(null != value){
 					value = BasicUtil.parseLong(value, null);
 				}
@@ -45,7 +45,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 			},
 		BINARY	            {public String getName(){return "binary";}				public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -62,7 +62,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		BIT	                {public String getName(){return "bit";}					public Class getJavaClass(){return Boolean.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BIT;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -79,7 +79,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		BLOB	            {public String getName(){return "blob";}				public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BLOB;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -96,7 +96,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		CHAR	            {public String getName(){return "char";}				public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CHAR;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -113,7 +113,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		DATE	            {public String getName(){return "date";} 				public Class getJavaClass(){return java.sql.Date.class;}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATE;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -130,7 +130,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		DATETIME	        {public String getName(){return "datetime";}			public Class getJavaClass(){return LocalDateTime.class;}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATETIME;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -147,7 +147,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		DECIMAL	            {public String getName(){return "decimal";}				public Class getJavaClass(){return BigDecimal.class;}		public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DECIMAL;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -164,7 +164,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		DOUBLE	            {public String getName(){return "double";}				public Class getJavaClass(){return Double.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DOUBLE;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -181,7 +181,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		ENUM	            {public String getName(){return "enum";}				public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.ENUM;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -198,7 +198,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		FLOAT	            {public String getName(){return "float";}				public Class getJavaClass(){return Float.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -215,7 +215,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		GEOMETRY	        {public String getName(){return "geometry";}			public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.GEOMETRY;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -232,7 +232,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		GEOMETRYCOLLECTION	{public String getName(){return "geometrycollection";}	public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.GEOMETRYCOLLECTION;}
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -249,7 +249,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		INT	                {public String getName(){return "int";}					public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.INT;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -266,7 +266,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		INTEGER	            {public String getName(){return "int";}					public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.INTEGER;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -283,7 +283,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		JSON	            {public String getName(){return "json";}				public Class getJavaClass(){return DataRow.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.JSON;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -300,7 +300,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		LINESTRING	        {public String getName(){return "linestring";}			public Class getJavaClass(){return byte[].class;} 			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LINE;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -317,7 +317,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		LONGBLOB	        {public String getName(){return "longblob";}            public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LONGBLOB;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -334,7 +334,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		LONGTEXT	        {public String getName(){return "longtext";}            public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.LONGTEXT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -351,7 +351,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		MEDIUMBLOB	        {public String getName(){return "mediumblob";}          public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMBLOB;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -368,7 +368,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		MEDIUMINT	        {public String getName(){return "mediumint";}           public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMINT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -385,7 +385,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		MEDIUMTEXT	        {public String getName(){return "mediumtext";}          public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MEDIUMTEXT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -402,7 +402,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		MULTILINESTRING	    {public String getName(){return "multilinestring";}     public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTILINESTRING;    }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -419,7 +419,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		MULTIPOINT	        {public String getName(){return "multipoint";}          public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTIPOINT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -436,7 +436,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		MULTIPOLYGON	    {public String getName(){return "multipolygon";}        public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.MULTIPOLYGON;	   }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -453,7 +453,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		NUMERIC	            {public String getName(){return "decimal";}             public Class getJavaClass(){return BigDecimal.class;}		public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMERIC;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -470,7 +470,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		POINT	            {public String getName(){return "point";}               public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.POINT;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -487,7 +487,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		POLYGON	            {public String getName(){return "polygon";}             public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.POLYGON;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -504,7 +504,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		REAL	            {public String getName(){return "double";}              public Class getJavaClass(){return Double.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.REAL;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -521,7 +521,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		SET	                {public String getName(){return "set";}                 public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.SET;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -538,7 +538,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		SMALLINT	        {public String getName(){return "smallint";}            public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.SMALLINT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -555,7 +555,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		TEXT	            {public String getName(){return "text";}                public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TEXT;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -572,7 +572,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		TIME	            {public String getName(){return "time";}                public Class getJavaClass(){return Time.class;}				public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIME;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -589,7 +589,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		TIMESTAMP	        {public String getName(){return "timestamp";}           public Class getJavaClass(){return Timestamp.class;}		public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIMESTAMP;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -606,7 +606,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		TINYBLOB	        {public String getName(){return "tinyblob";}            public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYBLOB;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -623,7 +623,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		TINYINT	            {public String getName(){return "tinyint";}             public Class getJavaClass(){return Integer.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYINT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -640,7 +640,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		TINYTEXT	        {public String getName(){return "tinytext";}            public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TINYTEXT;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -657,7 +657,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		VARBINARY	        {public String getName(){return "varbinary";}           public Class getJavaClass(){return byte[].class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARBINARY;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -674,7 +674,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		VARCHAR	            {public String getName(){return "varchar";}             public Class getJavaClass(){return String.class;}			public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR;	       }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -691,7 +691,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		},
 		YEAR	            {public String getName(){return "year";}             	public Class getJavaClass(){return java.sql.Date.class;}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.YEAR;	           }
-			public Object read(Object value){
+			public Object read(Object value, Class clazz){
 				return value;
 			}
 			public Object write(Object value){
@@ -711,9 +711,10 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		/**
 		 * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
 		 * @param value value
+		 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
 		 * @return Object
 		 */
-		public abstract Object read(Object value);
+		public abstract Object read(Object value, Class clazz);
 		/**
 		 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
 		 * @param value value
