@@ -1510,6 +1510,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
 		}
 		try {
+			//不准确 POINT 返回 GEOMETRY
 			String jdbcType = rsm.getColumnTypeName(index);
 			column.setJdbcType(jdbcType);
 			if(BasicUtil.isEmpty(column.getTypeName())) {
