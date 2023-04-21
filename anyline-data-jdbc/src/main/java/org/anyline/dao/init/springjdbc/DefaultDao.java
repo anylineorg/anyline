@@ -1789,7 +1789,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				LinkedHashMap<String,Table> tmps = adapter.tables(true, tables, con.getMetaData(), catalog, schema, pattern, tps);
+				LinkedHashMap<String,Table> tmps = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 				for(String key:tmps.keySet()){
 					Table item = tables.get(key);
 					if(null == item){
