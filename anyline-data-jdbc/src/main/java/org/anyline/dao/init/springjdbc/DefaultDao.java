@@ -1789,14 +1789,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				tables = adapter.tables(true, tables, con.getMetaData(), catalog, schema, pattern, tps);
-
-				List<String> keys = BeanUtil.getMapKeys(tables);
-				for(String key:keys){
+				LinkedHashMap<String,Table> tmps = adapter.tables(true, tables, con.getMetaData(), catalog, schema, pattern, tps);
+				for(String key:tmps.keySet()){
 					Table item = tables.get(key);
-					if(!greedy) {
-						if (!(catalog + "_" + schema).equals(item.getCatalog() + "_" + item.getSchema())) {
-							tables.remove(key);
+					if(null == item){
+						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+							tables.put(key.toUpperCase(), item);
 						}
 					}
 				}
@@ -1806,7 +1804,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
 			}
-			if(null != pattern){
+			if(BasicUtil.isNotEmpty(pattern)){
 				LinkedHashMap<String,Table> tmps = new LinkedHashMap<>();
 				List<String> keys = BeanUtil.getMapKeys(tables);
 				for(String key:keys){
