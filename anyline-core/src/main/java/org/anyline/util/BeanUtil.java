@@ -642,6 +642,7 @@ public class BeanUtil {
 	 * @param obj 在此基础上执行,如果不提供则新创建
 	 * @param map map
 	 * @param clazz class
+	 * @param metadatas metadatas
 	 * @param recursion 是否递归
 	 * @param ignoreCase 是否忽略大小写
 	 * @param ignoreSplit 是否忽略分隔符号
@@ -650,7 +651,7 @@ public class BeanUtil {
 	 * @param <T> T
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		try {
 			if(null == obj) {
 				obj = (T) clazz.newInstance();
@@ -663,11 +664,14 @@ public class BeanUtil {
 				String k = (String) entry.getKey();
 				Object v = entry.getValue();
 				Field field = ClassUtil.getField(fields, k, ignoreCase, ignoreSplit);
-				Column col = null;
-				if(null != columns){
-					col = (Column) columns.get(k.toUpperCase());
+				Column metadata = null;
+				if(map instanceof DataRow){
+					metadata = ((DataRow)map).getMetadata(k);
 				}
-				setFieldValue(obj, field, col, v);
+				if(null == metadata && null != metadatas){
+					metadata = (Column) metadatas.get(k.toUpperCase());
+				}
+				setFieldValue(obj, field, metadata, v);
 			}
 			if(null != keys){
 				for(String key:keys){
@@ -688,11 +692,11 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
-		return map2object(null, map, clazz, columns, recursion, ignoreCase, ignoreSplit, keys);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+		return map2object(null, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit, keys);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		obj = map2object(obj, map, clazz, columns, recursion, ignoreCase, ignoreSplit);
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		obj = map2object(obj, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit);
 		for(Map.Entry item:fields.entrySet()){
 			Field field = (Field)item.getKey();
 			String column = (String)item.getValue();
@@ -702,32 +706,32 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		return map2object(null, map, clazz, columns, recursion, ignoreCase, ignoreSplit, fields);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		return map2object(null, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit, fields);
 	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
 		return map2object(null, map, clazz, null, recursion, ignoreCase, ignoreSplit, fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, Map<Field, String> fields){
-		return map2object(obj, map, clazz, columns, false, false, false, fields);
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
+		return map2object(obj, map, clazz, metadatas, false, false, false, fields);
 	}
 	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz,  Map<Field, String> fields){
 		return map2object(obj, map, clazz, null, false, false, false, fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, Map<Field, String> fields){
-		return map2object(null, map, clazz, columns, false, false, false, fields);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
+		return map2object(null, map, clazz, metadatas, false, false, false, fields);
 	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
 		return map2object(null, map, clazz, null, false, false, false, fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map columns, String ... keys){
-		return map2object(obj, map, clazz, columns, false, false, false);
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, String ... keys){
+		return map2object(obj, map, clazz, metadatas, false, false, false);
 	}
 	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, String ... keys){
 		return map2object(obj, map, clazz, null, false, false, false);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map columns, String ... keys){
-		return map2object(null, map, clazz, columns, false, false, false);
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, String ... keys){
+		return map2object(null, map, clazz, metadatas, false, false, false);
 	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz,  String ... keys){
 		return map2object(null, map, clazz, null, false, false, false);
