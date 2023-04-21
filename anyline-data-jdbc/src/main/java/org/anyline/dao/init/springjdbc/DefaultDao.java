@@ -1060,6 +1060,23 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	protected <T> EntitySet<T> select(JDBCRuntime runtime, Class<T> clazz, String table,  String sql, List<Object> values){
+
+		EntitySet<T> set = new EntitySet<>();
+		DataSet rows = select(runtime, table, sql, values);
+		for(DataRow row:rows){
+			if(EntityAdapterProxy.hasAdapter()){
+				T entity = EntityAdapterProxy.entity(clazz, row, null);
+				set.add(entity);
+			}else{
+				T entity = row.entity(clazz);
+				set.add(entity);
+			}
+		}
+		return set;
+	}
+/*
+	protected <T> EntitySet<T> select(JDBCRuntime runtime, Class<T> clazz, String table,  String sql, List<Object> values){
+
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -1129,7 +1146,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		return set;
-	}
+	}*/
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
