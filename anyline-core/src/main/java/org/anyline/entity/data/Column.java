@@ -1,5 +1,8 @@
 package org.anyline.entity.data;
 
+import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.JavaType;
+
 import java.io.Serializable;
 
 public interface Column extends Serializable {
@@ -60,4 +63,8 @@ public interface Column extends Serializable {
     //完整的数据类型 varchar(32)
     public String getFullType();
     public boolean equals(Column column);
+    public ColumnType getColumnType();
+    public JavaType getJavaType();
+    public void setColumnType(ColumnType type);
+    public void setJavaType(JavaType type);
 }
