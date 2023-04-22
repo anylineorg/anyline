@@ -280,7 +280,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 valuesBuilder.append(value);
             }else if(null != value && value instanceof SQL_BUILD_IN_VALUE){
                 //内置函数值
-                value = buildInValue((SQL_BUILD_IN_VALUE)value);
+                value = value((SQL_BUILD_IN_VALUE)value);
                 valuesBuilder.append(value);
             }else{
                 insertColumns.add(key);
@@ -292,7 +292,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         addRunValue(run, Compare.EQUAL, key, value);
                     }
                 }else{
-                    format(valuesBuilder, value);
+                    //format(valuesBuilder, value);
+                    valuesBuilder.append(write(null, value, false));
                 }
             }
             if(i<size-1){
@@ -399,7 +400,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 builder.append("?");
                 addRunValue(run, Compare.EQUAL, key, value);
             }else {
-                value(builder, obj, key);
+                //value(builder, obj, key);
+                builder.append(write(null, obj, false));
             }
 
             if(alias){

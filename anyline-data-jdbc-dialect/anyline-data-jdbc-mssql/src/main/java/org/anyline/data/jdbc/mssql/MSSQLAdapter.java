@@ -1485,7 +1485,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
 
@@ -1513,7 +1513,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "getdate()";
 		}
@@ -1521,19 +1521,16 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	@Override
-	public String type2type(String type){
+	public String type(String type){
 		if(null != type){
 			type = type.toUpperCase();
 			if(type.equals("DOUBLE")){
 				return  "DECIMAL";
 			}
 		}
-		return super.type2type(type);
+		return super.type(type);
 	}
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
-	}
+	
 
 
 

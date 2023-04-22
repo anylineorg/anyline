@@ -502,7 +502,9 @@ public enum DataType {
      */
     public abstract Object read(Object value, Class clazz);
     /**
-     * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
+     * 写入数据库前类型转换<br/>
+     * 如果有占位符成数据库可接受的Java数据类型<br/>
+     * 如果没有占位符 需要确定加单引号或内置函数<br/>
      * @param placeholder 是否占位符
      * @param value value
      * @return Object

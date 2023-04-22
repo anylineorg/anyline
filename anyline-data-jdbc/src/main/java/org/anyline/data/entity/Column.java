@@ -3,6 +3,8 @@ package org.anyline.data.entity;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
+import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -22,6 +24,8 @@ public class Column implements org.anyline.entity.data.Column{
     protected String comment                      ; // 备注
     protected Integer type                        ; // 类型
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected ColumnType columnType               ;
+    protected JavaType javaType                   ;
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
@@ -37,6 +41,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected Object defaultValue                 ; // 默认值
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
+
 
     protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
     protected String order                        ; // 在索引中的排序方式ASC | DESC
@@ -615,6 +620,61 @@ public class Column implements org.anyline.entity.data.Column{
         this.delete = delete;
     }
 
+    @Override
+    public boolean equals(org.anyline.entity.data.Column column) {
+        if(null == column){
+            return false;
+        }
+        if(BasicUtil.equals(typeName, column.getTypeName())){
+            return false;
+        }
+        if(BasicUtil.equals(precision, column.getPrecision())){
+            return false;
+        }
+        if(BasicUtil.equals(scale, column.getScale())){
+            return false;
+        }
+        if(BasicUtil.equals(defaultValue, column.getDefaultValue())){
+            return false;
+        }
+        if(BasicUtil.equals(comment, column.getComment())){
+            return false;
+        }
+        if(BasicUtil.equals(nullable, column.isNullable())){
+            return false;
+        }
+        if(BasicUtil.equals(isAutoIncrement, column.isAutoIncrement())){
+            return false;
+        }
+        if(BasicUtil.equals(charset, column.getCharset())){
+            return false;
+        }
+        if(BasicUtil.equals(isPrimaryKey, column.isPrimaryKey())){
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public ColumnType getColumnType() {
+        return columnType;
+    }
+
+    @Override
+    public void setColumnType(ColumnType columnType) {
+        this.columnType = columnType;
+    }
+
+    @Override
+    public JavaType getJavaType() {
+        return javaType;
+    }
+
+    @Override
+    public void setJavaType(JavaType javaType) {
+        this.javaType = javaType;
+    }
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -697,42 +757,6 @@ public class Column implements org.anyline.entity.data.Column{
     }
     public String getKeyword() {
         return this.keyword;
-    }
-
-    @Override
-    public boolean equals(org.anyline.entity.data.Column column) {
-        if(null == column){
-            return false;
-        }
-        if(BasicUtil.equals(typeName, column.getTypeName())){
-            return false;
-        }
-        if(BasicUtil.equals(precision, column.getPrecision())){
-            return false;
-        }
-        if(BasicUtil.equals(scale, column.getScale())){
-            return false;
-        }
-        if(BasicUtil.equals(defaultValue, column.getDefaultValue())){
-            return false;
-        }
-        if(BasicUtil.equals(comment, column.getComment())){
-            return false;
-        }
-        if(BasicUtil.equals(nullable, column.isNullable())){
-            return false;
-        }
-        if(BasicUtil.equals(isAutoIncrement, column.isAutoIncrement())){
-            return false;
-        }
-        if(BasicUtil.equals(charset, column.getCharset())){
-            return false;
-        }
-        if(BasicUtil.equals(isPrimaryKey, column.isPrimaryKey())){
-            return false;
-        }
-
-        return true;
     }
 
 }

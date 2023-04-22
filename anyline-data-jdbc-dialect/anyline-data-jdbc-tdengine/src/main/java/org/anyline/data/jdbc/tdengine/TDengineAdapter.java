@@ -1078,7 +1078,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			if(idx > 0){
 				builder.append(",");
 			}
-			format(builder, tag.getValue());
+			//format(builder, tag.getValue());
+			builder.append(write(null, tag.getValue(), false));
 			idx ++;
 		}
 		builder.append(")");
@@ -1637,7 +1638,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
 
@@ -1665,7 +1666,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return String
 	 */
 	@Override
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "NOW";
 		}
@@ -1673,13 +1674,10 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 
 	@Override
-	public String type2type(String type){
-		return super.type2type(type);
+	public String type(String type){
+		return super.type(type);
 	}
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
-	}
+	
 
 
 

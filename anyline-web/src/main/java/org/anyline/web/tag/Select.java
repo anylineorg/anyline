@@ -227,7 +227,7 @@ public class Select extends BaseBodyTag {
 		return type; 
 	} 
  
-	public void setType(String type) { 
+	public void setType(String type) {
 		this.type = type; 
 	} 
  
