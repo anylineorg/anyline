@@ -18,17 +18,17 @@
 
 
  
-package org.anyline.web.tag; 
- 
- 
+package org.anyline.web.tag;
+
+
+import org.anyline.util.BasicUtil;
+import org.anyline.util.encrypt.DESUtil;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.encrypt.DESUtil;
 
 public abstract class ComponentTag extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L;
@@ -578,7 +578,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 	public String getType() { 
 		return type; 
 	} 
-	public void setType(String type) { 
+	public void setType(String type) {
 		this.type = type; 
 	} 
 	public String getUnselectable() { 
