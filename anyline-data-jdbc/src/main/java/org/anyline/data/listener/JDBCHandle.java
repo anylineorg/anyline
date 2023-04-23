@@ -3,7 +3,6 @@ package org.anyline.data.listener;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.data.Column;
 import org.anyline.listener.EntityListener;
 import org.anyline.util.ConfigTable;
 
@@ -28,7 +27,7 @@ public class JDBCHandle {
     public DDListener ddListener;
     public EntityListener entityListener;
     public Map<String, Class> columnClass = new LinkedHashMap<>(); //列(属性)对应的JAVA数据类型
-    public Map<String, Column.STANDARD_DATA_TYPE> columnTypes = new LinkedHashMap<>(); //列(属性)对应的DB数据类型
+    public Map<String, Object> columnTypes = new LinkedHashMap<>(); //列(属性)对应的DB数据类型
 
 
     private static final ThreadLocal<JDBCHandle> THREAD_JDBC_HANDLE = new ThreadLocal<JDBCHandle>();
@@ -52,7 +51,7 @@ public class JDBCHandle {
         columnClass.put(column, clazz);
         return this;
     }
-    public JDBCHandle setColumnTypes(String column, Column.STANDARD_DATA_TYPE type){
+    public JDBCHandle setColumnTypes(String column, Object type){
         columnTypes.put(column, type);
         return this;
     }

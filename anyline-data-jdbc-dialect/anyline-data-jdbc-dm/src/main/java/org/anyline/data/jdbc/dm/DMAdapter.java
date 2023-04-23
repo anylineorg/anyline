@@ -5,24 +5,22 @@ import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
-import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.dm")
 public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
@@ -823,7 +821,10 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" DEFAULT ");
 		if(null != def){
-			format(builder, def);
+
+			def = write(column, def, false);
+			//format(builder, def);
+			builder.append(def);
 		}else{
 			builder.append("NULL");
 		}
@@ -1263,7 +1264,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 * public void value(StringBuilder builder, Object obj, String key)
 	 ******************************************************************************************************************/
@@ -1291,14 +1292,14 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "sysdate";
 		}
 		return null;
 	}
 	@Override
-	public String type2type(String type){
+	public String type(String type){
 		if(null != type){
 			type = type.toUpperCase();
 			if("DATETIME".equals(type)){
@@ -1308,13 +1309,10 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				return "DECIMAL";
 			}
 		}
-		return super.type2type(type);
-	}
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
+		return super.type(type);
 	}
 
+/*
 	@Override
 	public void value(StringBuilder builder, Object obj, String key){
 		Object value = null;
@@ -1351,7 +1349,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		}else{
 			builder.append(value);
 		}
-	}
+	}*/
 
 
 } 

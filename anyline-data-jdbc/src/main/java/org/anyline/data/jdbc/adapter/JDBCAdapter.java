@@ -26,6 +26,8 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.JavaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -596,6 +598,7 @@ public interface JDBCAdapter {
 	public Column column(Column column, ResultSetMetaData rsm, int index);
 	public Column column(Column column, ResultSet rs);
 
+
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
@@ -1049,6 +1052,8 @@ public interface JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder type(StringBuilder builder, Column column);
+	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
+	public String type(String type);
 
 	public boolean isIgnorePrecision(Column column);
 	public boolean isIgnoreScale(Column column);
@@ -1320,8 +1325,8 @@ public interface JDBCAdapter {
 	 * @return Object
 	 */
 	public Object getPrimaryValue(Object obj);
-
-	/**
+/*
+	*//**
 	 * 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
 	 * @param catalog catalog
@@ -1364,8 +1369,27 @@ public interface JDBCAdapter {
 	 * @param builder builder
 	 * @param value value
 	 */
-	public void format(StringBuilder builder, Object value);
+	//public void format(StringBuilder builder, Object value);
 
+	/**
+	 * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
+	 * @param metadata Column 用来定位数据类型
+	 * @param value value
+	 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
+	 * @return Object
+	 */
+	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz);
+	public Object read(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, Class clazz);
+
+	/**
+	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
+	 * @param metadata Column 用来定位数据类型
+	 * @param placeholder 是否占位符
+	 * @param value value
+	 * @return Object
+	 */
+	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
+	public Object write(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
 	/**
 	 * 拼接字符串
 	 * @param args args
@@ -1403,20 +1427,20 @@ public interface JDBCAdapter {
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String buildInValue(SQL_BUILD_IN_VALUE value);
+	public String value(SQL_BUILD_IN_VALUE value);
 
 	/**
-	 * 转换成相应数据库的数据类型
-	 * @param type type
+	 * 转换成相应数据库的数据类型包含精度
+	 * @param column column
 	 * @return String
 	 */
-	public String type2type(String type);
+	//public String type(Column column);
 
 	/**
 	 * 数据库类型转换成java类型
 	 * @param type type
 	 * @return String
 	 */
-	public String type2class(String type);
+	//public String type2class(String type);
 
 }
