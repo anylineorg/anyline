@@ -43,163 +43,163 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		setDelimiter(delimiter);
 	}
 	public enum DATA_TYPE{
-		BIGINT	            {public String getName(){return "bigint";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.BIGINT;	           }
+		BIGINT	            {public String getName(){return "bigint";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.BIGINT;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		BINARY	            {public String getName(){return "binary";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.BINARY;	           }
+		BINARY	            {public String getName(){return "binary";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.BINARY;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		BIT	                {public String getName(){return "bit";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.BIT;	           }
+		BIT	                {public String getName(){return "bit";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.BIT;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		BLOB	            {public String getName(){return "blob";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.BLOB;	           }
+		BLOB	            {public String getName(){return "blob";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.BLOB;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		CHAR	            {public String getName(){return "char";}                public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.CHAR;	           }
+		CHAR	            {public String getName(){return "char";}                public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.CHAR;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		DATE	            {public String getName(){return "date";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.DATE;	           }
+		DATE	            {public String getName(){return "date";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.DATE;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		DATETIME	        {public String getName(){return "datetime";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.DATETIME;	       }
+		DATETIME	        {public String getName(){return "datetime";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.DATETIME;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		DECIMAL	            {public String getName(){return "decimal";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.DECIMAL;	       }
+		DECIMAL	            {public String getName(){return "decimal";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.DECIMAL;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		DOUBLE	            {public String getName(){return "double";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.DOUBLE;	           }
+		DOUBLE	            {public String getName(){return "double";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.DOUBLE;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		ENUM	            {public String getName(){return "enum";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.ENUM;	           }
+		ENUM	            {public String getName(){return "enum";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.ENUM;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		FLOAT	            {public String getName(){return "float";}               public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.FLOAT;	           }
+		FLOAT	            {public String getName(){return "float";}               public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.FLOAT;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		GEOMETRY	        {public String getName(){return "geometry";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.GEOMETRY;	       }
+		GEOMETRY	        {public String getName(){return "geometry";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.GEOMETRY;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		GEOMETRYCOLLECTION	{public String getName(){return "geometrycollection";}  public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.GEOMETRYCOLLECTION;}
+		GEOMETRYCOLLECTION	{public String getName(){return "geometrycollection";}  public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.GEOMETRYCOLLECTION;}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		INT	                {public String getName(){return "int";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.INT;	           }
+		INT	                {public String getName(){return "int";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.INT;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		INTEGER	            {public String getName(){return "int";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.INTEGER;	       }
+		INTEGER	            {public String getName(){return "int";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.INTEGER;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		JSON	            {public String getName(){return "json";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.JSON;	           }
+		JSON	            {public String getName(){return "json";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.JSON;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		LINESTRING	        {public String getName(){return "linestring";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.LINE;	       }
+		LINESTRING	        {public String getName(){return "linestring";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.LINE;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		LONGBLOB	        {public String getName(){return "longblob";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.LONGBLOB;	       }
+		LONGBLOB	        {public String getName(){return "longblob";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.LONGBLOB;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		LONGTEXT	        {public String getName(){return "longtext";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.LONGTEXT;	       }
+		LONGTEXT	        {public String getName(){return "longtext";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.LONGTEXT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		MEDIUMBLOB	        {public String getName(){return "mediumblob";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.MEDIUMBLOB;	       }
+		MEDIUMBLOB	        {public String getName(){return "mediumblob";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.MEDIUMBLOB;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		MEDIUMINT	        {public String getName(){return "mediumint";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.MEDIUMINT;	       }
+		MEDIUMINT	        {public String getName(){return "mediumint";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.MEDIUMINT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		MEDIUMTEXT	        {public String getName(){return "mediumtext";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.MEDIUMTEXT;	       }
+		MEDIUMTEXT	        {public String getName(){return "mediumtext";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.MEDIUMTEXT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		MULTILINESTRING	    {public String getName(){return "multilinestring";}     public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.MULTILINESTRING;    }
+		MULTILINESTRING	    {public String getName(){return "multilinestring";}     public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.MULTILINESTRING;    }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		MULTIPOINT	        {public String getName(){return "multipoint";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.MULTIPOINT;	       }
+		MULTIPOINT	        {public String getName(){return "multipoint";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.MULTIPOINT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		MULTIPOLYGON	    {public String getName(){return "multipolygon";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.MULTIPOLYGON;	   }
+		MULTIPOLYGON	    {public String getName(){return "multipolygon";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.MULTIPOLYGON;	   }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		NUMERIC	            {public String getName(){return "numeric";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.NUMERIC;	       }
+		NUMERIC	            {public String getName(){return "numeric";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.NUMERIC;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		POINT	            {public String getName(){return "point";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.POINT;	           }
+		POINT	            {public String getName(){return "point";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.POINT;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		POLYGON	            {public String getName(){return "polygon";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.POLYGON;	       }
+		POLYGON	            {public String getName(){return "polygon";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.POLYGON;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		REAL	            {public String getName(){return "double";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.REAL;	           }
+		REAL	            {public String getName(){return "double";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.REAL;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		SET	                {public String getName(){return "set";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.SET;	           }
+		SET	                {public String getName(){return "set";}                 public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.SET;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		SMALLINT	        {public String getName(){return "smallint";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.SMALLINT;	       }
+		SMALLINT	        {public String getName(){return "smallint";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.SMALLINT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		TEXT	            {public String getName(){return "text";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.TEXT;	           }
+		TEXT	            {public String getName(){return "text";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.TEXT;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		TIME	            {public String getName(){return "time";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.TIME;	           }
+		TIME	            {public String getName(){return "time";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.TIME;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		TIMESTAMP	        {public String getName(){return "timestamp";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.TIMESTAMP;	       }
+		TIMESTAMP	        {public String getName(){return "timestamp";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.TIMESTAMP;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		TINYBLOB	        {public String getName(){return "tinyblob";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.TINYBLOB;	       }
+		TINYBLOB	        {public String getName(){return "tinyblob";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.TINYBLOB;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		TINYINT	            {public String getName(){return "tinyint";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.TINYINT;	       }
+		TINYINT	            {public String getName(){return "tinyint";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.TINYINT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		TINYTEXT	        {public String getName(){return "tinytext";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.TINYTEXT;	       }
+		TINYTEXT	        {public String getName(){return "tinytext";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.TINYTEXT;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		VARBINARY	        {public String getName(){return "varbinary";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.VARBINARY;	       }
+		VARBINARY	        {public String getName(){return "varbinary";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.VARBINARY;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		VARCHAR	            {public String getName(){return "varchar";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.VARCHAR;	       }
+		VARCHAR	            {public String getName(){return "varchar";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.VARCHAR;	       }
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
-		YEAR	            {public String getName(){return "numeric";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard(){return org.anyline.entity.data.Column.STANDARD_DATA_TYPE.YEAR;	           }
+		YEAR	            {public String getName(){return "numeric";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public org.anyline.data.entity.DataType getStandard(){return org.anyline.data.entity.DataType.YEAR;	           }
 			public Object convert(Object value, boolean string){
 				return value;
 			}};
@@ -211,7 +211,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		 * @return Object
 		 */
 		public abstract Object convert(Object value, boolean string);
-		public abstract org.anyline.entity.data.Column.STANDARD_DATA_TYPE getStandard();
+		public abstract org.anyline.data.entity.DataType getStandard();
 		public abstract String getName();
 		public abstract boolean isIgnorePrecision();
 		public abstract boolean isIgnoreScale();
@@ -1502,7 +1502,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
 
@@ -1531,7 +1531,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 
 	@Override
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "now()";
 		}
@@ -1539,13 +1539,10 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	@Override
-	public String type2type(String type){
-		return super.type2type(type);
+	public String type(String type){
+		return super.type(type);
 	}
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
-	}
+	
 
 
 

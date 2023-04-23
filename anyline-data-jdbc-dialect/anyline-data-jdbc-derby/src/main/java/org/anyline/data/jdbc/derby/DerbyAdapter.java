@@ -1128,7 +1128,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
 
@@ -1155,7 +1155,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "CURRENT TIMESTAMP";
 		}
@@ -1163,7 +1163,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	@Override
-	public String type2type(String type){
+	public String type(String type){
 		if(null != type){
 			type = type.toUpperCase();
 			if(type.equals("DATETIME")){
@@ -1171,12 +1171,9 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		}
 
-		return super.type2type(type);
+		return super.type(type);
 	}
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
-	}
+	
 
 
 
