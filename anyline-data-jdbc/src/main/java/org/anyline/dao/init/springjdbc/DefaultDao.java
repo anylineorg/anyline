@@ -958,14 +958,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (metadatas.isEmpty()) {
 				for (int i = 1; i <= qty; i++) {
 					org.anyline.entity.data.Column column = metadatas.get(rsmd.getColumnName(i)) ;
-					column = adapter.column(null, rsmd, i);
+					column = adapter.column((Column) column, rsmd, i);
 					metadatas.put(column.getName().toUpperCase(), column);
 				}
 			}
 			for (int i = 1; i <= qty; i++) {
 				String name = rsmd.getColumnLabel(i);
 				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
-				row.put(false, name, BeanUtil.value(column.getTypeName(), rs.getObject(name)));
+				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
+				Object value = adapter.read(column, rs.getObject(name), null);
+				row.put(false, name, value);
 			}
 			row.setMetadatas(metadatas);
 		}catch (Exception e){
