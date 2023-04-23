@@ -34,6 +34,8 @@ import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
+import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -49,9 +51,6 @@ import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 import java.util.*;
 
@@ -1361,7 +1360,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return column;
 	}
 
-
 	@Override
 	public Column column(Column column, SqlRowSetMetaData rsm, int index){
 		if(null == column) {
@@ -2219,8 +2217,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			column.setName(uname);
 			// 修改数据类型
-			String type = type2type(column.getTypeName());
-			String utype = type2type(update.getTypeName());
+			String type = type(null, column).toString();
+			String utype = type(null, update).toString();
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
 				List<String> list = buildChangeTypeRunSQL(column);
 				if(null != list){
@@ -2418,15 +2416,40 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
-		String typeName = type2type(column.getTypeName());
-		builder.append(typeName);
-		if(!isIgnorePrecision(column)) {
+		if(null == builder){
+			builder = new StringBuilder();
+		}
+		boolean isIgnorePrecision = false;
+		boolean isIgnoreScale = false;
+		String typeName = column.getTypeName();
+		DataType type = null;
+		if (null != typeName && !"NULL".equals(typeName.toUpperCase())) {
+			type = DataType.valueOf(typeName.toUpperCase());//如果没有对应的类型一般要创建别名,别名内的方法引用原类型方法
+		}
+		if(null != type){
+			isIgnorePrecision = type.isIgnorePrecision();
+			isIgnoreScale = type.isIgnoreScale();
+			typeName = type.getName();
+		}else{
+			isIgnorePrecision = isIgnorePrecision(column);
+			isIgnoreScale = isIgnoreScale(column);
+		}
+		return type(builder, column, type.getName(), isIgnorePrecision, isIgnoreScale);
+	}
+
+	@Override
+	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+		if(null == builder){
+			builder = new StringBuilder();
+		}
+		builder.append(type);
+		if(!isIgnorePrecision) {
 			Integer precision =  column.getPrecision();
 			if (null != precision) {
 				if (precision > 0) {
 					builder.append("(").append(precision);
 					Integer scale = column.getScale();
-					if (null != scale && scale > 0 && !isIgnoreScale(column)) {
+					if (null != scale && scale > 0 && !isIgnoreScale) {
 						builder.append(",").append(scale);
 					}
 					builder.append(")");
@@ -2438,6 +2461,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return builder;
 	}
 
+	@Override
+	public String type(String type){
+		DataType dt = DataType.valueOf(type);
+		if(null != dt){
+			return dt.getName();
+		}
+		return type;
+	}
 	@Override
 	public Boolean checkIgnorePrecision(String datatype) {
 		return null;
@@ -2561,12 +2592,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append(" DEFAULT ");
 			boolean isCharColumn = isCharColumn(column);
 			if(def instanceof SQL_BUILD_IN_VALUE){
-				String value = buildInValue((SQL_BUILD_IN_VALUE)def);
+				String value = value((SQL_BUILD_IN_VALUE)def);
 				if(null != value){
 					builder.append(value);
 				}
 			}else {
-				format(builder, def);
+				def = write(column, def, false);
+				//format(builder, def);
+				builder.append(def);
 			}
 		}
 		return builder;
@@ -2711,8 +2744,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			tag.setName(uname);
 			// 修改数据类型
-			String type = type2type(tag.getTypeName());
-			String utype = type2type(update.getTypeName());
+			String type = type(null, tag).toString();
+			String utype = type(null, update).toString();
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
 				List<String> list = buildChangeTypeRunSQL(tag);
 				if(null != list){
@@ -3091,7 +3124,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 *
 	 * protected String string(List<String> keys, String key, ResultSet set, String def) throws Exception
@@ -3176,18 +3209,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		return null;
 	}
 
-	@Override
-	public String type2type(String type){
+/*	@Override
+	public String type(String type){
 		return type;
 	}
 	@Override
 	public String type2class(String type){
 		return type;
-	}
+	}*/
 
 	/**
 	 * 先检测rs中是否包含当前key 如果包含再取值, 取值时按keys中的大小写为准
@@ -3241,58 +3274,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected Object value(Map<String, Integer> keys, String key, ResultSet set) throws Exception{
 		return value(keys, key, set, null);
 	}
-	@Override
-	public void value(StringBuilder builder, Object obj, String key){
-		Object value = null;
-		if(obj instanceof DataRow){
-			value = ((DataRow)obj).get(key);
-		}else {
-			if (EntityAdapterProxy.hasAdapter()) {
-				Field field = EntityAdapterProxy.field(obj.getClass(), key);
-				value = BeanUtil.getFieldValue(obj, field);
-			} else {
-				value = BeanUtil.getFieldValue(obj, key);
-			}
-		}
-		format(builder, value);
-	}
-	@Override
-	public void format(StringBuilder builder, Object value){
-		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-			builder.append("null");
-		}else if(value instanceof SQL_BUILD_IN_VALUE){
-			builder.append(buildInValue((SQL_BUILD_IN_VALUE)value));
-		}else if(value instanceof String){
-			String str = (String)value;
-			if(str.startsWith("${") && str.endsWith("}")){
-				str = str.substring(2, str.length()-1);
-			}else if(str.startsWith("'") && str.endsWith("'")){
-			}else{
-				str = "'" + str.replace("'", "''") + "'";
-			}
-			builder.append(str);
-		}else if(value instanceof Timestamp){
-			builder.append("'").append(value).append("'");
-		}else if(value instanceof java.sql.Date){
-			builder.append("'").append(value).append("'");
-		}else if(value instanceof LocalDate){
-			builder.append("'").append(value).append("'");
-		}else if(value instanceof LocalTime){
-			builder.append("'").append(value).append("'");
-		}else if(value instanceof LocalDateTime){
-			builder.append("'").append(value).append("'");
-		}else if(value instanceof Date){
-			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
-		}else if(value instanceof Number || value instanceof Boolean){
-			builder.append(value);
-		}else if(value instanceof DataRow){
-			builder.append("'").append(((DataRow)value).toJSON().replace("'","''")).append("'");
-		} else if(value instanceof DataSet){
-			builder.append("'").append(((DataSet)value).toJSON().replace("'","''")).append("'");
-		} else{
-			builder.append(value);
-		}
-	}
 
 	@Override
 	public String getPrimaryKey(Object obj){
@@ -3341,6 +3322,138 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 
+	/**
+	 * 写入数据库前类型转换<br/>
+	 *
+	 * @param metadata Column 用来定位数据类型
+	 * @param placeholder 是否占位符
+	 * @param value value
+	 * @return Object
+	 */
+	@Override
+	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
+		return write(ColumnTypeHolder.types(), JavaTypeHolder.types(), metadata, value, placeholder);
+	}
+	@Override
+	public Object write(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
+		return value;
+	}
+	/**
+	 * 从数据库中读取数据<br/>
+	 * 先由子类根据metadata.typeName(CHAR,INT)定位到具体的数据库类型ColumnType<br/>
+	 * 如果定准成功由CoumnType根据class转换(class可不提供)<br/>
+	 * 如果没有定位到ColumnType再根据className(String,BigDecimal)定位到JavaType<br/>
+	 * 如果定准失败或转换失败(返回null)再由父类转换<br/>
+	 * 如果没有提供metadata和class则根据value.class<br/>
+	 * 常用类型jdbc可以自动转换直接返回就可以(一般子类DataType返回null父类原样返回)<br/>
+	 * 不常用的如json/point/polygon/blob等转换成anyline对应的类型<br/>
+	 *
+	 * @param metadata Column 用来定位数据类型
+	 * @param value value
+	 * @param clazz 目标数据类型(给entity赋值时应该指定属性class, DataRow赋值时可以通过JDBChandler指定class)
+	 * @return Object
+	 */
+	@Override
+	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
+		return read(ColumnTypeHolder.types(), JavaTypeHolder.types(), metadata, value, clazz);
+	}
+	@Override
+	public Object read(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, Class clazz){
+		Object result = null;
+		if (null != metadata && null != value) {
+			ColumnType ctype = metadata.getColumnType();
+			if(null == ctype) {
+				String typeName = metadata.getTypeName();
+				if (null != typeName) {
+					ctype = ctypes.get(typeName.toUpperCase());
+				}
+			}
+			if(null != ctype){
+				result = ctype.read(value, clazz);
+			}
+			if(null == result){
+				JavaType jType = metadata.getJavaType();
+				if(null == jType){
+					String className = metadata.getClassName();
+					if(null != className){
+						jType = jtypes.get(className.toUpperCase());
+					}
+				}
+				if(null != jType){
+					result = jType.read(value, clazz);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void value(StringBuilder builder, Object obj, String key){
+		Object value = null;
+		if(obj instanceof DataRow){
+			value = ((DataRow)obj).get(key);
+		}else {
+			if (EntityAdapterProxy.hasAdapter()) {
+				Field field = EntityAdapterProxy.field(obj.getClass(), key);
+				value = BeanUtil.getFieldValue(obj, field);
+			} else {
+				value = BeanUtil.getFieldValue(obj, key);
+			}
+		}
+		JavaType type = null;
+		if(null == value){
+			if(value instanceof SQL_BUILD_IN_VALUE){
+				builder.append(value((SQL_BUILD_IN_VALUE)value));
+			}else {
+				type = JavaTypeHolder.type(value.getClass().getName());
+				if (null != type) {
+					builder.append(type.write(value, null, true));
+				} else {
+					builder.append(value);
+				}
+			}
+		}else{
+			builder.append("null");
+		}
+	}/*
+	@Override
+	public void format(StringBuilder builder, Object value){
+		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+			builder.append("null");
+		}else if(value instanceof SQL_BUILD_IN_VALUE){
+			builder.append(value((SQL_BUILD_IN_VALUE)value));
+		}else if(value instanceof String){
+			String str = (String)value;
+			if(str.startsWith("${") && str.endsWith("}")){
+				str = str.substring(2, str.length()-1);
+			}else if(str.startsWith("'") && str.endsWith("'")){
+			}else{
+				str = "'" + str.replace("'", "''") + "'";
+			}
+			builder.append(str);
+		}else if(value instanceof Timestamp){
+			builder.append("'").append(value).append("'");
+		}else if(value instanceof java.sql.Date){
+			builder.append("'").append(value).append("'");
+		}else if(value instanceof LocalDate){
+			builder.append("'").append(value).append("'");
+		}else if(value instanceof LocalTime){
+			builder.append("'").append(value).append("'");
+		}else if(value instanceof LocalDateTime){
+			builder.append("'").append(value).append("'");
+		}else if(value instanceof Date){
+			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
+		}else if(value instanceof Number || value instanceof Boolean){
+			builder.append(value);
+		}else if(value instanceof DataRow){
+			builder.append("'").append(((DataRow)value).toJSON().replace("'","''")).append("'");
+		} else if(value instanceof DataSet){
+			builder.append("'").append(((DataSet)value).toJSON().replace("'","''")).append("'");
+		} else{
+			builder.append(value);
+		}
+	}
+*/
 	@Override
 	public boolean convert(String catalog, String schema, String table, RunValue run){
 		boolean result = false;
@@ -3359,17 +3472,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		return result;
 	}
-
 	/**
 	 * 根据数据库列属性 类型转换(一般是在更新数据库时调用)
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
-	 * @param column 列
+	 * @param metadata 列
 	 * @param run RunValue
 	 * @return boolean 是否完成类型转换,决定下一步是否继续
 	 */
 	@Override
-	public boolean convert(Column column, RunValue run){
-		if(null == column){
+	public boolean convert(Column metadata, RunValue run){
+		if(null == metadata){
 			return false;
 		}
 		if(null == run){
@@ -3380,216 +3492,20 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			return true;
 		}
 		try {
-			String clazz = column.getClassName();
-			String typeName = column.getTypeName().toUpperCase();
-			if(null != typeName){
-				// 根据数据库类型
-				if(typeName.contains("BIGINT")){
-					if(value instanceof Long){
-					}else{
-						run.setValue(BasicUtil.parseLong(value, null));
-					}
-				}else if(typeName.equals("POINT")){
-					if(value instanceof byte[]){
-					}else if(value instanceof Point){
-						value = ((Point)value).bytes();
-						run.setValue(value);
-					}
-					if(value instanceof double[]){
-						double[] ds = (double[]) value;
-						if(ds.length < 2){
-							run.setValue(null);
-						}else {
-							if (ds.length >= 2) {
-								value = new Point(ds[0], ds[1]).bytes();
-								run.setValue(value);
-							}
-						}
-					}else if(value instanceof Double[]){
-						Double[] ds = (Double[]) value;
-						if(ds.length < 2 || null == ds[0] || null == ds[1]){
-							run.setValue(null);
-						}else {
-							if (ds.length >= 2) {
-								value = new Point(ds[0], ds[1]).bytes();
-								run.setValue(value);
-							}
-						}
-					}
-				}else if(typeName.startsWith("INT")){
-					if(value instanceof Integer){
-					}else{
-						run.setValue(BasicUtil.parseInt(value, null));
-					}
-				}else if(typeName.contains("DECIMAL") || typeName.contains("NUMERIC") || typeName.contains("MONEY")){
-					if(value instanceof BigDecimal){
-					}else {
-						run.setValue(BasicUtil.parseDecimal(value, null));
-					}
-				}else if(typeName.equals("DOUBLE")){
-					if(value instanceof Double){
-					}else{
-						run.setValue(BasicUtil.parseDouble(value, null));
-					}
-				}else if(typeName.equals("FLOAT")){
-					if(value instanceof Float){
-					}else{
-						run.setValue(BasicUtil.parseFloat(value, null));
-					}
-				}else if(typeName.equals("UUID")){
-					if(value instanceof UUID) {
-					}else{
-						run.setValue(UUID.fromString(value.toString()));
-					}
-					return true;
-				}else if(typeName.contains("CHAR") || typeName.contains("TEXT")){
-					if(value instanceof String){
-					}else if(value instanceof Date){
-						run.setValue(DateUtil.format((Date)value));
-					}else{
-						run.setValue(value.toString());
-					}
-					return true;
-				}else if(typeName.equals("BIT")){
-					if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
-						run.setValue("0");
-					}else{
-						run.setValue("1");
-					}
-					return true;
-				}else if(typeName.equals("DATETIME")){
-					if(value instanceof Timestamp){
-					}else {
-						Date date = DateUtil.parse(value);
-						if(null != date) {
-							run.setValue(new Timestamp(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(typeName.equals("TIMESTAMP")){
-					if(value instanceof Timestamp){
-					}else {
-						Date date = DateUtil.parse(value);
-						if(null != date) {
-							run.setValue(new Timestamp(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(typeName.equals("DATE")){
-					if(value instanceof java.sql.Date){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue(new java.sql.Date(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(typeName.equals("TIME")){
-					if(value instanceof Time){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue( new Time(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(typeName.contains("BLOB")){
-					if(value instanceof byte[]){
-					}else {
-						if(value instanceof String){
-							String str = (String)value;
-							if(Base64Util.verify(str)){
-								try {
-									run.setValue(Base64Util.decode(str));
-								}catch (Exception e){
-									run.setValue(str.getBytes());
-								}
-							}else{
-								run.setValue(str.getBytes());
-							}
-						}
-					}
-					return true;
+			ColumnType columnType = metadata.getColumnType();
+			if(null == columnType){
+				columnType = ColumnTypeHolder.type(metadata.getTypeName());
+			}
+			if(null != columnType){
+				value = columnType.write(value, null, false);
+			}else {
+				String clazz = metadata.getClassName();
+				JavaType javaType = JavaTypeHolder.type(clazz);
+				if(null != javaType){
+					value = javaType.write(value, null, false);
 				}
 			}
-			if(null != clazz){
-				// 根据Java类
-				// 不要解析String 许多不识别的类型会对应String 交给子类解析
-				// 不要解析Boolean类型 有可能是 0,1
-				if(clazz.contains("Integer")){
-					if(value instanceof Integer){
-					}else {
-						run.setValue(BasicUtil.parseInt(value, null));
-					}
-					return true;
-				}else if(clazz.contains("Long")){
-					if(value instanceof Long){
-					}else {
-						run.setValue(BasicUtil.parseLong(value, null));
-					}
-					return true;
-				}else if(clazz.contains("Double")){
-					if(value instanceof Double){
-					}else {
-						run.setValue(BasicUtil.parseDouble(value, null));
-					}
-					return true;
-				}else if(clazz.contains("Float")){
-					if(value instanceof Float){
-					}else {
-						run.setValue(BasicUtil.parseFloat(value, null));
-					}
-					return true;
-				}else if(clazz.contains("BigDecimal")){
-					if(value instanceof BigDecimal){
-					}else {
-						run.setValue(BasicUtil.parseDecimal(value, null));
-					}
-					return true;
-				}else if(clazz.contains("java.sql.Timestamp")){
-					if(value instanceof Timestamp){
-					}else {
-						Date date = DateUtil.parse(value);
-						if(null != date) {
-							run.setValue(new Timestamp(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(clazz.equals("java.sql.Time")){
-					if(value instanceof Time){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue( new Time(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}else if(clazz.contains("java.sql.Date")){
-					if(value instanceof java.sql.Date){
-					}else {
-						Date date = DateUtil.parse(value);
-						if (null != date) {
-							run.setValue(new java.sql.Date(date.getTime()));
-						}else{
-							run.setValue(null);
-						}
-					}
-					return true;
-				}
-			}
-
+			run.setValue(value);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
