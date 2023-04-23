@@ -25,10 +25,10 @@ public class Coordinate {
 	private String provinceName				; // 省中文名
 	private String cityCode					; // 市编号
 	private String cityName					; // 市中文我
-	private String countyCode				; // 区编号
-	private String countyName				; // 区中文名
-	private String townCode					; // 街道编号
-	private String townName					; // 街道中文名
+	private String countyCode				; // 区(县)编号
+	private String countyName				; // 区(县)中文名
+	private String townCode					; // 街道(乡镇)编号
+	private String townName					; // 街道(乡镇)中文名
 	private String villageCode				; // 社区(村)编号
 	private String villageName				; // 社区(村)中文名
 	private String street					; // 道路
