@@ -414,15 +414,18 @@ public class ColumnTypeHolder {
                     return value;
                 }
                 Point point = BasicUtil.parsePoint(value);
-                String classNmae = clazz.getSimpleName();
-                if(classNmae.equals("point")){
+                if(null == clazz){
                     value = point;
-                }else if(classNmae.equals("double[]")){
-                    value = BeanUtil.Double2double(point.getArray(), 0);
-                }else if(classNmae.equals("Double[]")){
-                    value = point.getArray();
-                }else if(classNmae.equals("byte[]")){
-                    value = point.bytes();
+                }else if(null != point){
+                    if (clazz == Point.class) {
+                        value = point;
+                    } else if (clazz == double[].class) {
+                        value = BeanUtil.Double2double(point.getArray(), 0);
+                    } else if (clazz == Double[].class) {
+                        value = point.getArray();
+                    } else if (clazz == byte[].class) {
+                        value = point.bytes();
+                    }
                 }
                 return value;
             }
