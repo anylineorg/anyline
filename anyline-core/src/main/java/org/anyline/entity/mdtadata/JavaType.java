@@ -1,13 +1,6 @@
 package org.anyline.entity.mdtadata;
 
 public interface JavaType {
-
-    /**
-     * 数据类型名称,为兼容不同数据库书写习惯,name有可能是别名与数据库不一致,别名中的所有方法调用原类型方法
-     * @return
-     */
-    public abstract String getName();
-
     /**
      * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
      * @param value value
@@ -21,19 +14,12 @@ public interface JavaType {
      * 如果没有占位符 需要确定加单引号或内置函数<br/>
      * @param placeholder 是否占位符
      * @param value value
+     * @param def 默认值
      * @return Object
      */
-    public abstract Object write(Object value, boolean placeholder);
+    public abstract Object write(Object value, Object def, boolean placeholder);
 
 
 
-    //public abstract Class getJavaClass();
-    // public String getName();
-
-    /**
-     * 定义列时 数据类型格式
-     * @return boolean
-     */
-    public abstract boolean isIgnorePrecision();
-    public abstract boolean isIgnoreScale();
+    public abstract Class getJavaClass();
 }
