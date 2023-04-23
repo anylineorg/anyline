@@ -3,6 +3,7 @@ package org.anyline.data.jdbc.oracle;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
+import org.anyline.data.entity.JavaTypeHolder;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.SQLAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -16,7 +17,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.*;
-import org.anyline.entity.data.Column.STANDARD_DATA_TYPE;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,127 +50,127 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 	public enum DATA_TYPE{
 		BFILE{
-			public String getName(){return "BFILE";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BFILE;	}
+			public String getName(){return "BFILE";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BFILE;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		BINARY_DOUBLE{
-			public String getName(){return "BINARY_DOUBLE";}   public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY_DOUBLE;}
+			public String getName(){return "BINARY_DOUBLE";}   public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BINARY_DOUBLE;}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		BINARY_FLOAT{
-			public String getName(){return "BINARY_FLOAT";}    public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BINARY_FLOAT;}
+			public String getName(){return "BINARY_FLOAT";}    public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BINARY_FLOAT;}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		BLOB{
-			public String getName(){return "BLOB";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.BLOB;	}
+			public String getName(){return "BLOB";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BLOB;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		CHAR{
-			public String getName(){return "CHAR";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CHAR;	}
+			public String getName(){return "CHAR";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.CHAR;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		CLOB{
-			public String getName(){return "CLOB";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.CLOB;	}
+			public String getName(){return "CLOB";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.CLOB;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		DATE{
-			public String getName(){return "DATE";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.DATE;	}
+			public String getName(){return "DATE";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.DATE;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		DECIMAL{
-			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		FLOAT{
-			public String getName(){return "FLOAT";}           public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	}
+			public String getName(){return "FLOAT";}           public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.FLOAT;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		INT{
-			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		INTEGER{
-			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		LONG{
-			public String getName(){return "LONG";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "LONG";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		NCHAR{
-			public String getName(){return "NCHAR";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NCHAR;	}
+			public String getName(){return "NCHAR";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NCHAR;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		NCLOB{
-			public String getName(){return "NCLOB";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NCLOB;	}
+			public String getName(){return "NCLOB";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NCLOB;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		NUMBER{
-			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		NUMERIC{
-			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		NVARCHAR2{
-			public String getName(){return "NVARCHAR2";}     	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NVARCHAR2;	}
+			public String getName(){return "NVARCHAR2";}     	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NVARCHAR2;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		RAW{
-			public String getName(){return "RAW";}           	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.RAW;	}
+			public String getName(){return "RAW";}           	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.RAW;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		REAL{
-			public String getName(){return "FLOAT";}           public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.FLOAT;	}
+			public String getName(){return "FLOAT";}           public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.FLOAT;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		ROWID{
-			public String getName(){return "ROWID";}         	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.ROWID;	}
+			public String getName(){return "ROWID";}         	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.ROWID;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		SMALINT{
-			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.NUMBER;	}
+			public String getName(){return "NUMBER";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.NUMBER;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		TIMESTAMP{
-			public String getName(){return "TIMESTAMP";}       public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.TIMESTAMP;	}
+			public String getName(){return "TIMESTAMP";}       public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TIMESTAMP;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		UROWID{
-			public String getName(){return "UROWID";}      	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.UROWID;	}
+			public String getName(){return "UROWID";}      	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.UROWID;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		VARCHAR{
-			public String getName(){return "VARCHAR";}         public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR;	}
+			public String getName(){return "VARCHAR";}         public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.VARCHAR;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}},
 		VARCHAR2{
-			public String getName(){return "VARCHAR2";}        public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public STANDARD_DATA_TYPE getStandard(){return STANDARD_DATA_TYPE.VARCHAR2;	}
+			public String getName(){return "VARCHAR2";}        public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.VARCHAR2;	}
 			public Object convert(Object value, boolean string){
 				return value;
 			}};
@@ -182,7 +182,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		 * @return Object
 		 */
 		public abstract Object convert(Object value, boolean string);
-		public abstract STANDARD_DATA_TYPE getStandard();
+		public abstract DataType getStandard();
 		public abstract String getName();
 		public abstract boolean isIgnorePrecision();
 		public abstract boolean isIgnoreScale();
@@ -1287,7 +1287,9 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" DEFAULT ");
 		if(null != def){
-			format(builder, def);
+			def = write(column, def, false);
+			//format(builder, def);
+			builder.append(def);
 		}else{
 			builder.append("NULL");
 		}
@@ -1746,7 +1748,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 * public void value(StringBuilder builder, Object obj, String key)
 	 ******************************************************************************************************************/
@@ -1774,14 +1776,14 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "sysdate";
 		}
 		return null;
 	}
 	@Override
-	public String type2type(String type){
+	public String type(String type){
 		if(null != type){
 			type = type.toUpperCase();
 			if("DATETIME".equals(type)){
@@ -1791,12 +1793,9 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 				return "DECIMAL";
 			}
 		}
-		return super.type2type(type);
+		return super.type(type);
 	}
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
-	}
+/*
 
 	@Override
 	public void value(StringBuilder builder, Object obj, String key){
@@ -1812,7 +1811,8 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		if(null == value || "NULL".equals(value)){
 			builder.append("null");
 		}else if(value instanceof String){
-			format(builder, value);
+			//format(builder, value);
+			write(null, value, false);
 		}else if(value instanceof Timestamp
 				|| value instanceof java.util.Date
 				|| value instanceof java.sql.Date
@@ -1835,8 +1835,25 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			builder.append(value);
 		}
 	}
+*/
 
 
+	@Override
+	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
+		Object result = read(ColumnTypeHolder.types(), JavaTypeHolder.types(), metadata, value, clazz);
+		if(null == result){
+			result = super.read(metadata, value, clazz);
+		}
+		return result;
+	}
+	@Override
+	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
+		Object result = write(ColumnTypeHolder.types(), JavaTypeHolder.types(), metadata, value, placeholder);
+		if(null == result){
+			result = super.write(metadata, value, placeholder);
+		}
+		return result;
+	}
 
 
 }
