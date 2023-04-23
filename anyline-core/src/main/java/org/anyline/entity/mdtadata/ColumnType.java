@@ -20,13 +20,14 @@ public interface ColumnType {
      * 如果没有占位符 需要确定加单引号或内置函数<br/>
      * @param placeholder 是否占位符
      * @param value value
+     * @param def 默认值
      * @return Object
      */
-    public abstract Object write(Object value, boolean placeholder);
+    public abstract Object write(Object value, Object def, boolean placeholder);
 
 
 
-    //public abstract Class getJavaClass();
+    //public abstract JavaType getJavaType();
     // public String getName();
 
     /**
