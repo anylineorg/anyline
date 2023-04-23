@@ -260,6 +260,58 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+	public static Long[] long2Long(long[] array){
+		if(null == array){
+			return null;
+		}
+		Long[] result = new Long[array.length];
+		int idx = 0;
+		for(long item:array){
+			result[idx++] = item;
+		}
+		return result;
+	}
+	public static long[] Long2long(Long[] array, long def){
+		if(null == array){
+			return null;
+		}
+		long[] result = new long[array.length];
+		int idx = 0;
+		for(Long item:array){
+			if(null == item){
+				item = def;
+			}
+			result[idx++] = item;
+		}
+		return result;
+	}
+
+	public static Float[] flong2Float(float[] array){
+		if(null == array){
+			return null;
+		}
+		Float[] result = new Float[array.length];
+		int idx = 0;
+		for(float item:array){
+			result[idx++] = item;
+		}
+		return result;
+	}
+	public static float[] Float2float(Float[] array, float def){
+		if(null == array){
+			return null;
+		}
+		float[] result = new float[array.length];
+		int idx = 0;
+		for(Float item:array){
+			if(null == item){
+				item = def;
+			}
+			result[idx++] = item;
+		}
+		return result;
+	}
 	/**
 	 * 根据数据类型转换成Java值
 	 * @param type 数据库类型

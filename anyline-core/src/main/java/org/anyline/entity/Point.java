@@ -36,6 +36,15 @@ public class Point {
     public Double[] getArray(){
         return new Double[]{x,y};
     }
+    public Double[] getDoubles(){
+        return new Double[]{x,y};
+    }
+    public Long[] getLongs(){
+        return new Long[]{x.longValue(),y.longValue()};
+    }
+    public Integer[] getInteger(){
+        return new Integer[]{x.intValue(),y.intValue()};
+    }
     public Double getX() {
         return x;
     }

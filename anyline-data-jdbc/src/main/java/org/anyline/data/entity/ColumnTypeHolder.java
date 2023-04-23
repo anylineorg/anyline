@@ -2,8 +2,10 @@ package org.anyline.data.entity;
 
 import org.anyline.entity.Point;
 import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.JavaType;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
 
 import java.sql.Timestamp;
@@ -13,7 +15,16 @@ import java.util.Map;
 
 public class ColumnTypeHolder {
     private static Map<String, ColumnType> types = new Hashtable<>();
-
+    public static Map<String, ColumnType> types(){
+        return types;
+    }
+    public static ColumnType type(String type){
+        if(null != type){
+            return types.get(type);
+        }else{
+            return null;
+        }
+    }
     static {
 
         /* *****************************************************************************************************************
@@ -310,9 +321,9 @@ public class ColumnTypeHolder {
                 Date date = DateUtil.parse(value);
                 if(null != date) {
                     if(placeholder){
-                        value = "'" + DateUtil.format(date) + "'";
-                    }else{
                         value = new Timestamp(date.getTime());
+                    }else{
+                        value = "'" + DateUtil.format(date) + "'";
                     }
                 }
                 return value;
@@ -398,7 +409,23 @@ public class ColumnTypeHolder {
          * *********************************************************************************************************************************/
 
         ColumnType POINT             = new ColumnType() {public String getName(){return"POINT";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
+            public Object read(Object value, Class clazz){
+                if(null == value){
+                    return value;
+                }
+                Point point = BasicUtil.parsePoint(value);
+                String classNmae = clazz.getSimpleName();
+                if(classNmae.equals("point")){
+                    value = point;
+                }else if(classNmae.equals("double[]")){
+                    value = BeanUtil.Double2double(point.getArray(), 0);
+                }else if(classNmae.equals("Double[]")){
+                    value = point.getArray();
+                }else if(classNmae.equals("byte[]")){
+                    value = point.bytes();
+                }
+                return value;
+            }
             public Object write(Object value, Object def, boolean placeholder){
                 if(null == value){
                     value = def;
