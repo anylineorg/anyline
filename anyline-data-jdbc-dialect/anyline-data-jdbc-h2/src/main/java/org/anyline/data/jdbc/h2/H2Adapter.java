@@ -1116,7 +1116,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
 	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
-	 * public String type2type(String type)
+	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
 
@@ -1154,11 +1154,11 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
+	public String value(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "CURRENT_TIMESTAMP";
 		}
-		return super.buildInValue(value);
+		return super.value(value);
 	}
 
 
@@ -1168,19 +1168,11 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String type2type(String type){
-		return super.type2type(type);
+	public String type(String type){
+		return super.type(type);
 	}
 
-	/**
-	 * 数据库类型转换成java数据类型
-	 * @param type 数据库类型
-	 * @return String
-	 */
-	@Override
-	public String type2class(String type){
-		return super.type2class(type);
-	}
+	
 
 	@Override
 	public String concat(String ... args){
