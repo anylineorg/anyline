@@ -29,7 +29,7 @@ public interface DataType {
     };
     /**
      * 数据类型名称,为兼容不同数据库书写习惯,name有可能是别名与数据库不一致,别名中的所有方法调用原类型方法
-     * @return
+     * @return String
      */
     public abstract String getName();
 
