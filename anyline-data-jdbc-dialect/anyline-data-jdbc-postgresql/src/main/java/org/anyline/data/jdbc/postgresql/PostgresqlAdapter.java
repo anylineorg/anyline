@@ -972,13 +972,15 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		// 如果有递增列 通过数据类型实现
 		if(column.isAutoIncrement() == 1){
 			String type = column.getTypeName().toLowerCase();
-			if ("int4".equals(type)) {
-				column.setType("SERIAL");
-			} else if ("int8".equals(type)) {
-				column.setType("BIGSERIAL");
-			} else if ("int2".equals(type)) {
+			if ("int4".equals(type) || "int".equals(type) || "integer".equals(type)) {
+				column.setType("SERIAL4");
+			} else if ("int8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
+				column.setType("SERIAL8");
+			} else if ("int2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
 				//9.2.0
-				column.setType("SMALLSERIAL");
+				column.setType("SERIAL2");
+			}else{
+				column.setType("SERIAL8");
 			}
 		}
 		return super.define(builder, column);
