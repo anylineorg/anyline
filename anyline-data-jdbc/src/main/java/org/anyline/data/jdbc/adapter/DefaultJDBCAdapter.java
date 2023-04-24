@@ -2402,10 +2402,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		charset(builder, column);
 		// 默认值
 		defaultValue(builder, column);
-		// 递增列
-		increment(builder, column);
 		// 非空
 		nullable(builder, column);
+		// 递增
+		increment(builder, column);
 		// 更新行事件
 		onupdate(builder, column);
 		// 备注

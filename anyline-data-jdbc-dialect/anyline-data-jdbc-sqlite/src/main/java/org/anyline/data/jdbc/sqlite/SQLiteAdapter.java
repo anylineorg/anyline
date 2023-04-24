@@ -67,13 +67,6 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-
-
-
-
-
-
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -792,9 +785,9 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		/*if(column.isAutoIncrement() == 1){
-			builder.append(" AUTO_INCREMENT");
-		}*/
+		if(column.isAutoIncrement() == 1){
+			builder.append(" autoincrement");
+		}
 		return builder;
 	}
 
