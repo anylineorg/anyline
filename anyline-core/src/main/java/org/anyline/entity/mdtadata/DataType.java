@@ -1,6 +1,32 @@
 package org.anyline.entity.mdtadata;
 
 public interface DataType {
+    public static DataType NOT_SUPPORT = new DataType() {
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Object read(Object value, Class clazz) {
+            return null;
+        }
+
+        @Override
+        public Object write(Object value, Object def, boolean placeholder) {
+            return null;
+        }
+
+        @Override
+        public boolean isIgnorePrecision() {
+            return false;
+        }
+
+        @Override
+        public boolean isIgnoreScale() {
+            return false;
+        }
+    };
     /**
      * 数据类型名称,为兼容不同数据库书写习惯,name有可能是别名与数据库不一致,别名中的所有方法调用原类型方法
      * @return
