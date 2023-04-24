@@ -33,8 +33,7 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.Point;
-import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.DataType;
 import org.anyline.entity.mdtadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
@@ -49,9 +48,10 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.sql.*;
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.*;
 
 
@@ -61,6 +61,9 @@ import java.util.*;
 
 public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
+
+
+	protected DataTypeAdapter dataTypeAdapter;
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -73,6 +76,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public String delimiterTo = "";
 	public DB_TYPE type(){
 		return null;
+	}
+	public DefaultJDBCAdapter(){
+		dataTypeAdapter = new DataTypeAdapter();
 	}
 
 	@Override
@@ -2422,10 +2428,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		boolean isIgnorePrecision = false;
 		boolean isIgnoreScale = false;
 		String typeName = column.getTypeName();
-		DataType type = null;
-		if (null != typeName && !"NULL".equals(typeName.toUpperCase())) {
-			type = DataType.valueOf(typeName.toUpperCase());//如果没有对应的类型一般要创建别名,别名内的方法引用原类型方法
-		}
+		DataType type = type(typeName);
 		if(null != type){
 			isIgnorePrecision = type.isIgnorePrecision();
 			isIgnoreScale = type.isIgnoreScale();
@@ -2434,9 +2437,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			isIgnorePrecision = isIgnorePrecision(column);
 			isIgnoreScale = isIgnoreScale(column);
 		}
-		return type(builder, column, type.getName(), isIgnorePrecision, isIgnoreScale);
+		return type(builder, column, typeName, isIgnorePrecision, isIgnoreScale);
 	}
 
+	/**
+	 * 列数据类型定义
+	 * @param builder builder
+	 * @param column 列
+	 * @param type 数据类型(已经过转换)
+	 * @param isIgnorePrecision 是否忽略长度
+	 * @param isIgnoreScale 是否忽略小数
+	 * @return StringBuilder
+	 */
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		if(null == builder){
@@ -2461,14 +2473,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return builder;
 	}
 
+	/**
+	 * 转换成相应数据库类型
+	 * @param type type
+	 * @return String
+	 */
 	@Override
-	public String type(String type){
-		DataType dt = DataType.valueOf(type);
-		if(null != dt){
-			return dt.getName();
-		}
-		return type;
+	public DataType type(String type){
+		return dataTypeAdapter.type(type);
 	}
+
 	@Override
 	public Boolean checkIgnorePrecision(String datatype) {
 		return null;
@@ -3332,10 +3346,33 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
-		return write(ColumnTypeHolder.types(), JavaTypeHolder.types(), metadata, value, placeholder);
-	}
-	@Override
-	public Object write(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
+
+		Object result = null;
+		if(null != metadata && null != value){
+			DataType ctype = metadata.getColumnType();
+			if(null == ctype) {
+				String typeName = metadata.getTypeName();
+				if (null != typeName) {
+					ctype = dataTypeAdapter.type(typeName.toUpperCase());
+				}
+			}
+			if(null != ctype){
+				result = ctype.write(value, metadata.getDefaultValue(), placeholder);
+			}
+
+			if(null == result){
+				DataType jType = metadata.getJavaType();
+				if(null == jType){
+					String className = metadata.getClassName();
+					if(null != className){
+						jType = dataTypeAdapter.type(className.toUpperCase());
+					}
+				}
+				if(null != jType){
+					result = jType.write(value, metadata.getDefaultValue(), placeholder);
+				}
+			}
+		}
 		return value;
 	}
 	/**
@@ -3355,28 +3392,24 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
-		return read(ColumnTypeHolder.types(), JavaTypeHolder.types(), metadata, value, clazz);
-	}
-	@Override
-	public Object read(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, Class clazz){
 		Object result = null;
 		if (null != metadata && null != value) {
-			ColumnType ctype = metadata.getColumnType();
+			DataType ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
-					ctype = ctypes.get(typeName.toUpperCase());
+					ctype = dataTypeAdapter.type(typeName);
 				}
 			}
 			if(null != ctype){
 				result = ctype.read(value, clazz);
 			}
 			if(null == result){
-				JavaType jType = metadata.getJavaType();
+				DataType jType = metadata.getJavaType();
 				if(null == jType){
 					String className = metadata.getClassName();
 					if(null != className){
-						jType = jtypes.get(className.toUpperCase());
+						jType = dataTypeAdapter.type(className);
 					}
 				}
 				if(null != jType){
@@ -3400,12 +3433,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				value = BeanUtil.getFieldValue(obj, key);
 			}
 		}
-		JavaType type = null;
+		DataType type = null;
 		if(null == value){
 			if(value instanceof SQL_BUILD_IN_VALUE){
 				builder.append(value((SQL_BUILD_IN_VALUE)value));
 			}else {
-				type = JavaTypeHolder.type(value.getClass().getName());
+				type = dataTypeAdapter.type(value.getClass().getName());
 				if (null != type) {
 					builder.append(type.write(value, null, true));
 				} else {
@@ -3460,6 +3493,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table);
 			result = convert(columns, run);
+		}else{
+			result = convert((Column)null, run);
 		}
 		return result;
 	}
@@ -3481,9 +3516,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public boolean convert(Column metadata, RunValue run){
-		if(null == metadata){
-			return false;
-		}
 		if(null == run){
 			return true;
 		}
@@ -3492,19 +3524,28 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			return true;
 		}
 		try {
-			ColumnType columnType = metadata.getColumnType();
-			if(null == columnType){
-				columnType = ColumnTypeHolder.type(metadata.getTypeName());
-			}
-			if(null != columnType){
-				value = columnType.write(value, null, false);
-			}else {
-				String clazz = metadata.getClassName();
-				JavaType javaType = JavaTypeHolder.type(clazz);
-				if(null != javaType){
-					value = javaType.write(value, null, false);
+			if(null != metadata) {
+				DataType columnType = metadata.getColumnType();
+				if (null == columnType) {
+					columnType = dataTypeAdapter.type(metadata.getTypeName());
+				}
+				if (null != columnType) {
+					value = columnType.write(value, null, true);
+				} else {
+					String clazz = metadata.getClassName();
+					DataType javaType = dataTypeAdapter.type(clazz);
+					if (null != javaType) {
+						value = javaType.write(value, null, true);
+					}
+				}
+			}else{
+				String clazz = value.getClass().getName();
+				DataType javaType = dataTypeAdapter.type(clazz);
+				if (null != javaType) {
+					value = javaType.write(value, null, true);
 				}
 			}
+
 			run.setValue(value);
 		}catch (Exception e){
 			e.printStackTrace();

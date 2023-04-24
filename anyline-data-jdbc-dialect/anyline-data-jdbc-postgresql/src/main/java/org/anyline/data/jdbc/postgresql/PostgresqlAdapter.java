@@ -34,59 +34,10 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		return DB_TYPE.PostgreSQL; 
 	}
 
-	public enum DATA_TYPE{
-		BIT	            {public String getName(){return "bit";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BIT;	           }},
-		BOOL	        {public String getName(){return "bool";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BOOL;	           }},
-		BOX		        {public String getName(){return "box";}             public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.BOX;	           }},
-		BYTEA	        {public String getName(){return "bytea";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.CHAR;	           }},
-		CHAR	        {public String getName(){return "char";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.CHAR;	           }},
-		CIDR	        {public String getName(){return "cidr";}            public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.CIDR;	           }},
-		CIRCLE	        {public String getName(){return "circle";}          public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.CIDR;	           }},
-		DATE	        {public String getName(){return "date";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.DATE;	           }},
-		DECIMAL	        {public String getName(){return "decimal";}         public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public DataType getStandard(){return DataType.DECIMAL;	       }},
-		FLOAT4	        {public String getName(){return "float4";}          public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.FLOAT;	           }},
-		FLOAT8	        {public String getName(){return "float8";}          public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.FLOAT;	           }},
-		INET	        {public String getName(){return "inet";}       	    public boolean isIgnorePrecision(){return true;}   	public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.FLOAT;	           }},
-		INT2	        {public String getName(){return "int2";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INT;	           }},
-		INT4	        {public String getName(){return "int4";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INT;	           }},
-		INT8	        {public String getName(){return "int8";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INT;	           }},
-		INTERVAL        {public String getName(){return "interval";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INTERVAL;	       }},
-		JSON	        {public String getName(){return "json";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.JSON;	           }},
-		JSONB	        {public String getName(){return "jsonb";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.JSONB;	           }},
-		LINE		    {public String getName(){return "line";}          	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.LINE;	       		}},
-		LSEG		    {public String getName(){return "lseg";}          	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.LSEG;	       		}},
-		MACADDR		    {public String getName(){return "macaddr";}         public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.MACADDR;			}},
-		MONEY		    {public String getName(){return "money";}          	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.MONEY;	       		}},
-		NUMERIC		    {public String getName(){return "numeric";}         public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public DataType getStandard(){return DataType.NUMERIC;	       }},
-		PATH		    {public String getName(){return "path";}          	public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}	public DataType getStandard(){return DataType.PATH;		       }},
-		POINT	        {public String getName(){return "point";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.POINT;	           }},
-		POLYGON	        {public String getName(){return "polygon";}         public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.POLYGON;	       }},
-		serial2	        {public String getName(){return "int2";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INT;	           }},
-		serial4	        {public String getName(){return "int4";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INT;	           }},
-		serial8	        {public String getName(){return "int8";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.INT;	           }},
-		TEXT	        {public String getName(){return "text";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TEXT;	           }},
-		TIME	        {public String getName(){return "time";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TIME;	           }},
-		TIMEZ	        {public String getName(){return "timez";}           public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TIMEZ;	           }},
-		TIMESTAMP	    {public String getName(){return "timestamp";}       public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TIMESTAMP;	       }},
-		TIMESTAMPZ	    {public String getName(){return "timestampz";}      public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TIMESTAMPZ;	       }},
-		TSQUERY	        {public String getName(){return "tsquery";}         public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TSQUERY;	       }},
-		TSVECTOR	    {public String getName(){return "tsvector";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TSVECTOR;	       }},
-		TXID_SNAPSHOT	{public String getName(){return "txid_snapshot";}	public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.TXID_SNAPSHOT;	   }},
-		UUID	        {public String getName(){return "uuid";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.UUID;	       }},
-		VARBIT	        {public String getName(){return "varbit";}          public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.VARBIT;	       }},
-		VARCHAR	        {public String getName(){return "varchar";}         public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.VARCHAR;	       }},
-		XML		        {public String getName(){return "xml";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.XML;	       }},
-		YEAR	        {public String getName(){return "numeric";}         public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}	public DataType getStandard(){return DataType.YEAR;	           }};
-		public abstract DataType getStandard();
-		public abstract String getName();
-		public abstract boolean isIgnorePrecision();
-		public abstract boolean isIgnoreScale();
-	}
-
-
 	public PostgresqlAdapter(){
 		delimiterFr = "\"";
 		delimiterTo = "\"";
+		dataTypeAdapter = new DataTypeAdapter();
 	}
 	@Value("${anyline.jdbc.delimiter.postgresql:}")
 	private String delimiter;
@@ -329,7 +280,26 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryColumnRunSQL(table, metadata);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(builder, table);
+			builder.append(" WHERE 1=0");
+		}else{
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
+			builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS  WHERE 1=1 ");
+			/*if(BasicUtil.isNotEmpty(catalog)){
+				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
+			}*/
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+			}
+			builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1454,34 +1424,6 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	}
 
 
-	/**
-	 * 转换成当前数据库类型
-	 * @param type 数据库类型也有可能是java数据类型
-	 * @return String
-	 */
-	@Override
-	public String type(String type){
-		if(null != type) {
-			type = type.toUpperCase();
-			if (type.equalsIgnoreCase("INT")) {
-				return "INT4";
-			}
-			if (type.equalsIgnoreCase("datetime")) {
-				return "TIMESTAMP";
-			}
-		}
-		return super.type(type);
-	}
-
-	/**
-	 * 数据库类型转换成java数据类型
-	 * @param type 数据库类型
-	 * @return String
-	 */
-	
-
-
-
 
 	/* *****************************************************************************************************************
 	 *
@@ -1573,7 +1515,6 @@ varbit:String
 		}
 		return result;
 	}*/
-
 	public PGobject value(String type, Object value) throws SQLException {
 		PGobject pg = null;
 		if(value instanceof PGobject) {

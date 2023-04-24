@@ -27,6 +27,7 @@ import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.mdtadata.ColumnType;
+import org.anyline.entity.mdtadata.DataType;
 import org.anyline.entity.mdtadata.JavaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -1052,8 +1053,23 @@ public interface JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder type(StringBuilder builder, Column column);
+	/**
+	 * 列数据类型定义
+	 * @param builder builder
+	 * @param column 列
+	 * @param type 数据类型(已经过转换)
+	 * @param isIgnorePrecision 是否忽略长度
+	 * @param isIgnoreScale 是否忽略小数
+	 * @return StringBuilder
+	 */
 	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
-	public String type(String type);
+
+	/**
+	 * 转换成相应数据库支持类型
+	 * @param type type
+	 * @return DataType
+	 */
+	public DataType type(String type);
 
 	public boolean isIgnorePrecision(Column column);
 	public boolean isIgnoreScale(Column column);
@@ -1346,12 +1362,13 @@ public interface JDBCAdapter {
 	public boolean convert(Map<String, Column> columns, RunValue run);
 
 	/**
-	 * 数据类型转换
+	 * 数据类型转换,没有提供column的根据value类型
 	 * @param column 列
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
 	public boolean convert(Column column, RunValue run);
+
 
 	/**
 	 * 在不检测数据库结构时才生效,否则会被convert代替
@@ -1379,7 +1396,6 @@ public interface JDBCAdapter {
 	 * @return Object
 	 */
 	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz);
-	public Object read(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, Class clazz);
 
 	/**
 	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
@@ -1389,8 +1405,7 @@ public interface JDBCAdapter {
 	 * @return Object
 	 */
 	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
-	public Object write(Map<String, ColumnType> ctypes,Map<String, JavaType> jtypes, org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
-	/**
+ 	/**
 	 * 拼接字符串
 	 * @param args args
 	 * @return String

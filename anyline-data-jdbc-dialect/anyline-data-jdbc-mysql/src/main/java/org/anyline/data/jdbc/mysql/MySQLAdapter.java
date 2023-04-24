@@ -36,6 +36,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public MySQLAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
+		dataTypeAdapter = new DataTypeAdapter();
 	}
 	@Value("${anyline.jdbc.delimiter.mysql:}")
 	private String delimiter;
@@ -1193,16 +1194,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
-		String typeName = column.getTypeName();
-		DataType type = null;
-		if (null != typeName && !"NULL".equals(typeName.toUpperCase())) {
-			type = DataType.valueOf(typeName.toUpperCase());
-		}
-		if(null != type) {
-			return super.type(builder, column, type.getName(), type.isIgnorePrecision(), type.isIgnoreScale());
-		}else{
-			return super.type(builder, column);
-		}
+		return super.type(builder, column);
 	}
 
 	@Override
@@ -1216,27 +1208,11 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 	@Override
 	public Boolean checkIgnorePrecision(String datatype) {
-		try {
-			DataType type = DataType.valueOf(datatype);
-			if (null == type) {
-				return type.isIgnorePrecision();
-			}
-		}catch (Exception e){
-
-		}
-		return null;
+		return super.checkIgnorePrecision(datatype);
 	}
 	@Override
 	public Boolean checkIgnoreScale(String datatype) {
-		try {
-			DataType type = DataType.valueOf(datatype);
-			if (null == type) {
-				return type.isIgnoreScale();
-			}
-		}catch (Exception e){
-
-		}
-		return null;
+		return super.checkIgnoreScale(datatype);
 	}
 
 	/**
