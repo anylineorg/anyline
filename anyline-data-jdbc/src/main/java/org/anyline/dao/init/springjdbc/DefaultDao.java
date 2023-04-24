@@ -1745,8 +1745,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				LinkedHashMap<String,Table> tmps = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 				for(String key:tmps.keySet()){
-					Table item = tables.get(key);
-					if(null == item){
+					Table item = tmps.get(key);
+					if(null != item){
 						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
 							tables.put(key.toUpperCase(), item);
 						}
@@ -1890,7 +1890,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				tables = adapter.mtables(false, tables, con.getMetaData(), catalog, schema, pattern, tps);
+				LinkedHashMap<String,MasterTable> tmps = adapter.mtables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+				for(String key:tmps.keySet()){
+					MasterTable item = tmps.get(key);
+					if(null != item){
+						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+							tables.put(key.toUpperCase(), item);
+						}
+					}
+				}
 			}catch (Exception e){
 				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 			}
