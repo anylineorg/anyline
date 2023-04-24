@@ -30,6 +30,9 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         // 把每种可能的key put进types并对应准确的类型
         // 父类中有的value不需要重复实现,需要重新实现的一般是与内置函数有关的类型(如to_date)
 
+        // 以下按字母顺序 方便查找
+        // 后面备注表示key在哪个数据库中使用过
+        // 了类配置中:如果在当前数据库中没的再现的,应该把value换成当前数据库支持的正常的类型
         types.put("BFILE"                   , SQL_BFILE                 ); //        ,oracle
         types.put("BINARY_DOUBLE"           , SQL_BINARY_DOUBLE         ); //        ,oracle
         types.put("BINARY_FLOAT"            , SQL_BINARY_FLOAT          ); //        ,oracle
