@@ -136,68 +136,69 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
 
     } 
 
-        /* *********************************************************************************************************************************
-         *
-         *                                              date
-         *
-         * *********************************************************************************************************************************/
-        //TODO         write 需要根据数据库类型 由内置函数转换
-        protected DataType SQL_DATE              = new DataType() {public String getName(){return "DATE";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){
-                if(null == value){
-                    value = def;
-                }
-                Date date = DateUtil.parse(value);
-                if (null != date) {
-                    if(placeholder){
-                        value = new java.sql.Date(date.getTime());
-                    }else{
-                        value = "'" + DateUtil.format(date, "yyyy-MM-dd");
-                    }
-                }
-                return value;
-            }
-        };  //mysql,pg,oracle
-        protected DataType SQL_TIMESTAMP          = new DataType() {public String getName(){return "TIMESTAMP";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){
-                if(null == value){
-                    value = def;
-                }
-                Date date = DateUtil.parse(value);
-                if(null != date) {
-                    if(placeholder){
-                        value = new Timestamp(date.getTime());
-                    }else{
-                        value = "'" + DateUtil.format(date) + "'";
-                    }
-                }
-                return value;
-            }
-        };  //mysql
+    /* *********************************************************************************************************************************
+     *
+     *                                              date
+     *
+     * *********************************************************************************************************************************/
+    //TODO         write 需要根据数据库类型 由内置函数转换
 
-        protected DataType SQL_TIME              = new DataType() {public String getName(){return "TIME";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){return value;}
-        };  //mysql,pg
-        protected DataType SQL_TIMEZ             = new DataType() {public String getName(){return "TIMEZ";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){return value;}
-        };  //     ,pg
-        protected DataType SQL_TIMESTAMP_ZONE    = new DataType() {public String getName(){return "TIMESTAMP";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){return value;}
-        };  //     ,pg
-        protected DataType SQL_TIMESTAMP_LOCAL_ZONE= new DataType() {public String getName(){return "TIMESTAMP";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){return value;}
-        };  //     ,pg
+    protected DataType SQL_DATE              = new DataType() {public String getName(){return "DATE";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            if(null == value){
+                value = def;
+            }
+            Date date = DateUtil.parse(value);
+            if (null != date) {
+                if(placeholder){
+                    value = new java.sql.Date(date.getTime());
+                }else{
+                    value = "'" + DateUtil.format(date, "yyyy-MM-dd");
+                }
+            }
+            return value;
+        }
+    };  //mysql,pg,oracle
+    protected DataType SQL_TIMESTAMP          = new DataType() {public String getName(){return "TIMESTAMP";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            if(null == value){
+                value = def;
+            }
+            Date date = DateUtil.parse(value);
+            if(null != date) {
+                if(placeholder){
+                    value = new Timestamp(date.getTime());
+                }else{
+                    value = "'" + DateUtil.format(date) + "'";
+                }
+            }
+            return value;
+        }
+    };  //mysql
 
-        protected DataType SQL_YEAR              = new DataType() {public String getName(){return "YEAR";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
-            public Object read(Object value, Class clazz){return value;}
-            public Object write(Object value, Object def, boolean placeholder){return SQL_DATE.write(value, def, placeholder);}
-        };
+    protected DataType SQL_TIME              = new DataType() {public String getName(){return "TIME";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return DataTypeAdapter.super.SQL_TIME.write(value, def, placeholder);}
+    };  //mysql,pg
+    protected DataType SQL_TIMEZ             = new DataType() {public String getName(){return "TIMEZ";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return SQL_TIME.write(value, def, placeholder);}
+    };  //     ,pg
+    protected DataType SQL_TIMESTAMP_ZONE    = new DataType() {public String getName(){return "TIMESTAMP";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return SQL_TIME.write(value, def, placeholder);}
+    };  //     ,pg
+    protected DataType SQL_TIMESTAMP_LOCAL_ZONE= new DataType() {public String getName(){return "TIMESTAMP";}        public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return SQL_TIME.write(value, def, placeholder);}
+    };  //     ,pg
+
+    protected DataType SQL_YEAR              = new DataType() {public String getName(){return "YEAR";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return SQL_DATE.write(value, def, placeholder);}
+    };
 
 
 }

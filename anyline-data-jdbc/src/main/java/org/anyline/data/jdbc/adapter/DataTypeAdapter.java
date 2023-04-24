@@ -564,13 +564,34 @@ public class DataTypeAdapter {
 
     protected DataType SQL_TIME              = new ColumnType() {public String getName(){return "TIME";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
-        public Object write(Object value, Object def, boolean placeholder){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            if(null == value){
+                value = def;
+            }
+            Date date = DateUtil.parse(value);
+            if(null == date && null != def){
+                date = DateUtil.parse(def);
+            }
+            if(null != date) {
+                if(placeholder){
+                    value = new Time(date.getTime());
+                }else{
+                    value = "'" + DateUtil.format(date, "HH:mm:ss") + "'";
+                }
+            }
+            return value;
+        }
     };  //mysql,pg
     protected DataType SQL_TIMEZ             = new ColumnType() {public String getName(){return "TIMEZ";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
     };  //     ,pg
-    protected DataType SQL_TIMESTAMP         =  SQL_DATETIME;  //mysql,pg,oracle
+    protected DataType SQL_TIMESTAMP         = new ColumnType() {public String getName(){return "TIMESTAMP";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_DATETIME.write(value, def, placeholder);
+        }
+    };;  //mysql,pg,oracle
     protected DataType SQL_TIMESTAMP_ZONE    = new ColumnType() {public String getName(){return "TIMESTAMP";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
