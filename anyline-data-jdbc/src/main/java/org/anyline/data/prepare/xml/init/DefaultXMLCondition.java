@@ -112,12 +112,13 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 	 */ 
 	private void parseText(){ 
 		try{
-			// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD 
-			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+			List<List<String>> keys = null;
+			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
+			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
+			keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 			if(keys.size() ==0){
-				// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-				//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				setVariableType(VARIABLE_FLAG_TYPE_KEY); 

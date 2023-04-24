@@ -151,11 +151,17 @@ public class TextRun extends BasicRun implements Run {
 		try{ 
 			int varType = -1; 
 			Compare compare = Compare.EQUAL;
-			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
-			int type = 1;
+
+			List<List<String>> keys = null;
+			int type = 0;
+			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
+			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
+			keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+			type = Variable.KEY_TYPE_SIGN_V2 ;
 			if(keys.size() == 0){
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
-				type = 2;
+				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				// AND CD = :CD 
