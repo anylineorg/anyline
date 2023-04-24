@@ -41,7 +41,7 @@ public interface RunPrepare extends Cloneable {
 	// NAME = ':NM' 
 	// NM IN (:NM)
 
-	public static final String SQL_PARAM_VAIRABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+\\w+)(\\s|'|\\)|%|\\,)?";
+	public static final String SQL_PARAM_VARIABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+\\w+)(\\s|'|\\)|%|\\,)?";
 	// 与上一种方式　二选一不能同时支持
 	//新版本中不要用{key} 避免与json格式冲突
 	// 以${}标识的执行时直接替换
@@ -54,7 +54,7 @@ public interface RunPrepare extends Cloneable {
 	// NM LIKE '%#{NM}%'
 	// NM IN(${NM})
 	// NM IN(#{NM})
-	public static final String SQL_PARAM_VAIRABLE_REGEX_EL = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
+	public static final String SQL_PARAM_VARIABLE_REGEX_EL = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
 
 
 	

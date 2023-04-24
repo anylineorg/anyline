@@ -127,10 +127,10 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 			return;
 		} 
 		try{
-			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			int type = Variable.KEY_TYPE_SIGN_V1 ;
 			if(keys.size() == 0){
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V2 ;
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 

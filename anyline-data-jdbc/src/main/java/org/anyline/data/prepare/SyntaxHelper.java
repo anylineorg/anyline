@@ -30,7 +30,10 @@ public class SyntaxHelper {
 		int varType = -1;
 		if(BasicUtil.isNotEmpty(prefix)){
 			//CODE = 'A:1' prefix = "A"
-			if(prefix.matches(".*[a-zA-Z0-9]$")){
+			//CODE = 'IN:1' prefix = "IN"
+			//CODE IN(:CODES)  prefix = "IN("
+			//CODE IN (:CODES)  prefix = "IN" afterChar =")"
+			if(prefix.matches(".*[a-zA-Z0-9]$") && !")".equals(afterChar)){
 				return null;
 			}
 		}

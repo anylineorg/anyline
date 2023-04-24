@@ -151,10 +151,10 @@ public class TextRun extends BasicRun implements Run {
 		try{ 
 			int varType = -1; 
 			Compare compare = Compare.EQUAL;
-			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+			List<List<String>> keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			int type = 1;
 			if(keys.size() == 0){
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 				type = 2;
 			}
 			if(BasicUtil.isNotEmpty(true,keys)){ 
