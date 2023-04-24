@@ -1297,7 +1297,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 			return "sysdate";
 		}
 		return null;
-	}
+	}/*
 	@Override
 	public String type(String type){
 		if(null != type){
@@ -1310,7 +1310,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 			}
 		}
 		return super.type(type);
-	}
+	}*/
 
 /*
 	@Override
