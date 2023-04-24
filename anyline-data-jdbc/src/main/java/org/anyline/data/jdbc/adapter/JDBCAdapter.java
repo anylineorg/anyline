@@ -1100,6 +1100,13 @@ public interface JDBCAdapter {
 	public StringBuilder defaultValue(StringBuilder builder, Column column);
 
 	/**
+	 * 主键(注意不要跟表定义中的主键重复)
+	 * @param builder builder
+	 * @param column 列
+	 * @return StringBuilder
+	 */
+	public StringBuilder primary(StringBuilder builder, Column column);
+	/**
 	 * 递增列
 	 * @param builder builder
 	 * @param column 列
