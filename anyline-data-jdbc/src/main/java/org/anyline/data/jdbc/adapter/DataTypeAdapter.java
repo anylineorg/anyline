@@ -83,7 +83,7 @@ public class DataTypeAdapter {
         types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle
         types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle
         types.put("PATH"                    , SQL_PATH                  ); //     ,pg
-        types.put("LONG"                    , SQL_LONG                  ); //
+        types.put("LONG"                    , SQL_LONG                  ); //     ,  ,oracle
         types.put("LONGBLOB"                , SQL_LONGBLOB              ); //mysql
         types.put("LONGTEXT"                , SQL_LONGTEXT              ); //mysql
         types.put("MEDIUMBLOB"              , SQL_MEDIUMBLOB            ); //mysql
@@ -319,7 +319,7 @@ public class DataTypeAdapter {
             }
             return BasicUtil.parseLong(value, null);
         }
-    };  //
+    };  //oracle
     protected DataType SQL_SERIAL               = new ColumnType() {public String getName(){return "SERIAL";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){

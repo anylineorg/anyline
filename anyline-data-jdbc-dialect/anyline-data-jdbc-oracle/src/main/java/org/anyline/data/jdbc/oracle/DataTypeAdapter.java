@@ -47,7 +47,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("CIDR"                    , SQL_CIDR                  ); //      pg
         types.put("CIRCLE"                  , SQL_CIRCLE                ); //      pg
         types.put("CLOB"                    , SQL_CLOB                  ); //        ,oracle
-        types.put("DATE"                    , SQL_TIMESTAMP             ); //mysql,pg,oracle
+        types.put("DATE"                    , SQL_DATE                  ); //mysql,pg,oracle
         types.put("DATETIME"                , SQL_TIMESTAMP             ); //mysql
         types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle
         types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql
@@ -90,10 +90,10 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("ROWID"                   , SQL_ROWID                 ); //     ,  ,oracle
         types.put("SERIAL"                  , SQL_SERIAL                ); //     ,pg,
         types.put("SET"                     , SQL_SET                   ); //mysql
-        types.put("SMALLINT"                , SQL_SMALLINT              ); //mysql
+        types.put("SMALLINT"                , SQL_INT                   ); //mysql
         types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg
-        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg
-        types.put("TIMEZ"                   , SQL_TIMEZ                 ); //     ,pg
+        types.put("TIME"                    , SQL_TIMESTAMP             ); //mysql,pg
+        types.put("TIMEZ"                   , SQL_TIMESTAMP             ); //     ,pg
         types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle
         types.put("TIMESTAMP_LOCAL_ZONE"    , SQL_TIMESTAMP_LOCAL_ZONE  ); //     ,pg
         types.put("TIMESTAMP_ZONE"          , SQL_TIMESTAMP_ZONE        ); //     ,pg
@@ -113,20 +113,20 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("YEAR"                    , SQL_YEAR                  ); //mysql
 
 
-        types.put("JAVA.MATH.DECIMAL"              , SQL_DECIMAL        );
-        types.put("JAVA.LANG.DOUBLE"               , SQL_DOUBLE         );
+        types.put("JAVA.MATH.DECIMAL"              , SQL_NUMBER         );
+        types.put("JAVA.LANG.DOUBLE"               , SQL_NUMBER         );
         types.put("JAVA.LANG.BOOLEAN"              , SQL_BOOL           );
-        types.put("JAVA.LANG.INTEGER"              , SQL_INTEGER        );
+        types.put("JAVA.LANG.INTEGER"              , SQL_INT            );
         types.put("JAVA.LANG.LONG"                 , SQL_LONG           );
         types.put("JAVA.LANG.FLOAT"                , SQL_FLOAT          );
         types.put("JAVA.LANG.STRING"               , SQL_VARCHAR        );
-        types.put("JAVA.UTIL.DATE"                 , SQL_DATETIME       );
+        types.put("JAVA.UTIL.DATE"                 , SQL_TIMESTAMP      );
         types.put("JAVA.SQL.DATE"                  , SQL_DATE           );
         types.put("JAVA.SQL.TIMESTAMP"             , SQL_TIMESTAMP      );
-        types.put("JAVA.SQL.TIME"                  , SQL_TIME           );
+        types.put("JAVA.SQL.TIME"                  , SQL_DATE           );
         types.put("JAVA.TIME.LOCALDATE"            , SQL_DATE           );
-        types.put("JAVA.TIME.LOCALTIME"            , SQL_TIME           );
-        types.put("JAVA.TIME.LOCALDATETIME"        , SQL_DATETIME       );
+        types.put("JAVA.TIME.LOCALTIME"            , SQL_DATE           );
+        types.put("JAVA.TIME.LOCALDATETIME"        , SQL_TIMESTAMP      );
 
     } 
 

@@ -70,7 +70,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle
         types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle
         types.put("PATH"                    , SQL_PATH                  ); //     ,pg
-        types.put("LONG"                    , SQL_INT8                  ); //     ,pg
+        types.put("LONG"                    , SQL_LONG                  ); //     ,pg
         types.put("LONGBLOB"                , SQL_LONGBLOB              ); //mysql
         types.put("LONGTEXT"                , SQL_LONGTEXT              ); //mysql
         types.put("MEDIUMBLOB"              , SQL_MEDIUMBLOB            ); //mysql
@@ -113,8 +113,8 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("JAVA.MATH.DECIMAL"              , SQL_DECIMAL        );
         types.put("JAVA.LANG.DOUBLE"               , SQL_DOUBLE         );
         types.put("JAVA.LANG.BOOLEAN"              , SQL_BOOL           );
-        types.put("JAVA.LANG.INTEGER"              , SQL_INT4           );
-        types.put("JAVA.LANG.LONG"                 , SQL_INT8           );
+        types.put("JAVA.LANG.INTEGER"              , SQL_INT            );
+        types.put("JAVA.LANG.LONG"                 , SQL_LONG           );
         types.put("JAVA.LANG.FLOAT"                , SQL_FLOAT          );
         types.put("JAVA.LANG.STRING"               , SQL_VARCHAR        );
         types.put("JAVA.UTIL.DATE"                 , SQL_DATETIME       );
