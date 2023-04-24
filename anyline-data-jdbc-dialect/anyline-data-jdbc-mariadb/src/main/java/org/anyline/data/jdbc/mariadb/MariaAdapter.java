@@ -1538,12 +1538,6 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return null;
 	}
 
-	@Override
-	public String type(String type){
-		return super.type(type);
-	}
-	
-
 
 
 

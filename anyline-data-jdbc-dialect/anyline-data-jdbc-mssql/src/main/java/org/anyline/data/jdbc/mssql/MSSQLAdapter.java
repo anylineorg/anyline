@@ -1520,17 +1520,6 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return null;
 	}
 
-	@Override
-	public String type(String type){
-		if(null != type){
-			type = type.toUpperCase();
-			if(type.equals("DOUBLE")){
-				return  "DECIMAL";
-			}
-		}
-		return super.type(type);
-	}
-	
 
 
 

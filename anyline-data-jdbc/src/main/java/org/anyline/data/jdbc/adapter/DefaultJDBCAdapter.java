@@ -3227,15 +3227,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
-/*	@Override
-	public String type(String type){
-		return type;
-	}
-	@Override
-	public String type2class(String type){
-		return type;
-	}*/
-
 	/**
 	 * 先检测rs中是否包含当前key 如果包含再取值, 取值时按keys中的大小写为准
 	 * @param keys keys
@@ -3346,8 +3337,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
-
-		Object result = null;
+		Object result = value;
 		if(null != metadata && null != value){
 			DataType ctype = metadata.getColumnType();
 			if(null == ctype) {
@@ -3373,7 +3363,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 		}
-		return value;
+		return result;
 	}
 	/**
 	 * 从数据库中读取数据<br/>
@@ -3392,7 +3382,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
-		Object result = null;
+		Object result = value;
 		if (null != metadata && null != value) {
 			DataType ctype = metadata.getColumnType();
 			if(null == ctype) {

@@ -1673,20 +1673,5 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return null;
 	}
 
-	@Override
-	public String type(String type){
-		return super.type(type);
-	}
-	
-
-
-
-
-
-
-
-
-
-
 
 }

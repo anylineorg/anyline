@@ -239,6 +239,9 @@ public class DataTypeAdapter {
             if(null != value){
                 value = java.util.UUID.fromString(value.toString());
             }
+            if(null == value){
+                value = def;
+            }
             return value;
         }
     };  //     ,pg
@@ -294,7 +297,7 @@ public class DataTypeAdapter {
                 value = def;
             }
             Short result = BasicUtil.parseShort(value, null);
-            if(null == result){
+            if(null != def && null == result){
                 result = BasicUtil.parseShort(def, null);
             }
             return result;
@@ -307,7 +310,7 @@ public class DataTypeAdapter {
                 value = def;
             }
             Integer result = BasicUtil.parseInt(value, null);
-            if(null == result){
+            if(null != def && null == result){
                 result = BasicUtil.parseInt(def, null);
             }
             return result;
@@ -319,16 +322,17 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            return BasicUtil.parseLong(value, null);
+            Long result = BasicUtil.parseLong(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseLong(def, null);
+            }
+            return result;
         }
     };  //oracle
     protected DataType SQL_SERIAL               = new ColumnType() {public String getName(){return "SERIAL";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
-            if(null == value){
-                value = def;
-            }
-            return BasicUtil.parseLong(value, null);
+            return SQL_LONG.write(value, def, placeholder);
         }
     };  //
     protected DataType SQL_INT2               = new ColumnType() {public String getName(){return "INT2";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
@@ -366,10 +370,7 @@ public class DataTypeAdapter {
     protected DataType SQL_BIGINT            = new ColumnType() {public String getName(){return "BIGINT";}              public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
-            if(null == value){
-                value = def;
-            }
-            return BasicUtil.parseLong(value, null);
+            return SQL_LONG.write(value, def, placeholder);
         }
     };  //mysql
 
@@ -402,7 +403,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            return BasicUtil.parseDecimal(value, null);
+            BigDecimal result = BasicUtil.parseDecimal(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseDecimal(def, null);
+            }
+            return result;
         }
     }; //mysql,  ,oracle
 
@@ -412,7 +417,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            return BasicUtil.parseDouble(value, null);
+            Double result = BasicUtil.parseDouble(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseDouble(def, null);
+            }
+            return result;
         }
     }; //mysql
 
@@ -422,7 +431,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            return BasicUtil.parseFloat(value, null);
+            Float result = BasicUtil.parseFloat(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseFloat(def, null);
+            }
+            return result;
         }
     }; //mysql,  ,oracle
 
@@ -470,6 +483,9 @@ public class DataTypeAdapter {
                 value = def;
             }
             Date date = DateUtil.parse(value);
+            if(null == date && null != def){
+                date = DateUtil.parse(def);
+            }
             if (null != date) {
                 if(placeholder){
                     value = new java.sql.Date(date.getTime());
@@ -487,6 +503,9 @@ public class DataTypeAdapter {
                 value = def;
             }
             Date date = DateUtil.parse(value);
+            if(null == date && null != def){
+                date = DateUtil.parse(def);
+            }
             if(null != date) {
                 if(placeholder){
                     value = new Timestamp(date.getTime());
@@ -844,11 +863,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            value =  BasicUtil.parseBoolean(value, null);
-            if(null == value){
-                value =  BasicUtil.parseBoolean(value, null);
+            Boolean result =  BasicUtil.parseBoolean(value, null);
+            if(null != def && null == result){
+                result =  BasicUtil.parseBoolean(def, null);
             }
-            return value;
+            return result;
         }
     };
     protected DataType JAVA_INTEGER             = new JavaType() {public Class getJavaClass(){return Integer.class;}public String getName() {return null;}public boolean isIgnorePrecision() {return true;}public boolean isIgnoreScale() {return true;}
@@ -857,11 +876,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            value = BasicUtil.parseInt(value, null);
+            Integer result = BasicUtil.parseInt(value, null);
             if(null == value){
-                value = BasicUtil.parseInt(def, null);
+                result = BasicUtil.parseInt(def, null);
             }
-            return value;
+            return result;
         }
     };
     protected DataType JAVA_LONG             = new JavaType() {public Class getJavaClass(){return Long.class;}public String getName() {return null;}public boolean isIgnorePrecision() {return true;}public boolean isIgnoreScale() {return true;}
@@ -870,11 +889,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            value = BasicUtil.parseLong(value, null);
-            if(null == value){
-                value = BasicUtil.parseLong(def, null);
+            Long result = BasicUtil.parseLong(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseLong(def, null);
             }
-            return value;
+            return result;
         }
     };
     protected DataType JAVA_FLOAT             = new JavaType() {public Class getJavaClass(){return Float.class;}public String getName() {return null;}public boolean isIgnorePrecision() {return false;}public boolean isIgnoreScale() {return false;}
@@ -883,11 +902,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            value = BasicUtil.parseFloat(value, null);
-            if(null == value){
-                value = BasicUtil.parseFloat(def, null);
+            Float result = BasicUtil.parseFloat(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseFloat(def, null);
             }
-            return value;
+            return result;
         }
     };
     protected DataType JAVA_DOUBLE             = new JavaType() {public Class getJavaClass(){return Long.class;}public String getName() {return null;}public boolean isIgnorePrecision() {return false;}public boolean isIgnoreScale() {return false;}
@@ -896,11 +915,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            value = BasicUtil.parseDouble(value, null);
-            if(null == value){
-                value = BasicUtil.parseDouble(def, null);
+            Double result = BasicUtil.parseDouble(value, null);
+            if(null != def && null == result){
+                result = BasicUtil.parseDouble(def, null);
             }
-            return value;
+            return result;
         }
     };
     protected DataType JAVA_DECIMAL             = new JavaType() {public Class getJavaClass(){return BigDecimal.class;}public String getName() {return null;}public boolean isIgnorePrecision() {return false;}public boolean isIgnoreScale() {return false;}
@@ -909,11 +928,11 @@ public class DataTypeAdapter {
             if(null == value){
                 value = def;
             }
-            value =  BasicUtil.parseDecimal(value, null);
-            if(null == value){
-                value =  BasicUtil.parseDecimal(def, null);
+            BigDecimal result =  BasicUtil.parseDecimal(value, null);
+            if(null != def && null == result){
+                result =  BasicUtil.parseDecimal(def, null);
             }
-            return value;
+            return result;
         }
     };
     protected DataType JAVA_SQL_TIMESTAMP             = new JavaType() {public Class getJavaClass(){return java.sql.Timestamp.class;}public String getName() {return null;}public boolean isIgnorePrecision() {return true;}public boolean isIgnoreScale() {return true;}

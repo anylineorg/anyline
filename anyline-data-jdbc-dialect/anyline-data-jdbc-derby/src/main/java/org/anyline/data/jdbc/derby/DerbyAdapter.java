@@ -1162,18 +1162,6 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return null;
 	}
 
-	@Override
-	public String type(String type){
-		if(null != type){
-			type = type.toUpperCase();
-			if(type.equals("DATETIME")){
-				type = "TIMESTAMP";
-			}
-		}
-
-		return super.type(type);
-	}
-	
 
 
 

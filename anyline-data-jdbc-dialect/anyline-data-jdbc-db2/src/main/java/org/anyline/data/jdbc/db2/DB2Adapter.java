@@ -1211,12 +1211,6 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		return null;
 	}
 
-	@Override
-	public String type(String type){
-		return super.type(type);
-	}
-	
-
 
 
 	public String concat(String ... args){ 

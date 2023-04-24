@@ -1162,16 +1162,6 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	}
 
 
-	/**
-	 * 转换成当前数据库类型
-	 * @param type 数据库类型也有可能是java数据类型
-	 * @return String
-	 */
-	@Override
-	public String type(String type){
-		return super.type(type);
-	}
-
 	
 
 	@Override

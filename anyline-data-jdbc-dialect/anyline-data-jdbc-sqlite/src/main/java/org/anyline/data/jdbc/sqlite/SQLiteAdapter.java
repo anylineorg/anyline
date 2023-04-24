@@ -1163,43 +1163,6 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-	/**
-	 * 转换成当前数据库类型
-	 * @param type 数据库类型也有可能是java数据类型
-	 * @return String
-	 */
-	@Override
-	public String type(String type){
-		if(null != type){
-			type = type.toUpperCase();
-			if(type.contains("CHAR")){
-				return "TEXT";
-			}
-			if(type.startsWith("INT")){
-				return "INTEGER";
-			}
-			if(type.contains("BLOB")){
-				return "BLOB";
-			}
-			if(type.contains("DOUBLE")
-					|| type.contains("FLOAT")
-					|| type.contains("DECIMAL")
-					|| type.contains("NUMERIC")
-					|| type.contains("DATE")
-					|| type.contains("TIME")
-					||type.contains("PRICE")){
-				return "REAL";
-			}
-		}
-		return "TEXT";
-	}
-
-	/**
-	 * 数据库类型转换成java数据类型
-	 * @param type 数据库类型
-	 * @return String
-	 */
-	
 
 	@Override
 	public String concat(String ... args){
