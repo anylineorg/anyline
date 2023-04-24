@@ -37,6 +37,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("BINARY_DOUBLE"           , SQL_BINARY_DOUBLE         ); //        ,oracle
         types.put("BINARY_FLOAT"            , SQL_BINARY_FLOAT          ); //        ,oracle
         types.put("BIGINT"                  , SQL_BIGINT                ); //mysql
+        types.put("BIGSERIAL"               , SQL_SERIAL8               ); //     ,pg,
         types.put("BINARY"                  , SQL_BINARY                ); //mysql
         types.put("BIT"                     , SQL_BIT                   ); //mysql,pg
         types.put("BLOB"                    , SQL_BLOB                  ); //mysql,  ,oracle
@@ -52,7 +53,9 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle
         types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql
         types.put("ENUM"                    , SQL_ENUM                  ); //mysql
-        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle
+        types.put("FLOAT"                   , SQL_FLOAT4                ); //mysql,  ,oracle
+        types.put("FLOAT4"                  , SQL_FLOAT4                ); //     ,pg
+        types.put("FLOAT8"                  , SQL_FLOAT8                ); //     ,pg
         types.put("GEOMETRY"                , SQL_GEOMETRY              ); //mysql
         types.put("GEOMETRYCOLLECTIO"       , SQL_GEOMETRYCOLLECTIO     ); //mysql
         types.put("INET"                    , SQL_INET                  ); //     ,pg
@@ -89,8 +92,12 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("RAW"                     , SQL_RAW                   ); //     ,  ,oracle
         types.put("ROWID"                   , SQL_ROWID                 ); //     ,  ,oracle
         types.put("SERIAL"                  , SQL_SERIAL                ); //     ,pg,
+        types.put("SERIAL2"                 , SQL_SERIAL2               ); //     ,pg,
+        types.put("SERIAL4"                 , SQL_SERIAL4               ); //     ,pg,
+        types.put("SERIAL8"                 , SQL_SERIAL8               ); //     ,pg,
         types.put("SET"                     , SQL_SET                   ); //mysql
         types.put("SMALLINT"                , SQL_SMALLINT              ); //mysql
+        types.put("SMALSERIAL"              , SQL_SERIAL2               ); //     ,pg,
         types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg
         types.put("TIME"                    , SQL_TIME                  ); //mysql,pg
         types.put("TIMEZ"                   , SQL_TIMEZ                 ); //     ,pg
