@@ -54,7 +54,10 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle
         types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql
         types.put("ENUM"                    , SQL_ENUM                  ); //mysql
-        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle
+        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle,mssql
+        types.put("FLOAT4"                  , SQL_FLOAT                 ); //     ,pg
+        types.put("FLOAT8"                  , SQL_FLOAT                 ); //     ,pg
+        types.put("GEOGRAPHY"               , SQL_GEOGRAPHY             ); //     ,  ,      ,mssql
         types.put("GEOMETRY"                , SQL_GEOMETRY              ); //mysql
         types.put("GEOMETRYCOLLECTIO"       , SQL_GEOMETRYCOLLECTIO     ); //mysql
         types.put("INET"                    , SQL_INET                  ); //     ,pg

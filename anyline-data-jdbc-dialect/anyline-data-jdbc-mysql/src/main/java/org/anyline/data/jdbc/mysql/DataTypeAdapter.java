@@ -49,16 +49,23 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("CIRCLE"                  , SQL_CIRCLE                ); //      pg
         types.put("CLOB"                    , SQL_CLOB                  ); //        ,oracle
         types.put("DATE"                    , SQL_DATE                  ); //mysql,pg,oracle
-        types.put("DATETIME"                , SQL_TIMESTAMP             ); //mysql
-        types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle
+        types.put("DATETIME"                , SQL_DATETIME              ); //mysql
+        types.put("DATETIME2"               , SQL_DATETIME              ); //     ,  ,      ,mssql
+        types.put("DATETIMEOFFSET"          , SQL_TIMESTAMP             ); //     ,  ,      ,mssql
+        types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle,mssql
         types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql
         types.put("ENUM"                    , SQL_ENUM                  ); //mysql
-        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle
+        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle,mssql
+        types.put("FLOAT4"                  , SQL_FLOAT                 ); //     ,pg
+        types.put("FLOAT8"                  , SQL_FLOAT                 ); //     ,pg
+        types.put("GEOGRAPHY"               , SQL_GEOGRAPHY             ); //     ,  ,      ,mssql
         types.put("GEOMETRY"                , SQL_GEOMETRY              ); //mysql
         types.put("GEOMETRYCOLLECTIO"       , SQL_GEOMETRYCOLLECTIO     ); //mysql
+        types.put("HIERARCHYID"             , SQL_HIERARCHYID           ); //     ,  ,      ,mssql
+        types.put("IMAGE"                   , SQL_IMAGE                 ); //     ,  ,      ,mssql
         types.put("INET"                    , SQL_INET                  ); //     ,pg
         types.put("INTERVAL"                , SQL_INTERVAL              ); //     ,pg
-        types.put("INT"                     , SQL_INT                   ); //mysql
+        types.put("INT"                     , SQL_INT                   ); //mysql,  ,      ,mssql,
         types.put("INT2"                    , SQL_INT                   ); //     ,pg
         types.put("INT4"                    , SQL_INT                   ); //
         types.put("INT8"                    , SQL_BIGINT                ); //
@@ -68,7 +75,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("LINE"                    , SQL_LINE                  ); //mysql,pg
         types.put("LSEG"                    , SQL_LSEG                  ); //     ,pg
         types.put("MACADDR"                 , SQL_MACADDR               ); //     ,pg
-        types.put("MONEY"                   , SQL_DECIMAL               ); //     ,pg
+        types.put("MONEY"                   , SQL_DECIMAL               ); //     ,pg,      ,mssql
         types.put("NUMBER"                  , SQL_DECIMAL               ); //     ,  ,oracle
         types.put("NCHAR"                   , SQL_CHAR                  ); //     ,  ,oracle
         types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle

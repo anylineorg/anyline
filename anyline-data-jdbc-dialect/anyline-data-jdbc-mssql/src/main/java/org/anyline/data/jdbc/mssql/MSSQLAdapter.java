@@ -15,7 +15,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.EntityAdapterProxy;
 import org.anyline.util.SQLUtil;
-import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,6 +51,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public MSSQLAdapter(){
 		delimiterFr = "[";
 		delimiterTo = "]";
+		dataTypeAdapter = new DataTypeAdapter();
 	}
 
 	private String getDbVersion(){ 

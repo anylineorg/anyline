@@ -45,91 +45,96 @@ public class DataTypeAdapter {
         // 以下按字母顺序 方便查找
         // 后面备注表示key在哪个数据库中使用过
         // 了类配置中:如果在当前数据库中没的再现的,应该把value换成当前数据库支持的正常的类型
-        types.put("BFILE"                   , SQL_BFILE                 ); //        ,oracle
-        types.put("BINARY_DOUBLE"           , SQL_BINARY_DOUBLE         ); //        ,oracle
-        types.put("BINARY_FLOAT"            , SQL_BINARY_FLOAT          ); //        ,oracle
-        types.put("BIGINT"                  , SQL_BIGINT                ); //mysql
+        types.put("BFILE"                   , SQL_BFILE                 ); //        ,oracle,
+        types.put("BINARY_DOUBLE"           , SQL_BINARY_DOUBLE         ); //        ,oracle,
+        types.put("BINARY_FLOAT"            , SQL_BINARY_FLOAT          ); //        ,oracle,
+        types.put("BIGINT"                  , SQL_BIGINT                ); //mysql,  ,      ,mssql
         types.put("BIGSERIAL"               , SQL_SERIAL8               ); //     ,pg,
-        types.put("BINARY"                  , SQL_BINARY                ); //mysql
-        types.put("BIT"                     , SQL_BIT                   ); //mysql,pg
+        types.put("BINARY"                  , SQL_BINARY                ); //mysql,  ,      ,mssql
+        types.put("BIT"                     , SQL_BIT                   ); //mysql,pg,
         types.put("BLOB"                    , SQL_BLOB                  ); //mysql,  ,oracle
-        types.put("BOOL"                    , SQL_BOOL                  ); //     ,pg
-        types.put("BOX"                     , SQL_BOX                   ); //     ,pg
-        types.put("BYTEA"                   , SQL_BYTEA                 ); //     ,pg
-        types.put("CHAR"                    , SQL_CHAR                  ); //mysql,pg
-        types.put("CIDR"                    , SQL_CIDR                  ); //      pg
-        types.put("CIRCLE"                  , SQL_CIRCLE                ); //      pg
-        types.put("CLOB"                    , SQL_CLOB                  ); //        ,oracle
-        types.put("DATE"                    , SQL_DATE                  ); //mysql,pg,oracle
-        types.put("DATETIME"                , SQL_DATETIME              ); //mysql
-        types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle
-        types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql
-        types.put("ENUM"                    , SQL_ENUM                  ); //mysql
-        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle
-        types.put("FLOAT4"                  , SQL_FLOAT4                ); //     ,pg
-        types.put("FLOAT8"                  , SQL_FLOAT8                ); //     ,pg
-        types.put("GEOMETRY"                , SQL_GEOMETRY              ); //mysql
-        types.put("GEOMETRYCOLLECTIO"       , SQL_GEOMETRYCOLLECTIO     ); //mysql
-        types.put("INET"                    , SQL_INET                  ); //     ,pg
-        types.put("INTERVAL"                , SQL_INTERVAL              ); //     ,pg
-        types.put("INT"                     , SQL_INT                   ); //mysql
-        types.put("INT2"                    , SQL_INT2                  ); //     ,pg
+        types.put("BOOL"                    , SQL_BOOL                  ); //     ,pg,
+        types.put("BOX"                     , SQL_BOX                   ); //     ,pg,
+        types.put("BYTEA"                   , SQL_BYTEA                 ); //     ,pg,
+        types.put("CHAR"                    , SQL_CHAR                  ); //mysql,pg,      ,mssql
+        types.put("CIDR"                    , SQL_CIDR                  ); //      pg,
+        types.put("CIRCLE"                  , SQL_CIRCLE                ); //      pg,
+        types.put("CLOB"                    , SQL_CLOB                  ); //        ,oracle,
+        types.put("DATE"                    , SQL_DATE                  ); //mysql,pg,oracle,
+        types.put("DATETIME"                , SQL_DATETIME              ); //mysql,
+        types.put("DATETIME2"               , SQL_DATETIME2             ); //     ,   ,     ,mssql,
+        types.put("DATETIMEOFFSET"          , SQL_DATETIMEOFFSET        ); //mysql,  ,      ,mssql
+        types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle,mssql
+        types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql,
+        types.put("ENUM"                    , SQL_ENUM                  ); //mysql,
+        types.put("FLOAT"                   , SQL_FLOAT                 ); //mysql,  ,oracle,mssql,
+        types.put("FLOAT4"                  , SQL_FLOAT4                ); //     ,pg,
+        types.put("FLOAT8"                  , SQL_FLOAT8                ); //     ,pg,
+        types.put("GEOGRAPHY"               , SQL_GEOGRAPHY             ); //     ,  ,      ,mssql
+        types.put("GEOMETRY"                , SQL_GEOMETRY              ); //mysql,  ,      ,mssql
+        types.put("GEOMETRYCOLLECTIO"       , SQL_GEOMETRYCOLLECTIO     ); //mysql,
+        types.put("HIERARCHYID"             , SQL_HIERARCHYID           ); //     ,  ,      ,mssql
+        types.put("IMAGE"                   , SQL_IMAGE                 ); //     ,  ,      ,mssql
+        types.put("INET"                    , SQL_INET                  ); //     ,pg,
+        types.put("INTERVAL"                , SQL_INTERVAL              ); //     ,pg,
+        types.put("INT"                     , SQL_INT                   ); //mysql,  ,      ,mssql,
+        types.put("INT2"                    , SQL_INT2                  ); //     ,pg,
         types.put("INT4"                    , SQL_INT4                  ); //
         types.put("INT8"                    , SQL_INT8                  ); //
-        types.put("INTEGER"                 , SQL_INTEGER               ); //mysql
-        types.put("JSON"                    , SQL_JSON                  ); //mysql,pg
-        types.put("JSONB"                   , SQL_JSONB                 ); //     ,pg
-        types.put("LINE"                    , SQL_LINE                  ); //mysql,pg
-        types.put("LSEG"                    , SQL_LSEG                  ); //     ,pg
-        types.put("MACADDR"                 , SQL_MACADDR               ); //     ,pg
-        types.put("MONEY"                   , SQL_MONEY                 ); //     ,pg
-        types.put("NUMBER"                  , SQL_NUMBER                ); //     ,  ,oracle
-        types.put("NCHAR"                   , SQL_NCHAR                 ); //     ,  ,oracle
-        types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle
-        types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle
-        types.put("PATH"                    , SQL_PATH                  ); //     ,pg
-        types.put("LONG"                    , SQL_LONG                  ); //     ,  ,oracle
-        types.put("LONGBLOB"                , SQL_LONGBLOB              ); //mysql
-        types.put("LONGTEXT"                , SQL_LONGTEXT              ); //mysql
-        types.put("MEDIUMBLOB"              , SQL_MEDIUMBLOB            ); //mysql
-        types.put("MEDIUMINT"               , SQL_MEDIUMINT             ); //mysql
-        types.put("MEDIUMTEXT"              , SQL_MEDIUMTEXT            ); //mysql
-        types.put("MULTILINESTRING"         , SQL_MULTILINESTRING       ); //mysql
-        types.put("MULTIPOINT"              , SQL_MULTIPOINT            ); //mysql
-        types.put("MULTIPOLYGON"            , SQL_MULTIPOLYGON          ); //mysql
-        types.put("NUMERIC"                 , SQL_NUMERIC               ); //mysql
-        types.put("POINT"                   , SQL_POINT                 ); //mysql,pg
-        types.put("POLYGON"                 , SQL_POLYGON               ); //mysql,pg
-        types.put("REAL"                    , SQL_REAL                  ); //mysql
-        types.put("RAW"                     , SQL_RAW                   ); //     ,  ,oracle
-        types.put("ROWID"                   , SQL_ROWID                 ); //     ,  ,oracle
+        types.put("INTEGER"                 , SQL_INTEGER               ); //mysql,
+        types.put("JSON"                    , SQL_JSON                  ); //mysql,pg,
+        types.put("JSONB"                   , SQL_JSONB                 ); //     ,pg,
+        types.put("LINE"                    , SQL_LINE                  ); //mysql,pg,
+        types.put("LSEG"                    , SQL_LSEG                  ); //     ,pg,
+        types.put("MACADDR"                 , SQL_MACADDR               ); //     ,pg,
+        types.put("MONEY"                   , SQL_MONEY                 ); //     ,pg,      ,mssql
+        types.put("NUMBER"                  , SQL_NUMBER                ); //     ,  ,oracle,
+        types.put("NCHAR"                   , SQL_NCHAR                 ); //     ,  ,oracle,
+        types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle,
+        types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle,
+        types.put("PATH"                    , SQL_PATH                  ); //     ,pg,
+        types.put("LONG"                    , SQL_LONG                  ); //     ,  ,oracle,
+        types.put("LONGBLOB"                , SQL_LONGBLOB              ); //mysql,
+        types.put("LONGTEXT"                , SQL_LONGTEXT              ); //mysql,
+        types.put("MEDIUMBLOB"              , SQL_MEDIUMBLOB            ); //mysql,
+        types.put("MEDIUMINT"               , SQL_MEDIUMINT             ); //mysql,
+        types.put("MEDIUMTEXT"              , SQL_MEDIUMTEXT            ); //mysql,
+        types.put("MULTILINESTRING"         , SQL_MULTILINESTRING       ); //mysql,
+        types.put("MULTIPOINT"              , SQL_MULTIPOINT            ); //mysql,
+        types.put("MULTIPOLYGON"            , SQL_MULTIPOLYGON          ); //mysql,
+        types.put("NUMERIC"                 , SQL_NUMERIC               ); //mysql,
+        types.put("POINT"                   , SQL_POINT                 ); //mysql,pg,
+        types.put("POLYGON"                 , SQL_POLYGON               ); //mysql,pg,
+        types.put("REAL"                    , SQL_REAL                  ); //mysql,
+        types.put("RAW"                     , SQL_RAW                   ); //     ,  ,oracle,
+        types.put("ROWID"                   , SQL_ROWID                 ); //     ,  ,oracle,
         types.put("SERIAL"                  , SQL_SERIAL                ); //     ,pg,
         types.put("SERIAL2"                 , SQL_SERIAL2               ); //     ,pg,
         types.put("SERIAL4"                 , SQL_SERIAL4               ); //     ,pg,
         types.put("SERIAL8"                 , SQL_SERIAL8               ); //     ,pg,
-        types.put("SET"                     , SQL_SET                   ); //mysql
-        types.put("SMALLINT"                , SQL_SMALLINT              ); //mysql
+        types.put("SET"                     , SQL_SET                   ); //mysql,
+        types.put("SMALLINT"                , SQL_SMALLINT              ); //mysql,
         types.put("SMALSERIAL"              , SQL_SERIAL2               ); //     ,pg,
-        types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg
-        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg
-        types.put("TIMEZ"                   , SQL_TIMEZ                 ); //     ,pg
-        types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle
-        types.put("TIMESTAMP_LOCAL_ZONE"    , SQL_TIMESTAMP_LOCAL_ZONE  ); //     ,pg
-        types.put("TIMESTAMP_ZONE"          , SQL_TIMESTAMP_ZONE        ); //     ,pg
-        types.put("TSQUERY"                 , SQL_TSQUERY               ); //     ,pg
-        types.put("TSVECTOR"                , SQL_TSVECTOR              ); //     ,pg
-        types.put("TXID_SNAPSHOT"           , SQL_TXID_SNAPSHOT         ); //     ,pg
-        types.put("UUID"                    , SQL_UUID                  ); //     ,pg
-        types.put("UROWID"                  , SQL_UROWID                ); //     ,  ,oracle
-        types.put("VARBIT"                  , SQL_VARBIT                ); //     ,pg
-        types.put("TINYBLOB"                , SQL_TINYBLOB              ); //mysql
-        types.put("TINYINT"                 , SQL_TINYINT               ); //mysql
-        types.put("TINYTEXT"                , SQL_TINYTEXT              ); //mysql
-        types.put("VARBINARY"               , SQL_VARBINARY             ); //mysql
-        types.put("VARCHAR"                 , SQL_VARCHAR               ); //mysql,pg,oracle
-        types.put("VARCHAR2"                , SQL_VARCHAR2              ); //     ,  ,oracle
-        types.put("XML"                     , SQL_XML                   ); //     ,pg
-        types.put("YEAR"                    , SQL_YEAR                  ); //mysql
+        types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg,
+        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg,
+        types.put("TIMEZ"                   , SQL_TIMEZ                 ); //     ,pg,
+        types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle,
+        types.put("TIMESTAMP_LOCAL_ZONE"    , SQL_TIMESTAMP_LOCAL_ZONE  ); //     ,pg,
+        types.put("TIMESTAMP_ZONE"          , SQL_TIMESTAMP_ZONE        ); //     ,pg,
+        types.put("TSQUERY"                 , SQL_TSQUERY               ); //     ,pg,
+        types.put("TSVECTOR"                , SQL_TSVECTOR              ); //     ,pg,
+        types.put("TXID_SNAPSHOT"           , SQL_TXID_SNAPSHOT         ); //     ,pg,
+        types.put("UUID"                    , SQL_UUID                  ); //     ,pg,
+        types.put("UROWID"                  , SQL_UROWID                ); //     ,  ,oracle,
+        types.put("VARBIT"                  , SQL_VARBIT                ); //     ,pg,
+        types.put("TINYBLOB"                , SQL_TINYBLOB              ); //mysql,
+        types.put("TINYINT"                 , SQL_TINYINT               ); //mysql,
+        types.put("TINYTEXT"                , SQL_TINYTEXT              ); //mysql,
+        types.put("VARBINARY"               , SQL_VARBINARY             ); //mysql,
+        types.put("VARCHAR"                 , SQL_VARCHAR               ); //mysql,pg,oracle,
+        types.put("VARCHAR2"                , SQL_VARCHAR2              ); //     ,  ,oracle,
+        types.put("XML"                     , SQL_XML                   ); //     ,pg,
+        types.put("YEAR"                    , SQL_YEAR                  ); //mysql,
 
 
         types.put("JAVA.MATH.DECIMAL"              , SQL_DECIMAL        );
@@ -470,14 +475,14 @@ public class DataTypeAdapter {
         }
     }; //mysql,  ,oracle
 
-    protected DataType SQL_FLOAT4             = new ColumnType() {public String getName(){return "FLOAT4";}               public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}
+    protected DataType SQL_FLOAT4             = new ColumnType() {public String getName(){return "FLOAT4";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_FLOAT.write(value, def, placeholder);
         }
     }; //    ,pg  ,
 
-    protected DataType SQL_FLOAT8             = new ColumnType() {public String getName(){return "FLOAT8";}               public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}
+    protected DataType SQL_FLOAT8             = new ColumnType() {public String getName(){return "FLOAT8";}             public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_DOUBLE.write(value, def, placeholder);
@@ -561,6 +566,19 @@ public class DataTypeAdapter {
             return value;
         }
     };  //mysql
+
+    protected DataType SQL_DATETIME2          = new ColumnType() {public String getName(){return "DATETIME2";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_DATETIME.write(value, def, placeholder);
+        }
+    };  //mssql
+    protected DataType SQL_DATETIMEOFFSET     = new ColumnType() {public String getName(){return "DATETIMEOFFSET";}     public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_DATETIME.write(value, def, placeholder);
+        }
+    };  //mssql
 
     protected DataType SQL_TIME              = new ColumnType() {public String getName(){return "TIME";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
@@ -655,6 +673,10 @@ public class DataTypeAdapter {
      *                                              byte[]-file
      *
      * *********************************************************************************************************************************/
+    protected DataType SQL_IMAGE = new ColumnType() {public String getName(){return "IMAGE";}  public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
+    };  //mssql
     /* *********************************************************************************************************************************
      *
      *                                              byte[]-geometry
@@ -729,6 +751,10 @@ public class DataTypeAdapter {
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
     };  //mysql
+    protected DataType SQL_HIERARCHYID = new ColumnType() {public String getName(){return "HIERARCHYID";}  public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
+    };  //mssql
 
     protected DataType SQL_LINE              = new ColumnType() {public String getName(){return "LINE";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
@@ -738,6 +764,11 @@ public class DataTypeAdapter {
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
     };  //     ,pg
+
+    protected DataType SQL_GEOGRAPHY              = new ColumnType() {public String getName(){return "GEOGRAPHY";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
+    };  //     ,mssql
 
 
 

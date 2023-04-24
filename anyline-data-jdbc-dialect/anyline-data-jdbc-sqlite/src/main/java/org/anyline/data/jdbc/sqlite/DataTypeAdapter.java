@@ -47,17 +47,22 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("CLOB"                    , SQL_TEXT              ); //        ,oracle
         types.put("DATE"                    , SQL_TEXT              ); //mysql,pg,oracle
         types.put("DATETIME"                , SQL_TEXT              ); //mysql
-        types.put("DECIMAL"                 , SQL_REAL              ); //mysql,  ,oracle
+        types.put("DATETIME2"               , SQL_TEXT              ); //     ,  ,      ,mssql
+        types.put("DATETIMEOFFSET"          , SQL_TEXT              ); //     ,  ,      ,mssql
+        types.put("DECIMAL"                 , SQL_REAL              ); //mysql,  ,oracle,mssql
         types.put("DOUBLE"                  , SQL_REAL              ); //mysql
         types.put("ENUM"                    , DataType.NOT_SUPPORT  ); //mysql
-        types.put("FLOAT"                   , SQL_REAL              ); //mysql,  ,oracle
+        types.put("FLOAT"                   , SQL_REAL              ); //mysql,  ,oracle,mssql
         types.put("FLOAT4"                  , SQL_REAL              ); //     ,pg
         types.put("FLOAT8"                  , SQL_REAL              ); //     ,pg
+        types.put("GEOGRAPHY"               , SQL_GEOGRAPHY         ); //     ,  ,      ,mssql
         types.put("GEOMETRY"                , DataType.NOT_SUPPORT  ); //mysql
         types.put("GEOMETRYCOLLECTIO"       , DataType.NOT_SUPPORT  ); //mysql
+        types.put("HIERARCHYID"             , SQL_HIERARCHYID       ); //     ,  ,      ,mssql
+        types.put("IMAGE"                   , SQL_IMAGE             ); //     ,  ,      ,mssql
         types.put("INET"                    , DataType.NOT_SUPPORT  ); //     ,pg
         types.put("INTERVAL"                , DataType.NOT_SUPPORT  ); //     ,pg
-        types.put("INT"                     , SQL_INTEGER           ); //mysql
+        types.put("INT"                     , SQL_INTEGER           ); //mysql,  ,      ,mssql,
         types.put("INT2"                    , SQL_INTEGER           ); //     ,pg
         types.put("INT4"                    , SQL_INTEGER           ); //
         types.put("INT8"                    , SQL_INTEGER           ); //
@@ -67,7 +72,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("LINE"                    , SQL_INTEGER           ); //mysql,pg
         types.put("LSEG"                    , SQL_INTEGER           ); //     ,pg
         types.put("MACADDR"                 , SQL_INTEGER           ); //     ,pg
-        types.put("MONEY"                   , SQL_REAL              ); //     ,pg
+        types.put("MONEY"                   , SQL_REAL              ); //     ,pg,      ,mssql
         types.put("NUMBER"                  , SQL_REAL              ); //     ,  ,oracle
         types.put("NCHAR"                   , SQL_TEXT              ); //     ,  ,oracle
         types.put("NCLOB"                   , SQL_TEXT              ); //     ,  ,oracle

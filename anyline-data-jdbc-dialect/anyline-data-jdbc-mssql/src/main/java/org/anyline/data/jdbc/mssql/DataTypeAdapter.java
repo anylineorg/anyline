@@ -1,4 +1,4 @@
-package org.anyline.data.jdbc.postgresql;
+package org.anyline.data.jdbc.mssql;
 
 import org.anyline.entity.mdtadata.DataType;
 import org.anyline.util.DateUtil;
@@ -33,27 +33,27 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         // 以下按字母顺序 方便查找
         // 后面备注表示key在哪个数据库中使用过
         // 了类配置中:如果在当前数据库中没的再现的,应该把value换成当前数据库支持的正常的类型
-        types.put("BFILE"                   , SQL_BFILE                 ); //     ,  ,oracle
-        types.put("BINARY_DOUBLE"           , SQL_BINARY_DOUBLE         ); //     ,  ,oracle
-        types.put("BINARY_FLOAT"            , SQL_BINARY_FLOAT          ); //     ,  ,oracle
-        types.put("BIGINT"                  , SQL_BIGINT                ); //mysql,
+        types.put("BFILE"                   , SQL_BFILE                 ); //     ,  ,oracle,
+        types.put("BINARY_DOUBLE"           , SQL_BINARY_DOUBLE         ); //     ,  ,oracle,
+        types.put("BINARY_FLOAT"            , SQL_BINARY_FLOAT          ); //     ,  ,oracle,
+        types.put("BIGINT"                  , SQL_BIGINT                ); //mysql,  ,      ,mssql,
         types.put("BIGSERIAL"               , SQL_SERIAL8               ); //     ,pg,
-        types.put("BINARY"                  , SQL_BINARY                ); //mysql,
-        types.put("BIT"                     , SQL_BIT                   ); //mysql,pg
+        types.put("BINARY"                  , SQL_BINARY                ); //mysql,  ,      ,mssql,
+        types.put("BIT"                     , SQL_BIT                   ); //mysql,pg,      ,mssql,
         types.put("BLOB"                    , SQL_BYTEA                  ); //mysql,  ,oracle
         types.put("BOOL"                    , SQL_BOOL                  ); //     ,pg
         types.put("BOX"                     , SQL_BOX                   ); //     ,pg
         types.put("BYTEA"                   , SQL_BYTEA                 ); //     ,pg
-        types.put("CHAR"                    , SQL_CHAR                  ); //mysql,pg
+        types.put("CHAR"                    , SQL_CHAR                  ); //mysql,pg,      ,mssql,
         types.put("CIDR"                    , SQL_CIDR                  ); //      pg
         types.put("CIRCLE"                  , SQL_CIRCLE                ); //      pg
         types.put("CLOB"                    , SQL_CLOB                  ); //     ,  ,oracle
-        types.put("DATE"                    , SQL_DATE                  ); //mysql,pg,oracle
-        types.put("DATETIME"                , SQL_TIMESTAMP             ); //mysql,
-        types.put("DATETIME2"               , SQL_TIMESTAMP             ); //    ,  ,       ,mssql
-        types.put("DATETIMEOFFSET"          , SQL_TIMESTAMP             ); //    ,  ,       ,mssql
-        types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle
-        types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql,  ,      ,mssql
+        types.put("DATE"                    , SQL_DATE                  ); //mysql,pg,oracle,mssql
+        types.put("DATETIME"                , SQL_DATETIME              ); //mysql,  ,      ,mssql
+        types.put("DATETIME2"               , SQL_DATETIME2             ); //mysql,  ,      ,mssql
+        types.put("DATETIMEOFFSET"          , SQL_DATETIMEOFFSET        ); //mysql,  ,      ,mssql
+        types.put("DECIMAL"                 , SQL_DECIMAL               ); //mysql,  ,oracle,mssql
+        types.put("DOUBLE"                  , SQL_DOUBLE                ); //mysql,
         types.put("ENUM"                    , SQL_ENUM                  ); //mysql,
         types.put("FLOAT"                   , SQL_FLOAT4                ); //mysql,  ,oracle,mssql
         types.put("FLOAT4"                  , SQL_FLOAT4                ); //     ,pg
@@ -73,7 +73,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("JSON"                    , SQL_JSON                  ); //mysql,pg
         types.put("JSONB"                   , SQL_JSONB                 ); //     ,pg
         types.put("LINE"                    , SQL_LINE                  ); //mysql,pg
-        types.put("LONG"                    , SQL_INT8                  ); //     ,pg
+        types.put("LONG"                    , SQL_BIGINT                ); //     ,pg
         types.put("LONGBLOB"                , SQL_BYTEA                 ); //mysql
         types.put("LONGTEXT"                , SQL_LONGTEXT              ); //mysql
         types.put("LSEG"                    , SQL_LSEG                  ); //     ,pg
