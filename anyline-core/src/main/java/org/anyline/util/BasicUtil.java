@@ -317,6 +317,23 @@ public class BasicUtil {
 		}
 		return RegularUtil.isDateTime(obj.toString());
 	}
+	public static Short parseShort(Object value, Short def) {
+		if (null == value) {
+			return def;
+		}
+		if(value instanceof Short){
+			return (Short) value;
+		}
+		try {
+			return (short) Double.parseDouble(value.toString());
+		} catch (Exception e) {
+			return def;
+		}
+	}
+	public static Short parseShort(Object value) throws Exception{
+		return (short) Double.parseDouble(value.toString());
+	}
+
 	public static Integer parseInt(Object value, Integer def) {
 		if (null == value) {
 			return def;
