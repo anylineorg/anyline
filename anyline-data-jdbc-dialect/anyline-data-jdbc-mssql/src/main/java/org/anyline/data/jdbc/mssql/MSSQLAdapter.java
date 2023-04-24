@@ -15,6 +15,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.EntityAdapterProxy;
 import org.anyline.util.SQLUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -1381,6 +1382,63 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.buildRenameRunSQL(primary);
 	}
 
+
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * public PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的主键
+	 * @param table 表
+	 * @return sqls
+	 */
+	@Override
+	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT  *  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \nWHERE TABLE_NAME='").append(table.getName()).append("'");
+		String catalog = table.getCatalog();
+		if(BasicUtil.isNotEmpty(catalog)){
+			builder.append("\nAND TABLE_CATALOG = '").append(catalog).append("'");
+		}
+		String schema = table.getSchema();
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append("\nAND TABLE_SCHEMA = '").append(schema).append("'");
+		}
+		builder.append("\nORDER BY ORDINAL_POSITION");
+		list.add(builder.toString());
+		return list;
+	}
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+		PrimaryKey primary = table.getPrimaryKey();
+		for(DataRow row:set){
+			if(null == primary){
+				primary = new PrimaryKey();
+				primary.setName(row.getString("TABLE_NAME"));
+				primary.setTable(table);
+			}
+			String col = row.getString("COLUMN_NAME");
+			Column column = primary.getColumn(col);
+			if(null == column){
+				column = new Column(col);
+			}
+			column.setTable(table);
+			column.setPosition(row.getInt("ORDINAL_POSITION",0));
+			primary.addColumn(column);
+		}
+		return primary;
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
