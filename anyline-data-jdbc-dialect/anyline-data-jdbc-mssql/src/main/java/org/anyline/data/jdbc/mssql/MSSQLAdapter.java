@@ -672,7 +672,9 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<String> sqls = super.buildCreateRunSQL(table);
 		//如果有备注 单独生成
 		String sql = buildChangeCommentRunSQL(table);
-		sqls.add(sql);
+		if(BasicUtil.isNotEmpty(sql)) {
+			sqls.add(sql);
+		}
 		//列备注
 		for(Column col:table.getColumns().values()){
 			String cmt = col.getComment();
