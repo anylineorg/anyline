@@ -409,7 +409,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		if(set.size()>0){
 			DataRow row = set.getRow(0);
 			primary = new PrimaryKey();
-			//con_name 	    |con_type	|con_key |  define
+			//conname 	    |contype	|conkey |  define
 			//test_pk_pkey	| p			| {2,1}	| 	PRIMARY KEY (id, name)
 			primary.setName(row.getString("conname"));
 			String define = row.getString("define");
@@ -971,7 +971,15 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	public StringBuilder define(StringBuilder builder, Column column){
 		// 如果有递增列 通过数据类型实现
 		if(column.isAutoIncrement() == 1){
-			column.setType("SERIAL");
+			String type = column.getTypeName().toLowerCase();
+			if ("int4".equals(type)) {
+				column.setType("SERIAL");
+			} else if ("int8".equals(type)) {
+				column.setType("BIGSERIAL");
+			} else if ("int2".equals(type)) {
+				//9.2.0
+				column.setType("SMALLSERIAL");
+			}
 		}
 		return super.define(builder, column);
 	}
