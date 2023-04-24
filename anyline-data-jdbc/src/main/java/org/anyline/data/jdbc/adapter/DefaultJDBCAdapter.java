@@ -2404,6 +2404,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		defaultValue(builder, column);
 		// 非空
 		nullable(builder, column);
+		//主键
+		primary(builder, column);
 		// 递增
 		increment(builder, column);
 		// 更新行事件
@@ -2618,6 +2620,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		return builder;
 	}
+	/**
+	 * 主键(注意不要跟表定义中的主键重复)
+	 * 子类实现
+	 * @param builder builder
+	 * @param column 列
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder primary(StringBuilder builder, Column column){
+		return builder;
+	}
+
 	/**
 	 * 递增列
 	 * 子类实现
@@ -3270,9 +3284,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	protected Object value(Map<String, Integer> keys, String key, ResultSet set, Object def) throws Exception{
 		Integer index = keys.get(key);
-		if(null != index){
-			// db2 直接用 set.getObject(String) 可能发生 参数无效：未知列名 String
-			return set.getObject(index);
+		if(null != index && index >= 0){
+			try {
+				// db2 直接用 set.getObject(String) 可能发生 参数无效：未知列名 String
+				return set.getObject(index);
+			}catch (Exception e){
+				return def;
+			}
 		}
 		return def;
 	}
