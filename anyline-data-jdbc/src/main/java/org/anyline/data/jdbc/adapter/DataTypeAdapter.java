@@ -562,6 +562,8 @@ public class DataTypeAdapter {
                 }else{
                     value = "'" + DateUtil.format(date) + "'";
                 }
+            }else{
+                value = null;
             }
             return value;
         }
@@ -596,6 +598,8 @@ public class DataTypeAdapter {
                 }else{
                     value = "'" + DateUtil.format(date, "HH:mm:ss") + "'";
                 }
+            }else{
+                value = null;
             }
             return value;
         }

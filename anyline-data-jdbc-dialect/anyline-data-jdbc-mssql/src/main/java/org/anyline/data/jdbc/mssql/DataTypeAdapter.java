@@ -65,11 +65,11 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("IMAGE"                   , SQL_IMAGE                 ); //     ,  ,      ,mssql
         types.put("INET"                    , SQL_INET                  ); //     ,pg
         types.put("INTERVAL"                , SQL_INTERVAL              ); //     ,pg
-        types.put("INT"                     , SQL_INT4                  ); //mysql,  ,      ,mssql,
-        types.put("INT2"                    , SQL_INT2                  ); //     ,pg
-        types.put("INT4"                    , SQL_INT4                  ); //
-        types.put("INT8"                    , SQL_INT8                  ); //
-        types.put("INTEGER"                 , SQL_INTEGER               ); //mysql
+        types.put("INT"                     , SQL_INT                   ); //mysql,  ,      ,mssql,
+        types.put("INT2"                    , SQL_INT                   ); //     ,pg
+        types.put("INT4"                    , SQL_INT                   ); //
+        types.put("INT8"                    , SQL_BIGINT                ); //
+        types.put("INTEGER"                 , SQL_INT                   ); //mysql
         types.put("JSON"                    , SQL_JSON                  ); //mysql,pg
         types.put("JSONB"                   , SQL_JSONB                 ); //     ,pg
         types.put("LINE"                    , SQL_LINE                  ); //mysql,pg
@@ -161,6 +161,8 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
                     }else{
                         value = "'" + DateUtil.format(date, "yyyy-MM-dd");
                     }
+                }else{
+                    value = null;
                 }
                 return value;
             }
@@ -178,6 +180,8 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
                     }else{
                         value = "'" + DateUtil.format(date) + "'";
                     }
+                }else{
+                    value = null;
                 }
                 return value;
             }

@@ -161,6 +161,8 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
                     }else{
                         value = "'" + DateUtil.format(date, "yyyy-MM-dd");
                     }
+                }else{
+                    value = null;
                 }
                 return value;
             }
@@ -178,6 +180,8 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
                     }else{
                         value = "'" + DateUtil.format(date) + "'";
                     }
+                }else{
+                    value = null;
                 }
                 return value;
             }
