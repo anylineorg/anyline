@@ -27,6 +27,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public SQLiteAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
+		dataTypeAdapter = new DataTypeAdapter();
 	}
 	@Value("${anyline.jdbc.delimiter.sqlite:}")
 	private String delimiter;
@@ -498,7 +499,8 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public StringBuilder primary(StringBuilder builder, Table table){
-		return super.primary(builder, table);
+		//在列上实现
+		return builder;
 	}
 
 
@@ -776,6 +778,21 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public StringBuilder defaultValue(StringBuilder builder, Column column){
 		return super.defaultValue(builder, column);
 	}
+
+	/**
+	 * 主键(注意不要跟表定义中的主键重复)
+	 * 子类实现
+	 * @param builder builder
+	 * @param column 列
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder primary(StringBuilder builder, Column column){
+		if(column.isAutoIncrement() != 1){
+			builder.append(" PRIMARY KEY");
+		}
+		return builder;
+	}
 	/**
 	 * 递增列
 	 * 主键默认递增
@@ -786,7 +803,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
 		if(column.isAutoIncrement() == 1){
-			builder.append(" autoincrement");
+			builder.append(" PRIMARY KEY AUTOINCREMENT");
 		}
 		return builder;
 	}
