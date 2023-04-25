@@ -275,7 +275,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		String sql = "IF EXISTS(\n" + run.getBuilder().toString() +"\n) SELECT 1 AS IS_EXISTS ELSE SELECT 0 AS IS_EXISTS"; 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	} 
+	}
+	@Override
 	public String concat(String ... args){
 		return concatAdd(args);
 	}
