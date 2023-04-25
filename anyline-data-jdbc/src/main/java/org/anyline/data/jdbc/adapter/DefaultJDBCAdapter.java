@@ -34,7 +34,6 @@ import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.mdtadata.DataType;
-import org.anyline.entity.mdtadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -2103,6 +2102,114 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
 		return builder;
 	}
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildCreateRunSQL(View view);
+	 * public String buildCreateCommentRunSQL(View view);
+	 * public List<String> buildAlterRunSQL(View view);
+	 * public String buildRenameRunSQL(View view);
+	 * public String buildChangeCommentRunSQL(View view);
+	 * public String buildDropRunSQL(View view);
+	 * public StringBuilder checkViewExists(StringBuilder builder, boolean exists)
+	 * public StringBuilder primary(StringBuilder builder, View view)
+	 * public StringBuilder comment(StringBuilder builder, View view)
+	 * public StringBuilder name(StringBuilder builder, View view)
+	 ******************************************************************************************************************/
+
+
+	@Override
+	public List<String> buildCreateRunSQL(View view) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		view.setCreater(this);
+		builder.append("CREATE OR REPLACE VIEW ");
+		name(builder, view);
+		builder.append(" AS \n").append(view.getSql());
+		return list;
+	}
+
+	@Override
+	public String buildCreateCommentRunSQL(View view) throws Exception{
+		return null;
+	}
+
+
+	@Override
+	public List<String> buildAlterRunSQL(View view) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		view.setCreater(this);
+		builder.append("ALTER VIEW ");
+		name(builder, view);
+		builder.append(" AS \n").append(view.getSql());
+		return list;
+	}
+	/**
+	 * 修改视图名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param view 视图
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(View view) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(View view)", 37));
+		}
+		return null;
+	}
+
+	@Override
+	public String buildChangeCommentRunSQL(View view) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildChangeCommentRunSQL(View view)", 37));
+		}
+		return null;
+	}
+	/**
+	 * 删除视图
+	 * @param view 视图
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(View view) throws Exception{
+		view.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		builder.append("DROP ").append(view.getKeyword()).append(" ");
+		checkViewExists(builder, true);
+		name(builder, view);
+		return builder.toString();
+	}
+
+	/**
+	 * 创建或删除视图时检测视图是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
+		builder.append(" IF ");
+		if(!exists){
+			builder.append("NOT ");
+		}
+		builder.append("EXISTS ");
+		return builder;
+	}
+
+	/**
+	 * 备注 不支持创建视图时带备注的 在子视图中忽略
+	 * @param builder builder
+	 * @param view 视图
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder comment(StringBuilder builder, View view){
+		return null;
+	}
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
