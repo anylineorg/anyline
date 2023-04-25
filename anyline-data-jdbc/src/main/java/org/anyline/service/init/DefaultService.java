@@ -2979,6 +2979,59 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         /* *****************************************************************************************************************
+         * 													view
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean save(View view) throws Exception
+         * public boolean create(View view) throws Exception
+         * public boolean alter(View view) throws Exception
+         * public boolean drop(View view) throws Exception
+         ******************************************************************************************************************/
+
+        @Override
+        public boolean save(View view) throws Exception{
+            boolean result = false;
+            clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
+            CacheProxy.clearViewMaps(DataSourceHolder.curDataSource()+"");
+            View oview = metadata.view(view.getCatalog(), view.getSchema(), view.getName());
+            if(null != oview){
+                oview.setAutoDropColumn(view.isAutoDropColumn());
+                View update = (View)view.getUpdate();
+                if(null == update){
+                    update = view;
+                }
+                oview.setUpdate(update);
+                result = alter(oview);
+            }else{
+                result =  create(view);
+            }
+
+            clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
+            return result;
+        }
+        @Override
+        public boolean create(View view) throws Exception{
+            view.setService(DefaultService.this);
+            boolean result =  dao.create(view);
+            clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
+            return result;
+        }
+        @Override
+        public boolean alter(View view) throws Exception{
+            view.setService(DefaultService.this);
+            boolean result = dao.alter(view);
+            clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
+            return result;
+        }
+
+        @Override
+        public boolean drop(View view) throws Exception{
+            view.setService(DefaultService.this);
+            boolean result = dao.drop(view);
+
+            clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
+            return result;
+        }
+        /* *****************************************************************************************************************
          * 													master table
          * -----------------------------------------------------------------------------------------------------------------
 		 * public boolean save(MasterTable master) throws Exception

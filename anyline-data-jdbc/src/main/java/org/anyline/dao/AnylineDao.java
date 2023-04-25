@@ -287,6 +287,7 @@ public interface AnylineDao<E>{
 	 *
 	 * =================================================================================================================
 	 * table			: 表
+	 * view 			: 视图
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
@@ -301,6 +302,12 @@ public interface AnylineDao<E>{
 	public boolean create(Table table) throws Exception;
 	public boolean alter(Table table) throws Exception;
 	public boolean drop(Table table) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													view
+	 ******************************************************************************************************************/
+	public boolean create(View view) throws Exception;
+	public boolean alter(View view) throws Exception;
+	public boolean drop(View view) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
