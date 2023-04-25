@@ -31,6 +31,7 @@ public class CacheProxy {
     private static Map<String,DataRow> cache_metadata = new HashMap<>();
     private static Map<String,DataRow> cache_metadatas = new HashMap<>();
     private static Map<String,DataRow> cache_table_maps = new HashMap<>();
+    private static Map<String,DataRow> cache_view_maps = new HashMap<>();
 
     public static String tableName(String datasource, String name){
         DataRow row = cache_table_maps.get(datasource);
@@ -39,12 +40,31 @@ public class CacheProxy {
         }
         return name;
     }
+    public static String viewName(String datasource, String name){
+        DataRow row = cache_view_maps.get(datasource);
+        if(null != row){
+            return row.getString(name);
+        }
+        return name;
+    }
     public static void clearTableMaps(String datasource){
         cache_table_maps.remove(datasource);
+    }
+    public static void clearViewMaps(String datasource){
+        cache_view_maps.remove(datasource);
     }
     public static void setTableMaps(String datasource, DataRow maps){
         cache_table_maps.put(datasource, maps);
     }
+    public static void setViewMaps(String datasource, DataRow maps){
+        cache_view_maps.put(datasource, maps);
+    }
+
+    /**
+     * 表缓存
+     * @param datasource 数据源名_TYPES crm_TABLE  crm_VIEW
+     * @return DataRow
+     */
     public static DataRow getTableMaps(String datasource){
         datasource = datasource.toUpperCase();
         DataRow row = cache_table_maps.get(datasource);
@@ -54,7 +74,26 @@ public class CacheProxy {
         }
         return row;
     }
+    /**
+     * 视图缓存
+     * @param datasource 数据源名_TYPES crm_TABLE  crm_VIEW
+     * @return DataRow
+     */
+    public static DataRow getViewMaps(String datasource){
+        datasource = datasource.toUpperCase();
+        DataRow row = cache_view_maps.get(datasource);
+        if(null == row){
+            row = new DataRow();
+            cache_view_maps.put(datasource, row);
+        }
+        return row;
+    }
 
+    /**
+     * 表或视图的列
+     * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
+     * @return LinkedHashMap
+     */
     public static LinkedHashMap<String, Column> columns(String table){
         if(null == table){
             return null;
