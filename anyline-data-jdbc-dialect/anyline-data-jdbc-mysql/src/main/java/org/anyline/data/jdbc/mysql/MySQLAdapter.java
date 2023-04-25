@@ -339,6 +339,132 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception
+	 * public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 查询视图
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
+		// 8.0版本中 这个视图中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
+		/*if(BasicUtil.isNotEmpty(catalog)){
+			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
+		}*/
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+		}
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(types)){
+			String[] tmps = types.split(",");
+			builder.append(" AND TABLE_TYPE IN(");
+			int idx = 0;
+			for(String tmp:tmps){
+				if(idx > 0){
+					builder.append(",");
+				}
+				builder.append("'").append(tmp).append("'");
+				idx ++;
+			}
+			builder.append(")");
+		}else {
+			builder.append(" AND TABLE_TYPE IN ('VIEW')");
+		}
+		sqls.add(builder.toString());
+		return sqls;
+	}
+
+	/**
+	 *
+	 * @param index 第几条SQL 对照buildQueryViewRunSQL返回顺序
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set DataSet
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception{
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			View view = views.get(name.toUpperCase());
+			if(null == view){
+				view = new View();
+			}
+			//MYSQL不支付TABLE_CATALOG
+			//view.setCatalog(row.getString("TABLE_CATALOG"));
+			view.setSchema(row.getString("TABLE_SCHEMA"));
+			view.setName(name);
+			view.setEngine(row.getString("ENGINE"));
+			view.setComment(row.getString("TABLE_COMMENT"));
+			views.put(name.toUpperCase(), view);
+		}
+		return views;
+	}
+	@Override
+	public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+		//参考 checkSchema()
+		ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		Map<String,Integer> keys = keys(set);
+		while(set.next()) {
+			String viewName = string(keys, "TABLE_NAME", set);
+
+			if(BasicUtil.isEmpty(viewName)){
+				viewName = string(keys, "NAME", set);
+			}
+			if(BasicUtil.isEmpty(viewName)){
+				continue;
+			}
+			View view = views.get(viewName.toUpperCase());
+			if(null == view){
+				if(create){
+					view = new View();
+					views.put(viewName.toUpperCase(), view);
+				}else{
+					continue;
+				}
+			}
+			//参考 checkSchema()
+			view.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			view.setCatalog(null);
+
+			view.setName(viewName);
+			view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
+			view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
+			view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
+			view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
+			view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
+			view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
+			views.put(viewName.toUpperCase(), view);
+
+			// view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
+		}
+		return views;
+	}
+
+	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
