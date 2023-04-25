@@ -241,10 +241,10 @@ public class DataSourceHolder {
 		return addDataSource(key, ds, true);
 	}
 
-	public static DataSource reg(String key, Map<String,?> param, boolean over) throws Exception{
+	public static DataSource reg(String key, Map param, boolean over) throws Exception{
 		return addDataSource(key, buildDataSource(param), over);
 	}
-	public static DataSource reg(String key, Map<String,?> param) throws Exception{
+	public static DataSource reg(String key, Map param) throws Exception{
 		return addDataSource(key, buildDataSource(param), true);
 	}
 
@@ -260,7 +260,7 @@ public class DataSourceHolder {
 	 * @throws Exception 异常 Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{
+	public static DataSource buildDataSource(Map params) throws Exception{
         try {
             String type = (String)params.get("pool");
 			if(BasicUtil.isEmpty(type)){
