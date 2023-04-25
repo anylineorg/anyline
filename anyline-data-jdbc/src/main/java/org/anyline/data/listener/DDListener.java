@@ -5,12 +5,15 @@ import org.anyline.data.entity.Index;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.entity.Column;
 import org.anyline.data.entity.Table;
+import org.anyline.data.entity.View;
 import org.anyline.service.AnylineService;
 
 public interface DDListener {
 
     public boolean beforeCreate(Table table);
     public void afterCreate(Table table, boolean result);
+    public boolean beforeCreate(View view);
+    public void afterCreate(View view, boolean result);
     public boolean beforeAdd(Column column);
 
     public void afterAdd(Column column, boolean result);
@@ -52,8 +55,13 @@ public interface DDListener {
 
     public boolean beforeAlter(Table table);
     public void afterAlter(Table table, boolean result);
+
+    public boolean beforeAlter(View view);
+    public void afterAlter(View view, boolean result);
     public boolean beforeDrop(Table table);
     public void afterDrop(Table table, boolean result);
+    public boolean beforeDrop(View view);
+    public void afterDrop(View view, boolean result);
     public boolean beforeRename(Table table);
     public void afterRename(Table table, boolean result);
 
