@@ -469,7 +469,7 @@ public class Table implements org.anyline.entity.data.Table{
     }
 
     public String toString(){
-        return keyword+":"+name;
+        return this.keyword+":"+name;
     }
 
     public boolean isAutoDropColumn() {
