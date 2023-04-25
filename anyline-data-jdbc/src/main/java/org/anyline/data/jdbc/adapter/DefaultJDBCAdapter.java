@@ -2126,7 +2126,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		view.setCreater(this);
 		builder.append("CREATE OR REPLACE VIEW ");
 		name(builder, view);
-		builder.append(" AS \n").append(view.getSql());
+		builder.append(" AS \n").append(view.getDefinition());
 		list.add(builder.toString());
 		return list;
 	}
@@ -2144,7 +2144,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		view.setCreater(this);
 		builder.append("ALTER VIEW ");
 		name(builder, view);
-		builder.append(" AS \n").append(view.getSql());
+		builder.append(" AS \n").append(view.getDefinition());
 		list.add(builder.toString());
 		return list;
 	}

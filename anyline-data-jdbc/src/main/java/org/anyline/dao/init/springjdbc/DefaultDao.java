@@ -1739,8 +1739,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String[] tps = null;
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
-			}else{
-				tps = new String[]{"VIEW"};
 			}
 
 			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"_"+types);
@@ -1910,6 +1908,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String[] tps = null;
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
+			}else{
+				tps = new String[]{"VIEW"};
 			}
 
 			DataRow view_map = CacheProxy.getViewMaps(DataSourceHolder.curDataSource()+"");

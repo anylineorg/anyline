@@ -14,10 +14,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
-import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.*;
 
@@ -358,7 +355,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 
-		builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
+		builder.append("SELECT * FROM information_schema.VIEWS WHERE 1=1 ");
 		// 8.0版本中 这个视图中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
 		/*if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
@@ -368,21 +365,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
-		}
-		if(BasicUtil.isNotEmpty(types)){
-			String[] tmps = types.split(",");
-			builder.append(" AND TABLE_TYPE IN(");
-			int idx = 0;
-			for(String tmp:tmps){
-				if(idx > 0){
-					builder.append(",");
-				}
-				builder.append("'").append(tmp).append("'");
-				idx ++;
-			}
-			builder.append(")");
-		}else {
-			builder.append(" AND TABLE_TYPE IN ('VIEW')");
 		}
 		sqls.add(builder.toString());
 		return sqls;
@@ -413,8 +395,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			//view.setCatalog(row.getString("TABLE_CATALOG"));
 			view.setSchema(row.getString("TABLE_SCHEMA"));
 			view.setName(name);
-			view.setEngine(row.getString("ENGINE"));
-			view.setComment(row.getString("TABLE_COMMENT"));
+			view.setDefinition(row.getString("VIEW_DEFINITION"));
 			views.put(name.toUpperCase(), view);
 		}
 		return views;
