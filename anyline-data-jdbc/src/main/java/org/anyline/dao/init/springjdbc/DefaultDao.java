@@ -2756,6 +2756,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 *
 	 * =================================================================================================================
 	 * table			: 表
+	 * view 			: 视图
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
@@ -2951,6 +2952,124 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(null != listener){
 			listener.afterDrop(table, result);
+		}
+		return result;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean create(View view) throws Exception
+	 * public boolean alter(View view) throws Exception
+	 * public boolean drop(View view) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(View view) throws Exception {
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), view);
+		List<String> sqls = adapter.buildCreateRunSQL(view);
+		DDListener listener = view.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeCreate(view);
+		}
+		if(exe) {
+			for(String sql:sqls) {
+				String random = null;
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					random = random();
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				runtime.getTemplate().update(sql);
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[create view][view:{}][执行耗时:{}ms]", random, view.getName(), System.currentTimeMillis() - fr);
+				}
+			}
+			result = true;
+		}
+
+		if(null != listener){
+			listener.afterCreate(view, result);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean alter(View view) throws Exception {
+		boolean result = false;
+		View update = (View)view.getUpdate();
+		String name = view.getName();
+		String uname = update.getName();
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), view);
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), update);
+		if(!name.equalsIgnoreCase(uname)){
+			String sql = adapter.buildRenameRunSQL(view);
+			String random = null;
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				random = random();
+				log.warn("{}[sql:\n{}\n]", random,sql);
+			}
+
+			DDListener listener = view.getListener();
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeRename(view);
+			}
+			if(exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[rename view][view:{}][result:{}][执行耗时:{}ms]", random, view.getName(), result, System.currentTimeMillis() - fr);
+			}
+			if(null != listener){
+				listener.afterRename(view, result);
+			}
+		}
+
+		CacheProxy.clearViewMaps(DataSourceHolder.curDataSource()+"");
+		return result;
+	}
+
+	@Override
+	public boolean drop(View view) throws Exception{
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		adapter.checkSchema(runtime.getTemplate().getDataSource(), view);
+		String sql = adapter.buildDropRunSQL(view);
+		String random = null;
+		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+			random = random();
+			log.warn("{}[sql:\n{}\n]", random,sql);
+		}
+		DDListener listener = view.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(view);
+		}
+		if(exe) {
+			runtime.getTemplate().update(sql);
+			CacheProxy.clearViewMaps(DataSourceHolder.curDataSource()+"");
+			result = true;
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+			log.warn("{}[drop view][view:{}][result:{}][执行耗时:{}ms]", random, view.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(view, result);
 		}
 		return result;
 	}
