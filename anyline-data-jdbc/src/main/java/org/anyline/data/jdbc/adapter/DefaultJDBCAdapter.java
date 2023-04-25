@@ -991,6 +991,81 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception
+	 * public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 查询表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)", 37));
+		}
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set)", 37));
+		}
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		return views;
+	}
+	@Override
+	public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+
+		ResultSet set = dbmd.getTables(catalog, schema, pattern, new String[]{"VIEW"});
+
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		Map<String,Integer> keys = keys(set);
+		while(set.next()) {
+			String viewName = string(keys, "TABLE_NAME", set);
+
+			if(BasicUtil.isEmpty(viewName)){
+				viewName = string(keys, "NAME", set);
+			}
+			if(BasicUtil.isEmpty(viewName)){
+				continue;
+			}
+			View view = views.get(viewName.toUpperCase());
+			if(null == view){
+				if(create){
+					view = new View();
+					views.put(viewName.toUpperCase(), view);
+				}else{
+					continue;
+				}
+			}
+			view.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			view.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
+			view.setName(viewName);
+			view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
+			view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
+			view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
+			view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
+			view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
+			view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
+			views.put(viewName.toUpperCase(), view);
+
+			// view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
+		}
+		return views;
+	}
+	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
@@ -1994,8 +2069,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 
 	/**
-	 * 备注
-	 * 子类实现
+	 * 备注 不支持创建表时带备注的 在子表中忽略
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder

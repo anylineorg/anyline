@@ -865,14 +865,14 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 	/**
 	 * 备注
-	 *
+	 * 不支持在创建表时带备注，创建后单独添加 buildCreateCommentRunSQL(table)
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Table table){
-		return super.comment(builder, table);
+		return builder;
 	}
 
 	/**
