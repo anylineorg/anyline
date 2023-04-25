@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 public class MasterTable extends Table {
     protected String keyword = "STABLE"             ;
     private LinkedHashMap<String,Table> partitions  ; // 分区表
+    protected MasterTable update;
     private Partition partition                     ; // 分区方式
 
     public MasterTable(){
@@ -65,7 +66,41 @@ public class MasterTable extends Table {
         Table table = null;
         return table;
     }
+
+    public MasterTable clone(){
+        MasterTable table = new MasterTable();
+        table.partition = partition;
+        table.catalog = catalog;
+        table.schema = schema;
+        table.name = name;
+        table.comment = comment;
+        table.type = type;
+        table.typeCat = typeCat;
+        table.typeSchema = typeSchema;
+        table.typeName = typeName;
+        table.selfReferencingColumn = selfReferencingColumn;
+        table.refGeneration = refGeneration;
+        table.engine = engine;
+        table.charset = charset;
+        table.collate = collate;
+        table.ttl = ttl;
+        table.checkSchemaTime = checkSchemaTime;
+        table.primaryKey = primaryKey;
+        table.columns = columns;
+        table.tags = tags;
+        table.indexs = indexs;
+        table.constraints = constraints;
+        table.listener = listener;
+        table.autoDropColumn = autoDropColumn;
+        table.update = update;
+        return table;
+    }
+    public MasterTable update(){
+        update = clone();
+        update.setUpdate(null);
+        return update;
+    }
     public String toString(){
-        return keyword+":"+name;
+        return this.keyword+":"+name;
     }
 }
