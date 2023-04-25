@@ -121,6 +121,12 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	@Override
+	public String parseExists(Run run){
+		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		return sql;
+	}
+	@Override
 	public String concat(String ... args){
 		return concatOr(args);
 	}
