@@ -319,8 +319,13 @@ public class ConfigTable {
 						}
 					}
 					for (JarEntry jarEntry : list) {
-						in = AnylineConfig.class.getClassLoader().getResourceAsStream(jarEntry.getName());
-						parse(in);
+						try {
+							in = AnylineConfig.class.getClassLoader().getResourceAsStream(jarEntry.getName());
+							parse(in);
+						}catch (Exception e){
+							//这里有可能遇到 多层jar
+							//好几层jar的就不读取了 这个文件也极少用 需要配置放spring配置文件里就可以了
+						}
 					}
 				}else{
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+flag+"-config.xml");
