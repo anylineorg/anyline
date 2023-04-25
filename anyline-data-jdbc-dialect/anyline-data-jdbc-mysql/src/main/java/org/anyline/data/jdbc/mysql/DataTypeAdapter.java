@@ -77,9 +77,11 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("MACADDR"                 , SQL_MACADDR               ); //     ,pg
         types.put("MONEY"                   , SQL_DECIMAL               ); //     ,pg,      ,mssql
         types.put("NUMBER"                  , SQL_DECIMAL               ); //     ,  ,oracle
-        types.put("NCHAR"                   , SQL_CHAR                  ); //     ,  ,oracle
-        types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle
-        types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle
+        types.put("NCHAR"                   , SQL_CHAR                  ); //     ,  ,oracle,mssql
+        types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle,
+        types.put("NTEXT"                   , SQL_TEXT                  ); //     ,  ,      ,mssql
+        types.put("NVARCHAR"                , SQL_VARCHAR               ); //     ,  ,      ,mssql
+        types.put("NVARCHAR2"               , SQL_VARCHAR               ); //     ,  ,oracle
         types.put("PATH"                    , SQL_PATH                  ); //     ,pg
         types.put("LONG"                    , SQL_INT8                  ); //     ,pg
         types.put("LONGBLOB"                , SQL_LONGBLOB              ); //mysql
@@ -90,10 +92,10 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("MULTILINESTRING"         , SQL_MULTILINESTRING       ); //mysql
         types.put("MULTIPOINT"              , SQL_MULTIPOINT            ); //mysql
         types.put("MULTIPOLYGON"            , SQL_MULTIPOLYGON          ); //mysql
-        types.put("NUMERIC"                 , SQL_NUMERIC               ); //mysql
+        types.put("NUMERIC"                 , SQL_NUMERIC               ); //mysql,pg,       ,mssql
         types.put("POINT"                   , SQL_POINT                 ); //mysql,pg
         types.put("POLYGON"                 , SQL_POLYGON               ); //mysql,pg
-        types.put("REAL"                    , SQL_REAL                  ); //mysql
+        types.put("REAL"                    , SQL_REAL                  ); //mysql,  ,      ,mssql
         types.put("RAW"                     , SQL_RAW                   ); //     ,  ,oracle
         types.put("ROWID"                   , SQL_ROWID                 ); //     ,  ,oracle
         types.put("SERIAL"                  , SQL_SERIAL                ); //     ,pg,
@@ -101,27 +103,32 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("SERIAL4"                 , SQL_SERIAL4               ); //     ,pg,
         types.put("SERIAL8"                 , SQL_SERIAL8               ); //     ,pg,
         types.put("SET"                     , SQL_SET                   ); //mysql
+        types.put("SMALLDATETIME"           , SQL_DATETIME              ); //     ,  ,      ,mssql
+        types.put("SMALLMONEY"              , SQL_DECIMAL               ); //     ,  ,      ,mssql
         types.put("SMALLINT"                , SQL_SMALLINT              ); //mysql
-        types.put("SMALSERIAL"              , SQL_SERIAL2            ); //     ,pg,
-        types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg
-        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg
-        types.put("TIMEZ"                   , SQL_TIME                  ); //     ,pg
-        types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle
-        types.put("TIMESTAMP_LOCAL_ZONE"    , SQL_TIMESTAMP             ); //     ,pg
-        types.put("TIMESTAMP_ZONE"          , SQL_TIMESTAMP             ); //     ,pg
-        types.put("TSQUERY"                 , SQL_TSQUERY               ); //     ,pg
-        types.put("TSVECTOR"                , SQL_TSVECTOR              ); //     ,pg
-        types.put("TXID_SNAPSHOT"           , SQL_TXID_SNAPSHOT         ); //     ,pg
-        types.put("UUID"                    , SQL_UUID                  ); //     ,pg
-        types.put("UROWID"                  , SQL_UROWID                ); //     ,  ,oracle
+        types.put("SMALSERIAL"              , SQL_SERIAL2               ); //     ,pg,
+        types.put("SQL_VARIANT"             , DataType.NOT_SUPPORT      ); //     ,  ,      ,mssql
+        types.put("SYSNAME"                 , SQL_SYSNAME               ); //     ,  ,      ,mssql
+        types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg,      ,mssql
+        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg,      ,mssql
+        types.put("TIMEZ"                   , SQL_TIME                  ); //     ,pg,      ,
+        types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle,mssql
+        types.put("TIMESTAMP_LOCAL_ZONE"    , SQL_TIMESTAMP             ); //     ,pg,
+        types.put("TIMESTAMP_ZONE"          , SQL_TIMESTAMP             ); //     ,pg,
+        types.put("TSQUERY"                 , SQL_TSQUERY               ); //     ,pg,
+        types.put("TSVECTOR"                , SQL_TSVECTOR              ); //     ,pg,
+        types.put("TXID_SNAPSHOT"           , SQL_TXID_SNAPSHOT         ); //     ,pg,
+        types.put("UNIQUEIDENTIFIER"        , SQL_UUID                  ); //     ,  ，     ,mssql
+        types.put("UUID"                    , SQL_UUID                  ); //     ,pg,
+        types.put("UROWID"                  , SQL_UROWID                ); //     ,  ,oracle,
         types.put("VARBIT"                  , SQL_VARBIT                ); //     ,pg
         types.put("TINYBLOB"                , SQL_TINYBLOB              ); //mysql
-        types.put("TINYINT"                 , SQL_TINYINT               ); //mysql
+        types.put("TINYINT"                 , SQL_TINYINT               ); //mysql,  ,      ,mssql
         types.put("TINYTEXT"                , SQL_TINYTEXT              ); //mysql
-        types.put("VARBINARY"               , SQL_VARBINARY             ); //mysql
-        types.put("VARCHAR"                 , SQL_VARCHAR               ); //mysql,pg,oracle
+        types.put("VARBINARY"               , SQL_VARBINARY             ); //mysql,  ,      ,mssql
+        types.put("VARCHAR"                 , SQL_VARCHAR               ); //mysql,pg,oracle,mssql
         types.put("VARCHAR2"                , SQL_VARCHAR               ); //     ,  ,oracle
-        types.put("XML"                     , SQL_XML                   ); //     ,pg
+        types.put("XML"                     , SQL_XML                   ); //     ,pg,      ,mssql
         types.put("YEAR"                    , SQL_YEAR                  ); //mysql
 
 

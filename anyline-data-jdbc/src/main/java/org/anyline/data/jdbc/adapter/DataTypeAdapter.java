@@ -85,27 +85,29 @@ public class DataTypeAdapter {
         types.put("JSON"                    , SQL_JSON                  ); //mysql,pg,
         types.put("JSONB"                   , SQL_JSONB                 ); //     ,pg,
         types.put("LINE"                    , SQL_LINE                  ); //mysql,pg,
-        types.put("LSEG"                    , SQL_LSEG                  ); //     ,pg,
-        types.put("MACADDR"                 , SQL_MACADDR               ); //     ,pg,
-        types.put("MONEY"                   , SQL_MONEY                 ); //     ,pg,      ,mssql
-        types.put("NUMBER"                  , SQL_NUMBER                ); //     ,  ,oracle,
-        types.put("NCHAR"                   , SQL_NCHAR                 ); //     ,  ,oracle,
-        types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle,
-        types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle,
-        types.put("PATH"                    , SQL_PATH                  ); //     ,pg,
         types.put("LONG"                    , SQL_LONG                  ); //     ,  ,oracle,
         types.put("LONGBLOB"                , SQL_LONGBLOB              ); //mysql,
         types.put("LONGTEXT"                , SQL_LONGTEXT              ); //mysql,
+        types.put("LSEG"                    , SQL_LSEG                  ); //     ,pg,
+        types.put("MACADDR"                 , SQL_MACADDR               ); //     ,pg,
         types.put("MEDIUMBLOB"              , SQL_MEDIUMBLOB            ); //mysql,
         types.put("MEDIUMINT"               , SQL_MEDIUMINT             ); //mysql,
         types.put("MEDIUMTEXT"              , SQL_MEDIUMTEXT            ); //mysql,
         types.put("MULTILINESTRING"         , SQL_MULTILINESTRING       ); //mysql,
         types.put("MULTIPOINT"              , SQL_MULTIPOINT            ); //mysql,
         types.put("MULTIPOLYGON"            , SQL_MULTIPOLYGON          ); //mysql,
-        types.put("NUMERIC"                 , SQL_NUMERIC               ); //mysql,
+        types.put("MONEY"                   , SQL_MONEY                 ); //     ,pg,      ,mssql
+        types.put("NUMBER"                  , SQL_NUMBER                ); //     ,  ,oracle,
+        types.put("NCHAR"                   , SQL_NCHAR                 ); //     ,  ,oracle,mssql
+        types.put("NCLOB"                   , SQL_NCLOB                 ); //     ,  ,oracle,
+        types.put("NTEXT"                   , SQL_NTEXT                 ); //     ,  ,      ,mssql
+        types.put("NVARCHAR2"               , SQL_NVARCHAR2             ); //     ,  ,oracle,
+        types.put("NVARCHAR"                , SQL_NVARCHAR              ); //     ,  ,       ,mssql
+        types.put("NUMERIC"                 , SQL_NUMERIC               ); //mysql,pg,       ,mssql
+        types.put("PATH"                    , SQL_PATH                  ); //     ,pg,
         types.put("POINT"                   , SQL_POINT                 ); //mysql,pg,
         types.put("POLYGON"                 , SQL_POLYGON               ); //mysql,pg,
-        types.put("REAL"                    , SQL_REAL                  ); //mysql,
+        types.put("REAL"                    , SQL_REAL                  ); //mysql,  ,      ,mssql
         types.put("RAW"                     , SQL_RAW                   ); //     ,  ,oracle,
         types.put("ROWID"                   , SQL_ROWID                 ); //     ,  ,oracle,
         types.put("SERIAL"                  , SQL_SERIAL                ); //     ,pg,
@@ -113,27 +115,31 @@ public class DataTypeAdapter {
         types.put("SERIAL4"                 , SQL_SERIAL4               ); //     ,pg,
         types.put("SERIAL8"                 , SQL_SERIAL8               ); //     ,pg,
         types.put("SET"                     , SQL_SET                   ); //mysql,
+        types.put("SMALLDATETIME"           , SQL_SMALLDATETIME         ); //     ,  ,      ,mssql
+        types.put("SMALLMONEY"              , SQL_SMALLMONEY            ); //     ,  ,      ,mssql
         types.put("SMALLINT"                , SQL_SMALLINT              ); //mysql,
         types.put("SMALSERIAL"              , SQL_SERIAL2               ); //     ,pg,
-        types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg,
-        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg,
+        types.put("SQL_VARIANT"             , SQL_SQL_VARIANT           ); //     ,  ,      ,mssql
+        types.put("TEXT"                    , SQL_TEXT                  ); //mysql,pg,      ,mssql
+        types.put("TIME"                    , SQL_TIME                  ); //mysql,pg,      ,mssql
         types.put("TIMEZ"                   , SQL_TIMEZ                 ); //     ,pg,
-        types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle,
+        types.put("TIMESTAMP"               , SQL_TIMESTAMP             ); //mysql,pg,oracle,mssql
         types.put("TIMESTAMP_LOCAL_ZONE"    , SQL_TIMESTAMP_LOCAL_ZONE  ); //     ,pg,
         types.put("TIMESTAMP_ZONE"          , SQL_TIMESTAMP_ZONE        ); //     ,pg,
         types.put("TSQUERY"                 , SQL_TSQUERY               ); //     ,pg,
         types.put("TSVECTOR"                , SQL_TSVECTOR              ); //     ,pg,
         types.put("TXID_SNAPSHOT"           , SQL_TXID_SNAPSHOT         ); //     ,pg,
+        types.put("UNIQUEIDENTIFIER"        , SQL_UNIQUEIDENTIFIER      ); //     ,  ，     ,mssql
         types.put("UUID"                    , SQL_UUID                  ); //     ,pg,
         types.put("UROWID"                  , SQL_UROWID                ); //     ,  ,oracle,
         types.put("VARBIT"                  , SQL_VARBIT                ); //     ,pg,
         types.put("TINYBLOB"                , SQL_TINYBLOB              ); //mysql,
-        types.put("TINYINT"                 , SQL_TINYINT               ); //mysql,
+        types.put("TINYINT"                 , SQL_TINYINT               ); //mysql,  ,      ,mssql
         types.put("TINYTEXT"                , SQL_TINYTEXT              ); //mysql,
-        types.put("VARBINARY"               , SQL_VARBINARY             ); //mysql,
-        types.put("VARCHAR"                 , SQL_VARCHAR               ); //mysql,pg,oracle,
+        types.put("VARBINARY"               , SQL_VARBINARY             ); //mysql,  ,      ,mssql
+        types.put("VARCHAR"                 , SQL_VARCHAR               ); //mysql,pg,oracle,mssql
         types.put("VARCHAR2"                , SQL_VARCHAR2              ); //     ,  ,oracle,
-        types.put("XML"                     , SQL_XML                   ); //     ,pg,
+        types.put("XML"                     , SQL_XML                   ); //     ,pg,      ,mssql
         types.put("YEAR"                    , SQL_YEAR                  ); //mysql,
 
 
@@ -204,6 +210,10 @@ public class DataTypeAdapter {
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SQL_CHAR.write(value, def, placeholder);}
     };  //     ,  ,oracle
+    protected DataType SQL_NVARCHAR         = new ColumnType() {public String getName(){return "NVARCHAR";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return SQL_CHAR.write(value, def, placeholder);}
+    };  //     ,  ,     ,mssql
     protected DataType SQL_NVARCHAR2         = new ColumnType() {public String getName(){return "NVARCHAR2";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SQL_CHAR.write(value, def, placeholder);}
@@ -226,6 +236,11 @@ public class DataTypeAdapter {
         public Object write(Object value, Object def, boolean placeholder){return SQL_CHAR.write(value, def, placeholder);}
     };  //mysql,pg
 
+    protected DataType SQL_NTEXT              = new ColumnType() {public String getName(){return "NTEXT";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return SQL_CHAR.write(value, def, placeholder);}
+    };  //mssql
+
     protected DataType SQL_TINYTEXT          = new ColumnType() {public String getName(){return "TINYTEXT";}            public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SQL_CHAR.write(value, def, placeholder);}
@@ -242,6 +257,19 @@ public class DataTypeAdapter {
             return SQL_CHAR.write(value, def, placeholder);
         }
     };  //     ,  ,oracle
+    protected DataType SQL_SYSNAME          = new ColumnType() {public String getName(){return "SYSNAME";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_CHAR.write(value, def, placeholder);
+        }
+    };  //     ,  ,mssql
+    protected DataType SQL_UNIQUEIDENTIFIER          = new ColumnType() {public String getName(){return "UNIQUEIDENTIFIER";}            public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_UUID.write(value, def, placeholder);
+        }
+    };  //     ,  ,mssql
+
     protected DataType SQL_UUID              = new ColumnType() {public String getName(){return "UUID";}                public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -352,19 +380,19 @@ public class DataTypeAdapter {
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_LONG.write(value, def, placeholder);
         }
-    };  //
+    };  //pg
     protected DataType SQL_SERIAL4               = new ColumnType() {public String getName(){return "SERIAL4";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_LONG.write(value, def, placeholder);
         }
-    };  //
+    };  //pg
     protected DataType SQL_SERIAL8               = new ColumnType() {public String getName(){return "SERIAL8";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_LONG.write(value, def, placeholder);
         }
-    };  //
+    };  //pg
     protected DataType SQL_BIGERIAL               = new ColumnType() {public String getName(){return "BIGSERIAL";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -503,6 +531,12 @@ public class DataTypeAdapter {
             return SQL_DECIMAL.write(value, def, placeholder);
         }
     };  //     ,pg
+    protected DataType SQL_SMALLMONEY             = new ColumnType() {public String getName(){return "SMALLMONEY";}               public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_DECIMAL.write(value, def, placeholder);
+        }
+    };  //mssql
     protected DataType SQL_NUMERIC            = new ColumnType() {public String getName(){return "NUMERIC";}              public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return false;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -570,6 +604,13 @@ public class DataTypeAdapter {
     };  //mysql
 
     protected DataType SQL_DATETIME2          = new ColumnType() {public String getName(){return "DATETIME2";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_DATETIME.write(value, def, placeholder);
+        }
+    };  //mssql
+
+    protected DataType SQL_SMALLDATETIME          = new ColumnType() {public String getName(){return "SMALLDATETIME";}          public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_DATETIME.write(value, def, placeholder);
@@ -886,6 +927,10 @@ public class DataTypeAdapter {
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
     };  //mysql
+    protected DataType SQL_SQL_VARIANT         = new ColumnType() {public String getName(){return "SQL_VARIANT";}           public boolean isIgnorePrecision(){return false;}   public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
+    };  //mssql
 
 
 
