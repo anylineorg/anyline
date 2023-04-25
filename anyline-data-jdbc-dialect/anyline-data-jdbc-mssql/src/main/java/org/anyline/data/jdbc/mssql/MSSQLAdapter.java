@@ -136,11 +136,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				builder.append("SELECT "+cols+" FROM( \n"); 
 				builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(") 
 				.append(order) 
-				.append(") AS ROW_NUMBER \n"); 
+				.append(") AS PAGE_ROW_NUMBER_ \n");
 				builder.append("FROM( \n"); 
 				builder.append(sql); 
 				builder.append(") AS _TAB_I \n"); 
-				builder.append(") AS _TAB_O WHERE ROW_NUMBER BETWEEN "+(first+1)+" AND "+(last+1)); 
+				builder.append(") AS _TAB_O WHERE PAGE_ROW_NUMBER_ BETWEEN "+(first+1)+" AND "+(last+1));
 			} 
 			 
 		} 

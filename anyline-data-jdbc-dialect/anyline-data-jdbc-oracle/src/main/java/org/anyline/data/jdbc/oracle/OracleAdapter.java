@@ -107,12 +107,12 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}else{ 
 			// 分页 
 				builder.append("SELECT "+cols+" FROM( \n");
-				builder.append("SELECT TAB_I.* ,ROWNUM AS ROW_NUMBER \n"); 
+				builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
 				builder.append("FROM( \n"); 
 				builder.append(sql);
 				builder.append("\n").append(order);
 				builder.append(")  TAB_I \n");
-				builder.append(")  TAB_O WHERE ROW_NUMBER >= "+(first+1)+" AND ROW_NUMBER <= "+(last+1));
+				builder.append(")  TAB_O WHERE PAGE_ROW_NUMBER_ >= "+(first+1)+" AND PAGE_ROW_NUMBER_ <= "+(last+1));
 
 		} 
 		 
