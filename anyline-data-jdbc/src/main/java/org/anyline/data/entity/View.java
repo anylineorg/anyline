@@ -5,14 +5,14 @@ import org.anyline.data.listener.init.DefaultDDListener;
 public class View extends Table implements org.anyline.entity.data.View{
     protected String keyword = "VIEW"            ;
     protected View update;
-    protected String sql;
+    protected String definition;
 
-    public String getSql() {
-        return sql;
+    public String getDefinition() {
+        return definition;
     }
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 
 
@@ -57,7 +57,7 @@ public class View extends Table implements org.anyline.entity.data.View{
         view.listener = listener;
         view.autoDropColumn = autoDropColumn;
         view.update = update;
-        view.sql = sql;
+        view.definition = definition;
         return view;
     }
     public View update(){
