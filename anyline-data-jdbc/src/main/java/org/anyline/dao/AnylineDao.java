@@ -175,6 +175,21 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, Table> tables(String types);
 	public LinkedHashMap<String, Table> tables();
 
+
+	/* *****************************************************************************************************************
+	 * 													views
+	 ******************************************************************************************************************/
+	public LinkedHashMap<String, View> views(boolean greedy, String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, View> views(boolean greedy, String schema, String name, String types);
+	public LinkedHashMap<String, View> views(boolean greedy, String name, String types);
+	public LinkedHashMap<String, View> views(boolean greedy, String types);
+	public LinkedHashMap<String, View> views(boolean greedy);
+	public LinkedHashMap<String, View> views(String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, View> views(String schema, String name, String types);
+	public LinkedHashMap<String, View> views(String name, String types);
+	public LinkedHashMap<String, View> views(String types);
+	public LinkedHashMap<String, View> views();
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/

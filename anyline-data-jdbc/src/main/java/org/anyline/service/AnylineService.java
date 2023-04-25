@@ -638,6 +638,21 @@ public interface AnylineService<E>{
 	public List<String> tables(String types);
 	public List<String> tables();
 
+
+	public List<String> views(boolean greedy, String catalog, String schema, String name, String types);
+	public List<String> views(boolean greedy, String schema, String name, String types);
+	public List<String> views(boolean greedy, String name, String types);
+	public List<String> views(boolean greedy, String types);
+	public List<String> views(boolean greedy);
+
+
+	public List<String> views(String catalog, String schema, String name, String types);
+	public List<String> views(String schema, String name, String types);
+	public List<String> views(String name, String types);
+	public List<String> views(String types);
+	public List<String> views();
+
+
 	public List<String> mtables(boolean greedy, String catalog, String schema, String name, String types);
 	public List<String> mtables(boolean greedy, String schema, String name, String types);
 	public List<String> mtables(boolean greedy, String name, String types);
@@ -718,6 +733,8 @@ public interface AnylineService<E>{
 		 */
 		public boolean exists(Table table);
 		public boolean exists(boolean greedy, Table table);
+		public boolean exists(View view);
+		public boolean exists(boolean greedy, View view);
 		/**
 		 * tables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -748,6 +765,33 @@ public interface AnylineService<E>{
 		public Table table(String schema, String name);
 		public Table table(String name);
 
+
+
+		/* *****************************************************************************************************************
+		 * 													view
+		 ******************************************************************************************************************/
+
+
+		public LinkedHashMap<String,View> views(boolean greedy, String catalog, String schema, String name, String types);
+		public LinkedHashMap<String,View> views(boolean greedy, String schema, String name, String types);
+		public LinkedHashMap<String,View> views(boolean greedy, String name, String types);
+		public LinkedHashMap<String,View> views(boolean greedy, String types);
+		public LinkedHashMap<String,View> views(boolean greedy);
+
+		public LinkedHashMap<String,View> views(String catalog, String schema, String name, String types);
+		public LinkedHashMap<String,View> views(String schema, String name, String types);
+		public LinkedHashMap<String,View> views(String name, String types);
+		public LinkedHashMap<String,View> views(String types);
+		public LinkedHashMap<String,View> views();
+
+
+		public View view(boolean greedy, String catalog, String schema, String name);
+		public View view(boolean greedy, String schema, String name);
+		public View view(boolean greedy, String name);
+
+		public View view(String catalog, String schema, String name);
+		public View view(String schema, String name);
+		public View view(String name);
 
 		/* *****************************************************************************************************************
 		 * 													master table
