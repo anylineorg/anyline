@@ -473,15 +473,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.beforeExists(run);
 				}
 				Map<String, Object> map = null;
-				if (null != values && values.size() > 0) {
-					map = runtime.getTemplate().queryForMap(txt, values.toArray());
-				} else {
-					map = runtime.getTemplate().queryForMap(txt);
-				}
-				if (null == map) {
-					result = false;
-				} else {
-					result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+				if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)){
+					//>0:有占位 isEmpty:值为空
+				}else{
+					if (null != values && values.size() > 0) {
+						map = runtime.getTemplate().queryForMap(txt, values.toArray());
+					} else {
+						map = runtime.getTemplate().queryForMap(txt);
+					}
+					if (null == map) {
+						result = false;
+					} else {
+						result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+					}
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				if(null != listener){
@@ -503,9 +507,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			} catch (Exception e) {
 				if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常", 33), prepare,  paramLogFormat(values));
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), prepare,  paramLogFormat(values));
 				}
-				throw e;
+				if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+					throw e;
+				}
 			}
 		}finally {
 			// 自动切换回默认数据源
@@ -608,15 +614,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常", 33), sql, paramLogFormat(run.getUpdateColumns(),values));
-			}
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("insert异常",e);
+				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常:", 33)+e.toString(), sql, paramLogFormat(run.getUpdateColumns(),values));
+				}
+				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回默认数据源
@@ -661,11 +668,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
-
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				throw new SQLUpdateException("save空数据");
 			}else {
 				log.error("save空数据");
+				return -1;
 			}
 		}
 		if(data instanceof Collection){
@@ -792,7 +799,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != tags && tags.size()>0){
 				LinkedHashMap<String,PartitionTable> ptables = ptables(false, new MasterTable(dest), tags);
 				if(ptables.size() != 1){
-					throw new SQLUpdateException("分区表定位异常,主表:"+dest+",标签:"+BeanUtil.map2json(tags)+",分区表:"+BeanUtil.object2json(ptables.keySet()));
+					String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(ptables.keySet());
+					if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+						throw new SQLUpdateException(msg);
+					}else{
+						log.error(msg);
+						return -1;
+					}
 				}
 				dest = ptables.values().iterator().next().getName();
 			}
@@ -840,15 +853,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常", 33), sql, paramLogFormat(run.getInsertColumns(),values));
-			}
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("insert异常",e);
+				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, paramLogFormat(run.getInsertColumns(),values));
+				}
+				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回默认数据源
@@ -901,7 +915,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		List<Map<String,Object>> maps = null;
 		if(BasicUtil.isEmpty(sql)){
-			throw new SQLQueryException("未指定SQL");
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+				throw new SQLQueryException("未指定SQL");
+			}else{
+				log.error("未指定SQL");
+				return new ArrayList<>();
+			}
 		}
 		long fr = System.currentTimeMillis();
 		String random = "";
@@ -936,15 +955,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, maps.size());
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常", 33), sql, paramLogFormat(values));
-			}
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-				SQLQueryException ex = new SQLQueryException("query异常");
+				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString());
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, paramLogFormat(values));
+				}
+				e.printStackTrace();
 			}
 		}
 		return maps;
@@ -957,13 +977,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			int qty = rsmd.getColumnCount();
 			if (metadatas.isEmpty()) {
 				for (int i = 1; i <= qty; i++) {
-					org.anyline.entity.data.Column column = metadatas.get(rsmd.getColumnName(i)) ;
+					String name = rsmd.getColumnName(i);
+					if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
+						continue;
+					}
+					org.anyline.entity.data.Column column = metadatas.get(name) ;
 					column = adapter.column((Column) column, rsmd, i);
-					metadatas.put(column.getName().toUpperCase(), column);
+					metadatas.put(name.toUpperCase(), column);
 				}
 			}
 			for (int i = 1; i <= qty; i++) {
 				String name = rsmd.getColumnLabel(i);
+				if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
+					continue;
+				}
 				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
 				Object value = adapter.read(column, rs.getObject(name), null);
@@ -978,7 +1005,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	protected DataSet select(JDBCRuntime runtime, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
-			throw new SQLQueryException("未指定SQL");
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+				throw new SQLQueryException("未指定SQL");
+			}else{
+				log.error("未指定SQL");
+				return new DataSet();
+			}
 		}
 		long fr = System.currentTimeMillis();
 		String random = "";
@@ -1050,15 +1082,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常", 33), sql, paramLogFormat(values));
-			}
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-				SQLQueryException ex = new SQLQueryException("query异常",e);
+				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, paramLogFormat(values));
+				}
+				e.printStackTrace();
 			}
 		}
 		return set;
@@ -1131,10 +1164,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]" , random, LogUtil.format("SQL执行异常", 33),prepare, paramLogFormat(values));
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+				throw e;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]" , random, LogUtil.format("SQL执行异常:", 33)+e.toString(),prepare, paramLogFormat(values));
+				}
 			}
-			throw e;
 		}finally{
 			// 自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1250,14 +1286,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			result = false;
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常", 33), sql, paramLogFormat(inputs), paramLogFormat(outputs));
-			}
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("execute异常",e);
+				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(),e);
 				ex.setSql(sql);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, paramLogFormat(inputs), paramLogFormat(outputs));
+				}
+				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回默认数据源
@@ -1406,18 +1443,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn("{}[执行耗时:{}ms]", random, millis);
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
-						, random
-						, LogUtil.format("存储过程查询异常", 33)
-						, procedure.getName()
-						, paramLogFormat(inputs)
-						, paramLogFormat(outputs));
-			}
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-				SQLQueryException ex = new SQLQueryException("query异常",e);
+				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
+							, random
+							, LogUtil.format("存储过程查询异常:", 33)+e.toString()
+							, procedure.getName()
+							, paramLogFormat(inputs)
+							, paramLogFormat(outputs));
+				}
+				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回默认数据源
@@ -1549,16 +1587,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				// result = 1;
 			}
 		}catch(Exception e){
-			if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("删除异常", 33), sql, paramLogFormat(values));
-			}
 			result = 0;
-			e.printStackTrace();
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("delete异常",e);
+				SQLUpdateException ex = new SQLUpdateException("delete异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("删除异常:", 33)+e.toString(), sql, paramLogFormat(values));
+				}
+				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回默认数据源
@@ -1618,8 +1657,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			ds = runtime.getTemplate().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
-			
 			// 根据系统表查询
 			try{
 				List<String> sqls = adapter.buildQueryDatabaseRunSQL();
@@ -1704,11 +1741,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				tps = types.toUpperCase().trim().split(",");
 			}
 
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"_"+types);
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
-					LinkedHashMap<String,Table> all = tables(greedy, catalog, schema, null, types);
+					LinkedHashMap<String,Table> all = tables(greedy, catalog, schema, null, null);
 					if(!greedy) {
 						for (Table table : all.values()) {
 							if ((catalog + "_" + schema).equals(table.getCatalog() + "_" + table.getSchema())) {
@@ -1817,6 +1854,175 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public LinkedHashMap<String,Table> tables(){
 		return tables(false, null, null, null, "TABLE");
 	}
+
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, View> views(String catalog, String schema, String name, String types)
+	 * public LinkedHashMap<String, View> views(String schema, String name, String types)
+	 * public LinkedHashMap<String, View> views(String name, String types)
+	 * public LinkedHashMap<String, View> views(String types)
+	 * public LinkedHashMap<String, View> views()
+	 ******************************************************************************************************************/
+
+	/**
+	 * views
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
+	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+	 * @return List
+	 */
+	@Override
+	public LinkedHashMap<String, View> views(boolean greedy, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String,View> views = new LinkedHashMap<>();
+		DataSource ds = null;
+		Connection con = null;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		String random = random();
+		try{
+			long fr = System.currentTimeMillis();
+			ds = runtime.getTemplate().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			View search = new View();
+			if(null == catalog || null == schema){
+				View tmp = new View();
+				if(!greedy) {
+					adapter.checkSchema(con, tmp);
+				}
+				if(null == catalog){
+					catalog = tmp.getCatalog();
+				}
+				if(null == schema){
+					schema = tmp.getSchema();
+				}
+			}
+			search.setName(pattern);
+			search.setCatalog(catalog);
+			search.setSchema(schema);
+
+			String[] tps = null;
+			if(null != types){
+				tps = types.toUpperCase().trim().split(",");
+			}
+
+			DataRow view_map = CacheProxy.getViewMaps(DataSourceHolder.curDataSource()+"");
+			if(null != pattern){
+				if(view_map.isEmpty()){
+					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
+					LinkedHashMap<String,View> all = views(greedy, catalog, schema, null, types);
+					if(!greedy) {
+						for (View view : all.values()) {
+							if ((catalog + "_" + schema).equals(view.getCatalog() + "_" + view.getSchema())) {
+								view_map.put(view.getName(greedy).toUpperCase(), view.getName(greedy));
+							}
+						}
+					}
+				}
+				if(view_map.containsKey(search.getName(greedy).toUpperCase())){
+					pattern = view_map.getString(search.getName(greedy).toUpperCase());
+				}else{
+					pattern = search.getName(greedy);
+				}
+			}
+			// 根据系统表查询
+			try{
+				List<String> sqls = adapter.buildQueryViewRunSQL(catalog, schema, pattern, types);
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+							views = adapter.views(idx++, true, catalog, schema, views, set);
+						}
+					}
+				}
+			}catch (Exception e){
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+				}
+			}
+
+			// 根据jdbc接口补充
+			try {
+				LinkedHashMap<String,View> tmps = adapter.views(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+				for(String key:tmps.keySet()){
+					View item = tmps.get(key);
+					if(null != item){
+						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+							views.put(key.toUpperCase(), item);
+						}
+					}
+				}
+			}catch (Exception e){
+				log.warn("{}[views][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, views.size(), System.currentTimeMillis() - fr);
+			}
+			if(BasicUtil.isNotEmpty(pattern)){
+				LinkedHashMap<String,View> tmps = new LinkedHashMap<>();
+				List<String> keys = BeanUtil.getMapKeys(views);
+				for(String key:keys){
+					View item = views.get(key);
+					String name = item.getName(greedy);
+					if(RegularUtil.match(name, pattern)){
+						tmps.put(name.toUpperCase(), item);
+					}
+				}
+				views = tmps;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return views;
+	}
+
+	@Override
+	public LinkedHashMap<String,View> views(boolean greedy, String schema, String name, String types){
+		return views(greedy, null, schema, name, types);
+	}
+	@Override
+	public LinkedHashMap<String,View> views(boolean greedy, String name, String types){
+		return views(greedy, null, null, name, types);
+	}
+	@Override
+	public LinkedHashMap<String,View> views(boolean greedy, String types){
+		return views(greedy, null, null, types);
+	}
+	@Override
+	public LinkedHashMap<String,View> views(boolean greedy){
+		return views(greedy, null, null, null, "TABLE");
+	}
+
+	public LinkedHashMap<String, View> views(String catalog, String schema, String pattern, String types){
+		return views(false, catalog, schema, pattern, types);
+	}
+
+	@Override
+	public LinkedHashMap<String,View> views(String schema, String name, String types){
+		return views(false, null, schema, name, types);
+	}
+	@Override
+	public LinkedHashMap<String,View> views(String name, String types){
+		return views(false, null, null, name, types);
+	}
+	@Override
+	public LinkedHashMap<String,View> views(String types){
+		return views(false, null, null, types);
+	}
+	@Override
+	public LinkedHashMap<String,View> views(){
+		return views(false, null, null, null, "TABLE");
+	}
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1856,7 +2062,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"");
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"_"+types);
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -3127,7 +3333,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == table){
 			LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
 			if(tables.size() ==0){
-				throw new AnylineException("表不存在:"+column.getTableName());
+				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+					throw new AnylineException("表不存在:" + column.getTableName());
+				}else{
+					log.error("表不存在:" + column.getTableName());
+				}
 			}else {
 				table = tables.values().iterator().next();
 			}
@@ -3277,7 +3487,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == table){
 			LinkedHashMap<String,Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
 			if(tables.size() ==0){
-				throw new AnylineException("表不存在:"+tag.getTableName());
+				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+					throw new AnylineException("表不存在:" + tag.getTableName());
+				}else {
+					log.error("表不存在:" + tag.getTableName());
+				}
 			}else {
 				table = tables.values().iterator().next();
 			}
@@ -3419,7 +3633,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == table){
 			LinkedHashMap<String,Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(), "TABLE");
 			if(tables.size() ==0){
-				throw new AnylineException("表不存在:"+primary.getTableName());
+				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+					throw new AnylineException("表不存在:" + primary.getTableName());
+				}else{
+					log.error("表不存在:" + primary.getTableName());
+				}
 			}else {
 				table = tables.values().iterator().next();
 			}
@@ -3535,7 +3753,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == table){
 			LinkedHashMap<String,Table> tables = tables(false, index.getCatalog(), index.getSchema(), index.getTableName(), "TABLE");
 			if(tables.size() ==0){
-				throw new AnylineException("表不存在:"+index.getTableName());
+				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+					throw new AnylineException("表不存在:" + index.getTableName());
+				}else{
+					log.error("表不存在:" + index.getTableName());
+				}
 			}else {
 				table = tables.values().iterator().next();
 			}
@@ -3650,7 +3872,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == table){
 			LinkedHashMap<String,Table> tables = tables(false, constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(), "TABLE");
 			if(tables.size() ==0){
-				throw new AnylineException("表不存在:"+constraint.getTableName());
+				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+					throw new AnylineException("表不存在:" + constraint.getTableName());
+				}else{
+					log.error("表不存在:" + constraint.getTableName());
+				}
 			}else {
 				table = tables.values().iterator().next();
 			}

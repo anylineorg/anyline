@@ -422,7 +422,7 @@ public interface JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
-	 * @param types types
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
@@ -448,12 +448,54 @@ public interface JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
-	 * @param types types
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
+
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询视图
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @return String
+	 */
+	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+
+	/**
+	 *  根据查询结果集构造View
+	 * @param index 第几条SQL 对照buildQueryViewRunSQL返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set set
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception;
+
+	/**
+	 * 根据JDBC补充
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param views 上一步查询结果
+	 * @param dbmd DatabaseMetaData
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -751,6 +793,7 @@ public interface JDBCAdapter {
 	 *
 	 * =================================================================================================================
 	 * table			: 表
+	 * view  			: 视图
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
@@ -853,6 +896,76 @@ public interface JDBCAdapter {
 	 */
 	public StringBuilder name(StringBuilder builder, Table table);
 
+
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 ******************************************************************************************************************/
+
+	/**
+	 * 创建视图
+	 * @param view 视图
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildCreateRunSQL(View view) throws Exception;
+
+	/**
+	 * 添加视图备注(视图创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param view 视图
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(View view) throws Exception;
+
+	/**
+	 * 修改视图
+	 * @param view 视图
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildAlterRunSQL(View view) throws Exception;
+
+	/**
+	 * 重命名
+	 * @param view 视图
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildRenameRunSQL(View view) throws Exception;
+
+	/**
+	 * 修改备注
+	 * @param view 视图
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildChangeCommentRunSQL(View view) throws Exception;
+
+	/**
+	 * 删除视图
+	 * @param view 视图
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildDropRunSQL(View view) throws Exception;
+
+	/**
+	 * 创建或删除视图之前  检测视图是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkViewExists(StringBuilder builder, boolean exists);
+
+	/**
+	 * 视图备注
+	 * @param builder builder
+	 * @param view 视图
+	 * @return StringBuilder
+	 */
+	public StringBuilder comment(StringBuilder builder, View view);
 
 	/* *****************************************************************************************************************
 	 * 													master table

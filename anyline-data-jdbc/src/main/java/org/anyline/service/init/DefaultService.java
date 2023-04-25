@@ -1824,6 +1824,46 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
 
+
+    @Override
+    public List<String> views(boolean greedy, String catalog, String schema, String name, String types){
+        LinkedHashMap<String, View> views = metadata.views(greedy, catalog, schema, name, types);
+        List<String> list = new ArrayList<>();
+        for(View view:views.values()){
+            list.add(view.getName());
+        }
+        return list;
+    }
+    public List<String> views(boolean greedy, String schema, String name, String types){
+        return views(greedy, null, schema, name, types);
+    }
+    public List<String> views(boolean greedy, String name, String types){
+        return views(greedy, null, null, name, types);
+    }
+    public List<String> views(boolean greedy, String types){
+        return views(greedy, null, null, null, types);
+    }
+    public List<String> views(boolean greedy){
+        return views(greedy, null);
+    }
+
+    @Override
+    public List<String> views(String catalog, String schema, String name, String types){
+        return views(false, catalog, schema, name, types);
+    }
+    public List<String> views(String schema, String name, String types){
+        return views(false, null, schema, name, types);
+    }
+    public List<String> views(String name, String types){
+        return views(false, null, null, name, types);
+    }
+    public List<String> views(String types){
+        return views(false, null, null, null, types);
+    }
+    public List<String> views(){
+        return views(false, null);
+    }
+
     @Override
     public List<String> mtables(boolean greedy, String catalog, String schema, String name, String types) {
         LinkedHashMap<String, MasterTable> tables = metadata.mtables(greedy, catalog, schema, name, types);
@@ -2141,6 +2181,117 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
 
+        /* *****************************************************************************************************************
+         * 													view
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean exists(View view)
+         * public LinkedHashMap<String,View> views(String catalog, String schema, String name, String types)
+         * public LinkedHashMap<String,View> views(String schema, String name, String types)
+         * public LinkedHashMap<String,View> views(String name, String types)
+         * public LinkedHashMap<String,View> views(String types)
+         * public LinkedHashMap<String,View> views()
+         * public View view(String catalog, String schema, String name)
+         * public View view(String schema, String name)
+         * public View view(String name)
+         ******************************************************************************************************************/
+
+        @Override
+        public boolean exists(boolean greedy, View view) {
+            if(null != view(greedy, view.getCatalog(), view.getSchema(), view.getName())){
+                return true;
+            }
+            return false;
+        }
+        @Override
+        public boolean exists(View view) {
+            return exists(false, view);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(boolean greedy, String schema, String name, String types) {
+            return views(greedy,null, schema, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(boolean greedy, String name, String types) {
+            return views(greedy,null, null, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(boolean greedy, String types) {
+            return views(greedy,null, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(boolean greedy) {
+            return views(greedy,null);
+        }
+
+
+        @Override
+        public LinkedHashMap<String, View> views(boolean greedy, String catalog, String schema, String name, String types) {
+            return dao.views(greedy, catalog, schema, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(String schema, String name, String types) {
+            return views(false, null, schema, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(String name, String types) {
+            return views(false, null, null, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views(String types) {
+            return views(false, null, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, View> views() {
+            return views(false, null);
+        }
+
+
+        @Override
+        public LinkedHashMap<String, View> views(String catalog, String schema, String name, String types) {
+            return dao.views(false, catalog, schema, name, types);
+        }
+        @Override
+        public View view(boolean greedy, String catalog, String schema,String name) {
+            View view = null;
+            LinkedHashMap<String, View> views = views(greedy, catalog, schema, name,null);
+            if(views.size()>0){
+                view = views.values().iterator().next();
+                view.setColumns(columns(view));
+                view.setTags(tags(view));
+                view.setIndexs(indexs(view));
+            }
+            return view;
+        }
+        @Override
+        public View view(boolean greedy, String schema,String name) {
+            return view(greedy, null, schema, name);
+        }
+        @Override
+        public View view(boolean greedy, String name) {
+            return view(greedy, null, null, name);
+        }
+
+
+        @Override
+        public View view(String catalog, String schema, String name) {
+            return view(false, catalog, schema, name);
+        }
+        @Override
+        public View view(String schema,String name) {
+            return view(false, null, schema, name);
+        }
+        @Override
+        public View view(String name) {
+            return view(false, null, null, name);
+        }
         /* *****************************************************************************************************************
          * 													master table
          * -----------------------------------------------------------------------------------------------------------------
