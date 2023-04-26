@@ -22,7 +22,6 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
     JSON                    (org.anyline.data.metadata.DataType.JSON                ) ,
     JSONB                   (org.anyline.data.metadata.DataType.JSONB               ) ,
     LINE                    (org.anyline.data.metadata.DataType.LINE                ) ,
-    LONG                    (org.anyline.data.metadata.DataType.LONG                ) ,
     LSEG                    (org.anyline.data.metadata.DataType.LSEG                ) ,
     MACADDR                 (org.anyline.data.metadata.DataType.MACADDR             ) ,
     MONEY                   (org.anyline.data.metadata.DataType.MONEY               ) ,

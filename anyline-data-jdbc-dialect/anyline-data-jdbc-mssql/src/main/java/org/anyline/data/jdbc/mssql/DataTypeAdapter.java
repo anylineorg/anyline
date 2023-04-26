@@ -68,7 +68,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("JSON"                    , DataType.ILLEGAL               ); //mysql,pg
         types.put("JSONB"                   , DataType.ILLEGAL               ); //     ,pg
         types.put("LINE"                    , DataType.ILLEGAL               ); //mysql,pg
-        types.put("LONG"                    , DataType.BIGINT                ); //     ,pg
+        types.put("LONG"                    , DataType.BIGINT                ); //     ,  ,oracle
         types.put("LONGBLOB"                , DataType.VARBINARY             ); //mysql
         types.put("LONGTEXT"                , DataType.TEXT                  ); //mysql
         types.put("LSEG"                    , DataType.ILLEGAL               ); //     ,pg

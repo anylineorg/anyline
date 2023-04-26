@@ -31,8 +31,8 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("BFILE"                   , DataType.ILLEGAL               ); //     ,  ,oracle,
         types.put("BINARY_DOUBLE"           , DataType.FLOAT8                ); //     ,  ,oracle,
         types.put("BINARY_FLOAT"            , DataType.FLOAT4                ); //     ,  ,oracle,
-        types.put("BIGINT"                  , DataType.LONG                  ); //mysql,  ,      ,mssql,
-        types.put("BIGSERIAL"               , DataType.LONG                  ); //     ,pg,
+        types.put("BIGINT"                  , DataType.INT8                  ); //mysql,  ,      ,mssql,
+        types.put("BIGSERIAL"               , DataType.BIGSERIAL             ); //     ,pg,
         types.put("BINARY"                  , DataType.BIT                   ); //mysql,  ,      ,mssql,
         types.put("BIT"                     , DataType.BIT                   ); //mysql,pg,      ,mssql,
         types.put("BLOB"                    , DataType.BYTEA                 ); //mysql,  ,oracle,     ,sqlite
@@ -68,7 +68,7 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         types.put("JSON"                    , DataType.JSON                  ); //mysql,pg
         types.put("JSONB"                   , DataType.JSONB                 ); //     ,pg
         types.put("LINE"                    , DataType.LINE                  ); //mysql,pg
-        types.put("LONG"                    , DataType.LONG                  ); //     ,pg
+        types.put("LONG"                    , DataType.INT8                  ); //     ,  ,oracle
         types.put("LONGBLOB"                , DataType.BYTEA                 ); //mysql
         types.put("LONGTEXT"                , DataType.TEXT                  ); //mysql
         types.put("LSEG"                    , DataType.LSEG                  ); //     ,pg
