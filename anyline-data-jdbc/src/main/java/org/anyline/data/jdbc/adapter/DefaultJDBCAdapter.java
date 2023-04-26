@@ -33,7 +33,7 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.mdtadata.DataType;
+import org.anyline.entity.metadata.DataType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -2615,9 +2615,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		String typeName = column.getTypeName();
 		DataType type = type(typeName);
 		if(null != type){
-			isIgnorePrecision = type.isIgnorePrecision();
-			isIgnoreScale = type.isIgnoreScale();
-			typeName = type.getName();
+			isIgnorePrecision = type.ignorePrecision();
+			isIgnoreScale = type.ignoreScale();
+			typeName = type.type();
 		}else{
 			isIgnorePrecision = isIgnorePrecision(column);
 			isIgnoreScale = isIgnoreScale(column);
