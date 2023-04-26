@@ -112,7 +112,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
-     * mysql,pg
+     * mysql,pg,sqlite
      */
     ,TEXT("TEXT", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
@@ -393,7 +393,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
         public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
     }
     /**
-     * mysql
+     * mysql,sqlite
      */
     ,INTEGER("MEDIUMINT", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
@@ -524,7 +524,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
-     * mysql
+     * mysql,sqlite
      */
     ,NUMERIC("NUMERIC", BigDecimal.class, false, false){
         public Object read(Object value, Class clazz){return value;}
@@ -538,7 +538,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
-     * mysql
+     * mysql,sqlite
      */
     ,REAL("REAL", Float.class, false, false){
         public Object read(Object value, Class clazz){return value;}
@@ -703,7 +703,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
      *
      * ****************************************************************************************************************/
     /**
-     * mysql,  ,oracle
+     * mysql,  ,oracle,sqlite
      */
     ,BLOB("BLOB", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
