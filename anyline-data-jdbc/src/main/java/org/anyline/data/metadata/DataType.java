@@ -408,7 +408,7 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
     /**
      * mysql
      */
-    ,TINYINT("TINYINT", Short.class, true, true){
+    ,TINYINT("TINYINT", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
     }
@@ -575,7 +575,7 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
     /**
      * mysql
      */
-    ,DATETIME("DATE", java.sql.Timestamp.class, true, true){
+    ,DATETIME("DATETIME", LocalDateTime.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
