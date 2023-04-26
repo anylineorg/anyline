@@ -1,9 +1,9 @@
 package org.anyline.entity.mdtadata;
 
 public interface DataType {
-    public static DataType NOT_SUPPORT = new DataType() {
+    public static DataType ILLEGAL = new DataType() {
         @Override
-        public String getName() {
+        public String type() {
             return null;
         }
 
@@ -18,12 +18,16 @@ public interface DataType {
         }
 
         @Override
-        public boolean isIgnorePrecision() {
+        public boolean ignorePrecision() {
             return false;
         }
 
         @Override
-        public boolean isIgnoreScale() {
+        public boolean ignoreScale() {
+            return false;
+        }
+        @Override
+        public boolean support() {
             return false;
         }
     };
@@ -31,7 +35,7 @@ public interface DataType {
      * 数据类型名称,为兼容不同数据库书写习惯,name有可能是别名与数据库不一致,别名中的所有方法调用原类型方法
      * @return String
      */
-    public abstract String getName();
+    public abstract String type();
 
     /**
      * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
@@ -60,6 +64,7 @@ public interface DataType {
      * 定义列时 数据类型格式
      * @return boolean
      */
-    public abstract boolean isIgnorePrecision();
-    public abstract boolean isIgnoreScale();
+    public abstract boolean ignorePrecision();
+    public abstract boolean ignoreScale();
+    public abstract boolean support();
 }
