@@ -346,7 +346,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     /**
      * pg
      */
-    ,SAMLLSERIAL("SERIAL2", Long.class, true, true){
+    ,SMALLSERIAL("SERIAL2", Long.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
     }
@@ -434,7 +434,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
      * ****************************************************************************************************************/
 
     /**
-     * mysql,  ,oracle
+     * mysql,pg,oracle
      */
     ,DECIMAL("DECIMAL", BigDecimal.class, false, false){
         public Object read(Object value, Class clazz){return value;}
@@ -682,7 +682,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     /**
      * pg
      */
-    ,IMESTAMP_LOCAL_ZONE("TIMESTAMP", java.sql.Timestamp.class, true, true){
+    ,TIMESTAMP_LOCAL_ZONE("TIMESTAMP", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return DATETIME.write(value, def, placeholder);

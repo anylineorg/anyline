@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.postgresql;
 
 public enum DataType implements org.anyline.entity.mdtadata.DataType{
-    ILLEGAL                 (org.anyline.data.metadata.DataType.ILLEGAL         ),
+    ILLEGAL                 (org.anyline.data.metadata.DataType.ILLEGAL             ),
     BIGSERIAL               (org.anyline.data.metadata.DataType.BIGSERIAL           ) ,
     BIT                     (org.anyline.data.metadata.DataType.BIT                 ) ,
     BOOL                    (org.anyline.data.metadata.DataType.BOOL                ) ,
@@ -11,11 +11,14 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     CIDR                    (org.anyline.data.metadata.DataType.CIDR                ) ,
     CIRCLE                  (org.anyline.data.metadata.DataType.CIRCLE              ) ,
     DATE                    (org.anyline.data.metadata.DataType.DATE                ) ,
+    DECIMAL                 (org.anyline.data.metadata.DataType.DECIMAL             ) ,
     FLOAT4                  (org.anyline.data.metadata.DataType.FLOAT4              ) ,
     FLOAT8                  (org.anyline.data.metadata.DataType.FLOAT8              ) ,
     INET                    (org.anyline.data.metadata.DataType.INET                ) ,
     INTERVAL                (org.anyline.data.metadata.DataType.INTERVAL            ) ,
     INT2                    (org.anyline.data.metadata.DataType.INT2                ) ,
+    INT4                    (org.anyline.data.metadata.DataType.INT4                ) ,
+    INT8                    (org.anyline.data.metadata.DataType.INT8                ) ,
     JSON                    (org.anyline.data.metadata.DataType.JSON                ) ,
     JSONB                   (org.anyline.data.metadata.DataType.JSONB               ) ,
     LINE                    (org.anyline.data.metadata.DataType.LINE                ) ,
@@ -30,7 +33,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     SERIAL2                 (org.anyline.data.metadata.DataType.SERIAL2             ) ,
     SERIAL4                 (org.anyline.data.metadata.DataType.SERIAL4             ) ,
     SERIAL8                 (org.anyline.data.metadata.DataType.SERIAL8             ) ,
-    SMALLSERIAL             (org.anyline.data.metadata.DataType.SMALLSERIAL        ) ,
+    SMALLSERIAL             (org.anyline.data.metadata.DataType.SMALLSERIAL         ) ,
     TEXT                    (org.anyline.data.metadata.DataType.TEXT                ) ,
     TIME                    (org.anyline.data.metadata.DataType.TIME                ) ,
     TIMEZ                   (org.anyline.data.metadata.DataType.TIMEZ               ) ,
