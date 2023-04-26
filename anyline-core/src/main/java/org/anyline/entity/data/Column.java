@@ -1,7 +1,7 @@
 package org.anyline.entity.data;
 
-import org.anyline.entity.mdtadata.ColumnType;
-import org.anyline.entity.mdtadata.JavaType;
+import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.metadata.JavaType;
 
 import java.io.Serializable;
 

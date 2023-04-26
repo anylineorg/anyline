@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.postgresql;
 
-public enum DataType implements org.anyline.entity.mdtadata.DataType{
+public enum DataType implements org.anyline.entity.metadata.DataType{
     ILLEGAL                 (org.anyline.data.metadata.DataType.ILLEGAL             ),
     BIGSERIAL               (org.anyline.data.metadata.DataType.BIGSERIAL           ) ,
     BIT                     (org.anyline.data.metadata.DataType.BIT                 ) ,
@@ -48,9 +48,9 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     VARCHAR                 (org.anyline.data.metadata.DataType.VARCHAR             ) ,
     XML                     (org.anyline.data.metadata.DataType.XML                 ) ;
 
-    private final  org.anyline.entity.mdtadata.DataType standard;
+    private final  org.anyline.entity.metadata.DataType standard;
 
-    private DataType(org.anyline.entity.mdtadata.DataType standard){
+    private DataType(org.anyline.entity.metadata.DataType standard){
         this.standard = standard;
     }
     @Override

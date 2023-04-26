@@ -1,15 +1,15 @@
 package org.anyline.data.jdbc.sqlite;
 
-public enum DataType implements org.anyline.entity.mdtadata.DataType{
+public enum DataType implements org.anyline.entity.metadata.DataType{
     ILLEGAL          (org.anyline.data.metadata.DataType.ILLEGAL         ),
     INTEGER           (org.anyline.data.metadata.DataType.BIGINT         ),
     REAL           (org.anyline.data.metadata.DataType.BINARY            ),
     TEXT              (org.anyline.data.metadata.DataType.BIT            ),
     BLOB             (org.anyline.data.metadata.DataType.CHAR            );
 
-    private final  org.anyline.entity.mdtadata.DataType standard;
+    private final  org.anyline.entity.metadata.DataType standard;
 
-    private DataType(org.anyline.entity.mdtadata.DataType standard){
+    private DataType(org.anyline.entity.metadata.DataType standard){
         this.standard = standard;
     }
     @Override

@@ -1,4 +1,4 @@
-package org.anyline.entity.mdtadata;
+package org.anyline.entity.metadata;
 
 public interface DataType {
     public static DataType ILLEGAL = new DataType() {

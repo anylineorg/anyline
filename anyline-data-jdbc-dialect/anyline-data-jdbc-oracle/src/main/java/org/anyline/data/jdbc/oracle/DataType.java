@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.oracle;
 
-public enum DataType implements org.anyline.entity.mdtadata.DataType{
+public enum DataType implements org.anyline.entity.metadata.DataType{
     ILLEGAL                 (org.anyline.data.metadata.DataType.ILLEGAL         ),
     BFILE                   (org.anyline.data.metadata.DataType.BFILE           ),
     BINARY_DOUBLE           (org.anyline.data.metadata.DataType.BINARY_DOUBLE   ),
@@ -20,9 +20,9 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     UROWID                  (org.anyline.data.metadata.DataType.UROWID          ),
     VARCHAR                 (org.anyline.data.metadata.DataType.VARCHAR         ),
     VARCHAR2                (org.anyline.data.metadata.DataType.VARCHAR2        );
-    private final  org.anyline.entity.mdtadata.DataType standard;
+    private final  org.anyline.entity.metadata.DataType standard;
 
-    private DataType(org.anyline.entity.mdtadata.DataType standard){
+    private DataType(org.anyline.entity.metadata.DataType standard){
         this.standard = standard;
     }
     @Override

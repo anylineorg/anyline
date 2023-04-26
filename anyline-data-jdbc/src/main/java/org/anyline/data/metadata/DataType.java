@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
-import org.anyline.entity.mdtadata.ColumnType;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
-public enum DataType implements org.anyline.entity.mdtadata.DataType{
+public enum DataType implements org.anyline.entity.metadata.DataType{
 
 
     /* *****************************************************************************************************************
