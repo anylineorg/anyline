@@ -465,7 +465,7 @@ public class Table implements org.anyline.entity.data.Table{
     }
 
     public String getKeyword() {
-        return this.keyword;
+        return keyword;
     }
 
     public String toString(){

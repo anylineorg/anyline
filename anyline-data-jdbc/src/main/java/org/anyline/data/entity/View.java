@@ -66,6 +66,10 @@ public class View extends Table implements org.anyline.entity.data.View{
         return update;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
     public String toString(){
         return this.keyword+":"+name;
     }
