@@ -9,8 +9,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapter {
+
     private static Map<String, DataType> types = new Hashtable<>();
-    
     public  DataType type(String type){
         if(null != type){
             DataType dt = types.get(type.toUpperCase());
@@ -21,6 +21,48 @@ public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapt
         }
         return null;
     }
+    protected DataType PG_BIGSERIAL                   = super.SQL_BIGSERIAL            ;
+    protected DataType PG_BIT                         = super.SQL_BIT                  ;
+    protected DataType PG_BOOL                        = super.SQL_BOOL                 ;
+    protected DataType PG_BOX                         = super.SQL_BOX                  ;
+    protected DataType PG_BYTEA                       = super.SQL_BYTEA                ;
+    protected DataType PG_CHAR                        = super.SQL_CHAR                 ;
+    protected DataType PG_CIDR                        = super.SQL_CIDR                 ;
+    protected DataType PG_CIRCLE                      = super.SQL_CIRCLE               ;
+    protected DataType PG_DATE                        = super.SQL_DATE                 ;
+    protected DataType PG_FLOAT4                      = super.SQL_FLOAT4               ;
+    protected DataType PG_FLOAT8                      = super.SQL_FLOAT8               ;
+    protected DataType PG_INET                        = super.SQL_INET                 ;
+    protected DataType PG_INTERVAL                    = super.SQL_INTERVAL             ;
+    protected DataType PG_INT2                        = super.SQL_INT2                 ;
+    protected DataType PG_JSON                        = super.SQL_JSON                 ;
+    protected DataType PG_JSONB                       = super.SQL_JSONB                ;
+    protected DataType PG_LINE                        = super.SQL_LINE                 ;
+    protected DataType PG_LONG                        = super.SQL_LONG                 ;
+    protected DataType PG_LSEG                        = super.SQL_LSEG                 ;
+    protected DataType PG_MACADDR                     = super.SQL_MACADDR              ;
+    protected DataType PG_MONEY                       = super.SQL_MONEY                ;
+    protected DataType PG_PATH                        = super.SQL_PATH                 ;
+    protected DataType PG_POINT                       = super.SQL_POINT                ;
+    protected DataType PG_POLYGON                     = super.SQL_POLYGON              ;
+    protected DataType PG_SERIAL                      = super.SQL_SERIAL               ;
+    protected DataType PG_SERIAL2                     = super.SQL_SERIAL2              ;
+    protected DataType PG_SERIAL4                     = super.SQL_SERIAL4              ;
+    protected DataType PG_SERIAL8                     = super.SQL_SERIAL8              ;
+    protected DataType PG_SMALLSERIAL                 = super.SQL_SAMLLSERIAL          ;
+    protected DataType PG_TEXT                        = super.SQL_TEXT                 ;
+    protected DataType PG_TIME                        = super.SQL_TIME                 ;
+    protected DataType PG_TIMEZ                       = super.SQL_TIMEZ                ;
+    protected DataType PG_TIMESTAMP                   = super.SQL_TIMESTAMP            ;
+    protected DataType PG_TIMESTAMP_LOCAL_ZONE        = super.SQL_TIMESTAMP_LOCAL_ZONE ;
+    protected DataType PG_TIMESTAMP_ZONE              = super.SQL_TIMESTAMP_ZONE       ;
+    protected DataType PG_TSQUERY                     = super.SQL_TSQUERY              ;
+    protected DataType PG_TSVECTOR                    = super.SQL_TSVECTOR             ;
+    protected DataType PG_TXID_SNAPSHOT               = super.SQL_TXID_SNAPSHOT        ;
+    protected DataType PG_UUID                        = super.SQL_UUID                 ;
+    protected DataType PG_VARBIT                      = super.SQL_VARBIT               ;
+    protected DataType PG_VARCHAR                     = super.SQL_VARCHAR              ;
+    protected DataType PG_XML                         = super.SQL_XML                  ;
     public DataTypeAdapter(){
         // 类型定位时通过key,先通过子类定位,失败后通过父类
         // key:开发中有可能书写的类型(特别是在多数据库环境下,创建表时不为mysql写一个脚本,pg写一个脚本,而一个脚本两处执行)

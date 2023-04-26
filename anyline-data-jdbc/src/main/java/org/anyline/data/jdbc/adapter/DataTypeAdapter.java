@@ -393,7 +393,13 @@ public class DataTypeAdapter {
             return SQL_LONG.write(value, def, placeholder);
         }
     };  //pg
-    protected DataType SQL_BIGERIAL               = new ColumnType() {public String getName(){return "BIGSERIAL";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+    protected DataType SQL_BIGSERIAL = new ColumnType() {public String getName(){return "BIGSERIAL";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){
+            return SQL_LONG.write(value, def, placeholder);
+        }
+    };  //
+    protected DataType SQL_SAMLLSERIAL = new ColumnType() {public String getName(){return "SAMLLSERIAL";}                 public boolean isIgnorePrecision(){return true;}    public boolean isIgnoreScale(){return true;}
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return SQL_LONG.write(value, def, placeholder);
