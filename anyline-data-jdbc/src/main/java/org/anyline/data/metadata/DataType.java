@@ -1,4 +1,4 @@
-package org.anyline.data.jdbc.adapter;
+package org.anyline.data.metadata;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.entity.DataRow;
@@ -41,18 +41,9 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
      *                                              String
      *
      * ****************************************************************************************************************/
-
-    UNSUPPORT("UNSUPPORT", String.class, true, true){
-        @Override
-        public Object read(Object value, Class clazz) {
-            return null;
-        }
-
-        @Override
-        public Object write(Object value, Object def, boolean placeholder) {
-            return null;
-        }
-    },
+    /**
+     * mysql,pg
+     */
     CHAR("CHAR", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -70,59 +61,101 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//mysql,pg
+    }
+    /**
+     * oracle,mssql
+     */
     ,NCHAR("NCHAR", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//     ,  ,oracle
+    }
+    /**
+     * oracle
+     */
     ,CLOB("CLOB", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//        ,oracle
+    }
+    /**
+     * oracle
+     */
     ,NCLOB("NCLOB", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//        ,oracle
+    }
+    /**
+     * mssql
+     */
     ,NVARCHAR("NVARCHAR", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//        ,mssql
+    }
+    /**
+     * oracle
+     */
     ,NVARCHAR2("NVARCHAR2", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//,oracle
+    }
+    /**
+     * mysql
+     */
     ,LONGTEXT("LONGTEXT", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,MEDIUMTEXT("MEDIUMTEXT", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql,pg
+     */
     ,TEXT("TEXT", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mysql,pg
+    }
+    /**
+     * mssql
+     */
     ,NTEXT("NTEXT", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * mysql
+     */
     ,TINYTEXT("TINYTEXT", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql,pg,oracle
+     */
     ,VARCHAR("VARCHAR", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mysql,pg,oracle
+    }
+    /**
+     * oracle
+     */
     ,VARCHAR2("VARCHAR2", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//oracle
+    }
+    /**
+     * mssql
+     */
     ,SYSNAME("SYSNAME", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * pg
+     */
     ,UUID("UUID", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -137,19 +170,28 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//pg
+    }
+    /**
+     * mssql
+     */
     ,UNIQUEIDENTIFIER("UNIQUEIDENTIFIER", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * mysql,mssql
+     */
     ,BINARY("BINARY", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * mysql,mssql
+     */
     ,VARBINARY("VARBINARY", String.class, false, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
 
 
     /* *****************************************************************************************************************
@@ -158,6 +200,9 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
      *
      * ****************************************************************************************************************/
 
+    /**
+     * mysql,pg
+     */
     ,JSON("JSON", String.class, true, true){
         public Object read(Object value, Class clazz){
             if(null == value){
@@ -181,18 +226,23 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql,pg
+    }
 
+    /**
+     * mssql
+     */
     ,XML("XML", String.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mssql
+    }
     /* *****************************************************************************************************************
      *
      *                                              number-int/long
      *
      * ****************************************************************************************************************/
-
+    /**
+     * mysql,mssql
+     */
     ,BIT("BIT", Byte.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -206,18 +256,23 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//mysql,mssql
-    //pg中作为数组存在,不同与mysql,mssql
+    }
+    /**
+     * pg中作为数组存在,不同与mysql,mssql
+     */
     ,BITS("BIT", Byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return value;
         }
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,VARBIT("VARBIT", Byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return BITS.write(value, def, placeholder);}
-    }//pg
+    }
     ,SHORT("SHORT", Short.class, true, true){public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -230,6 +285,9 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             return result;
         }
     }
+    /**
+     * mysql,mssql
+     */
     ,INT("INT", Integer.class, true, true){public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -241,7 +299,10 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return result;
         }
-    }//mysql
+    }
+    /**
+     * oracle
+     */
     ,LONG("LONG", Long.class, true, true){public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -253,69 +314,128 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return result;
         }
-    }//oracle
+    }
+    /**
+     * pg
+     */
     ,SERIAL("SERIAL", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,SERIAL2("SERIAL2", Short.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,SERIAL4("SERIAL4", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SERIAL.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,SERIAL8("SERIAL8", Long.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,SAMLLSERIAL("SERIAL2", Long.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,BIGSERIAL("SERIAL8", Long.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,INT2("INT2", Short.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
     }
+    /**
+     * pg
+     */
     ,INT4("INT4", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
     }
+    /**
+     * pg
+     */
     ,INT8("INT8", Long.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
     }
+    /**
+     * mysql
+     */
     ,BIGINT("BIGINT", Long.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,MEDIUMINT("MEDIUMINT", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,INTEGER("MEDIUMINT", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,SMALLINT("SMALLINT", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,TINYINT("TINYINT", Short.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * pg
+     */
+    ,BOOLEAN("BOOLEAN", Boolean.class, true, true){
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
+    }
+    /**
+     * pg
+     */
+    ,BOOL("BOOLEAN", Boolean.class, true, true){
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return BOOLEAN.write(value, def, placeholder);}
+    }
     /* *****************************************************************************************************************
      *
      *                                              number-double/float
      *
      * ****************************************************************************************************************/
 
+    /**
+     * mysql,  ,oracle
+     */
     ,DECIMAL("DECIMAL", BigDecimal.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -328,7 +448,10 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return result;
         }
-    }//mysql,  ,oracle
+    }
+    /**
+     * mysql
+     */
     ,DOUBLE("DOUBLE", Double.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -341,7 +464,10 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return result;
         }
-    }//mysql
+    }
+    /**
+     * mysql,  ,oracle
+     */
     ,FLOAT("FLOAT", Float.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -354,50 +480,79 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return result;
         }
-    }//mysql,  ,oracle
+    }
+    /**
+     * pg
+     */
     ,FLOAT4("FLOAT4", Float.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,FLOAT8("FLOAT4", Double.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * oracle
+     */
     ,BINARY_DOUBLE("BINARY_DOUBLE", Double.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
-    }//oracle
+    }
+    /**
+     * oracle
+     */
     ,BINARY_FLOAT("BINARY_FLOAT", Float.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
-    }//oracle
+    }
+    /**
+     * pg
+     */
     ,MONEY("MONEY", BigDecimal.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
-    }//pg
+    }
+    /**
+     * mssql
+     */
     ,SMALLMONEY("SMALLMONEY", BigDecimal.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * mysql
+     */
     ,NUMERIC("NUMERIC", BigDecimal.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * oracle
+     */
     ,NUMBER("NUMBER", BigDecimal.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
-    }//oracle
+    }
+    /**
+     * mysql
+     */
     ,REAL("REAL", Float.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
-    }//mysql
+    }
     /* *****************************************************************************************************************
      *
      *                                              date
      *                               write 需要根据数据库类型 由内置函数转换
      *
      * ****************************************************************************************************************/
-
+    /**
+     * mysql,pg,oracle
+     */
     ,DATE("DATE", java.sql.Date.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -417,7 +572,10 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//mysql,pg,oracle
+    }
+    /**
+     * mysql
+     */
     ,DATETIME("DATE", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -439,19 +597,39 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//mysql
+    }
+    /**
+     * mssql
+     */
     ,DATETIME2("DATETIME2", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DATETIME.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * mssql<br/>
+     * 2020-01-01 15:10:10.0000011
+     */
+    ,DATETIMEOFFSET("DATETIMEOFFSET", java.sql.Timestamp.class, true, true){
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+    }
+    /**
+     * mssql
+     */
     ,SMALLDATETIME("SMALLDATETIME", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DATETIME.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * mssql
+     */
     ,SQL_DATETIMEOFFSET("SQL_DATETIMEOFFSET", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DATETIME.write(value, def, placeholder);}
-    }//mssql
+    }
+    /**
+     * mysql,pg
+     */
     ,TIME("TIME", java.sql.Time.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -473,42 +651,60 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//mysql,pg
+    }
+    /**
+     * pg
+     */
     ,TIMEZ("TIMEZ", java.sql.Time.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
-    }//pg
+    }
+    /**
+     * mysql,pg,oracle
+     */
     ,TIMESTAMP("TIMESTAMP", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
-    }//mysql,pg,oracle
+    }
+    /**
+     * pg
+     */
     ,TIMESTAMP_ZONE("TIMESTAMP", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,IMESTAMP_LOCAL_ZONE("TIMESTAMP", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
-    }//pg
+    }
+    /**
+     * mysql
+     */
     ,YEAR("YEAR", java.sql.Date.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             return DATE.write(value, def, placeholder);
         }
-    }//mysql
+    }
     /* *****************************************************************************************************************
      *
      *                                              byte[]
      *
      * ****************************************************************************************************************/
+    /**
+     * mysql,  ,oracle
+     */
     ,BLOB("BLOB", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -533,51 +729,76 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }////mysql,  ,oracle
+    }
+    /**
+     * mysql
+     */
     ,LONGBLOB("LONGBLOB", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return BLOB.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,MEDIUMBLOB("MEDIUMBLOB", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return BLOB.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,TINYBLOB("TINYBLOB", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return BLOB.write(value, def, placeholder);}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,MULTILINESTRING("MULTILINESTRING", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * pg
+     */
     ,BYTEA("BYTEA", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,JSONB("JSONB", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return BLOB.write(value, def, placeholder);}
-    }//pg
+    }
     /* *****************************************************************************************************************
      *
      *                                              byte[]-file
      *
      * ****************************************************************************************************************/
-
+    /**
+     * mssql
+     */
     ,IMAGE("IMAGE", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mssql
+    }
+    /**
+     * oracle
+     */
     ,BFILE("BFILE", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//oracle
+    }
     /* *****************************************************************************************************************
      *
      *                                              byte[]-geometry
      *
      * ****************************************************************************************************************/
-
+    /**
+     * mysql,pg
+     */
     ,POINT("IMAGE", byte[].class, true, true){
         public Object read(Object value, Class clazz){
             if(null == value){
@@ -623,61 +844,98 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
             }
             return value;
         }
-    }//mysql,pg
-
-
+    }
+    /**
+     * mysql
+     */
     ,MULTIPOLYGON("MULTIPOLYGON", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,MULTIPOINT("MULTIPOINT", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * mysql,pg
+     */
     ,POLYGON("POLYGON", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql,pg
+    }
+    /**
+     * mysql
+     */
     ,GEOMETRY("GEOMETRY", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * mysql
+     */
     ,GEOMETRYCOLLECTION("GEOMETRYCOLLECTION", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * mssql
+     */
     ,HIERARCHYID("HIERARCHYID", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mssql
+    }
+    /**
+     * mysql,pg
+     */
     ,LINE("LINE", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql,pg
+    }
+    /**
+     * pg
+     */
     ,LSEG("LSEG", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * mssql
+     */
     ,GEOGRAPHY("GEOGRAPHY", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mssql
+    }
+    /**
+     * pg
+     */
     ,BOX("BOX", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,CIDR("CIDR", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,CIRCLE("CIRCLE", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,INET("INET", byte[].class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
 
 
     /* *****************************************************************************************************************
@@ -686,56 +944,98 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
      *
      * ****************************************************************************************************************/
 
+    /**
+     * mysql
+     */
     ,ENUM("INET", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * pg
+     */
     ,INTERVAL("INTERVAL", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,PATH("PATH", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * oracle
+     */
     ,RAW("RAW", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//oracle
+    }
+    /**
+     * oracle
+     */
     ,ROWID("ROWID", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//oracle
+    }
+    /**
+     * mysql
+     */
     ,SET("SET", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mysql
+    }
+    /**
+     * pg
+     */
     ,TSQUERY("TSQUERY", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * pg
+     */
     ,TSVECTOR("TSVECTOR", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
-
+    }
+    /**
+     * pg
+     */
+    ,MACADDR("MACADDR", null, true, true){
+        public Object read(Object value, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
+    }
+    /**
+     * pg
+     */
     ,PG_SNAPSHOT("PG_SNAPSHOT", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
-    //弃用 换成pg_snapshot
+    }
+    /**
+     * pg
+     * 弃用 换成pg_snapshot
+     */
     ,TXID_SNAPSHOT("TXID_SNAPSHOT", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//pg
+    }
+    /**
+     * oracle
+     */
     ,UROWID("UROWID", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//oracle
+    }
+    /**
+     * mssql
+     */
     ,SQL_VARIANT("SQL_VARIANT", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
-    }//mssql
+    }
 
     /* *****************************************************************************************************************
      *
@@ -801,7 +1101,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     ,JAVA_BOOL("BOOL", Boolean.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return JAVA_BOOLEAN.write(value, def, placeholder);}
-    }//pg
+    }
     ,JAVA_INTEGER("INT", Integer.class, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
@@ -997,7 +1297,7 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
         this.ignoreScale = ignoreScale;
     }
     @Override
-    public String getName() {
+    public String type() {
         return name;
     }
 
@@ -1012,12 +1312,18 @@ public enum DataType implements org.anyline.entity.mdtadata.DataType{
     }
 
     @Override
-    public boolean isIgnorePrecision() {
+    public boolean ignorePrecision() {
         return ignorePrecision;
     }
 
     @Override
-    public boolean isIgnoreScale() {
+    public boolean ignoreScale() {
         return ignoreScale;
     }
+
+    @Override
+    public boolean support() {
+        return true;
+    }
+
 }
