@@ -35,6 +35,9 @@ public class SQLException extends RuntimeException{
 	}
 
 	public void setSrc(Exception src) {
+		if(null != src) {
+			super.setStackTrace(src.getStackTrace());
+		}
 		this.src = src;
 	}
 
