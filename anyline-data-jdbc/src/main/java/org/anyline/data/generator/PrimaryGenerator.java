@@ -19,7 +19,7 @@
 
 package org.anyline.data.generator;
 
-import org.anyline.data.jdbc.adapter.JDBCAdapter.DB_TYPE;
+import org.anyline.data.adapter.JDBCAdapter.DB_TYPE;
 
 import java.util.List;
 

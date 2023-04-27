@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.util;
 
 import org.anyline.data.jdbc.ds.DataSourceHolder;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.util.LogUtil;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;

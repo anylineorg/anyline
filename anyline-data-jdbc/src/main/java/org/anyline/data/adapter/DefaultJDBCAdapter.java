@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.data.jdbc.adapter;
+package org.anyline.data.adapter;
 
 
 import org.anyline.data.entity.*;
@@ -281,7 +281,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
 				if(EntityAdapterProxy.hasAdapter()){
-					keys = EntityAdapterProxy.columns(obj.getClass(), true, false);
+					LinkedHashMap<String,org.anyline.entity.data.Column> cols = EntityAdapterProxy.columns(obj.getClass(), true, false);
+					keys.addAll(cols.keySet());
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
@@ -384,7 +385,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			row.put(row.getPrimaryKey(), value);
 		}else{
 			if(EntityAdapterProxy.hasAdapter()){
-				String key = EntityAdapterProxy.primaryKey(obj.getClass());
+				org.anyline.entity.data.Column key = EntityAdapterProxy.primaryKey(obj.getClass());
 				Field field = EntityAdapterProxy.field(obj.getClass(), key);
 				BeanUtil.setFieldValue(obj, field, value);
 			}
@@ -790,7 +791,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				entity = ((Collection)obj).iterator().next();
 			}
 			if(EntityAdapterProxy.hasAdapter()){
-				dest = EntityAdapterProxy.table(entity.getClass());
+				org.anyline.entity.data.Table table = EntityAdapterProxy.table(entity.getClass());
+				if(null != table){
+					dest = table.getName();
+				}
 			}
 		}
 		if(obj instanceof ConfigStore){
@@ -3490,7 +3494,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			return ((DataRow)obj).getPrimaryKey();
 		}else{
 			if(EntityAdapterProxy.hasAdapter()){
-				return EntityAdapterProxy.primaryKey(obj.getClass());
+				return EntityAdapterProxy.primaryKey(obj.getClass()).getName();
 			}
 		}
 		return null;

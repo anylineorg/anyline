@@ -3,7 +3,7 @@ package org.anyline.data.jdbc.mysql;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class DataTypeAdapter extends org.anyline.data.jdbc.adapter.DataTypeAdapter {
+public class DataTypeAdapter extends org.anyline.data.adapter.DataTypeAdapter {
     private static Map<String, DataType> types = new Hashtable<>();
     
     public org.anyline.entity.metadata.DataType type(String type){

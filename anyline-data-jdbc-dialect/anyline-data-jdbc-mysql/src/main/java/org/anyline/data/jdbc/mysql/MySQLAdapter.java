@@ -1,8 +1,8 @@
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.data.entity.*;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;

@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.data.jdbc.adapter;
+package org.anyline.data.adapter;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;

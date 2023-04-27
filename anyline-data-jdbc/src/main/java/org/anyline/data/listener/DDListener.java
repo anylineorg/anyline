@@ -2,7 +2,7 @@ package org.anyline.data.listener;
 
 import org.anyline.data.entity.Constraint;
 import org.anyline.data.entity.Index;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.entity.Column;
 import org.anyline.data.entity.Table;
 import org.anyline.data.entity.View;

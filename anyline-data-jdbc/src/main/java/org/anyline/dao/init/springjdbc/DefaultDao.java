@@ -22,7 +22,7 @@ package org.anyline.dao.init.springjdbc;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.jdbc.ds.RuntimeHolder;
@@ -60,7 +60,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 

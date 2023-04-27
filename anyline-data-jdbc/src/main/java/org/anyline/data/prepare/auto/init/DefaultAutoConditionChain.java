@@ -19,7 +19,7 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;

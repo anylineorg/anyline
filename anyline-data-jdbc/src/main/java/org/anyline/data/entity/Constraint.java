@@ -1,6 +1,6 @@
 package org.anyline.data.entity;
 
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.service.AnylineService;
 

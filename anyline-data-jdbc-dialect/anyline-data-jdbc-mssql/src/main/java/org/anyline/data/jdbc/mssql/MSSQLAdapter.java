@@ -3,8 +3,8 @@ package org.anyline.data.jdbc.mssql;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;

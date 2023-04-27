@@ -5,6 +5,8 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.adapter.EntityAdapter;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.adapter.KeyAdapter;
+import org.anyline.entity.data.Column;
+import org.anyline.entity.data.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,13 +68,13 @@ public class EntityAdapterProxy {
      * @param clazz 类
      * @return String
      */
-    public static String table(EntityAdapter adapter, Class clazz){
+    public static Table table(EntityAdapter adapter, Class clazz){
         if(null != adapter){
             return adapter.table(clazz);
         }
         return null;
     }
-    public static String table(Class clazz){
+    public static Table table(Class clazz){
         return table(adapter, clazz);
     }
 
@@ -84,7 +86,7 @@ public class EntityAdapterProxy {
      * @param update 是否update环境
      * @return List
      */
-    public static List<String> columns(EntityAdapter adapter, Class clazz, boolean insert, boolean update){
+    public static LinkedHashMap<String, Column> columns(EntityAdapter adapter, Class clazz, boolean insert, boolean update){
         if(null != adapter){
             return adapter.columns(clazz, insert, update);
         }
@@ -98,7 +100,7 @@ public class EntityAdapterProxy {
      * @param update 是否update环境
      * @return List
      */
-    public static List<String> columns(Class clazz, boolean insert, boolean update){
+    public static LinkedHashMap<String, Column> columns(Class clazz, boolean insert, boolean update){
         return columns(adapter, clazz, insert, update);
     }
     /**
@@ -108,13 +110,13 @@ public class EntityAdapterProxy {
      * @param field 属性
      * @return String
      */
-    public static String column(EntityAdapter adapter, Class clazz, Field field){
+    public static Column column(EntityAdapter adapter, Class clazz, Field field){
         if(null != adapter){
             return adapter.column(clazz, field);
         }
         return null;
     }
-    public static String column(Class clazz, Field field){
+    public static Column column(Class clazz, Field field){
         return column(adapter, clazz, field);
     }
 
@@ -134,6 +136,9 @@ public class EntityAdapterProxy {
     public static Field field(Class clazz, String column){
         return field(adapter, clazz, column);
     }
+    public static Field field(Class clazz, Column column){
+        return field(adapter, clazz, column.getName());
+    }
 
     /**
      * 获取clazz类相关的主键
@@ -141,13 +146,13 @@ public class EntityAdapterProxy {
      * @param clazz 类
      * @return String
      */
-    public static String primaryKey(EntityAdapter adapter, Class clazz){
+    public static Column primaryKey(EntityAdapter adapter, Class clazz){
         if(null != adapter){
             return adapter.primaryKey(clazz);
         }
         return null;
     }
-    public static String primaryKey(Class clazz){
+    public static Column primaryKey(Class clazz){
         return primaryKey(adapter, clazz);
     }
 
@@ -157,13 +162,13 @@ public class EntityAdapterProxy {
      * @param clazz 类
      * @return List
      */
-    public static List<String> primaryKeys(EntityAdapter adapter, Class clazz){
+    public static LinkedHashMap<String, Column> primaryKeys(EntityAdapter adapter, Class clazz){
         if(null != adapter){
             return adapter.primaryKeys(clazz);
         }
         return null;
     }
-    public static List<String> primaryKeys(Class clazz){
+    public static LinkedHashMap<String, Column> primaryKeys(Class clazz){
         return primaryKeys(adapter, clazz);
     }
 

@@ -19,7 +19,7 @@
 
 package org.anyline.data.prepare;
  
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.run.RunValue;
 
 import java.util.List;

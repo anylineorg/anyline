@@ -2,8 +2,8 @@ package org.anyline.data.jdbc.gbasedb;
 
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.SQLAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;

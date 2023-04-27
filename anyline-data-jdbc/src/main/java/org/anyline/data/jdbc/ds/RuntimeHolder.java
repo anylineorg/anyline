@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.ds;
 
 import org.anyline.dao.init.springjdbc.DefaultDao;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.anyline.data.listener.DMListener;
 import org.anyline.service.init.DefaultService;

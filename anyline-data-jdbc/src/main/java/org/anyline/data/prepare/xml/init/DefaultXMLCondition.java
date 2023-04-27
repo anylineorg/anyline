@@ -19,7 +19,7 @@
 
 package org.anyline.data.prepare.xml.init;
 
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.prepare.Variable;

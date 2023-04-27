@@ -25,7 +25,7 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;

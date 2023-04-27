@@ -1,7 +1,7 @@
 package org.anyline.data.generator.init;
 
 import org.anyline.data.generator.PrimaryGenerator;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.util.BeanUtil;
 
 import java.util.List;

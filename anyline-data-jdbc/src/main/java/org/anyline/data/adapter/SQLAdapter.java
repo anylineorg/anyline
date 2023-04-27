@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.data.jdbc.adapter;
+package org.anyline.data.adapter;
 
 
 import org.anyline.data.entity.Column;
@@ -613,7 +613,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         int size = keys.size();
         if(size > 0){
             builder.append("UPDATE ").append(parseTable(dest));
-            builder.append(" SET").append(JDBCAdapter.BR_TAB);
+            builder.append(" SET").append(BR_TAB);
             boolean first = true;
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
@@ -631,7 +631,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     if(!first){
                         builder.append(",");
                     }
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(BR_TAB);
                     first = false;
                 }else{
                     if("NULL".equals(value)){
@@ -652,7 +652,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                             builder.append(",");
                         }
                         first = false;
-                        SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+                        SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(BR_TAB);
                         updateColumns.add(key);
                         Compare compare = Compare.EQUAL;
                         if(isMultipleValue(run, key)){
@@ -662,8 +662,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                 }
             }
-            builder.append(JDBCAdapter.BR);
-            builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
+            builder.append(BR);
+            builder.append("\nWHERE 1=1").append(BR_TAB);
             if(null == configs) {
                 for (String pk : primaryKeys) {
                     builder.append(" AND ");
@@ -713,16 +713,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         int size = keys.size();
         if(size > 0){
             builder.append("UPDATE ").append(parseTable(dest));
-            builder.append(" SET").append(JDBCAdapter.BR_TAB);
+            builder.append(" SET").append(BR_TAB);
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
                 Object value = row.get(key);
                 if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(BR_TAB);
                 }else{
-                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+                    SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(BR_TAB);
                     if("NULL".equals(value)){
                         value = null;
                     }
@@ -734,8 +734,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     builder.append(",");
                 }
             }
-            builder.append(JDBCAdapter.BR);
-            builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
+            builder.append(BR);
+            builder.append("\nWHERE 1=1").append(BR_TAB);
             if(null == configs) {
                 for (String pk : primaryKeys) {
                     builder.append(" AND ");
@@ -947,7 +947,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null != sql.getDistinct()){
             builder.append(sql.getDistinct());
         }
-        builder.append(JDBCAdapter.BR_TAB);
+        builder.append(BR_TAB);
         List<String> columns = sql.getColumns();
         if(null != columns && columns.size()>0){
             // 指定查询列
@@ -973,18 +973,18 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     builder.append(",");
                 }
             }
-            builder.append(JDBCAdapter.BR);
+            builder.append(BR);
         }else{
             // 全部查询
             builder.append("*");
-            builder.append(JDBCAdapter.BR);
+            builder.append(BR);
         }
-        builder.append("FROM").append(JDBCAdapter.BR_TAB);
+        builder.append("FROM").append(BR_TAB);
         if(null != run.getSchema()){
             SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
         }
         SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
-        builder.append(JDBCAdapter.BR);
+        builder.append(BR);
         if(BasicUtil.isNotEmpty(sql.getAlias())){
             // builder.append(" AS ").append(sql.getAlias());
             builder.append("  ").append(sql.getAlias());
@@ -992,7 +992,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         List<Join> joins = sql.getJoins();
         if(null != joins) {
             for (Join join:joins) {
-                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
 
                 if(null != join.getSchema()){
                     SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
@@ -1078,7 +1078,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
 
         SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
-        builder.append(JDBCAdapter.BR);
+        builder.append(BR);
         if(BasicUtil.isNotEmpty(prepare.getAlias())){
             // builder.append(" AS ").append(sql.getAlias());
             builder.append("  ").append(prepare.getAlias());
@@ -1086,7 +1086,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         List<Join> joins = prepare.getJoins();
         if(null != joins) {
             for (Join join:joins) {
-                builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
+                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
                 if(null != join.getSchema()){
                     SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
                 }

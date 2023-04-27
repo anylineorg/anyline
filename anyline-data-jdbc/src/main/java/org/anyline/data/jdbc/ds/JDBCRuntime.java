@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.ds;
 
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.util.SQLAdapterUtil;
 import org.springframework.jdbc.core.JdbcTemplate;
 

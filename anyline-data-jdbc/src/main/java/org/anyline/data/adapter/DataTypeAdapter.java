@@ -1,4 +1,4 @@
-package org.anyline.data.jdbc.adapter;
+package org.anyline.data.adapter;
 
 import org.anyline.data.metadata.DataType;
 

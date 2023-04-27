@@ -52,6 +52,7 @@ public interface EntityAdapter {
      * @return Field
      */
     public Field field(Class clazz, String column);
+    public Field field(Class clazz, Column column);
 
 
     /**
@@ -72,7 +73,7 @@ public interface EntityAdapter {
      * @param clazz 类
      * @return List
      */
-    public List<Column> primaryKeys(Class clazz);
+    public LinkedHashMap<String, Column> primaryKeys(Class clazz);
 
     /**
      * 主键值
