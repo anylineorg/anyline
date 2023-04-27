@@ -2,7 +2,7 @@ package org.anyline.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.EntityAdapter;
+import org.anyline.entity.adapter.EntityAdapter;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.adapter.KeyAdapter;
 import org.springframework.beans.factory.annotation.Autowired;

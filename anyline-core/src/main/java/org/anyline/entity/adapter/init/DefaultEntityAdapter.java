@@ -1,7 +1,7 @@
 package org.anyline.entity.adapter.init;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.EntityAdapter;
+import org.anyline.entity.adapter.EntityAdapter;
 import org.anyline.entity.adapter.KeyAdapter;
 import org.anyline.entity.data.Column;
 import org.anyline.util.*;

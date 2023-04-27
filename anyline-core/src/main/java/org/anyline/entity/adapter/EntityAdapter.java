@@ -1,6 +1,11 @@
-package org.anyline.entity;
+package org.anyline.entity.adapter;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.data.Column;
+import org.anyline.entity.data.Table;
 
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +16,14 @@ public interface EntityAdapter {
      * @param clazz 类
      * @return String
      */
-    public String table(Class clazz);
+    public Table table(Class clazz);
 
     /**
      * 获取指定类的列名s
      * @param clazz 类
      * @return List
      */
-    public List<String> columns(Class clazz);
+    public LinkedHashMap<String, Column> columns(Class clazz);
 
     /**
      * 获取指定类的列名s
@@ -27,7 +32,7 @@ public interface EntityAdapter {
      * @param update 是否update环境
      * @return List
      */
-    public List<String> columns(Class clazz, boolean insert, boolean update);
+    public LinkedHashMap<String, Column> columns(Class clazz, boolean insert, boolean update);
 
     /**
      * 获取指定类.属性关联的列名
@@ -38,7 +43,7 @@ public interface EntityAdapter {
      *
      * @return String
      */
-    public String column(Class clazz, Field field, String ... annotations);
+    public Column column(Class clazz, Field field, String ... annotations);
 
     /**
      * 根据类与列名 获取相关的属性
@@ -53,9 +58,9 @@ public interface EntityAdapter {
      * 检测主键(是主键名不是值)<br/>
      * 从primaryKeys中取一个
      * @param clazz 类
-     * @return String
+     * @return Column
      */
-    public String primaryKey(Class clazz);
+    public Column primaryKey(Class clazz);
 
 
     /**
@@ -67,7 +72,7 @@ public interface EntityAdapter {
      * @param clazz 类
      * @return List
      */
-    public List<String> primaryKeys(Class clazz);
+    public List<Column> primaryKeys(Class clazz);
 
     /**
      * 主键值

@@ -24,6 +24,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.entity.*;
+import org.anyline.entity.adapter.EntityAdapter;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.listener.EntityListener;
 import org.anyline.service.AnylineService;
