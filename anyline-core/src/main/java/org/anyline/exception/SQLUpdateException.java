@@ -26,7 +26,6 @@ public class SQLUpdateException extends SQLException{
 		super(title);
 	}
 	public SQLUpdateException(String title, Exception src){
-		super(title);
-		this.src = src;
+		super(title, src);
 	}
 } 

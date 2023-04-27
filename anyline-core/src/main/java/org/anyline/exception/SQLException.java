@@ -25,9 +25,15 @@ public class SQLException extends RuntimeException{
 	protected List<Object> values;
 	public SQLException(){ 
 		super(); 
-	} 
-	public SQLException(String title){ 
-		super(title); 
+	}
+	public SQLException(String title){
+		super(title);
+	}
+	public SQLException(String title, Exception src){
+		super(title, src);
+		if(null != src) {
+			super.setStackTrace(src.getStackTrace());
+		}
 	}
 
 	public Exception getSrc() {
