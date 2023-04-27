@@ -289,7 +289,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(BasicUtil.isEmpty(prepare.getDataSource())) {
 				if (EntityAdapterProxy.hasAdapter()) {
-					prepare.setDataSource(EntityAdapterProxy.table(clazz));
+					prepare.setDataSource(EntityAdapterProxy.table(clazz).getName());
 				}
 			}
 

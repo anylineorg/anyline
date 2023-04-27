@@ -766,17 +766,17 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         // List<Object> values = new ArrayList<Object>();
-        List<String> keys = null;
-        List<String> primaryKeys = null;
+        List<String> keys = new ArrayList<>();
+        List<String> primaryKeys = new ArrayList<>();
         if(null != columns && columns.size() >0 ){
             keys = columns;
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                keys = EntityAdapterProxy.columns(obj.getClass(), false, true);
+                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), false, true).keySet());
             }
         }
         if(EntityAdapterProxy.hasAdapter()){
-            primaryKeys = EntityAdapterProxy.primaryKeys(obj.getClass());
+            primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
         }else{
             primaryKeys = new ArrayList<>();
             primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
@@ -1025,7 +1025,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 keys = ((DataRow)obj).getPrimaryKeys();
             }else{
                 if(EntityAdapterProxy.hasAdapter()){
-                    keys = EntityAdapterProxy.primaryKeys(obj.getClass());
+                    keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
                 }
             }
         }

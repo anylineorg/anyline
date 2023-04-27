@@ -1248,7 +1248,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 dest = DataSourceHolder.parseDataSource(dest, data);
             }else{
                 if(EntityAdapterProxy.hasAdapter()){
-                    dest = EntityAdapterProxy.table(data.getClass());
+                    dest = EntityAdapterProxy.table(data.getClass()).getName();
                 }
             }
         }
@@ -1475,9 +1475,9 @@ public class DefaultService<E> implements AnylineService<E> {
         }else{
             if(EntityAdapterProxy.hasAdapter()){
                 if(obj instanceof Collection){
-                    dest = EntityAdapterProxy.table(((Collection)obj).iterator().next().getClass());
+                    dest = EntityAdapterProxy.table(((Collection)obj).iterator().next().getClass()).getName();
                 }else{
-                    dest = EntityAdapterProxy.table(obj.getClass());
+                    dest = EntityAdapterProxy.table(obj.getClass()).getName();
                 }
                 return dao.delete(dest, obj, columns);
             }
@@ -1767,7 +1767,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     if (BasicUtil.isNotEmpty(true, value)) {
                         String key = field.getName();
                         if (EntityAdapterProxy.hasAdapter()) {
-                            key = EntityAdapterProxy.column(entity.getClass(), field);
+                            key = EntityAdapterProxy.column(entity.getClass(), field).getName();
                         }
                         if(BasicUtil.isEmpty(key)){
                             continue;

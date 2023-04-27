@@ -146,9 +146,9 @@ public class DataSourceHolder {
 			}
 		} else if (obj instanceof Collection) {
 			Object first = ((Collection)obj).iterator().next();
-			result = EntityAdapterProxy.table(first.getClass());
+			result = EntityAdapterProxy.table(first.getClass()).getName();
 		} else{
-			result = EntityAdapterProxy.table(obj.getClass());
+			result = EntityAdapterProxy.table(obj.getClass()).getName();
 		}
 		result = parseDataSource(result);
 		return result;
