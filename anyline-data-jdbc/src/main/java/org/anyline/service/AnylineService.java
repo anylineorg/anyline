@@ -73,6 +73,15 @@ public interface AnylineService<E>{
 	 * 													INSERT
 	 ******************************************************************************************************************/
 
+	/**
+	 * 插入数据
+	 * @param dest 表名
+	 * @param data entity或list或DataRow或DataSet
+	 * @param checkPriamry 是否检测主键
+	 * @param fixs 需要插入哪些列
+	 * @param columns 需要插入哪些列
+	 * @return 影响行数
+	 */
 	public int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
 	public int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
 	public int insert(Object data, List<String> fixs, String ... columns);
@@ -211,13 +220,13 @@ public interface AnylineService<E>{
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件
-	 * @param conditions	固定查询条件
-	 * 			CD:1 生成SQL: CD = 1
-	 * 			CD: 忽略
-	 * 			CD:null 忽略
-	 * 			CD:NULL 生成SQL:CD IS NULL
-	 * 			原生SQL(包括GROUP、ORDER、HAVING等)如 ID > 1 AND ID < 10
-	 * 			${原生SQL}:${}之内的SQL不全处理 如果原生SQL比较复杂(如出现小时格式)可能与以上几种格式混淆,可以用${}表示不解析按原文执行
+	 * @param conditions	固定查询条件 <br/>
+	 * 			CD:1 生成SQL: CD = 1<br/>
+	 * 			CD: 忽略<br/>
+	 * 			CD:null 忽略<br/>
+	 * 			CD:NULL 生成SQL:CD IS NULL<br/>
+	 * 			原生SQL(包括GROUP、ORDER、HAVING等)如 ID > 1 AND ID < 10<br/>
+	 * 			${原生SQL}:${}之内的SQL不全处理 如果原生SQL比较复杂(如出现小时格式)可能与以上几种格式混淆,可以用${}表示不解析按原文执行<br/>
 	 * 			
 	 * @return DataSet
 	 */
@@ -246,8 +255,8 @@ public interface AnylineService<E>{
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
-	 * @param first 起 下标从0开始
-	 * @param last 止
+	 * @param first 		起 下标从0开始
+	 * @param last 			止
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
@@ -258,7 +267,7 @@ public interface AnylineService<E>{
 	/**
 	 * 查询序列cur 或 next value
 	 * @param next  是否生成返回下一个序列 false:cur true:next
-	 * @param name 序列名
+	 * @param name 	序列名
 	 * @return long 查询失败返回null
 	 */
 	public BigDecimal sequence(boolean next, String name);
