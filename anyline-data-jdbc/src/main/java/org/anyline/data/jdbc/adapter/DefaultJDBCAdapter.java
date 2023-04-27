@@ -1840,7 +1840,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 查询表上的约束
 	 * @param table 表
-	 * @param name 名称
+	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
 	@Override

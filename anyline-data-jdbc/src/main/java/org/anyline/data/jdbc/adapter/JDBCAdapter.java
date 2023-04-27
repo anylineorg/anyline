@@ -647,7 +647,7 @@ public interface JDBCAdapter {
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param name 名称
+	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
 	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception;
@@ -763,7 +763,7 @@ public interface JDBCAdapter {
 	/**
 	 * 查询表上的约束
 	 * @param table 表
-	 * @param name 名称
+	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
 	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception;

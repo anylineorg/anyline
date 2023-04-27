@@ -53,6 +53,10 @@ public class RuntimeHolder  implements ApplicationContextAware {
             }
         }
         //默认数据源 有多个数据源的情况下 再注册anyline.service.default
+        //如果单个数据源 只通过@serveri注解 注册一个anyline.service
+        //anyline.service.default 用来操作主数据源
+        //anyline.service.sso 用来操作sso数据源
+        //anyline.service.common 用来操作所有数据源
         JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
         if(null != template) {
             if(multiple) {

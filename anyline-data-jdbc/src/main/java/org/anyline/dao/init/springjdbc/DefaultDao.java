@@ -956,7 +956,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString());
+				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;

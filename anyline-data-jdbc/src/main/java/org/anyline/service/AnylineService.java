@@ -264,7 +264,6 @@ public interface AnylineService<E>{
 	public BigDecimal sequence(boolean next, String name);
 	/**
 	 * 查询序列next value
-	 * @param next  是否生成返回下一个序列
 	 * @param name 序列名
 	 * @return long 查询失败返回null
 	 */
