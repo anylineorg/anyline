@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
-import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.adapter.KeyAdapter.KEY_CASE;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware { 
 	public static int RESULT_TYPE_DEFAULT = 0; 

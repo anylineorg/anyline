@@ -1,6 +1,6 @@
-package org.anyline.entity.adapter.init;
+package org.anyline.adapter.init;
 
-import org.anyline.entity.adapter.KeyAdapter;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.util.BeanUtil;
 
 public class CamelAdapter implements KeyAdapter {

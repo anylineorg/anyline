@@ -1,8 +1,8 @@
 package org.anyline.data.adapter;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.adapter.EntityAdapter;
-import org.anyline.entity.adapter.KeyAdapter;
+import org.anyline.adapter.EntityAdapter;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
 import org.anyline.util.*;
@@ -19,6 +19,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
     private static LinkedHashMap<String, LinkedHashMap<String, Column>> primarys = new LinkedHashMap<>();  // 主键
     private static LinkedHashMap<String, LinkedHashMap<String, Column>> insert_columns  = new LinkedHashMap<>();
     private static LinkedHashMap<String, LinkedHashMap<String, Column>> update_columns  = new LinkedHashMap<>();
+    private static LinkedHashMap<String, LinkedHashMap<String, Column>> ddl_columns  = new LinkedHashMap<>();
 
     /**
      * 清空缓存
@@ -71,15 +72,17 @@ public class DefaultEntityAdapter implements EntityAdapter {
 
     @Override
     public LinkedHashMap<String, Column> columns(Class clazz) {
-        return columns(clazz, false, false);
+        return columns(clazz, MODE.DDL);
     }
     @Override
-    public LinkedHashMap<String, Column> columns(Class clazz, boolean insert, boolean update) {
+    public LinkedHashMap<String, Column> columns(Class clazz, MODE mode) {
         LinkedHashMap<String, Column> columns = null;
-        if(insert) {
+        if(MODE.INSERT == mode) {
             columns = DefaultEntityAdapter.insert_columns.get(clazz.getName().toUpperCase());
-        }else if(update){
+        }else if(MODE.UPDATE == mode){
             columns = DefaultEntityAdapter.update_columns.get(clazz.getName().toUpperCase());
+        }else if(MODE.DDL == mode){
+
         }
         if(null == columns) {
             columns = new LinkedHashMap<>();
@@ -88,28 +91,31 @@ public class DefaultEntityAdapter implements EntityAdapter {
             fields.removeAll(ignores);
             for (Field field : fields) {
                 Column column = column(clazz, field);
-                if(insert){
+                if(MODE.INSERT == mode){
                     //检测是否需要insert
                     String insertable = ClassUtil.parseAnnotationFieldValue(field, "column.insertable");
                     if("false".equalsIgnoreCase(insertable)){
                         continue;
                     }
-                }
-                if(update){
+                }else if(MODE.UPDATE == mode){
                     //检测是否需要update
                     String updatable = ClassUtil.parseAnnotationFieldValue(field, "column.updatable");
                     if("false".equalsIgnoreCase(updatable)){
                         continue;
                     }
+                }else if(MODE.DDL == mode){
+
                 }
                 if(BasicUtil.isNotEmpty(column)) {
                     columns.put(column.getName().toUpperCase(), column);
                 }
             }
-            if(insert) {
+            if(MODE.INSERT == mode) {
                 DefaultEntityAdapter.insert_columns.put(clazz.getName().toUpperCase(),columns);
-            }else if(update){
+            }else if(MODE.UPDATE == mode){
                 DefaultEntityAdapter.update_columns.put(clazz.getName().toUpperCase(),columns);
+            }else if(MODE.DDL == mode){
+                DefaultEntityAdapter.ddl_columns.put(clazz.getName().toUpperCase(),columns);
             }
         }
         LinkedHashMap<String, Column> list = new LinkedHashMap();
@@ -135,26 +141,24 @@ public class DefaultEntityAdapter implements EntityAdapter {
             }
         }
         name = ClassUtil.parseAnnotationFieldValue(field, annotations);
-        if(BasicUtil.isNotEmpty(name)){
-            column = new org.anyline.data.entity.Column(name);
-            field2column.put(key.toUpperCase(), column);
-            column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);
-            return column;
-        }
 
         // 3.属性名转成列名
-        if("camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)){
-            name = BeanUtil.camel_(field.getName());
-            column = new org.anyline.data.entity.Column(name);
-            field2column.put(key.toUpperCase(), column);
-            column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);
-            return column;
+        if(BasicUtil.isEmpty(name)){
+            if("camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)){
+                name = BeanUtil.camel_(field.getName());
+            }
         }
         // 4.属性名
+        if(BasicUtil.isEmpty(name)){
+            Class c = field.getType();
+            //boolean、char、byte、short、int、long、float、double
+            if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
+                name = field.getName();
+            }
+        }
 
-        Class c = field.getType();
-        if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
-            name = field.getName();
+        //创建Column
+        if(BasicUtil.isNotEmpty(name)){
             column = new org.anyline.data.entity.Column(name);
             field2column.put(key.toUpperCase(), column);
             column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);

@@ -99,6 +99,8 @@ public interface JDBCAdapter {
 	 */
 	public String getDelimiterFr();
 	public String getDelimiterTo();
+	public DataTypeAdapter getDataTypeAdapter();
+	public void setDataTypeAdapter(DataTypeAdapter adapter);
 
 	/* *****************************************************************************************************************
 	 *

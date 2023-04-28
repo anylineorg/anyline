@@ -101,7 +101,7 @@ public class DataTypeAdapter {
         types.put("SMALLDATETIME"           , DataType.SMALLDATETIME         ); //     ,  ,      ,mssql
         types.put("SMALLMONEY"              , DataType.SMALLMONEY            ); //     ,  ,      ,mssql
         types.put("SMALLINT"                , DataType.SMALLINT              ); //mysql,
-        types.put("SMALLSERIAL"              , DataType.SERIAL2               ); //     ,pg,
+        types.put("SMALLSERIAL"             , DataType.SERIAL2               ); //     ,pg,
         types.put("DataType.VARIANT"        , DataType.SQL_VARIANT           ); //     ,  ,      ,mssql
         types.put("TEXT"                    , DataType.TEXT                  ); //mysql,pg,      ,mssql,sqlite
         types.put("TIME"                    , DataType.TIME                  ); //mysql,pg,      ,mssql

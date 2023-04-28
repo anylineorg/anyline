@@ -20,6 +20,7 @@
 package org.anyline.data.adapter;
 
 
+import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
@@ -122,6 +123,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 	}
 
+	@Override
+	public DataTypeAdapter getDataTypeAdapter() {
+		return dataTypeAdapter;
+	}
+
+	@Override
+	public void setDataTypeAdapter(DataTypeAdapter dataTypeAdapter) {
+		this.dataTypeAdapter = dataTypeAdapter;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -281,7 +291,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
 				if(EntityAdapterProxy.hasAdapter()){
-					LinkedHashMap<String,org.anyline.entity.data.Column> cols = EntityAdapterProxy.columns(obj.getClass(), true, false);
+					LinkedHashMap<String,org.anyline.entity.data.Column> cols = EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT);
 					keys.addAll(cols.keySet());
 				}else {
 					keys = new ArrayList<>();
@@ -2669,7 +2679,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public DataType type(String type){
-		return dataTypeAdapter.type(type);
+		return getDataTypeAdapter().type(type);
 	}
 
 	@Override
@@ -3548,7 +3558,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
-					ctype = dataTypeAdapter.type(typeName.toUpperCase());
+					ctype = getDataTypeAdapter().type(typeName.toUpperCase());
 				}
 			}
 			if(null != ctype){
@@ -3560,7 +3570,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if(null == jType){
 					String className = metadata.getClassName();
 					if(null != className){
-						jType = dataTypeAdapter.type(className.toUpperCase());
+						jType = getDataTypeAdapter().type(className.toUpperCase());
 					}
 				}
 				if(null != jType){
@@ -3593,7 +3603,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
-					ctype = dataTypeAdapter.type(typeName);
+					ctype = getDataTypeAdapter().type(typeName);
 				}
 			}
 			if(null != ctype){
@@ -3604,7 +3614,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if(null == jType){
 					String className = metadata.getClassName();
 					if(null != className){
-						jType = dataTypeAdapter.type(className);
+						jType = getDataTypeAdapter().type(className);
 					}
 				}
 				if(null != jType){
@@ -3633,7 +3643,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(value instanceof SQL_BUILD_IN_VALUE){
 				builder.append(value((SQL_BUILD_IN_VALUE)value));
 			}else {
-				type = dataTypeAdapter.type(value.getClass().getName());
+				type = getDataTypeAdapter().type(value.getClass().getName());
 				if (null != type) {
 					builder.append(type.write(value, null, true));
 				} else {
@@ -3722,20 +3732,20 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null != metadata) {
 				DataType columnType = metadata.getColumnType();
 				if (null == columnType) {
-					columnType = dataTypeAdapter.type(metadata.getTypeName());
+					columnType = getDataTypeAdapter().type(metadata.getTypeName());
 				}
 				if (null != columnType) {
 					value = columnType.write(value, null, true);
 				} else {
 					String clazz = metadata.getClassName();
-					DataType javaType = dataTypeAdapter.type(clazz);
+					DataType javaType = getDataTypeAdapter().type(clazz);
 					if (null != javaType) {
 						value = javaType.write(value, null, true);
 					}
 				}
 			}else{
 				String clazz = value.getClass().getName();
-				DataType javaType = dataTypeAdapter.type(clazz);
+				DataType javaType = getDataTypeAdapter().type(clazz);
 				if (null != javaType) {
 					value = javaType.write(value, null, true);
 				}

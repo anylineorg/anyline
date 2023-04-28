@@ -47,6 +47,11 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		setDelimiter(delimiter);
 	}
 
+	@Override
+	public org.anyline.data.adapter.DataTypeAdapter getDataTypeAdapter() {
+		return dataTypeAdapter;
+	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 														DML

@@ -20,6 +20,7 @@
 package org.anyline.data.adapter;
 
 
+import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.entity.Column;
 import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
@@ -584,7 +585,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             keys = columns;
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), false, true).keySet()) ;
+                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE).keySet()) ;
             }
         }
         if(EntityAdapterProxy.hasAdapter()){

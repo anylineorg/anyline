@@ -38,6 +38,11 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
+	@Override
+	public org.anyline.data.adapter.DataTypeAdapter getDataTypeAdapter() {
+		return dataTypeAdapter;
+	}
+
 	/* *****************************************************************************************************
 	 *
 	 * 											DML

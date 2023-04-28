@@ -1,8 +1,8 @@
-package org.anyline.entity.adapter;
+package org.anyline.adapter;
 
-import org.anyline.entity.adapter.init.LowerKeyAdapter;
-import org.anyline.entity.adapter.init.SrcKeyAdapter;
-import org.anyline.entity.adapter.init.UpperKeyAdapter;
+import org.anyline.adapter.init.LowerKeyAdapter;
+import org.anyline.adapter.init.UpperKeyAdapter;
+import org.anyline.adapter.init.SrcKeyAdapter;
 
 import java.io.Serializable;
 

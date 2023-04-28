@@ -1,5 +1,6 @@
 package org.anyline.data.jdbc.neo4j;
 
+import org.anyline.adapter.EntityAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -772,7 +773,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             keys = columns;
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), false, true).keySet());
+                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE).keySet());
             }
         }
         if(EntityAdapterProxy.hasAdapter()){

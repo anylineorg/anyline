@@ -2,9 +2,9 @@ package org.anyline.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.adapter.EntityAdapter;
+import org.anyline.adapter.EntityAdapter;
 import org.anyline.entity.EntitySet;
-import org.anyline.entity.adapter.KeyAdapter;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,13 +82,12 @@ public class EntityAdapterProxy {
      * 获取指定类的列名s
      * @param adapter adapter
      * @param clazz 类
-     * @param insert 是否insert环境
-     * @param update 是否update环境
+     * @param mode insert/update/ddl
      * @return List
      */
-    public static LinkedHashMap<String, Column> columns(EntityAdapter adapter, Class clazz, boolean insert, boolean update){
+    public static LinkedHashMap<String, Column> columns(EntityAdapter adapter, Class clazz, EntityAdapter.MODE mode){
         if(null != adapter){
-            return adapter.columns(clazz, insert, update);
+            return adapter.columns(clazz, mode);
         }
         return null;
     }
@@ -96,12 +95,11 @@ public class EntityAdapterProxy {
     /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
-     * @param insert 是否insert环境
-     * @param update 是否update环境
+     * @param mode insert/update/ddl
      * @return List
      */
-    public static LinkedHashMap<String, Column> columns(Class clazz, boolean insert, boolean update){
-        return columns(adapter, clazz, insert, update);
+    public static LinkedHashMap<String, Column> columns(Class clazz, EntityAdapter.MODE mode){
+        return columns(adapter, clazz, mode);
     }
     /**
      * 获取指定类.属性关联的列名

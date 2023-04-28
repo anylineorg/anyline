@@ -23,7 +23,7 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.util.*;
 import org.anyline.util.encrypt.DESUtil;
 import org.slf4j.Logger;

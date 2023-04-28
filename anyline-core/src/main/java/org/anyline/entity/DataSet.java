@@ -2,7 +2,7 @@ package org.anyline.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.entity.data.Column;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;

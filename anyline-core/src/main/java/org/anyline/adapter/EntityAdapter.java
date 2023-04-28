@@ -1,4 +1,4 @@
-package org.anyline.entity.adapter;
+package org.anyline.adapter;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.data.Column;
@@ -10,7 +10,20 @@ import java.util.List;
 import java.util.Map;
 
 public interface EntityAdapter {
-
+    public static enum MODE{
+        /**
+         * 只检测可INSERT的列
+         */
+        INSERT,
+        /**
+         * 只检测可UPDATE的列
+         */
+        UPDATE,
+        /**
+         * 检测所有的列一般用于定义表
+         */
+        DDL
+    }
     /**
      * 获取指定类关联的表名
      * @param clazz 类
@@ -28,17 +41,16 @@ public interface EntityAdapter {
     /**
      * 获取指定类的列名s
      * @param clazz 类
-     * @param insert 是否insert环境
-     * @param update 是否update环境
+     * @param mode  insert环境  update环境 ddl环境
      * @return List
      */
-    public LinkedHashMap<String, Column> columns(Class clazz, boolean insert, boolean update);
+    public LinkedHashMap<String, Column> columns(Class clazz, MODE mode);
 
     /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
      * @param field 属性
-     * @param annotations 根据指定的注解 ,以第一个成功取值的注解为准
+     * @param annotations 根据指定的注解 ,以第一个成功取值的注解为准<br/>
      *                    不指定则按默认规则 column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value
      *
      * @return String
@@ -94,8 +106,8 @@ public interface EntityAdapter {
      */
     public void createPrimaryValue(Object obj);
     /**
-     * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<br/>
+     * 如果不实现当前可以返回null,将继续执行默认处理方式<br/>
      * @param clazz 类
      * @param map map
      * @return T
@@ -104,8 +116,8 @@ public interface EntityAdapter {
     public <T> T entity(Class<T> clazz, Map<String,Object> map, Map columns);
 
     /**
-     * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<<br/>
+     * 如果不实现当前可以返回null,将继续执行默认处理方式<br/>
      * @param entity 在此基础上执行,如果不提供则新创建
      * @param clazz 类
      * @param map map
