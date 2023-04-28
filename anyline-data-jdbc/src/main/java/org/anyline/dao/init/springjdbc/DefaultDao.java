@@ -546,6 +546,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
+		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
 		if(null != listener){
 			exe = listener.beforeBuildUpdate(dest, data, configs, false, columns);
@@ -782,6 +783,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
+		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
 		if(null != listener){
 			exe = listener.beforeBuildInsert(dest, data, checkPrimary, columns);
@@ -1466,7 +1468,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public int deletes(String table, String key, Collection<Object> values){
-		
+		table = DataSourceHolder.parseDataSource(table, null);
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, values);
@@ -1474,7 +1476,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 	public int deletes(String table, String key, String ... values){
-
+		table = DataSourceHolder.parseDataSource(table, null);
 		List<String> list = new ArrayList<>();
 		if(null != values){
 			for(String value:values){
@@ -1496,7 +1498,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public int delete(String dest,Object obj, String... columns) {
+	public int delete(String dest, Object obj, String... columns) {
+		dest = DataSourceHolder.parseDataSource(dest,obj);
 		int size = 0;
 		if(null != obj){
 			if(obj instanceof Collection){
@@ -1531,6 +1534,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
+		table = DataSourceHolder.parseDataSource(table, null);
 		boolean exe = true;
 		if(null != listener){
 			exe = listener.beforeBuildDelete(table, configs, conditions);
@@ -1610,9 +1614,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public int truncate(String table){
-		
-			JDBCRuntime runtime = runtime();
-			JDBCAdapter adapter = runtime.getAdapter();
+		table = DataSourceHolder.parseDataSource(table);
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		String sql = adapter.buildTruncateSQL(table);
 		RunPrepare prepare = new DefaultTextPrepare(sql);;
 		return execute(prepare);
