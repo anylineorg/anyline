@@ -73,11 +73,6 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return dbVersion; 
 	}
 
-	@Override
-	public org.anyline.data.adapter.DataTypeAdapter getDataTypeAdapter() {
-		return dataTypeAdapter;
-	}
-
 	/* *****************************************************************************************************
 	 *
 	 * 											DML

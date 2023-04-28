@@ -35,7 +35,7 @@ public class DataTypeAdapter extends org.anyline.data.adapter.DataTypeAdapter {
         types.put("BIGSERIAL"               , DataType.BIGINT                ); //     ,pg,
         types.put("BINARY"                  , DataType.BINARY                ); //mysql,  ,      ,mssql,
         types.put("BIT"                     , DataType.BIT                   ); //mysql,pg,      ,mssql,
-        types.put("BLOB"                    , DataType.VARBINARY             ); //mysql,  ,oracle,     ,sqlite
+        types.put("BLOB"                    , DataType.BLOB                  ); //mysql,  ,oracle,     ,sqlite
         types.put("BOOL"                    , DataType.BIT                   ); //     ,pg
         types.put("BOX"                     , DataType.ILLEGAL               ); //     ,pg
         types.put("BYTEA"                   , DataType.VARBINARY             ); //     ,pg

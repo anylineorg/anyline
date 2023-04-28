@@ -51,11 +51,6 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		dataTypeAdapter = new DataTypeAdapter();
 	}
 
-	@Override
-	public org.anyline.data.adapter.DataTypeAdapter getDataTypeAdapter() {
-		return dataTypeAdapter;
-	}
-
 	/* *****************************************************************************************************************
 	 *
 	 * 														DML

@@ -43,11 +43,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		setDelimiter(delimiter);
 	}
 
-	@Override
-	public org.anyline.data.adapter.DataTypeAdapter getDataTypeAdapter() {
-		return dataTypeAdapter;
-	}
-
 	/* *****************************************************************************************************
 	 *
 	 * 											DML

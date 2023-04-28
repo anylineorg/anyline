@@ -490,7 +490,7 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
     /**
      * pg
      */
-    ,FLOAT8("FLOAT4", Double.class, false, false){
+    ,FLOAT8("FLOAT8", Double.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
     }
@@ -798,7 +798,7 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
     /**
      * mysql,pg
      */
-    ,POINT("IMAGE", byte[].class, true, true){
+    ,POINT("POINT", byte[].class, true, true){
         public Object read(Object value, Class clazz){
             if(null == value){
                 return value;
@@ -946,7 +946,7 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
     /**
      * mysql
      */
-    ,ENUM("INET", null, true, true){
+    ,ENUM("ENUM", null, true, true){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){return value;}
     }
@@ -1153,7 +1153,7 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
             return result;
         }
     }
-    ,JAVA_DECIMAL("DOUBLE", BigDecimal.class, false, false){
+    ,JAVA_DECIMAL("DECIMAL", BigDecimal.class, false, false){
         public Object read(Object value, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
