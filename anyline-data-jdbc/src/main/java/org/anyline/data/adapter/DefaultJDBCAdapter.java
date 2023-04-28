@@ -233,7 +233,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns, boolean batch){
-		List<String> keys = null;/*确定需要插入的列*/
+		List<String> keys = new ArrayList<>();/*确定需要插入的列*/
 		if(null == obj){
 			return new ArrayList<>();
 		}
@@ -283,8 +283,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
 				if(EntityAdapterProxy.hasAdapter()){
-					LinkedHashMap<String,org.anyline.entity.data.Column> cols = EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT);
-					keys.addAll(cols.keySet());
+					keys.addAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT).keySet());
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);

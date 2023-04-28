@@ -705,7 +705,14 @@ public enum DataType implements org.anyline.entity.metadata.DataType{
      * mysql,  ,oracle,sqlite
      */
     ,BLOB("BLOB", byte[].class, true, true){
-        public Object read(Object value, Class clazz){return value;}
+        public Object read(Object value, Class clazz){
+            if(clazz == byte[].class){
+
+            }else if(clazz == String.class){
+                value = new String((byte[])value);
+            }
+            return value;
+        }
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
                 value = def;
