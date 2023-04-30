@@ -27,6 +27,7 @@ import org.anyline.entity.*;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.listener.EntityListener;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.listener.ControllerListener;
