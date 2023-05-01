@@ -2,18 +2,19 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.dao.AnylineDao;
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.EntityAdapterProxy;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
 	 
-	public DB_TYPE type(){
-		return DB_TYPE.MSSQL; 
+	public DatabaseType type(){
+		return DatabaseType.MSSQL; 
 	}
 
 	@Value("${anyline.jdbc.delimiter.mssql:}")
@@ -51,7 +52,9 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public MSSQLAdapter(){
 		delimiterFr = "[";
 		delimiterTo = "]";
-		dataTypeAdapter = new DataTypeAdapter();
+		for (MSSQLColumnTypeAlias alias: MSSQLColumnTypeAlias.values()){
+			alas.put(alias.name(), alias.standard());
+		}
 	}
 
 	private String getDbVersion(){ 
