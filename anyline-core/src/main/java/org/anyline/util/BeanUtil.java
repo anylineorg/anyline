@@ -33,10 +33,13 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import org.anyline.adapter.init.JavaTypeAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
+import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.metadata.DataType;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -122,7 +125,7 @@ public class BeanUtil {
 	 * @param value 值
 	 * @return boolean
 	 */
-	public static boolean setFieldValue(Object obj, Field field, Column column, Object value){
+	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value){
 		if(null == field){
 			return false;
 		}
@@ -135,78 +138,104 @@ public class BeanUtil {
 		boolean compatible = true;//是否兼容 int long等不能设置null值
 		String fieldType = field.getType().getSimpleName();
 		String type = fieldType.toLowerCase();		//属性类型
-		String columnType = null;
-		if(null != column){
-			columnType = column.getTypeName().toUpperCase();
+		ColumnType columnType = null;
+		String typeName = null;
+		if(null != metadata){
+			columnType = metadata.getColumnType();
+			typeName = metadata.getTypeName();
+			if(null != typeName){
+				typeName = typeName.toUpperCase();
+			}
 		}
+
+		String srcTypeKey = ClassUtil.type(v);
+		String tarTypeKey = ClassUtil.type(field);
 		try{
 			if(null != v){
-				if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
-					if (type.equals("int") || type.equals("integer")) {
-						v = Integer.parseInt(value.toString());
-					} else if (type.equals("double")) {
-						v = Double.parseDouble(value.toString());
-					} else if (type.equals("long")) {
-						v = Long.parseLong(value.toString());
-					} else if (type.equals("float")) {
-						v = Float.parseFloat(value.toString());
-					} else if (type.equals("boolean")) {
-						v = Boolean.parseBoolean(value.toString());
-					} else if (type.equals("short")) {
-						v = Short.parseShort(value.toString());
-					} else if (type.equals("bigdecimal")) {
-						v = new BigDecimal(value.toString());
-					} else if (type.equals("byte")) {
-						v = Byte.parseByte(value.toString());
-					} else if (type.equals("date")) {
-						v = DateUtil.parse(v);
-					} else if(type.equals("localtime")){
-						Date date = new Date(DateUtil.parse(v).getTime());
-						v = DateUtil.localTime(date);
-					} else if(type.equals("localdate")){
-						Date date = new Date(DateUtil.parse(v).getTime());
-						v = DateUtil.localDate(date);
-					} else if(type.equals("localdatetime")){
-						Date date = new Date(DateUtil.parse(v).getTime());
-						v = DateUtil.localDateTime(date);
-					}else if(!type.equals("string") && null != columnType){
-						if(columnType.contains("JSON")) {
-							v = json2oject(v.toString(), field.getType());
-						}else if(columnType.contains("XML")){
-							v = xml2object(v.toString(), field.getType());
-						}else {
-							//根据数据库类型
-							if("POINT".equals(columnType)){
-								if("double[]".equals(fieldType)){
-									if(v instanceof byte[]){
-										v = BeanUtil.Double2double(new Point((byte[])v).getArray(), 0d);
-									}else if(v instanceof Point){
-										Double[] ds = ((Point)v).getArray();
-										v = BeanUtil.Double2double(ds, 0);
+				if(!srcTypeKey.equals(tarTypeKey)) {
+					if(typeName.contains("JSON")) {
+						if(v instanceof String){
+							v = json2oject((String)v, field.getType());
+						}else if(v instanceof Map){
+							v = map2object((Map)v, field.getType());
+						}
+					}else if(typeName.contains("XML")){
+						v = xml2object(v.toString(), field.getType());
+					}else if(null != columnType){
+						v = columnType.convert(v, field.getType());
+					}else{
+						DataType dt = JavaTypeAdapter.type(v.getClass());
+						if(null != dt){
+							v = dt.read(value, null, field.getType());
+						}else{
+							if (type.equals("int") || type.equals("integer")) {
+								v = Integer.parseInt(value.toString());
+							} else if (type.equals("double")) {
+								v = Double.parseDouble(value.toString());
+							} else if (type.equals("long")) {
+								v = Long.parseLong(value.toString());
+							} else if (type.equals("float")) {
+								v = Float.parseFloat(value.toString());
+							} else if (type.equals("boolean")) {
+								v = Boolean.parseBoolean(value.toString());
+							} else if (type.equals("short")) {
+								v = Short.parseShort(value.toString());
+							} else if (type.equals("bigdecimal")) {
+								v = new BigDecimal(value.toString());
+							} else if (type.equals("byte")) {
+								v = Byte.parseByte(value.toString());
+							} else if (type.equals("date")) {
+								v = DateUtil.parse(v);
+							} else if(type.equals("localtime")){
+								Date date = new Date(DateUtil.parse(v).getTime());
+								v = DateUtil.localTime(date);
+							} else if(type.equals("localdate")){
+								Date date = new Date(DateUtil.parse(v).getTime());
+								v = DateUtil.localDate(date);
+							} else if(type.equals("localdatetime")){
+								Date date = new Date(DateUtil.parse(v).getTime());
+								v = DateUtil.localDateTime(date);
+							}else if(!type.equals("string") && null != columnType){
+								if(typeName.contains("JSON")) {
+									v = json2oject(v.toString(), field.getType());
+								}else if(typeName.contains("XML")){
+									v = xml2object(v.toString(), field.getType());
+								}else {
+									//根据数据库类型
+									if("POINT".equals(columnType)){
+										if("double[]".equals(fieldType)){
+											if(v instanceof byte[]){
+												v = BeanUtil.Double2double(new Point((byte[])v).getArray(), 0d);
+											}else if(v instanceof Point){
+												Double[] ds = ((Point)v).getArray();
+												v = BeanUtil.Double2double(ds, 0);
+											}
+										}else if("Double[]".equals(fieldType)){
+											if(v instanceof byte[]){
+												v = new Point((byte[])v).getArray();
+											}else if(v instanceof Point){
+												v = ((Point)v).getArray();
+											}
+										}else if("Point".equals(fieldType)){
+											if(v instanceof byte[]){
+												v = new Point((byte[])v);
+											}else if(v instanceof Point){
+											}
+										}
 									}
-								}else if("Double[]".equals(fieldType)){
-									if(v instanceof byte[]){
-										v = new Point((byte[])v).getArray();
-									}else if(v instanceof Point){
-										v = ((Point)v).getArray();
-									}
-								}else if("Point".equals(fieldType)){
-									if(v instanceof byte[]){
-										v = new Point((byte[])v);
-									}else if(v instanceof Point){
-									}
+								}
+							} else if (type.equals("string")) {
+								if(v instanceof byte[]){
+									v = Base64Util.encode((byte[]) v);
+								}else {
+									v = v.toString();
 								}
 							}
 						}
-					} else if (type.equals("string")) {
-						if(v instanceof byte[]){
-							v = Base64Util.encode((byte[]) v);
-						}else {
-							v = v.toString();
-						}
-					}
+					}//end ! columnt type
 				}
-			}else{
+
+			}else{//v == null
 				if(type.equals("int")
 						|| type.equals("double")
 						|| type.equals("long")
@@ -230,7 +259,8 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error("[set field value][result:fail][field:{}][column:{}][value:{}][msg:{}]", field, columnType, v, e.toString());
+			e.printStackTrace();
+			log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, v, srcTypeKey, columnType, e.toString());
 			return false;
 		}
 		return true;
@@ -287,7 +317,33 @@ public class BeanUtil {
 		return result;
 	}
 
-	public static Float[] flong2Float(float[] array){
+	public static Integer[] int2Integer(int[] array){
+		if(null == array){
+			return null;
+		}
+		Integer[] result = new Integer[array.length];
+		int idx = 0;
+		for(int item:array){
+			result[idx++] = item;
+		}
+		return result;
+	}
+	public static int[] Integer2int(Integer[] array, int def){
+		if(null == array){
+			return null;
+		}
+		int[] result = new int[array.length];
+		int idx = 0;
+		for(Integer item:array){
+			if(null == item){
+				item = def;
+			}
+			result[idx++] = item;
+		}
+		return result;
+	}
+
+	public static Float[] float2Float(float[] array){
 		if(null == array){
 			return null;
 		}
