@@ -1,14 +1,16 @@
  
 package org.anyline.data.jdbc.mariadb;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -26,8 +28,8 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.mariadb")
 public class MariaAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
-	public DB_TYPE type(){
-		return DB_TYPE.MYSQL; 
+	public DatabaseType type(){
+		return DatabaseType.MYSQL;
 	} 
 	 
 	public MariaAdapter(){
@@ -379,6 +381,8 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			column.setScale(row.getInt("NUMERIC_SCALE",0));
 			column.setCharset(row.getString("CHARACTER_SET_NAME"));
 			column.setCollate(row.getString("COLLATION_NAME"));
+			ColumnType columnType = type(column.getTypeName());
+			column.setColumnType(columnType);
 			columns.put(column.getName().toUpperCase(), column);
 		}
 		return columns;
