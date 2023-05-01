@@ -19,10 +19,11 @@
 
 package org.anyline.data.generator;
 
-import org.anyline.data.adapter.JDBCAdapter.DB_TYPE;
+
+import org.anyline.entity.data.DatabaseType;
 
 import java.util.List;
 
 public interface PrimaryGenerator {
-	public Object create(Object entity, DB_TYPE type, String table, List<String> columns, String other);
+	public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other);
 } 
