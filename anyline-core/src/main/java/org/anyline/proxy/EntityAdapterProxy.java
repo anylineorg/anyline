@@ -1,4 +1,4 @@
-package org.anyline.util;
+package org.anyline.proxy;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -7,6 +7,7 @@ import org.anyline.entity.EntitySet;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
+import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
