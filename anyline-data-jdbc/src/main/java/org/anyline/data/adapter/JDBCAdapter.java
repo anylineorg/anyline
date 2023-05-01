@@ -26,7 +26,8 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.metadata.DataType;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface JDBCAdapter {
+
 	// 内置VALUE
 	public static enum SQL_BUILD_IN_VALUE{
 		CURRENT_TIME  		{public String getCode(){return "CURRENT_TIME";}	public String getName(){return "当前时间";}};
@@ -50,48 +52,12 @@ public interface JDBCAdapter {
 		public abstract String getCode();
 		public abstract String getName();
 	}
+	public DatabaseType type();
 
-
-	public enum DB_TYPE{
-		Cassandra			{public String getCode(){return "DB_TYPE_CASSANDRA";}			public String getName(){return "Cassandra";}			public String getDriver(){return "";}},
-		ClickHouse			{public String getCode(){return "DB_TYPE_CLICKHOUSE";}			public String getName(){return "ClickHouse";}			public String getDriver(){return "ru.yandex.clickhouse.ClickHouseDriver";}},
-		CockroachDB			{public String getCode(){return "DB_TYPE_COCKROACHDB";}			public String getName(){return "CockroachDB";}			public String getDriver(){return "";}},
-		DB2					{public String getCode(){return "DB_TYPE_DB2";}					public String getName(){return "db2";}					public String getDriver(){return "com.ibm.db2.jcc.DB2Driver";}},
-		Derby  				{public String getCode(){return "DB_TYPE_DERBY";}				public String getName(){return "Derby";}				public String getDriver(){return "org.apache.derby.jdbc.EmbeddedDriver";}},
-		DM		 			{public String getCode(){return "DB_TYPE_DM";}					public String getName(){return "达梦";}					public String getDriver(){return "dm.jdbc.driver.DmDriver";}},
-		GBase  				{public String getCode(){return "DB_TYPE_GBASE";}				public String getName(){return "南大通用";}				public String getDriver(){return "com.gbase.jdbc.Driver";}},
-		H2  				{public String getCode(){return "DB_TYPE_H2";}					public String getName(){return "H2";}					public String getDriver(){return "org.h2.Driver";}},
-		HighGo				{public String getCode(){return "DB_TYPE_HIGHGO";}				public String getName(){return "瀚高";}					public String getDriver(){return "com.highgo.jdbc.Driver";}},
-		HSQLDB  			{public String getCode(){return "DB_TYPE_HSQLDB";}				public String getName(){return "HSQLDB";}				public String getDriver(){return "org.hsqldb.jdbcDriver";}},
-		InfluxDB			{public String getCode(){return "DB_TYPE_INFLUXDB";}			public String getName(){return "InfluxDB";}				public String getDriver(){return "";}},
-		KingBase			{public String getCode(){return "DB_TYPE_KINGBASE";}			public String getName(){return "人大金仓 Oracle";}		public String getDriver(){return "com.kingbase8.Driver";}},
-		KingBase_PostgreSQL	{public String getCode(){return "DB_TYPE_KINGBASE_POSTGRESQL";}	public String getName(){return "人大金仓 PostgreSQL";}	public String getDriver(){return "";}},
-		MariaDB				{public String getCode(){return "DB_TYPE_MARIADB";}				public String getName(){return "MariaDB";}				public String getDriver(){return "org.mariadb.jdbc.Driver";}},
-		MongoDB				{public String getCode(){return "DB_TYPE_MONGODB";}				public String getName(){return "MongoDB";}				public String getDriver(){return "";}},
-		MSSQL				{public String getCode(){return "DB_TYPE_MSSQL";}				public String getName(){return "mssql";}				public String getDriver(){return "com.microsoft.sqlserver.jdbc.SQLServerDriver";}},
-		MYSQL				{public String getCode(){return "DB_TYPE_MYSQL";}				public String getName(){return "mysql";}				public String getDriver(){return "com.mysql.cj.jdbc.Driver";}},
-		Neo4j  				{public String getCode(){return "DB_TYPE_NEO4J";}				public String getName(){return "Neo4j";}				public String getDriver(){return "org.neo4j.jdbc.Driver";}},
-		OceanBase 			{public String getCode(){return "DB_TYPE_OCEANBASE";}			public String getName(){return "OceanBase";}			public String getDriver(){return "com.oceanbase.jdbc.Driver";}},
-		ORACLE				{public String getCode(){return "DB_TYPE_ORACLE";}				public String getName(){return "oracle";}				public String getDriver(){return "oracle.jdbc.OracleDriver";}},
-		oscar				{public String getCode(){return "DB_TYPE_OSCAR";}				public String getName(){return "神舟通用";}				public String getDriver(){return "com.oscar.Driver";}},
-		PolarDB  			{public String getCode(){return "DB_TYPE_POLARDB";}				public String getName(){return "PolarDB";}				public String getDriver(){return "com.aliyun.polardb.Driver";}},
-		PostgreSQL 			{public String getCode(){return "DB_TYPE_POSTGRESQL";}			public String getName(){return "PostgreSQL";}			public String getDriver(){return "org.postgresql.Driver";}},
-		QuestDB 			{public String getCode(){return "DB_TYPE_QUESTDB";}				public String getName(){return "QuestDB";}				public String getDriver(){return "org.postgresql.Driver";}},
-		RethinkDB  			{public String getCode(){return "DB_TYPE_RETHINKDB";}			public String getName(){return "RethinkDB";}			public String getDriver(){return "";}},
-		SQLite  			{public String getCode(){return "DB_TYPE_SQLITE";}				public String getName(){return "SQLite";}				public String getDriver(){return "org.sqlite.JDBC";}},
-		TDengine  			{public String getCode(){return "DB_TYPE_TDENGINE";}			public String getName(){return "TDengine";}				public String getDriver(){return "com.taosdata.jdbc.TSDBDriver";}},
-		Timescale			{public String getCode(){return "DB_TYPE_TIMESCALE";}			public String getName(){return "Timescale";}			public String getDriver(){return "org.postgresql.Driver";}};
-
-		public abstract String getCode();
-		public abstract String getName();
-		//默认的驱动,在注册数据源时可能用到,如果不准确,需要根据依赖的驱动jar修改
-		public abstract String getDriver();
-	} 
 	public static final String TAB 		= "\t"		;
 	public static final String BR 		= "\n"		;
 	public static final String BR_TAB 	= "\n\t"	;
-	
-	public DB_TYPE type();
+
 
 	/**
 	 * 界定符
@@ -1179,9 +1145,9 @@ public interface JDBCAdapter {
 	/**
 	 * 转换成相应数据库支持类型
 	 * @param type type
-	 * @return DataType
+	 * @return StandardColumnType
 	 */
-	public DataType type(String type);
+	public ColumnType type(String type);
 
 	public boolean isIgnorePrecision(Column column);
 	public boolean isIgnoreScale(Column column);
@@ -1487,7 +1453,7 @@ public interface JDBCAdapter {
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
 	public boolean convert(Column column, RunValue run);
-
+	public Object convert(Column column, Object value);
 
 	/**
 	 * 在不检测数据库结构时才生效,否则会被convert代替
