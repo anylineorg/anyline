@@ -1,12 +1,13 @@
  
 package org.anyline.data.jdbc.kingbase;
- 
+
 import org.anyline.dao.AnylineDao;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.OrderStore;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,8 +21,8 @@ public class KingbaseAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
 
-	public DB_TYPE type(){
-		return DB_TYPE.KingBase;
+	public DatabaseType type(){
+		return DatabaseType.KingBase;
 	}
 	@Value("${anyline.jdbc.delimiter.kingbase:}")
 	private String delimiter;
