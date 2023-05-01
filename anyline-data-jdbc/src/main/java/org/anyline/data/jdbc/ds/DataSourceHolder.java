@@ -19,13 +19,13 @@
  
 package org.anyline.data.jdbc.ds;
 
-import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.EntityAdapterProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class DataSourceHolder {
     private static final ThreadLocal<Boolean> THREAD_AUTO_RECOVER = new ThreadLocal<Boolean>(); 
     private static List<String> dataSources = new ArrayList<>();
 	//数据源对应的数据库类型
-	private static Map<String, JDBCAdapter.DB_TYPE> types = new HashMap<>();
+	private static Map<String, DatabaseType> types = new HashMap<>();
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
     } 
@@ -51,11 +51,11 @@ public class DataSourceHolder {
         return THREAD_CUR_SOURCE.get();
     }
 
-	public static JDBCAdapter.DB_TYPE dialect(){
+	public static DatabaseType dialect(){
 		String ds = curDataSource();
 		return types.get(ds);
 	}
-	public static void dialect(String ds, JDBCAdapter.DB_TYPE type){
+	public static void dialect(String ds, DatabaseType type){
 		types.put(ds, type);
 	}
 
@@ -231,7 +231,7 @@ public class DataSourceHolder {
 		DataSource ds = buildDataSource(param);
 		return reg(key, ds, true);
 	}
-	public static DataSource reg(String key, JDBCAdapter.DB_TYPE type, String url, String user, String password) throws Exception{
+	public static DataSource reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
 		return reg(key, "om.zaxxer.hikari.HikariDataSource", type.getDriver(), url, user, password);
 	}
 	public static DataSource reg(String key, DataSource ds, boolean over) throws Exception{
