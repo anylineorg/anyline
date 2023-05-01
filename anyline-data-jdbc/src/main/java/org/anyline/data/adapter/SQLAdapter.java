@@ -36,8 +36,10 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.metadata.ColumnType;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.util.*;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,8 +59,6 @@ import java.util.*;
  */
 
 public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter {
-
-
     /* *****************************************************************************************************************
      *
      * 													DML
@@ -288,10 +288,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 if(supportInsertPlaceholder()) {
                     valuesBuilder.append("?");
                     if ("NULL".equals(value)) {
-                        addRunValue(run, Compare.EQUAL,  key, null);
-                    } else {
-                        addRunValue(run, Compare.EQUAL, key, value);
+                        value = null;
                     }
+                    addRunValue(run, Compare.EQUAL, key, value);
                 }else{
                     //format(valuesBuilder, value);
                     valuesBuilder.append(write(null, value, false));
@@ -1227,7 +1226,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
         }*/
         if(null != value){
-            String type = null;
             Column column = null;
             if(ConfigTable.IS_AUTO_CHECK_METADATA) {
                 String table = run.getTable();
@@ -1236,22 +1234,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     if(null != columns){
                         column = columns.get(key.toUpperCase());
                         if(null != column){
-                            type = column.getTypeName().toUpperCase();
+                            value = convert(column, value);
                         }
                     }
-                }
-            }
-            if(null != type && !(value instanceof String)){
-                if(type.contains("JSON")){
-                    value = BeanUtil.object2json(value);
-                }else if(type.contains("XML")){
-                    value = BeanUtil.object2xml(value);
                 }
             }
         }
 
         run.addValues(compare, key, value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
     }
+
     /* ************** 拼接字符串 *************** */
     protected String concatFun(String ... args){
         String result = "";
