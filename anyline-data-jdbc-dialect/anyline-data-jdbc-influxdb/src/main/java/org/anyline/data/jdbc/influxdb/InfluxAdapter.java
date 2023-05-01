@@ -8,6 +8,7 @@ import org.anyline.data.run.TableRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +21,8 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.influxdb")
 public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
-	public DB_TYPE type(){
-		return DB_TYPE.InfluxDB;
+	public DatabaseType type(){
+		return DatabaseType.InfluxDB;
 	} 
 	public InfluxAdapter(){
 		delimiterFr = "\"";
