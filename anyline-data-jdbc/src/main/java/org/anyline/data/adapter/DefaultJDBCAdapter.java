@@ -25,6 +25,7 @@ import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
@@ -34,7 +35,10 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.metadata.DataType;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
+import org.anyline.adapter.init.ConvertAdapter;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -61,9 +65,13 @@ import java.util.*;
 
 public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
+	protected DatabaseType db;
 
+	public String delimiterFr = "";
+	public String delimiterTo = "";
 
-	protected DataTypeAdapter dataTypeAdapter;
+	protected Map<String, ColumnType> types = new Hashtable<>();
+	protected Map<String, ColumnType> alas = new Hashtable<>();//子类填充
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -72,13 +80,26 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Qualifier("anyline.service")
 	protected AnylineService service;
 
-	public String delimiterFr = "";
-	public String delimiterTo = "";
-	public DB_TYPE type(){
-		return null;
+
+	public DatabaseType type(){
+		return this.db;
 	}
 	public DefaultJDBCAdapter(){
-		dataTypeAdapter = new DataTypeAdapter();
+		//当前数据库支持的数据类型
+		for(StandardColumnType type: StandardColumnType.values()){
+			DatabaseType[] dbs = type.dbs();
+			for(DatabaseType db:dbs){
+				if(db == this.type()){
+					//column type支持当前db
+					types.put(type.getName(), type);
+					break;
+				}
+			}
+		}
+		//数据类型 别名兼容
+		for(String key:alas.keySet()){
+			types.put(key, alas.get(key));
+		}
 	}
 
 	@Override
@@ -90,7 +111,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return this.delimiterTo;
 	}
 
-	public Object createPrimaryValue(Object entity, DB_TYPE type, String table, List<String> columns, String other){
+	public Object createPrimaryValue(Object entity, DatabaseType type, String table, List<String> columns, String other){
 		if(null == primaryGenerator){
 			if(ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE){
 				primaryGenerator = new SnowflakeGenerator();
@@ -1343,6 +1364,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
+			ColumnType columnType = type(column.getTypeName());
+			column.setColumnType(columnType);
 			column(column, set);
 			column.setName(name);
 		}
@@ -1439,6 +1462,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if (BasicUtil.isEmpty(column.getDefaultValue())) {
 				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
 			}
+			ColumnType columnType = type(column.getTypeName());
+			column.setColumnType(columnType);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -1519,6 +1544,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			} catch (Exception e) {
 				log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 			}
+
+			ColumnType columnType = type(column.getTypeName());
+			column.setColumnType(columnType);
 		}
 		return column;
 	}
@@ -1602,6 +1630,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}catch (Exception e){
 			log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 		}
+		ColumnType columnType = type(column.getTypeName());
+		column.setColumnType(columnType);
 		return column;
 	}
 
@@ -2618,11 +2648,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		boolean isIgnorePrecision = false;
 		boolean isIgnoreScale = false;
 		String typeName = column.getTypeName();
-		DataType type = type(typeName);
+		ColumnType type = type(typeName);
 		if(null != type){
+			if(!type.support()){
+				throw new RuntimeException("数据类型不支持:"+typeName);
+			}
 			isIgnorePrecision = type.ignorePrecision();
 			isIgnoreScale = type.ignoreScale();
-			typeName = type.type();
+			typeName = type.getName();
 		}else{
 			isIgnorePrecision = isIgnorePrecision(column);
 			isIgnoreScale = isIgnoreScale(column);
@@ -2669,8 +2702,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public DataType type(String type){
-		return dataTypeAdapter.type(type);
+	public ColumnType type(String type){
+		if(null == type){
+			return null;
+		}
+		return types.get(type.toUpperCase());
 	}
 
 	@Override
@@ -3545,27 +3581,20 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
 		Object result = value;
 		if(null != metadata && null != value){
-			DataType ctype = metadata.getColumnType();
+			ColumnType ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
-					ctype = dataTypeAdapter.type(typeName.toUpperCase());
+					ctype = type(typeName.toUpperCase());
 				}
 			}
 			if(null != ctype){
-				result = ctype.write(value, metadata.getDefaultValue(), placeholder);
-			}
-
-			if(null == result){
-				DataType jType = metadata.getJavaType();
-				if(null == jType){
-					String className = metadata.getClassName();
-					if(null != className){
-						jType = dataTypeAdapter.type(className.toUpperCase());
-					}
-				}
-				if(null != jType){
-					result = jType.write(value, metadata.getDefaultValue(), placeholder);
+				//拼接SQL需要引号或转换函数
+				if(!placeholder){
+					result = ctype.concat(value);
+				}else{
+					Class writeClass = ctype.compatible();
+					result = ConvertAdapter.convert(value, writeClass);
 				}
 			}
 		}
@@ -3588,9 +3617,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
-		Object result = value;
+		Object result = ConvertAdapter.convert(value, clazz);/*
 		if (null != metadata && null != value) {
-			DataType ctype = metadata.getColumnType();
+			ColumnType ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
@@ -3598,7 +3627,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 			if(null != ctype){
-				result = ctype.read(value, clazz);
+				result = ctype.read(value, null, clazz);
 			}
 			if(null == result){
 				DataType jType = metadata.getJavaType();
@@ -3609,10 +3638,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					}
 				}
 				if(null != jType){
-					result = jType.read(value, clazz);
+					result = jType.read(value, null, clazz);
 				}
 			}
-		}
+		}*/
 		return result;
 	}
 
@@ -3629,17 +3658,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				value = BeanUtil.getFieldValue(obj, key);
 			}
 		}
-		DataType type = null;
 		if(null == value){
 			if(value instanceof SQL_BUILD_IN_VALUE){
 				builder.append(value((SQL_BUILD_IN_VALUE)value));
 			}else {
-				type = dataTypeAdapter.type(value.getClass().getName());
+				ColumnType type = type(value.getClass().getName());
 				if (null != type) {
-					builder.append(type.write(value, null, true));
-				} else {
-					builder.append(value);
+					value = type.concat(value);
 				}
+				builder.append(value);
+
 			}
 		}else{
 			builder.append("null");
@@ -3710,7 +3738,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param run RunValue
 	 * @return boolean 是否完成类型转换,决定下一步是否继续
 	 */
-	@Override
 	public boolean convert(Column metadata, RunValue run){
 		if(null == run){
 			return true;
@@ -3721,34 +3748,50 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		try {
 			if(null != metadata) {
-				DataType columnType = metadata.getColumnType();
-				if (null == columnType) {
-					columnType = dataTypeAdapter.type(metadata.getTypeName());
-				}
-				if (null != columnType) {
-					value = columnType.write(value, null, true);
-				} else {
-					String clazz = metadata.getClassName();
-					DataType javaType = dataTypeAdapter.type(clazz);
-					if (null != javaType) {
-						value = javaType.write(value, null, true);
-					}
-				}
-			}else{
-				String clazz = value.getClass().getName();
-				DataType javaType = dataTypeAdapter.type(clazz);
-				if (null != javaType) {
-					value = javaType.write(value, null, true);
-				}
+				value = convert(metadata, value);
+				run.setValue(value);
 			}
 
-			run.setValue(value);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return false;
 	}
+	public Object convert(Column metadata, Object value){
+		if(null == value){
+			return value;
+		}
+		try {
+			if(null != metadata) {
+				String typeNmae = metadata.getTypeName().toUpperCase();
+				ColumnType columnType = metadata.getColumnType();
+				if (null == columnType) {
+					columnType = type(typeNmae);
+				}
+				if (null != columnType) {
+					Class transfer = columnType.transfer();
+					Class compatible = columnType.compatible();
+					if(null != transfer){
+						value = ConvertAdapter.convert(value, transfer);
+					}
+					if(null != compatible) {
+						value = ConvertAdapter.convert(value, compatible);
+					}
+ 				}
 
+				if(null != typeNmae && !(value instanceof String)){
+					if(typeNmae.contains("JSON")){
+						value = BeanUtil.object2json(value);
+					}else if(typeNmae.contains("XML")){
+						value = BeanUtil.object2xml(value);
+					}
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return value;
+	}
 	public PrimaryGenerator getPrimaryGenerator() {
 		return primaryGenerator;
 	}
