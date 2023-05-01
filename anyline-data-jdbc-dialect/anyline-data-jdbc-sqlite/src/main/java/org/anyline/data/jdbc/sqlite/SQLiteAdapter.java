@@ -1,12 +1,13 @@
 package org.anyline.data.jdbc.sqlite;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -21,13 +22,15 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.sqlite")
 public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
-	public DB_TYPE type(){
-		return DB_TYPE.SQLite;
+	public DatabaseType type(){
+		return DatabaseType.SQLite;
 	} 
 	public SQLiteAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
-		dataTypeAdapter = new DataTypeAdapter();
+		for (SQLiteColumnTypeAlias alias: SQLiteColumnTypeAlias.values()){
+			alas.put(alias.name(), alias.standard());
+		}
 	}
 	@Value("${anyline.jdbc.delimiter.sqlite:}")
 	private String delimiter;
