@@ -1,7 +1,7 @@
 package org.anyline.entity;
 
 import org.anyline.entity.data.Column;
-import org.anyline.util.EntityAdapterProxy;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
