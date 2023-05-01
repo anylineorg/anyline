@@ -1,10 +1,12 @@
 package org.anyline.data.jdbc.mysql;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -14,15 +16,16 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.*;
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 
-	public DB_TYPE type(){
-		return DB_TYPE.MYSQL; 
+	public DatabaseType type(){
+		return DatabaseType.MYSQL; 
 	}
 
 	@Override
@@ -33,7 +36,9 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public MySQLAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
-		dataTypeAdapter = new DataTypeAdapter();
+		for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
+			alas.put(alias.name(), alias.standard());
+		}
 	}
 	@Value("${anyline.jdbc.delimiter.mysql:}")
 	private String delimiter;
@@ -42,7 +47,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
-
 	/* *****************************************************************************************************
 	 *
 	 * 											DML
@@ -641,6 +645,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			column.setScale(row.getInt("NUMERIC_SCALE",0));
 			column.setCharset(row.getString("CHARACTER_SET_NAME"));
 			column.setCollate(row.getString("COLLATION_NAME"));
+			ColumnType columnType = type(column.getTypeName());
+			column.setColumnType(columnType);
 			columns.put(column.getName().toUpperCase(), column);
 		}
 		return columns;
