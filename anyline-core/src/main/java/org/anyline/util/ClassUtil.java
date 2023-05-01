@@ -634,4 +634,38 @@ public class ClassUtil {
 		}
 		return null;
 	}
+
+	/**
+	 * 对象类型<br/>
+	 * int[] > int[]<br/>
+	 * Integer[] > java.long.Integer[]<br/>
+	 * @param obj 对象
+	 * @return 类型
+	 */
+	public static String type(Object obj){
+		String type = null;
+		if(null != obj) {
+			type = type(obj.getClass());
+		}
+		return type;
+	}
+	public static String type(Field field){
+		String type = null;
+		if(null != field) {
+			Class clazz = field.getType();
+			type = type(clazz);
+		}
+		return type;
+	}
+	public static String type(Class clazz){
+		String type = null;
+		if(null != clazz) {
+			if (clazz.isArray()) {
+				type = clazz.getComponentType().getName() + "[]";
+			} else {
+				type = clazz.getName();
+			}
+		}
+		return type;
+	}
 } 
