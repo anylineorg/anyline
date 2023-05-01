@@ -20,7 +20,7 @@
 package org.anyline.data.generator.init;
 
 import org.anyline.data.generator.PrimaryGenerator;
-import org.anyline.data.adapter.JDBCAdapter.DB_TYPE;
+import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SnowflakeWorker;
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class SnowflakeGenerator implements PrimaryGenerator {
 	private static SnowflakeWorker worker = null;
-	public Object create(Object entity, DB_TYPE type, String table, List<String> columns, String other){
+	public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other){
 		if(null == worker){
 			worker = newInstance();
 		}
