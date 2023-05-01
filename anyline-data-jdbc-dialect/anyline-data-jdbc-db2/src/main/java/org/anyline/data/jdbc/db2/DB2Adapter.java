@@ -18,14 +18,15 @@
 
 package org.anyline.data.jdbc.db2;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -42,8 +43,8 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-	public DB_TYPE type(){
-		return DB_TYPE.DB2; 
+	public DatabaseType type(){
+		return DatabaseType.DB2;
 	} 
 	public DB2Adapter(){
 		delimiterFr = "\"";
