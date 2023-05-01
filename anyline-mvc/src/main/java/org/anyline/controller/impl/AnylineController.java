@@ -27,7 +27,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.EntityAdapterProxy;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.FileUtil;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
