@@ -1,25 +1,26 @@
 package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.Compare;
-import org.anyline.exception.SQLException;
-import org.anyline.exception.SQLUpdateException;
-import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.DefaultJDBCAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.entity.Join;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
-import org.anyline.data.entity.Join;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.run.XMLRun;
-import org.anyline.util.*;
+import org.anyline.entity.*;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.exception.SQLException;
+import org.anyline.exception.SQLUpdateException;
+import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,13 +30,15 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.neo4j")
 public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
-    public DB_TYPE type(){
-        return DB_TYPE.Neo4j;
+    public DatabaseType type(){
+        return DatabaseType.Neo4j;
     }
     public Neo4jAdapter(){
         delimiterFr = "`";
