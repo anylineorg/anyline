@@ -1,13 +1,14 @@
  
 package org.anyline.data.jdbc.dm;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,8 +26,8 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.dm")
 public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
-	public DB_TYPE type(){
-		return DB_TYPE.DM;
+	public DatabaseType type(){
+		return DatabaseType.DM;
 	} 
 	public DMAdapter(){
 		delimiterFr = "\"";
