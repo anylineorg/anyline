@@ -46,6 +46,7 @@ import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.proxy.CacheProxy;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
@@ -994,8 +995,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-				Object value = adapter.read(column, rs.getObject(name), null);
-				row.put(false, name, value);
+				//Object value = adapter.read(column, rs.getObject(name), null);
+				row.put(false, name, rs.getObject(name));
 			}
 			row.setMetadatas(metadatas);
 		}catch (Exception e){
@@ -1103,6 +1104,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSet rows = select(runtime, table, sql, values);
 		for(DataRow row:rows){
 			if(EntityAdapterProxy.hasAdapter()){
+				//jdbc adapter需要参与 或者metadata里添加colun type
 				T entity = EntityAdapterProxy.entity(clazz, row, null);
 				set.add(entity);
 			}else{
