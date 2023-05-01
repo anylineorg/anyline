@@ -2,16 +2,21 @@
 package org.anyline.data.jdbc.oracle;
 
 import org.anyline.dao.AnylineDao;
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.util.*;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,8 +38,8 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
 
-	public DB_TYPE type(){
-		return DB_TYPE.ORACLE; 
+	public DatabaseType type(){
+		return DatabaseType.ORACLE; 
 	}
 
 	@Value("${anyline.jdbc.delimiter.oracle:}")
@@ -48,7 +53,9 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public OracleAdapter(){
 		delimiterFr = "";
 		delimiterTo = "";
-		dataTypeAdapter = new DataTypeAdapter();
+		for (OracleColumnTypeAlias alias: OracleColumnTypeAlias.values()){
+			alas.put(alias.name(), alias.standard());
+		}
 	}
 
 	/* *****************************************************************************************************************
