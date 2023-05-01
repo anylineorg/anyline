@@ -1,10 +1,12 @@
 package org.anyline.data.jdbc.tdengine;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
+import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,8 +22,8 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
-	public DB_TYPE type(){
-		return DB_TYPE.TDengine;
+	public DatabaseType type(){
+		return DatabaseType.TDengine;
 	}
 
 	public TDengineAdapter(){
@@ -595,6 +597,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			column.setSchema(table.getSchema());
 			column.setTypeName(row.getString("type"));
 			column.setPrecision(row.getInt("length", 0));
+			ColumnType columnType = type(column.getTypeName());
+			column.setColumnType(columnType);
 		}
 		return columns;
 	}
