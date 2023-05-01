@@ -923,10 +923,10 @@ public class DateUtil {
 	public static Date parse(Object value) throws RuntimeException{
 		Date date = null;
 		if(null != value){
-			if(value instanceof Timestamp){
-				date = parse((Timestamp)value);
-			}else if(value instanceof Date){
+			if(value.getClass() == Date.class){
 				date = (Date)value;
+			}else if(value instanceof Timestamp){
+				date = parse((Timestamp)value);
 			}else if(value instanceof java.sql.Date){
 				date = parse((java.sql.Date)value);
 			}else if(value instanceof Long){
@@ -1774,5 +1774,21 @@ public class DateUtil {
 	}
 	public static LocalDate localDate(Long timestamp) {
 		return localDate(timestamp, ZoneId.systemDefault());
+	}
+
+
+	public static java.sql.Date sqlDate(Date date){
+		java.sql.Date result = null;
+		if(null != date){
+			result = java.sql.Date.valueOf(localDate(date));
+		}
+		return result;
+	}
+	public static java.sql.Date sqlDate(LocalDate date){
+		java.sql.Date result = null;
+		if(null != date){
+			result = java.sql.Date.valueOf(date);
+		}
+		return result;
 	}
 }
