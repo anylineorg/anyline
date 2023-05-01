@@ -33,6 +33,7 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultProcedure;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.proxy.CacheProxy;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
