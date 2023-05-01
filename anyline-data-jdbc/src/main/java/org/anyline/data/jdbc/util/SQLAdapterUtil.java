@@ -1,7 +1,8 @@
 package org.anyline.data.jdbc.util;
 
-import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.LogUtil;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class SQLAdapterUtil {
 			return defaultAdapter;
 		}
 		JDBCAdapter adapter = null;
-		JDBCAdapter.DB_TYPE type = DataSourceHolder.dialect();
+		DatabaseType type = DataSourceHolder.dialect();
 		if(null != type){
 			// 根据 别名
 			adapter = getAdapter(type.getName());
@@ -88,42 +89,42 @@ public class SQLAdapterUtil {
 		if(null != adapter){
 			return adapter;
 		}
-		if(adapters.containsKey(JDBCAdapter.DB_TYPE.MYSQL.getCode()) && name.contains("mysql")){
-			adapter = adapters.get(JDBCAdapter.DB_TYPE.MYSQL.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.MSSQL.getCode()) && (name.contains("mssql") || name.contains("sqlserver"))){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.MSSQL.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.ORACLE.getCode()) && name.contains("oracle")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.ORACLE.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.PostgreSQL.getCode()) && name.contains("postgresql")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.PostgreSQL.getCode());
+		if(adapters.containsKey(DatabaseType.MYSQL.getCode()) && name.contains("mysql")){
+			adapter = adapters.get(DatabaseType.MYSQL.getCode());
+		}else if(adapters.containsKey(DatabaseType.MSSQL.getCode()) && (name.contains("mssql") || name.contains("sqlserver"))){
+			adapter =  adapters.get(DatabaseType.MSSQL.getCode());
+		}else if(adapters.containsKey(DatabaseType.ORACLE.getCode()) && name.contains("oracle")){
+			adapter =  adapters.get(DatabaseType.ORACLE.getCode());
+		}else if(adapters.containsKey(DatabaseType.PostgreSQL.getCode()) && name.contains("postgresql")){
+			adapter =  adapters.get(DatabaseType.PostgreSQL.getCode());
 		}
 
-		else if(adapters.containsKey(JDBCAdapter.DB_TYPE.ClickHouse.getCode()) && name.contains("clickhouse")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.ClickHouse.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.DB2.getCode()) && name.contains("db2")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.DB2.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.Derby.getCode()) && name.contains("derby")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.Derby.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.DM.getCode()) && name.contains("dmdbms")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.DM.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.HighGo.getCode()) && name.contains("hgdb") || name.contains("highgo")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.HighGo.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.KingBase.getCode()) && name.contains("kingbase")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.KingBase.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.OceanBase.getCode()) && name.contains("oceanbase")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.OceanBase.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.PolarDB.getCode()) && name.contains("polardb")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.PolarDB.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.SQLite.getCode()) && name.contains("sqlite")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.SQLite.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.H2.getCode()) && name.contains(":h2:")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.H2.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.HSQLDB.getCode()) && name.contains("hsqldb")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.HSQLDB.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.TDengine.getCode()) && name.contains("taos")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.TDengine.getCode());
-		}else if(adapters.containsKey(JDBCAdapter.DB_TYPE.Neo4j.getCode()) && name.contains("neo4j")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.Neo4j.getCode());
+		else if(adapters.containsKey(DatabaseType.ClickHouse.getCode()) && name.contains("clickhouse")){
+			adapter =  adapters.get(DatabaseType.ClickHouse.getCode());
+		}else if(adapters.containsKey(DatabaseType.DB2.getCode()) && name.contains("db2")){
+			adapter =  adapters.get(DatabaseType.DB2.getCode());
+		}else if(adapters.containsKey(DatabaseType.Derby.getCode()) && name.contains("derby")){
+			adapter =  adapters.get(DatabaseType.Derby.getCode());
+		}else if(adapters.containsKey(DatabaseType.DM.getCode()) && name.contains("dmdbms")){
+			adapter =  adapters.get(DatabaseType.DM.getCode());
+		}else if(adapters.containsKey(DatabaseType.HighGo.getCode()) && name.contains("hgdb") || name.contains("highgo")){
+			adapter =  adapters.get(DatabaseType.HighGo.getCode());
+		}else if(adapters.containsKey(DatabaseType.KingBase.getCode()) && name.contains("kingbase")){
+			adapter =  adapters.get(DatabaseType.KingBase.getCode());
+		}else if(adapters.containsKey(DatabaseType.OceanBase.getCode()) && name.contains("oceanbase")){
+			adapter =  adapters.get(DatabaseType.OceanBase.getCode());
+		}else if(adapters.containsKey(DatabaseType.PolarDB.getCode()) && name.contains("polardb")){
+			adapter =  adapters.get(DatabaseType.PolarDB.getCode());
+		}else if(adapters.containsKey(DatabaseType.SQLite.getCode()) && name.contains("sqlite")){
+			adapter =  adapters.get(DatabaseType.SQLite.getCode());
+		}else if(adapters.containsKey(DatabaseType.H2.getCode()) && name.contains(":h2:")){
+			adapter =  adapters.get(DatabaseType.H2.getCode());
+		}else if(adapters.containsKey(DatabaseType.HSQLDB.getCode()) && name.contains("hsqldb")){
+			adapter =  adapters.get(DatabaseType.HSQLDB.getCode());
+		}else if(adapters.containsKey(DatabaseType.TDengine.getCode()) && name.contains("taos")){
+			adapter =  adapters.get(DatabaseType.TDengine.getCode());
+		}else if(adapters.containsKey(DatabaseType.Neo4j.getCode()) && name.contains("neo4j")){
+			adapter =  adapters.get(DatabaseType.Neo4j.getCode());
 		}
 		if(null != adapter) {
 			adapters.put(name, adapter);
