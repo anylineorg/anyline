@@ -1,15 +1,16 @@
  
 package org.anyline.data.jdbc.postgresql;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -30,14 +31,16 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.postgresql")
 public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
-	public DB_TYPE type(){
-		return DB_TYPE.PostgreSQL; 
+	public DatabaseType type(){
+		return DatabaseType.PostgreSQL;
 	}
 
 	public PostgresqlAdapter(){
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		dataTypeAdapter = new DataTypeAdapter();
+		for (PostresqlColumnTypeAlias alias: PostresqlColumnTypeAlias.values()){
+			alas.put(alias.name(), alias.standard());
+		}
 	}
 	@Value("${anyline.jdbc.delimiter.postgresql:}")
 	private String delimiter;
