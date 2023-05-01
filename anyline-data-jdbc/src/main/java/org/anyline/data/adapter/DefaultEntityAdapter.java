@@ -1,8 +1,8 @@
 package org.anyline.data.adapter;
 
-import org.anyline.entity.DataRow;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
 import org.anyline.util.*;
@@ -246,7 +246,14 @@ public class DefaultEntityAdapter implements EntityAdapter {
     public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map metadatas) {
         List<Field> fields = ClassUtil.getFields(clazz, false, false);
         Map<Field,String> fk = new HashMap<>();
-        entity = BeanUtil.map2object(entity, map, clazz, metadatas, false, true, true);
+        //entity = BeanUtil.map2object(entity, map, clazz, metadatas, false, true, true);
+        if (null == entity) {
+            try {
+                entity = (T) clazz.newInstance();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         for(Field field:fields){
             Column column = column(clazz, field);//列名
             Object value = map.get(column.getName().toUpperCase());
@@ -258,7 +265,8 @@ public class DefaultEntityAdapter implements EntityAdapter {
                 if(null == metadata && null != metadatas){
                     metadata = (Column) metadatas.get(column.getName().toUpperCase());
                 }
-                BeanUtil.setFieldValue(entity, field, metadata, map.get(column.getName().toUpperCase()));
+                BeanUtil.setFieldValue(entity, field, metadata, value);
+
             }
         }
         return entity;
