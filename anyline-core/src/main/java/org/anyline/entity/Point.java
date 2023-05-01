@@ -11,7 +11,30 @@ public class Point {
         this.x = x ;
         this.y = y;
     }
+    public Point(Integer[] xy){
+        this.x = new Double(x) ;
+        this.y = new Double(y);
+        isInt = true;
+    }
+    public Point(int[] xy){
+        this.x = new Double(x) ;
+        this.y = new Double(y);
+        isInt = true;
+    }
+    public Point(Double[] xy){
+        this.x = xy[0] ;
+        this.y = xy[1];
+    }
+    public Point(double[] xy){
+        this.x = xy[0] ;
+        this.y = xy[1];
+    }
     public Point(int x, int y){
+        this.x = new Double(x) ;
+        this.y = new Double(y);
+        isInt = true;
+    }
+    public Point(Integer x, Integer y){
         this.x = new Double(x) ;
         this.y = new Double(y);
         isInt = true;
@@ -39,11 +62,20 @@ public class Point {
     public Double[] getDoubles(){
         return new Double[]{x,y};
     }
+    public double[] doubles() throws Exception{
+        return new double[]{x, y};
+    }
     public Long[] getLongs(){
         return new Long[]{x.longValue(),y.longValue()};
     }
-    public Integer[] getInteger(){
+    public long[] longs() throws Exception{
+        return new long[]{x.longValue(), y.longValue()};
+    }
+    public Integer[] getIntegers(){
         return new Integer[]{x.intValue(),y.intValue()};
+    }
+    public int[] ints() throws Exception{
+        return new int[]{x.intValue(), y.intValue()};
     }
     public Double getX() {
         return x;
