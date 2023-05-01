@@ -752,6 +752,7 @@ public class Column implements org.anyline.entity.data.Column{
         copy.setAfter(after);
         copy.setCharset(charset);
         copy.setCollate(collate);
+        copy.setColumnType(columnType);
 
         return copy;
     }
