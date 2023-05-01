@@ -222,52 +222,55 @@ public abstract class BasicRun implements Run {
 		if(null != obj){
 			// from:1-DataRow 2-Entity
 			if(split && getFrom() != 2){
-				if(obj instanceof Object[]){
-					Object[] list = (Object[]) obj;
-					for(Object item:list){
-						addValues(new RunValue(key, item));
-						if(Compare.EQUAL == compare){
-							break;
+				/**/
+				if(obj.getClass().isArray()) {
+					if(obj instanceof Object[]){
+						Object[] list = (Object[]) obj;
+						for(Object item:list){
+							addValues(new RunValue(key, item));
+							if(Compare.EQUAL == compare){
+								break;
+							}
 						}
-					}
-				}else if(obj instanceof double[]){
-					double[] list = (double[]) obj;
-					for(double item:list){
-						addValues(new RunValue(key, item));
-						if(Compare.EQUAL == compare){
-							break;
+					}else if(obj instanceof double[]){
+						double[] list = (double[]) obj;
+						for(double item:list){
+							addValues(new RunValue(key, item));
+							if(Compare.EQUAL == compare){
+								break;
+							}
 						}
-					}
-				}else if(obj instanceof int[]){
-					int[] list = (int[]) obj;
-					for(int item:list){
-						addValues(new RunValue(key, item));
-						if(Compare.EQUAL == compare){
-							break;
+					}else if(obj instanceof int[]){
+						int[] list = (int[]) obj;
+						for(int item:list){
+							addValues(new RunValue(key, item));
+							if(Compare.EQUAL == compare){
+								break;
+							}
 						}
-					}
-				}else if(obj instanceof float[]){
-					float[] list = (float[]) obj;
-					for(float item:list){
-						addValues(new RunValue(key, item));
-						if(Compare.EQUAL == compare){
-							break;
+					}else if(obj instanceof float[]){
+						float[] list = (float[]) obj;
+						for(float item:list){
+							addValues(new RunValue(key, item));
+							if(Compare.EQUAL == compare){
+								break;
+							}
 						}
-					}
-				}else if(obj instanceof short[]){
-					short[] list = (short[]) obj;
-					for(short item:list){
-						addValues(new RunValue(key, item));
-						if(Compare.EQUAL == compare){
-							break;
+					}else if(obj instanceof short[]){
+						short[] list = (short[]) obj;
+						for(short item:list){
+							addValues(new RunValue(key, item));
+							if(Compare.EQUAL == compare){
+								break;
+							}
 						}
-					}
-				}else if(obj instanceof Object[]){
-					Object[] list = (Object[]) obj;
-					for(Object item:list){
-						addValues(new RunValue(key, item));
-						if(Compare.EQUAL == compare){
-							break;
+					}else if(obj instanceof Object[]){
+						Object[] list = (Object[]) obj;
+						for(Object item:list){
+							addValues(new RunValue(key, item));
+							if(Compare.EQUAL == compare){
+								break;
+							}
 						}
 					}
 				}else if(obj instanceof Collection){
