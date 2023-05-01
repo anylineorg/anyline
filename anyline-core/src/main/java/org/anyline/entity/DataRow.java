@@ -27,6 +27,7 @@ import org.anyline.adapter.init.LowerKeyAdapter;
 import org.anyline.adapter.init.SrcKeyAdapter;
 import org.anyline.adapter.init.UpperKeyAdapter;
 import org.anyline.entity.data.Column;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
