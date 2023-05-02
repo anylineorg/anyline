@@ -34,10 +34,11 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	public MySQLAdapter(){
+		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
-			alas.put(alias.name(), alias.standard());
+			types.put(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.jdbc.delimiter.mysql:}")
