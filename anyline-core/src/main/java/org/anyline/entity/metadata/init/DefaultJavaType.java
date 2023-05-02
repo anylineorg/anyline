@@ -4,6 +4,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.metadata.Convert;
+import org.anyline.entity.metadata.ConvertException;
 import org.anyline.entity.metadata.DataType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
@@ -152,7 +153,12 @@ public enum DefaultJavaType implements DataType {
         public Object read(Object value, Object def, Class clazz){
             Convert convert = convert(clazz);
             if(null != convert){
-                value = convert.exe(value, def);
+                try {
+                    value = convert.exe(value, def);
+                }catch (ConvertException e){
+                    //TODO 根据异常信息 决定下一行
+                    e.printStackTrace();
+                }
             }
             return value;
         }
