@@ -103,7 +103,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         XML                     (StandardColumnType.TEXT                  ), //     ,pg，      ,mssql
         YEAR                    (StandardColumnType.DATE                  ); //mysql,
         private final ColumnType standard;
-        private MySQLColumnTypeAlias(ColumnType standard){
+        MySQLColumnTypeAlias(ColumnType standard){
                 this.standard = standard;
         }
 
