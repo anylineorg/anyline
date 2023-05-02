@@ -5,39 +5,39 @@ import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.entity.metadata.ColumnType;
 
 public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
-        BFILE                   (StandardColumnType.ILLEGAL               ), //     ( ,oracle,
-        BINARY_DOUBLE           (StandardColumnType.DOUBLE                ), //     ( ,oracle,
-        BINARY_FLOAT            (StandardColumnType.FLOAT                 ), //     ( ,oracle,
-        BIGINT                  (StandardColumnType.BIGINT                ), //mysql( (     ,mssql,
+        BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  ,oracle,
+        BINARY_DOUBLE           (StandardColumnType.DOUBLE                ), //     ,  ,oracle,
+        BINARY_FLOAT            (StandardColumnType.FLOAT                 ), //     ,  ,oracle,
+        BIGINT                  (StandardColumnType.BIGINT                ), //mysql,  ,     ,mssql,
         BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
-        BINARY                  (StandardColumnType.BINARY                ), //mysql( (     ,mssql,
+        BINARY                  (StandardColumnType.BINARY                ), //mysql,  ,     ,mssql,
         BIT                     (StandardColumnType.BIT                   ), //mysql,pg(     ,mssql,
-        BLOB                    (StandardColumnType.BLOB                  ), //mysql( ,oracle(    ,sqlite
+        BLOB                    (StandardColumnType.BLOB                  ), //mysql,  ,oracle(    ,sqlite
         BOOL                    (StandardColumnType.BIT                   ), //     ,pg
         BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
         BYTEA                   (StandardColumnType.VARBINARY             ), //     ,pg
         CHAR                    (StandardColumnType.CHAR                  ), //mysql,pg,oracle,mssql,
         CIDR                    (StandardColumnType.ILLEGAL               ), //      pg
         CIRCLE                  (StandardColumnType.ILLEGAL               ), //      pg
-        CLOB                    (StandardColumnType.TEXT                  ), //     ( ,oracle
+        CLOB                    (StandardColumnType.TEXT                  ), //     ,  ,oracle
         DATE                    (StandardColumnType.DATE                  ), //mysql,pg,oracle,mssql
-        DATETIME                (StandardColumnType.DATETIME              ), //mysql( (     ,mssql
-        DATETIME2               (StandardColumnType.DATETIME2             ), //mysql( (     ,mssql
-        DATETIMEOFFSET          (StandardColumnType.DATETIMEOFFSET        ), //mysql( (     ,mssql
+        DATETIME                (StandardColumnType.DATETIME              ), //mysql,  ,     ,mssql
+        DATETIME2               (StandardColumnType.DATETIME2             ), //mysql,  ,     ,mssql
+        DATETIMEOFFSET          (StandardColumnType.DATETIMEOFFSET        ), //mysql,  ,     ,mssql
         DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql
         DOUBLE                  (StandardColumnType.DECIMAL               ), //mysql,
         ENUM                    (StandardColumnType.ENUM                  ), //mysql,
-        FLOAT                   (StandardColumnType.FLOAT                 ), //mysql( ,oracle,mssql
+        FLOAT                   (StandardColumnType.FLOAT                 ), //mysql,  ,oracle,mssql
         FLOAT4                  (StandardColumnType.FLOAT                 ), //     ,pg
         FLOAT8                  (StandardColumnType.FLOAT                 ), //     ,pg
-        GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //     ( (     ,mssql
+        GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
         GEOMETRY                (StandardColumnType.GEOMETRY              ), //mysql
         GEOMETRYCOLLECTION      (StandardColumnType.GEOMETRYCOLLECTION    ), //mysql
-        HIERARCHYID             (StandardColumnType.ILLEGAL               ), //     ( (     ,mssql
-        IMAGE                   (StandardColumnType.BLOB                  ), //     ( (     ,mssql
+        HIERARCHYID             (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
+        IMAGE                   (StandardColumnType.BLOB                  ), //     ,  ,     ,mssql
         INET                    (StandardColumnType.ILLEGAL               ), //     ,pg
         INTERVAL                (StandardColumnType.ILLEGAL               ), //     ,pg
-        INT                     (StandardColumnType.INT                   ), //mysql( (     ,mssql,
+        INT                     (StandardColumnType.INT                   ), //mysql,  ,     ,mssql,
         INT2                    (StandardColumnType.INT                   ), //     ,pg
         INT4                    (StandardColumnType.INT                   ), //     ,pg
         INT8                    (StandardColumnType.BIGINT                ), //     ,pg
@@ -45,18 +45,18 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         JSON                    (StandardColumnType.JSON                  ), //mysql,pg
         JSONB                   (StandardColumnType.BLOB                  ), //     ,pg
         LINE                    (StandardColumnType.LINE                  ), //mysql,pg
-        LONG                    (StandardColumnType.BIGINT                ), //     ( ,oracle
+        LONG                    (StandardColumnType.BIGINT                ), //     ,  ,oracle
         LONGBLOB                (StandardColumnType.VARBINARY             ), //mysql
         LONGTEXT                (StandardColumnType.LONGTEXT              ), //mysql
         LSEG                    (StandardColumnType.ILLEGAL               ), //     ,pg
         MACADDR                 (StandardColumnType.ILLEGAL               ), //     ,pg
         MONEY                   (StandardColumnType.DECIMAL               ), //     ,pg(     ,mssql
-        NUMBER                  (StandardColumnType.NUMERIC               ), //     ( ,oracle
-        NCHAR                   (StandardColumnType.VARCHAR               ), //     ( ,oracle,mssql
-        NCLOB                   (StandardColumnType.TEXT                  ), //     ( ,oracle
-        NTEXT                   (StandardColumnType.TEXT                  ), //     ( (     ,mssql
-        NVARCHAR                (StandardColumnType.VARCHAR               ), //     ( (     ,mssql
-        NVARCHAR2               (StandardColumnType.VARCHAR               ), //     ( ,oracle
+        NUMBER                  (StandardColumnType.NUMERIC               ), //     ,  ,oracle
+        NCHAR                   (StandardColumnType.VARCHAR               ), //     ,  ,oracle,mssql
+        NCLOB                   (StandardColumnType.TEXT                  ), //     ,  ,oracle
+        NTEXT                   (StandardColumnType.TEXT                  ), //     ,  ,     ,mssql
+        NVARCHAR                (StandardColumnType.VARCHAR               ), //     ,  ,     ,mssql
+        NVARCHAR2               (StandardColumnType.VARCHAR               ), //     ,  ,oracle
         PATH                    (StandardColumnType.ILLEGAL               ), //     ,pg
         MEDIUMBLOB              (StandardColumnType.MEDIUMBLOB            ), //mysql,
         MEDIUMINT               (StandardColumnType.MEDIUMINT             ), //mysql,
@@ -64,23 +64,23 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         MULTILINESTRING         (StandardColumnType.MULTILINESTRING       ), //mysql,
         MULTIPOINT              (StandardColumnType.MULTIPOINT            ), //mysql,
         MULTIPOLYGON            (StandardColumnType.MULTIPOLYGON          ), //mysql,
-        NUMERIC                 (StandardColumnType.NUMERIC               ), //mysql( (      ,mssql,sqlite
+        NUMERIC                 (StandardColumnType.NUMERIC               ), //mysql,  ,      ,mssql,sqlite
         POINT                   (StandardColumnType.POINT                 ), //mysql,pg
         POLYGON                 (StandardColumnType.POLYGON               ), //mysql,pg
-        REAL                    (StandardColumnType.REAL                  ), //mysql( (     ,mssql,sqlite
-        RAW                     (StandardColumnType.ILLEGAL               ), //     ( ,oracle
-        ROWID                   (StandardColumnType.ILLEGAL               ), //     ( ,oracle
+        REAL                    (StandardColumnType.REAL                  ), //mysql,  ,     ,mssql,sqlite
+        RAW                     (StandardColumnType.ILLEGAL               ), //     ,  ,oracle
+        ROWID                   (StandardColumnType.ILLEGAL               ), //     ,  ,oracle
         SERIAL                  (StandardColumnType.TINYINT               ), //     ,pg,
         SERIAL2                 (StandardColumnType.TINYINT               ), //     ,pg,
         SERIAL4                 (StandardColumnType.INT                   ), //     ,pg,
         SERIAL8                 (StandardColumnType.BIGINT                ), //     ,pg,
         SET                     (StandardColumnType.SET                   ), //mysql,
-        SMALLDATETIME           (StandardColumnType.DATETIME              ), //     ( (     ,mssql
-        SMALLMONEY              (StandardColumnType.DECIMAL               ), //     ( (     ,mssql
+        SMALLDATETIME           (StandardColumnType.DATETIME              ), //     ,  ,     ,mssql
+        SMALLMONEY              (StandardColumnType.DECIMAL               ), //     ,  ,     ,mssql
         SMALLINT                (StandardColumnType.TINYINT               ), //mysql,
         SMALLSERIAL             (StandardColumnType.TINYINT               ), //     ,pg,
-        SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //     ( (     ,mssql
-        SYSNAME                 (StandardColumnType.ILLEGAL               ), //     ( (     ,mssql
+        SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
+        SYSNAME                 (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
         TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg(     ,mssql,sqlite
         TIME                    (StandardColumnType.TIME                  ), //mysql,pg(     ,mssql
         TIMEZ                   (StandardColumnType.TIME                  ), //     ,pg
@@ -92,14 +92,14 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //     ,pg
         UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ), //     ( ，     ,mssql
         UUID                    (StandardColumnType.ILLEGAL               ), //     ,pg
-        UROWID                  (StandardColumnType.ILLEGAL               ), //     ( ,oracle
+        UROWID                  (StandardColumnType.ILLEGAL               ), //     ,  ,oracle
         VARBIT                  (StandardColumnType.VARBINARY             ), //     ,pg
         TINYBLOB                (StandardColumnType.TINYBLOB              ), //mysql,
-        TINYINT                 (StandardColumnType.TINYINT               ), //mysql( (     ,mssql
+        TINYINT                 (StandardColumnType.TINYINT               ), //mysql,  ,     ,mssql
         TINYTEXT                (StandardColumnType.TINYTEXT              ), //mysql,
-        VARBINARY               (StandardColumnType.VARBINARY             ), //mysql( (     ,mssql
+        VARBINARY               (StandardColumnType.VARBINARY             ), //mysql,  ,     ,mssql
         VARCHAR                 (StandardColumnType.VARCHAR               ), //mysql,pg,oracle,mssql
-        VARCHAR2                (StandardColumnType.VARCHAR               ), //     ( ,oracle,
+        VARCHAR2                (StandardColumnType.VARCHAR               ), //     ,  ,oracle,
         XML                     (StandardColumnType.TEXT                  ), //     ,pg，      ,mssql
         YEAR                    (StandardColumnType.DATE                  ); //mysql,
         private final ColumnType standard;
