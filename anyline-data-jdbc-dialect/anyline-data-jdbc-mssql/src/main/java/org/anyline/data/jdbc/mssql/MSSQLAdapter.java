@@ -50,10 +50,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	private static String dbVersion = ConfigTable.getString("DATABASE_VERSION"); 
 	public MSSQLAdapter(){
+		super();
 		delimiterFr = "[";
 		delimiterTo = "]";
 		for (MSSQLColumnTypeAlias alias: MSSQLColumnTypeAlias.values()){
-			alas.put(alias.name(), alias.standard());
+			types.put(alias.name(), alias.standard());
 		}
 	}
 
