@@ -36,10 +36,11 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	}
 
 	public PostgresqlAdapter(){
+		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (PostresqlColumnTypeAlias alias: PostresqlColumnTypeAlias.values()){
-			alas.put(alias.name(), alias.standard());
+			types.put(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.jdbc.delimiter.postgresql:}")
