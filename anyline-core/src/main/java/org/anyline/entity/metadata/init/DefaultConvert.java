@@ -3,14 +3,158 @@ package org.anyline.entity.metadata.init;
 import org.anyline.entity.Point;
 import org.anyline.entity.metadata.Convert;
 import org.anyline.entity.metadata.ConvertException;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.Date;
 
 public enum DefaultConvert implements Convert {
+
+    /* *****************************************************************************************************************
+     *                                               String
+     * ==================================================================================================================
+     * byte
+     * date
+     * number
+     * *****************************************************************************************************************/
+    String_bytes(String.class, byte[].class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return value.toString().getBytes();
+        }
+    },
+    String_Integer(String.class, Integer.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseInt(value.toString());
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_int(String.class, int.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseInt(value.toString()).intValue();
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_Long(String.class, Long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseLong(value);
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_Double(String.class, Double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseDouble(value, null);
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_double(String.class, double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseDouble(value, null).doubleValue();
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_Float(String.class, Float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseFloat(value, null);
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_float(String.class, float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseFloat(value, null).floatValue();
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_Decimal(String.class, BigDecimal.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseDecimal(value, null);
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_javaUtilDate(String.class, Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.parse(value);
+        }
+    },
+
+    /* *****************************************************************************************************************
+     *                                                  number
+     * *****************************************************************************************************************/
+
+    Integer_int(Integer.class, int.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).intValue();
+        }
+    },
+    int_Integer(int.class, Integer.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value);
+        }
+    },
+    Float_float(Float.class, float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Float)value).floatValue();
+        }
+    },
+    float_Float(float.class, Float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Float((float)value);
+        }
+    },
+    Double_double(Double.class, double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Double)value).doubleValue();
+        }
+    },
+    double_Double(double.class, Double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Double((double)value);
+        }
+    },
+
     /* *****************************************************************************************************************
     *                                               日期
     * ==================================================================================================================
@@ -679,6 +823,12 @@ public enum DefaultConvert implements Convert {
             return value;
         }
     }
+    /* *****************************************************************************************************************
+     *                                               Point
+     * ==================================================================================================================
+     * java.entity.Point
+     *
+     * *****************************************************************************************************************/
     ;
     private DefaultConvert(Class origin, Class target){
         this.origin = origin;
