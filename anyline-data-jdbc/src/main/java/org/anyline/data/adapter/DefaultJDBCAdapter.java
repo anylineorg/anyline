@@ -71,7 +71,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public String delimiterTo = "";
 
 	protected Map<String, ColumnType> types = new Hashtable<>();
-	protected Map<String, ColumnType> alas = new Hashtable<>();//子类填充
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -95,10 +94,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					break;
 				}
 			}
-		}
-		//数据类型 别名兼容
-		for(String key:alas.keySet()){
-			types.put(key, alas.get(key));
 		}
 	}
 
@@ -3768,22 +3763,28 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if (null == columnType) {
 					columnType = type(typeNmae);
 				}
-				if (null != columnType) {
-					Class transfer = columnType.transfer();
-					Class compatible = columnType.compatible();
-					if(null != transfer){
-						value = ConvertAdapter.convert(value, transfer);
-					}
-					if(null != compatible) {
-						value = ConvertAdapter.convert(value, compatible);
-					}
- 				}
 
+				boolean parseJson = false;
 				if(null != typeNmae && !(value instanceof String)){
 					if(typeNmae.contains("JSON")){
+						//对象转换成json string
 						value = BeanUtil.object2json(value);
+						parseJson = true;
 					}else if(typeNmae.contains("XML")){
 						value = BeanUtil.object2xml(value);
+						parseJson = true;
+					}
+				}
+				if(!parseJson){
+					if (null != columnType) {
+						Class transfer = columnType.transfer();
+						Class compatible = columnType.compatible();
+						if(null != transfer){
+							value = ConvertAdapter.convert(value, transfer);
+						}
+						if(null != compatible) {
+							value = ConvertAdapter.convert(value, compatible);
+						}
 					}
 				}
 			}
