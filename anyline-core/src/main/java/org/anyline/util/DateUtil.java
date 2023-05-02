@@ -1784,6 +1784,17 @@ public class DateUtil {
 		}
 		return result;
 	}
+	public static java.sql.Time sqlTime(Date date){
+		java.sql.Time result = null;
+		if(null != date){
+			result = java.sql.Time.valueOf(format("HH:mm:ss"));
+		}
+		return result;
+	}
+	public static java.sql.Timestamp sqlTimestamp(Date date){
+		java.sql.Timestamp result = new Timestamp(date.getTime());
+		return result;
+	}
 	public static java.sql.Date sqlDate(LocalDate date){
 		java.sql.Date result = null;
 		if(null != date){
