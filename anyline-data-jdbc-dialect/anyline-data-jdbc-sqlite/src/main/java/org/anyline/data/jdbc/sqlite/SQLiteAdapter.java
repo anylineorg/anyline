@@ -26,10 +26,11 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return DatabaseType.SQLite;
 	} 
 	public SQLiteAdapter(){
+		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (SQLiteColumnTypeAlias alias: SQLiteColumnTypeAlias.values()){
-			alas.put(alias.name(), alias.standard());
+			types.put(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.jdbc.delimiter.sqlite:}")
