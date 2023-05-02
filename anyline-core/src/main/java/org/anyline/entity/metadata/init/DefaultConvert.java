@@ -284,6 +284,13 @@ public enum DefaultConvert implements Convert {
             return DateUtil.format(date);
         }
     },
+
+    javaSQLTimestamp_Long(java.sql.Timestamp.class, Long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((java.sql.Timestamp)value).getTime();
+        }
+    },
     javaSQLTimestamp_javaSQLDate(java.sql.Timestamp.class, java.util.Date.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
@@ -351,6 +358,261 @@ public enum DefaultConvert implements Convert {
             return DateUtil.localDateTime(date);
         }
     },
+
+    /* *****************************************************************************************************************
+     *                                                  java.time.LocalDate
+     * *****************************************************************************************************************/
+
+    javaTimeLocalDate_String(java.time.LocalDate.class, String.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.format(date,"yyyy-MM-dd");
+        }
+    },
+    javaTimeLocalDate_javaUtilDate(java.time.LocalDate.class, java.util.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return date;
+        }
+    },
+    javaTimeLocalDate_javaSQLDate(java.time.LocalDate.class, java.sql.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlDate(date);
+        }
+    },
+    javaTimeLocalDate_javaSQLTime(java.time.LocalDate.class, java.sql.Time.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTime(date);
+        }
+    },
+    javaTimeLocalDate_javaSQLTimestamp(java.time.LocalDate.class, java.sql.Timestamp.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTimestamp(date);
+        }
+    },
+    javaTimeLocalDate_javaTimeYear(java.time.LocalDate.class, java.time.Year.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Year year = Year.of(DateUtil.year(date));
+            return year;
+        }
+    },
+    javaTimeLocalDate_javaTimeYearMonth(java.time.LocalDate.class, java.time.YearMonth.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
+        }
+    },
+    javaTimeLocalDate_javaTimeMonth(java.time.LocalDate.class, java.time.Month.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Month month = Month.of(DateUtil.month(date));
+            return month;
+        }
+    },
+    javaTimeLocalDate_javaTimeLocalDate(java.time.LocalDate.class, java.time.LocalDate.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localDate(date);
+        }
+    },
+    javaTimeLocalDate_javaTimeLocalTime(java.time.LocalDate.class, java.time.LocalTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localTime(date);
+
+        }
+    },
+
+    javaTimeLocalDate_javaTimeLocalDateTime(java.time.LocalDate.class, java.time.LocalDateTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localDateTime(date);
+        }
+    },
+
+    /* *****************************************************************************************************************
+     *                                                  java.time.LocalTime
+     * *****************************************************************************************************************/
+
+    javaTimeLocalTime_String(java.time.LocalTime.class, String.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.format(date,"HH:mm:ss");
+        }
+    },
+    javaTimeLocalTime_javaUtilDate(java.time.LocalTime.class, java.util.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return date;
+        }
+    },
+    javaTimeLocalTime_javaSQLDate(java.time.LocalTime.class, java.sql.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlDate(date);
+        }
+    },
+    javaTimeLocalTime_javaSQLTime(java.time.LocalTime.class, java.sql.Time.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTime(date);
+        }
+    },
+    javaTimeLocalTime_javaSQLTimestamp(java.time.LocalTime.class, java.sql.Timestamp.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTimestamp(date);
+        }
+    },
+    javaTimeLocalTime_javaTimeYear(java.time.LocalTime.class, java.time.Year.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Year year = Year.of(DateUtil.year(date));
+            return year;
+        }
+    },
+    javaTimeLocalTime_javaTimeYearMonth(java.time.LocalTime.class, java.time.YearMonth.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
+        }
+    },
+    javaTimeLocalTime_javaTimeMonth(java.time.LocalTime.class, java.time.Month.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Month month = Month.of(DateUtil.month(date));
+            return month;
+        }
+    },
+    javaTimeLocalTime_javaTimeLocalTime(java.time.LocalTime.class, java.time.LocalTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localTime(date);
+
+        }
+    },
+
+    javaTimeLocalTime_javaTimeLocalDateTime(java.time.LocalTime.class, java.time.LocalDateTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localDateTime(date);
+        }
+    },
+
+    /* *****************************************************************************************************************
+     *                                                  java.time.LocalDateTime
+     * *****************************************************************************************************************/
+
+    javaTimeLocalDateTime_String(java.time.LocalDateTime.class, String.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.format(date);
+        }
+    },
+    javaTimeLocalDateTime_Long(java.time.LocalDateTime.class, Long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return date.getTime();
+        }
+    },
+    javaTimeLocalDateTime_javaUtilDate(java.time.LocalDateTime.class, java.util.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return date;
+        }
+    },
+    javaTimeLocalDateTime_javaSQLDate(java.time.LocalDateTime.class, java.sql.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlDate(date);
+        }
+    },
+    javaTimeLocalDateTime_javaSQLTime(java.time.LocalDateTime.class, java.sql.Time.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTime(date);
+        }
+    },
+    javaTimeLocalDateTime_javaSQLTimestamp(java.time.LocalDateTime.class, java.sql.Timestamp.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTimestamp(date);
+        }
+    },
+    javaTimeLocalDateTime_javaTimeYear(java.time.LocalDateTime.class, java.time.Year.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Year year = Year.of(DateUtil.year(date));
+            return year;
+        }
+    },
+    javaTimeLocalDateTime_javaTimeYearMonth(java.time.LocalDateTime.class, java.time.YearMonth.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
+        }
+    },
+    javaTimeLocalDateTime_javaTimeMonth(java.time.LocalDateTime.class, java.time.Month.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Month month = Month.of(DateUtil.month(date));
+            return month;
+        }
+    },
+    javaTimeLocalDateTime_javaTimeLocalDateTime(java.time.LocalDateTime.class, java.time.LocalDate.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localDate(date);
+        }
+    },
+    javaTimeLocalDateTime_javaTimeLocalTime(java.time.LocalDateTime.class, java.time.LocalTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localTime(date);
+
+        }
+    },
+
+
 
     /* *****************************************************************************************************************
      *                                               array
