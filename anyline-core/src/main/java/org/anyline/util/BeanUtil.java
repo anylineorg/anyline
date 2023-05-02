@@ -33,13 +33,12 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.anyline.adapter.init.JavaTypeAdapter;
+import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.metadata.ColumnType;
-import org.anyline.entity.metadata.DataType;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -52,9 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
@@ -118,6 +115,8 @@ public class BeanUtil {
 	public static boolean setFieldValue(Object obj, Field field, Object value){
 		return setFieldValue(obj, field, null, value);
 	}
+	private static List<String> arr = new ArrayList<>();
+
 	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值,传null
@@ -139,7 +138,7 @@ public class BeanUtil {
 		String fieldType = field.getType().getSimpleName();
 		String type = fieldType.toLowerCase();		//属性类型
 		ColumnType columnType = null;
-		String typeName = null;
+		String typeName = "";
 		if(null != metadata){
 			columnType = metadata.getColumnType();
 			typeName = metadata.getTypeName();
@@ -159,12 +158,32 @@ public class BeanUtil {
 						}else if(v instanceof Map){
 							v = map2object((Map)v, field.getType());
 						}
+						boolean replace = false;
+						List<Object> tmps = new ArrayList<>();
+						if(v instanceof Collection){
+							ParameterizedType pt = (ParameterizedType)field.getGenericType();
+							Type[] args = pt.getActualTypeArguments();
+							if(null != args && args.length>0){
+								Class itemClass = (Class)args[0];
+								for(Object item:(Collection)v){
+									if(item instanceof Map){
+										Object oitem = BeanUtil.map2object((Map)item, itemClass);
+										tmps.add(oitem);
+										replace = true;
+									}
+								}
+							}
+						}
+						if(replace){
+							v = tmps;
+						}
 					}else if(typeName.contains("XML")){
 						v = xml2object(v.toString(), field.getType());
 					}else if(null != columnType){
-						v = columnType.convert(v, field.getType());
+						v = columnType.convert(v, obj, field);
 					}else{
-						DataType dt = JavaTypeAdapter.type(v.getClass());
+						v = ConvertAdapter.convert(v, field.getType());
+						/*DataType dt = JavaTypeAdapter.type(v.getClass());
 						if(null != dt){
 							v = dt.read(value, null, field.getType());
 						}else{
@@ -231,7 +250,7 @@ public class BeanUtil {
 									v = v.toString();
 								}
 							}
-						}
+						}*/
 					}//end ! columnt type
 				}
 
@@ -857,7 +876,7 @@ public class BeanUtil {
 		return null;
 	}
 	public static <T> T json2oject(String json, Class<T> clazz){
-		return json2oject(json,clazz, null);
+		return json2oject(json, clazz, null);
 	}
 	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){
