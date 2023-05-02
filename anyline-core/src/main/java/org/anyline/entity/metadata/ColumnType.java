@@ -1,8 +1,10 @@
 package org.anyline.entity.metadata;
 
 
-import org.anyline.entity.data.DatabaseType;
 import org.anyline.adapter.init.ConvertAdapter;
+import org.anyline.entity.data.DatabaseType;
+
+import java.lang.reflect.Field;
 
 public interface ColumnType {
     public static ColumnType ILLEGAL = new ColumnType() {
@@ -61,6 +63,11 @@ public interface ColumnType {
             return null;
         }
 
+        @Override
+        public Object convert(Object value, Object obj, Field field) {
+            return null;
+        }
+
     };
     public abstract String getName();
     public abstract boolean ignorePrecision();
@@ -103,4 +110,5 @@ public interface ColumnType {
     public abstract Object convert(Object value, Object def);
     public abstract Object convert(Object value, Class target);
     public abstract Object convert(Object value, Class target, Object def);
+    public abstract Object convert(Object value, Object obj, Field field);
 }
