@@ -12,6 +12,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.time.LocalDateTime;
@@ -1101,6 +1102,11 @@ public enum StandardColumnType implements ColumnType {
         return value;
     }
 
+    @Override
+    public Object convert(Object value, Object obj, Field field) {
+        return convert(value, field.getType());
+    }
+
     public Object read(Object value, Object def, Class clazz) {
         return value;
     }
@@ -1147,4 +1153,5 @@ public enum StandardColumnType implements ColumnType {
     public DatabaseType[] dbs() {
         return dbs;
     }
+
 }
