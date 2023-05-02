@@ -2,6 +2,7 @@ package org.anyline.adapter.init;
 
 
 import org.anyline.entity.metadata.Convert;
+import org.anyline.entity.metadata.ConvertException;
 import org.anyline.entity.metadata.init.DefaultConvert;
 import org.anyline.util.LogUtil;
 import org.slf4j.Logger;
@@ -61,7 +62,12 @@ public class ConvertAdapter {
             if(null != map) {
                 Convert convert = map.get(target);
                 if(null != convert) {
-                    result = convert.exe(value, def);
+                    try {
+                        result = convert.exe(value, def);
+                    }catch (ConvertException e){
+                        //TODO 根据异常信息 决定下一行
+                        e.printStackTrace();
+                    }
                 }else{
                     log.error("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
                 }
