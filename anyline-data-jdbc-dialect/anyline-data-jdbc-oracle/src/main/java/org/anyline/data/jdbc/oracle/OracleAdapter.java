@@ -51,10 +51,11 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	public OracleAdapter(){
+		super();
 		delimiterFr = "";
 		delimiterTo = "";
 		for (OracleColumnTypeAlias alias: OracleColumnTypeAlias.values()){
-			alas.put(alias.name(), alias.standard());
+			types.put(alias.name(), alias.standard());
 		}
 	}
 
