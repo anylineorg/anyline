@@ -69,10 +69,10 @@ public class ConvertAdapter {
                         e.printStackTrace();
                     }
                 }else{
-                    log.error("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
+                    log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
                 }
             }else{
-                log.error("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
+                log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
             }
         }
         return result;
