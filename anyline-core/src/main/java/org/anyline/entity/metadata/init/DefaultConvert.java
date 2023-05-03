@@ -21,6 +21,7 @@ public enum DefaultConvert implements Convert {
      * byte
      * date
      * number
+     * date
      * *****************************************************************************************************************/
     String_bytes(String.class, byte[].class){
         @Override
@@ -203,6 +204,81 @@ public enum DefaultConvert implements Convert {
         }
     },
 
+    string_javaUtilDate(String.class, java.util.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return date;
+        }
+    },
+    string_javaSQLDate(String.class, java.sql.Date.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlDate(date);
+        }
+    },
+    string_javaSQLTime(String.class, java.sql.Time.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTime(date);
+        }
+    },
+    string_javaSQLTimestamp(String.class, java.sql.Timestamp.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.sqlTimestamp(date);
+        }
+    },
+    string_javaTimeYear(String.class, java.time.Year.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Year year = Year.of(DateUtil.year(date));
+            return year;
+        }
+    },
+    string_javaTimeYearMonth(String.class, java.time.YearMonth.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
+        }
+    },
+    string_javaTimeMonth(String.class, java.time.Month.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Month month = Month.of(DateUtil.month(date));
+            return month;
+        }
+    },
+    string_javaTimeLocalDate(String.class, java.time.LocalDate.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localDate(date);
+        }
+    },
+    string_javaTimeLocalTime(String.class, java.time.LocalTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localTime(date);
+
+        }
+    },
+
+    string_javaTimeLocalDateTime(String.class, java.time.LocalDateTime.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            return DateUtil.localDateTime(date);
+        }
+    },
     /* *****************************************************************************************************************
     *                                               日期
     * ==================================================================================================================
