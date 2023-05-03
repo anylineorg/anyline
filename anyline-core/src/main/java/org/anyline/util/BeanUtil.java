@@ -34,11 +34,13 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.anyline.adapter.init.ConvertAdapter;
+import org.anyline.adapter.init.JavaTypeAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.metadata.DataType;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -118,6 +120,56 @@ public class BeanUtil {
 	private static List<String> arr = new ArrayList<>();
 
 	/**
+	 * 根据field集合条目泛型类转换
+	 * @param field field
+	 * @param value Collection&lt;Map&gt;
+	 * @return Collection&lt;Entity&gt;
+	 * @throws Exception
+	 */
+	public static Collection maps2object(Field field, Collection value) throws Exception{
+		Collection list = value.getClass().newInstance();
+		Type type = field.getGenericType();
+		if(type instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) type;
+			Type[] args = pt.getActualTypeArguments();
+			if (null != args && args.length > 0) {
+				Class itemClass = (Class) args[0];
+				for (Object item : value) {
+					if (item instanceof Map) {
+						Object oitem = BeanUtil.map2object((Map) item, itemClass);
+						list.add(oitem);
+					}
+				}
+			}
+		}
+		return list;
+	}
+	/**
+	 * 根据field集合条目泛型类转换
+	 * @param value Map&lt;?,Map&gt;
+	 * @return Map&lt;?,Entity&gt;
+	 * @throws Exception
+	 */
+	public static Map maps2object(Field field, Map value) throws Exception{
+		Map map = value.getClass().newInstance();
+		Type type = field.getGenericType();
+		if(type instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) type;
+			Type[] args = pt.getActualTypeArguments();
+			if (null != args && args.length > 1) {
+				Class itemClass = (Class) args[1];
+				for (Object key : value.keySet()) {
+					Object item = value.get(key);
+					if (item instanceof Map) {
+						Object oitem = BeanUtil.map2object((Map) item, itemClass);
+						map.put(key, oitem);
+					}
+				}
+			}
+		}
+		return map;
+	}
+	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值,传null
 	 * @param field 属性
@@ -153,29 +205,23 @@ public class BeanUtil {
 			if(null != v){
 				if(!srcTypeKey.equals(tarTypeKey)) {
 					if(typeName.contains("JSON")) {
+						//先转换成Collection<Map>或Map<Map>
 						if(v instanceof String){
 							v = json2oject((String)v, field.getType());
 						}else if(v instanceof Map){
 							v = map2object((Map)v, field.getType());
 						}
-						boolean replace = false;
-						List<Object> tmps = new ArrayList<>();
+						//再把map转换成Entity
 						if(v instanceof Collection){
-							ParameterizedType pt = (ParameterizedType)field.getGenericType();
-							Type[] args = pt.getActualTypeArguments();
-							if(null != args && args.length>0){
-								Class itemClass = (Class)args[0];
-								for(Object item:(Collection)v){
-									if(item instanceof Map){
-										Object oitem = BeanUtil.map2object((Map)item, itemClass);
-										tmps.add(oitem);
-										replace = true;
-									}
-								}
+							Collection list = maps2object(field, (Collection) v);
+							if(null != list && !list.isEmpty()){
+								v = list;
 							}
-						}
-						if(replace){
-							v = tmps;
+						}else if(v instanceof Map){
+							Map map = maps2object(field, (Map)v);
+							if(null != map && !map.isEmpty()){
+								v = map;
+							}
 						}
 					}else if(typeName.contains("XML")){
 						v = xml2object(v.toString(), field.getType());
@@ -1048,8 +1094,8 @@ public class BeanUtil {
 				value = "";
 			}
 			builder.append("<").append(field.getName()).append(">")
-			.append(value)
-			.append("</").append(field.getName()).append(">");
+					.append(value)
+					.append("</").append(field.getName()).append(">");
 		}
 		builder.append("</xml>");
 		return builder.toString();
@@ -1350,17 +1396,17 @@ public class BeanUtil {
 		return equals(obj1, obj2, array2list(keys));
 	}
 
-/*
+	/*
 
-	*/
+	 */
 /**
-	 * 数组拼接成字符串
-	 *
-	 * @param list   集合
-	 * @param split  分隔符
-	 * @param field 条目属性
-	 * @return String
-	 *//*
+ * 数组拼接成字符串
+ *
+ * @param list   集合
+ * @param split  分隔符
+ * @param field 条目属性
+ * @return String
+ *//*
 
 
 	public static String concat(List<?> list, String field, String split) {
@@ -2559,17 +2605,17 @@ public class BeanUtil {
 		result[1] = key2;
 		return result;
 	}
-   public static boolean isJson(Object json){
-	   if(null == json){
-		   return false;
-	   }
-	   try{
-		   JSON_MAPPER.readTree(json.toString());
-	   }catch(Exception e){
-		   return false;
-	   }
-	   return true;
-   }
+	public static boolean isJson(Object json){
+		if(null == json){
+			return false;
+		}
+		try{
+			JSON_MAPPER.readTree(json.toString());
+		}catch(Exception e){
+			return false;
+		}
+		return true;
+	}
 
 	public static Object value(JsonNode json){
 		if(null == json){
@@ -2724,8 +2770,8 @@ public class BeanUtil {
 	 * @param map map
 	 * @param alert 赋值失败时是否提示异常信息
 	 */
-    public static void setFieldsValue(Object obj, Map<String,?> map , boolean alert){
-    	if(null != map && null != obj) {
+	public static void setFieldsValue(Object obj, Map<String,?> map , boolean alert){
+		if(null != map && null != obj) {
 			List<String> fields = ClassUtil.getFieldsName(obj.getClass());
 			for (String field : fields) {
 				Object value = propertyNvl(map, field);
@@ -2734,7 +2780,7 @@ public class BeanUtil {
 				}
 			}
 		}
-    }
+	}
 
 	public static void setFieldsValue(Object obj, Map<String,?> map ){
 		setFieldsValue(obj, map, true);
@@ -3532,4 +3578,4 @@ public class BeanUtil {
 	private static String value(Environment env, String ... keys){
 		return value(null, env, keys);
 	}
-} 
+}
