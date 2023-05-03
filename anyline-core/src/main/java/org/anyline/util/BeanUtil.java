@@ -149,6 +149,8 @@ public class BeanUtil {
 					}
 				}
 			}
+		}else{
+			list = value;
 		}
 		return list;
 	}
@@ -174,6 +176,8 @@ public class BeanUtil {
 					}
 				}
 			}
+		}else{
+			map = value;
 		}
 		return map;
 	}
@@ -821,8 +825,8 @@ public class BeanUtil {
 	/**
 	 * map转实现
 	 * @param obj 在此基础上执行,如果不提供则新创建
-	 * @param map map
-	 * @param clazz class
+	 * @param map 源数据
+	 * @param clazz Entity class
 	 * @param metadatas metadatas
 	 * @param recursion 是否递归
 	 * @param ignoreCase 是否忽略大小写
@@ -835,6 +839,12 @@ public class BeanUtil {
 	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		try {
 			if(null == obj) {
+				if(Map.class.isAssignableFrom(clazz)){
+					return (T)map;
+				}
+				if(Object.class == clazz){
+					return (T)map;
+				}
 				if(clazz == Map.class){
 					obj = (T)new HashMap<>();
 				}else {
