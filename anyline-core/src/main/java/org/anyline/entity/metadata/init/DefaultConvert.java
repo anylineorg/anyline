@@ -39,6 +39,26 @@ public enum DefaultConvert implements Convert {
             }
         }
     },
+    String_Boolean(String.class, Boolean.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseBoolean(value);
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
+    String_boolean(String.class, boolean.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            try {
+                return BasicUtil.parseBoolean(value);
+            }catch (Exception e){
+                return value;
+            }
+        }
+    },
     String_int(String.class, int.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
