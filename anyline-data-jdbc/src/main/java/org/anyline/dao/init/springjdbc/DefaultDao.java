@@ -1787,10 +1787,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				LinkedHashMap<String,Table> tmps = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 				for(String key:tmps.keySet()){
-					Table item = tmps.get(key);
-					if(null != item){
-						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
-							tables.put(key.toUpperCase(), item);
+					if(!tables.containsKey(key.toUpperCase())) {
+						Table item = tmps.get(key);
+						if (null != item) {
+							if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+								tables.put(key.toUpperCase(), item);
+							}
 						}
 					}
 				}
@@ -1958,10 +1960,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				LinkedHashMap<String,View> tmps = adapter.views(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 				for(String key:tmps.keySet()){
-					View item = tmps.get(key);
-					if(null != item){
-						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
-							views.put(key.toUpperCase(), item);
+					if(!views.containsKey(key.toUpperCase())) {
+						View item = tmps.get(key);
+						if (null != item) {
+							if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+								views.put(key.toUpperCase(), item);
+							}
 						}
 					}
 				}
@@ -2105,10 +2109,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				LinkedHashMap<String,MasterTable> tmps = adapter.mtables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 				for(String key:tmps.keySet()){
-					MasterTable item = tmps.get(key);
-					if(null != item){
-						if(greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
-							tables.put(key.toUpperCase(), item);
+					if(!tables.containsKey(key.toUpperCase())) {
+						MasterTable item = tmps.get(key);
+						if (null != item) {
+							if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+								tables.put(key.toUpperCase(), item);
+							}
 						}
 					}
 				}
