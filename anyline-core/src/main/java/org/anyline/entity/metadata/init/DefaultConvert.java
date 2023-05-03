@@ -179,6 +179,81 @@ public enum DefaultConvert implements Convert {
             return new Integer((int)value);
         }
     },
+    Integer_Long(Integer.class, Long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).longValue();
+        }
+    },
+    int_Long(int.class, Long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value).longValue();
+        }
+    },
+    Integer_long(Integer.class, long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).longValue();
+        }
+    },
+    int_long(int.class, long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value).longValue();
+        }
+    },
+
+    Integer_Float(Integer.class, Float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).floatValue();
+        }
+    },
+    int_Float(int.class, Float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value).floatValue();
+        }
+    },
+    Integer_float(Integer.class, float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).floatValue();
+        }
+    },
+    int_float(int.class, float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value).floatValue();
+        }
+    },
+
+    Integer_Double(Integer.class, Double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).doubleValue();
+        }
+    },
+    int_Double(int.class, Double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value).doubleValue();
+        }
+    },
+
+    Integer_double(Integer.class, double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((Integer)value).doubleValue();
+        }
+    },
+    int_double(int.class, double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return new Integer((int)value).doubleValue();
+        }
+    },
     Float_float(Float.class, float.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
