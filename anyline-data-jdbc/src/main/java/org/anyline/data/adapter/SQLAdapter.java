@@ -482,7 +482,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 Collection list = (Collection) data;
                 //检测是否有主键值
                 for(Object item:list){
-                    if(BasicUtil.isNotEmpty(getPrimaryValue(item))){
+                    if(BasicUtil.isNotEmpty(true, getPrimaryValue(item))){
                         //已经有主键值了
                         return true;
                     }
@@ -520,7 +520,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
             }else{
                 if(null != keys && keys.size() > 0) {
-                    if(BasicUtil.isEmpty(getPrimaryValue(data))){
+                    if(BasicUtil.isEmpty(true, getPrimaryValue(data))){
                         Object id = keys.get(0).get(id_key);
                         setPrimaryValue(data, id);
                         if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
