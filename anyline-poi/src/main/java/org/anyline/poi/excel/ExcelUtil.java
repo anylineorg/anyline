@@ -331,8 +331,8 @@ public class ExcelUtil {
 	/**
 	 * 读取sheet
 	 * @param sheet sheet
-	 * @param rows 从第rows行开始
-	 * @param foot 到第几行结束(如果负数表示 表尾有多少行不需要读取)
+	 * @param start 从第rows行开始
+	 * @param end 到第几行结束(如果负数表示 表尾有多少行不需要读取)
 	 * @return List
 	 */
 	public static List<List<String>> read(Sheet sheet, int start, int end) {
