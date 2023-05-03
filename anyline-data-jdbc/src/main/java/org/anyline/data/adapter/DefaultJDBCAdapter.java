@@ -21,6 +21,7 @@ package org.anyline.data.adapter;
 
 
 import org.anyline.adapter.EntityAdapter;
+import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
@@ -37,7 +38,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
-import org.anyline.adapter.init.ConvertAdapter;
+import org.anyline.entity.metadata.DataType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
@@ -3612,19 +3613,23 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
-		Object result = ConvertAdapter.convert(value, clazz);/*
+		//Object result = ConvertAdapter.convert(value, clazz);
+		Object result = value;
 		if (null != metadata && null != value) {
 			ColumnType ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
-					ctype = dataTypeAdapter.type(typeName);
+					ctype = type(typeName);
 				}
 			}
 			if(null != ctype){
-				result = ctype.read(value, null, clazz);
+				if(null == clazz){
+
+				}
+				result = ctype.convert(value, clazz);
 			}
-			if(null == result){
+			/*if(null == result){
 				DataType jType = metadata.getJavaType();
 				if(null == jType){
 					String className = metadata.getClassName();
@@ -3635,8 +3640,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if(null != jType){
 					result = jType.read(value, null, clazz);
 				}
-			}
-		}*/
+			}*/
+		}
 		return result;
 	}
 
