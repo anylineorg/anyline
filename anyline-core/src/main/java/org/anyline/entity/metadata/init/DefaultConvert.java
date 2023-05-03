@@ -7,6 +7,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
@@ -117,7 +118,54 @@ public enum DefaultConvert implements Convert {
     /* *****************************************************************************************************************
      *                                                  number
      * *****************************************************************************************************************/
-
+    BigInteger_int(BigInteger.class, int.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).intValue();
+        }
+    },
+    BigInteger_Integer(BigInteger.class, Integer.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).intValue();
+        }
+    },
+    BigInteger_long(BigInteger.class, long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).longValue();
+        }
+    },
+    BigInteger_Long(BigInteger.class, Long.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).longValue();
+        }
+    },
+    BigInteger_float(BigInteger.class, float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).floatValue();
+        }
+    },
+    BigInteger_Float(BigInteger.class, Float.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).floatValue();
+        }
+    },
+    BigInteger_double(BigInteger.class, double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).doubleValue();
+        }
+    },
+    BigInteger_Double(BigInteger.class, Double.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((BigInteger)value).doubleValue();
+        }
+    },
     Integer_int(Integer.class, int.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
