@@ -34,13 +34,11 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.adapter.init.JavaTypeAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.metadata.ColumnType;
-import org.anyline.entity.metadata.DataType;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -127,16 +125,26 @@ public class BeanUtil {
 	 * @throws Exception
 	 */
 	public static Collection maps2object(Field field, Collection value) throws Exception{
+
+		Class clazz = field.getType();
+
 		Collection list = value.getClass().newInstance();
-		Type type = field.getGenericType();
-		if(type instanceof ParameterizedType) {
-			ParameterizedType pt = (ParameterizedType) type;
+		if(!clazz.isAssignableFrom(list.getClass())){
+			if(clazz == Collection.class || clazz == List.class){
+				//TODO 更多类型
+				list = new ArrayList();
+			}
+		}
+
+		Type gtype = field.getGenericType();
+		if(gtype instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) gtype;
 			Type[] args = pt.getActualTypeArguments();
 			if (null != args && args.length > 0) {
 				Class itemClass = (Class) args[0];
 				for (Object item : value) {
 					if (item instanceof Map) {
-						Object oitem = BeanUtil.map2object((Map) item, itemClass);
+						Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
 						list.add(oitem);
 					}
 				}
@@ -161,7 +169,7 @@ public class BeanUtil {
 				for (Object key : value.keySet()) {
 					Object item = value.get(key);
 					if (item instanceof Map) {
-						Object oitem = BeanUtil.map2object((Map) item, itemClass);
+						Object oitem = BeanUtil.map2object((Map) item, itemClass, null, true, true, true);
 						map.put(key, oitem);
 					}
 				}
@@ -209,7 +217,7 @@ public class BeanUtil {
 						if(v instanceof String){
 							v = json2oject((String)v, field.getType());
 						}else if(v instanceof Map){
-							v = map2object((Map)v, field.getType());
+							v = map2object((Map)v, field.getType(), null, true, true, true);
 						}
 						//再把map转换成Entity
 						if(v instanceof Collection){
@@ -827,7 +835,11 @@ public class BeanUtil {
 	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		try {
 			if(null == obj) {
-				obj = (T) clazz.newInstance();
+				if(clazz == Map.class){
+					obj = (T)new HashMap<>();
+				}else {
+					obj = (T) clazz.newInstance();
+				}
 			}
 			Set es = map.entrySet();
 			Iterator it = es.iterator();
@@ -856,7 +868,7 @@ public class BeanUtil {
 						k = tmp[1];
 					}
 					Object v = map.get(k);
-					setFieldValue(obj, f, v);
+					setFieldValue(obj, f, v, true);
 				}
 			}
 		}catch(Exception e){
