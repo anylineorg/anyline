@@ -53,7 +53,7 @@ public class ConvertAdapter {
     }
     public static  Object convert(Object value, Class target, Object def){
         Object result = value;
-        if(null != value){
+        if(null != value && null != target){
             Class clazz = value.getClass();
             if(clazz == target){
                 return value;
@@ -85,6 +85,7 @@ public class ConvertAdapter {
             }
             if(!success){
                 log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
+                throw new RuntimeException();
             }
         }
         return result;
