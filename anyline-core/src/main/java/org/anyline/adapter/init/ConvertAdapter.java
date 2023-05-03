@@ -68,6 +68,8 @@ public class ConvertAdapter {
                         //TODO 根据异常信息 决定下一行
                         e.printStackTrace();
                     }
+                }else if(target == String.class){
+                    result = value.toString();
                 }else{
                     log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
                 }
