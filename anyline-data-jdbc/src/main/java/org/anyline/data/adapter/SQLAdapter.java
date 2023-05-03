@@ -1234,7 +1234,15 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     if(null != columns){
                         column = columns.get(key.toUpperCase());
                         if(null != column){
-                            value = convert(column, value);
+                            if(value instanceof Collection) {
+                                List list = new ArrayList();
+                                for(Object item:(Collection)value){
+                                    list.add(convert(column, item));
+                                }
+                                value = list;
+                            }else{
+                                value = convert(column, value);
+                            }
                         }
                     }
                 }
