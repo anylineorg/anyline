@@ -48,32 +48,42 @@ public class ConvertAdapter {
         }
     }
 
-    public static Object convert(Object value, Class target){
+    public static  Object convert(Object value, Class target){
         return convert(value, target, null);
     }
-    public static Object convert(Object value, Class target, Object def){
+    public static  Object convert(Object value, Class target, Object def){
         Object result = value;
         if(null != value){
             Class clazz = value.getClass();
             if(clazz == target){
                 return value;
             }
+            boolean success = false;
+
             Map<Class, Convert> map = converts.get(clazz);
             if(null != map) {
                 Convert convert = map.get(target);
                 if(null != convert) {
                     try {
                         result = convert.exe(value, def);
+                        success = true;
                     }catch (ConvertException e){
                         //TODO 根据异常信息 决定下一行
                         e.printStackTrace();
                     }
                 }else if(target == String.class){
                     result = value.toString();
-                }else{
-                    log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
+                    success = true;
                 }
-            }else{
+            }
+            if(!success){
+                try{
+                    result = target.cast(value);
+                    success = true;
+                }catch (Exception e){
+                }
+            }
+            if(!success){
                 log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
             }
         }
