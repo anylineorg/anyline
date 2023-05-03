@@ -208,6 +208,31 @@ public enum StandardColumnType implements ColumnType {
      * mysql,pg
      */
     ,JSON("JSON", new DatabaseType[]{MYSQL, PostgreSQL}, String.class, true, true){
+
+        @Override
+        public Object convert(Object value, Class target, Object def) {
+            if(null == value){
+                return def;
+            }
+            Class transfer = transfer();
+            Class compatible = compatible();
+            try{
+                if(null == target) {
+                    JsonNode node = BeanUtil.JSON_MAPPER.readTree(value.toString());
+                    if (node.isArray()) {
+                        value = DataSet.parseJson(node);
+                    } else {
+                        value = DataRow.parseJson(node);
+                    }
+                }else{
+                    value = super.convert(value, target, def);
+                }
+            }catch (Exception e){
+                //不能转成DataSet的List
+                value = super.convert(value, target, def);
+            }
+            return value;
+        }
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return value;
@@ -1071,24 +1096,13 @@ public enum StandardColumnType implements ColumnType {
     }
     @Override
     public Object convert(Object value, Object def){
-        if(null != value){
-            if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, def);
-            }
-            value = ConvertAdapter.convert(value, compatible, def);
-        }
-        return value;
+        return convert(value, null, def);
     }
 
     @Override
     public Object convert(Object value, Class target){
-        if(null != value){
-            if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, null);
-            }
-            value = ConvertAdapter.convert(value, target, null);
-        }
-        return value;
+        Object def = null;
+        return convert(value, target, def);
     }
 
     @Override
