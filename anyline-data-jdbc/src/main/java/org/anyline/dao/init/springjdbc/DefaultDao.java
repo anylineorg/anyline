@@ -995,8 +995,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-				//Object value = adapter.read(column, rs.getObject(name), null);
-				row.put(false, name, rs.getObject(name));
+				Object value = adapter.read(column, rs.getObject(name), null);
+				row.put(false, name, value);
 			}
 			row.setMetadatas(metadatas);
 		}catch (Exception e){
