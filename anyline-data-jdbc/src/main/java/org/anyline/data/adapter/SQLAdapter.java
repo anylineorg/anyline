@@ -1224,7 +1224,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             if(null != value){
                 value = "${"+value+"}";
             }
-        }*/
+        }*//*
+        下一步会执行convert
         if(null != value){
             Column column = null;
             if(ConfigTable.IS_AUTO_CHECK_METADATA) {
@@ -1247,7 +1248,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                 }
             }
-        }
+        }*/
 
         run.addValues(compare, key, value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
     }
