@@ -1,5 +1,7 @@
 package org.anyline.entity.metadata.init;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.metadata.Convert;
 import org.anyline.entity.metadata.ConvertException;
@@ -14,7 +16,18 @@ import java.time.YearMonth;
 import java.util.Date;
 
 public enum DefaultConvert implements Convert {
-
+    DataRow_String(DataRow.class, String.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((DataRow)value).toJSON();
+        }
+    },
+    DataSet_String(DataSet.class, String.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return ((DataSet)value).toJSON();
+        }
+    },
     /* *****************************************************************************************************************
      *                                               String
      * ==================================================================================================================
