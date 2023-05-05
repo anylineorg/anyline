@@ -65,8 +65,6 @@ public class RuntimeHolder  implements ApplicationContextAware {
             JDBCRuntime runtime = new JDBCRuntime("common", template, null);
             runtimes.put("common", runtime);
         }
-
-
     }
 
     public static void reg(String key, DataSource ds){
@@ -124,7 +122,6 @@ public class RuntimeHolder  implements ApplicationContextAware {
         }
         return runtime;
     }
-
     public static JdbcTemplate getJdbcTemplate(){
         JDBCRuntime runtime = getRuntime();
         if(null != runtime){
@@ -153,5 +150,4 @@ public class RuntimeHolder  implements ApplicationContextAware {
         }
         return null;
     }
-
 }
