@@ -1802,4 +1802,8 @@ public class DateUtil {
 		}
 		return result;
 	}
+	public static YearMonth yearMonth(Date date){
+		YearMonth yearMonth = YearMonth.of(year(date), month(date));
+		return yearMonth;
+	}
 }
