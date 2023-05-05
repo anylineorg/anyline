@@ -614,7 +614,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(!columns.contains(DataRow.DEFAULT_PRIMARY_KEY)) {
             keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
         }
-
+        boolean isReplaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
         keys = checkMetadata(dest, keys);
         keys = BeanUtil.distinct(keys);
 
@@ -645,6 +645,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     first = false;
                 }else{
                     if("NULL".equals(value)){
+                        value = null;
+                    }else if("".equals(value) && isReplaceEmptyNull){
                         value = null;
                     }
                     boolean chk = true;
@@ -718,6 +720,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(!columns.contains(DataRow.DEFAULT_PRIMARY_KEY)) {
             keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
         }
+
+        boolean replaceEmptyNull = row.isReplaceEmptyNull();
+
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
         int size = keys.size();
@@ -734,6 +739,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }else{
                     SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(BR_TAB);
                     if("NULL".equals(value)){
+                        value = null;
+                    }else if("".equals(value) && replaceEmptyNull){
                         value = null;
                     }
                     updateColumns.add(key);
