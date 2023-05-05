@@ -103,7 +103,7 @@ public interface ColumnType {
 
     /**
      * 支持的数据库
-     * @return
+     * @return DatabaseType
      */
     public abstract DatabaseType[] dbs();
 
