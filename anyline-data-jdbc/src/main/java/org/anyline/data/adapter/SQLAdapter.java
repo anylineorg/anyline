@@ -247,11 +247,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
         run.setFrom(from);
         /*确定需要插入的列*/
-
         List<String> keys = confirmInsertColumns(dest, obj, columns, false);
         if(null == keys || keys.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
         }
+        boolean replaceEmptyNull = false;
+        if(obj instanceof DataRow){
+            row = (DataRow)obj;
+            replaceEmptyNull = row.isReplaceEmptyNull();
+        }else{
+            replaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
+        }
+
+
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
         valuesBuilder.append(") VALUES (");
@@ -288,6 +296,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 if(supportInsertPlaceholder()) {
                     valuesBuilder.append("?");
                     if ("NULL".equals(value)) {
+                        value = null;
+                    }else if("".equals(value) && replaceEmptyNull){
                         value = null;
                     }
                     addRunValue(run, Compare.EQUAL, key, value);
