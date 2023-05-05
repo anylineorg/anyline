@@ -2557,6 +2557,9 @@ public enum DefaultConvert implements Convert {
     java_util_Date2java_time_YearMonth(java.util.Date.class, java.time.YearMonth.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = (java.util.Date)value;
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
         }
     },
     java_util_Date2java_time_Month(java.util.Date.class, java.time.Month.class){
