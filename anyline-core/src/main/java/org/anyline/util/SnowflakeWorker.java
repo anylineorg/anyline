@@ -3,7 +3,7 @@ package org.anyline.util;
 public class SnowflakeWorker {
 
     /** 开始时间截 (这个用自己业务系统上线的时间) */
-    private final long twepoch = 1577808000000L;
+    private final long TWEPOCH = DateUtil.parse(ConfigTable.SNOWFLAKE_TWEPOCH).getTime();
 
     /** 机器id所占的位数 */
     private final long workerIdBits = 10L;
@@ -74,7 +74,7 @@ public class SnowflakeWorker {
         lastTimestamp = timestamp;
 
         //移位并通过或运算拼到一起组成64位的ID
-        return ((timestamp - twepoch) << timestampLeftShift) //
+        return ((timestamp - TWEPOCH) << timestampLeftShift) //
                 | (workerId << workerIdShift) //
                 | sequence;
     }
