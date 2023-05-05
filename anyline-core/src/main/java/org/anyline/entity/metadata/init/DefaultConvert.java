@@ -2565,102 +2565,129 @@ public enum DefaultConvert implements Convert {
     java_util_Date2java_time_Month(java.util.Date.class, java.time.Month.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = (java.util.Date)value;
+            Month month = Month.of(DateUtil.month(date));
+            return month;
         }
     },
     java_util_Date2java_time_LocalDate(java.util.Date.class, java.time.LocalDate.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.localDate((java.util.Date)value);
         }
     },
     java_util_Date2java_time_LocalTime(java.util.Date.class, java.time.LocalTime.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.localTime((java.util.Date)value);
         }
     },
     java_util_Date2java_time_LocalDateTime(java.util.Date.class, java.time.LocalDateTime.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.localDateTime((java.util.Date)value);
         }
     },
     java_sql_Date2String(java.sql.Date.class, String.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
-
+            return DateUtil.format(DateUtil.parse(value), "yyyy-MM-dd");
         }
     },
     java_sql_Date2Long(java.sql.Date.class, Long.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return Long.valueOf(DateUtil.parse(value).getTime());
         }
     },
     java_sql_Date2long(java.sql.Date.class, long.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.parse(value).getTime();
         }
     },
     java_sql_Date2java_util_Date(java.sql.Date.class, java.util.Date.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.parse(value);
         }
     },
     java_sql_Date2java_sql_Time(java.sql.Date.class, java.sql.Time.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.sqlTime(DateUtil.parse(value));
         }
     },
     java_sql_Date2java_sql_Timestamp(java.sql.Date.class, java.sql.Timestamp.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.sqlTimestamp(DateUtil.parse(value));
         }
     },
     java_sql_Date2java_time_Year(java.sql.Date.class, java.time.Year.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Year year = Year.of(DateUtil.year(date));
+            return year;
         }
     },
     java_sql_Date2java_time_YearMonth(java.sql.Date.class, java.time.YearMonth.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
         }
     },
     java_sql_Date2java_time_Month(java.sql.Date.class, java.time.Month.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Month month = Month.of(DateUtil.month(date));
+            return month;
         }
     },
     java_sql_Date2java_time_LocalDate(java.sql.Date.class, java.time.LocalDate.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.localDate(DateUtil.parse(value));
         }
     },
     java_sql_Date2java_time_LocalTime(java.sql.Date.class, java.time.LocalTime.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.localTime(DateUtil.parse(value));
         }
     },
     java_sql_Date2java_time_LocalDateTime(java.sql.Date.class, java.time.LocalDateTime.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.localDateTime(DateUtil.parse(value));
         }
     },
     java_sql_Time2String(java.sql.Time.class, String.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.format(DateUtil.parse(value), "HH:mm:ss");
         }
     },
     java_sql_Time2Long(java.sql.Time.class, Long.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return Long.valueOf(DateUtil.parse(value).getTime());
         }
     },
     java_sql_Time2long(java.sql.Time.class, long.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.parse(value).getTime();
         }
     },
     java_sql_Time2java_util_Date(java.sql.Time.class, java.util.Date.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            return DateUtil.parse(value);
         }
     },
     java_sql_Time2java_sql_Date(java.sql.Time.class, java.sql.Date.class){
