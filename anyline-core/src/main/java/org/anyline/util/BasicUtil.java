@@ -317,6 +317,17 @@ public class BasicUtil {
 		}
 		return RegularUtil.isDateTime(obj.toString());
 	}
+
+	public static Byte parseByte(Object value, Byte def){
+		try {
+			return Byte.parseByte(value.toString());
+		}catch (Exception e){
+			return def;
+		}
+	}
+	public static Byte parseByte(Object value) throws Exception{
+		return Byte.parseByte(value.toString());
+	}
 	public static Short parseShort(Object value, Short def) {
 		if (null == value) {
 			return def;
@@ -451,8 +462,7 @@ public class BasicUtil {
 			return DateUtil.parse(value).getTime();
 		}
 		return Long.parseLong(value.toString());
-	} 
- 
+	}
 	/** 
 	 * 类型转换 
 	 *  
