@@ -61,6 +61,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
     private boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
     private boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
+    private boolean replaceEmptyNull            = ConfigTable.IS_REPLACE_EMPTY_NULL;
 
     /*
      * 相当于Class Name 如User/Department
@@ -1356,8 +1357,18 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if (null == oldValue || !oldValue.equals(value)) {
                     super.put(key, value);
                 }
-                if (!ignore && !BasicUtil.equals(oldValue, value)) {
-                    addUpdateColumns(key);
+                if(null == value){
+                    if(isInsertNullColumn() || isUpdateNullColumn()){
+                        addUpdateColumns(key);
+                    }
+                }else if("".equals(value)){
+                    if(isInsertEmptyColumn() || isUpdateEmptyColumn()){
+                        addUpdateColumns(key);
+                    }
+                }else {
+                    if (!ignore && !BasicUtil.equals(oldValue, value)) {
+                        addUpdateColumns(key);
+                    }
                 }
             }else{
                 super.put(key, value);
@@ -2557,6 +2568,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public boolean isInsertEmptyColumn() {
         return insertEmptyColumn;
+    }
+    public boolean isReplaceEmptyNull(){
+        return replaceEmptyNull;
     }
 
     public void setInsertEmptyColumn(boolean insertEmptyColumn) {
