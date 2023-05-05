@@ -3624,9 +3624,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 			if(null != ctype){
-				if(null == clazz){
-
-				}
 				result = ctype.convert(value, clazz);
 			}
 			/*if(null == result){
