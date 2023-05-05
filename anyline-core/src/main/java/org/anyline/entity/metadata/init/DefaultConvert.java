@@ -2550,6 +2550,8 @@ public enum DefaultConvert implements Convert {
     java_util_Date2java_time_Year(java.util.Date.class, java.time.Year.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Year year = Year.of(DateUtil.year((java.util.Date)value));
+            return year;
         }
     },
     java_util_Date2java_time_YearMonth(java.util.Date.class, java.time.YearMonth.class){
@@ -2580,6 +2582,7 @@ public enum DefaultConvert implements Convert {
     java_sql_Date2String(java.sql.Date.class, String.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+
         }
     },
     java_sql_Date2Long(java.sql.Date.class, Long.class){
