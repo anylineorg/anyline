@@ -107,6 +107,10 @@ public class AnylineProperty {
      */
     protected boolean updateEmptyField						    = false		;	// Entity是否更新空值的属性
     /**
+     * 是否把""替换成null
+     */
+    protected boolean replaceEmptyNull                          = true      ;   // 是否把""替换成null
+    /**
      * Entity是否更新nul值的属性
      */
     protected boolean insertNullField							= false		;	// Entity是否更新nul值的属性
@@ -660,6 +664,15 @@ public class AnylineProperty {
     public void setInsertEmptyField(boolean insertEmptyField) {
         this.insertEmptyField = insertEmptyField;
         ConfigTable.IS_INSERT_EMPTY_FIELD = insertEmptyField;
+    }
+
+    public boolean isReplaceEmptyNull() {
+        return replaceEmptyNull;
+    }
+
+    public void setReplaceEmptyNull(boolean replaceEmptyNull) {
+        this.replaceEmptyNull = replaceEmptyNull;
+        ConfigTable.IS_REPLACE_EMPTY_NULL = replaceEmptyNull;
     }
 
     public String getMixDefaultSeed() {
