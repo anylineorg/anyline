@@ -2472,21 +2472,31 @@ public enum DefaultConvert implements Convert {
     long2java_time_Year(long.class, java.time.Year.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Year year = Year.of(DateUtil.year(date));
+            return year;
         }
     },
     long2java_time_YearMonth(long.class, java.time.YearMonth.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            YearMonth yearMonth = YearMonth.of(DateUtil.year(date), DateUtil.month(date));
+            return yearMonth;
         }
     },
     long2java_time_Month(long.class, java.time.Month.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+            Date date = DateUtil.parse(value);
+            Month month = Month.of(DateUtil.month(date));
+            return month;
         }
     },
     long2java_time_LocalDate(long.class, java.time.LocalDate.class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
+
         }
     },
     long2java_time_LocalTime(long.class, java.time.LocalTime.class){
