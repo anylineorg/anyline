@@ -256,7 +256,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         }
         for(Field field:fields){
             Column column = column(clazz, field);//列名
-            Object value = map.get(column.getName().toUpperCase());
+            Object value = map.get(column.getName());
             if(null != value) {
                 Column metadata = null;  //列属性
                 if(map instanceof DataRow){
