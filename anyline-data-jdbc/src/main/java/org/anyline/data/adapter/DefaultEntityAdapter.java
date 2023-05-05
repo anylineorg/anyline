@@ -254,11 +254,21 @@ public class DefaultEntityAdapter implements EntityAdapter {
                 e.printStackTrace();
             }
         }
+        DataRow row = null;
+        if(map instanceof DataRow){
+            row = (DataRow) map;
+        }
         for(Field field:fields){
             Column column = column(clazz, field);//列名
-            Object value = map.get(column.getName());
-            if(null ==value){
-                value = map.get(column.getName().toUpperCase());
+            String columnName = column.getName();
+            Object value = null;
+            if(null != row){
+                value = row.get(columnName);
+            }else {
+                value = map.get(columnName);
+                if (null == value) {
+                    value = map.get(columnName.toUpperCase());
+                }
             }
             if(null != value) {
                 Column metadata = null;  //列属性
