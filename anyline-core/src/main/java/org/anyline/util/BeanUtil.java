@@ -54,6 +54,9 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -444,6 +447,22 @@ public class BeanUtil {
 			result[idx++] = item;
 		}
 		return result;
+	}
+	public static byte[] char2bytes(char[] chars) {
+		Charset charset = Charset.forName("ISO-8859-1");
+		CharBuffer charBuffer = CharBuffer.allocate(chars.length);
+		charBuffer.put(chars);
+		charBuffer.flip();
+		ByteBuffer byteBuffer = charset.encode(charBuffer);
+		return byteBuffer.array();
+	}
+	public static char[] byte2char(byte[] bytes) {
+		Charset charset = Charset.forName("ISO-8859-1");
+		ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
+		byteBuffer.put(bytes);
+		byteBuffer.flip();
+		CharBuffer charBuffer = charset.decode(byteBuffer);
+		return charBuffer.array();
 	}
 	/**
 	 * 根据数据类型转换成Java值
