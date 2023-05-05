@@ -12,255 +12,259 @@ public class AnylineProperty {
     /**
      * debug状态会输出更多日志
      */
-    protected boolean debug 									= true		;	// debug状态会输出更多日志
+    protected boolean debug 									= true			;	// debug状态会输出更多日志
     /**
      * 执行sql时是否输出日志
      */
-    protected boolean showSql									= true		;	// 执行sql时是否输出日志
+    protected boolean showSql									= true			;	// 执行sql时是否输出日志
     /**
      * 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用DMListener.slow
      */
-    protected long slowSqlMillis								= 0			; 	// 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
+    protected long slowSqlMillis								= 0			    ; 	// 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
     /**
      * 执行sql时是否输出参数日志
      */
-    protected boolean showSqlParam								= true		;	// 执行sql时是否输出参数日志
+    protected boolean showSqlParam								= true			;	// 执行sql时是否输出参数日志
     /**
      * 执行sql异常时是否输出日志
      */
-    protected boolean showSqlWhenError						    = true		;	// 执行sql异常时是否输出日志
+    protected boolean showSqlWhenError						    = true			;	// 执行sql异常时是否输出日志
     /**
      * 执行sql异常时是否输出参数日志
      */
-    protected boolean showSqlParamWhenError					    = true		;	// 执行sql异常时是否输出参数日志
+    protected boolean showSqlParamWhenError					    = true			;	// 执行sql异常时是否输出参数日志
     /**
      * 加载自定义sql时是否输出日志
      */
-    protected boolean sqlDebug	 								= false		;	// 加载自定义sql时是否输出日志
+    protected boolean sqlDebug	 								= false			;	// 加载自定义sql时是否输出日志
     /**
      * 调用http接口时是否出输出日志
      */
-    protected boolean httpLog 									= true		;	// 调用http接口时是否出输出日志
+    protected boolean httpLog 									= true			;	// 调用http接口时是否出输出日志
     /**
      * http参数是否需要解码 0:自动识别 1:确认编码 -1:确认未编码
      */
-    protected int httpParamEncode								= 0			;   // http参数是否需要解码 0:自动识别 1:确认编码 -1:确认未编码
+    protected int httpParamEncode								= 0			    ;   // http参数是否需要解码 0:自动识别 1:确认编码 -1:确认未编码
     /**
      * 如果有多数据源为每个数据源生成独立的service
      */
-    protected boolean multipleService                            = true     ;   // 如果有多数据源为每个数据源生成独立的service
+    protected boolean multipleService                            = true         ;   // 如果有多数据源为每个数据源生成独立的service
     /**
      * 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
      */
-    protected boolean autoConvertBytes 							 = true		;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
+    protected boolean autoConvertBytes 							 = true		    ;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
 
     /**
      * DataRow是否自动转换成大写
      */
-    protected boolean upperKey 								    = true		;	// DataRow是否自动转换成大写
+    protected boolean upperKey 								    = true			;	// DataRow是否自动转换成大写
     /**
      * DataRow是否自动转换成小写
      */
-    protected boolean lowerKey 								    = false		;	// DataRow是否自动转换成小写
+    protected boolean lowerKey 								    = false			;	// DataRow是否自动转换成小写
     /**
      * DataRow是否忽略大小写
      */
-    protected boolean keyIgnoreCase 							= true		;	// DataRow是否忽略大小写
+    protected boolean keyIgnoreCase 							= true			;	// DataRow是否忽略大小写
     /**
      * sql查询异常时是否抛出
      */
-    protected boolean throwSqlQueryException 					= true		;	// sql查询异常时是否抛出
+    protected boolean throwSqlQueryException 					= true			;	// sql查询异常时是否抛出
     /**
      * sql执行异常时是否抛出
      */
-    protected boolean throwSqlUpdateException 				    = true		;	// sql执行异常时是否抛出
+    protected boolean throwSqlUpdateException 				    = true			;	// sql执行异常时是否抛出
     /**
      * http参数值是否自动trim
      */
-    protected boolean httpParamAutoTrim						    = true		;   // http参数值是否自动trim
+    protected boolean httpParamAutoTrim						    = true		    ;   // http参数值是否自动trim
     /**
      * AnylineController.entity(String ck)是否忽略http未提交的key
      */
-    protected boolean ignoreEmptyHttpKey						= false		;	// AnylineController.entity(String ck)是否忽略http未提交的key
+    protected boolean ignoreEmptyHttpKey						= false			;	// AnylineController.entity(String ck)是否忽略http未提交的key
     /**
      * DataRow是否更新nul值的列
      */
-    protected boolean updateNullColumn							= false		;	// DataRow是否更新nul值的列
+    protected boolean updateNullColumn							= false			;	// DataRow是否更新nul值的列
     /**
      * DataRow是否更新空值的列
      */
-    protected boolean updateEmptyColumn						    = false		;	// DataRow是否更新空值的列
+    protected boolean updateEmptyColumn						    = false			;	// DataRow是否更新空值的列
     /**
      * DataRow是否更新nul值的列
      */
-    protected boolean insertNullColumn							= false		;	// DataRow是否更新nul值的列
+    protected boolean insertNullColumn							= false			;	// DataRow是否更新nul值的列
     /**
      * DataRow是否更新空值的列
      */
-    protected boolean insertEmptyColumn						    = false		;	// DataRow是否更新空值的列
+    protected boolean insertEmptyColumn						    = false			;	// DataRow是否更新空值的列
     /**
      * Entity是否更新nul值的属性
      */
-    protected boolean updateNullField							= false		;	// Entity是否更新nul值的属性
+    protected boolean updateNullField							= false			;	// Entity是否更新nul值的属性
     /**
      * Entity是否更新空值的属性
      */
-    protected boolean updateEmptyField						    = false		;	// Entity是否更新空值的属性
+    protected boolean updateEmptyField						    = false			;	// Entity是否更新空值的属性
     /**
      * 是否把""替换成null
      */
-    protected boolean replaceEmptyNull                          = true      ;   // 是否把""替换成null
+    protected boolean replaceEmptyNull                          = true          ;   // 是否把""替换成null
     /**
      * Entity是否更新nul值的属性
      */
-    protected boolean insertNullField							= false		;	// Entity是否更新nul值的属性
+    protected boolean insertNullField							= false			;	// Entity是否更新nul值的属性
     /**
      * Entity是否更新空值的属性
      */
-    protected boolean insertEmptyField						    = false		;	// Entity是否更新空值的属性
+    protected boolean insertEmptyField						    = false			;	// Entity是否更新空值的属性
     /**
      * 是否禁用查询缓存
      */
-    protected boolean cacheDisabled                             = false     ;   // 是否禁用查询缓存
+    protected boolean cacheDisabled                             = false         ;   // 是否禁用查询缓存
     /**
      * 禁用默认的entity adapter
      */
-    protected boolean disabledDefaultEntityAdapter              = false     ;   // 禁用默认的entity adapter
+    protected boolean disabledDefaultEntityAdapter              = false         ;   // 禁用默认的entity adapter
     /**
      * 是否开启 界定符
      */
-    protected boolean sqlDelimiterOpen 						    = false		;	// 是否开启 界定符
+    protected boolean sqlDelimiterOpen 						    = false			;	// 是否开启 界定符
     /**
      * 是否开启 界定符的占位符
      */
-    protected boolean sqlDelimiterPlaceholderOpen 			    = false		;	// 是否开启 界定符的占位符
+    protected boolean sqlDelimiterPlaceholderOpen 			    = false			;	// 是否开启 界定符的占位符
     /**
      * 界定符的点位符
      */
-    protected String sqlDelimiterPlaceholder					= "`"		;   // 界定符的点位符
+    protected String sqlDelimiterPlaceholder					= "`"		    ;   // 界定符的点位符
     /**
      * service.query() dataset.getRow()返回null时,是否替换成new DataRow(), new entity()
      */
-    protected boolean returnEmptyInstanceReplaceNull			= false		;	// service.query() dataset.getRow()返回null时,是否替换成new DataRow(), new entity()
+    protected boolean returnEmptyInstanceReplaceNull			= false			;	// service.query() dataset.getRow()返回null时,是否替换成new DataRow(), new entity()
     /**
      * 更新数据库时，是把自动把数组/集合类型拆分
      */
-    protected boolean autoSplitArray						    = true		;	// 更新数据库时，是把自动把数组/集合类型拆分
+    protected boolean autoSplitArray						    = true			;	// 更新数据库时，是把自动把数组/集合类型拆分
 
     /**
      * insert update 时是否自动检测表结构(删除表中不存在的属性)
      */
-    protected boolean autoCheckMetadata						    = false		; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+    protected boolean autoCheckMetadata						    = false		    ; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
     /**
      * DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
      */
-    protected boolean removeEmptyHttpKey                        = false     ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
+    protected boolean removeEmptyHttpKey                        = false         ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
     /**
      * 默认主键
      */
-    protected String defaultPrimaryKey							= "id"		;	// 默认主键
+    protected String defaultPrimaryKey							= "id"			;	// 默认主键
     /**
      * 主键生成器机器id
      */
-    public int primaryGeneratorWorkerId					        = 1			;	// 主键生成器机器id
+    public int primaryGeneratorWorkerId					        = 1				;	// 主键生成器机器id
     /**
      * 主键前缀(随机主键)
      */
-    public String primaryGeneratorPrefix					    = ""		;	// 主键前缀(随机主键)
+    public String primaryGeneratorPrefix					    = ""			;	// 主键前缀(随机主键)
     /**
      * 主随机主键总长度
      */
-    public int primaryGeneratorRandomLength				        = 32		;	// 主随机主键总长度
+    public int primaryGeneratorRandomLength				        = 32			;	// 主随机主键总长度
     /**
      * 生成主键大写
      */
-    public boolean primaryGeneratorUpper					    = true		;	// 生成主键大写
+    public boolean primaryGeneratorUpper					    = true			;	// 生成主键大写
     /**
      * 生成主键小写
      */
-    public boolean primaryGeneratorLower					    = false		;	// 生成主键小写
+    public boolean primaryGeneratorLower					    = false			;	// 生成主键小写
     /**
      * 生成主键日期格式(默认yyyyMMddhhmmssSSS)
      */
-    public String primaryGeneratorTimeFormat					= null		;	// 生成主键日期格式(默认yyyyMMddhhmmssSSS)
+    public String primaryGeneratorTimeFormat					= null		    ;	// 生成主键日期格式(默认yyyyMMddhhmmssSSS)
     /**
      * 生成主键time/timestamp后缀随机数长度
      */
-    public int primaryGeneratorTimeSuffixLength				    = 3			;   // 生成主键time/timestamp后缀随机数长度
+    public int primaryGeneratorTimeSuffixLength				    = 3			    ;   // 生成主键time/timestamp后缀随机数长度
+    /**
+     * 雪花算法开始日期
+     */
+    public String snowflakeTwepoch                              = "2000-01-01"  ;   //雪花算法开始日期
     /**
      * 是否开启默认的主键生成器(UUID)
      */
-    public boolean primaryGeneratorUuidActive			        = false		;	// 是否开启默认的主键生成器(UUID)
+    public boolean primaryGeneratorUuidActive			        = false			;	// 是否开启默认的主键生成器(UUID)
     /**
      * 是否开启默认的主键生成器(雪花)
      */
-    public boolean primaryGeneratorSnowflakeActive		        = false		;	// 是否开启默认的主键生成器(雪花)
+    public boolean primaryGeneratorSnowflakeActive		        = false			;	// 是否开启默认的主键生成器(雪花)
     /**
      * 是否开启默认的主键生成器(随机)
      */
-    public boolean primaryGeneratorRandomActive			        = false		;	// 是否开启默认的主键生成器(随机)
+    public boolean primaryGeneratorRandomActive			        = false			;	// 是否开启默认的主键生成器(随机)
     /**
      * 是否开启默认的主键生成器(时间戳)
      */
-    public boolean primaryGeneratorTimestampActive			    = false		;	// 是否开启默认的主键生成器(时间戳)
+    public boolean primaryGeneratorTimestampActive			    = false			;	// 是否开启默认的主键生成器(时间戳)
     /**
      * 是否开启默认的主键生成器(年月日时分秒毫秒)
      */
-    public boolean primaryGeneratorTimeActive					= false		;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
+    public boolean primaryGeneratorTimeActive					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
 
     /**
      * ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
      */
-    protected int afterAlterColumnExceptionAction				= 1000		;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+    protected int afterAlterColumnExceptionAction				= 1000		    ;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
     /**
      * ddl执行时是否自动删除定义中不存在的列
      */
-    protected boolean ddlAutoDropColumn						    = false		;   // ddl执行时是否自动删除定义中不存在的列
+    protected boolean ddlAutoDropColumn						    = false		    ;   // ddl执行时是否自动删除定义中不存在的列
     /**
      * 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
      */
-    protected String sqlStoreDir								= null		;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
+    protected String sqlStoreDir								= null			;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
     /**
      * 是否开始解析mybatis定义的SQL
      */
-    protected boolean openParseMybatis							= true		; 	// 是否开始解析mybatis定义的SQL
+    protected boolean openParseMybatis							= true		    ; 	// 是否开始解析mybatis定义的SQL
     /**
      * 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
      */
-    protected String entityFieldColumnMap                       = "camel_"  ;   // 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
+    protected String entityFieldColumnMap                       = "camel_"      ;   // 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
     /**
      * 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
      */
-    protected String entityClassTableMap						= "Camel_"  ;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
+    protected String entityClassTableMap						= "Camel_"  	;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
     /**
      * 表名注解
      */
-    protected String entityTableAnnotation						= null		;   // 表名注解
+    protected String entityTableAnnotation						= null		    ;   // 表名注解
     /**
      * 列名注解
      */
-    protected String entityColumnAnnotation					    = null		;	// 列名注解
+    protected String entityColumnAnnotation					    = null			;	// 列名注解
     /**
      * 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
      */
-    protected String entityPrimaryKeyAnnotation				    = null		;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+    protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
     /**
      * http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
      */
-    protected String httpParamKeyCase							= "camel"	;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
+    protected String httpParamKeyCase							= "camel"		;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
     /**
      * 表结构缓存key
      */
-    protected String tableMetadataCacheKey					    = ""		;	// 表结构缓存key
+    protected String tableMetadataCacheKey					    = ""			;	// 表结构缓存key
     /**
      * 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
      */
-    protected int tableMetadataCacheSecond						= 3600*24	;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+    protected int tableMetadataCacheSecond						= 3600*24		;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
     /**
      * MixUtil.mix默认seed
      */
-    protected String mixDefaultSeed                             = "al"      ;   // MixUtil.mix默认seed
-    protected String elAttributePrefix      					= "al"		;
+    protected String mixDefaultSeed                             = "al"          ;   // MixUtil.mix默认seed
+    protected String elAttributePrefix      					= "al"		    ;
     public boolean isDebug() {
         return debug;
     }
@@ -749,6 +753,15 @@ public class AnylineProperty {
 
     public boolean isPrimaryGeneratorSnowflakeActive() {
         return primaryGeneratorSnowflakeActive;
+    }
+
+    public String getSnowflakeTwepoch() {
+        return snowflakeTwepoch;
+    }
+
+    public void setSnowflakeTwepoch(String snowflakeTwepoch) {
+        this.snowflakeTwepoch = snowflakeTwepoch;
+        ConfigTable.SNOWFLAKE_TWEPOCH = snowflakeTwepoch;
     }
 
     public void setPrimaryGeneratorSnowflakeActive(boolean primaryGeneratorSnowflakeActive) {
