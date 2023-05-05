@@ -1111,6 +1111,9 @@ public enum StandardColumnType implements ColumnType {
             if(null != transfer) {
                 value = ConvertAdapter.convert(value, transfer, def);
             }
+            if(null == target){
+                target = compatible;
+            }
             value = ConvertAdapter.convert(value, target, def);
         }
         return value;
