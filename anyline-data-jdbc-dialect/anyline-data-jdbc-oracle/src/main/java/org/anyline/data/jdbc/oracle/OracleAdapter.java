@@ -425,16 +425,29 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 //		sqls.add(builder.toString());
 //		return sqls;
 		// jack 2023年5月2日 19点55分 由于之前查询表名的方式会意外失效，特进行调整,兼容table和view
-		//增加types列用于后期扩展，types 1表 2视图
+		//增加types列用于后期扩展
 		builder.append(" SELECT * FROM (" );
-		builder.append(" SELECT * FROM  (SELECT A.TABLE_NAME TABLE_NAME, B.COMMENTS COMMENTS ,'TABLE' TYPES FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME ORDER BY TABLE_NAME) T ");
+		builder.append(" SELECT A.TABLE_NAME, B.COMMENTS, 'TABLE' TABLE_TYPE FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME");
 		builder.append(" UNION ALL ");
-		builder.append(" SELECT * FROM (SELECT A.VIEW_NAME TABLE_NAME ,  B.COMMENTS COMMENTS ,'VIEW' TYPES FROM USER_VIEWS A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME ORDER BY TABLE_NAME) V ");
-		builder.append(" ) T ");
-		if (BasicUtil.isNotEmpty(pattern)) {
-			builder.append(" AND T.TABLE_NAME = '").append(pattern).append("'");
-		}
+		builder.append(" SELECT A.VIEW_NAME,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
+		builder.append(" ) T WHERE 1=1");
 
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(types)){
+			String[] tmps = types.split(",");
+			builder.append(" AND TABLE_TYPE IN(");
+			int idx = 0;
+			for(String tmp:tmps){
+				if(idx > 0){
+					builder.append(",");
+				}
+				builder.append("'").append(tmp).append("'");
+				idx ++;
+			}
+			builder.append(")");
+		}
 		sqls.add(builder.toString());
 		return sqls;
 	}
