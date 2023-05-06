@@ -2266,8 +2266,8 @@ public class DefaultService<E> implements AnylineService<E> {
             if(views.size()>0){
                 view = views.values().iterator().next();
                 view.setColumns(columns(view));
-                view.setTags(tags(view));
-                view.setIndexs(indexs(view));
+                //view.setTags(tags(view));
+                //view.setIndexs(indexs(view));
             }
             return view;
         }
