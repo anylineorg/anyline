@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2023 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 package org.anyline.util;
 
@@ -24,9 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -39,7 +37,7 @@ public class ClassUtil {
 	private static final Logger log = LoggerFactory.getLogger(ClassUtil.class);
 	/**
 	 * 是否是基础类型(不包含String类型)
-	 * @param obj obj
+	 * @param obj 对象或类,如果是对象先getClass()
 	 * @return boolean
 	 */
 	@SuppressWarnings("rawtypes")
@@ -509,6 +507,40 @@ public class ClassUtil {
 		}
 		return list;
 	}
+
+	/**
+	 * 根据注解名称 获取属性上的注解
+	 * @param field 属性
+	 * @param names 注解名称
+	 * @return Annotation
+	 */
+	public static List<Annotation> getFieldAnnotations(Field field, String ... names){
+		List<Annotation> list = new ArrayList<>();
+		Annotation[] annotations = field.getAnnotations();
+		for(Annotation annotation:annotations){
+			for(String name:names) {
+				if (match(annotation.annotationType().getSimpleName(), name)) {
+					list.add(annotation);
+					break;
+				}
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 根据注解名称 获取属性上的注解
+	 * @param field 属性
+	 * @param names 注解名称
+	 * @return Annotation
+	 */
+	public static Annotation getFieldAnnotation(Field field, String ... names){
+		List<Annotation> list = getFieldAnnotations(field, names);
+		if(list.size()>0){
+			return list.get(0);
+		}
+		return null;
+	}
 	/**
 	 * 查询指定类的有annotation注解的属性
 	 * @param clazz  clazz
@@ -636,6 +668,23 @@ public class ClassUtil {
 	}
 
 	/**
+	 * 根据属性获取 集合条件泛型类
+	 * @param field 属性
+	 * @return Class
+	 */
+	public static Class getCollectionItemClass(Field field){
+		Type gtype = field.getGenericType();
+		if(gtype instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) gtype;
+			Type[] args = pt.getActualTypeArguments();
+			if (null != args && args.length > 0) {
+				Class itemClass = (Class) args[0];
+				return itemClass;
+			}
+		}
+		return null;
+	}
+	/**
 	 * 对象类型<br/>
 	 * int[] > int[]<br/>
 	 * Integer[] > java.long.Integer[]<br/>
@@ -668,4 +717,4 @@ public class ClassUtil {
 		}
 		return type;
 	}
-} 
+}
