@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Hashtable;
 
-@Component()
+@Component("anyline.nacos.config")
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
