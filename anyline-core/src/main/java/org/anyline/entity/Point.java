@@ -88,9 +88,6 @@ public class Point {
     public int[] ints() throws Exception{
         return new int[]{x.intValue(), y.intValue()};
     }
-    public Integer[] integers(){
-        return new Integer[]{x.intValue(), y.intValue()};
-    }
     public Double getX() {
         return x;
     }
