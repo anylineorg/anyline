@@ -3326,7 +3326,7 @@ public enum DefaultConvert implements Convert {
             return point.getDecimals();
         }
     },
-    Point_Integer(Point.class, Integer[].class){
+    Point_Integers(Point.class, Integer[].class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
             Point point = (Point) value;
