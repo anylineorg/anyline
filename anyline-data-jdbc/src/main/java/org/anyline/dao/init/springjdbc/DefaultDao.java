@@ -61,6 +61,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
@@ -1103,16 +1104,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		EntitySet<T> set = new EntitySet<>();
 		DataSet rows = select(runtime, table, sql, values);
 		for(DataRow row:rows){
+			T entity = null;
 			if(EntityAdapterProxy.hasAdapter()){
 				//jdbc adapter需要参与 或者metadata里添加colun type
-				T entity = EntityAdapterProxy.entity(clazz, row, null);
-				set.add(entity);
+				entity = EntityAdapterProxy.entity(clazz, row, null);
 			}else{
-				T entity = row.entity(clazz);
-				set.add(entity);
+				entity = row.entity(clazz);
 			}
+			set.add(entity);
+			//检测依赖关系
+			checkDependency(entity);
 		}
 		return set;
+	}
+	protected <T> void checkDependency(T entity){
+		//ManyToMany
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(entity.getClass(), "ManyToMany");
+		for(Field field:fields){
+
+		}
 	}
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
