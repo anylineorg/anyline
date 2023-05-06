@@ -1,22 +1,20 @@
 package org.anyline.proxy;
 
+import org.anyline.adapter.EntityAdapter;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.adapter.EntityAdapter;
 import org.anyline.entity.EntitySet;
-import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
 import org.anyline.util.ConfigTable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component("anyline.entity.adapter.proxy")
+//@Component("anyline.entity.adapter.proxy")
 public class EntityAdapterProxy {
 
     public static boolean hasAdapter(){
@@ -28,39 +26,6 @@ public class EntityAdapterProxy {
 
 
 
-    @Autowired(required = false)
-    public void setAdapter(Map<String,EntityAdapter> adapters) {
-        EntityAdapterProxy.adapters = adapters;
-        String defaultKey = "anyline.entity.adapter";
-        if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ){
-            // 如果禁用 adapter 引用 随机引用一个 , adapters引用其他
-            // 计算时先调用 adapter 再用其他覆盖
-            adapters.remove(defaultKey);
-            for (String key : adapters.keySet()) {
-                // 如果没有default 则随机引用一个
-                adapter = adapters.get(key);
-                adapters.remove(key);
-                break;
-            }
-        }else{
-            // 如果不禁用 adapter 引用 default , adapters引用其他
-            // 计算时先调用 adapter 再用其他覆盖
-
-            adapter = adapters.get(defaultKey);
-            if(null == adapter) {
-                for (String key : adapters.keySet()) {
-                    // 如果没有default 则随机引用一个
-                    adapter = adapters.get(key);
-                    adapters.remove(key);
-                    break;
-                }
-            }else{
-                adapters.remove(defaultKey);
-            }
-
-        }
-
-    }
 
 
     /**
