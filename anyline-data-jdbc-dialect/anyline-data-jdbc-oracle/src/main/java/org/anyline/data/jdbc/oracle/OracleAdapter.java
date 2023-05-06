@@ -411,14 +411,27 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
-		builder.append("FROM SYS.ALL_ALL_TABLES T \n");
-		builder.append("LEFT JOIN SYS.ALL_TAB_COMMENTS TC  ON  TC.OWNER  = T.OWNER  AND TC.TABLE_NAME  = T.TABLE_NAME \n");
-		builder.append("WHERE T.IOT_NAME IS NULL  AND T.NESTED = 'NO'  AND T.SECONDARY = 'N' ");
-		if(BasicUtil.isNotEmpty(schema)){
-			builder.append("AND T.OWNER = '").append(schema).append("'");
-		}
-		if(BasicUtil.isNotEmpty(pattern)){
+//		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
+//		builder.append("FROM SYS.ALL_ALL_TABLES T \n");
+//		builder.append("LEFT JOIN SYS.ALL_TAB_COMMENTS TC  ON  TC.OWNER  = T.OWNER  AND TC.TABLE_NAME  = T.TABLE_NAME \n");
+//		builder.append("WHERE T.IOT_NAME IS NULL  AND T.NESTED = 'NO'  AND T.SECONDARY = 'N' ");
+//		if(BasicUtil.isNotEmpty(schema)){
+//			builder.append("AND T.OWNER = '").append(schema).append("'");
+//		}
+//		if(BasicUtil.isNotEmpty(pattern)){
+//			builder.append(" AND T.TABLE_NAME = '").append(pattern).append("'");
+//		}
+//
+//		sqls.add(builder.toString());
+//		return sqls;
+		// jack 2023年5月2日 19点55分 由于之前查询表名的方式会意外失效，特进行调整,兼容table和view
+		//增加types列用于后期扩展，types 1表 2视图
+		builder.append(" SELECT * FROM (" );
+		builder.append(" SELECT * FROM  (SELECT A.TABLE_NAME TABLE_NAME, B.COMMENTS COMMENTS ,'TABLE' TYPES FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME ORDER BY TABLE_NAME) T ");
+		builder.append(" UNION ALL ");
+		builder.append(" SELECT * FROM (SELECT A.VIEW_NAME TABLE_NAME ,  B.COMMENTS COMMENTS ,'VIEW' TYPES FROM USER_VIEWS A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME ORDER BY TABLE_NAME) V ");
+		builder.append(" ) T ");
+		if (BasicUtil.isNotEmpty(pattern)) {
 			builder.append(" AND T.TABLE_NAME = '").append(pattern).append("'");
 		}
 
