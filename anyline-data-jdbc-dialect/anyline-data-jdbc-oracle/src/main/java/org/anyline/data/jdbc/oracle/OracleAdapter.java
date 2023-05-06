@@ -477,6 +477,64 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception
+	 * public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 查询视图
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("SELECT A.VIEW_NAME,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+		}
+		sqls.add(builder.toString());
+		return sqls;
+	}
+
+	/**
+	 *
+	 * @param index 第几条SQL 对照buildQueryViewRunSQL返回顺序
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set DataSet
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception{
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("VIEW_NAME");
+			View view = views.get(name.toUpperCase());
+			if(null == view){
+				view = new View();
+			}
+			//MYSQL不支付TABLE_CATALOG
+			view.setCatalog(catalog);
+			view.setSchema(schema);
+			view.setName(name);
+			view.setDefinition(row.getString("VIEW_DEFINITION"));
+			views.put(name.toUpperCase(), view);
+		}
+		return views;
+	}
+	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
@@ -812,8 +870,13 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return sql
 	 * @throws Exception 异常
 	 */
+	@Override
 	public String buildCreateCommentRunSQL(Table table) throws Exception {
-		return super.buildCreateCommentRunSQL(table);
+		StringBuilder builder = new StringBuilder();
+		builder.append(" COMMENT ON TABLE ");
+		name(builder, table);
+		builder.append("  IS '").append(table.getComment()).append("'");
+		return builder.toString();
 	}
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
@@ -925,6 +988,24 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public StringBuilder name(StringBuilder builder, Table table){
 		return super.name(builder, table);
 	}
+
+
+	/**
+	 * 创建或删除视图时检测视图是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
+		return builder;
+	}
+
+	@Override
+	public String buildCreateCommentRunSQL(View view) throws Exception{
+		return buildCreateCommentRunSQL((Table)view);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
