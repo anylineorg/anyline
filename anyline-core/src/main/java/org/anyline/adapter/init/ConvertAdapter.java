@@ -18,7 +18,8 @@ public class ConvertAdapter {
     public ConvertAdapter(){}
     static {
         //内置转换器
-        for (Convert convert : DefaultConvert.values()) {
+        Convert[] array = DefaultConvert.values();
+        for (Convert convert : array) {
             Class origin = convert.getOrigin();
             Class target = convert.getTarget();
             Map<Class,Convert> map = converts.get(origin);
