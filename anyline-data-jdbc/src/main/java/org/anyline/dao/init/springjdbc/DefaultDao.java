@@ -1795,10 +1795,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据jdbc接口补充
 			try {
-				LinkedHashMap<String,Table> tmps = adapter.tables(true, tables, con.getMetaData(), catalog, schema, pattern, tps);
-				for(String key:tmps.keySet()){
+				LinkedHashMap<String,Table> jdbcTables = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+				for(String key:jdbcTables.keySet()){
 					if(!tables.containsKey(key.toUpperCase())) {
-						Table item = tmps.get(key);
+						Table item = jdbcTables.get(key);
 						if (null != item) {
 							if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
 								tables.put(key.toUpperCase(), item);
