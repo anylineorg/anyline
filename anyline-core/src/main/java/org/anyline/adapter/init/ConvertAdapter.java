@@ -7,17 +7,15 @@ import org.anyline.entity.metadata.init.DefaultConvert;
 import org.anyline.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Hashtable;
 import java.util.Map;
-@Component
+
 public class ConvertAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(ConvertAdapter.class);
-    private static Map<Class, Map<Class,Convert>> converts = new Hashtable();    //DATE > {STRING>SrintCovert,TIME>timeConvert}
-
+    public static Map<Class, Map<Class,Convert>> converts = new Hashtable();    //DATE > {STRING>SrintCovert,TIME>timeConvert}
+    public ConvertAdapter(){}
     static {
         //内置转换器
         for (Convert convert : DefaultConvert.values()) {
@@ -32,21 +30,6 @@ public class ConvertAdapter {
         }
     }
 
-    //用户自定义转换器
-    @Autowired(required = false)
-    public void setConverts(Map<String, Convert> converts) {
-        //内置转换器
-        for (Convert convert : converts.values()) {
-            Class origin = convert.getOrigin();
-            Class target = convert.getTarget();
-            Map<Class,Convert> map = ConvertAdapter.converts.get(origin);
-            if(null == map){
-                map = new Hashtable<>();
-                ConvertAdapter.converts.put(origin, map);
-            }
-            map.put(target, convert);
-        }
-    }
 
     public static  Object convert(Object value, Class target){
         return convert(value, target, null);
