@@ -9,7 +9,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
 
-@Component
+@Component("anyline.web.listener.config")
 public class ConfigListener implements ApplicationContextAware {
 
     @Override
