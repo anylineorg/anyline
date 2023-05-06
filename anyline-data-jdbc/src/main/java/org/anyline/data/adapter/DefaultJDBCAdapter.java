@@ -2159,6 +2159,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
 		list.add(builder.toString());
+		list.add(buildCreateCommentRunSQL(view));
 		return list;
 	}
 
