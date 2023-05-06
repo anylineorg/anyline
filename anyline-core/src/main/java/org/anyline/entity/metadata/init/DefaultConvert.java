@@ -3304,7 +3304,47 @@ public enum DefaultConvert implements Convert {
             return value;
         }
     },
+    Point_Floats(Point.class, Float[].class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Point point = (Point) value;
+            return point.getFloats();
+        }
+    },
+    Point_floats(Point.class, float[].class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Point point = (Point) value;
+            return point.floats();
+        }
+    },
 
+    Point_BigDecimals(Point.class, BigDecimal[].class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Point point = (Point) value;
+            return point.getDecimals();
+        }
+    },
+    Point_Integer(Point.class, Integer[].class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Point point = (Point) value;
+            return point.integers();
+        }
+    },
+    Point_ints(Point.class, int[].class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            Point point = (Point) value;
+            try{
+                value = point.ints();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return value;
+        }
+    },
 
     DataRow_String(DataRow.class, String.class){
         @Override
@@ -3324,6 +3364,12 @@ public enum DefaultConvert implements Convert {
             return BeanUtil.map2json((Map)value);
         }
     },
+    Map_DataRow(Map.class, DataRow.class){
+        @Override
+        public Object exe(Object value, Object def) throws ConvertException {
+            return DataRow.parse((Map)value);
+        }
+    },
     String_bytes(String.class, byte[].class){
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
@@ -3332,14 +3378,6 @@ public enum DefaultConvert implements Convert {
     },
 
 
-
-
-    /* *****************************************************************************************************************
-     *                                               Point
-     * ==================================================================================================================
-     * java.entity.Point
-     *
-     * *****************************************************************************************************************/
     ;
     private DefaultConvert(Class origin, Class target){
         this.origin = origin;

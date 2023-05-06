@@ -2,6 +2,8 @@ package org.anyline.entity;
 
 import org.anyline.util.NumberUtil;
 
+import java.math.BigDecimal;
+
 public class Point {
     boolean isInt = false;
     private Double x;
@@ -62,6 +64,15 @@ public class Point {
     public Double[] getDoubles(){
         return new Double[]{x,y};
     }
+    public Float[] getFloats(){
+        return new Float[]{x.floatValue(),y.floatValue()};
+    }
+    public BigDecimal[] getDecimals(){
+        return new BigDecimal[]{BigDecimal.valueOf(x),BigDecimal.valueOf(y)};
+    }
+    public float[] floats(){
+        return new float[]{x.floatValue(),y.floatValue()};
+    }
     public double[] doubles() throws Exception{
         return new double[]{x, y};
     }
@@ -76,6 +87,9 @@ public class Point {
     }
     public int[] ints() throws Exception{
         return new int[]{x.intValue(), y.intValue()};
+    }
+    public Integer[] integers(){
+        return new Integer[]{x.intValue(), y.intValue()};
     }
     public Double getX() {
         return x;
