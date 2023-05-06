@@ -3330,7 +3330,7 @@ public enum DefaultConvert implements Convert {
         @Override
         public Object exe(Object value, Object def) throws ConvertException {
             Point point = (Point) value;
-            return point.integers();
+            return point.getIntegers();
         }
     },
     Point_ints(Point.class, int[].class){
