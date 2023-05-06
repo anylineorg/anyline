@@ -374,8 +374,8 @@ public class ClassUtil {
 	/**
 	 * 提取类及父类的所有属性
 	 * @param clazz  clazz
-	 * @param statics  是否提供静态
-	 * @param finals  是否提供final
+	 * @param statics  是否返回静态属性
+	 * @param finals  是否返回final属性
 	 * @return List
 	 */
 	public static List<Field> getFields(Class<?> clazz, boolean statics, boolean finals){
