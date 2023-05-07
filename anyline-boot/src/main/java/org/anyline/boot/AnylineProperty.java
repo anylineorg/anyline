@@ -250,9 +250,24 @@ public class AnylineProperty {
     protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
 
     /**
-     * 实体类属性依赖层级 > 0是 查询属性关联表
+     * 实体类属性依赖层级 > 0:查询属性关联表
      */
-    protected int entityFieldDependency                         = 0             ;   // 实体类属性依赖层级 > 0是 查询属性关联表
+    protected int entityFieldQueryDependency = 0             ;   // 实体类属性依赖层级 > 0:查询属性关联表
+
+    /**
+     * 实体类属性依赖层级 > 0:插入属性关联表
+     */
+    protected int entityFieldInsertDependency = 0             ;   // 实体类属性依赖层级 > 0:插入属性关联表
+
+    /**
+     * 实体类属性依赖层级 > 0:更新属性关联表
+     */
+    protected int entityFieldUpdateDependency = 0             ;   // 实体类属性依赖层级 > 0:更新属性关联表
+
+    /**
+     * 实体类属性依赖层级 > 0:删除属性关联表
+     */
+    protected int entityFieldDeleteDependency = 0             ;   // 实体类属性依赖层级 > 0:删除属性关联表
     /**
      * http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
      */
@@ -405,13 +420,40 @@ public class AnylineProperty {
         ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION = throwSqlQueryException;
     }
 
-    public int getEntityFieldDependency() {
-        return entityFieldDependency;
+    public int getEntityFieldQueryDependency() {
+        return entityFieldQueryDependency;
     }
 
-    public void setEntityFieldDependency(int entityFieldDependency) {
-        this.entityFieldDependency = entityFieldDependency;
-        ConfigTable.ENTITY_FIELD_DEPENDENCY = entityFieldDependency;
+    public void setEntityFieldQueryDependency(int entityFieldQueryDependency) {
+        this.entityFieldQueryDependency = entityFieldQueryDependency;
+        ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY = entityFieldQueryDependency;
+    }
+
+    public int getEntityFieldInsertDependency() {
+        return entityFieldInsertDependency;
+    }
+
+    public void setEntityFieldInsertDependency(int entityFieldInsertDependency) {
+        this.entityFieldInsertDependency = entityFieldInsertDependency;
+        ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY = entityFieldInsertDependency;
+    }
+
+    public int getEntityFieldUpdateDependency() {
+        return entityFieldUpdateDependency;
+    }
+
+    public void setEntityFieldUpdateDependency(int entityFieldUpdateDependency) {
+        this.entityFieldUpdateDependency = entityFieldUpdateDependency;
+        ConfigTable.ENTITY_FIELD_UPDATE_DEPENDENCY = entityFieldUpdateDependency;
+    }
+
+    public int getEntityFieldDeleteDependency() {
+        return entityFieldDeleteDependency;
+    }
+
+    public void setEntityFieldDeleteDependency(int entityFieldDeleteDependency) {
+        this.entityFieldDeleteDependency = entityFieldDeleteDependency;
+        ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY = entityFieldDeleteDependency;
     }
 
     public boolean isThrowSqlUpdateException() {
