@@ -791,7 +791,7 @@ public class ConvertAdapter {
         reg(new AbstractConvert(Integer.class, String.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return (char)((BigInteger)value).intValue();
+                return value.toString();
             }
         });
         reg(new AbstractConvert(Integer.class, Boolean.class){
