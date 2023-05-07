@@ -417,7 +417,16 @@ public class BeanUtil {
 		CharBuffer charBuffer = charset.decode(byteBuffer);
 		return charBuffer.array();
 	}
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+
+	/**
+	 * 设置属性值
+	 * @param obj 对象
+	 * @param field 属性名
+	 * @param value 值
+	 * @param recursion 是递归查换父类属性
+	 * @param alert 设备失败是否提示日期
+	 * @return boolean
+	 */
 	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion, boolean alert){
 		if(null == obj || null == field){
 			return false;
@@ -2706,7 +2715,7 @@ public class BeanUtil {
 			for (String field : fields) {
 				Object value = propertyNvl(map, field);
 				if (BasicUtil.isNotEmpty(value)) {
-					setFieldValue(obj, field, value, false, alert);
+					setFieldValue(obj, field, value, true, alert);
 				}
 			}
 		}
