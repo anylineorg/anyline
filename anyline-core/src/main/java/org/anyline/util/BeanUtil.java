@@ -128,9 +128,21 @@ public class BeanUtil {
 	 * @throws Exception
 	 */
 	public static Collection maps2object(Field field, Collection value) throws Exception{
-
 		Class clazz = field.getType();
-
+		Collection list = null;
+		Class itemClass = ClassUtil.getCollectionItemClass(field);
+		if(null == itemClass){
+			list = value;
+		}else{
+			list = ClassUtil.newInstance(value.getClass());
+			for (Object item : value) {
+				if (item instanceof Map) {
+					Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
+					list.add(oitem);
+				}
+			}
+		}
+		/*
 		Collection list = value.getClass().newInstance();
 		if(!clazz.isAssignableFrom(list.getClass())){
 			if(clazz == Collection.class || clazz == List.class){
@@ -154,7 +166,7 @@ public class BeanUtil {
 			}
 		}else{
 			list = value;
-		}
+		}*/
 		return list;
 	}
 	/**
