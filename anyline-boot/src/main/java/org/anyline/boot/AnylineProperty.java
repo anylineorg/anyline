@@ -248,6 +248,11 @@ public class AnylineProperty {
      * 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
      */
     protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+
+    /**
+     * 实体类属性依赖层级 > 0是 查询属性关联表
+     */
+    protected int entityFieldDependency                         = 0             ;   // 实体类属性依赖层级 > 0是 查询属性关联表
     /**
      * http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
      */
@@ -398,6 +403,15 @@ public class AnylineProperty {
     public void setThrowSqlQueryException(boolean throwSqlQueryException) {
         this.throwSqlQueryException = throwSqlQueryException;
         ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION = throwSqlQueryException;
+    }
+
+    public int getEntityFieldDependency() {
+        return entityFieldDependency;
+    }
+
+    public void setEntityFieldDependency(int entityFieldDependency) {
+        this.entityFieldDependency = entityFieldDependency;
+        ConfigTable.ENTITY_FIELD_DEPENDENCY = entityFieldDependency;
     }
 
     public boolean isThrowSqlUpdateException() {
