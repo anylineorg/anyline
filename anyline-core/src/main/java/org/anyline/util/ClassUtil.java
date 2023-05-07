@@ -26,9 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -112,17 +110,17 @@ public class ClassUtil {
 		return list;
 	}
 	/**
-	 * 是否是bases子类或实现了basees接口(满足其中一个)
-	 * @param c  c
-	 * @param bases  bases
+	 * 是否是bases子类或实现了basee接口(满足其中一个)
+	 * @param clazz  类
+	 * @param bases  父类或接口
 	 * @return boolean
 	 */
-	public static boolean isInSub(Class<?> c, Class<?> ... bases){
+	public static boolean isInSub(Class<?> clazz, Class<?> ... bases){
 		if(null == bases || bases.length == 0){
 			return true;
 		}
 		for(Class<?> base : bases){
-			if(base.isAssignableFrom(c)){
+			if(base.isAssignableFrom(clazz)){
 				return true;
 			}
 		}
@@ -181,7 +179,7 @@ public class ClassUtil {
 	 *                     类名集合
 	 * @param childPackage 是否遍历子包
 	 * @return 类的完整名称
-	 * @throws UnsupportedEncodingException  UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromFile(String filePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> myClassName = new ArrayList<>();
@@ -216,7 +214,7 @@ public class ClassUtil {
 	 * @param jarPath      jar文件路径
 	 * @param childPackage 是否遍历子包
 	 * @return 类的完整名称
-	 * @throws UnsupportedEncodingException UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromJar(String jarPath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> names = new ArrayList<>();
@@ -716,5 +714,29 @@ public class ClassUtil {
 			}
 		}
 		return type;
+	}
+	public static <T> T newInstance(Class<T> clazz) throws Exception{
+		if(!clazz.isInterface()
+				&& !clazz.isAnnotation()
+				&& !clazz.isEnum()
+				&& !clazz.isArray()
+				&& !Modifier.isAbstract(clazz.getModifiers())
+		){
+			return clazz.newInstance();
+		}
+
+		if(isInSub(clazz, List.class)){
+			return (T) new ArrayList<>();
+		}
+		if(isInSub(clazz, Set.class)){
+			return (T) new HashSet();
+		}
+		if(isInSub(clazz, Collection.class)){
+			return (T) new ArrayList<>();
+		}
+		if(isInSub(clazz, Map.class)){
+			return (T) new HashMap<>();
+		}
+		return null;
 	}
 }
