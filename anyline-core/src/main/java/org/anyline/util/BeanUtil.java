@@ -137,7 +137,7 @@ public class BeanUtil {
 		if(null == itemClass){
 			list = value;
 		}else{
-			list = ClassUtil.newInstance(value.getClass());
+			list = (Collection)ClassUtil.newInstance(clazz);
 			for (Object item : value) {
 				if (item instanceof Map) {
 					Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
@@ -222,14 +222,15 @@ public class BeanUtil {
 
 		boolean compatible = true;//是否兼容 int long等不能设置null值
 		String fieldType = field.getType().getSimpleName();
+		Class targetClass = field.getType();
 		String type = fieldType.toLowerCase();		//属性类型
 		ColumnType columnType = null;
-		String typeName = "";
+		String columnTypeName = ""; //列类型
 		if(null != metadata){
 			columnType = metadata.getColumnType();
-			typeName = metadata.getTypeName();
-			if(null != typeName){
-				typeName = typeName.toUpperCase();
+			columnTypeName = metadata.getTypeName();
+			if(null != columnTypeName){
+				columnTypeName = columnTypeName.toUpperCase();
 			}
 		}
 
@@ -238,7 +239,7 @@ public class BeanUtil {
 		try{
 			if(null != v){
 				if(!srcTypeKey.equals(tarTypeKey)) {
-					if(typeName.contains("JSON")) {
+					if(columnTypeName.contains("JSON")) {
 						//先转换成Collection<Map>或Map<Map>
 						if(v instanceof String){
 							v = json2oject((String)v, field.getType());
@@ -257,12 +258,27 @@ public class BeanUtil {
 								v = map;
 							}
 						}
-					}else if(typeName.contains("XML")){
+					}else if(columnTypeName.contains("XML")){
 						v = xml2object(v.toString(), field.getType());
 					}else if(null != columnType){
 						v = columnType.convert(v, obj, field);
 					}else{
-						v = ConvertAdapter.convert(v, field.getType(), null, alert);
+						//没有列属性,根据数据类型
+						//集合类
+						if(ClassUtil.isInSub(targetClass, Collection.class)){
+							Class itemClass = ClassUtil.getCollectionItemClass(field);
+							Collection list = (Collection) ClassUtil.newInstance(targetClass);
+							Collection values = (Collection) v;
+							for(Object item:values){
+								list.add(ConvertAdapter.convert(item, itemClass, null, alert));
+							}
+							v = list;
+						}else if(ClassUtil.isInSub(targetClass, Map.class)){
+							//Map类
+						}else{
+							v = ConvertAdapter.convert(v, targetClass, null, alert);
+						}
+
 					}//end ! columnt type
 				}
 
