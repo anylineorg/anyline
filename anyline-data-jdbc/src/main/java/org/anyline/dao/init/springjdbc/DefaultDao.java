@@ -1132,12 +1132,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return set;
 	}
-	protected <T> void checkDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
-		//ManyToMany
-		if(set.size()==0){
-			return;
-		}
-		dependency --;
+	protected class Join{
+
 		/*
 			HR_EMPLOYEE				:主表 当前表
 			HR_EMPLOYEE_DEPARTMENT 	:关联表
@@ -1148,73 +1144,96 @@ public class DefaultDao<E> implements AnylineDao<E> {
             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
             List<Department> departments;
         */
+		//public Class clazz				; // Employee.class
+		//public String table				; // HR_EMPLOYEE				: 主表 当前表
+		//public String pk 				; // ID							: 当前表主键(HR_EMPLOYEE.ID)
+
+		public String joinTable			; // HR_EMPLOYEE_DEPARTMENT 	: 关联表
+		public String joinColumn		; // EMPLOYEE_ID				: 关联表中与当前表关联的外键
+		public String inverseJoinColumn	; // DEPARTMENT_ID				: 关联表中与右表关联的外键
+		public String dependencyTable	; // HR_DEPARTMENT				: 依赖表
+		public Object fieldInstance		; // ArrayList<Department>		:
+		public Class itemClass			; // Department					:
+		public String dependencyPk		; // ID							: 依赖表主键(HR_DEPARTMENT.ID)
+	}
+	protected Join checkJoin(Field field) throws Exception{
+		Join join = new Join();
+
+ 		//String rightTable_name 			= null	;  //HR_DEPARTMENT(根据Department类上的注解)
+		//String joinColumn_name 			= null	;  //EMPLOYEE_ID
+		//tring inverseJoinColumn_name 	= null	;  //DEPARTMENT_ID
+		join.joinTable = ClassUtil.parseAnnotationFieldValue(field, "JoinTable.name");
+		Annotation anJoinTable = ClassUtil.getFieldAnnotation(field, "JoinTable");
+		if (null != anJoinTable) {
+			Method methodJoinColumns = anJoinTable.annotationType().getMethod("joinColumns");
+			if (null != methodJoinColumns) {
+				Object[] ojoinColumns = (Object[]) methodJoinColumns.invoke(anJoinTable);
+				if (null != ojoinColumns && ojoinColumns.length > 0) {
+					Annotation joinColumn = (Annotation) ojoinColumns[0];
+					join.joinColumn = (String) joinColumn.annotationType().getMethod("name").invoke(joinColumn);
+				}
+			}
+			Method methodInverseJoinColumns = anJoinTable.annotationType().getMethod("inverseJoinColumns");
+			if (null != methodInverseJoinColumns) {
+				Object[] ojoinColumns = (Object[]) methodInverseJoinColumns.invoke(anJoinTable);
+				if (null != ojoinColumns && ojoinColumns.length > 0) {
+					Annotation joinColumn = (Annotation) ojoinColumns[0];
+					join.inverseJoinColumn = (String) joinColumn.annotationType().getMethod("name").invoke(joinColumn);
+				}
+			}
+		}
+		join.itemClass = ClassUtil.getCollectionItemClass(field);	//Department
+		if(!ClassUtil.isPrimitiveClass(join.itemClass)){
+			//List<Department> departments;
+			org.anyline.entity.data.Table table = EntityAdapterProxy.table(join.itemClass);
+			if(null != table){
+				join.dependencyTable = table.getName();
+				org.anyline.entity.data.Column col = EntityAdapterProxy.primaryKey(join.itemClass);
+				if(null != col){
+					join.dependencyPk = col.getName();
+				}
+			}
+		}else{
+			//List<Long> departments
+			//基础类(只取ID)
+		}
+		return join;
+	}
+	protected <T> void checkDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
+		//ManyToMany
+		if(set.size()==0){
+			return;
+		}
+		dependency --;
 		Class clazz = set.get(0).getClass();
-		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
-		String pk 		= null; // 当前表主键(HR_EMPLOYEE.ID)
-		String rightPk 	= null; // 右表主键
-		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(set.get(0).getClass());
+		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
 		if(null != pc){
 			pk = pc.getName();
 		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
 		for(Field field:fields){
 			try {
-				String joinTable_name  			= null	;  //HR_EMPLOYEE_DEPARTMENT
-				String rightTable_name 			= null	;  //HR_DEPARTMENT(根据Department类上的注解)
-				String joinColumn_name 			= null	;  //EMPLOYEE_ID
-				String inverseJoinColumn_name 	= null	;  //DEPARTMENT_ID
-				joinTable_name = ClassUtil.parseAnnotationFieldValue(field, "JoinTable.name");
-				Annotation anJoinTable = ClassUtil.getFieldAnnotation(field, "JoinTable");
-				if (null != anJoinTable) {
-					Method methodJoinColumns = anJoinTable.annotationType().getMethod("joinColumns");
-					if (null != methodJoinColumns) {
-						Object[] ojoinColumns = (Object[]) methodJoinColumns.invoke(anJoinTable);
-						if (null != ojoinColumns && ojoinColumns.length > 0) {
-							Annotation joinColumn = (Annotation) ojoinColumns[0];
-							joinColumn_name = (String) joinColumn.annotationType().getMethod("name").invoke(joinColumn);
-						}
-					}
-					Method methodInverseJoinColumns = anJoinTable.annotationType().getMethod("inverseJoinColumns");
-					if (null != methodInverseJoinColumns) {
-						Object[] ojoinColumns = (Object[]) methodInverseJoinColumns.invoke(anJoinTable);
-						if (null != ojoinColumns && ojoinColumns.length > 0) {
-							Annotation joinColumn = (Annotation) ojoinColumns[0];
-							inverseJoinColumn_name = (String) joinColumn.annotationType().getMethod("name").invoke(joinColumn);
-						}
-					}
-				}
-				//List<Department> departments;
-				Class itemClass = ClassUtil.getCollectionItemClass(field);	//Department
-				if(!ClassUtil.isPrimitiveClass(itemClass)){
-					org.anyline.entity.data.Table table = EntityAdapterProxy.table(itemClass);
-					if(null != table){
-						rightTable_name = table.getName();
-						org.anyline.entity.data.Column col = EntityAdapterProxy.primaryKey(itemClass);
-						if(null != col){
-							rightPk = col.getName();
-						}
-					}
-				}else{
-					//List<Long> departments
-					//基础类(只取ID)
-				}
+				Join join = checkJoin(field);
 				for(T entity:set){
 					Map<String,Object> pvs = EntityAdapterProxy.primaryValue(entity);
-					if(null == rightTable_name){
+					if(null == join.dependencyTable){
 						//只通过中间表查主键
-						DataSet items = selects(new DefaultTablePrepare(joinTable_name), "++"+joinColumn_name+":"+pvs.get(pk.toUpperCase()));
-						List<String> ids = items.getStrings(inverseJoinColumn_name);
+						DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++"+join.joinColumn+":"+pvs.get(pk.toUpperCase()));
+						List<String> ids = items.getStrings(join.inverseJoinColumn);
 						BeanUtil.setFieldValue(entity, field, ids);
 					}else{
 						//通过子表完整查询
-						String sql = "SELECT * FROM " + rightTable_name + " WHERE " + rightPk + " IN (SELECT " + inverseJoinColumn_name + " FROM " + joinTable_name + " WHERE " + joinColumn_name + "=?" + ")";
-						List<Object> values = new ArrayList<>();
-						values.add(pvs.get(pk.toUpperCase()));
-						EntitySet<T> dependencys = select(runtime, itemClass, null, sql, values, dependency);
-						Collection vs = (Collection) ClassUtil.newInstance(field.getType());
+						String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
+						List<Object> params = new ArrayList<>();
+						params.add(pvs.get(pk.toUpperCase()));
+						EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
+/*
+						Collection values = (Collection) ClassUtil.newInstance(field.getType());
 						for(T item:dependencys){
-							vs.add(item);
-						}
-						BeanUtil.setFieldValue(entity, field, vs);
+							values.add(item);
+						}*/
+						BeanUtil.setFieldValue(entity, field, dependencys);
 					}
 				}
 			}catch (Exception e){
@@ -1639,7 +1658,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				size = exeDelete(runtime, run);
 				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 					if(!(obj instanceof DataRow)){
-						checkDependencyDelete(obj);
+						checkDependencyDelete(runtime, obj);
 					}
 
 				}
@@ -1647,7 +1666,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return size;
 	}
-	private int checkDependencyDelete(Object obj){
+	private int checkDependencyDelete(JDBCRuntime runtime, Object obj){
 		int result = 0;
 		return result;
 	}
