@@ -50,7 +50,11 @@ public class ConvertAdapter {
     public static  Object convert(Object value, Class target){
         return convert(value, target, null);
     }
+
     public static  Object convert(Object value, Class target, Object def){
+        return convert(value, target, def, true);
+    }
+    public static  Object convert(Object value, Class target, Object def, boolean warn){
         Object result = value;
         if(null != value && null != target){
             Class clazz = value.getClass();
@@ -68,7 +72,9 @@ public class ConvertAdapter {
                         success = true;
                     }catch (ConvertException e){
                         //TODO 根据异常信息 决定下一行
-                        e.printStackTrace();
+                        if(warn) {
+                            e.printStackTrace();
+                        }
                     }
                 }else if(target == String.class){
                     result = value.toString();
@@ -82,8 +88,8 @@ public class ConvertAdapter {
                 }catch (Exception e){
                 }
             }
-            if(!success){
-                log.warn("[{}][origin class:{}][target class:{}]", LogUtil.format("convert定位失败",31), clazz, target);
+            if(!success && warn){
+                log.warn("[{}][origin:{}][target:{}]", LogUtil.format("convert定位失败",31), clazz, target);
                 //throw new RuntimeException();
             }
         }
