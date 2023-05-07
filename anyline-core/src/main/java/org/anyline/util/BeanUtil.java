@@ -118,6 +118,9 @@ public class BeanUtil {
 	public static boolean setFieldValue(Object obj, Field field, Object value){
 		return setFieldValue(obj, field, null, value);
 	}
+	public static boolean setFieldValue(Object obj, Field field, Object value, boolean alert){
+		return setFieldValue(obj, field, null, value, alert);
+	}
 	private static List<String> arr = new ArrayList<>();
 
 	/**
@@ -196,14 +199,18 @@ public class BeanUtil {
 		}
 		return map;
 	}
+	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value){
+		return setFieldValue(obj, field, metadata, value, true);
+	}
 	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值,传null
 	 * @param field 属性
 	 * @param value 值
+	 * @param alert 失败提醒
 	 * @return boolean
 	 */
-	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value){
+	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value, boolean alert){
 		if(null == field){
 			return false;
 		}
@@ -255,75 +262,7 @@ public class BeanUtil {
 					}else if(null != columnType){
 						v = columnType.convert(v, obj, field);
 					}else{
-						v = ConvertAdapter.convert(v, field.getType());
-						/*DataType dt = JavaTypeAdapter.type(v.getClass());
-						if(null != dt){
-							v = dt.read(value, null, field.getType());
-						}else{
-							if (type.equals("int") || type.equals("integer")) {
-								v = Integer.parseInt(value.toString());
-							} else if (type.equals("double")) {
-								v = Double.parseDouble(value.toString());
-							} else if (type.equals("long")) {
-								v = Long.parseLong(value.toString());
-							} else if (type.equals("float")) {
-								v = Float.parseFloat(value.toString());
-							} else if (type.equals("boolean")) {
-								v = Boolean.parseBoolean(value.toString());
-							} else if (type.equals("short")) {
-								v = Short.parseShort(value.toString());
-							} else if (type.equals("bigdecimal")) {
-								v = new BigDecimal(value.toString());
-							} else if (type.equals("byte")) {
-								v = Byte.parseByte(value.toString());
-							} else if (type.equals("date")) {
-								v = DateUtil.parse(v);
-							} else if(type.equals("localtime")){
-								Date date = new Date(DateUtil.parse(v).getTime());
-								v = DateUtil.localTime(date);
-							} else if(type.equals("localdate")){
-								Date date = new Date(DateUtil.parse(v).getTime());
-								v = DateUtil.localDate(date);
-							} else if(type.equals("localdatetime")){
-								Date date = new Date(DateUtil.parse(v).getTime());
-								v = DateUtil.localDateTime(date);
-							}else if(!type.equals("string") && null != columnType){
-								if(typeName.contains("JSON")) {
-									v = json2oject(v.toString(), field.getType());
-								}else if(typeName.contains("XML")){
-									v = xml2object(v.toString(), field.getType());
-								}else {
-									//根据数据库类型
-									if("POINT".equals(columnType)){
-										if("double[]".equals(fieldType)){
-											if(v instanceof byte[]){
-												v = BeanUtil.Double2double(new Point((byte[])v).getArray(), 0d);
-											}else if(v instanceof Point){
-												Double[] ds = ((Point)v).getArray();
-												v = BeanUtil.Double2double(ds, 0);
-											}
-										}else if("Double[]".equals(fieldType)){
-											if(v instanceof byte[]){
-												v = new Point((byte[])v).getArray();
-											}else if(v instanceof Point){
-												v = ((Point)v).getArray();
-											}
-										}else if("Point".equals(fieldType)){
-											if(v instanceof byte[]){
-												v = new Point((byte[])v);
-											}else if(v instanceof Point){
-											}
-										}
-									}
-								}
-							} else if (type.equals("string")) {
-								if(v instanceof byte[]){
-									v = Base64Util.encode((byte[]) v);
-								}else {
-									v = v.toString();
-								}
-							}
-						}*/
+						v = ConvertAdapter.convert(v, field.getType(), null, alert);
 					}//end ! columnt type
 				}
 
@@ -351,8 +290,10 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
-			log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, v, srcTypeKey, columnType, e.toString());
+			if(alert) {
+				e.printStackTrace();
+				log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, v, srcTypeKey, columnType, e.toString());
+			}
 			return false;
 		}
 		return true;
@@ -476,76 +417,8 @@ public class BeanUtil {
 		CharBuffer charBuffer = charset.decode(byteBuffer);
 		return charBuffer.array();
 	}
-	/**
-	 * 根据数据类型转换成Java值
-	 * @param type 数据库类型
-	 * @param value 值
-	 * @return Object
-	 */
-	public static Object value(String type, Object value){
-		Object v = value;
-		if(null == type){
-			return v;
-		}
-		type = type.toLowerCase();
-		if(null != v){
-			if(!type.equals(v.getClass().getSimpleName().toLowerCase())) {
-				if (type.equals("bigint") || type.equals("long")|| type.equals("int8")) {
-					v = Long.parseLong(value.toString());
-				} else if (type.startsWith("int") || type.equals("integer")) {
-					v = Integer.parseInt(value.toString());
-				} else if (type.equals("double")) {
-					v = Double.parseDouble(value.toString());
-				}else if (type.equals("float")) {
-					v = Float.parseFloat(value.toString());
-				} else if (type.equals("boolean")) {
-					v = Boolean.parseBoolean(value.toString());
-				} else if (type.equals("short")) {
-					v = Short.parseShort(value.toString());
-				} else if (type.equals("bigdecimal")) {
-					v = new BigDecimal(value.toString());
-				} else if (type.equals("byte")) {
-					v = Byte.parseByte(value.toString());
-				} else if (type.equals("date")) {
-					v = DateUtil.parse(v);
-				} else if(type.equals("localtime")){
-					Date date = DateUtil.parse(v);
-					v = DateUtil.localTime(date);
-				} else if(type.equals("localdate")){
-					Date date = DateUtil.parse(v);
-					v = DateUtil.localDate(date);
-				} else if(type.equals("localdatetime")){
-					Date date = DateUtil.parse(v);
-					v = DateUtil.localDateTime(date);
-				}else if(type.equals("json")){
-					String str = v.toString().trim();
-					try{
-						JsonNode node = BeanUtil.JSON_MAPPER.readTree(str);
-						if(node.isArray()){
-							v = DataSet.parseJson(node);
-						}else{
-							v = DataRow.parseJson(node);
-						}
-					}catch (Exception e){
-						e.printStackTrace();
-					}
-				}else if (type.equals("blob")) {
-					if(v instanceof byte[]){
-						v = Base64Util.encode((byte[]) v);
-					}else {
-						v = v.toString();
-					}
-				}else if (type.equals("point")) {
-					if(v instanceof byte[]){
-						v = new Point((byte[]) v);
-					}
-				}
-			}
-		}
-		return v;
-	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){
+	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion, boolean alert){
 		if(null == obj || null == field){
 			return false;
 		}
@@ -554,9 +427,13 @@ public class BeanUtil {
 			tmp.put(field, value);
 		}else{
 			Field f = ClassUtil.getField(obj.getClass(), field, recursion);
-			setFieldValue(obj, f, value);
+			setFieldValue(obj, f, value, alert);
 		}
 		return true;
+	}
+
+	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){
+		return setFieldValue(obj, field, value, recursion, true);
 	}
 	public static boolean setFieldValue(Object obj, String field, Object value){
 		return setFieldValue(obj, field, value, true);
@@ -2829,13 +2706,13 @@ public class BeanUtil {
 			for (String field : fields) {
 				Object value = propertyNvl(map, field);
 				if (BasicUtil.isNotEmpty(value)) {
-					setFieldValue(obj, field, value);
+					setFieldValue(obj, field, value, false, alert);
 				}
 			}
 		}
 	}
 
-	public static void setFieldsValue(Object obj, Map<String,?> map ){
+	public static void setFieldsValue(Object obj, Map<String,?> map){
 		setFieldsValue(obj, map, true);
 	}
 	public static byte[] serialize(Object value) {
