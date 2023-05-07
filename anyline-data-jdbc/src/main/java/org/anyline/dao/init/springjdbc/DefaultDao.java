@@ -349,7 +349,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						listener.beforeQuery(run, total);
 					}
 					fr = System.currentTimeMillis();
-					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ConfigTable.ENTITY_FIELD_DEPENDENCY);
+					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY);
 					if (null != listener) {
 						listener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
@@ -1128,11 +1128,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		//检测依赖关系
 		if(dependency > 0) {
-			checkDependency(runtime, set, dependency);
+			checkDependencyQuery(runtime, set, dependency);
 		}
 		return set;
 	}
-	protected <T> void checkDependency(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
+	protected <T> void checkDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
 		//ManyToMany
 		if(set.size()==0){
 			return;
@@ -1637,12 +1637,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				JDBCAdapter adapter = runtime.getAdapter();
 				Run run = adapter.buildDeleteRun(dest, obj, columns);
 				size = exeDelete(runtime, run);
+				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
+					if(!(obj instanceof DataRow)){
+						checkDependencyDelete(obj);
+					}
 
+				}
 			}
 		}
 		return size;
 	}
-
+	private int checkDependencyDelete(Object obj){
+		int result = 0;
+		return result;
+	}
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
 		table = DataSourceHolder.parseDataSource(table, null);
