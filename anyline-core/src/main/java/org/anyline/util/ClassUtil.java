@@ -715,7 +715,7 @@ public class ClassUtil {
 		}
 		return type;
 	}
-	public static <T> T newInstance(Class<T> clazz) throws Exception{
+	public static Object newInstance(Class clazz) throws Exception{
 		if(!clazz.isInterface()
 				&& !clazz.isAnnotation()
 				&& !clazz.isEnum()
@@ -726,16 +726,16 @@ public class ClassUtil {
 		}
 
 		if(isInSub(clazz, List.class)){
-			return (T) new ArrayList<>();
+			return new ArrayList<>();
 		}
 		if(isInSub(clazz, Set.class)){
-			return (T) new HashSet();
+			return new HashSet();
 		}
 		if(isInSub(clazz, Collection.class)){
-			return (T) new ArrayList<>();
+			return new ArrayList<>();
 		}
 		if(isInSub(clazz, Map.class)){
-			return (T) new HashMap<>();
+			return new HashMap<>();
 		}
 		return null;
 	}
