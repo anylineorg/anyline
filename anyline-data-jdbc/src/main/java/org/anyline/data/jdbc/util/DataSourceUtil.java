@@ -44,7 +44,7 @@ public class DataSourceUtil {
             map.put("user",username);
             map.put("username",username);
             map.put("password",password);
-            BeanUtil.setFieldsValue(ds, map);
+            BeanUtil.setFieldsValue(ds, map, false);
             return ds;
         } catch (Exception e) {
             e.printStackTrace();

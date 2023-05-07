@@ -283,7 +283,7 @@ public class DataSourceHolder {
 			map.put("driverClassName",driver);
 			map.put("user",user);
 			map.put("username",user);
-            BeanUtil.setFieldsValue(ds, map);
+            BeanUtil.setFieldsValue(ds, map, false);
             return ds;
         } catch (Exception e) {
             e.printStackTrace();
