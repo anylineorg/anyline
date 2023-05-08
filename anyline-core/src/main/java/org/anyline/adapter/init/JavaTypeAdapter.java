@@ -18,11 +18,14 @@ public class JavaTypeAdapter {
             return null;
         }
     }
+    public static void reg(Class clazz, org.anyline.entity.metadata.DataType type){
+        types.put(clazz, type);
+    }
     static {
         //支持的数据类型
         for(DefaultJavaType type:DefaultJavaType.values()){
             Class clazz = type.supportClass();
-            types.put(clazz, type);
+            reg(clazz, type);
         }
     }
 }
