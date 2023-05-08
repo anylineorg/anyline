@@ -20,23 +20,18 @@
 package org.anyline.data.run;
 
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
-import org.anyline.data.prepare.init.DefaultGroupStore;
-import org.anyline.service.AnylineService;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.DefaultOrderStore;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.Compare;
-import org.anyline.data.param.ConfigParser;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.entity.*;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
-import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -662,7 +657,7 @@ public abstract class BasicRun implements Run {
 		return this;
 	}
 	protected static boolean endWithWhere(String txt){
-		boolean result = false;
+		/*boolean result = false;
 		txt = txt.toUpperCase();
 		int fr = 0;
 		while((fr = txt.indexOf("WHERE")) > 0){
@@ -687,7 +682,13 @@ public abstract class BasicRun implements Run {
 				e.printStackTrace();
 			}
 		}
-		return result;
+		return result;*/
+		txt = txt.replaceAll("\\s"," ")
+				.replaceAll("'[\\S\\s]*?'","{}")
+				.replaceAll("\\([^\\(\\)]+?\\)","{}")
+				.replaceAll("\\([^\\(\\)]+?\\)","{}")
+				.replaceAll("\\([^\\(\\)]+?\\)","{}");
+		return txt.toUpperCase().contains("WHERE");
 	}
 
 	/**
