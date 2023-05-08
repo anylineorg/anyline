@@ -332,17 +332,9 @@ public enum StandardColumnType implements ColumnType {
     /**
      * oracle
      */
-    ,LONG("LONG", new DatabaseType[]{ORACLE}, Long.class, true, true){public Object read(Object value, Object def, Class clazz){return value;}
-        public Object write(Object value, Object def, boolean placeholder){
-            if(null == value){
-                value = def;
-            }
-            Long result = BasicUtil.parseLong(value, null);
-            if(null != def && null == result){
-                result = BasicUtil.parseLong(def, null);
-            }
-            return result;
-        }
+    ,LONG("LONG", new DatabaseType[]{ORACLE}, String.class, true, true){
+        public Object read(Object value, Object def, Class clazz){return value;}
+        public Object write(Object value, Object def, boolean placeholder){return value;}
     }
     /**
      * pg

@@ -46,7 +46,7 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
     JSON                    (StandardColumnType.CLOB                  ), //mysql,pg
     JSONB                   (StandardColumnType.BLOB                  ), //     ,pg
     LINE                    (StandardColumnType.ILLEGAL               ), //mysql,pg
-    LONG                    (StandardColumnType.NUMBER                ), //     ( ,oracle
+    LONG                    (StandardColumnType.LONG                  ), //     ( ,oracle
     LONGBLOB                (StandardColumnType.BLOB                  ), //mysql
     LONGTEXT                (StandardColumnType.CLOB                  ), //mysql
     LSEG                    (StandardColumnType.ILLEGAL               ), //     ,pg
