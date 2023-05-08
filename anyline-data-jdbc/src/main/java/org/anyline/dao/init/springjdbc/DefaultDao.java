@@ -2983,14 +2983,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(exe) {
 			for(String sql:sqls) {
-				String random = null;
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					random = random();
-					log.warn("{}[sql:\n{}\n]", random, sql);
-				}
-				runtime.getTemplate().update(sql);
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[create table][table:{}][执行耗时:{}ms]", random, table.getName(), System.currentTimeMillis() - fr);
+				if (BasicUtil.isNotEmpty(sql)) {
+					String random = null;
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						random = random();
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					runtime.getTemplate().update(sql);
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[create table][table:{}][执行耗时:{}ms]", random, table.getName(), System.currentTimeMillis() - fr);
+					}
 				}
 			}
 			result = true;
@@ -3172,14 +3174,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(exe) {
 			for(String sql:sqls) {
-				String random = null;
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					random = random();
-					log.warn("{}[sql:\n{}\n]", random, sql);
-				}
-				runtime.getTemplate().update(sql);
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[create view][view:{}][执行耗时:{}ms]", random, view.getName(), System.currentTimeMillis() - fr);
+				if (BasicUtil.isNotEmpty(sql)) {
+					String random = null;
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						random = random();
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					runtime.getTemplate().update(sql);
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[create view][view:{}][执行耗时:{}ms]", random, view.getName(), System.currentTimeMillis() - fr);
+					}
 				}
 			}
 			result = true;
@@ -3293,13 +3297,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if(exe) {
 			for(String sql:sqls) {
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					random = random();
-					log.warn("{}[sql:\n{}\n]", random, sql);
-				}
-				runtime.getTemplate().update(sql);
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+				if (BasicUtil.isNotEmpty(sql)) {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						random = random();
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					runtime.getTemplate().update(sql);
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+					}
 				}
 			}
 			result = true;
@@ -3470,14 +3476,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		if (exe) {
 			for(String sql:sqls) {
-				String random = null;
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					random = random();
-					log.warn("{}[sql:\n{}\n]", random, sql);
-				}
-				runtime.getTemplate().update(sql);
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+				if (BasicUtil.isNotEmpty(sql)) {
+					String random = null;
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						random = random();
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					runtime.getTemplate().update(sql);
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+					}
 				}
 			}
 			result = true;
@@ -3709,16 +3717,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DDListener listener = column.getListener();
 		try{
 			for(String sql:sqls) {
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[sql:\n{}\n]", random, sql);
-				}
-				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(column);
-				}
-				if (exe) {
-					runtime.getTemplate().update(sql);
-					result = true;
+				if (BasicUtil.isNotEmpty(sql)) {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					boolean exe = true;
+					if (null != listener) {
+						exe = listener.beforeAlter(column);
+					}
+					if (exe) {
+						runtime.getTemplate().update(sql);
+						result = true;
+					}
 				}
 			}
 		}catch (Exception e){
@@ -3863,16 +3873,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DDListener listener = tag.getListener();
 		try{
 			for(String sql:sqls) {
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[sql:\n{}\n]", random, sql);
-				}
-				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(tag);
-				}
-				if (exe) {
-					runtime.getTemplate().update(sql);
-					result = true;
+				if (BasicUtil.isNotEmpty(sql)) {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					boolean exe = true;
+					if (null != listener) {
+						exe = listener.beforeAlter(tag);
+					}
+					if (exe) {
+						runtime.getTemplate().update(sql);
+						result = true;
+					}
 				}
 			}
 		}catch (Exception e){
@@ -3970,16 +3982,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		random = random();
 		DDListener listener = primary.getListener();
 		for(String sql:sqls) {
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[sql:\n{}\n]", random, sql);
-			}
-			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAlter(primary);
-			}
-			if (exe) {
-				runtime.getTemplate().update(sql);
-				result = true;
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(primary);
+				}
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
 			}
 		}
 
@@ -4090,16 +4104,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		random = random();
 		DDListener listener = index.getListener();
 		for(String sql:sqls) {
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[sql:\n{}\n]", random, sql);
-			}
-			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAlter(index);
-			}
-			if (exe) {
-				runtime.getTemplate().update(sql);
-				result = true;
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(index);
+				}
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
 			}
 		}
 
@@ -4209,16 +4225,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		random = random();
 		DDListener listener = constraint.getListener();
 		for(String sql:sqls) {
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[sql:\n{}\n]", random, sql);
-			}
-			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAlter(constraint);
-			}
-			if (exe) {
-				runtime.getTemplate().update(sql);
-				result = true;
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(constraint);
+				}
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
 			}
 		}
 
