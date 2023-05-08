@@ -346,7 +346,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						listener.beforeQuery(run, total);
 					}
 					fr = System.currentTimeMillis();
-					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY);
+					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY);
 					if (null != listener) {
 						listener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
@@ -1134,7 +1134,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		/*
 			HR_EMPLOYEE				:主表 当前表
 			HR_EMPLOYEE_DEPARTMENT 	:关联表
-			HR_DEPARTMENT			:右表
+			HR_DEPARTMENT			:依赖表
 		     @ManyToMany
    			 @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                 //中间关联表
             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
@@ -1148,17 +1148,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		public String joinTable			; // HR_EMPLOYEE_DEPARTMENT 	: 关联表
 		public String joinColumn		; // EMPLOYEE_ID				: 关联表中与当前表关联的外键
 		public String inverseJoinColumn	; // DEPARTMENT_ID				: 关联表中与右表关联的外键
-		public String dependencyTable	; // HR_DEPARTMENT				: 依赖表
+		public String dependencyTable	; // HR_DEPARTMENT				: 依赖表(根据Department类上的注解)
 		public Object fieldInstance		; // ArrayList<Department>		:
 		public Class itemClass			; // Department					:
 		public String dependencyPk		; // ID							: 依赖表主键(HR_DEPARTMENT.ID)
 	}
 	protected Join checkJoin(Field field) throws Exception{
 		Join join = new Join();
-
- 		//String rightTable_name 			= null	;  //HR_DEPARTMENT(根据Department类上的注解)
-		//String joinColumn_name 			= null	;  //EMPLOYEE_ID
-		//tring inverseJoinColumn_name 	= null	;  //DEPARTMENT_ID
 		join.joinTable = ClassUtil.parseAnnotationFieldValue(field, "JoinTable.name");
 		Annotation anJoinTable = ClassUtil.getFieldAnnotation(field, "JoinTable");
 		if (null != anJoinTable) {
@@ -1180,7 +1176,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		join.itemClass = ClassUtil.getCollectionItemClass(field);	//Department
-		if(!ClassUtil.isPrimitiveClass(join.itemClass)){
+		if(!ClassUtil.isPrimitiveClass(join.itemClass) && String.class != join.itemClass){
 			//List<Department> departments;
 			org.anyline.entity.data.Table table = EntityAdapterProxy.table(join.itemClass);
 			if(null != table){
@@ -1212,17 +1208,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		for(Field field:fields){
 			try {
 				Join join = checkJoin(field);
-				if(Compare.EQUAL == ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY_COMPARE) {
+				if(Compare.EQUAL == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE || set.size() == 1) {
 					//逐行查询
 					for (T entity : set) {
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						if (null == join.dependencyTable) {
 							//只通过中间表查主键 List<Long> departmentIds
+							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
 							DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
 						} else {
 							//通过子表完整查询 List<Department> departments
+							//SELECT * FROM HR_DEPARTMENT WHERE ID IN(SELECT DEPARTMENT_ID FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?)
 							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
 							List<Object> params = new ArrayList<>();
 							params.add(primaryValueMap.get(pk.toUpperCase()));
@@ -1230,21 +1228,39 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							BeanUtil.setFieldValue(entity, field, dependencys);
 						}
 					}
-				}else if(Compare.IN == ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY_COMPARE){
+				}else if(Compare.IN == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE){
+					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
-					/*if (null == join.dependencyTable) {
+					Map<T,Object> idmap = new HashMap<>();
+					for(T entity:set){
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						Object pv = primaryValueMap.get(pk.toUpperCase());
+						pvs.add(pv);
+						idmap.put(entity, pv);
+					}
+					if (null == join.dependencyTable) {
 						//只通过中间表查主键 List<Long> departmentIds
-						DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
-						List<String> ids = items.getStrings(join.inverseJoinColumn);
-						BeanUtil.setFieldValue(entity, field, ids);
+						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?,?,?)
+						ConfigStore conditions = new DefaultConfigStore();
+						conditions.and(join.joinColumn, pvs);
+						DataSet allItems = selects(new DefaultTablePrepare(join.joinTable), conditions);
+						for(T entity:set){
+							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
+							List<String> ids = items.getStrings(join.inverseJoinColumn);
+							BeanUtil.setFieldValue(entity, field, ids);
+						}
 					} else {
 						//通过子表完整查询 List<Department> departments
-						String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
-						List<Object> params = new ArrayList<>();
-						params.add(primaryValueMap.get(pk.toUpperCase()));
-						EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
-						BeanUtil.setFieldValue(entity, field, dependencys);
-					}*/
+						//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
+						ConfigStore conditions = new DefaultConfigStore();
+						conditions.param("JOIN_PVS", pvs);
+						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
+						DataSet alls = selects(new DefaultTextPrepare(sql), conditions);
+						for(T entity:set){
+							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
+							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
+						}
+					}
 				}
 			}catch (Exception e){
 				e.printStackTrace();
