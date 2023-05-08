@@ -1,5 +1,6 @@
 package org.anyline.boot;
 
+import org.anyline.entity.Compare;
 import org.anyline.util.ConfigTable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -254,6 +255,7 @@ public class AnylineProperty {
      */
     protected int entityFieldSelectDependency = 0             ;   // 实体类属性依赖层级 > 0:查询属性关联表
 
+    protected String entityFieldSelectDependencyCompare         = "IN"         ;   //实体类属性依赖查询方式 EQUAL:逐行查询 IN:一次查询
     /**
      * 实体类属性依赖层级 > 0:插入属性关联表
      */
@@ -895,5 +897,14 @@ public class AnylineProperty {
     public void setEntityClassTableMap(String entityClassTableMap) {
         this.entityClassTableMap = entityClassTableMap;
         ConfigTable.ENTITY_CLASS_TABLE_MAP = entityClassTableMap;
+    }
+
+    public String getEntityFieldSelectDependencyCompare() {
+        return entityFieldSelectDependencyCompare;
+    }
+
+    public void setEntityFieldSelectDependencyCompare(String entityFieldSelectDependencyCompare) {
+        this.entityFieldSelectDependencyCompare = entityFieldSelectDependencyCompare;
+        ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE = Compare.valueOf(entityFieldSelectDependencyCompare.toUpperCase());
     }
 }
