@@ -1,6 +1,8 @@
  
 package org.anyline.data.jdbc.oracle;
 
+import org.anyline.adapter.init.ConvertAdapter;
+import org.anyline.adapter.init.JavaTypeAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
@@ -12,11 +14,13 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.Convert;
+import org.anyline.entity.metadata.ConvertException;
+import org.anyline.entity.metadata.DataType;
+import org.anyline.entity.metadata.init.AbstractColumnType;
+import org.anyline.entity.metadata.init.AbstractConvert;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.SQLUtil;
+import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,13 +54,724 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		setDelimiter(delimiter);
 	}
 
-	public OracleAdapter(){
+	public OracleAdapter() {
 		super();
 		delimiterFr = "";
 		delimiterTo = "";
-		for (OracleColumnTypeAlias alias: OracleColumnTypeAlias.values()){
+
+		ConvertAdapter.reg(new AbstractConvert(String.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(String.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(String.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(String.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.util.Date.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = (Date)value;
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.util.Date.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = (Date)value;
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.util.Date.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = (Date)value;
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.util.Date.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = (Date)value;
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Date.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Date.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Date.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Date.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Time.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Time.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Time.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Time.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Timestamp.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.sql.Timestamp.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDate.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDate.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDate.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDate.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalTime.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalTime.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalTime.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalTime.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDateTime.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDateTime.class, oracle.sql.TIMESTAMP.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMP.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDateTime.class, oracle.sql.TIMESTAMPTZ.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.TIMESTAMPTZ.of(DateUtil.offsetDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(java.time.LocalDateTime.class, oracle.sql.DATE.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(value);
+					return oracle.sql.DATE.of(DateUtil.localDateTime(date));
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, String.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.format(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.util.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return date;
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.sql.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.sqlDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.sql.Time.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.sqlTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.sql.Timestamp.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.sqlTimestamp(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.time.LocalDate.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.localDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.time.LocalTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.localTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.time.LocalDateTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.localDateTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, String.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.format(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.util.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return date;
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.sql.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.sqlDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.sql.Time.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.sqlTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.sql.Timestamp.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.sqlTimestamp(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.time.LocalDate.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.localDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.time.LocalTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.localTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMP.class, java.time.LocalDateTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMP)value).timestampValue());
+					return DateUtil.localDateTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, String.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.format(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.util.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return date;
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.sql.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.sqlDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.sql.Time.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.sqlTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.sql.Timestamp.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.sqlTimestamp(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.time.LocalDate.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.localDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.time.LocalTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.localTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.TIMESTAMPTZ.class, java.time.LocalDateTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.TIMESTAMPTZ)value).timestampValue());
+					return DateUtil.localDateTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, String.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.format(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.util.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return date;
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.sql.Date.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.sqlDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.sql.Time.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.sqlTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.sql.Timestamp.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.sqlTimestamp(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.time.LocalDate.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.localDate(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.time.LocalTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.localTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		ConvertAdapter.reg(new AbstractConvert(oracle.sql.DATE.class, java.time.LocalDateTime.class) {
+			@Override
+			public Object exe(Object value, Object def) throws ConvertException {
+				try {
+					Date date = DateUtil.parse(((oracle.sql.DATE)value).timestampValue());
+					return DateUtil.localDateTime(date);
+				} catch (Exception e) {
+					return value;
+				}
+			}
+		});
+		for (OracleColumnTypeAlias alias : OracleColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
+		types.put("DATE", new AbstractColumnType("DATE", DatabaseType.ORACLE, java.sql.Date.class, oracle.sql.DATE.class, true, true));
+		types.put("TIMESTAMP", new AbstractColumnType("TIMESTAMP", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, true, true));
+		types.put("TIMESTAMPTZ", new AbstractColumnType("TIMESTAMPTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, true, true));
+		types.put("TIMESTAMPLTZ", new AbstractColumnType("TIMESTAMPLTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, true, true));
+
+
 	}
 
 	/* *****************************************************************************************************************
