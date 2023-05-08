@@ -68,6 +68,16 @@ public interface ColumnType {
             return null;
         }
 
+        @Override
+        public Object read(Object value, Object def, Class clazz) {
+            return null;
+        }
+
+        @Override
+        public Object write(Object value, Object def, boolean placeholder) {
+            return null;
+        }
+
     };
     public abstract String getName();
     public abstract boolean ignorePrecision();
@@ -111,4 +121,7 @@ public interface ColumnType {
     public abstract Object convert(Object value, Class target);
     public abstract Object convert(Object value, Class target, Object def);
     public abstract Object convert(Object value, Object obj, Field field);
+
+    public Object read(Object value, Object def, Class clazz);
+    public Object write(Object value, Object def, boolean placeholder);
 }
