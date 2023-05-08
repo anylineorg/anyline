@@ -38,10 +38,7 @@ import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
@@ -1201,7 +1198,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected <T> void checkDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
 		//ManyToMany
-		if(set.size()==0){
+		if(set.size()==0 || dependency <= 0){
 			return;
 		}
 		dependency --;
@@ -1215,26 +1212,39 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		for(Field field:fields){
 			try {
 				Join join = checkJoin(field);
-				for(T entity:set){
-					Map<String,Object> pvs = EntityAdapterProxy.primaryValue(entity);
-					if(null == join.dependencyTable){
-						//只通过中间表查主键
-						DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++"+join.joinColumn+":"+pvs.get(pk.toUpperCase()));
+				if(Compare.EQUAL == ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY_COMPARE) {
+					//逐行查询
+					for (T entity : set) {
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						if (null == join.dependencyTable) {
+							//只通过中间表查主键 List<Long> departmentIds
+							DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							List<String> ids = items.getStrings(join.inverseJoinColumn);
+							BeanUtil.setFieldValue(entity, field, ids);
+						} else {
+							//通过子表完整查询 List<Department> departments
+							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
+							List<Object> params = new ArrayList<>();
+							params.add(primaryValueMap.get(pk.toUpperCase()));
+							EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
+							BeanUtil.setFieldValue(entity, field, dependencys);
+						}
+					}
+				}else if(Compare.IN == ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY_COMPARE){
+					List pvs = new ArrayList();
+					/*if (null == join.dependencyTable) {
+						//只通过中间表查主键 List<Long> departmentIds
+						DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
 						List<String> ids = items.getStrings(join.inverseJoinColumn);
 						BeanUtil.setFieldValue(entity, field, ids);
-					}else{
-						//通过子表完整查询
+					} else {
+						//通过子表完整查询 List<Department> departments
 						String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
 						List<Object> params = new ArrayList<>();
-						params.add(pvs.get(pk.toUpperCase()));
+						params.add(primaryValueMap.get(pk.toUpperCase()));
 						EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
-/*
-						Collection values = (Collection) ClassUtil.newInstance(field.getType());
-						for(T item:dependencys){
-							values.add(item);
-						}*/
 						BeanUtil.setFieldValue(entity, field, dependencys);
-					}
+					}*/
 				}
 			}catch (Exception e){
 				e.printStackTrace();
@@ -1658,7 +1668,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				size = exeDelete(runtime, run);
 				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 					if(!(obj instanceof DataRow)){
-						checkDependencyDelete(runtime, obj);
+						checkDependencyDelete(runtime, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 					}
 
 				}
@@ -1666,8 +1676,41 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return size;
 	}
-	private int checkDependencyDelete(JDBCRuntime runtime, Object obj){
+	private int checkDependencyDelete(JDBCRuntime runtime, Object entity, int dependency){
 		int result = 0;
+		dependency --;
+		Class clazz = entity.getClass();
+		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		for(Field field:fields) {
+			try {
+				Join join = checkJoin(field);
+				/*if(null == join.dependencyTable){
+					//只通过中间表查主键 List<Long> departmentIds
+					DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++"+join.joinColumn+":"+pvs.get(pk.toUpperCase()));
+					List<String> ids = items.getStrings(join.inverseJoinColumn);
+					BeanUtil.setFieldValue(entity, field, ids);
+				}else{
+					//通过子表完整查询 List<Department> departments
+					String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
+					List<Object> params = new ArrayList<>();
+					params.add(pvs.get(pk.toUpperCase()));
+					EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
+*//*
+						Collection values = (Collection) ClassUtil.newInstance(field.getType());
+						for(T item:dependencys){
+							values.add(item);
+						}*//*
+					BeanUtil.setFieldValue(entity, field, dependencys);
+				}*/
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 	@Override
