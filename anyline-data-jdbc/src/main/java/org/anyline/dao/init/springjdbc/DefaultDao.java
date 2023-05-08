@@ -1271,9 +1271,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
-		
-			JDBCRuntime runtime = runtime();
-			JDBCAdapter adapter = runtime.getAdapter();
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildExecuteRun(prepare, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -1705,24 +1705,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		for(Field field:fields) {
 			try {
 				Join join = checkJoin(field);
-				/*if(null == join.dependencyTable){
-					//只通过中间表查主键 List<Long> departmentIds
-					DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++"+join.joinColumn+":"+pvs.get(pk.toUpperCase()));
-					List<String> ids = items.getStrings(join.inverseJoinColumn);
-					BeanUtil.setFieldValue(entity, field, ids);
-				}else{
-					//通过子表完整查询 List<Department> departments
-					String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
-					List<Object> params = new ArrayList<>();
-					params.add(pvs.get(pk.toUpperCase()));
-					EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
-*//*
-						Collection values = (Collection) ClassUtil.newInstance(field.getType());
-						for(T item:dependencys){
-							values.add(item);
-						}*//*
-					BeanUtil.setFieldValue(entity, field, dependencys);
-				}*/
+				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+				deletes(join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+
 			}catch (Exception e){
 				e.printStackTrace();
 			}
