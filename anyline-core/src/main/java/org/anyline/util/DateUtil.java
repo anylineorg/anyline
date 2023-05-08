@@ -901,7 +901,7 @@ public class DateUtil {
 	}
 
 	public static Date parse(Long value){
-		Date date = new Date((Long)value);
+		Date date = new Date(value);
 		return date;
 	}
 	public static Date parse(java.sql.Date value){
@@ -914,6 +914,10 @@ public class DateUtil {
 	}
 	public static Date parse(LocalDateTime value){
 		Date date = Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
+		return date;
+	}
+	public static Date parse(LocalTime value){
+		Date date = Date.from(value.atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
 	public static Date parse(Timestamp value){
@@ -1734,6 +1738,9 @@ public class DateUtil {
 			return null;
 		}
 		return  date.toInstant().atZone(zone).toLocalDateTime();
+	}
+	public static OffsetDateTime offsetDateTime(Date date){
+		return OffsetDateTime.of(localDateTime(date), ZoneOffset.UTC);
 	}
 	public static LocalDateTime localDateTime(Date date){
 		return localDateTime(date, ZoneId.systemDefault());
