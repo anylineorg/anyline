@@ -1780,7 +1780,14 @@ public class DateUtil {
 	public static java.sql.Date sqlDate(Date date){
 		java.sql.Date result = null;
 		if(null != date){
-			result = java.sql.Date.valueOf(localDate(date));
+			result = new java.sql.Date(date.getTime());
+		}
+		return result;
+	}
+	public static java.sql.Date sqlDate(Timestamp date){
+		java.sql.Date result = null;
+		if(null != date){
+			result = new java.sql.Date(date.getTime());
 		}
 		return result;
 	}
