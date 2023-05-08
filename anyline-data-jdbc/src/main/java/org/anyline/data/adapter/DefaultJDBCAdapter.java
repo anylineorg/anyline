@@ -3625,7 +3625,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 			if(null != ctype){
-				result = ctype.convert(value, clazz);
+				result = ctype.read(value, null, clazz);
 			}
 			/*if(null == result){
 				DataType jType = metadata.getJavaType();
