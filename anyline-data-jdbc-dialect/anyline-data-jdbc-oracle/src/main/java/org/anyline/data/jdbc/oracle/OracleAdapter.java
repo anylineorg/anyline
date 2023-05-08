@@ -496,7 +496,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 
-		builder.append("SELECT A.VIEW_NAME,A.TEXT,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
+		builder.append("SELECT A.VIEW_NAME,A.TEXT DEFINITION_SQL,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
 		}
@@ -528,7 +528,8 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			view.setCatalog(catalog);
 			view.setSchema(schema);
 			view.setName(name);
-			view.setDefinition(row.getString("TEXT"));
+			view.setComment(row.getString("COMMENTS"));
+			view.setDefinition(row.getString("DEFINITION_SQL"));
 			views.put(name.toUpperCase(), view);
 		}
 		return views;
@@ -871,6 +872,9 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public String buildCreateCommentRunSQL(Table table) throws Exception {
+		if(BasicUtil.isEmpty(table.getComment())){
+			return null;
+		}
 		StringBuilder builder = new StringBuilder();
 		builder.append(" COMMENT ON TABLE ");
 		name(builder, table);
