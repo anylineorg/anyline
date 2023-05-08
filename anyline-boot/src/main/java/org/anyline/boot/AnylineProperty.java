@@ -252,7 +252,7 @@ public class AnylineProperty {
     /**
      * 实体类属性依赖层级 > 0:查询属性关联表
      */
-    protected int entityFieldQueryDependency = 0             ;   // 实体类属性依赖层级 > 0:查询属性关联表
+    protected int entityFieldSelectDependency = 0             ;   // 实体类属性依赖层级 > 0:查询属性关联表
 
     /**
      * 实体类属性依赖层级 > 0:插入属性关联表
@@ -420,13 +420,13 @@ public class AnylineProperty {
         ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION = throwSqlQueryException;
     }
 
-    public int getEntityFieldQueryDependency() {
-        return entityFieldQueryDependency;
+    public int getEntityFieldSelectDependency() {
+        return entityFieldSelectDependency;
     }
 
-    public void setEntityFieldQueryDependency(int entityFieldQueryDependency) {
-        this.entityFieldQueryDependency = entityFieldQueryDependency;
-        ConfigTable.ENTITY_FIELD_QUERY_DEPENDENCY = entityFieldQueryDependency;
+    public void setEntityFieldSelectDependency(int entityFieldSelectDependency) {
+        this.entityFieldSelectDependency = entityFieldSelectDependency;
+        ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY = entityFieldSelectDependency;
     }
 
     public int getEntityFieldInsertDependency() {
