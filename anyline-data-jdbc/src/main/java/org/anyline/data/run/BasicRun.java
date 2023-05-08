@@ -32,6 +32,7 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -687,8 +688,37 @@ public abstract class BasicRun implements Run {
 				.replaceAll("'[\\S\\s]*?'","{}")
 				.replaceAll("\\([^\\(\\)]+?\\)","{}")
 				.replaceAll("\\([^\\(\\)]+?\\)","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}");
-		return txt.toUpperCase().contains("WHERE");
+				.replaceAll("\\([^\\(\\)]+?\\)","{}")
+				.toUpperCase();
+		if(txt.contains("UNION")){
+			boolean result = false;
+			int fr = 0;
+			while((fr = txt.indexOf("WHERE")) > 0){
+				txt = txt.substring(fr+5);
+				if(txt.indexOf("UNION") > 0){
+					continue;
+				}
+				try{
+					int bSize = 0;//左括号数据
+					if(txt.contains(")")){
+						bSize = RegularUtil.fetch(txt, "\\)").size();
+					}
+					int eSize = 0;//右括号数量
+					if(txt.contains("(")){
+						eSize = RegularUtil.fetch(txt, "\\(").size();
+					}
+					if(bSize == eSize){
+						result = true;
+						break;
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			return result;
+		}else {
+			return txt.contains("WHERE");
+		}
 	}
 
 	/**
