@@ -2,6 +2,7 @@ package org.anyline.entity;
 
 import org.anyline.entity.data.Column;
 import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,16 @@ public class EntitySet<T> implements Collection<T>, Serializable {
             return col.getClassName();
         }
         return null;
+    }
+    public EntitySet<T> gets(String key, Object value){
+        EntitySet<T> result = new EntitySet<>();
+        for(T entity:datas){
+            Object v = BeanUtil.getFieldValue(entity, key);
+            if(null != v && v.equals(value)){
+                result.add(entity);
+            }
+        }
+        return result;
     }
     public T get(int index){
         return datas.get(index);
