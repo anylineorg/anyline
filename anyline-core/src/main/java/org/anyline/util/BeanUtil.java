@@ -202,6 +202,21 @@ public class BeanUtil {
 	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value){
 		return setFieldValue(obj, field, metadata, value, true);
 	}
+	public static Collection convertList(Object v, Class component){
+		Collection result = new ArrayList();
+		if(v.getClass().isArray()){
+			Object[] list = (Object[])v;
+			for(Object item:list){
+				result.add(ConvertAdapter.convert(item, component));
+			}
+		}else if(v instanceof Collection){
+			Collection list = (Collection) v;
+			for(Object item:list){
+				result.add(ConvertAdapter.convert(item, component));
+			}
+		}
+		return result;
+	}
 	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值,传null
@@ -236,10 +251,49 @@ public class BeanUtil {
 
 		String srcTypeKey = ClassUtil.type(v);
 		String tarTypeKey = ClassUtil.type(field);
+		Class componentClass = ClassUtil.getComponentClass(field);
 		try{
 			if(null != v){
 				if(!srcTypeKey.equals(tarTypeKey)) {
-					if(columnTypeName.contains("JSON")) {
+					try {
+						//数组 集合 Map
+						//entity
+						//基础类型
+						if (targetClass.isArray()) {
+							Collection converts = convertList(v, componentClass);
+							Object[] array = (Object[]) Array.newInstance(targetClass, converts.size());
+							int idx = 0;
+							for (Object item : converts) {
+								array[idx++] = item;
+							}
+							v = array;
+						} else if (ClassUtil.isInSub(targetClass, Collection.class)) {
+							Collection list = (Collection) ClassUtil.newInstance(targetClass);
+							Collection converts = convertList(v, componentClass);
+							list.addAll(converts);
+							v = list;
+						} else if (ClassUtil.isInSub(targetClass, Map.class)) {
+							Map map = (Map) ClassUtil.newInstance(targetClass);
+							if (v instanceof Map) {
+								Map vmap = (Map) v;
+							}
+						} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
+							//entity
+							List<Field> fields = ClassUtil.getFields(targetClass);
+							Object entity = ClassUtil.newInstance(targetClass);
+							for (Field f : fields) {
+								Object fv = getFieldValue(v, f.getName());
+								setFieldValue(entity, f, fv);
+							}
+							v = entity;
+						} else {
+							//基础类型
+							v = ConvertAdapter.convert(value, targetClass);
+						}
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+					/*if(columnTypeName.contains("JSON")) {
 						//先转换成Collection<Map>或Map<Map>
 						if(v instanceof String){
 							v = json2oject((String)v, field.getType());
@@ -277,9 +331,9 @@ public class BeanUtil {
 							//Map类
 						}else{
 							v = ConvertAdapter.convert(v, targetClass, null, alert);
-						}
+						}*/
 
-					}//end ! columnt type
+					//}//end ! columnt type
 				}
 
 			}else{//v == null
