@@ -424,7 +424,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
 
-    private static Object parseJsonObject(KEY_CASE keyCase, JsonNode json) {
+    public static Object parseJsonObject(KEY_CASE keyCase, JsonNode json) {
         return parseJsonObject(null, keyCase, json);
     }
     /**
