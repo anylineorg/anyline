@@ -670,7 +670,12 @@ public class ClassUtil {
 	 * @param field 属性
 	 * @return Class
 	 */
-	public static Class getCollectionItemClass(Field field){
+	public static Class getComponentClass(Field field){
+		//数组
+		if(field.getType().isArray()){
+			return field.getType().getComponentType();
+		}
+		//集合
 		Type gtype = field.getGenericType();
 		if(gtype instanceof ParameterizedType) {
 			ParameterizedType pt = (ParameterizedType) gtype;
