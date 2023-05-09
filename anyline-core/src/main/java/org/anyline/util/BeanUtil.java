@@ -133,7 +133,7 @@ public class BeanUtil {
 	public static Collection maps2object(Field field, Collection value) throws Exception{
 		Class clazz = field.getType();
 		Collection list = null;
-		Class itemClass = ClassUtil.getCollectionItemClass(field);
+		Class itemClass = ClassUtil.getComponentClass(field);
 		if(null == itemClass){
 			list = value;
 		}else{
@@ -266,7 +266,7 @@ public class BeanUtil {
 						//没有列属性,根据数据类型
 						//集合类
 						if(ClassUtil.isInSub(targetClass, Collection.class)){
-							Class itemClass = ClassUtil.getCollectionItemClass(field);
+							Class itemClass = ClassUtil.getComponentClass(field);
 							Collection list = (Collection) ClassUtil.newInstance(targetClass);
 							Collection values = (Collection) v;
 							for(Object item:values){
