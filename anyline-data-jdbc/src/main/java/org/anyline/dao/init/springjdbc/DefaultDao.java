@@ -3092,7 +3092,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		//主键
-		PrimaryKey src_primary = primary(update);
+		PrimaryKey src_primary = primary(table);
 		PrimaryKey cur_primary = update.getPrimaryKey();
 		String src_define = "";
 		String cur_define = "";

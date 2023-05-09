@@ -21,6 +21,7 @@ import org.anyline.entity.metadata.init.AbstractColumnType;
 import org.anyline.entity.metadata.init.AbstractConvert;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
+import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -1311,6 +1312,15 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	/**
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Column column) throws Exception {
+		return buildChangeCommentRunSQL(column);
+	}
+	/**
 	 * 修改备注
 	 * COMMENT ON COLUMN T.ID IS 'ABC'
 	 * @param column 列
@@ -1628,6 +1638,59 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public String buildRenameRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildRenameRunSQL(primary);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													primary
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * public PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的主键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT COL.* FROM DBA_CONSTRAINTS CON ,DBA_CONS_COLUMNS COL\n");
+		builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
+		builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
+		builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
+		if(BasicUtil.isNotEmpty(table.getSchema())){
+			builder.append(" AND COL.OWNER = '").append(table.getSchema()).append("'");
+		}
+		list.add(builder.toString());
+		return list;
+	}
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+		PrimaryKey primary = table.getPrimaryKey();
+		for(DataRow row:set){
+			if(null == primary){
+				primary = new PrimaryKey();
+				primary.setName(row.getString("TABLE_NAME"));
+				primary.setTable(table);
+			}
+			String col = row.getString("COLUMN_NAME");
+			Column column = primary.getColumn(col);
+			if(null == column){
+				column = new Column(col);
+			}
+			column.setTable(table);
+			column.setPosition(row.getInt("POSITION",0));
+			primary.addColumn(column);
+		}
+		return primary;
 	}
 
 	/* *****************************************************************************************************************
