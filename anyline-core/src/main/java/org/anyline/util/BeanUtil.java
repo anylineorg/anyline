@@ -254,28 +254,37 @@ public class BeanUtil {
 		Class componentClass = ClassUtil.getComponentClass(field);
 		try{
 			if(null != v){
-				if(!srcTypeKey.equals(tarTypeKey)) {
+				if(targetClass == Object.class){
+
+				}else if(!srcTypeKey.equals(tarTypeKey)) {
 					try {
 						//数组 集合 Map
 						//entity
 						//基础类型
 						if (targetClass.isArray()) {
 							Collection converts = convertList(v, componentClass);
-							Object[] array = (Object[]) Array.newInstance(targetClass, converts.size());
+							Object[] array = (Object[]) Array.newInstance(targetClass.getComponentType(), converts.size());
 							int idx = 0;
 							for (Object item : converts) {
 								array[idx++] = item;
 							}
-							v = array;
+							if(array.length >0) {
+								v = array;
+							}else{
+								v = null;
+							}
 						} else if (ClassUtil.isInSub(targetClass, Collection.class)) {
 							Collection list = (Collection) ClassUtil.newInstance(targetClass);
 							Collection converts = convertList(v, componentClass);
 							list.addAll(converts);
-							v = list;
+							if(list.size()>0) {
+								v = list;
+							}
 						} else if (ClassUtil.isInSub(targetClass, Map.class)) {
 							Map map = (Map) ClassUtil.newInstance(targetClass);
-							if (v instanceof Map) {
-								Map vmap = (Map) v;
+							map = object2map(map,v);
+							if(!map.isEmpty()) {
+								v = map;
 							}
 						} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
 							//entity
@@ -290,6 +299,12 @@ public class BeanUtil {
 							//基础类型
 							v = ConvertAdapter.convert(value, targetClass);
 						}
+
+						if(null == v){
+							//特殊类型如Point > double > int ...
+							v = ConvertAdapter.convert(value, targetClass);
+						}
+
 					}catch (Exception e){
 						e.printStackTrace();
 					}
@@ -1125,16 +1140,58 @@ public class BeanUtil {
 		return map;
 	}
 	public static Map<String,Object> object2map(Object obj, List<String> keys){
+		return object2map(new HashMap(), obj, keys);
+	}
+
+	public static Map<String,Object> object2map(Map map, Object obj){
+		return object2map(map, obj, null);
+	}
+	public static Map<String,Object> object2map(Map map, Object obj, List<String> keys){
 		if(null == obj){
 			return null;
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
-		for(String key:keys){
-			Object value = getFieldValue(obj, key);
-			if(null == value){
-				value = "";
+		if(null == keys || keys.size()==0){
+			if(obj instanceof Map){
+				try {
+					if(null == map) {
+						map = (Map) obj.getClass().newInstance();
+					}
+					Map objmap = (Map)obj;
+					for (Object key:objmap.keySet()) {
+						map.put(key, objmap.get(key));
+					}
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}else{
+				if(null == map){
+					map = new HashMap();
+				}
+				List<Field> fields = ClassUtil.getFields(obj.getClass());
+				for(Field field:fields){
+					Object value = getFieldValue(obj, field);
+					if (null == value) {
+						value = "";
+					}
+					map.put(field.getName(), value);
+				}
 			}
-			map.put(key, value);
+		}else {
+
+			if(null == map){
+				map = new HashMap();
+			}
+			if(obj instanceof Map){
+				map=(Map)obj;
+			}else {
+				for (String key : keys) {
+					Object value = getFieldValue(obj, key);
+					if (null == value) {
+						value = "";
+					}
+					map.put(key, value);
+				}
+			}
 		}
 		return map;
 	}

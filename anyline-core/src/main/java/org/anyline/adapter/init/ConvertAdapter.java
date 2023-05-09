@@ -8,10 +8,7 @@ import org.anyline.entity.metadata.Convert;
 import org.anyline.entity.metadata.ConvertException;
 import org.anyline.entity.metadata.DataType;
 import org.anyline.entity.metadata.init.AbstractConvert;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.DateUtil;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +56,14 @@ public class ConvertAdapter {
         if(null != value && null != target){
             Class clazz = value.getClass();
             if(clazz == target){
+                return value;
+            }
+            if(value instanceof Map && ClassUtil.isWrapClass(target) && target != String.class){
+                if(value instanceof DataRow){
+                    value = ((DataRow)value).entity(target);
+                }else {
+                    value = BeanUtil.map2object((Map) value, target);
+                }
                 return value;
             }
             boolean success = false;
