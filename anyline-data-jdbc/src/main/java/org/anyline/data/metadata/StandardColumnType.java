@@ -168,13 +168,13 @@ public enum StandardColumnType implements ColumnType {
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
-     * mysql,mssql
+     * mysql(byte[]),mssql
      */
-    ,BINARY("BINARY", new DatabaseType[]{MYSQL, MSSQL}, String.class, false, true){}
+    ,BINARY("BINARY", new DatabaseType[]{MYSQL, MSSQL}, byte[].class, false, true)
     /**
-     * mysql,mssql
+     * mysql(byte[]),mssql
      */
-    ,VARBINARY("VARBINARY", new DatabaseType[]{MYSQL, MSSQL}, String.class, false, true){}
+    ,VARBINARY("VARBINARY", new DatabaseType[]{MYSQL, MSSQL}, byte[].class, false, true)
 
 
     /* *****************************************************************************************************************
@@ -246,62 +246,18 @@ public enum StandardColumnType implements ColumnType {
      *
      * ****************************************************************************************************************/
     /**
-     * mysql,mssql
+     * mysql(Boolean),pg(Boolean),mssql
      */
-    ,BIT("BIT", new DatabaseType[]{MYSQL, MSSQL}, Byte.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){
-            if(null == value){
-                value = def;
-            }
-            if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
-                value = 0;
-            }else{
-                value = 1;
-            }
-            return value;
-        }
-    }
-    /**
-     * pg中作为数组存在,不同与mysql,mssql
-     */
-    ,BITS("BIT", new DatabaseType[]{PolarDB}, Byte[].class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){
-            return value;
-        }
-    }
+    ,BIT("BIT", new DatabaseType[]{MYSQL, MSSQL}, Boolean.class, true, true)
     /**
      * pg
      */
-    ,VARBIT("VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return BITS.write(value, def, placeholder);}
-    }
-    ,SHORT("SHORT", new DatabaseType[]{}, Short.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){
-            if(null == value){
-                value = def;
-            }
-            Short result = BasicUtil.parseShort(value, null);
-            if(null != def && null == result){
-                result = BasicUtil.parseShort(def, null);
-            }
-            return result;
-        }
-    }
+    ,VARBIT("VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true)
+    ,SHORT("SHORT", new DatabaseType[]{}, Short.class, true, true)
     /**
      * mysql,mssql
      */
-    ,INT("INT", new DatabaseType[]{MYSQL, MSSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){
-            if(null == value){
-                value = def;
-            }
-            Integer result = BasicUtil.parseInt(value, null);
-            if(null != def && null == result){
-                result = BasicUtil.parseInt(def, null);
-            }
-            return result;
-        }
-    }
+    ,INT("INT", new DatabaseType[]{MYSQL, MSSQL}, Integer.class, true, true)
     /**
      * oracle
      */
@@ -309,91 +265,64 @@ public enum StandardColumnType implements ColumnType {
     /**
      * pg
      */
-    ,SERIAL("SERIAL", new DatabaseType[]{PostgreSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }
+    ,SERIAL("SERIAL", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
     /**
      * pg
      */
-    ,SERIAL2("SERIAL2", new DatabaseType[]{PostgreSQL}, Short.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
-    }
+    ,SERIAL2("SERIAL2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
     /**
      * pg
      */
-    ,SERIAL4("SERIAL4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return SERIAL.write(value, def, placeholder);}
-    }
+    ,SERIAL4("SERIAL4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
     /**
      * pg
      */
-    ,SERIAL8("SERIAL8", new DatabaseType[]{PostgreSQL}, Long.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }
+    ,SERIAL8("SERIAL8", new DatabaseType[]{PostgreSQL}, Long.class, true, true)
     /**
      * pg
      */
-    ,SMALLSERIAL("SERIAL2", new DatabaseType[]{PostgreSQL}, Long.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
-    }
+    ,SMALLSERIAL("SERIAL2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
     /**
      * pg
      */
-    ,BIGSERIAL("SERIAL8", new DatabaseType[]{PostgreSQL}, Long.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }
+    ,BIGSERIAL("SERIAL8", new DatabaseType[]{PostgreSQL}, Long.class, true, true)
     /**
      * pg
      */
-    ,INT2("INT2", new DatabaseType[]{PostgreSQL}, Short.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
-    }
+    ,INT2("INT2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
     /**
      * pg
      */
-    ,INT4("INT4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }
+    ,INT4("INT4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
     /**
      * pg
      */
-    ,INT8("INT8", new DatabaseType[]{PostgreSQL}, Long.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }
+    ,INT8("INT8", new DatabaseType[]{PostgreSQL}, Long.class, true, true)
     /**
      * mysql
      */
-    ,BIGINT("BIGINT", new DatabaseType[]{MYSQL}, Long.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return LONG.write(value, def, placeholder);}
-    }
+    ,BIGINT("BIGINT", new DatabaseType[]{MYSQL}, Long.class, true, true)
     /**
      * mysql
      */
-    ,MEDIUMINT("MEDIUMINT", new DatabaseType[]{MYSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }
+    ,MEDIUMINT("MEDIUMINT", new DatabaseType[]{MYSQL}, Integer.class, true, true)
     /**
      * mysql,sqlite
      */
-    ,INTEGER("MEDIUMINT", new DatabaseType[]{MYSQL, SQLite}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }
+    ,INTEGER("MEDIUMINT", new DatabaseType[]{MYSQL, SQLite}, Integer.class, true, true)
     /**
      * mysql
      */
-    ,SMALLINT("SMALLINT", new DatabaseType[]{MYSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return INT.write(value, def, placeholder);}
-    }
+    ,SMALLINT("SMALLINT", new DatabaseType[]{MYSQL}, Integer.class, true, true)
     /**
      * mysql
      */
     ,TINYINT("TINYINT", new DatabaseType[]{MYSQL}, Integer.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return SHORT.write(value, def, placeholder);}
     }
     /**
      * pg
      */
-    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL}, Boolean.class, true, true){}
+    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL}, Boolean.class, true, true)
     /**
      * pg
      */
@@ -437,7 +366,7 @@ public enum StandardColumnType implements ColumnType {
         }
     }
     /**
-     * mysql,  ,oracle
+     * mysql,  ,oracle(BigDecimal)
      */
     ,FLOAT("FLOAT", new DatabaseType[]{MYSQL, ORACLE}, Float.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){
@@ -456,6 +385,12 @@ public enum StandardColumnType implements ColumnType {
      */
     ,FLOAT4("FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    /**
+     * ORACLE
+     */
+    ,ORACLE_FLOAT("FLOAT", new DatabaseType[]{ORACLE}, BigDecimal.class, false, false){
+        public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
      * pg
@@ -500,9 +435,9 @@ public enum StandardColumnType implements ColumnType {
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
-     * mysql,sqlite
+     * mysql(Double),sqlite
      */
-    ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite}, Float.class, false, false){
+    ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite}, Double.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
@@ -534,7 +469,7 @@ public enum StandardColumnType implements ColumnType {
         }
     }
     /**
-     * mysql
+     * mysql(LocalDateTime)
      */
     ,DATETIME("DATETIME", new DatabaseType[]{MYSQL}, LocalDateTime.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){
@@ -652,7 +587,7 @@ public enum StandardColumnType implements ColumnType {
      *
      * ****************************************************************************************************************/
     /**
-     * mysql,  ,oracle,sqlite
+     * mysql(byte[]),  ,oracle,sqlite
      */
     ,BLOB("BLOB", new DatabaseType[]{MYSQL, ORACLE, SQLite}, byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){
@@ -848,7 +783,7 @@ public enum StandardColumnType implements ColumnType {
     /**
      * mysql
      */
-    ,ENUM("ENUM", new DatabaseType[]{MYSQL}, null, true, true)
+    ,ENUM("ENUM", new DatabaseType[]{MYSQL}, String.class, true, true)
     /**
      * pg
      */
@@ -860,7 +795,7 @@ public enum StandardColumnType implements ColumnType {
     /**
      * oracle
      */
-    ,RAW("RAW",  new DatabaseType[]{ORACLE},null, true, true)
+    ,RAW("RAW",  new DatabaseType[]{ORACLE},byte[].class, true, true)
     /**
      * oracle
      */
@@ -868,7 +803,7 @@ public enum StandardColumnType implements ColumnType {
     /**
      * mysql
      */
-    ,SET("SET",  new DatabaseType[]{MYSQL},null, true, true)
+    ,SET("SET",  new DatabaseType[]{MYSQL},String.class, true, true)
     /**
      * pg
      */
@@ -898,6 +833,7 @@ public enum StandardColumnType implements ColumnType {
      * mssql
      */
     ,SQL_VARIANT("SQL_VARIANT",  new DatabaseType[]{MSSQL},null, true, true)
+
     ;
     private final DatabaseType[] dbs;
     private final String name;

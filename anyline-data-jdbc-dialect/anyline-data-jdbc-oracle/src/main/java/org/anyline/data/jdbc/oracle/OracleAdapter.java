@@ -766,7 +766,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		for (OracleColumnTypeAlias alias : OracleColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
-		types.put("DATE", new AbstractColumnType("DATE", DatabaseType.ORACLE, java.util.Date.class, oracle.sql.DATE.class, true, true));
+		types.put("BFILE", new AbstractColumnType("BFILE", DatabaseType.ORACLE, oracle.sql.BFILE.class, true, true));
+		types.put("ROWID", new AbstractColumnType("ROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
+		types.put("UROWID", new AbstractColumnType("UROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
+		types.put("DATE", new AbstractColumnType("DATE", DatabaseType.ORACLE, java.util.Date.class, java.sql.Timestamp.class, true, true));
 		types.put("TIMESTAMP", new AbstractColumnType("TIMESTAMP", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, true, true));
 		types.put("TIMESTAMPTZ", new AbstractColumnType("TIMESTAMPTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, true, true));
 		types.put("TIMESTAMPLTZ", new AbstractColumnType("TIMESTAMPLTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, true, true));

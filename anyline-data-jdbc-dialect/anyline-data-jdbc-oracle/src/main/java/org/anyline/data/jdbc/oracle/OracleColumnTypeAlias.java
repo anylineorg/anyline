@@ -28,9 +28,9 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
     DECIMAL                 (StandardColumnType.NUMBER                ), //mysql,pg,oracle,mssql
     DOUBLE                  (StandardColumnType.NUMBER                ), //mysql,
     ENUM                    (StandardColumnType.ILLEGAL               ), //mysql,
-    FLOAT                   (StandardColumnType.FLOAT                 ), //mysql  ,oracle,mssql
-    FLOAT4                  (StandardColumnType.FLOAT                 ), //     ,pg
-    FLOAT8                  (StandardColumnType.FLOAT                 ), //     ,pg
+    FLOAT                   (StandardColumnType.ORACLE_FLOAT          ), //mysql  ,oracle,mssql
+    FLOAT4                  (StandardColumnType.ORACLE_FLOAT          ), //     ,pg
+    FLOAT8                  (StandardColumnType.ORACLE_FLOAT          ), //     ,pg
     GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //              ,mssql
     GEOMETRY                (StandardColumnType.ILLEGAL               ), //mysql
     GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ), //mysql
@@ -68,7 +68,7 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
     NUMERIC                 (StandardColumnType.NUMBER                ), //mysql          ,mssql,sqlite
     POINT                   (StandardColumnType.ILLEGAL               ), //mysql,pg
     POLYGON                 (StandardColumnType.ILLEGAL               ), //mysql,pg
-    REAL                    (StandardColumnType.FLOAT                 ), //mysql         ,mssql,sqlite
+    REAL                    (StandardColumnType.ORACLE_FLOAT          ), //mysql         ,mssql,sqlite
     RAW                     (StandardColumnType.RAW                   ), //       ,oracle
     ROWID                   (StandardColumnType.ROWID                 ), //       ,oracle
     SERIAL                  (StandardColumnType.NUMBER                ), //     ,pg,
