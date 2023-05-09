@@ -1223,6 +1223,15 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return super.buildChangeNullableRunSQL(column);
 	}
 	/**
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Column column) throws Exception {
+		return buildChangeCommentRunSQL(column);
+	}
+	/**
 	 * 修改备注
 	 * 子类实现
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
