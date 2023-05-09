@@ -55,6 +55,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		super();
 		delimiterFr = "";
 		delimiterTo = "";
+		for (DMColumnTypeAlias alias : DMColumnTypeAlias.values()) {
+			types.put(alias.name(), alias.standard());
+		}
 	}
 
 	/* *****************************************************************************************************************
@@ -127,16 +130,16 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	}
 
 	@Override
+	public String concat(String ... args){
+		return concatOr(args);
+	}
+
+	@Override
 	public String parseExists(Run run){
 		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
 	}
-	@Override
-	public String concat(String ... args){
-		return concatOr(args);
-	}
-
 	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
@@ -1296,6 +1299,15 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return null;
 	}
 
+	/**
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Column column) throws Exception {
+		return buildChangeCommentRunSQL(column);
+	}
 	/**
 	 * 修改备注
 	 * COMMENT ON COLUMN T.ID IS 'ABC'
