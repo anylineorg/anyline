@@ -12,6 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>anyline-data-jdbc-kingbase</artifactId>
+    <description>人大金仓</description>
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-kingbase</name>
     <url>http://www.anyline.org/kingbase</url>
