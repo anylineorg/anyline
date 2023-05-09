@@ -1038,6 +1038,15 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	/**
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Column column) throws Exception {
+		return buildChangeCommentRunSQL(column);
+	}
+	/**
 	 * 修改备注
 	 *  -- 字段加注释
 	 * EXEC sys.sp_addextendedproperty @name=N'MS_Description'
