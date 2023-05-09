@@ -1,37 +1,46 @@
  
 package org.anyline.data.jdbc.dm;
 
+
+import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.TextRun;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.dm")
 public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+
+	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
+	@Autowired(required = false)
+	@Qualifier("anyline.dao")
+	protected AnylineDao dao;
+
 	public DatabaseType type(){
 		return DatabaseType.DM;
-	} 
-	public DMAdapter(){
-		delimiterFr = "\"";
-		delimiterTo = "\"";
 	}
 
 	@Value("${anyline.jdbc.delimiter.dm:}")
@@ -42,39 +51,327 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		setDelimiter(delimiter);
 	}
 
-	/* *****************************************************************************************************
-	 *
-	 * 											DML
-	 *
-	 * ****************************************************************************************************/
-	@Override 
-	public String parseFinalQuery(Run run){
-		String sql = run.getBaseQuery(); 
-		String cols = run.getQueryColumns(); 
-		if(!"*".equals(cols)){ 
-			String reg = "(?i)^select[\\s\\S]+from"; 
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
-		} 
-		OrderStore orders = run.getOrderStore(); 
-		if(null != orders){ 
-			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		} 
-		PageNavi navi = run.getPageNavi(); 
-		if(null != navi){ 
-			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
-			if(limit < 0){ 
-				limit = 0; 
-			} 
-			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
-		} 
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
-		return sql; 
+	public DMAdapter() {
+		super();
+		delimiterFr = "";
+		delimiterTo = "";
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 														DML
+	 *
+	 *  *****************************************************************************************************************/
 
+	/**
+	 * 查询序列cur 或 next value
+	 * @param next  是否生成返回下一个序列 false:cur true:next
+	 * @param names 序列名
+	 * @return String
+	 */
+	public String buildQuerySequence(boolean next, String ... names){
+		String key = "CURRVAL";
+		if(next){
+			key = "NEXTVAL";
+		}
+		StringBuilder builder = new StringBuilder();
+		Run run = null;
+		if(null != names && names.length>0) {
+			run = new TextRun();
+			builder.append("SELECT ");
+			boolean first = true;
+			for (String name : names) {
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+				builder.append(name).append(".").append(key).append(" AS ").append(name);
+			}
+			builder.append(" FROM DUAL");
+		}
+		return builder.toString();
+	}
+	@Override
+	public String parseFinalQuery(Run run){
+		StringBuilder builder = new StringBuilder();
+		String cols = run.getQueryColumns();
+		PageNavi navi = run.getPageNavi();
+		String sql = run.getBaseQuery();
+		OrderStore orders = run.getOrderStore();
+		int first = 0;
+		int last = 0;
+		String order = "";
+		if(null != orders){
+			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
+		}
+		if(null != navi){
+			first = navi.getFirstRow();
+			last = navi.getLastRow();
+		}
+		if(null == navi){
+			builder.append(sql).append("\n").append(order);
+		}else{
+			// 分页
+			builder.append("SELECT "+cols+" FROM( \n");
+			builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
+			builder.append("FROM( \n");
+			builder.append(sql);
+			builder.append("\n").append(order);
+			builder.append(")  TAB_I \n");
+			builder.append(")  TAB_O WHERE PAGE_ROW_NUMBER_ >= "+(first+1)+" AND PAGE_ROW_NUMBER_ <= "+(last+1));
+
+		}
+
+		return builder.toString();
+
+	}
+
+	@Override
+	public String parseExists(Run run){
+		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		return sql;
+	}
 	@Override
 	public String concat(String ... args){
 		return concatOr(args);
+	}
+
+	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
+		int size = list.size();
+		for(int i=0; i<size; i++){
+			builder.append("SELECT NULL FROM DUAL\n");
+			if(i<size-1){
+				builder.append("UNION ALL\n");
+			}
+		}
+		builder.append(") M");
+		List<Map<String,Object>> ids = template.queryForList(builder.toString());
+		int i=0;
+		for(Object obj:list){
+			Object value = ids.get(i++).get("ID");
+			setPrimaryValue(obj, value);
+		}
+	}
+
+	/**
+	 * 批量插入
+	 *
+	 * 有序列时 只支持插入同一张表
+	 * INSERT INTO CRM_USER(ID, NAME)
+	 *  SELECT gloable_seq.nextval  AS ID  , M.* FROM (
+	 * 		SELECT  'A1' AS NM FROM  DUAL
+	 * 		UNION ALL SELECT    'A2' FROM DUAL
+	 * 		UNION ALL SELECT    'A3' FROM DUAL
+	 * ) M
+	 * @param template JdbcTemplate
+	 * @param run run
+	 * @param dest dest
+	 * @param keys keys
+	 */
+	@Override
+	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
+		if(null == set || set.size() ==0){
+			return;
+		}
+		StringBuilder builder = run.getBuilder();
+		DataRow first = set.getRow(0);
+		Map<String,String> seqs = new HashMap<>();
+		for(String key:keys){
+			Object value = first.getStringNvl(key);
+			if(null != value && value instanceof String) {
+				String str = (String)value;
+				if (str.toUpperCase().contains(".NEXTVAL")) {
+					if (str.startsWith("${") && str.endsWith("}")) {
+						str = str.substring(2, str.length() - 1);
+					}
+					if(DMAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
+						createPrimaryValue(template, set, str);
+					}else {
+						seqs.put(key, str);
+					}
+				}
+			}
+		}
+		builder.append("INSERT INTO ");
+		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			builder.append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append(") \n");
+		builder.append("SELECT ");
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			String seq = seqs.get(key);
+			if(null != seq){
+				builder.append(seq);
+			}else{
+				builder.append("M.").append(key);
+			}
+			builder.append(" AS ").append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append("\nFROM( ");
+		keys.removeAll(seqs.keySet());
+		int col = 0;
+		for(DataRow row:set) {
+			if(row.hasPrimaryKeys() && null != primaryGenerator){
+				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+			}
+
+			if(col > 0){
+				builder.append("\n\tUNION ALL");
+			}
+			builder.append("\n\tSELECT ");
+			insertValue(template, run, row, true, true,false, keys);
+			builder.append(" FROM DUAL ");
+			col ++;
+		}
+		builder.append(") M ");
+	}
+	@Override
+	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys){
+		if(null == list || list.isEmpty()){
+			return;
+		}
+		StringBuilder builder = run.getBuilder();
+		if(null == builder){
+			builder = new StringBuilder();
+			run.setBuilder(builder);
+		}
+		if(list instanceof DataSet){
+			DataSet set = (DataSet) list;
+			createInserts(template, run, dest, set, keys);
+			return;
+		}
+
+		Object first = list.iterator().next();
+		Map<String,String> seqs = new HashMap<>();
+		for(String key:keys){
+			Object value = BeanUtil.getFieldValue(first, key);
+			if(null != value && value instanceof String) {
+				String str = (String)value;
+				if (str.toUpperCase().contains(".NEXTVAL")) {
+					if (str.startsWith("${") && str.endsWith("}")) {
+						str = str.substring(2, str.length() - 1);
+					}
+					if(DMAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
+						createPrimaryValue(template, list, str);
+					}else {
+						seqs.put(key, str);
+					}
+				}
+			}
+		}
+		builder.append("INSERT INTO ");
+		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			builder.append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append(") \n");
+		builder.append("SELECT ");
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			String seq = seqs.get(key);
+			if(null != seq){
+				builder.append(seq);
+			}else{
+				builder.append("M.").append(key);
+			}
+			builder.append(" AS ").append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append("\nFROM( ");
+		keys.removeAll(seqs.keySet());
+		int col = 0;
+
+		for(Object obj:list){
+			if(obj instanceof DataRow) {
+				DataRow row = (DataRow)obj;
+				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
+					String pk = row.getPrimaryKey();
+					if (null == pk) {
+						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
+					}
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				}
+			}else{
+				if(EntityAdapterProxy.hasAdapter()){
+
+					EntityAdapterProxy.createPrimaryValue(obj);
+				}else{
+					if(null != primaryGenerator){
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+					}
+				}
+			}
+
+			if(col > 0){
+				builder.append("\n\tUNION ALL");
+			}
+			builder.append("\n\tSELECT ");
+			insertValue(template, run, obj, true, true,false, keys);
+			builder.append(" FROM DUAL ");
+			col ++;
+		}
+		builder.append(") M ");
+	}
+
+	/**
+	 * 执行 insert
+	 * @param template JdbcTemplate
+	 * @param random random
+	 * @param data entity|DataRow|DataSet
+	 * @param sql sql
+	 * @param values 占位参数值
+	 * @return int 影响行数
+	 * @throws Exception 异常
+	 */
+	@Override
+	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+		int cnt = 0;
+		if(data instanceof Collection) {
+			if (null == values || values.isEmpty()) {
+				cnt = template.update(sql);
+			} else {
+				int size = values.size();
+				Object[] params = new Object[size];
+				for (int i = 0; i < size; i++) {
+					params[i] = values.get(i);
+				}
+				cnt = template.update(sql, params);
+			}
+		}else{
+			//单行的可以返回序列号
+			pks = new String[]{getPrimayKey(data)};
+			cnt = super.insert(template, random, data, sql, values, pks);
+		}
+		return cnt;
+	}
+
+	@Override
+	public boolean identity(String random, Object data, KeyHolder keyholder){
+		if(data instanceof Collection) {
+			return false;
+		}else{
+			return super.identity(random, data, keyholder);
+		}
 	}
 
 
@@ -110,18 +407,131 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRunSQL(catalog, schema, pattern, types);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+//		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
+//		builder.append("FROM SYS.ALL_ALL_TABLES T \n");
+//		builder.append("LEFT JOIN SYS.ALL_TAB_COMMENTS TC  ON  TC.OWNER  = T.OWNER  AND TC.TABLE_NAME  = T.TABLE_NAME \n");
+//		builder.append("WHERE T.IOT_NAME IS NULL  AND T.NESTED = 'NO'  AND T.SECONDARY = 'N' ");
+//		if(BasicUtil.isNotEmpty(schema)){
+//			builder.append("AND T.OWNER = '").append(schema).append("'");
+//		}
+//		if(BasicUtil.isNotEmpty(pattern)){
+//			builder.append(" AND T.TABLE_NAME = '").append(pattern).append("'");
+//		}
+//
+//		sqls.add(builder.toString());
+//		return sqls;
+		// jack 2023年5月2日 19点55分 由于之前查询表名的方式会意外失效，特进行调整,兼容table和view
+		//增加types列用于后期扩展
+		builder.append(" SELECT * FROM (" );
+		builder.append(" SELECT A.TABLE_NAME, B.COMMENTS, 'TABLE' TABLE_TYPE FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME");
+		builder.append(" UNION ALL ");
+		builder.append(" SELECT A.VIEW_NAME,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
+		builder.append(" ) T WHERE 1=1");
+
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(types)){
+			String[] tmps = types.split(",");
+			builder.append(" AND TABLE_TYPE IN(");
+			int idx = 0;
+			for(String tmp:tmps){
+				if(idx > 0){
+					builder.append(",");
+				}
+				builder.append("'").append(tmp).append("'");
+				idx ++;
+			}
+			builder.append(")");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		return super.tables(index, create, catalog, schema, tables, set);
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			Table table = tables.get(name.toUpperCase());
+			if(null == table){
+				table = new Table();
+			}
+			table.setCatalog(catalog);
+			table.setSchema(schema);
+			table.setName(name);
+			table.setComment(row.getString("COMMENTS"));
+			tables.put(name.toUpperCase(), table);
+		}
+		return tables;
 	}
 	@Override
 	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception
+	 * public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 ******************************************************************************************************************/
+	/**
+	 * 查询视图
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("SELECT A.VIEW_NAME,A.TEXT DEFINITION_SQL,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+		}
+		sqls.add(builder.toString());
+		return sqls;
+	}
+
+	/**
+	 *
+	 * @param index 第几条SQL 对照buildQueryViewRunSQL返回顺序
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set DataSet
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception{
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("VIEW_NAME");
+			View view = views.get(name.toUpperCase());
+			if(null == view){
+				view = new View();
+			}
+			view.setCatalog(catalog);
+			view.setSchema(schema);
+			view.setName(name);
+			view.setComment(row.getString("COMMENTS"));
+			view.setDefinition(row.getString("DEFINITION_SQL"));
+			views.put(name.toUpperCase(), view);
+		}
+		return views;
+	}
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -434,7 +844,8 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(Table table)
+	 * public List<String> buildCreateRunSQL(Table table)
+	 * public String buildCreateCommentRunSQL(Table table);
 	 * public List<String> buildAlterRunSQL(Table table)
 	 * public String buildRenameRunSQL(Table table)
 	 * public String buildChangeCommentRunSQL(Table table)
@@ -457,8 +868,16 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return sql
 	 * @throws Exception 异常
 	 */
+	@Override
 	public String buildCreateCommentRunSQL(Table table) throws Exception {
-		return super.buildCreateCommentRunSQL(table);
+		if(BasicUtil.isEmpty(table.getComment())){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(" COMMENT ON TABLE ");
+		name(builder, table);
+		builder.append("  IS '").append(table.getComment()).append("'");
+		return builder.toString();
 	}
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
@@ -550,14 +969,14 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 	/**
 	 * 备注
-	 *
+	 * 不支持在创建表时带备注，创建后单独添加 buildCreateCommentRunSQL(table)
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Table table){
-		return super.comment(builder, table);
+		return builder;
 	}
 
 	/**
@@ -570,10 +989,28 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	public StringBuilder name(StringBuilder builder, Table table){
 		return super.name(builder, table);
 	}
+
+
+	/**
+	 * 创建或删除视图时检测视图是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
+		return builder;
+	}
+
+	@Override
+	public String buildCreateCommentRunSQL(View view) throws Exception{
+		return buildCreateCommentRunSQL((Table)view);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(MasterTable table)
+	 * public List<String> buildCreateRunSQL(MasterTable table)
 	 * public String buildCreateCommentRunSQL(MasterTable table)
 	 * public List<String> buildAlterRunSQL(MasterTable table)
 	 * public String buildDropRunSQL(MasterTable table)
@@ -695,7 +1132,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		builder.append(" ADD ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
-		// }
+		//}
 		return builder.toString();
 	}
 
@@ -822,7 +1259,6 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" DEFAULT ");
 		if(null != def){
-
 			def = write(column, def, false);
 			//format(builder, def);
 			builder.append(def);
@@ -941,11 +1377,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		if(column.isAutoIncrement() == 1){
-			builder.append(" IDENTITY(").append(column.getIncrementSeed()).append(",").append(column.getIncrementStep()).append(")");
-		}
-		return builder;
+		return super.increment(builder, column);
 	}
+
 
 
 
@@ -1128,7 +1562,24 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public String buildAddRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildAddRunSQL(primary);
+		StringBuilder builder = new StringBuilder();
+		Map<String,Column> columns = primary.getColumns();
+		if(columns.size()>0) {
+			builder.append("ALTER TABLE ");
+			name(builder, primary.getTable());
+			builder.append(" ADD CONSTRAINT ").append(primary.getTableName()).append("_PK").append(" PRIMARY KEY(");
+			boolean first = true;
+			for(Column column:columns.values()){
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+			}
+			builder.append(")");
+
+		}
+		return builder.toString();
 	}
 	/**
 	 * 修改主键
@@ -1148,7 +1599,11 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildDropRunSQL(primary);
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, primary.getTable());
+		builder.append(" DROP PRIMARY KEY");
+		return builder.toString();
 	}
 	/**
 	 * 修改主键名
@@ -1300,4 +1755,4 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return null;
 	}
 
-} 
+}
