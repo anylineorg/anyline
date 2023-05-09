@@ -35,6 +35,14 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		return DatabaseType.PostgreSQL;
 	}
 
+	@Value("${anyline.jdbc.delimiter.postgresql:}")
+	private String delimiter;
+
+	@Override
+	public void afterPropertiesSet()  {
+		setDelimiter(delimiter);
+	}
+
 	public PostgresqlAdapter(){
 		super();
 		delimiterFr = "\"";
@@ -43,13 +51,35 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 			types.put(alias.name(), alias.standard());
 		}
 	}
-	@Value("${anyline.jdbc.delimiter.postgresql:}")
-	private String delimiter;
+	@Override
+	public String parseFinalQuery(Run run){
+		String sql = run.getBaseQuery(); 
+		String cols = run.getQueryColumns(); 
+		if(!"*".equals(cols)){ 
+			String reg = "(?i)^select[\\s\\S]+from"; 
+			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
+		} 
+		OrderStore orders = run.getOrderStore(); 
+		if(null != orders){ 
+			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
+		} 
+		PageNavi navi = run.getPageNavi(); 
+		if(null != navi){ 
+			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
+			if(limit < 0){ 
+				limit = 0; 
+			} 
+			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow(); 
+		} 
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
+		return sql; 
+	}
 
 	@Override
-	public void afterPropertiesSet()  {
-		setDelimiter(delimiter);
+	public String concat(String ... args){
+		return concatOr(args);
 	}
+
 
 
 	/* *****************************************************************************************************************
@@ -85,31 +115,6 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		}
 		return builder.toString();
 	}
-	@Override
-	public String parseFinalQuery(Run run){
-		String sql = run.getBaseQuery(); 
-		String cols = run.getQueryColumns(); 
-		if(!"*".equals(cols)){ 
-			String reg = "(?i)^select[\\s\\S]+from"; 
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
-		} 
-		OrderStore orders = run.getOrderStore(); 
-		if(null != orders){ 
-			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		} 
-		PageNavi navi = run.getPageNavi(); 
-		if(null != navi){ 
-			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
-			if(limit < 0){ 
-				limit = 0; 
-			} 
-			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow(); 
-		} 
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
-		return sql; 
-	}
-
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -964,8 +969,6 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	}
 
 
-
-
 	/**
 	 * 定义列
 	 * @param builder builder
@@ -1446,90 +1449,6 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 *
 	 *  *****************************************************************************************************************/
 
-/*
-uuid:String
-int8:Long
-varchar:String
-date:java.sql.Date
-timestamp:java.sql.Timestamp
-timestamptz:java.sql.Timestamp
-time:java.sql.Time
-timez:java.sql.Time
-text:String
-numeric:BigDecimal
-json:String
-xml:String
-bit:Boolean
-bool:Boolean
-box:String
-bytea:byte[]
-bpchar:String
-cidr:String
-circle:String
-float4:Float
-float8:Double
-inet:String
-int2:Short
-int4:Integer
-int8:Long
-interval:String
-jsonb:String
-line:String
-lseg:String
-macaddr:String
-money:Double
-path:String
-point:String
-polygon:String
-smallserial:Short
-serial:Integer
-bigserial:Long
-tsquery:String
-tsvector:String
-txid_snapshot:String
-varbit:String
-* */
-/*
-	@Override
-	public boolean convert(Column metadata, RunValue run){
-		boolean result = false;
-
-		if(null == metadata){
-			return false;
-		}
-		if(null == run){
-			return true;
-		}
-		Object value = run.getValue();
-		if(null == value){
-			return true;
-		}
-		try {
-			String clazz = metadata.getClassName();
-			String typeName = metadata.getTypeName().toUpperCase();
-			// 先解析特定数据库类型,注意不需要重复解析super中解析的类型
-			// 
-			if(typeName.equals("JSON")
-					|| typeName.equals("XML")
-					|| typeName.equals("BOX")
-					|| typeName.equals("BIT")
-					|| typeName.equals("CIDR")
-					|| typeName.equals("CIRCLE")
-			){
-				run.setValue(value(typeName.toLowerCase(), value));
-				return true;
-			}else if(typeName.equals("BOOL")){
-				run.setValue(BasicUtil.parseBoolean(value, null));
-				return true;
-			}else{
-				// 没有成功,super继续解析通用类型
-				result = super.convert(metadata, run);
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return result;
-	}*/
 	public PGobject value(String type, Object value) throws SQLException {
 		PGobject pg = null;
 		if(value instanceof PGobject) {
@@ -1549,9 +1468,5 @@ varbit:String
 		}
 		return pg;
 	}
-	public String concat(String ... args){
-		return concatOr(args);
-	}
-
 
 }
