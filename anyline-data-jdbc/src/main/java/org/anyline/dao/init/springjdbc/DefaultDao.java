@@ -1175,7 +1175,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}
-		join.itemClass = ClassUtil.getCollectionItemClass(field);	//Department
+		join.itemClass = ClassUtil.getComponentClass(field);	//Department
 		if(!ClassUtil.isPrimitiveClass(join.itemClass) && String.class != join.itemClass){
 			//List<Department> departments;
 			org.anyline.entity.data.Table table = EntityAdapterProxy.table(join.itemClass);
