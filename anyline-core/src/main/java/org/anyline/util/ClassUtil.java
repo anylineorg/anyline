@@ -666,7 +666,7 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 根据属性获取 集合条件泛型类
+	 * 根据属性获取 集合或数组的泛型类
 	 * @param field 属性
 	 * @return Class
 	 */
@@ -686,6 +686,23 @@ public class ClassUtil {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 集合或数组的泛型类
+	 * @param clazz 需要是实例化过的对象getClass()返回的结果
+	 * @return Class
+	 */
+	public static Class getComponentClass(Class clazz){
+		//数组
+		if(clazz.isArray()){
+			return clazz.getComponentType();
+		}
+		//集合
+		Type genericSuperclass = clazz.getGenericSuperclass();
+		ParameterizedType pty= (ParameterizedType) genericSuperclass;
+		Type actualTypeArgument = pty.getActualTypeArguments()[0];
+		return (Class)actualTypeArgument;
 	}
 	/**
 	 * 对象类型<br/>
