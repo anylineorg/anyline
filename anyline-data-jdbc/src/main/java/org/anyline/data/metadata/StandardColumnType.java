@@ -1,6 +1,7 @@
 package org.anyline.data.metadata;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -16,7 +17,10 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import static org.anyline.entity.data.DatabaseType.*;
 
@@ -224,7 +228,24 @@ public enum StandardColumnType implements ColumnType {
                 JsonNode node = BeanUtil.JSON_MAPPER.readTree(str);
                 if(null == clazz) {
                     if (node.isArray()) {
-                        value = DataSet.parseJson(node);
+                        //value = DataSet.parseJson(node);
+                        Collection<Object> list = new ArrayList<>();
+                        Iterator<JsonNode> items = node.iterator();
+                        boolean isDataRow = true;
+                        while (items.hasNext()) {
+                            JsonNode item = items.next();
+                            Object row = DataRow.parseJsonObject(KeyAdapter.KEY_CASE.CONFIG, item);
+                            if(row instanceof DataRow){
+                            }else{
+                                isDataRow = false;
+                            }
+                            list.add(row);
+                        }
+                        if(isDataRow){
+                            value = DataSet.parse(list);
+                        }else{
+                            value = list;
+                        }
                     } else {
                         value = DataRow.parseJson(node);
                     }
