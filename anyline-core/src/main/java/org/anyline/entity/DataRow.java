@@ -350,10 +350,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public static DataRow parseJson(DataRow row, KEY_CASE keyCase, JsonNode json) {
-        return (DataRow) parse(row, keyCase, json);
+        return (DataRow) parseJsonObject(row, keyCase, json);
     }
     public static DataRow parseJson(KEY_CASE keyCase, JsonNode json) {
-        return (DataRow) parse(null, keyCase, json);
+        return (DataRow) parseJsonObject(null, keyCase, json);
     }
 
     public static DataRow parseJson(DataRow row, JsonNode json) {
@@ -363,7 +363,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return parseJson(null, KEY_CASE.CONFIG, json);
     }
 
-    private static Object parse(Object obj, KEY_CASE keyCase, JsonNode json) {
+    public static Object parseJsonObject(Object obj, KEY_CASE keyCase, JsonNode json) {
         if (null == json) {
             return obj;
         }
@@ -381,7 +381,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             boolean isDataRow = true;
             while (items.hasNext()) {
                 JsonNode item = items.next();
-                Object row = parse(obj, keyCase, item);
+                Object row = parseJsonObject(obj, keyCase, item);
                 if(row instanceof DataRow){
                 }else{
                     isDataRow = false;
@@ -424,8 +424,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
 
-    private static Object parse(KEY_CASE keyCase, JsonNode json) {
-        return parse(null, keyCase, json);
+    private static Object parseJsonObject(KEY_CASE keyCase, JsonNode json) {
+        return parseJsonObject(null, keyCase, json);
     }
     /**
      * 解析xml结构字符
