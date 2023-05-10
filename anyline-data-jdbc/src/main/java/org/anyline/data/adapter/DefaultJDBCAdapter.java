@@ -1329,7 +1329,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null == column.getPrecision()) {
 				column.setPosition(row.getInt("ORDINAL_POSITION", 0));
 			}
-			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT"), column.getComment()));
+			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
 			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
 			column.setDefaultValue(BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue()));
 			if(0 == column.isNullable()) {
