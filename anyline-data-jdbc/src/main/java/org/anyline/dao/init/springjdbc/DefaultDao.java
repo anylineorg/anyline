@@ -4359,8 +4359,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	protected String paramLogFormat(List<?> params){
 		StringBuilder builder = new StringBuilder();
-		builder.append("\n");
-		if(null != params){
+		if(null != params && params.size() > 0){
+			builder.append("\n");
 			int idx = 0;
 			for(Object param:params){
 				builder.append("param").append(idx++).append("=");
@@ -4375,8 +4375,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected String paramLogFormat(List<?> keys, List<?> values) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("\n");
-		if (null != keys && null != values) {
+		if (null != keys && null != values && keys.size() > 0) {
+			builder.append("\n");
 			if(keys.size() == values.size()) {
 				int size = keys.size();
 				for (int i = 0; i < size; i++) {
