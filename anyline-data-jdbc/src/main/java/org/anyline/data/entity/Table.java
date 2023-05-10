@@ -6,11 +6,17 @@ import org.anyline.data.listener.init.DefaultDDListener;
 import org.anyline.exception.AnylineException;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
 
 import java.util.*;
 
 public class Table implements org.anyline.entity.data.Table{
+
+    static {
+        ClassUtil.regImplement(org.anyline.entity.data.Table.class, Table.class);
+    }
+
     protected String keyword = "TABLE"            ;
     protected String catalog                      ;
     protected String schema                       ;

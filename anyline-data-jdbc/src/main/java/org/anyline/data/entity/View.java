@@ -1,8 +1,12 @@
 package org.anyline.data.entity;
 
 import org.anyline.data.listener.init.DefaultDDListener;
+import org.anyline.util.ClassUtil;
 
 public class View extends Table implements org.anyline.entity.data.View{
+    static {
+        ClassUtil.regImplement(org.anyline.entity.data.View.class, View.class);
+    }
     protected String keyword = "VIEW"            ;
     protected View update;
     protected String definition;
