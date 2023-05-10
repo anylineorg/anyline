@@ -23,13 +23,15 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class DataSourceHolder { 
@@ -248,6 +250,47 @@ public class DataSourceHolder {
 		return addDataSource(key, buildDataSource(param), true);
 	}
 
+	public static void regDatasource(String key, Map params) throws Exception{
+
+		try {
+			String type = (String)params.get("pool");
+			if(BasicUtil.isEmpty(type)){
+				type = (String)params.get("type");
+			}
+			if (type == null) {
+				throw new Exception("未设置数据源类型(如:pool=com.zaxxer.hikari.HikariDataSource)");
+			}
+			Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
+
+			Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
+			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
+			Object user =  BeanUtil.propertyNvl(params,"user","username");
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.putAll(params);
+			map.put("url", url);
+			map.put("jdbcUrl", url);
+			map.put("driver",driver);
+			map.put("driverClass",driver);
+			map.put("driverClassName",driver);
+			map.put("user",user);
+			map.put("username",user);
+
+			BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(poolClass);
+			List<Field> fields = ClassUtil.getFields(poolClass, false, false);
+			for(Field field:fields){
+				String name = field.getName();
+				Object value = map.get(name);
+				builder.addPropertyValue(name, value);
+			}
+
+			BeanDefinition definition = builder.getBeanDefinition();
+			DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+			factory.registerBeanDefinition("datasource."+key, definition);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 	/**
 	 * 创建数据源
 	 * @param params 数据源参数
@@ -269,7 +312,7 @@ public class DataSourceHolder {
             if (type == null) {
                 throw new Exception("未设置数据源类型(如:pool=com.zaxxer.hikari.HikariDataSource)");
             }
-            Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName((String) type);
+            Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
             Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
 			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
 			Object user =  BeanUtil.propertyNvl(params,"user","username");
@@ -284,7 +327,8 @@ public class DataSourceHolder {
 			map.put("user",user);
 			map.put("username",user);
             BeanUtil.setFieldsValue(ds, map, false);
-            return ds;
+
+			return ds;
         } catch (Exception e) {
             e.printStackTrace();
         }
