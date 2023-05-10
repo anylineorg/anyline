@@ -1979,6 +1979,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}catch (Exception e){
 				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 			}
+			//表备注
+			try{
+				List<String> sqls = adapter.buildQueryTableCommentRunSQL(catalog, schema, null, types);
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+							tables = adapter.comments(idx++, true, catalog, schema, tables, set);
+						}
+					}
+				}
+			}catch (Exception e){
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+				}
+			}
+
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
 			}
@@ -3627,20 +3645,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		checkSchema(runtime, column);
 		String random = null;
-		String sql = adapter.buildAddRunSQL(column);
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]", random,sql);
-		}
+
+		List<String> sqls = adapter.buildAddRunSQL(column);
 		DDListener listener = column.getListener();
 
 		boolean exe = true;
 		if(null != listener){
 			exe = listener.beforeAdd(column);
 		}
-		if(exe) {
-			runtime.getTemplate().update(sql);
-			result = true;
+		for(String sql:sqls) {
+			if(BasicUtil.isEmpty(sql)){
+				continue;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				random = random();
+				log.warn("{}[sql:\n{}\n]", random, sql);
+			}
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
 		}
 
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
