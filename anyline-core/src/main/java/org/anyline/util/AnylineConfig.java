@@ -126,7 +126,7 @@ public abstract class AnylineConfig {
 		T config = null;
 		try {
 			config = (T) T.newInstance();
-			List<Field> fields = ClassUtil.getFields(T);
+			List<Field> fields = ClassUtil.getFields(T, false, false);
 			Map<String, String> kvs = new HashMap<>();
 			config.kvs = kvs;
 			for (Field field : fields) {
