@@ -939,8 +939,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -954,6 +956,21 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)", 37));
+		}
+		return null;
+	}
+
+	/**
+	 * 查询表备注
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @return String
+	 */
+	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)", 37));
 		}
 		return null;
 	}
@@ -1011,6 +1028,30 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return tables;
 	}
 
+	/**
+	 * 表备注
+	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			String comment = row.getString("TABLE_COMMENT");
+			if(null != name && null != comment){
+				Table table = tables.get(name.toUpperCase());
+				if(null != table){
+					table.setComment(comment);
+				}
+			}
+		}
+		return tables;
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1271,11 +1312,48 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set)", 37));
-		}
 		if(null == columns){
 			columns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("COLUMN_NAME");
+			Column column = columns.get(name.toUpperCase());
+			if(null == column){
+				column = new Column();
+			}
+			column.setCatalog(BasicUtil.evl(row.getString("TABLE_CATALOG"), table.getCatalog(), column.getCatalog()));
+			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA"), table.getSchema(), column.getSchema()));
+			column.setTable(table);
+			column.setTableName(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName()));
+			column.setName(name);
+			if(null == column.getPrecision()) {
+				column.setPosition(row.getInt("ORDINAL_POSITION", 0));
+			}
+			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT"), column.getComment()));
+			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
+			column.setDefaultValue(BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue()));
+			if(0 == column.isNullable()) {
+				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE"));
+			}
+			Integer len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH");
+			if(null == len){
+				len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+			}
+			column.setPrecision(len);
+			if(null == column.getScale()) {
+				column.setScale(row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE"));
+			}
+			if(null == column.getCharset()) {
+				column.setCharset(row.getString("CHARACTER_SET_NAME"));
+			}
+			if(null == column.getCollate()) {
+				column.setCollate(row.getString("COLLATION_NAME"));
+			}
+			if(null == column.getColumnType()) {
+				ColumnType columnType = type(column.getTypeName());
+				column.setColumnType(columnType);
+			}
+			columns.put(name.toUpperCase(), column);
 		}
 		return columns;
 	}
@@ -2360,7 +2438,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
-	 * public String buildAddRunSQL(Column column)
+	 * public List<String> buildAddRunSQL(Column column)
 	 * public List<String> buildAlterRunSQL(Column column)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
@@ -2396,7 +2474,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
@@ -2409,7 +2488,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
 		// }
-		return builder.toString();
+		sqls.add(builder.toString());
+		sqls.add(buildCreateCommentRunSQL(column));
+		return sqls;
 	}
 
 
