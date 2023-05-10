@@ -50,32 +50,32 @@ public interface ColumnType {
 
         @Override
         public Object convert(Object value, Object def) {
-            return null;
+            return value;
         }
 
         @Override
         public Object convert(Object value, Class target) {
-            return null;
+            return value;
         }
 
         @Override
         public Object convert(Object value, Class target, Object def) {
-            return null;
+            return value;
         }
 
         @Override
         public Object convert(Object value, Object obj, Field field) {
-            return null;
+            return value;
         }
 
         @Override
         public Object read(Object value, Object def, Class clazz) {
-            return null;
+            return value;
         }
 
         @Override
         public Object write(Object value, Object def, boolean placeholder) {
-            return null;
+            return value;
         }
 
     };

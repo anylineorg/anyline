@@ -8,9 +8,12 @@ import org.anyline.entity.metadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ClassUtil;
 
 public class Column implements org.anyline.entity.data.Column{
-
+    static {
+        ClassUtil.regImplement(org.anyline.entity.data.Column.class, Column.class);
+    }
     protected String keyword = "COLUMN"           ;
 
     protected String name                         ; // 名称
