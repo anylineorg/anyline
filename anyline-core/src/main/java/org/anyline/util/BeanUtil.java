@@ -288,13 +288,15 @@ public class BeanUtil {
 							}
 						} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
 							//entity
-							List<Field> fields = ClassUtil.getFields(targetClass);
+							List<Field> fields = ClassUtil.getFields(targetClass, false, false);
 							Object entity = ClassUtil.newInstance(targetClass);
-							for (Field f : fields) {
-								Object fv = getFieldValue(v, f.getName());
-								setFieldValue(entity, f, fv);
+							if(null != entity) {
+								for (Field f : fields) {
+									Object fv = getFieldValue(v, f.getName());
+									setFieldValue(entity, f, fv);
+								}
+								v = entity;
 							}
-							v = entity;
 						} else {
 							//基础类型
 							v = ConvertAdapter.convert(value, targetClass);
