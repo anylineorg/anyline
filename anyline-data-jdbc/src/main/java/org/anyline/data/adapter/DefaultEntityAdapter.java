@@ -181,7 +181,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         return field;
     }
     public void fields(Class clazz){
-        List<Field> fields = ClassUtil.getFields(clazz);
+        List<Field> fields = ClassUtil.getFields(clazz, false, false);
         for(Field field:fields){
             column(clazz, field);
         }
