@@ -288,9 +288,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             } else {
                 List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
                 for (Field field : fields) {
-                    if (Modifier.isStatic(field.getModifiers())) {
-                        continue;
-                    }
                     String fieldName = field.getName();
                     String col = map.get(fieldName);
                     if (null == col) {
@@ -1726,7 +1723,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 return 0;
             }
         } else {
-            return (int) Double.parseDouble(val.toString());
+            Double dbl = getDouble(keys);
+            if(null != dbl){
+                return dbl.intValue();
+            }else{
+                return null;
+            }
         }
     }
 
@@ -1740,7 +1742,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 return 0;
             }
         } else {
-            return (int) Double.parseDouble(val.toString());
+            Double dbl = getDouble(key);
+            if(null != dbl){
+                return dbl.intValue();
+            }else{
+                return null;
+            }
         }
     }
 
@@ -1754,16 +1761,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Double getDouble(String ... keys) throws Exception {
         Object value = get(keys);
-        return Double.parseDouble(value.toString());
+        if(null != value) {
+            return Double.parseDouble(value.toString());
+        }
+        return null;
     }
     public Double getDouble(String key) throws Exception {
         Object value = get(key);
-        return Double.parseDouble(value.toString());
+        if(null != value) {
+            return Double.parseDouble(value.toString());
+        }
+        return null;
     }
 
     public Double getDouble(String key, Double def) {
         try {
-            return getDouble(key);
+            Double dbl = getDouble(key);
+            if(null == dbl){
+                return def;
+            }
+            return dbl;
         } catch (Exception e) {
             return def;
         }
