@@ -8,6 +8,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -214,13 +215,17 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		return databases;
 	}
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表
 	 * @param catalog catalog
@@ -263,7 +268,18 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		sqls.add(builder.toString());
 		return sqls;
 	}
-
+	/**
+	 * 查询表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
+	}
 	/**
 	 *
 	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
@@ -624,33 +640,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
-		if(null == columns){
-			columns = new LinkedHashMap<>();
-		}
-		for(DataRow row:set){
-			Column column = new Column();
-			column.setCatalog(row.getString("TABLE_CATALOG"));
-			column.setSchema(row.getString("TABLE_SCHEMA"));
-			column.setTable(row.getString("TABLE_NAME"));
-			column.setName(row.getString("COLUMN_NAME"));
-			column.setPosition(row.getInt("ORDINAL_POSITION", 0));
-			column.setComment(row.getString("COLUMN_COMMENT"));
-			column.setTypeName(row.getString("DATA_TYPE"));
-			column.setDefaultValue(row.get("COLUMN_DEFAULT"));
-			column.setNullable(row.getBoolean("IS_NULLABLE", null));
-			int len = row.getInt("CHARACTER_MAXIMUM_LENGTH",-1);
-			if(len == -1){
-				len = row.getInt("NUMERIC_PRECISION",0);
-			}
-			column.setPrecision(len);
-			column.setScale(row.getInt("NUMERIC_SCALE",0));
-			column.setCharset(row.getString("CHARACTER_SET_NAME"));
-			column.setCollate(row.getString("COLLATION_NAME"));
-			ColumnType columnType = type(column.getTypeName());
-			column.setColumnType(columnType);
-			columns.put(column.getName().toUpperCase(), column);
-		}
-		return columns;
+		return super.columns(index, create, table, columns, set);
 	}
 	@Override
 	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
@@ -1120,7 +1110,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
-	 * public String buildAddRunSQL(Column column)
+	 * public List<String> buildAddRunSQL(Column column)
 	 * public List<String> buildAlterRunSQL(Column column)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
@@ -1161,7 +1151,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
@@ -1186,7 +1177,10 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			// 位置
 			position(builder, column);
 		}
-		return builder.toString();
+		sqls.add(builder.toString());
+
+		sqls.add(buildCreateCommentRunSQL(column));
+		return sqls;
 	}
 
 	/**

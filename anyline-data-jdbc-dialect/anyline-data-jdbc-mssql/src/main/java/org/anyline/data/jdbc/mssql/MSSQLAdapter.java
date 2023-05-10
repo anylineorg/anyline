@@ -316,13 +316,17 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		table.setCheckSchemaTime(new Date());
 	}
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表
 	 * @param catalog catalog
@@ -336,6 +340,28 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.buildQueryTableRunSQL(catalog, schema, pattern, types);
 	}
 
+	/**
+	 * 查询表备注
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT TBS.NAME AS TABLE_NAME ,DS.VALUE AS TABLE_COMMENT\n");
+		builder.append("FROM SYS.EXTENDED_PROPERTIES DS\n");
+		builder.append("LEFT JOIN SYS.SYSOBJECTS TBS ON DS.MAJOR_ID=TBS.ID \n");
+		builder.append("WHERE  DS.MINOR_ID=0 \n");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append("TBS.NAME = '").append(pattern).append("'");
+		}
+		sqls.add(builder.toString());
+		return sqls;
+	}
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		return super.tables(index, create, catalog, schema, tables, set);
@@ -481,7 +507,17 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryColumnRunSQL(table, metadata);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT A.NAME AS TABLE_NAME,C.NAME AS COLUMN_NAME, B.VALUE COLUMN_COMMENT , C.PRECISION, C.SCALE, C.COLLATION_NAME, C.IS_NULLABLE, C.MAX_LENGTH  \n");
+		builder.append("FROM SYSOBJECTS A \n");
+		builder.append("LEFT JOIN  SYS.COLUMNS C ON A.ID = C.OBJECT_ID\n");
+		builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = A.ID AND B.MINOR_ID = C.COLUMN_ID\n");
+		if(null != table){
+			builder.append("WHERE A.NAME='").append(table.getName()).append("'");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -690,15 +726,6 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return sqls;
 	}
 
-	/**
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
-	 * @param table 表
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	public String buildCreateCommentRunSQL(Table table) throws Exception {
-		return buildChangeCommentRunSQL(table);
-	}
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
@@ -717,9 +744,13 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return builder.toString();
 	}
 
-
-	@Override
-	public String buildChangeCommentRunSQL(Table table) throws Exception{
+	/**
+	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public String buildCreateCommentRunSQL(Table table) throws Exception {
 		String comment = table.getComment();
 		if(BasicUtil.isEmpty(comment)){
 			return null;
@@ -735,6 +766,32 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append("'").append(table.getName()).append("'");
 		}else {
 			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+			builder.append(",@value=N'").append(comment).append("'");
+			builder.append(",@level0type=N'SCHEMA'");
+			builder.append(",@level0name=N'").append(table.getSchema()).append("'");
+			builder.append(",@level1type=N'TABLE'");
+			builder.append(",@level1name=N'").append(table.getName()).append("'");
+		}
+		return builder.toString();
+	}
+
+	@Override
+	public String buildChangeCommentRunSQL(Table table) throws Exception{
+		String comment = table.getComment();
+		if(BasicUtil.isEmpty(comment)){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		if("2000".equals(getDbVersion())){
+			builder.append("EXEC sp_updateextendedproperty ");
+			builder.append("'MS_Description',");
+			builder.append("N'").append(comment).append("',");
+			builder.append("'USER',");
+			builder.append("'").append(table.getSchema()).append("',");
+			builder.append("'TABLE',");
+			builder.append("'").append(table.getName()).append("'");
+		}else {
+			builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
 			builder.append(",@level0name=N'").append(table.getSchema()).append("'");
@@ -893,7 +950,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
-	 * public String buildAddRunSQL(Column column)
+	 * public List<String> buildAddRunSQL(Column column)
 	 * public List<String> buildAlterRunSQL(Column column)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
@@ -929,7 +986,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
@@ -938,7 +996,9 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append(" ADD ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
-		return builder.toString();
+		sqls.add(builder.toString());
+		sqls.add(buildCreateCommentRunSQL(column));
+		return sqls;
 	}
 
 
@@ -1044,7 +1104,36 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	public String buildCreateCommentRunSQL(Column column) throws Exception {
-		return buildChangeCommentRunSQL(column);
+		String comment = column.getComment();
+		if(BasicUtil.isEmpty(comment)){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		String schema = column.getSchema();
+		if(BasicUtil.isEmpty(schema)){
+			schema = column.getTable().getSchema();
+		}
+		if("2000".equals(getDbVersion())){
+			builder.append("EXEC sp_addextendedproperty ");
+			builder.append("'MS_Description',");
+			builder.append("N'").append(comment).append("',");
+			builder.append("'USER',");
+			builder.append("'").append(schema).append("',");
+			builder.append("'TABLE',");
+			builder.append("'").append(column.getTableName()).append("',");
+			builder.append("'COLUMN',");
+			builder.append("'").append(column.getName()).append("'");
+		}else {
+			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+			builder.append(",@value=N'").append(comment).append("'");
+			builder.append(",@level0type=N'SCHEMA'");
+			builder.append(",@level0name=N'").append(schema).append("'");
+			builder.append(",@level1type=N'TABLE'");
+			builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+			builder.append(",@level2type=N'COLUMN'");
+			builder.append(",@level2name=N'").append(column.getName()).append("'");
+		}
+		return builder.toString();
 	}
 	/**
 	 * 修改备注
@@ -1073,7 +1162,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			schema = column.getTable().getSchema();
 		}
 		if("2000".equals(getDbVersion())){
-			builder.append("EXEC sp_addextendedproperty ");
+			builder.append("EXEC sp_updateextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
 			builder.append("'USER',");
@@ -1083,7 +1172,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append("'COLUMN',");
 			builder.append("'").append(column.getName()).append("'");
 		}else {
-			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+			builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
 			builder.append(",@level0name=N'").append(schema).append("'");

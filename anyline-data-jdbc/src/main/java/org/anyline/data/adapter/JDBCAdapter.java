@@ -393,6 +393,16 @@ public interface JDBCAdapter {
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
+	 * 查询表备注
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @return String
+	 */
+	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+
+	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -420,6 +430,18 @@ public interface JDBCAdapter {
 	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
+	/**
+	 * 表备注
+	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -1052,7 +1074,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	public String buildAddRunSQL(Column column) throws Exception;
+	public List<String> buildAddRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改列

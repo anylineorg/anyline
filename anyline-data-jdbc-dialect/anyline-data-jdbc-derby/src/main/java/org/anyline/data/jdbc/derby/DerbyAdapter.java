@@ -88,13 +88,17 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 *
 	 ******************************************************************************************************************/
 
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表
 	 * @param catalog catalog
@@ -108,6 +112,18 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.buildQueryTableRunSQL(catalog, schema, pattern, types);
 	}
 
+	/**
+	 * 查询表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
+	}
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		return super.tables(index, create, catalog, schema, tables, set);
@@ -619,7 +635,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
-	 * public String buildAddRunSQL(Column column)
+	 * public List<String> buildAddRunSQL(Column column)
 	 * public List<String> buildAlterRunSQL(Column column)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
@@ -655,7 +671,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column) throws Exception{
 		return super.buildAddRunSQL(column);
 	}
 

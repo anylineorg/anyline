@@ -365,9 +365,12 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表
 	 * @param catalog catalog
@@ -421,6 +424,25 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		return sqls;
 	}
 
+
+	/**
+	 * 查询表备注
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	@Override
+	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM USER_TAB_COMMENTS\n");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append("WHERE TABLE_NAME = '").append(pattern).append("'");
+		}
+		return sqls;
+	}
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		if(null == tables){
@@ -637,7 +659,15 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryColumnRunSQL(table, metadata);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM USER_TAB_COLUMNS    M \n");
+		builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n");
+		if(BasicUtil.isNotEmpty(table)){
+			builder.append("WHERE M.TABLE_NAME = '").append(table.getName()).append("'");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1054,7 +1084,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
-	 * public String buildAddRunSQL(Column column)
+	 * public List<String> buildAddRunSQL(Column column)
 	 * public List<String> buildAlterRunSQL(Column column)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
@@ -1091,7 +1121,8 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
@@ -1104,7 +1135,9 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
 		//}
-		return builder.toString();
+		sqls.add(builder.toString());
+		sqls.add(buildCreateCommentRunSQL(column));
+		return sqls;
 	}
 
 	/**
@@ -1182,8 +1215,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 				sqls.add(rename);
 
 				update.setName(uname);
-				String add = buildAddRunSQL(update);
-				sqls.add(add);
+				sqls.addAll(buildAddRunSQL(update));
 
 				StringBuilder builder = new StringBuilder();
 				builder.append("UPDATE ");
