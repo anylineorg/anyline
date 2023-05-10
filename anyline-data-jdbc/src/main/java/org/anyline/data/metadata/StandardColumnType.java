@@ -404,19 +404,19 @@ public enum StandardColumnType implements ColumnType {
     /**
      * pg
      */
-    ,FLOAT4("FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, false, false){
+    ,FLOAT4("FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
     /**
      * ORACLE
      */
-    ,ORACLE_FLOAT("FLOAT", new DatabaseType[]{ORACLE}, BigDecimal.class, false, false){
+    ,ORACLE_FLOAT("FLOAT", new DatabaseType[]{ORACLE}, BigDecimal.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
      * pg
      */
-    ,FLOAT8("FLOAT8", new DatabaseType[]{PostgreSQL}, Double.class, false, false){
+    ,FLOAT8("FLOAT8", new DatabaseType[]{PostgreSQL}, Double.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
     }
     /**
