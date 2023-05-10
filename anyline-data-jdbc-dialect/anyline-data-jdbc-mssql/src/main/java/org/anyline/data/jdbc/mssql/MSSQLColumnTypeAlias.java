@@ -79,7 +79,7 @@ public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
     SMALLMONEY              (StandardColumnType.SMALLMONEY            ), //     ,  ,      ,mssql
     SMALLINT                (StandardColumnType.INT                   ), //mysql,
     SMALLSERIAL             (StandardColumnType.INT                   ), //     ,pg,
-    SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //     ,  ,      ,mssql
+    SQL_VARIANT             (StandardColumnType.SQL_VARIANT           ), //     ,  ,      ,mssql
     SYSNAME                 (StandardColumnType.SYSNAME               ), //     ,  ,      ,mssql
     TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg,      ,mssql,sqlite
     TIME                    (StandardColumnType.TIME                  ), //mysql,pg,      ,mssql
