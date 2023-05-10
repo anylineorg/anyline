@@ -100,7 +100,7 @@ public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {
     TINYTEXT                (StandardColumnType.CLOB                  ), //mysql,
     VARBINARY               (StandardColumnType.BLOB                  ), //mysql         ,mssql
     VARCHAR                 (StandardColumnType.VARCHAR               ), //mysql,pg,oracle,mssql
-    VARCHAR2                (StandardColumnType.VARCHAR               ), //        ,oracle,
+    VARCHAR2                (StandardColumnType.VARCHAR2               ), //        ,oracle,
     XML                     (StandardColumnType.ILLEGAL               ), //     ,pg，      ,mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
     private final ColumnType standard;

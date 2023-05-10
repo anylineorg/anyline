@@ -675,18 +675,18 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public List<String> buildCreateRunSQL(Table table) throws Exception{
 		List<String> sqls = super.buildCreateRunSQL(table);
-		//如果有备注 单独生成
-		String sql = buildChangeCommentRunSQL(table);
+		//如果有备注 单独生成 super中已包含
+		/*String sql = buildChangeCommentRunSQL(table);
 		if(BasicUtil.isNotEmpty(sql)) {
 			sqls.add(sql);
-		}
-		//列备注
-		for(Column col:table.getColumns().values()){
+		}*/
+		//列备注 super中已包含
+		/*for(Column col:table.getColumns().values()){
 			String cmt = col.getComment();
 			if(BasicUtil.isNotEmpty(cmt)){
 				sqls.add(buildChangeCommentRunSQL(col));
 			}
-		}
+		}*/
 		return sqls;
 	}
 
@@ -697,7 +697,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	public String buildCreateCommentRunSQL(Table table) throws Exception {
-		return super.buildCreateCommentRunSQL(table);
+		return buildChangeCommentRunSQL(table);
 	}
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
