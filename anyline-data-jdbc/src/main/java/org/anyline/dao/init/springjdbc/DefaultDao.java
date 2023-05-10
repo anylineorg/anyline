@@ -3019,6 +3019,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), update);
+		//修改表备注
+		String comment = update.getComment()+"";
+		if(!comment.equals(table.getComment())){
+			String sql = adapter.buildChangeCommentRunSQL(update);
+			runtime.getTemplate().update(sql);
+		}
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
 			String sql = adapter.buildRenameRunSQL(table);
