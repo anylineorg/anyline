@@ -33,6 +33,10 @@ import java.util.jar.JarFile;
 public class ClassUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(ClassUtil.class);
+	private static Map<Class, Class> INTERFACE_IMPLEMENT = new HashMap<>();
+	public static void regImplement(Class interfaceClass, Class implementClass){
+		INTERFACE_IMPLEMENT.put(interfaceClass, implementClass);
+	}
 	/**
 	 * 是否是基础类型(不包含String类型)
 	 * @param obj 对象或类,如果是对象先getClass()
@@ -746,7 +750,10 @@ public class ClassUtil {
 		){
 			return clazz.newInstance();
 		}
-
+		Class implementClass = INTERFACE_IMPLEMENT.get(clazz);
+		if(null != implementClass){
+			return implementClass.newInstance();
+		}
 		if(isInSub(clazz, List.class)){
 			return new ArrayList<>();
 		}
