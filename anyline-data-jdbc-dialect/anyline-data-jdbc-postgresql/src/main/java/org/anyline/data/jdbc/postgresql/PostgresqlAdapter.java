@@ -895,7 +895,12 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Column column) throws Exception{
-		Object def = column.getDefaultValue();
+		Object def = null;
+		if(null != column.getUpdate()){
+			def = column.getUpdate().getDefaultValue();
+		}else {
+			def = column.getDefaultValue();
+		}
 		if(null != def){
 			String str = def.toString();
 			if(str.contains("::")){

@@ -1152,7 +1152,12 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Column column) throws Exception{
-		String comment = column.getComment();
+		String comment = null;
+		if(null != column.getUpdate()){
+			comment = column.getUpdate().getComment();
+		}else {
+			comment = column.getComment();
+		}
 		if(BasicUtil.isEmpty(comment)){
 			return null;
 		}
