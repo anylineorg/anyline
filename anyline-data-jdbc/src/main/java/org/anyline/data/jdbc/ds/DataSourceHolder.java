@@ -78,10 +78,12 @@ public class DataSourceHolder {
 	 * @param auto 执行完后切换回原来的数据库
 	 */
     public static void setDataSource(String dataSource, boolean auto) {
-		if(BasicUtil.isEmpty(dataSource)){
+
+		//不要切换到默认数据源，避免误操作
+		/*if(BasicUtil.isEmpty(dataSource)){
 			setDefaultDataSource();
 			return;
-		}
+		}*/
 		if(null == dataSource || !dataSources.contains(dataSource)){
 			throw new RuntimeException("数据源未注册:"+dataSource);
 		}
