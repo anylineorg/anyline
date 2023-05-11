@@ -1753,7 +1753,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Integer getInt(String key, Integer def) {
         try {
-            return getInt(key);
+            Integer result =  getInt(key);
+            if(null == result){
+                result = def;
+            }
+            return result;
         } catch (Exception e) {
             return def;
         }
