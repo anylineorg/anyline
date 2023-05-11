@@ -1299,7 +1299,12 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Column column) throws Exception{
-		Object def = column.getDefaultValue();
+		Object def = null;
+		if(null != column.getUpdate()){
+			def = column.getUpdate().getDefaultValue();
+		}else {
+			def = column.getDefaultValue();
+		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable()).append(" MODIFY ");
@@ -1360,7 +1365,12 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Column column) throws Exception{
-		String comment = column.getComment();
+		String comment = null;
+		if(null != column.getUpdate()){
+			comment = column.getUpdate().getComment();
+		}else {
+			comment = column.getComment();
+		}
 		if(BasicUtil.isNotEmpty(comment)) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON COLUMN ");
