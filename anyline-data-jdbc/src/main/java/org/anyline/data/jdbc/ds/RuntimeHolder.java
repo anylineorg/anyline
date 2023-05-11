@@ -80,6 +80,18 @@ public class RuntimeHolder  implements ApplicationContextAware {
         reg(key, template, null);
     }
 
+    public static void reg(String key, DataSource ds){
+        DataSourceHolder.reg(key);
+        String template_key = "anyline.jdbc.template." + key;
+
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
+        builder.addPropertyValue("dataSource", ds);
+        BeanDefinition definition = builder.getBeanDefinition();
+        factory.registerBeanDefinition(template_key, definition);
+
+        JdbcTemplate template = factory.getBean(template_key, JdbcTemplate.class);
+        reg(key, template, null);
+    }
     public static void reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
         log.info("[create jdbc runtime][key:{}]", datasource);
         JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
