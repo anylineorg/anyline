@@ -46,7 +46,7 @@ public class RuntimeHolder  implements ApplicationContextAware {
         if(null != prefixs){
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
-                DataSource ds = DataSourceUtil.buildDataSource("spring.datasource."+prefix,env);
+                String ds = DataSourceUtil.buildDataSource(prefix,"spring.datasource."+prefix,env);
                 reg(prefix, ds);
                 multiple = true;
                 log.info("[创建数据源][prefix:{}]",prefix);
@@ -67,12 +67,12 @@ public class RuntimeHolder  implements ApplicationContextAware {
         }
     }
 
-    public static void reg(String key, DataSource ds){
+    public static void reg(String key, String ds){
         DataSourceHolder.reg(key);
         String template_key = "anyline.jdbc.template." + key;
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
-        builder.addPropertyValue("dataSource", ds);
+        builder.addPropertyReference("dataSource", ds);
         BeanDefinition definition = builder.getBeanDefinition();
         factory.registerBeanDefinition(template_key, definition);
 
