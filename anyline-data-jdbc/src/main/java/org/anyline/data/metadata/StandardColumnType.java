@@ -402,6 +402,12 @@ public enum StandardColumnType implements ColumnType {
         }
     }
     /**
+     * ms
+     */
+    ,MS_FLOAT("FLOAT", new DatabaseType[]{MSSQL}, Float.class, false, true){
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    /**
      * pg
      */
     ,FLOAT4("FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, true, true){

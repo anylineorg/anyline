@@ -5,9 +5,9 @@ import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.entity.metadata.ColumnType;
 
 public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
-    BFILE                   (ColumnType.ILLEGAL                      ), //     ,  ,oracle,
+    BFILE                   (ColumnType.ILLEGAL                       ), //     ,  ,oracle,
     BINARY_DOUBLE           (StandardColumnType.NUMERIC               ), //     ,  ,oracle,
-    BINARY_FLOAT            (StandardColumnType.FLOAT                 ), //     ,  ,oracle,
+    BINARY_FLOAT            (StandardColumnType.MS_FLOAT              ), //     ,  ,oracle,
     BIGINT                  (StandardColumnType.BIGINT                ), //mysql,  ,      ,mssql,
     BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
     BINARY                  (StandardColumnType.BINARY                ), //mysql,  ,      ,mssql,
@@ -27,9 +27,9 @@ public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
     DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql
     DOUBLE                  (StandardColumnType.DECIMAL               ), //mysql,
     ENUM                    (StandardColumnType.ILLEGAL               ), //mysql,
-    FLOAT                   (StandardColumnType.FLOAT                 ), //mysql,  ,oracle,mssql
-    FLOAT4                  (StandardColumnType.FLOAT                 ), //     ,pg
-    FLOAT8                  (StandardColumnType.FLOAT                 ), //     ,pg
+    FLOAT                   (StandardColumnType.MS_FLOAT                 ), //mysql,  ,oracle,mssql
+    FLOAT4                  (StandardColumnType.MS_FLOAT                 ), //     ,pg
+    FLOAT8                  (StandardColumnType.MS_FLOAT                 ), //     ,pg
     GEOGRAPHY               (StandardColumnType.GEOGRAPHY             ), //     ,  ,      ,mssql
     GEOMETRY                (StandardColumnType.ILLEGAL               ), //mysql
     GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ), //mysql
