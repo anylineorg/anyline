@@ -9,7 +9,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
@@ -72,11 +71,8 @@ public class DataSourceUtil {
      * @throws Exception 异常 Exception
      */
     @SuppressWarnings("unchecked")
-    public static String buildDataSource(String key, Map params) throws Exception{
-        return regDatasource(key, params);
-        /*
+    public static DataSource buildDataSource(String key, Map params) throws Exception{
         try {
-            regDatasource(key, params);
             String type = (String)params.get("pool");
             if(BasicUtil.isEmpty(type)){
                 type = (String)params.get("type");
@@ -104,12 +100,11 @@ public class DataSourceUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;*/
+        return null;
     }
 
     public static String regDatasource(String key, Map params) throws Exception{
         String ds_id = "anyline.datasource." + key;
-        String tm_id = "anyline.transaction." + key;
         try {
             String type = (String)params.get("pool");
             if(BasicUtil.isEmpty(type)){
@@ -142,11 +137,6 @@ public class DataSourceUtil {
             for(Field field:fields){
                 String name = field.getName();
                 Object value = map.get(name);
-                /*if(ClassUtil.isInSub(field.getType(), Number.class)){
-                    if(BasicUtil.isEmpty(value)){
-                        value = 0;
-                    }
-                }*/
                 value = ConvertAdapter.convert(value, field.getType());
                 if(null != value) {
                     ds_builder.addPropertyValue(name, value);
@@ -156,11 +146,6 @@ public class DataSourceUtil {
             BeanDefinition ds_definition = ds_builder.getBeanDefinition();
             factory.registerBeanDefinition(ds_id, ds_definition);
 
-            //事务管理器
-            BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
-            tm_builder.addPropertyReference("dataSource", ds_id);
-            BeanDefinition tm_definition = tm_builder.getBeanDefinition();
-            factory.registerBeanDefinition(tm_id, tm_definition);
 
         } catch (Exception e) {
             e.printStackTrace();
