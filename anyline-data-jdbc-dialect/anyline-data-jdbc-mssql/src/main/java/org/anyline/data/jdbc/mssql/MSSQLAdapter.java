@@ -1088,7 +1088,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable()).append(" ALTER COLUMN ");
-		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		type(builder, update);
 		if(nullable == 0){
 			builder.append("NOT");

@@ -161,7 +161,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return;
 		}
 		/*
-		* mysql不支付catalog
+		* mysql不支持catalog
 		*
 		* con.getCatalog:数据库名 赋值给table.schema
 		* con.getSchema:null
@@ -1140,7 +1140,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 ******************************************************************************************************************/
 	@Override
 	public String alterColumnKeyword(){
-		return "ALTER COLUMN";
+		return "ALTER COLUMN ";
 	}
 
 
