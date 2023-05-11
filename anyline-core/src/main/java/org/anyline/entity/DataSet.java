@@ -105,7 +105,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             try {
                 return parseJson(keyCase, BeanUtil.JSON_MAPPER.readTree(json));
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         return null;
