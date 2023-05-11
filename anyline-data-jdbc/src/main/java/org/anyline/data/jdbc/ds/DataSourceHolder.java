@@ -26,8 +26,13 @@ import org.anyline.entity.data.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -172,39 +177,50 @@ public class DataSourceHolder {
 		return dataSources.contains(ds); 
 	}
 
-	/**
-	 * 注册数据源
-	 * @param key 数据源名称
-	 * @param ds 数据源
-	 * @return DataSource
-	 * @throws Exception 异常 Exception
-	 */
-	public static String addDataSource(String key, String ds) throws Exception{
-		return addDataSource(key, ds,true);
-	}
-	public static String addDataSource(String ds) throws Exception{
-		return addDefaultDataSource( ds);
-	}
-	public static String addDefaultDataSource(String ds) throws Exception{
-		return addDataSource("default", ds,true);
-	}
 
 
 	/**
 	 * 注册数据源
 	 * @param key 数据源名称
-	 * @param ds 数据源
+	 * @param ds 数据源bean id
 	 * @param over 是否允许覆盖已有的数据源
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	public static String addDataSource(String key, String ds, boolean over) throws Exception{
+	private static String addDataSource(String key, String ds, boolean over) throws Exception{
 		if(!over && dataSources.contains(key)){
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
+
+		//事务管理器
+		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
+		tm_builder.addPropertyReference("dataSource", ds);
+		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
+		factory.registerBeanDefinition("anyline.transaction." + key, tm_definition);
+
+		reg(key);
+		RuntimeHolder.reg(key, ds);
+		return ds;
+	}
+	private static DataSource addDataSource(String key, DataSource ds, boolean over) throws Exception{
+		if(!over && dataSources.contains(key)){
+			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+		}
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
+		}
+
+		//事务管理器
+		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
+		tm_builder.addPropertyValue("dataSource", ds);
+		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
+		factory.registerBeanDefinition("anyline.transaction." + key, tm_definition);
+
 		reg(key);
 		RuntimeHolder.reg(key, ds);
 		return ds;
@@ -228,25 +244,28 @@ public class DataSourceHolder {
 		param.put("url", url);
 		param.put("user", user);
 		param.put("password", password);
-		String ds = DataSourceUtil.buildDataSource(key, param);
-		return reg(key, ds, true);
+		return reg(key, param);
 	}
 	public static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
 		return reg(key, "om.zaxxer.hikari.HikariDataSource", type.getDriver(), url, user, password);
 	}
-	public static String reg(String key, String ds, boolean over) throws Exception{
+
+	public static String reg(String key, Map param, boolean over) throws Exception{
+		return addDataSource(key, DataSourceUtil.regDatasource(key, param), over);
+	}
+	public static String reg(String key, Map param) throws Exception{
+		return addDataSource(key, DataSourceUtil.regDatasource(key, param), true);
+	}
+
+
+	public static DataSource reg(String key, DataSource ds, boolean over) throws Exception{
 		return addDataSource(key, ds, over);
 	}
-	public static String reg(String key, String ds) throws Exception{
+	public static DataSource reg(String key, DataSource ds) throws Exception{
 		return addDataSource(key, ds, true);
 	}
 
-	public static String reg(String key, Map param, boolean over) throws Exception{
-		return addDataSource(key, DataSourceUtil.buildDataSource(key, param), over);
-	}
-	public static String reg(String key, Map param) throws Exception{
-		return addDataSource(key, DataSourceUtil.buildDataSource(key, param), true);
-	}
+
 
 	public static DataSource getDataSource(){
 		return RuntimeHolder.getDataSource();
@@ -254,5 +273,6 @@ public class DataSourceHolder {
 	public static DataSource getDataSource(String key){
 		return RuntimeHolder.getDataSource(key);
 	}
+
 
 }
