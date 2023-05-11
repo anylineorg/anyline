@@ -1808,7 +1808,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Long getLong(String key, Long def) {
         try {
-            return getLong(key);
+            Long result = getLong(key);
+            if(null == result){
+                result = def;
+            }
+            return result;
         } catch (Exception e) {
             return def;
         }
@@ -1831,7 +1835,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Float getFloat(String key, Float def) {
         try {
-            return getFloat(key);
+            Float result = getFloat(key);
+            if(null == result){
+                result = def;
+            }
+            return result;
         } catch (Exception e) {
             return def;
         }
