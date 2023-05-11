@@ -315,14 +315,17 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 		}else{
 			String catalog = table.getCatalog();
 			String schema = table.getSchema();
-			builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS  WHERE 1=1 ");
-			/*if(BasicUtil.isNotEmpty(catalog)){
-				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-			}*/
-			if(BasicUtil.isNotEmpty(schema)){
-				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+			builder.append("SELECT M.* ,FD.DESCRIPTION AS COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS M\n");
+			builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
+			builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
+			builder.append("WHERE 1= 1\n");
+			if(BasicUtil.isNotEmpty(catalog)){
+				builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
 			}
-			builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
+			}
+			builder.append(" AND M.TABLE_NAME = '").append(table.getName()).append("'");
 		}
 		sqls.add(builder.toString());
 		return sqls;
@@ -340,6 +343,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+		set.changeKey("UDT_NAME","DATA_TYPE");
 		return super.columns(index, create, table, columns, set);
 	}
 	@Override

@@ -726,6 +726,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+		set.removeColumn("CHARACTER_SET_NAME");
 		return super.columns(index, create, table, columns, set);
 	}
 	@Override
