@@ -404,10 +404,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if (null != value) {
                     if (value.isValueNode()) {
                         row.put(key, BeanUtil.value(value));
-                    } else if (value.isArray()) {
-                        row.put(key, parse(keyCase, value));
-                    } else if (value.isObject()) {
-                        row.put(key, parseJson(keyCase, value));
+                    } else {
+                        row.put(key, parseJsonObject(keyCase, value));
                     }
                 } else {
                     row.put(key, null);
