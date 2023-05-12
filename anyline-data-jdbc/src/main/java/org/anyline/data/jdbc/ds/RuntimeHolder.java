@@ -83,6 +83,18 @@ public class RuntimeHolder {
     public static JDBCRuntime getRuntime(){
         return getRuntime(DataSourceHolder.curDataSource());
     }
+    public static void destroyRuntime(String key){
+        try {
+            runtimes.remove(key);
+            //注销 service dao template
+            factory.destroyScopedBean("anyline.service." + key);
+            factory.destroyScopedBean("anyline.dao." + key);
+            factory.destroyScopedBean("anyline.jdbc.template." + key);
+            factory.destroyScopedBean("anyline.datasource." + key);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public static JDBCRuntime getRuntime(String datasource){
         JDBCRuntime runtime = null;
         if(null == datasource){

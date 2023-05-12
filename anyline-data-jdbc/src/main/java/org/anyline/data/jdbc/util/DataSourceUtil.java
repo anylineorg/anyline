@@ -23,7 +23,8 @@ public class DataSourceUtil {
     private static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
     public static Logger log = LoggerFactory.getLogger(DataSourceUtil.class);
-    @SuppressWarnings("unchecked")
+
+
     public static String buildDataSource(String key, String prefix, Environment env) {
         try {
             if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){

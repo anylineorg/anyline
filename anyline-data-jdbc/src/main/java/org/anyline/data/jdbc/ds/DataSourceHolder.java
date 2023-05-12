@@ -76,6 +76,10 @@ public class DataSourceHolder {
 	public static void setDataSource(String dataSource) {
 		setDataSource(dataSource, false);
     }
+	public static void destroyDataSource(String dataSource){
+		dataSources.remove(dataSource);
+		RuntimeHolder.destroyRuntime(dataSource);
+	}
 
 	/**
 	 * 设置当前数据源名称
