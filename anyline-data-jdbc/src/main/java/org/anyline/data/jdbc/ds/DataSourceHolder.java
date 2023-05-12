@@ -206,6 +206,11 @@ public class DataSourceHolder {
 		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
 		dtm.commit(status);
 	}
+
+	public static void rollback(String datasource, TransactionStatus status){
+		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		dtm.rollback(status);
+	}
 	/**
 	 * 数据源列表中是否已包含指定数据源
 	 * @param ds 数据源名称
