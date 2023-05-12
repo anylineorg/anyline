@@ -5,6 +5,8 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.SpringContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -20,6 +22,7 @@ public class DataSourceUtil {
 
     private static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
+    public static Logger log = LoggerFactory.getLogger(DataSourceUtil.class);
     @SuppressWarnings("unchecked")
     public static String buildDataSource(String key, String prefix, Environment env) {
         try {
@@ -34,7 +37,7 @@ public class DataSourceUtil {
                 type = DATASOURCE_TYPE_DEFAULT;
             }
 
-            //Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName(type);
+
             String driverClassName = BeanUtil.value(prefix, env, "driver","driver-class","driver-class-name");
             String url = BeanUtil.value(prefix, env, "url","jdbc-url");
             String username = BeanUtil.value(prefix, env,"user","username","user-name");
@@ -71,7 +74,7 @@ public class DataSourceUtil {
      * @throws Exception 异常 Exception
      */
     @SuppressWarnings("unchecked")
-    public static DataSource buildDataSource(String key, Map params) throws Exception{
+    public static DataSource buildDataSource(Map params) throws Exception{
         try {
             String type = (String)params.get("pool");
             if(BasicUtil.isEmpty(type)){
@@ -95,10 +98,9 @@ public class DataSourceUtil {
             map.put("user",user);
             map.put("username",user);
             BeanUtil.setFieldsValue(ds, map, false);
-
             return ds;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[注册数据源失败][数据源:{}][msg:{}]", e.toString());
         }
         return null;
     }
@@ -117,6 +119,10 @@ public class DataSourceUtil {
             Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
 
             Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
+            if(null == driver){
+                return null;
+            }
+            Class.forName(driver.toString());
             Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
             Object user =  BeanUtil.propertyNvl(params,"user","username");
             Map<String,Object> map = new HashMap<String,Object>();
@@ -148,7 +154,8 @@ public class DataSourceUtil {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[注册数据源失败][数据源:{}][msg:{}]", key, e.toString());
+            return null;
         }
         return ds_id;
     }
