@@ -37,11 +37,13 @@ public class EnvironmentListener implements ApplicationContextAware {
                 // 多个数据源
                 try {
                     String ds = DataSourceUtil.buildDataSource(prefix, "spring.datasource." + prefix, env);
-                    DataSourceHolder.regDataSourceTransactionManager(prefix, ds);
-                    DataSourceHolder.reg(prefix);
-                    RuntimeHolder.reg(prefix, ds);
-                    multiple = true;
-                    log.info("[创建数据源][prefix:{}]", prefix);
+                    if(null != ds) {
+                        DataSourceHolder.regDataSourceTransactionManager(prefix, ds);
+                        DataSourceHolder.reg(prefix);
+                        RuntimeHolder.reg(prefix, ds);
+                        multiple = true;
+                        log.info("[创建数据源][prefix:{}]", prefix);
+                    }
                 }catch (Exception e){
                     log.error("[创建数据源失败][prefix:{}][msg:{}]", e.toString());
                 }
