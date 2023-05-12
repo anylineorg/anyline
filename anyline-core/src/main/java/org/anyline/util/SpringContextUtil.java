@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-@Component
+@Component("anyline.util.spring.context")
 public class SpringContextUtil implements ApplicationContextAware {
 	 
 	public static ApplicationContext applicationContext;
