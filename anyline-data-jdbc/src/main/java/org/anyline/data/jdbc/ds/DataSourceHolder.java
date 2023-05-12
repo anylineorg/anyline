@@ -33,6 +33,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -183,6 +186,26 @@ public class DataSourceHolder {
 		} 
 	}
 
+	public static TransactionStatus startTransaction(String datasource, DefaultTransactionDefinition definition){
+		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		// 获取事务
+		TransactionStatus status = dtm.getTransaction(definition);
+		return status;
+	}
+	public static TransactionStatus startTransaction(String datasource, int behavior){
+		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+		// 定义事务传播方式
+		definition.setPropagationBehavior(behavior);
+		return startTransaction(datasource, definition);
+	}
+
+	public static TransactionStatus startTransaction(String datasource){
+		return startTransaction(datasource, TransactionDefinition.PROPAGATION_REQUIRED);
+	}
+	public static void commit(String datasource, TransactionStatus status){
+		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		dtm.commit(status);
+	}
 	/**
 	 * 数据源列表中是否已包含指定数据源
 	 * @param ds 数据源名称
