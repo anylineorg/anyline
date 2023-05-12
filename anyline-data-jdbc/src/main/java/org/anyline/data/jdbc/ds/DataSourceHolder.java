@@ -274,7 +274,8 @@ public class DataSourceHolder {
 		return addDataSource(key, DataSourceUtil.regDatasource(key, param), over);
 	}
 	public static String reg(String key, Map param) throws Exception{
-		return addDataSource(key, DataSourceUtil.regDatasource(key, param), true);
+		String ds = DataSourceUtil.regDatasource(key, param);
+		return addDataSource(key, ds, true);
 	}
 
 
