@@ -687,16 +687,23 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 * 查询表上的列
 	 * @param table 表
+	 * @param metadata 是否根据metadata(true:1=0,false:查询系统表)
 	 * @return sql
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM USER_TAB_COLUMNS    M \n");
-		builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n");
-		if(BasicUtil.isNotEmpty(table)){
-			builder.append("WHERE M.TABLE_NAME = '").append(table.getName()).append("'");
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(builder, table);
+			builder.append(" WHERE 1=0");
+		}else{
+			builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM USER_TAB_COLUMNS    M \n");
+			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n");
+			if (BasicUtil.isNotEmpty(table)) {
+				builder.append("WHERE M.TABLE_NAME = '").append(table.getName()).append("'");
+			}
 		}
 		sqls.add(builder.toString());
 		return sqls;

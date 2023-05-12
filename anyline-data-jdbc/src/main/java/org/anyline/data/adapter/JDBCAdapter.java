@@ -585,7 +585,7 @@ public interface JDBCAdapter {
 	/**
 	 * 查询表上的列
 	 * @param table 表
-	 * @param metadata 是否根据metadata(SELEC * FROM T WHERE 1=0) | 查询系统表
+	 * @param metadata 是否根据metadata(true:SELEC * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception;

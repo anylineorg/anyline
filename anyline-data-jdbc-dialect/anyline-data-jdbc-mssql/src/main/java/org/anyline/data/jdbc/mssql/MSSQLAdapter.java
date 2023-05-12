@@ -503,18 +503,25 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的列
 	 * @param table 表
+	 * @param metadata 是否根据metadata(true:1=0,false:查询系统表)
 	 * @return sql
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT A.NAME AS TABLE_NAME,C.NAME AS COLUMN_NAME, B.VALUE COLUMN_COMMENT , C.PRECISION, C.SCALE, C.COLLATION_NAME, C.IS_NULLABLE, C.MAX_LENGTH  \n");
-		builder.append("FROM SYSOBJECTS A \n");
-		builder.append("LEFT JOIN  SYS.COLUMNS C ON A.ID = C.OBJECT_ID\n");
-		builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = A.ID AND B.MINOR_ID = C.COLUMN_ID\n");
-		if(null != table){
-			builder.append("WHERE A.NAME='").append(table.getName()).append("'");
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(builder, table);
+			builder.append(" WHERE 1=0");
+		}else{
+			builder.append("SELECT A.NAME AS TABLE_NAME,C.NAME AS COLUMN_NAME, B.VALUE COLUMN_COMMENT , C.PRECISION, C.SCALE, C.COLLATION_NAME, C.IS_NULLABLE, C.MAX_LENGTH  \n");
+			builder.append("FROM SYSOBJECTS A \n");
+			builder.append("LEFT JOIN  SYS.COLUMNS C ON A.ID = C.OBJECT_ID\n");
+			builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = A.ID AND B.MINOR_ID = C.COLUMN_ID\n");
+			if (null != table) {
+				builder.append("WHERE A.NAME='").append(table.getName()).append("'");
+			}
 		}
 		sqls.add(builder.toString());
 		return sqls;

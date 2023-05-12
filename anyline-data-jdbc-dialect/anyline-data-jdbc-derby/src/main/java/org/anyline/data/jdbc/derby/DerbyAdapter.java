@@ -263,6 +263,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 查询表上的列
 	 * @param table 表
+	 * @param metadata 是否根据metadata(true:1=0,false:查询系统表)
 	 * @return sql
 	 */
 	@Override

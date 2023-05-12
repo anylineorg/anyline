@@ -3721,25 +3721,28 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		checkSchema(runtime, column);
 		String sql = adapter.buildDropRunSQL(column);
-		String random = null;
-		if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-			random = random();
-			log.warn("{}[sql:\n{}\n]", random,sql);
-		}
-		DDListener listener = column.getListener();
-		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeDrop(column);
-		}
-		if(exe) {
-			runtime.getTemplate().update(sql);
-			result = true;
-		}
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
-		}
-		if(null != listener){
-			listener.afterDrop(column, result);
+
+		if(BasicUtil.isNotEmpty(sql)) {
+			String random = null;
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				random = random();
+				log.warn("{}[sql:\n{}\n]", random, sql);
+			}
+			DDListener listener = column.getListener();
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeDrop(column);
+			}
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
+			}
+			if (null != listener) {
+				listener.afterDrop(column, result);
+			}
 		}
 		return result;
 	}
