@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 
-@Component
+@Component("anyline.listener.EnvironmentListener")
 public class EnvironmentListener implements EnvironmentAware {
     private Logger log = LoggerFactory.getLogger(EnvironmentListener.class);
 
