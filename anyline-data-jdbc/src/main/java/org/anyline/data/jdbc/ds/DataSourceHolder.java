@@ -189,7 +189,12 @@ public class DataSourceHolder {
 	}
 
 	public static TransactionStatus startTransaction(String datasource, DefaultTransactionDefinition definition){
-		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		DataSourceTransactionManager dtm = null;
+		if(BasicUtil.isEmpty(datasource)){
+			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
+		}else {
+			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("anyline.transaction." + datasource);
+		}
 		// 获取事务
 		TransactionStatus status = dtm.getTransaction(definition);
 		transactionStatus.put(status, datasource);
@@ -218,14 +223,24 @@ public class DataSourceHolder {
 	}
 	public static void commit(TransactionStatus status){
 		String datasource = transactionStatus.get(status);
-		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		DataSourceTransactionManager dtm = null;
+		if(BasicUtil.isEmpty(datasource)){
+			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
+		}else {
+			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("anyline.transaction." + datasource);
+		}
 		dtm.commit(status);
 		transactionStatus.remove(status);
 	}
 
 	public static void rollback(TransactionStatus status){
 		String datasource = transactionStatus.get(status);
-		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		DataSourceTransactionManager dtm = null;
+		if(BasicUtil.isEmpty(datasource)){
+			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
+		}else {
+			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("anyline.transaction." + datasource);
+		}
 		dtm.rollback(status);
 		transactionStatus.remove(status);
 	}
@@ -240,7 +255,6 @@ public class DataSourceHolder {
 
 
 	public static String regDataSourceTransactionManager(String key, DataSource ds){
-
 		String tm_id = "anyline.transaction." + key;
 		//事务管理器
 		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
