@@ -53,6 +53,8 @@ public class DataSourceHolder {
     private static List<String> dataSources = new ArrayList<>();
 	//数据源对应的数据库类型
 	private static Map<String, DatabaseType> types = new HashMap<>();
+
+	private static Map<TransactionStatus, String> transactionStatus = new Hashtable<>();
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
     }
@@ -190,6 +192,7 @@ public class DataSourceHolder {
 		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
 		// 获取事务
 		TransactionStatus status = dtm.getTransaction(definition);
+		transactionStatus.put(status, datasource);
 		return status;
 	}
 	public static TransactionStatus startTransaction(String datasource, int behavior){
@@ -202,14 +205,29 @@ public class DataSourceHolder {
 	public static TransactionStatus startTransaction(String datasource){
 		return startTransaction(datasource, TransactionDefinition.PROPAGATION_REQUIRED);
 	}
-	public static void commit(String datasource, TransactionStatus status){
-		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
-		dtm.commit(status);
+
+	public static TransactionStatus startTransaction(DefaultTransactionDefinition definition){
+		return startTransaction(curDataSource(), definition);
+	}
+	public static TransactionStatus startTransaction(int behavior){
+		return startTransaction(curDataSource(), behavior);
 	}
 
-	public static void rollback(String datasource, TransactionStatus status){
+	public static TransactionStatus startTransaction(){
+		return startTransaction(curDataSource());
+	}
+	public static void commit(TransactionStatus status){
+		String datasource = transactionStatus.get(status);
+		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
+		dtm.commit(status);
+		transactionStatus.remove(status);
+	}
+
+	public static void rollback(TransactionStatus status){
+		String datasource = transactionStatus.get(status);
 		DataSourceTransactionManager dtm = (DataSourceTransactionManager)SpringContextUtil.getBean("anyline.transaction."+datasource);
 		dtm.rollback(status);
+		transactionStatus.remove(status);
 	}
 	/**
 	 * 数据源列表中是否已包含指定数据源
