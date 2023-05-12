@@ -14,7 +14,9 @@ import java.util.Map.Entry;
 public class SpringContextUtil implements ApplicationContextAware {
 	 
 	public static ApplicationContext applicationContext;
-
+	public static void init(ApplicationContext applicationContext){
+		SpringContextUtil.applicationContext = applicationContext;
+	}
 	@Override
 	public void setApplicationContext(ApplicationContext ac) throws BeansException { 
 		SpringContextUtil.applicationContext = ac;
