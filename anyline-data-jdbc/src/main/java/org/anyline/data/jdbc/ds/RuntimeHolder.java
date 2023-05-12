@@ -2,73 +2,31 @@ package org.anyline.data.jdbc.ds;
 
 import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.anyline.data.listener.DMListener;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.Hashtable;
 import java.util.Map;
 
-@Component
-public class RuntimeHolder  implements ApplicationContextAware {
+public class RuntimeHolder {
 
     private static Logger log = LoggerFactory.getLogger(RuntimeHolder.class);
     private static Map<String, JDBCRuntime> runtimes = new Hashtable();
-    private static ApplicationContext context;
-    private static DefaultListableBeanFactory factory;
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
-        factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
-        SpringContextUtil.applicationContext = context;
-        load();
+     private static DefaultListableBeanFactory factory;
+    public static void init(DefaultListableBeanFactory factory){
+        RuntimeHolder.factory = factory;
     }
-    //加载配置文件
-    private void load(){
-        Environment env = context.getEnvironment();
-        // 读取配置文件获取更多数据源
-        String prefixs = env.getProperty("spring.datasource.list");
-        boolean multiple = false;
-        if(null != prefixs){
-            for (String prefix : prefixs.split(",")) {
-                // 多个数据源
-                String ds = DataSourceUtil.buildDataSource(prefix,"spring.datasource."+prefix,env);
-                reg(prefix, ds);
-                multiple = true;
-                log.info("[创建数据源][prefix:{}]",prefix);
-            }
-        }
-        //默认数据源 有多个数据源的情况下 再注册anyline.service.default
-        //如果单个数据源 只通过@serveri注解 注册一个anyline.service
-        //anyline.service.default 用来操作主数据源
-        //anyline.service.sso 用来操作sso数据源
-        //anyline.service.common 用来操作所有数据源
-        JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
-        if(null != template) {
-            if(multiple) {
-                reg("default", template, null);
-            }
-            JDBCRuntime runtime = new JDBCRuntime("common", template, null);
-            runtimes.put("common", runtime);
-        }
-    }
-
     public static void reg(String key, String ds){
-        DataSourceHolder.reg(key);
+        //DataSourceHolder.reg(key);
         String template_key = "anyline.jdbc.template." + key;
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
@@ -80,8 +38,12 @@ public class RuntimeHolder  implements ApplicationContextAware {
         reg(key, template, null);
     }
 
+    public static void reg(String key, JDBCRuntime runtime){
+        runtimes.put(key, runtime);
+    }
+
     public static void reg(String key, DataSource ds){
-        DataSourceHolder.reg(key);
+        //DataSourceHolder.reg(key);
         String template_key = "anyline.jdbc.template." + key;
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
@@ -99,6 +61,7 @@ public class RuntimeHolder  implements ApplicationContextAware {
         if(!ConfigTable.IS_MULTIPLE_SERVICE){
             return;
         }
+        String tm_key = "anyline.transaction." + datasource;
         String dao_key = "anyline.dao." + datasource;
         String service_key = "anyline.service." + datasource;
         log.warn("[instance service][data source:{}][instance id:{}]", datasource, service_key);
@@ -115,6 +78,7 @@ public class RuntimeHolder  implements ApplicationContextAware {
         serviceBuilder.addPropertyValue("cacheProvider", SpringContextUtil.getBean("anyline.cache.provider"));
         BeanDefinition serviceDefinition = serviceBuilder.getBeanDefinition();
         factory.registerBeanDefinition(service_key, serviceDefinition);
+
     }
     public static JDBCRuntime getRuntime(){
         return getRuntime(DataSourceHolder.curDataSource());
