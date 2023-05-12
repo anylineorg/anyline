@@ -37,7 +37,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import javax.sql.DataSource;
 import java.util.*;
 
-public class DataSourceHolder { 
+
+public class DataSourceHolder {
 	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class);
 
 	// 切换前数据源 
@@ -51,7 +52,11 @@ public class DataSourceHolder {
 	private static Map<String, DatabaseType> types = new HashMap<>();
     static{ 
     	THREAD_AUTO_RECOVER.set(false); 
-    } 
+    }
+
+
+
+
     public static String curDataSource() {
         return THREAD_CUR_SOURCE.get();
     }
@@ -184,6 +189,29 @@ public class DataSourceHolder {
 	}
 
 
+	public static String regDataSourceTransactionManager(String key, DataSource ds){
+
+		String tm_id = "anyline.transaction." + key;
+		//事务管理器
+		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
+		tm_builder.addPropertyValue("dataSource", ds);
+		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
+		factory.registerBeanDefinition(tm_id, tm_definition);
+		log.warn("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		return tm_id;
+	}
+	public static String regDataSourceTransactionManager(String key, String ds){
+		String tm_id = "anyline.transaction." + key;
+		//事务管理器
+		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
+		tm_builder.addPropertyReference("dataSource", ds);
+		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
+		factory.registerBeanDefinition(tm_id, tm_definition);
+		log.warn("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		return tm_id;
+	}
 
 	/**
 	 * 注册数据源
@@ -200,14 +228,7 @@ public class DataSourceHolder {
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
-
-		//事务管理器
-		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
-		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
-		tm_builder.addPropertyReference("dataSource", ds);
-		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
-		factory.registerBeanDefinition("anyline.transaction." + key, tm_definition);
-
+		regDataSourceTransactionManager(key, ds);
 		reg(key);
 		RuntimeHolder.reg(key, ds);
 		return ds;
@@ -219,14 +240,7 @@ public class DataSourceHolder {
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
-
-		//事务管理器
-		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
-		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
-		tm_builder.addPropertyValue("dataSource", ds);
-		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
-		factory.registerBeanDefinition("anyline.transaction." + key, tm_definition);
-
+		regDataSourceTransactionManager(key, ds);
 		reg(key);
 		RuntimeHolder.reg(key, ds);
 		return ds;
