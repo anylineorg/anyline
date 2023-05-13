@@ -220,8 +220,11 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-kingbase">
-
 <img alt="kingbase" src="http://cdn.anyline.org/img/logo/kingbase.png" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-opengauss">
+<img alt="OpenGauss" src="http://cdn.anyline.org/img/logo/opengauss.png" width="100">
 </a>
 
 
@@ -236,7 +239,7 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 
 
 <a href="">
-<img alt="南大通用" src="http://cdn.anyline.org/img/logo/gbasedbt.jpg" width="100">
+<img alt="南大通用" src="http://cdn.anyline.org/img/logo/gbase.jpg" width="100">
 </a>
 
 <a href="">
