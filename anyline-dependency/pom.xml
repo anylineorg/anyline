@@ -206,7 +206,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-gbasedbt</artifactId>
+				<artifactId>anyline-data-jdbc-gbase</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -267,6 +267,11 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-oceanbase</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-opengauss</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
