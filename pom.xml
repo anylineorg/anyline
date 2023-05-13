@@ -57,7 +57,8 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-db2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-dm</module>							<!--达梦-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbasedbt</module>					<!--南大通用-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hgdb</module>						<!--瀚高-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hsqldb</module>
@@ -70,6 +71,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mysql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-neo4j</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oceanbase</module>
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-opengauss</module>					<!--高斯-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oracle</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar</module>						<!--神舟通用-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-polardb</module>
