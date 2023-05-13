@@ -113,6 +113,8 @@ public class SQLAdapterUtil {
 			adapter =  adapters.get(DatabaseType.KingBase.getCode());
 		}else if(adapters.containsKey(DatabaseType.OceanBase.getCode()) && name.contains("oceanbase")){
 			adapter =  adapters.get(DatabaseType.OceanBase.getCode());
+		}else if(adapters.containsKey(DatabaseType.Opengauss.getCode()) && name.contains("opengauss")){
+			adapter =  adapters.get(DatabaseType.Opengauss.getCode());
 		}else if(adapters.containsKey(DatabaseType.PolarDB.getCode()) && name.contains("polardb")){
 			adapter =  adapters.get(DatabaseType.PolarDB.getCode());
 		}else if(adapters.containsKey(DatabaseType.SQLite.getCode()) && name.contains("sqlite")){
