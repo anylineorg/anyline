@@ -1,4 +1,4 @@
-package org.anyline.data.jdbc.gbasedb;
+package org.anyline.data.jdbc.gbase;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.data.jdbc.adapter.gbasedb")
+@Repository("anyline.data.jdbc.adapter.gbase")
 public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
  
 	public DatabaseType type(){
@@ -21,7 +21,7 @@ public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		delimiterTo = "";
 	}
 
-	@Value("${anyline.jdbc.delimiter.gbasedb:}")
+	@Value("${anyline.jdbc.delimiter.gbase:}")
 	private String delimiter;
 
 	@Override
