@@ -111,6 +111,8 @@ public class SQLAdapterUtil {
 			adapter =  adapters.get(DatabaseType.HighGo.getCode());
 		}else if(adapters.containsKey(DatabaseType.KingBase.getCode()) && name.contains("kingbase")){
 			adapter =  adapters.get(DatabaseType.KingBase.getCode());
+		}else if(adapters.containsKey(DatabaseType.GBase.getCode()) && name.contains("gbase")){
+			adapter =  adapters.get(DatabaseType.GBase.getCode());
 		}else if(adapters.containsKey(DatabaseType.OceanBase.getCode()) && name.contains("oceanbase")){
 			adapter =  adapters.get(DatabaseType.OceanBase.getCode());
 		}else if(adapters.containsKey(DatabaseType.Opengauss.getCode()) && name.contains("opengauss")){
