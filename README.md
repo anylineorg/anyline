@@ -233,8 +233,8 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 </a>
 
 
-<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-hgdb">
-<img alt="hgdb" src="http://cdn.anyline.org/img/logo/hgdb.webp" width="100">
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-highgo">
+<img alt="highgo" src="http://cdn.anyline.org/img/logo/highgo.webp" width="100">
 </a>
 
 
