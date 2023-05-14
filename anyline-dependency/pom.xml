@@ -39,7 +39,7 @@
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
 		<jdbc-ojdbc.version>21.3.0.0</jdbc-ojdbc.version><!-- oracle -->
 		<jdbc-postgresql.version>42.4.1</jdbc-postgresql.version>
-		<jdbc-hgdb.version>4.0-jdbc42</jdbc-hgdb.version>
+		<jdbc-highgo.version>4.0-jdbc42</jdbc-highgo.version>
 		<jdbc-mariadb.version>2.4.4</jdbc-mariadb.version>
 		<jdbc-clickhouse.veriosn>0.3.2-patch7</jdbc-clickhouse.veriosn>
 		<jdbc-dm.veriosn>8.1.1.49</jdbc-dm.veriosn>
@@ -217,7 +217,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-hgdb</artifactId>
+				<artifactId>anyline-data-jdbc-highgo</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -501,9 +501,9 @@
 				<version>${jdbc-dm.veriosn}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.hgdb</groupId>
-				<artifactId>hgdb</artifactId>
-				<version>${jdbc-hgdb.version}</version>
+				<groupId>com.highgo</groupId>
+				<artifactId>highgo</artifactId>
+				<version>${jdbc-highgo.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mariadb.jdbc</groupId>

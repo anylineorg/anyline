@@ -60,7 +60,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用(postgresql)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hgdb</module>						<!--瀚高-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-highgo</module>						<!--瀚高-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hsqldb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-influxdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-informix</module>
