@@ -40,7 +40,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	protected AnylineDao dao;
 
 	public DatabaseType type(){
-		return DatabaseType.ORACLE;
+		return DatabaseType.oscar;
 	}
 
 	@Value("${anyline.jdbc.delimiter.oscar.oracle:}")
