@@ -21,16 +21,15 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.anyline</groupId>
-			<artifactId>anyline-data-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-data-jdbc</artifactId>
 		</dependency>
 	</dependencies>
 </project>

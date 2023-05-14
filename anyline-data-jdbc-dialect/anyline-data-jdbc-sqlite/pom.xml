@@ -22,12 +22,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data-jdbc</artifactId>
         </dependency>
     </dependencies>
 </project>

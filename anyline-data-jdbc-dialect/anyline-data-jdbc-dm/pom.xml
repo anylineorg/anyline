@@ -24,12 +24,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.dameng</groupId>
             <artifactId>Dm8JdbcDriver18</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data-jdbc</artifactId>
         </dependency>
     </dependencies>
 </project>

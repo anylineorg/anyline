@@ -21,12 +21,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data-jdbc</artifactId>
         </dependency>
     </dependencies>
 </project>

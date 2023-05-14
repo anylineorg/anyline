@@ -23,13 +23,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.jcouchdb</groupId>
             <artifactId>jcouchdb</artifactId>
-            <version>1.0.1-1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data-jdbc</artifactId>
         </dependency>
 
     </dependencies>

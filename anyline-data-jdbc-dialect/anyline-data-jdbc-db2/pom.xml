@@ -23,12 +23,13 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.anyline</groupId>
-			<artifactId>anyline-data-jdbc</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.ibm.db2</groupId>
 			<artifactId>jcc</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-data-jdbc</artifactId>
 		</dependency>
 	</dependencies>
 </project>

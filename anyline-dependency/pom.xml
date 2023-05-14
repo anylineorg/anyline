@@ -46,6 +46,7 @@
 		<jdbc-sqlite.veriosn>3.36.0.3</jdbc-sqlite.veriosn>
 		<jdbc-neo4j.veriosn>4.0.0</jdbc-neo4j.veriosn>
 		<jdbc-tdengine.version>3.0.0</jdbc-tdengine.version>
+		<jdbc-jcouchdb.version>1.0.1-1</jdbc-jcouchdb.version>
 
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>
@@ -523,6 +524,11 @@
 				<groupId>com.taosdata.jdbc</groupId>
 				<artifactId>taos-jdbcdriver</artifactId>
 				<version>${jdbc-tdengine.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.jcouchdb</groupId>
+				<artifactId>jcouchdb</artifactId>
+				<version>${jdbc-jcouchdb.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
