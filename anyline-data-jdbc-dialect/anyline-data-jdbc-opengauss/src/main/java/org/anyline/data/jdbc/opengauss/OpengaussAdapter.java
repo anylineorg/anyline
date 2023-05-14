@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.postgresql")
+@Repository("anyline.data.jdbc.adapter.opengauss")
 public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type(){

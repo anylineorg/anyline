@@ -64,7 +64,7 @@ public class DataSourceHolder {
 	 * 已注册成功的所有数据源
 	 * @return List
 	 */
-	public static List<String> dataSources(){
+	public static List<String> list(){
 		return dataSources;
 	}
 

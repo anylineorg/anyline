@@ -57,15 +57,15 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-db2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-dm</module>							<!--达梦-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用(oracle)-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用(postgresql)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hgdb</module>						<!--瀚高-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hsqldb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-influxdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-informix</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase</module>					<!--人大金仓-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase-postgresql</module>		<!--人大金仓-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase</module>					<!--人大金仓(oracle)-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase-postgresql</module>		<!--人大金仓(postgresql)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mariadb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mssql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mysql</module>
@@ -82,6 +82,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-tdengine</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-timescale</module>
+
 		<module>anyline-start</module>
 		<module>anyline-start/anyline-start-jdbc</module>
 		<module>anyline-start/anyline-start-mysql</module>
@@ -89,6 +90,7 @@
 		<module>anyline-start/anyline-start-mvc-jsp</module>
 		<module>anyline-start/anyline-start-mvc-jsp-mysql</module>
 		<module>anyline-start/anyline-start-mvc-mysql</module>
+
 		<module>anyline-ext/anyline-jpush</module>
 		<module>anyline-ext/anyline-mail</module>
 		<module>anyline-nacos</module>
