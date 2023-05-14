@@ -237,7 +237,7 @@ SQL Server
 
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-highgo">
-<img alt="瀚高" src="http://cdn.anyline.org/img/logo/highgo.webp" width="100">瀚高
+<img alt="瀚高" src="http://cdn.anyline.org/img/logo/hgdb.webp" width="100">瀚高
 </a>
 
 
