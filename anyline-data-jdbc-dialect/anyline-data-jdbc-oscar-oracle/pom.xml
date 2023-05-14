@@ -11,20 +11,15 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-data-jdbc-tdengine</artifactId>
+    <artifactId>anyline-data-jdbc-oscar-oracle</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-tdengine</name>
-    <url>http://www.anyline.org/tdengine</url>
+    <name>anyline-data-jdbc-oscar-oracle</name>
+    <url>http://www.anyline.org/oscar/oracle</url>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.taosdata.jdbc</groupId>
-            <artifactId>taos-jdbcdriver</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

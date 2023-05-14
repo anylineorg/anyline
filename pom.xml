@@ -74,6 +74,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-opengauss</module>					<!--高斯-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oracle</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar</module>						<!--神舟通用-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar-oracle</module>				<!--神舟通用(oracle)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-polardb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-postgresql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-questdb</module>
@@ -116,7 +117,7 @@
         <module>anyline-sms</module>
         <module>anyline-encrypt</module>
         <module>anyline-boot</module>
-    </modules>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
