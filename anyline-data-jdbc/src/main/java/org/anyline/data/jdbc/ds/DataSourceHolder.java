@@ -60,7 +60,13 @@ public class DataSourceHolder {
     }
 
 
-
+	/**
+	 * 已注册成功的所有数据源
+	 * @return List
+	 */
+	public List<String> dataSources(){
+		return dataSources;
+	}
 
     public static String curDataSource() {
         return THREAD_CUR_SOURCE.get();
