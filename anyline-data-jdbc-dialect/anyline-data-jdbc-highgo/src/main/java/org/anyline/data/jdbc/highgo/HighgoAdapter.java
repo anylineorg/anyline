@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.highgo")
 public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+	
 	public DatabaseType type(){
 		return DatabaseType.HighGo;
 	}

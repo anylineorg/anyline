@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.clickhouse")
 public class ClickhouseAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.ClickHouse;
 	}

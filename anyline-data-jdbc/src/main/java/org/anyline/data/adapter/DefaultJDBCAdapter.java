@@ -76,6 +76,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
 
+
 	@Autowired(required = false)
 	@Qualifier("anyline.service")
 	protected AnylineService service;
@@ -83,6 +84,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	public DatabaseType type(){
 		return this.db;
+	}
+	public DatabaseType compatible(){
+		return null;
 	}
 	public DefaultJDBCAdapter(){
 		//当前数据库支持的数据类型
@@ -97,6 +101,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 		}
 	}
+
 
 	@Override
 	public String getDelimiterFr(){

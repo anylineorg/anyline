@@ -337,7 +337,7 @@ public class DataSourceHolder {
 		return reg(key, param);
 	}
 	public static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
-		return reg(key, "om.zaxxer.hikari.HikariDataSource", type.getDriver(), url, user, password);
+		return reg(key, "om.zaxxer.hikari.HikariDataSource", type.driver(), url, user, password);
 	}
 
 	public static String reg(String key, Map param, boolean over) throws Exception{

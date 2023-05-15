@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.mariadb")
 public class MariaAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.MYSQL;
 	} 

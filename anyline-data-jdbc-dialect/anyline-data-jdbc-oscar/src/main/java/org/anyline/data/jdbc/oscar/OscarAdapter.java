@@ -28,7 +28,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.oscar")
 public class OscarAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 	public DatabaseType type(){
 		return DatabaseType.oscar;

@@ -628,31 +628,31 @@ public class Column implements org.anyline.entity.data.Column{
         if(null == column){
             return false;
         }
-        if(BasicUtil.equals(typeName, column.getTypeName())){
+        if(!BasicUtil.equals(typeName, column.getTypeName())){
             return false;
         }
-        if(BasicUtil.equals(precision, column.getPrecision())){
+        if(!BasicUtil.equals(precision, column.getPrecision())){
             return false;
         }
-        if(BasicUtil.equals(scale, column.getScale())){
+        if(!BasicUtil.equals(scale, column.getScale())){
             return false;
         }
-        if(BasicUtil.equals(defaultValue, column.getDefaultValue())){
+        if(!BasicUtil.equals(defaultValue, column.getDefaultValue())){
             return false;
         }
-        if(BasicUtil.equals(comment, column.getComment())){
+        if(!BasicUtil.equals(comment, column.getComment())){
             return false;
         }
-        if(BasicUtil.equals(nullable, column.isNullable())){
+        if(!BasicUtil.equals(nullable, column.isNullable())){
             return false;
         }
-        if(BasicUtil.equals(isAutoIncrement, column.isAutoIncrement())){
+        if(!BasicUtil.equals(isAutoIncrement, column.isAutoIncrement())){
             return false;
         }
-        if(BasicUtil.equals(charset, column.getCharset())){
+        if(!BasicUtil.equals(charset, column.getCharset())){
             return false;
         }
-        if(BasicUtil.equals(isPrimaryKey, column.isPrimaryKey())){
+        if(!BasicUtil.equals(isPrimaryKey, column.isPrimaryKey())){
             return false;
         }
 

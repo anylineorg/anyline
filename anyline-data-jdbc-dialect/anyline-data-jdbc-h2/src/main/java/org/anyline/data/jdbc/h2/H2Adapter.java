@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.h2")
 public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.H2;
 	} 

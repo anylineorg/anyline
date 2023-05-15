@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.questdb")
 public class QuestDbAdapter extends PostgresqlAdapter {
+    
     public DatabaseType type(){
         return DatabaseType.QuestDB;
     }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.gbase")
 public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.GBase;
 	} 

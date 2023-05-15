@@ -28,7 +28,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.kingbase")
 public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.KingBase;
 	}

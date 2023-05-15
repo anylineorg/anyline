@@ -30,7 +30,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.postgresql")
 public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.PostgreSQL;
 	}

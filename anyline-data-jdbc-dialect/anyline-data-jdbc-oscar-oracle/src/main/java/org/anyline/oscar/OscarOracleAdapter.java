@@ -33,7 +33,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.oscar.oracle")
 public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 	@Autowired(required = false)
 	@Qualifier("anyline.dao")

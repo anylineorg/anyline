@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.cassandra")
 public class CassandraAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+    
     public DatabaseType type(){
         return DatabaseType.Cassandra;
     }

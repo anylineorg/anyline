@@ -31,7 +31,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mssql") 
 public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-	 
+	
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 

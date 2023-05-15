@@ -21,7 +21,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.TDengine;
 	}

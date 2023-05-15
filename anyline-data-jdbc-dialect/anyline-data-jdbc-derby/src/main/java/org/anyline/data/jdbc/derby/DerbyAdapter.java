@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.derby")
 public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+	
 	public DatabaseType type(){
 		return DatabaseType.Derby;
 	}

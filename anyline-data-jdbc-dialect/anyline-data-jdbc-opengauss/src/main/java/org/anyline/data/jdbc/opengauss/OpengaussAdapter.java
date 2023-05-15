@@ -28,7 +28,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.opengauss")
 public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+	
 	public DatabaseType type(){
 		return DatabaseType.Opengauss;
 	}

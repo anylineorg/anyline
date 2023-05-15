@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.hsqldb")
 public class HSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.HSQLDB;
 	} 

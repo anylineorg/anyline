@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.timescale")
 public class TimescaleAdapter extends PostgresqlAdapter {
+    
     public DatabaseType type(){
         return DatabaseType.Timescale;
     }

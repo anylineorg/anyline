@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.influxdb")
 public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
- 
+	
 	public DatabaseType type(){
 		return DatabaseType.InfluxDB;
 	} 

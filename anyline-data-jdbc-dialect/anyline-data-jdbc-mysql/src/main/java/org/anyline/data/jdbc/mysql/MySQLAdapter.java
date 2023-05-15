@@ -24,7 +24,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-
+	
 	public DatabaseType type(){
 		return DatabaseType.MYSQL; 
 	}

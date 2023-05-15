@@ -66,6 +66,12 @@ public interface JDBCAdapter {
 	public String getDelimiterFr();
 	public String getDelimiterTo();
 
+	/**
+	 * 对应的兼容模式，有些数据库会兼容oracle或pg,需要分别提供两个JDBCAdapter或者直接依赖oracle/pg的adapter
+	 * 参考SQLAdapterUtil定位adapter的方法
+	 * @return
+	 */
+	public DatabaseType compatible();
 
 	/* *****************************************************************************************************************
 	 *

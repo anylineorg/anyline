@@ -37,6 +37,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.neo4j")
 public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+    
     public DatabaseType type(){
         return DatabaseType.Neo4j;
     }

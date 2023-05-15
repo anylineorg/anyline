@@ -43,6 +43,7 @@ import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
+	
 	public DatabaseType type(){
 		return DatabaseType.DB2;
 	} 
