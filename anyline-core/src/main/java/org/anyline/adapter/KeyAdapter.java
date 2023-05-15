@@ -10,8 +10,8 @@ public interface KeyAdapter extends Serializable {
     public static enum KEY_CASE{
         CONFIG				{public String getCode(){return "CONFIG";} 			public String getName(){return "按配置文件";}},
         SRC					{public String getCode(){return "SRC";} 			public String getName(){return "不转换";}},
-        UPPER				{public String getCode(){return "UPPER";} 			public String getName(){return "强制大写";}},
-        LOWER				{public String getCode(){return "LOWER";} 			public String getName(){return "强制小写";}},
+        UPPER				{public String getCode(){return "UPPER";} 			public String getName(){return "强制大写";} public String convert(String value){if(null == value) return null; else return value.toUpperCase();}},
+        LOWER				{public String getCode(){return "LOWER";} 			public String getName(){return "强制小写";} public String convert(String value){if(null == value) return null; else return value.toLowerCase();}},
         // 以下规则取消
         // 下/中划线转成驼峰
         Camel 				{public String getCode(){return "Camel";} 			public String getName(){return "大驼峰";}},
@@ -26,6 +26,9 @@ public interface KeyAdapter extends Serializable {
 
         public abstract String getName();
         public abstract String getCode();
+        public String convert(String value){
+            return value;
+        }
     }
     public String key(String key);
     public KEY_CASE getKeyCase();
@@ -43,4 +46,5 @@ public interface KeyAdapter extends Serializable {
         }
         return keyAdapter;
     }
+
 }
