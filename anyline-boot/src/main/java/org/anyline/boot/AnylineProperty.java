@@ -161,6 +161,10 @@ public class AnylineProperty {
      */
     protected String defaultPrimaryKey							= "id"			;	// 默认主键
     /**
+     * 是否需要提供主事务管理器,多数据源时需要
+     */
+    protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器,多数据源时需要
+    /**
      * 主键生成器机器id
      */
     public int primaryGeneratorWorkerId					        = 1				;	// 主键生成器机器id
@@ -906,5 +910,14 @@ public class AnylineProperty {
     public void setEntityFieldSelectDependencyCompare(String entityFieldSelectDependencyCompare) {
         this.entityFieldSelectDependencyCompare = entityFieldSelectDependencyCompare;
         ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE = Compare.valueOf(entityFieldSelectDependencyCompare.toUpperCase());
+    }
+
+    public boolean isOpenPrimaryTransactionManager() {
+        return openPrimaryTransactionManager;
+    }
+
+    public void setOpenPrimaryTransactionManager(boolean openPrimaryTransactionManager) {
+        this.openPrimaryTransactionManager = openPrimaryTransactionManager;
+        ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER = openPrimaryTransactionManager;
     }
 }
