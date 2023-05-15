@@ -194,6 +194,12 @@ public class DataSourceHolder {
 		} 
 	}
 
+	/**
+	 * 启动事务
+	 * @param datasource 数据源
+	 * @param definition 事务定义相关参数
+	 * @return TransactionStatus 回溯可提交时需要
+	 */
 	public static TransactionStatus startTransaction(String datasource, DefaultTransactionDefinition definition){
 		DataSourceTransactionManager dtm = null;
 		if(BasicUtil.isEmpty(datasource)){
@@ -207,6 +213,12 @@ public class DataSourceHolder {
 		transactionStatus.put(status, datasource);
 		return status;
 	}
+	/**
+	 * 启动事务
+	 * @param datasource 数据源
+	 * @return behavior 事务传播方式<br/>
+	 * 更多参数调用startTransaction(String datasource, DefaultTransactionDefinition definition)
+	 */
 	public static TransactionStatus startTransaction(String datasource, int behavior){
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 		// 定义事务传播方式
@@ -214,20 +226,45 @@ public class DataSourceHolder {
 		return startTransaction(datasource, definition);
 	}
 
+	/**
+	 * 启动事务
+	 * 	 * @param datasource 数据源
+	 * 更多参数调用startTransaction(String datasource, DefaultTransactionDefinition definition)
+	 */
 	public static TransactionStatus startTransaction(String datasource){
 		return startTransaction(datasource, TransactionDefinition.PROPAGATION_REQUIRED);
 	}
 
+	/**
+	 * 启动事务(默认数据源)
+	 * @param definition 事务定义相关参数
+	 * @return TransactionStatus 回溯可提交时需要
+	 */
 	public static TransactionStatus startTransaction(DefaultTransactionDefinition definition){
 		return startTransaction(curDataSource(), definition);
 	}
+	/**
+	 * 开启事务
+	 * @param behavior 事务传播方式<br/>
+	 * 更多参数调用startTransaction(String datasource, DefaultTransactionDefinition definition)
+	 * @return TransactionStatus 回溯可提交时需要
+	 */
 	public static TransactionStatus startTransaction(int behavior){
 		return startTransaction(curDataSource(), behavior);
 	}
 
+	/**
+	 * 开启事务
+	 * @return TransactionStatus 回溯可提交时需要
+	 */
 	public static TransactionStatus startTransaction(){
 		return startTransaction(curDataSource());
 	}
+
+	/**
+	 * 提交事务
+	 * @param status 开启事务时返回TransactionStatus
+	 */
 	public static void commit(TransactionStatus status){
 		String datasource = transactionStatus.get(status);
 		DataSourceTransactionManager dtm = null;
@@ -240,6 +277,10 @@ public class DataSourceHolder {
 		transactionStatus.remove(status);
 	}
 
+	/**
+	 * 回滚事务
+	 * @param status 开启事务时返回TransactionStatus
+	 */
 	public static void rollback(TransactionStatus status){
 		String datasource = transactionStatus.get(status);
 		DataSourceTransactionManager dtm = null;
@@ -261,10 +302,10 @@ public class DataSourceHolder {
 	}
 
 
-	public static String regDataSourceTransactionManager(String key, DataSource ds){
-		return regDataSourceTransactionManager(key, ds, false);
+	public static String regTransactionManager(String key, DataSource ds){
+		return regTransactionManager(key, ds, false);
 	}
-	public static String regDataSourceTransactionManager(String key, DataSource ds, boolean primary){
+	public static String regTransactionManager(String key, DataSource ds, boolean primary){
 		String tm_id = "anyline.transaction." + key;
 		//事务管理器
 		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
@@ -277,10 +318,10 @@ public class DataSourceHolder {
 		return tm_id;
 	}
 
-	public static String regDataSourceTransactionManager(String key, String ds){
-		return regDataSourceTransactionManager(key, ds, false);
+	public static String regTransactionManager(String key, String ds){
+		return regTransactionManager(key, ds, false);
 	}
-	public static String regDataSourceTransactionManager(String key, String ds, boolean primary){
+	public static String regTransactionManager(String key, String ds, boolean primary){
 		String tm_id = "anyline.transaction." + key;
 		//事务管理器
 		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
@@ -308,7 +349,7 @@ public class DataSourceHolder {
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
-		regDataSourceTransactionManager(key, ds);
+		regTransactionManager(key, ds);
 		reg(key);
 		RuntimeHolder.reg(key, ds);
 		return ds;
@@ -320,7 +361,7 @@ public class DataSourceHolder {
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
-		regDataSourceTransactionManager(key, ds);
+		regTransactionManager(key, ds);
 		reg(key);
 		RuntimeHolder.reg(key, ds);
 		return ds;

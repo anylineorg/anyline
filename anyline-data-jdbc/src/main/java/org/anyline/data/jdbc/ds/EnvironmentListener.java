@@ -39,7 +39,7 @@ public class EnvironmentListener implements ApplicationContextAware {
                 try {
                     String ds = DataSourceUtil.buildDataSource(prefix, "spring.datasource." + prefix, env);
                     if(null != ds) {
-                        DataSourceHolder.regDataSourceTransactionManager(prefix, ds);
+                        DataSourceHolder.regTransactionManager(prefix, ds);
                         DataSourceHolder.reg(prefix);
                         RuntimeHolder.reg(prefix, ds);
                         multiple = true;
@@ -61,7 +61,7 @@ public class EnvironmentListener implements ApplicationContextAware {
                 RuntimeHolder.reg("default", template, null);
                 //注册一个主事务管理器
                 if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
-                    DataSourceHolder.regDataSourceTransactionManager("primary", template.getDataSource(), true);
+                    DataSourceHolder.regTransactionManager("primary", template.getDataSource(), true);
                 }
             }
             JDBCRuntime runtime = new JDBCRuntime("common", template, null);
