@@ -437,7 +437,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		builder.append(" ) T WHERE 1=1");
 
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+			builder.append(" AND TABLE_NAME LIKE '").append(objectName(pattern)).append("'");
 		}
 		if(BasicUtil.isNotEmpty(types)){
 			String[] tmps = types.split(",");
@@ -471,7 +471,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT * FROM USER_TAB_COMMENTS\n");
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append("WHERE TABLE_NAME = '").append(pattern).append("'");
+			builder.append("WHERE TABLE_NAME = '").append(objectName(pattern)).append("'");
 		}
 		return sqls;
 	}
@@ -521,7 +521,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 		builder.append("SELECT A.VIEW_NAME,A.TEXT DEFINITION_SQL,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+			builder.append(" AND TABLE_NAME LIKE '").append(objectName(pattern)).append("'");
 		}
 		sqls.add(builder.toString());
 		return sqls;
@@ -702,7 +702,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 			builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM USER_TAB_COLUMNS    M \n");
 			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n");
 			if (BasicUtil.isNotEmpty(table)) {
-				builder.append("WHERE M.TABLE_NAME = '").append(table.getName()).append("'");
+				builder.append("WHERE M.TABLE_NAME = '").append(objectName(table.getName())).append("'");
 			}
 		}
 		sqls.add(builder.toString());
@@ -1696,7 +1696,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		builder.append("SELECT COL.* FROM DBA_CONSTRAINTS CON ,DBA_CONS_COLUMNS COL\n");
 		builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
 		builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
-		builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
+		builder.append("AND COL.TABLE_NAME = '").append(objectName(table.getName())).append("'\n");
 		if(BasicUtil.isNotEmpty(table.getSchema())){
 			builder.append(" AND COL.OWNER = '").append(table.getSchema()).append("'");
 		}

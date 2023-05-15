@@ -356,7 +356,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append("FROM SYS.EXTENDED_PROPERTIES DS\n");
 		builder.append("LEFT JOIN SYS.SYSOBJECTS TBS ON DS.MAJOR_ID=TBS.ID \n");
 		builder.append("WHERE  DS.MINOR_ID=0 \n");
-		if(BasicUtil.isNotEmpty(pattern)){
+		if(BasicUtil.isNotEmpty(objectName(pattern))){
 			builder.append("TBS.NAME = '").append(pattern).append("'");
 		}
 		sqls.add(builder.toString());
@@ -520,7 +520,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append("LEFT JOIN  SYS.COLUMNS C ON A.ID = C.OBJECT_ID\n");
 			builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = A.ID AND B.MINOR_ID = C.COLUMN_ID\n");
 			if (null != table) {
-				builder.append("WHERE A.NAME='").append(table.getName()).append("'");
+				builder.append("WHERE A.NAME='").append(objectName(table.getName())).append("'");
 			}
 		}
 		sqls.add(builder.toString());
@@ -1516,7 +1516,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT  *  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \nWHERE TABLE_NAME='").append(table.getName()).append("'");
+		builder.append("SELECT  *  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \nWHERE TABLE_NAME='").append(objectName(table.getName())).append("'");
 		String catalog = table.getCatalog();
 		if(BasicUtil.isNotEmpty(catalog)){
 			builder.append("\nAND TABLE_CATALOG = '").append(catalog).append("'");

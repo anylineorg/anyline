@@ -321,7 +321,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			if(BasicUtil.isNotEmpty(schema)){
 				builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
 			}
-			builder.append(" AND M.TABLE_NAME = '").append(table.getName()).append("'");
+			builder.append(" AND M.TABLE_NAME = '").append(objectName(table.getName())).append("'");
 		}
 		sqls.add(builder.toString());
 		return sqls;
@@ -414,7 +414,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		builder.append("FROM pg_constraint m \n");
 		builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
 		builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
-		builder.append("WHERE ft.relname = '").append(table.getName()).append("'");
+		builder.append("WHERE ft.relname = '").append(objectName(table.getName())).append("'");
 		String schema = table.getSchema();
 		if(BasicUtil.isNotEmpty(schema)){
 			builder.append(" AND ns.nspname = '").append(schema).append("'");

@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
+@Repository("anyline.SQLAdapterUtil")
 public class SQLAdapterUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(SQLAdapterUtil.class);

@@ -21,6 +21,7 @@ package org.anyline.data.adapter;
 
 
 import org.anyline.adapter.EntityAdapter;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
@@ -3889,5 +3890,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	public void setPrimaryGenerator(PrimaryGenerator primaryGenerator) {
 		this.primaryGenerator = primaryGenerator;
+	}
+
+	@Override
+	public String objectName(String name) {
+		KeyAdapter.KEY_CASE keyCase = type().nameCase();
+		if(null != keyCase){
+			return keyCase.convert(name);
+		}
+		return name;
 	}
 }

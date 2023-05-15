@@ -93,6 +93,7 @@ public class ConfigTable {
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false			; 	// 是否禁用查询缓存
 	public static String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
+	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要提供主事务管理器,多数据源时需要
 
 	public static boolean PRIMARY_GENERATOR_UUID_ACTIVE					= false			;	// 是否开启默认的主键生成器(UUID)
 	public static boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false			;	// 是否开启默认的主键生成器(雪花)

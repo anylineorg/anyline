@@ -61,7 +61,6 @@ public class RuntimeHolder {
         if(!ConfigTable.IS_MULTIPLE_SERVICE){
             return;
         }
-        String tm_key = "anyline.transaction." + datasource;
         String dao_key = "anyline.dao." + datasource;
         String service_key = "anyline.service." + datasource;
         log.warn("[instance service][data source:{}][instance id:{}]", datasource, service_key);

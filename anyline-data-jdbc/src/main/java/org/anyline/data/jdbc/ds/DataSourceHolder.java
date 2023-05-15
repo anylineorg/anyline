@@ -198,6 +198,7 @@ public class DataSourceHolder {
 		DataSourceTransactionManager dtm = null;
 		if(BasicUtil.isEmpty(datasource)){
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
+			datasource = "";
 		}else {
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("anyline.transaction." + datasource);
 		}
@@ -261,22 +262,31 @@ public class DataSourceHolder {
 
 
 	public static String regDataSourceTransactionManager(String key, DataSource ds){
+		return regDataSourceTransactionManager(key, ds, false);
+	}
+	public static String regDataSourceTransactionManager(String key, DataSource ds, boolean primary){
 		String tm_id = "anyline.transaction." + key;
 		//事务管理器
 		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
 		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
 		tm_builder.addPropertyValue("dataSource", ds);
+		tm_builder.setPrimary(primary);
 		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
 		factory.registerBeanDefinition(tm_id, tm_definition);
 		log.warn("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
 		return tm_id;
 	}
+
 	public static String regDataSourceTransactionManager(String key, String ds){
+		return regDataSourceTransactionManager(key, ds, false);
+	}
+	public static String regDataSourceTransactionManager(String key, String ds, boolean primary){
 		String tm_id = "anyline.transaction." + key;
 		//事务管理器
 		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
 		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
 		tm_builder.addPropertyReference("dataSource", ds);
+		tm_builder.setPrimary(primary);
 		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
 		factory.registerBeanDefinition(tm_id, tm_definition);
 		log.warn("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);

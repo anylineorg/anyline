@@ -136,7 +136,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+			builder.append(" AND TABLE_NAME LIKE '").append(objectName(pattern)).append("'");
 		}
 		if(BasicUtil.isNotEmpty(types)){
 			String[] tmps = types.split(",");
@@ -357,7 +357,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			if(BasicUtil.isNotEmpty(schema)){
 				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 			}
-			builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
+			builder.append(" AND TABLE_NAME = '").append(objectName(objectName(table.getName()))).append("'");
 		}
 		sqls.add(builder.toString());
 		return sqls;
