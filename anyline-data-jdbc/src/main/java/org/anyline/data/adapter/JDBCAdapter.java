@@ -1570,5 +1570,5 @@ public interface JDBCAdapter {
 	 * @return String
 	 */
 	//public String type2class(String type);
-
+	public String objectName(String name);
 }
