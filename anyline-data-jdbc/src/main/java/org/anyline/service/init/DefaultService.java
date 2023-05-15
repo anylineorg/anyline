@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -53,7 +54,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
-
+@Primary
 @Service("anyline.service")
 public class DefaultService<E> implements AnylineService<E> {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
