@@ -49,6 +49,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -63,7 +64,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
-
+@Primary
 @Repository("anyline.dao")
 public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
