@@ -1,6 +1,7 @@
 package org.anyline.data.jdbc.ds;
 
 import org.anyline.data.jdbc.util.DataSourceUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,10 @@ public class EnvironmentListener implements ApplicationContextAware {
         if(null != template) {
             if(multiple) {
                 RuntimeHolder.reg("default", template, null);
+                //注册一个主事务管理器
+                if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
+                    DataSourceHolder.regDataSourceTransactionManager("primary", template.getDataSource(), true);
+                }
             }
             JDBCRuntime runtime = new JDBCRuntime("common", template, null);
             RuntimeHolder.reg("common", runtime);
