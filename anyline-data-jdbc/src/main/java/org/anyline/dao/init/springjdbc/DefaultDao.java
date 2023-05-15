@@ -3079,7 +3079,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			Column column = columns.get(ucolumn.getName().toUpperCase());
 			if(null != column){
 				// 修改列
-				if(column.equals(ucolumn)){
+				if(!column.equals(ucolumn)){
 					column.setTable(update);
 					column.setUpdate(ucolumn);
 					column.setService(table.getService());
