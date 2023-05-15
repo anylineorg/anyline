@@ -1570,5 +1570,11 @@ public interface JDBCAdapter {
 	 * @return String
 	 */
 	//public String type2class(String type);
+
+	/**
+	 * 对象名称格式化(大小写转换)，在查询系统表时需要
+	 * @param name name
+	 * @return String
+	 */
 	public String objectName(String name);
 }
