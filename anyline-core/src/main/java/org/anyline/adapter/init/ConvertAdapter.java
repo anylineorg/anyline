@@ -17,9 +17,7 @@ import java.math.BigInteger;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 public class ConvertAdapter {
 
@@ -42,7 +40,13 @@ public class ConvertAdapter {
             type.convert(convert);
         }
     }
-
+    public static Convert getConvert(Class origin, Class target){
+        Map<Class, Convert> map = converts.get(origin);
+        if(null != map){
+            return map.get(target);
+        }
+        return null;
+    }
 
     public static  Object convert(Object value, Class target){
         return convert(value, target, null);
@@ -58,6 +62,7 @@ public class ConvertAdapter {
             if(clazz == target){
                 return value;
             }
+            //Map转换成Entity
             if(value instanceof Map && ClassUtil.isWrapClass(target) && target != String.class){
                 if(value instanceof DataRow){
                     value = ((DataRow)value).entity(target);
@@ -66,8 +71,51 @@ public class ConvertAdapter {
                 }
                 return value;
             }
+            //转换成String类型
+            if(target == String.class){
+                if(value instanceof Collection){
+                    //集合<基础类型> > String
+                    Collection col = (Collection) value;
+                    Class component = ClassUtil.getComponentClass(value);
+                    if(ClassUtil.isPrimitiveClass(component) || component == String.class){
+                        if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)){
+                            return BeanUtil.concat(col);
+                        }else if("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                            return BeanUtil.object2json(col);
+                        }
+                    }
+                }else if(value.getClass().isArray()){
+                    //数组[基础类型] > String
+                    Class component = ClassUtil.getComponentClass(value);
+                    Object[] list = null;
+                    if(component == String.class){
+                       list = (String[]) value;
+                    }else if(component == int.class){
+                        list = BeanUtil.int2Integer((int[])value);
+                    }else if(component == double.class){
+                        list = BeanUtil.double2Double((double[])value);
+                    }else if(component == long.class){
+                        list = BeanUtil.long2Long((long[])value);
+                    }else if(component == float.class){
+                        list = BeanUtil.float2Float((float[])value);
+                    }
+                    if(null != list) {
+                        if ("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                            return BeanUtil.concat(list);
+                        } else if ("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+                            return BeanUtil.object2json(list);
+                        }
+                    }
+                }else if(value instanceof Map){
+                    Map map = (Map)value;
+                    return BeanUtil.map2json(map);
+                }else if(ClassUtil.isPrimitiveClass(value.getClass()) || value instanceof String){
+                    return value.toString();
+                }
+            }
             boolean success = false;
 
+            //根据注册的Convert类型转换
             Map<Class, Convert> map = converts.get(clazz);
             if(null != map) {
                 Convert convert = map.get(target);
