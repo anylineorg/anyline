@@ -277,15 +277,15 @@ public class BeanUtil {
 							Collection list = (Collection) ClassUtil.newInstance(targetClass);
 							Collection converts = convertList(v, componentClass);
 							list.addAll(converts);
-							if(list.size()>0) {
+							//if(list.size()>0) {
 								v = list;
-							}
+							//}
 						} else if (ClassUtil.isInSub(targetClass, Map.class)) {
 							Map map = (Map) ClassUtil.newInstance(targetClass);
 							map = object2map(map,v);
-							if(!map.isEmpty()) {
+							//if(!map.isEmpty()) {
 								v = map;
-							}
+							//}
 						} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
 							//entity
 							List<Field> fields = ClassUtil.getFields(targetClass, false, false);
@@ -1927,16 +1927,40 @@ public class BeanUtil {
 		return result;
 	}
 	public static List<String> toUpperCase(List<String> list){
-		if(null != list){
+		return toUpperCase(list,false);
+	}
+
+	/**
+	 * 条目转换大写
+	 * @param list list
+	 * @param update 是否更新原集合 或创建新集合
+	 * @return List
+	 */
+	public static List<String> toUpperCase(List<String> list, boolean update){
+		if(null == list){
+			return list;
+		}
+		List<String> result = null;
+		if(!update){
+			result = new ArrayList<>();
+			for(String value:list){
+				if(null != value){
+					 value = value.toUpperCase();
+				}
+				result.add(value);
+			}
+		}else{
 			int size = list.size();
 			for(int i=0; i<size; i++){
 				String value = list.get(i);
 				if(null != value){
-					list.set(i, value.toUpperCase());
+					result.set(i, value.toUpperCase());
 				}
 			}
+			result = list;
 		}
-		return list;
+
+		return result;
 	}
 	public static List<String> toLowerCase(List<String> list){
 		if(null != list){
@@ -3492,7 +3516,7 @@ public class BeanUtil {
 	public static List<String> removeAll(List<String> src, List<String> remove){
 		List<String> check = new ArrayList<>();
 		if(null != src){
-			toUpperCase(remove);
+			remove = toUpperCase(remove);
 			for(String item:src){
 				if(null != item && remove.contains(item.toUpperCase())){
 					check.add(item);
