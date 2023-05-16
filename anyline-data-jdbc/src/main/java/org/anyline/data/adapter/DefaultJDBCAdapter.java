@@ -3873,6 +3873,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					if (null != columnType) {
 						Class transfer = columnType.transfer();
 						Class compatible = columnType.compatible();
+
 						if(null != transfer){
 							value = ConvertAdapter.convert(value, transfer);
 						}
