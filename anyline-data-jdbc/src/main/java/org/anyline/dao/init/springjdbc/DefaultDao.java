@@ -4404,7 +4404,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				builder.append("param").append(idx++).append("=");
 				builder.append(param);
 				if(null != param){
-					builder.append("(").append(param.getClass().getName()).append(")");
+					builder.append("(").append(ClassUtil.type(param)).append(")");
 				}
 				builder.append("\n");
 			}
@@ -4423,7 +4423,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					builder.append(keys.get(i)).append("=");
 					builder.append(value);
 					if (null != value) {
-						builder.append("(").append(value.getClass().getName()).append(")");
+						builder.append("(").append(ClassUtil.type(value)).append(")");
 					}
 					builder.append("\n");
 				}
