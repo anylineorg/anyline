@@ -179,9 +179,14 @@ public class DefaultDDListener implements DDListener {
     }
 
     @Override
+    public boolean beforeAlter(Table table, List<Column> columns){
+        return true;
+    }
+    @Override
     public void afterAlter(Table table, boolean result) {
 
     }
+    public void afterAlter(Table table, List<Column> columns, boolean result){}
 
     @Override
     public boolean beforeAlter(View view) {
