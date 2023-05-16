@@ -56,6 +56,7 @@ public class Column implements org.anyline.entity.data.Column{
 
     protected Column update                       ;
     protected boolean delete = false              ;
+    protected String action = null                ; //ddl命令 add drop alter
 
     protected transient DDListener listener       ;
 
@@ -678,6 +679,15 @@ public class Column implements org.anyline.entity.data.Column{
     public void setJavaType(JavaType javaType) {
         this.javaType = javaType;
     }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -756,6 +766,7 @@ public class Column implements org.anyline.entity.data.Column{
         copy.setCharset(charset);
         copy.setCollate(collate);
         copy.setColumnType(columnType);
+        copy.setAction(action);
 
         return copy;
     }
