@@ -3113,49 +3113,90 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}
+		List<Column> cols = new ArrayList<>();
+
 		// 更新列
-		for(Column ucolumn : ucolumns.values()){
+		for (Column ucolumn : ucolumns.values()) {
 			Column column = columns.get(ucolumn.getName().toUpperCase());
-			if(null != column){
+			if (null != column) {
 				// 修改列
-				if(!column.equals(ucolumn)){
-					column.setTable(update);
+				if (!column.equals(ucolumn)) {
+					/*column.setTable(update);
 					column.setUpdate(ucolumn);
 					column.setService(table.getService());
 					alter(column);
-					result = true;
+					result = true;*/
+					column.setAction("alter");
+					cols.add(column);
 				}
-			}else{
+			} else {
 				// 添加列
-				ucolumn.setTable(update);
+				/*ucolumn.setTable(update);
 				add(ucolumn);
-				result = true;
+				result = true;*/
+				ucolumn.setAction("add");
+				cols.add(ucolumn);
 			}
 		}
 		List<String> deletes = new ArrayList<>();
 		// 删除列(根据删除标记)
-		for(Column column : ucolumns.values()){
-			if(column.isDelete()){
-				drop(column);
-				deletes.add(column.getName().toUpperCase());
+		for (Column column : ucolumns.values()) {
+			if (column.isDelete()) {
+				/*drop(column);
+				deletes.add(column.getName().toUpperCase());*/
+				column.setAction("drop");
+				cols.add(column);
 			}
 		}
 		// 删除列(根据新旧对比)
-		if(table.isAutoDropColumn()) {
+		if (table.isAutoDropColumn()) {
 			for (Column column : columns.values()) {
-				if(column instanceof Tag){
+				if (column instanceof Tag) {
 					continue;
 				}
-				if(column.isDelete() || deletes.contains(column.getName().toUpperCase())){
+				if (column.isDelete() || deletes.contains(column.getName().toUpperCase()) || "drop".equals(column.getAction())) {
 					//上一步已删除
 					continue;
 				}
 
 				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
 				if (null == ucolumn) {
-					column.setTable(update);
+					/*column.setTable(update);
 					drop(column);
-					result = true;
+					result = true;*/
+					column.setAction("drop");
+					cols.add(column);
+				}
+			}
+		}
+		List<String> alters = adapter.buildAlterRunSQL(table, cols);
+		if(null != alters && alters.size()>0){
+			//DDL合并
+			for(String sql:alters){
+				if(BasicUtil.isNotEmpty(sql)) {
+					String random = null;
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						random = random();
+						log.warn("{}[sql:\n{}\n]", random, sql);
+					}
+					DDListener listener = table.getListener();
+					boolean exe = true;
+					if (null != listener) {
+						exe = listener.beforeDrop(table);
+					}
+					if (exe) {
+						result = false;
+						runtime.getTemplate().update(sql);
+						result = true;
+					}
+
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[alter table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+					}
+
+					if (null != listener) {
+						listener.afterAlter(table, cols, result);
+					}
 				}
 			}
 		}
@@ -3802,7 +3843,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		String random = null;
 		checkSchema(runtime, column);
-		List<String> sqls = adapter.buildAlterRunSQL(column);
+		List<String> sqls = adapter.buildAlterRunSQL(column, false);
 
 		random = random();
 		DDListener listener = column.getListener();
