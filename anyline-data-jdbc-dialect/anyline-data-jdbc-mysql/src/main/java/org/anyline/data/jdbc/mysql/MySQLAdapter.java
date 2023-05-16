@@ -951,7 +951,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			List<String> slices = new ArrayList<>();
 			for(Column column:columns){
 				String action = column.getAction();
-				builder.append("\n");
 				if("add".equals(action)){
 					slices.addAll(buildAddRunSQL(column, true));
 				}else if("alter".equals(action)){
