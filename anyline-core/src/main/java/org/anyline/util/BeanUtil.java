@@ -22,10 +22,7 @@ package org.anyline.util;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -39,6 +36,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.metadata.Convert;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -48,6 +46,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 import java.io.*;
@@ -202,8 +201,27 @@ public class BeanUtil {
 	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value){
 		return setFieldValue(obj, field, metadata, value, true);
 	}
+
 	public static Collection convertList(Object v, Class component){
 		Collection result = new ArrayList();
+		if(v instanceof String){
+			if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)){
+				String[] tmps = v.toString().split(",");
+				for(String tmp:tmps){
+					result.add(tmp);
+				}
+ 			}else if("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
+				try {
+					JavaType type = JSON_MAPPER.getTypeFactory().constructParametricType(List.class, component);
+					result = JSON_MAPPER.readValue(v.toString(), type);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}else{
+			}
+		}
+
+		//TODO 注意int double float long等基础无包装类型
 		if(v.getClass().isArray()){
 			Object[] list = (Object[])v;
 			for(Object item:list){
@@ -233,7 +251,7 @@ public class BeanUtil {
 			//对象不处理静态属性
 			return false;
 		}
-		Object v = value;
+		Object result = value;
 
 		boolean compatible = true;//是否兼容 int long等不能设置null值
 		String fieldType = field.getType().getSimpleName();
@@ -249,108 +267,51 @@ public class BeanUtil {
 			}
 		}
 
-		String srcTypeKey = ClassUtil.type(v);
+		String srcTypeKey = ClassUtil.type(value);
 		String tarTypeKey = ClassUtil.type(field);
 		Class componentClass = ClassUtil.getComponentClass(field);
 		try{
-			if(null != v){
+			if(null != value){
 				if(targetClass == Object.class){
 
 				}else if(!srcTypeKey.equals(tarTypeKey)) {
+					Convert convert =  ConvertAdapter.getConvert(value.getClass(), targetClass);
 					try {
 						//数组 集合 Map
 						//entity
 						//基础类型
-						if (targetClass.isArray()) {
-							Collection converts = convertList(v, componentClass);
-							Object[] array = (Object[]) Array.newInstance(targetClass.getComponentType(), converts.size());
-							int idx = 0;
-							for (Object item : converts) {
-								array[idx++] = item;
-							}
-							if(array.length >0) {
-								v = array;
-							}else{
-								v = null;
-							}
-						} else if (ClassUtil.isInSub(targetClass, Collection.class)) {
-							Collection list = (Collection) ClassUtil.newInstance(targetClass);
-							Collection converts = convertList(v, componentClass);
-							list.addAll(converts);
-							//if(list.size()>0) {
-								v = list;
-							//}
-						} else if (ClassUtil.isInSub(targetClass, Map.class)) {
-							Map map = (Map) ClassUtil.newInstance(targetClass);
-							map = object2map(map,v);
-							//if(!map.isEmpty()) {
-								v = map;
-							//}
-						} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
-							//entity
-							List<Field> fields = ClassUtil.getFields(targetClass, false, false);
-							Object entity = ClassUtil.newInstance(targetClass);
-							if(null != entity) {
-								for (Field f : fields) {
-									Object fv = getFieldValue(v, f.getName());
-									setFieldValue(entity, f, fv);
+						if(null == convert) {
+							if (targetClass.isArray()) {
+								Collection converts = convertList(value, componentClass);
+								result = BeanUtil.collection2array(converts, componentClass);
+							} else if (ClassUtil.isInSub(targetClass, Collection.class)) {
+								Collection list = (Collection) ClassUtil.newInstance(targetClass);
+								Collection converts = convertList(value, componentClass);
+								list.addAll(converts);
+								result = list;
+							} else if (ClassUtil.isInSub(targetClass, Map.class)) {
+								Map map = (Map) ClassUtil.newInstance(targetClass);
+								map = object2map(map, value);
+								result = map;
+							} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
+								//entity
+								List<Field> fields = ClassUtil.getFields(targetClass, false, false);
+								Object entity = ClassUtil.newInstance(targetClass);
+								if (null != entity) {
+									for (Field f : fields) {
+										Object fv = getFieldValue(result, f.getName());
+										setFieldValue(entity, f, fv);
+									}
+									result = entity;
 								}
-								v = entity;
 							}
-						} else {
-							//基础类型
-							v = ConvertAdapter.convert(value, targetClass);
-						}
-
-						if(null == v){
-							//特殊类型如Point > double > int ...
-							v = ConvertAdapter.convert(value, targetClass);
+						}else{
+							result = ConvertAdapter.convert(value, targetClass);
 						}
 
 					}catch (Exception e){
 						e.printStackTrace();
 					}
-					/*if(columnTypeName.contains("JSON")) {
-						//先转换成Collection<Map>或Map<Map>
-						if(v instanceof String){
-							v = json2oject((String)v, field.getType());
-						}else if(v instanceof Map){
-							v = map2object((Map)v, field.getType(), null, true, true, true);
-						}
-						//再把map转换成Entity
-						if(v instanceof Collection){
-							Collection list = maps2object(field, (Collection) v);
-							if(null != list && !list.isEmpty()){
-								v = list;
-							}
-						}else if(v instanceof Map){
-							Map map = maps2object(field, (Map)v);
-							if(null != map && !map.isEmpty()){
-								v = map;
-							}
-						}
-					}else if(columnTypeName.contains("XML")){
-						v = xml2object(v.toString(), field.getType());
-					}else if(null != columnType){
-						v = columnType.convert(v, obj, field);
-					}else{
-						//没有列属性,根据数据类型
-						//集合类
-						if(ClassUtil.isInSub(targetClass, Collection.class)){
-							Class itemClass = ClassUtil.getComponentClass(field);
-							Collection list = (Collection) ClassUtil.newInstance(targetClass);
-							Collection values = (Collection) v;
-							for(Object item:values){
-								list.add(ConvertAdapter.convert(item, itemClass, null, alert));
-							}
-							v = list;
-						}else if(ClassUtil.isInSub(targetClass, Map.class)){
-							//Map类
-						}else{
-							v = ConvertAdapter.convert(v, targetClass, null, alert);
-						}*/
-
-					//}//end ! columnt type
 				}
 
 			}else{//v == null
@@ -368,18 +329,18 @@ public class BeanUtil {
 			if(compatible) {
 				if (field.isAccessible()) {
 					// 可访问属性
-					field.set(obj, v);
+					field.set(obj, result);
 				} else {
 					// 不可访问属性
 					field.setAccessible(true);
-					field.set(obj, v);
+					field.set(obj, result);
 					field.setAccessible(false);
 				}
 			}
 		}catch(Exception e){
 			if(alert) {
 				e.printStackTrace();
-				log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, v, srcTypeKey, columnType, e.toString());
+				log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, result, srcTypeKey, columnType, e.toString());
 			}
 			return false;
 		}
@@ -1538,6 +1499,14 @@ public class BeanUtil {
 	public static String concat(Collection<?> list, String field, String split) {
 		return concat(list, field, split, false);
 	}
+
+	/**
+	 * 集合拼接
+	 * @param list list
+	 * @param split 分隔符
+	 * @param required 是否必须(遇到宿舍是否忽略)
+	 * @return String
+	 */
 	public static String concat(Collection<?> list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
@@ -1649,7 +1618,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static String concat(Long[] list, String split) {
-		return concat(list, split);
+		return concat(list, split, false);
 	}
 	public static String concat(Long[] list, boolean required) {
 		return concat(list, ",", required);
@@ -2034,6 +2003,63 @@ public class BeanUtil {
 		return result;
 	}
 
+	public static <T> T[] collection2array(Collection<T> list){
+		if(null == list || list.isEmpty()){
+			return null;
+		}
+		Class clazz = ClassUtil.getComponentClass(list);
+		T[] result = (T[]) Array.newInstance(clazz, list.size());
+		int index = 0;
+		for(T item:list){
+			result[index++] = item;
+		}
+		return result;
+	}
+
+	public static <T> Object collection2array(Collection list, Class<T> clazz){
+		if(null == list || list.isEmpty()){
+			return null;
+		}
+		Object result = null;
+		int size = list.size();
+		if(clazz == int.class){
+			int[] ints = new int[size];
+			int index = 0;
+			for(Object item:list){
+				ints[index++] = BasicUtil.parseInt(item, 0).intValue();
+			}
+			result = ints;
+		}else if(clazz == double.class){
+			double[] doubles = new double[size];
+			int index = 0;
+			for(Object item:list){
+				doubles[index++] = BasicUtil.parseDouble(item, 0d).doubleValue();
+			}
+			result = doubles;
+		}else if(clazz == float.class){
+			float[] floats = new float[size];
+			int index = 0;
+			for(Object item:list){
+				floats[index++] = BasicUtil.parseFloat(item, 0f).floatValue();
+			}
+			result = floats;
+		}else if(clazz == long.class){
+			long[] longs = new long[size];
+			int index = 0;
+			for(Object item:list){
+				longs[index++] = BasicUtil.parseLong(item, 0L).longValue();
+			}
+			result = longs;
+		}else {
+			T[] array = (T[]) Array.newInstance(clazz, list.size());
+			int index = 0;
+			for (Object item : list) {
+				array[index++] = (T) ConvertAdapter.convert(item, clazz);
+			}
+			result = array;
+		}
+		return result;
+	}
 	/**
 	 * 与toString不同的是 中间没有空格与引号[1,2,3]而不是[1, 2, 3]
 	 * @param list List
@@ -2929,6 +2955,10 @@ public class BeanUtil {
 		return rv;
 	}
 
+	public static <T> Collection array2collection(Object array){
+		Collection<T> list = new ArrayList<>();
+		return list;
+	}
 	public static <T> List<T> array2list(T[] ... arrays){
 		List<T> list = new ArrayList<T>();
 		if(null != arrays) {
