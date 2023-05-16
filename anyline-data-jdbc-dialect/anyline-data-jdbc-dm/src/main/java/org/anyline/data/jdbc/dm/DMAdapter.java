@@ -14,10 +14,7 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.SQLUtil;
+import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -888,6 +885,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * public List<String> buildCreateRunSQL(Table table)
 	 * public String buildCreateCommentRunSQL(Table table);
 	 * public List<String> buildAlterRunSQL(Table table)
+	 * public List<String> buildAlterRunSQL(Table table, List<Column> columns)
 	 * public String buildRenameRunSQL(Table table)
 	 * public String buildChangeCommentRunSQL(Table table)
 	 * public String buildDropRunSQL(Table table)
@@ -923,6 +921,16 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
+	}
+	/**
+	 * 修改列
+	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+	 * @param table 表
+	 * @param columns 列
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception{
+		return super.buildAlterRunSQL(table, columns);
 	}
 	/**
 	 * 修改表名
@@ -1124,8 +1132,11 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
+	 * public List<String> buildAddRunSQL(Column column, boolean slice)
 	 * public List<String> buildAddRunSQL(Column column)
+	 * public List<String> buildAlterRunSQL(Column column, boolean slice)
 	 * public List<String> buildAlterRunSQL(Column column)
+	 * public String buildDropRunSQL(Column column, boolean slice)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
 	 * public List<String> buildChangeTypeRunSQL(Column column)
@@ -1158,10 +1169,11 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * 添加列
 	 * ALTER TABLE  HR_USER ADD  UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public List<String> buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
@@ -1183,13 +1195,15 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Column column) throws Exception{
+	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildAlterRunSQL(column);
 	}
 
+	
 
 	/**
 	 * 删除列
@@ -1198,8 +1212,12 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Column column) throws Exception{
+	public String buildDropRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildDropRunSQL(column);
+	}
+	@Override
+	public String buildDropRunSQL(Column column) throws Exception{
+		return buildDropRunSQL(column, false);
 	}
 
 	/**

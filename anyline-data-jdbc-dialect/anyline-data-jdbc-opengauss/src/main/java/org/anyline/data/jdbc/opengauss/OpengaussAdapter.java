@@ -562,6 +562,7 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * public List<String> buildCreateRunSQL(Table table)
 	 * public String buildCreateCommentRunSQL(Table table);
 	 * public List<String> buildAlterRunSQL(Table table)
+	 * public List<String> buildAlterRunSQL(Table table, List<Column> columns)
 	 * public String buildRenameRunSQL(Table table)
 	 * public String buildChangeCommentRunSQL(Table table)
 	 * public String buildDropRunSQL(Table table)
@@ -581,6 +582,16 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
+	}
+	/**
+	 * 修改列
+	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+	 * @param table 表
+	 * @param columns 列
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception{
+		return super.buildAlterRunSQL(table, columns);
 	}
 	/**
 	 * 修改表名
@@ -782,8 +793,11 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
+	 * public List<String> buildAddRunSQL(Column column, boolean slice)
 	 * public List<String> buildAddRunSQL(Column column)
+	 * public List<String> buildAlterRunSQL(Column column, boolean slice)
 	 * public List<String> buildAlterRunSQL(Column column)
+	 * public String buildDropRunSQL(Column column, boolean slice)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
 	 * public List<String> buildChangeTypeRunSQL(Column column)
@@ -818,7 +832,7 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @return String
 	 */
 	@Override
-	public List<String> buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildAddRunSQL(column);
 	}
 
@@ -829,10 +843,11 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Column column) throws Exception{
+	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildAlterRunSQL(column);
 	}
 
+	
 
 	/**
 	 * 删除列
@@ -841,8 +856,12 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Column column) throws Exception{
+	public String buildDropRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildDropRunSQL(column);
+	}
+	@Override
+	public String buildDropRunSQL(Column column) throws Exception{
+		return buildDropRunSQL(column, false);
 	}
 
 	/**

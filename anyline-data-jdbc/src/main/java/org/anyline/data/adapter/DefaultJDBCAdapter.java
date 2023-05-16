@@ -2034,7 +2034,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildCreateRunSQL(Table table);
 	 * public String buildCreateCommentRunSQL(Table table);
-	 * public List<String> buildAlterRunSQL(Table table);
+	 * public List<String> buildAlterRunSQL(Table table)
+	 * public List<String> buildAlterRunSQL(Table table, List<Column> columns);
      * public String buildRenameRunSQL(Table table);
 	 * public String buildChangeCommentRunSQL(Table table);
 	 * public String buildDropRunSQL(Table table);
@@ -2103,6 +2104,27 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildAlterRunSQL(Table table)", 37));
 		}
 		return null;
+	}
+	/**
+	 * 修改列
+	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+	 * @param table 表
+	 * @param columns 列
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		for(Column column:columns){
+			String action = column.getAction();
+			if("add".equalsIgnoreCase(action)){
+				sqls.addAll(buildAddRunSQL(column, false));
+			}else if("alter".equalsIgnoreCase(action)){
+				sqls.addAll(buildAlterRunSQL(column, false));
+			}else if("drop".equalsIgnoreCase(action)){
+				sqls.add(buildDropRunSQL(column, false));
+			}
+		}
+		return sqls;
 	}
 	/**
 	 * 修改表名
@@ -2448,8 +2470,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
+	 * public List<String> buildAddRunSQL(Column column, boolean slice)
 	 * public List<String> buildAddRunSQL(Column column)
+	 * public List<String> buildAlterRunSQL(Column column, boolean slice)
 	 * public List<String> buildAlterRunSQL(Column column)
+	 * public String buildDropRunSQL(Column column, boolean slice)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
 	 * public List<String> buildChangeTypeRunSQL(Column column)
@@ -2484,7 +2509,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<String> buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
@@ -2502,6 +2527,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		sqls.add(buildCreateCommentRunSQL(column));
 		return sqls;
 	}
+	@Override
+	public List<String> buildAddRunSQL(Column column) throws Exception{
+		return buildAddRunSQL(column, false);
+	}
 
 
 	/**
@@ -2510,7 +2539,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Column column) throws Exception{
+	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
 
 		Column update = column.getUpdate();
@@ -2577,6 +2606,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return sqls;
 	}
 
+	@Override
+	public List<String> buildAlterRunSQL(Column column) throws Exception{
+		return buildAlterRunSQL(column, false);
+	}
 
 	/**
 	 * 删除列
@@ -2585,7 +2618,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Column column) throws Exception{
+	public String buildDropRunSQL(Column column, boolean slice) throws Exception{
 		if(column instanceof Tag){
 			Tag tag = (Tag)column;
 			return buildDropRunSQL(tag);
@@ -2593,14 +2626,20 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
+		if(!slice) {
+			Table table = column.getTable();
+			builder.append("ALTER ").append(table.getKeyword()).append(" ");
+			name(builder, table);
+		}
 		builder.append(" DROP ").append(column.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
 
+	@Override
+	public String buildDropRunSQL(Column column) throws Exception{
+		return buildDropRunSQL(column, false);
+	}
 	/**
 	 * 修改列名
 	 * 子类实现

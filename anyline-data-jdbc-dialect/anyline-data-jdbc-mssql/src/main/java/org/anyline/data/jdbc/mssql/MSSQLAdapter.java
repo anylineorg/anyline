@@ -704,7 +704,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildCreateRunSQL(Table table);
 	 * public String buildCreateCommentRunSQL(Table table);
-	 * public List<String> buildAlterRunSQL(Table table);
+	 * public List<String> buildAlterRunSQL(Table table)
+	 * public List<String> buildAlterRunSQL(Table table, List<Column> columns);
 	 * public String buildRenameRunSQL(Table table);
 	 * public String buildChangeCommentRunSQL(Table table);
 	 * public String buildDropRunSQL(Table table);
@@ -738,6 +739,16 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.buildAlterRunSQL(table);
 	}
 
+	/**
+	 * 修改列
+	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+	 * @param table 表
+	 * @param columns 列
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception{
+		return super.buildAlterRunSQL(table, columns);
+	}
 	/**
 	 * 修改表名
 	 * EXEC SP_RENAME 'A', 'B'
@@ -957,8 +968,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String alterColumnKeyword()
+	 * public List<String> buildAddRunSQL(Column column, boolean slice)
 	 * public List<String> buildAddRunSQL(Column column)
+	 * public List<String> buildAlterRunSQL(Column column, boolean slice)
 	 * public List<String> buildAlterRunSQL(Column column)
+	 * public String buildDropRunSQL(Column column, boolean slice)
 	 * public String buildDropRunSQL(Column column)
 	 * public String buildRenameRunSQL(Column column)
 	 * public List<String> buildChangeTypeRunSQL(Column column)
@@ -990,16 +1004,19 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 添加新列
 	 * ALTER TABLE TAB_A ADD USER_NAME VARCHAR(10)
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public List<String> buildAddRunSQL(Column column) throws Exception{
+	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER TABLE ");
-		name(builder, table);
+		if(!slice) {
+			Table table = column.getTable();
+			builder.append("ALTER TABLE ");
+			name(builder, table);
+		}
 		builder.append(" ADD ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
@@ -1013,23 +1030,30 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return sqls
 	 */
 	@Override
+	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
+		return super.buildAlterRunSQL(column, slice);
+	}
+	@Override
 	public List<String> buildAlterRunSQL(Column column) throws Exception{
-		return super.buildAlterRunSQL(column);
+		return buildAlterRunSQL(column, false);
 	}
 
+	
 
 	/**
 	 * 删除列
 	 * ALTER TABLE HR_USER DROP COLUMN NAME;
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Column column) throws Exception{
-		return super.buildDropRunSQL(column);
+	public String buildDropRunSQL(Column column, boolean slice) throws Exception{
+		return super.buildDropRunSQL(column, slice);
 	}
 
 

@@ -824,6 +824,14 @@ public interface JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	public List<String> buildAlterRunSQL(Table table) throws Exception;
+	/**
+	 * 修改列
+	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+	 * @param table 表
+	 * @param columns 列
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception;
 
 	/**
 	 * 重命名
@@ -1078,23 +1086,29 @@ public interface JDBCAdapter {
 	/**
 	 * 添加列
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
+	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception;
 	public List<String> buildAddRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return List
 	 */
+	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception;
 	public List<String> buildAlterRunSQL(Column column) throws Exception;
 
 	/**
 	 * 删除列
 	 * @param column 列
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
+	public String buildDropRunSQL(Column column, boolean slice) throws Exception;
 	public String buildDropRunSQL(Column column) throws Exception;
 
 	/**
