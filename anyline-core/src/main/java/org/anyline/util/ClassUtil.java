@@ -708,6 +708,25 @@ public class ClassUtil {
 		Type actualTypeArgument = pty.getActualTypeArguments()[0];
 		return (Class)actualTypeArgument;
 	}
+	public static Class getComponentClass(Object obj){
+		if(null == obj){
+			return null;
+		}
+		if(obj instanceof Field){
+			return getComponentClass((Field) obj);
+		}else if(obj instanceof Class){
+			return getComponentClass((Class)obj);
+		}
+		if(obj instanceof Collection){
+			Collection col = (Collection) obj;
+			for(Object item:col){
+				return item.getClass();
+			}
+		}else if(obj.getClass().isArray()){
+			return obj.getClass().getComponentType();
+		}
+		return getComponentClass(obj.getClass());
+	}
 	/**
 	 * 对象类型<br/>
 	 * int[] > int[]<br/>
