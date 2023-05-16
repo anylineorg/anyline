@@ -120,6 +120,10 @@ public class AnylineProperty {
      */
     protected boolean insertEmptyField						    = false			;	// Entity是否更新空值的属性
     /**
+     * List/Array转换成String后的格式 concat:A,B,C json:["A","B","C"]
+     */
+    protected String list2stringFormat                          = "concat"		;	// List/Array转换成String后的格式 concat:A,B,C json:["A","B","C"]
+    /**
      * 是否禁用查询缓存
      */
     protected boolean cacheDisabled                             = false         ;   // 是否禁用查询缓存
@@ -919,5 +923,14 @@ public class AnylineProperty {
     public void setOpenPrimaryTransactionManager(boolean openPrimaryTransactionManager) {
         this.openPrimaryTransactionManager = openPrimaryTransactionManager;
         ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER = openPrimaryTransactionManager;
+    }
+
+    public String getList2stringFormat() {
+        return list2stringFormat;
+    }
+
+    public void setList2stringFormat(String list2stringFormat) {
+        this.list2stringFormat = list2stringFormat;
+        ConfigTable.LIST2STRING_FORMAT =  list2stringFormat;
     }
 }
