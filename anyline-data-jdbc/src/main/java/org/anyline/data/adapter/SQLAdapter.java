@@ -230,6 +230,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         int from = 1;
         StringBuilder valuesBuilder = new StringBuilder();
         DataRow row = null;
+        if(obj instanceof Map){
+            obj = new DataRow((Map)obj);
+        }
         if(obj instanceof DataRow){
             row = (DataRow)obj;
             if(row.hasPrimaryKeys()){
