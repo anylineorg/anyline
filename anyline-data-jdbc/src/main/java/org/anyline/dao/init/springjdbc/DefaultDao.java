@@ -2520,25 +2520,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			metadata = con.getMetaData();;
 		}catch (Exception e){}
-		int qty1, qty2, qty3;
-		// 先根据metadata解析 SELECT * FROM T WHERE 1=0
-		try {
-			List<String> sqls = adapter.buildQueryColumnRunSQL(table , true);
-			if(null != sqls){
-				for(String sql:sqls) {
-					if (BasicUtil.isNotEmpty(sql)) {
-						SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
-						columns = adapter.columns(true, columns, table, set);
-					}
-				}
-			}
-		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
-			}
-		}
-		qty1 = columns.size();
-		// 再根据系统表查询
+		int qty_dialect  = 0 ; //优先根据系统表查询
+		int qty_metadata = 0 ; //再根据metadata解析
+		int qty_jdbc	 = 0 ; //根据jdbc接口补充
+		// 优先根据系统表查询
 		try{
 			List<String> sqls = adapter.buildQueryColumnRunSQL(table, false);
 			if(null != sqls){
@@ -2556,21 +2541,42 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 			}
 		}
-		qty2 = columns.size() - qty1;
-		// 根据jdbc接口补充
-		try {
-			columns = adapter.columns(true, columns, metadata, table, null);
-		}catch (Exception e){
-			e.printStackTrace();
-		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
+		qty_dialect = columns.size();
+		// 再根据metadata解析 SELECT * FROM T WHERE 1=0
+		if(columns.size() == 0) {
+			try {
+				List<String> sqls = adapter.buildQueryColumnRunSQL(table, true);
+				if (null != sqls) {
+					for (String sql : sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
+							columns = adapter.columns(true, columns, table, set);
+						}
+					}
+				}
+			} catch (Exception e) {
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+				}
 			}
+			qty_metadata = columns.size() - qty_dialect;
 		}
-		qty3 = columns.size() - qty1 - qty2;
+		// 根据jdbc接口补充
 
+		if(columns.size() == 0) {
+			try {
+				columns = adapter.columns(true, columns, metadata, table, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
+					DataSourceUtils.releaseConnection(con, ds);
+				}
+			}
+			qty_jdbc = columns.size() - qty_metadata - qty_dialect;
+		}
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			log.warn("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty1, qty2, qty3, System.currentTimeMillis() - fr);
+			log.warn("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
 		}
 		return columns;
 	}
