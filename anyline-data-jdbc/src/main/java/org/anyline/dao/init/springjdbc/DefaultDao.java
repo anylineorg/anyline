@@ -842,6 +842,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(listenerResult) {
 				cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
 				checkMany2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+				checkOne2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
 					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
@@ -997,52 +998,36 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			for(Field field:fields) {
 				try {
 					OneToMany join = PersistenceAdapter.oneToMany(field);
-					/*//INSERT INTO HR_DEPLOYEE_DEPARTMENT(EMPLOYEE_ID, DEPARTMENT_ID) VALUES();
-					Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(obj);
-					Object pv = primaryValueMap.get(pk.toUpperCase());
-					Object fv = BeanUtil.getFieldValue(obj, field);
-					if(null == fv){
-						continue;
+					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
+					Collection items = (Collection)BeanUtil.getFieldValue(obj, field);
+
+					Class componentClass = ClassUtil.getComponentClass(field);
+					Field joinField = ClassUtil.getField(componentClass, join.joinColumn);
+					String joinColumn = join.joinColumn;
+					if(null == joinField){
+						//提供的是列名
+						joinField = EntityAdapterProxy.field(componentClass, join.joinColumn);
 					}
-					DataSet set = new DataSet();
-					Collection fvs = new ArrayList();
-					if (null == join.dependencyTable) {
-						//只通过中间表查主键 List<Long> departmentIds
-						if(fv.getClass().isArray()){
-							fvs = BeanUtil.array2collection(fv);
-						}else if(fv instanceof Collection){
-							fvs = (Collection) fv;
-						}
-					} else {
-						//通过子表完整查询 List<Department> departments
-						org.anyline.entity.data.Column joinpc = EntityAdapterProxy.primaryKey(clazz);
-						String joinpk = null;
-						if(null != joinpc){
-							joinpk = joinpc.getName();
-						}
-						if(fv.getClass().isArray()){
-							Object[] objs = (Object[])fv;
-							for(Object item:objs){
-								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
-							}
-						}else if(fv instanceof Collection){
-							Collection objs = (Collection) fv;
-							for(Object item:objs){
-								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
-							}
-						}
+					if(null == joinField){
+						throw new RuntimeException(field+"关联属性异常");
 					}
 
-					for(Object item:fvs){
-						DataRow row = new DataRow();
-						row.put(join.joinColumn, pv);
-						row.put(join.inverseJoinColumn, item);
-						set.add(row);
+					org.anyline.entity.data.Column column = EntityAdapterProxy.column(componentClass, joinField);
+					if(null == column){
+						throw new RuntimeException(field+"关联列异常");
+					}
+					org.anyline.entity.data.Table table = EntityAdapterProxy.table(componentClass);
+					if(null == table){
+						throw new RuntimeException(field+"关联表异常");
 					}
 					if(mode == 1) {
-						deletes(join.joinTable, join.joinColumn, pv + "");
+						deletes(table.getName(), joinColumn, pv + "");
 					}
-					insert(join.joinTable, set);*/
+
+					for(Object item:items){
+						BeanUtil.setFieldValue(item, joinField, pv);
+					}
+					insert(table.getName(), items);
 
 				}catch (Exception e){
 					e.printStackTrace();
