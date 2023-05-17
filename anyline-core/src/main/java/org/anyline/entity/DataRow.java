@@ -2283,7 +2283,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
 
     }
-    public DataRow copy(boolean regex, DataRow data, Collection<String> fixs, String... keys) {
+    public DataRow copy(boolean regex, DataRow data, List<String> fixs, String... keys) {
         if (null == data || data.isEmpty()) {
             return this;
         }
@@ -2306,7 +2306,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow copy(DataRow data, String... keys) {
         return copy(false, data, keys);
     }
-    public DataRow copy(DataRow data, Collection<String> fixs, String... keys) {
+    public DataRow copy(DataRow data, List<String> fixs, String... keys) {
         return copy(false, data, fixs, keys);
     }
     /**
