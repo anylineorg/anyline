@@ -1846,6 +1846,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 					if(!(obj instanceof DataRow)){
 						checkMany2ManyDependencyDelete(runtime, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+						checkOne2ManyDependencyDelete(runtime, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 					}
 
 				}
@@ -1872,6 +1873,32 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
 				deletes(join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	private int checkOne2ManyDependencyDelete(JDBCRuntime runtime, Object entity, int dependency){
+		int result = 0;
+		//OneToMany
+		if(dependency <= 0){
+			return result;
+		}
+		dependency --;
+		Class clazz = entity.getClass();
+		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		for(Field field:fields) {
+			try {
+				OneToMany join = PersistenceAdapter.oneToMany(field);
+				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+				deletes(join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
 
 			}catch (Exception e){
 				e.printStackTrace();
