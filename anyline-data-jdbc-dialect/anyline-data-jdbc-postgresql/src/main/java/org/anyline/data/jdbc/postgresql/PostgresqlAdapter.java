@@ -23,10 +23,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.postgresql")
 public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {

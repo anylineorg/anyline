@@ -42,10 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -116,7 +113,7 @@ public class AbstractBasicController {
 	 * @param params  params
 	 * @return T
 	 */
-	public <T> T entity(HttpServletRequest request, Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
+	public <T> T entity(HttpServletRequest request, Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, Collection<String> fixs, String... params) {
 		T entity = null;
 		if (null == clazz) {
 			return entity;
@@ -180,7 +177,7 @@ public class AbstractBasicController {
 		return entity(request, clazz, false, false, BeanUtil.array2list(fixs, params));
 	}
 
-	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, Collection<String> fixs, String ... params) {
 		if (null == row) {
 			row = new DataRow(keyCase);
 		}
@@ -302,7 +299,7 @@ public class AbstractBasicController {
 		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(fixs, params));
 	}
 
-	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, Collection<String> fixs, String ... params) {
 		DataSet set = new DataSet();
 		List<String> arrays = BeanUtil.merge(fixs, params);
 
@@ -422,7 +419,7 @@ public class AbstractBasicController {
 	 * @param configs   参数
 	 * @return ConfigStore
 	 */
-	protected ConfigStore condition(HttpServletRequest request, boolean navi, List<String> fixs, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, boolean navi, Collection<String> fixs, String... configs) {
 		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
 		if (navi) {
 			PageNavi pageNavi = parsePageNavi(request);
@@ -452,7 +449,7 @@ public class AbstractBasicController {
 	 * @param configs    参数
 	 * @return ConfigStore
 	 */
-	protected ConfigStore condition(HttpServletRequest request, int vol, List<String> fixs, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, int vol, Collection<String> fixs, String... configs) {
 		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
 		if(vol >0){
 			PageNavi pageNavi = parsePageNavi(request);
@@ -482,7 +479,7 @@ public class AbstractBasicController {
 	 * @param configs     参数
 	 * @return ConfigStore
 	 */
-	protected ConfigStore condition(HttpServletRequest request, int fr, int to, List<String> fixs, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, int fr, int to, Collection<String> fixs, String... configs) {
 		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
 		PageNavi navi = new DefaultPageNavi();
 		navi.setCalType(1);
@@ -509,7 +506,7 @@ public class AbstractBasicController {
 	protected ConfigStore condition(HttpServletRequest request, String[] fixs, String... configs) {
 		return condition(request, false, BeanUtil.array2list(fixs, configs));
 	}
-	protected ConfigStore condition(HttpServletRequest request, List<String> fixs, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, Collection<String> fixs, String... configs) {
 		return condition(request, false,  fixs, configs);
 	}
 

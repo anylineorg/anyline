@@ -970,7 +970,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return int 影响行数
      */
     @Override
-    public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+    public int update(boolean async, String dest, Object data, ConfigStore configs, Collection<String> fixs, String ... columns){
         dest = DataSourceHolder.parseDataSource(dest,dest);
         fixs = BeanUtil.merge(fixs, columns);
         final List<String> cols = BeanUtil.merge(fixs, columns);
@@ -990,7 +990,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
     }
     @Override
-    public int update(boolean async, String dest, Object data, List<String> fixs, String... columns) {
+    public int update(boolean async, String dest, Object data, Collection<String> fixs, String... columns) {
         return update(async, dest, data, null, fixs, columns);
     }
     @Override
@@ -1014,11 +1014,11 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+    public int update(boolean async, Object data, ConfigStore configs, Collection<String> fixs, String ... columns){
         return update(async, null, data, configs, fixs, columns);
     }
     @Override
-    public int update(boolean async, Object data, List<String> fixs, String... columns) {
+    public int update(boolean async, Object data, Collection<String> fixs, String... columns) {
         return update(async, null, data, null, fixs, columns);
     }
     @Override
@@ -1042,7 +1042,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
+    public int update(String dest, Object data, ConfigStore configs, Collection<String> fixs, String... columns) {
         return update(false, dest, data, configs, fixs, columns);
     }
     @Override
@@ -1054,7 +1054,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return update(false, dest, data, configs, BeanUtil.array2list(columns));
     }
     @Override
-    public int update(String dest, Object data, List<String> fixs, String... columns) {
+    public int update(String dest, Object data, Collection<String> fixs, String... columns) {
         return update(false, dest, data, null, fixs, columns);
     }
 
@@ -1069,7 +1069,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public int update(Object data, ConfigStore configs, List<String> fixs, String... columns) {
+    public int update(Object data, ConfigStore configs, Collection<String> fixs, String... columns) {
         return update(false, null, data, configs, fixs, columns);
     }
     @Override
@@ -1081,7 +1081,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return update(false, null, data, configs, BeanUtil.array2list(columns));
     }
     @Override
-    public int update(Object data, List<String> fixs, String... columns) {
+    public int update(Object data, Collection<String> fixs, String... columns) {
         return update(false, null, data, null, fixs, columns);
     }
 
@@ -1106,7 +1106,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public int save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs,  String... columns) {
+    public int save(boolean async, String dest, Object data, boolean checkPrimary, Collection<String> fixs,  String... columns) {
         if(async){
 
             final String _dest = dest;
@@ -1128,7 +1128,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
     @SuppressWarnings("rawtypes")
     @Override
-    public int save(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public int save(String dest, Object data, boolean checkPrimary, Collection<String> fixs, String... columns) {
         if (null == data) {
             return 0;
         }
@@ -1154,7 +1154,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public int save(Object data, boolean checkPrimary, List<String>fixs, String... columns) {
+    public int save(Object data, boolean checkPrimary, Collection<String> fixs, String... columns) {
         return save(null, data, checkPrimary, BeanUtil.merge(fixs, columns));
     }
     @Override
@@ -1167,7 +1167,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public int save(boolean async, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public int save(boolean async, Object data, boolean checkPrimary, Collection<String> fixs, String... columns) {
         return save(async, null, data, checkPrimary, fixs, columns);
     }
 
@@ -1183,7 +1183,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int save(Object data, List<String> fixs, String... columns) {
+    public int save(Object data, Collection<String> fixs, String... columns) {
         return save(null, data, false, fixs, columns);
     }
 
@@ -1199,7 +1199,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int save(boolean async, Object data, List<String> fixs, String... columns) {
+    public int save(boolean async, Object data, Collection<String> fixs, String... columns) {
         return save(async, null, data, false, fixs, columns);
     }
 
@@ -1217,7 +1217,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int save(String dest, Object data, List<String> fixs, String... columns) {
+    public int save(String dest, Object data, Collection<String> fixs, String... columns) {
         return save(dest, data, false, fixs, columns);
     }
 
@@ -1232,7 +1232,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public int save(boolean async, String dest, Object data, List<String> fixs, String... columns) {
+    public int save(boolean async, String dest, Object data, Collection<String> fixs, String... columns) {
         return save(async, dest, data, false, fixs, columns);
     }
     @Override
@@ -1244,7 +1244,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return save(async, dest, data, false, columns);
     }
 
-    protected int saveObject(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    protected int saveObject(String dest, Object data, boolean checkPrimary, Collection<String> fixs, String... columns) {
         if(BasicUtil.isEmpty(dest)) {
             if (data instanceof DataRow || data instanceof DataSet) {
                 dest = DataSourceHolder.parseDataSource(dest, data);
@@ -1262,7 +1262,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return saveObject(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
     }
     @Override
-    public int insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public int insert(String dest, Object data, boolean checkPrimary, Collection<String> fixs, String... columns) {
         dest = DataSourceHolder.parseDataSource(dest,data);
         columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
         return dao.insert(dest, data, checkPrimary, columns);
@@ -1278,7 +1278,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int insert(Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public int insert(Object data, boolean checkPrimary, Collection<String> fixs, String... columns) {
         return insert(null, data, checkPrimary, fixs, columns);
     }
 
@@ -1294,7 +1294,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int insert(Object data, List<String> fixs, String... columns) {
+    public int insert(Object data, Collection<String> fixs, String... columns) {
         return insert(null, data, false, fixs, columns);
     }
     @Override
@@ -1309,7 +1309,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override
-    public int insert(String dest, Object data, List<String> fixs, String... columns) {
+    public int insert(String dest, Object data, Collection<String> fixs, String... columns) {
         return insert(dest, data, false, fixs, columns);
     }
     @Override
