@@ -2,6 +2,7 @@ package org.anyline.data.adapter;
 
 import org.anyline.data.metadata.persistence.ManyToMany;
 import org.anyline.data.metadata.persistence.OneToMany;
+import org.anyline.entity.data.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ClassUtil;
 
@@ -15,6 +16,16 @@ public class PersistenceAdapter {
     public static OneToMany oneToMany(Field field) throws Exception{
         OneToMany join = new OneToMany();
         join.joinColumn = ClassUtil.parseAnnotationFieldValue(field, "OneToMany.mappedBy");
+        join.dependencyClass = ClassUtil.getComponentClass(field);;
+        join.joinField = ClassUtil.getField(join.dependencyClass, join.joinColumn);
+        if(null == join.joinField){
+            //提供的是列名
+            join.joinField = EntityAdapterProxy.field(join.dependencyClass, join.joinColumn);
+        }
+        Table table = EntityAdapterProxy.table(join.dependencyClass);
+        if(null != table){
+            join.dependencyTable = table.getName();
+        }
         return join;
     }
     public static ManyToMany manyToMany(Field field) throws Exception{

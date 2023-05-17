@@ -1,5 +1,7 @@
 package org.anyline.data.metadata.persistence;
 
+import java.lang.reflect.Field;
+
 public class OneToMany {
 
     /*
@@ -10,5 +12,8 @@ public class OneToMany {
         private List<AttendanceRecord> records = null;
 
     */
-    public String joinColumn		; // employeeId/EMPLOYEE_ID				: 外键
+    public String joinColumn		; // EMPLOYEE_ID				: 外键
+    public Field joinField         ; // employeeId
+    public Class dependencyClass	; // AttendanceRecord
+    public String dependencyTable	; // HR_ATTENDANCE_RECORD				: 依赖表(根据AttendanceRecord类上的注解)
 }

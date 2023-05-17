@@ -1001,33 +1001,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
 					Collection items = (Collection)BeanUtil.getFieldValue(obj, field);
 
-					Class componentClass = ClassUtil.getComponentClass(field);
-					Field joinField = ClassUtil.getField(componentClass, join.joinColumn);
-					String joinColumn = join.joinColumn;
-					if(null == joinField){
-						//提供的是列名
-						joinField = EntityAdapterProxy.field(componentClass, join.joinColumn);
-					}
-					if(null == joinField){
+					if(null == join.joinField){
 						throw new RuntimeException(field+"关联属性异常");
 					}
 
-					org.anyline.entity.data.Column column = EntityAdapterProxy.column(componentClass, joinField);
-					if(null == column){
+					if(null == join.joinColumn){
 						throw new RuntimeException(field+"关联列异常");
 					}
-					org.anyline.entity.data.Table table = EntityAdapterProxy.table(componentClass);
-					if(null == table){
+
+					if(null == join.dependencyTable){
 						throw new RuntimeException(field+"关联表异常");
 					}
 					if(mode == 1) {
-						deletes(table.getName(), joinColumn, pv + "");
+						deletes(join.dependencyTable, join.joinColumn, pv + "");
 					}
 
 					for(Object item:items){
-						BeanUtil.setFieldValue(item, joinField, pv);
+						BeanUtil.setFieldValue(item, join.joinField, pv);
 					}
-					insert(table.getName(), items);
+					insert(join.dependencyTable, items);
 
 				}catch (Exception e){
 					e.printStackTrace();
@@ -1288,6 +1280,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		//检测依赖关系
 		if(dependency > 0) {
 			checkMany2ManyDependencyQuery(runtime, set, dependency);
+			checkOne2ManyDependencyQuery(runtime, set, dependency);
 		}
 		return set;
 	}
@@ -1360,6 +1353,63 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
 						}
 					}
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected <T> void checkOne2ManyDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
+		//OneToMany
+		if(set.size()==0 || dependency <= 0){
+			return;
+		}
+		dependency --;
+		Class clazz = set.get(0).getClass();
+		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+		for(Field field:fields){
+			try {
+				OneToMany join = PersistenceAdapter.oneToMany(field);
+				if(Compare.EQUAL == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE || set.size() == 1) {
+					//逐行查询
+					for (T entity : set) {
+						Object pv = EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase());
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						//通过子表完整查询 List<AttendanceRecord> records
+						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
+						String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.joinColumn + " =?" + ")";
+						List<Object> params = new ArrayList<>();
+						params.add(primaryValueMap.get(pk.toUpperCase()));
+						EntitySet<T> dependencys = querys(join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
+						BeanUtil.setFieldValue(entity, field, dependencys);
+
+					}
+				}else if(Compare.IN == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE){
+					//查出所有相关 再逐行分配
+					List pvs = new ArrayList();
+					Map<T,Object> idmap = new HashMap<>();
+					for(T entity:set){
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						Object pv = primaryValueMap.get(pk.toUpperCase());
+						pvs.add(pv);
+						idmap.put(entity, pv);
+					}
+					//通过子表完整查询 List<Department> departments
+					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
+					ConfigStore conditions = new DefaultConfigStore();
+					conditions.param("JOIN_PVS", pvs);
+					EntitySet<T> alls = querys(join.dependencyClass, conditions);
+					for(T entity:set){
+						EntitySet items = alls.gets(join.joinColumn, idmap.get(entity)+"");
+						BeanUtil.setFieldValue(entity, field, items);
+					}
+
 				}
 			}catch (Exception e){
 				e.printStackTrace();
