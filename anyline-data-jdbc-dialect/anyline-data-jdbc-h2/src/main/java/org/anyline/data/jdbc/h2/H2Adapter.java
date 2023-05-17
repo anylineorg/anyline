@@ -445,7 +445,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * public List<String> buildCreateRunSQL(Table table)
 	 * public String buildCreateCommentRunSQL(Table table);
 	 * public List<String> buildAlterRunSQL(Table table)
-	 * public List<String> buildAlterRunSQL(Table table, List<Column> columns)
+	 * public List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
 	 * public String buildRenameRunSQL(Table table)
 	 * public String buildChangeCommentRunSQL(Table table)
 	 * public String buildDropRunSQL(Table table)
@@ -481,7 +481,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception{
+	public List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
 		return super.buildAlterRunSQL(table, columns);
 	}
 	/**

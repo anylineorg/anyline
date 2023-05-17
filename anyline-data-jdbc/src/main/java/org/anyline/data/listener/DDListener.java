@@ -8,6 +8,7 @@ import org.anyline.data.entity.Table;
 import org.anyline.data.entity.View;
 import org.anyline.service.AnylineService;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface DDListener {
@@ -56,9 +57,9 @@ public interface DDListener {
 
 
     public boolean beforeAlter(Table table);
-    public boolean beforeAlter(Table table, List<Column> columns);
+    public boolean beforeAlter(Table table, Collection<Column> columns);
     public void afterAlter(Table table, boolean result);
-    public void afterAlter(Table table, List<Column> columns, boolean result);
+    public void afterAlter(Table table, Collection<Column> columns, boolean result);
 
     public boolean beforeAlter(View view);
     public void afterAlter(View view, boolean result);

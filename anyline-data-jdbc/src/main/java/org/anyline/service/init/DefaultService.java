@@ -2965,6 +2965,14 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean alter(Table table) throws Exception{
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
+            Table update = table.getUpdate();
+            if(null == update){
+                update = table;
+                table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
+                table.setUpdate(update);
+            }
             table.setService(DefaultService.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());

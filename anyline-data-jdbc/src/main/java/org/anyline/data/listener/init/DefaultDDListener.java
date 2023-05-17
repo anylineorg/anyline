@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -179,14 +180,14 @@ public class DefaultDDListener implements DDListener {
     }
 
     @Override
-    public boolean beforeAlter(Table table, List<Column> columns){
+    public boolean beforeAlter(Table table, Collection<Column> columns){
         return true;
     }
     @Override
     public void afterAlter(Table table, boolean result) {
 
     }
-    public void afterAlter(Table table, List<Column> columns, boolean result){}
+    public void afterAlter(Table table, Collection<Column> columns, boolean result){}
 
     @Override
     public boolean beforeAlter(View view) {

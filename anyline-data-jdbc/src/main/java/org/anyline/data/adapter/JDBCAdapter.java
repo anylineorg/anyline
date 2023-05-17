@@ -831,7 +831,7 @@ public interface JDBCAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception;
+	public List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception;
 
 	/**
 	 * 重命名

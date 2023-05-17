@@ -2035,7 +2035,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public List<String> buildCreateRunSQL(Table table);
 	 * public String buildCreateCommentRunSQL(Table table);
 	 * public List<String> buildAlterRunSQL(Table table)
-	 * public List<String> buildAlterRunSQL(Table table, List<Column> columns);
+	 * public List<String> buildAlterRunSQL(Table table, Collection<Column> columns);
      * public String buildRenameRunSQL(Table table);
 	 * public String buildChangeCommentRunSQL(Table table);
 	 * public String buildDropRunSQL(Table table);
@@ -2112,7 +2112,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Table table, List<Column> columns) throws Exception{
+	public List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		for(Column column:columns){
 			String action = column.getAction();
@@ -2513,9 +2513,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		List<String> sqls = new ArrayList<>();
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
+		if(!slice) {
+			Table table = column.getTable();
+			builder.append("ALTER ").append(table.getKeyword()).append(" ");
+			name(builder, table);
+		}
 		// Column update = column.getUpdate();
 		// if(null == update){
 		// 添加列
