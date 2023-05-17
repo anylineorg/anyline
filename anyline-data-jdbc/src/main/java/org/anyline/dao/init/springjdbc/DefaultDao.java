@@ -3121,9 +3121,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (null != column) {
 				// 修改列
 				if (!column.equals(ucolumn)) {
-					/*column.setTable(update);
+					column.setTable(update);
 					column.setUpdate(ucolumn);
 					column.setService(table.getService());
+					/*
 					alter(column);
 					result = true;*/
 					column.setAction("alter");
@@ -3131,7 +3132,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			} else {
 				// 添加列
-				/*ucolumn.setTable(update);
+				ucolumn.setTable(update);
+				/*
 				add(ucolumn);
 				result = true;*/
 				ucolumn.setAction("add");
@@ -3142,8 +3144,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		// 删除列(根据删除标记)
 		for (Column column : ucolumns.values()) {
 			if (column.isDelete()) {
-				/*drop(column);
-				deletes.add(column.getName().toUpperCase());*/
+				/*drop(column);*/
+				deletes.add(column.getName().toUpperCase());
 				column.setAction("drop");
 				cols.add(column);
 			}
@@ -3161,7 +3163,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
 				if (null == ucolumn) {
-					/*column.setTable(update);
+					column.setTable(update);
+					/*
 					drop(column);
 					result = true;*/
 					column.setAction("drop");

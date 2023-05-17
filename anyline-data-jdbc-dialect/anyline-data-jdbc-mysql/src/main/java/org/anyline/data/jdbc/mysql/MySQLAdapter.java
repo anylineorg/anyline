@@ -947,7 +947,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			StringBuilder builder = new StringBuilder();
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
 			name(builder, table);
-
 			List<String> slices = new ArrayList<>();
 			for(Column column:columns){
 				String action = column.getAction();
@@ -962,11 +961,11 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			boolean first = true;
 			for(String slice:slices){
 				if(BasicUtil.isNotEmpty(slice)){
+					builder.append("\n");
 					if(!first){
 						builder.append(",");
 					}
-					builder.append(slice);
-					builder.append("\n");
+					builder.append(slice.trim());
 					first = false;
 				}
 			}
