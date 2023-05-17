@@ -149,7 +149,7 @@ public class Table implements org.anyline.entity.data.Table{
         if(null == columns){
             columns = new LinkedHashMap<>();
         }
-        columns.put(column.getName(), column);
+        columns.put(column.getName().toUpperCase(), column);
         return this;
     }
     public Column addColumn(String name, String type){
