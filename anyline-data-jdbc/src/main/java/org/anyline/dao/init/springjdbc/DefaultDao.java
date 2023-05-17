@@ -1000,6 +1000,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					OneToMany join = PersistenceAdapter.oneToMany(field);
 					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
 					Collection items = (Collection)BeanUtil.getFieldValue(obj, field);
+					if(null == items || items.size() ==0){
+						continue;
+					}
 
 					if(null == join.joinField){
 						throw new RuntimeException(field+"关联属性异常");
