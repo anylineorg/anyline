@@ -3031,6 +3031,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == row.get(field)) {
                 String[] kvs = packParam(row, reverseKey(list));
                 DataSet set = items.getRows(compare, kvs(kvs));
+                set.remove(row);//避免无限递归
                 if (recursion) {
                     set.dispatchs(compare, field, unique, recursion, items, list);
                 }
