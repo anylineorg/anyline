@@ -712,7 +712,7 @@ public class WebUtil {
 	 * @return Map
 	 */
 	@SuppressWarnings("unchecked")
-	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, Collection<String> fixs, String... keys) {
+	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, List<String> fixs, String... keys) {
 		if (null == map) {
 			return map;
 		}
@@ -760,7 +760,7 @@ public class WebUtil {
 	 * @return Object
 	 */
 	@SuppressWarnings("unchecked")
-	private static Object encryptValue(Object obj, boolean mix, Collection<String> fixs, String... keys) {
+	private static Object encryptValue(Object obj, boolean mix, List<String> fixs, String... keys) {
 		if (null == obj) {
 			return obj;
 		}
@@ -812,7 +812,7 @@ public class WebUtil {
 	 * @return Collection
 	 */
 	@SuppressWarnings("unchecked")
-	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, Collection<String> fixs, String... keys) {
+	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, List<String> fixs, String... keys) {
 		if (null == list) {
 			return list;
 		}
@@ -841,7 +841,7 @@ public class WebUtil {
 	public static Object encrypt(Object obj, boolean mix, String... keys) {
 		return encryptValue(obj, mix, keys);
 	}
-	public static Object encrypt(Object obj, boolean mix, Collection<String> fixs, String... keys) {
+	public static Object encrypt(Object obj, boolean mix, List<String> fixs, String... keys) {
 		return encryptValue(obj, mix, BeanUtil.merge(fixs, keys));
 	}
 	public static Object encrypt(Object obj, boolean mix, String[] fixs, String... keys) {
@@ -850,7 +850,7 @@ public class WebUtil {
 	public static Object encrypt(Object obj, String... keys) {
 		return encrypt(obj,false,keys);
 	}
-	public static Object encrypt(Object obj, Collection<String> fixs, String... keys) {
+	public static Object encrypt(Object obj, List<String> fixs, String... keys) {
 		return encrypt(obj,false,BeanUtil.merge(fixs, keys));
 	}
 	public static Object encrypt(Object obj, String[] fixs, String... keys) {

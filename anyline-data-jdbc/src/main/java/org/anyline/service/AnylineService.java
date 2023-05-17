@@ -82,10 +82,10 @@ public interface AnylineService<E>{
 	 * @param columns 需要插入哪些列
 	 * @return 影响行数
 	 */
-	public int insert(String dest, Object data, boolean checkPriamry, Collection<String> fixs, String ... columns);
-	public int insert(Object data, boolean checkPriamry, Collection<String> fixs, String ... columns);
-	public int insert(Object data, Collection<String> fixs, String ... columns);
-	public int insert(String dest, Object data, Collection<String> fixs, String ... columns);
+	public int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int insert(Object data, List<String> fixs, String ... columns);
+	public int insert(String dest, Object data, List<String> fixs, String ... columns);
 
 	public int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
 	public int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
@@ -115,15 +115,15 @@ public interface AnylineService<E>{
 	 * @param configs 	更新条件
 	 * @return int 影响行数
 	 */
-	public int update(String dest, Object data, ConfigStore configs, Collection<String> fixs, String ... columns);
-	public int update(String dest, Object data, Collection<String> fixs, String ... columns);
+	public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	public int update(String dest, Object data, List<String> fixs, String ... columns);
 	public int update(String dest, Object data, String[] fixs, String ... columns);
 	public int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(String dest, Object data, String ... columns);
 	public int update(String dest, Object data, ConfigStore configs, String ... columns);
 
-	public int update(Object data, ConfigStore configs, Collection<String> fixs, String ... columns);
-	public int update(Object data, Collection<String> fixs, String ... columns);
+	public int update(Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	public int update(Object data, List<String> fixs, String ... columns);
 	public int update(Object data, String[] fixs, String ... columns);
 	public int update(Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(Object data, String ... columns);
@@ -131,15 +131,15 @@ public interface AnylineService<E>{
 
 
 
-	public int update(boolean async, String dest, Object data, Collection<String> fixs, String ... columns);
-	public int update(boolean async, String dest, Object data, ConfigStore configs, Collection<String> fixs, String ... columns);
+	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(boolean async, String dest, Object data, String ... columns);
 	public int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns);
 	
-	public int update(boolean async, Object data, Collection<String> fixs, String ... columns);
-	public int update(boolean async, Object data, ConfigStore configs, Collection<String> fixs, String ... columns);
+	public int update(boolean async, Object data, List<String> fixs, String ... columns);
+	public int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns);
 	public int update(boolean async, Object data, String[] fixs, String ... columns);
 	public int update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns);
 	public int update(boolean async, Object data, String ... columns);
@@ -168,10 +168,10 @@ public interface AnylineService<E>{
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	public int save(String dest, Object data, boolean checkPriamry, Collection<String> fixs, String ... columns);
-	public int save(Object data, boolean checkPriamry, Collection<String> fixs, String ... columns);
-	public int save(Object data, Collection<String> fixs, String ... columns);
-	public int save(String dest, Object data, Collection<String> fixs, String ... columns);
+	public int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(Object data, List<String> fixs, String ... columns);
+	public int save(String dest, Object data, List<String> fixs, String ... columns);
 
 	public int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
 	public int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
@@ -195,10 +195,10 @@ public interface AnylineService<E>{
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, Collection<String> fixs, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, Collection<String> fixs, String ... columns);
-	public int save(boolean async, Object data, Collection<String> fixs, String ... columns);
-	public int save(boolean async, String dest, Object data, Collection<String> fixs, String ... columns);
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(boolean async, Object data, List<String> fixs, String ... columns);
+	public int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
 
 	public int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
 	public int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);

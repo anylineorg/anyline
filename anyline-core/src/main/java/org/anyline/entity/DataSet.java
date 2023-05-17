@@ -1200,7 +1200,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow sums(DataRow result, Collection<String> fixs, String... keys) {
+    public DataRow sums(DataRow result, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
@@ -1234,7 +1234,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, Collection<String> fixs, String... keys) {
+    public DataRow avgs(DataRow result, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
@@ -1270,7 +1270,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, int scale, int round, Collection<String> fixs, String... keys) {
+    public DataRow avgs(DataRow result, int scale, int round, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
@@ -2245,7 +2245,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet extract(boolean regex, String[] fixs, String ... keys){
         return extract(regex, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet extract(boolean regex, Collection<String> fixs, String ... keys){
+    public DataSet extract(boolean regex, List<String> fixs, String ... keys){
         DataSet result = new DataSet();
         List<String> list = BeanUtil.merge(fixs, keys);
         for(DataRow row:rows){
@@ -2262,7 +2262,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet extract(String[] fixs, String ... keys){
         return extract(false, fixs, keys);
     }
-    public DataSet extract(Collection<String> fixs, String ... keys){
+    public DataSet extract(List<String> fixs, String ... keys){
         return extract(false, fixs, keys);
     }
 
@@ -2871,7 +2871,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys 根据keys去重
      * @return DataSet
      */
-    public DataSet union(DataSet set, Collection<String> fixs, String... keys) {
+    public DataSet union(DataSet set, List<String> fixs, String... keys) {
         DataSet result = new DataSet();
         if (null != rows) {
             int size = rows.size();
@@ -2929,7 +2929,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys keys
      * @return boolean
      */
-    public boolean contains(DataRow row, Collection<String> fixs, String... keys) {
+    public boolean contains(DataRow row, List<String> fixs, String... keys) {
         if (null == rows || rows.size() == 0 || null == row) {
             return false;
         }
@@ -2950,7 +2950,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
 
-    public String[] packParam(DataRow row, Collection<String> fixs, String... keys) {
+    public String[] packParam(DataRow row, List<String> fixs, String... keys) {
         if (null == row) {
             return null;
         }
@@ -3016,7 +3016,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys     ID:DEPT_ID或ID
      * @return DataSet
      */
-    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
         }
@@ -3055,7 +3055,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, String... keys) {
         return dispatchs(compare, "ITEMS", unique, recursion, items, keys);
     }
-    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         return dispatchs(compare, "ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
@@ -3069,14 +3069,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatchs(Compare compare, String field, DataSet items, String[] fixs, String... keys) {
         return dispatchs(compare, field,false, false, items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatchs(Compare compare, String field, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, String field, DataSet items, List<String> fixs, String... keys) {
         return dispatchs(compare, field,false, false, items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatchs(Compare compare, DataSet items, String... keys) {
         return dispatchs(compare, "ITEMS", items, keys);
     }
-    public DataSet dispatchs(Compare compare, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, DataSet items, List<String> fixs, String... keys) {
         return dispatchs(compare, "ITEMS", items, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(Compare compare, DataSet items, String[] fixs, String... keys) {
@@ -3087,7 +3087,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return dispatchs(compare, "ITEMS", unique, recursion, this, keys);
     }
 
-    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, Collection<String> fixs,  String... keys) {
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, List<String> fixs,  String... keys) {
         return dispatchs(compare, "ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, String[] fixs,  String... keys) {
@@ -3097,7 +3097,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, String... keys) {
         return dispatchs(compare, field, unique, recursion, this, keys);
     }
-    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
         return dispatchs(compare, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
@@ -3115,7 +3115,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys 匹配条件
      * @return this
      */
-    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
         }
@@ -3155,7 +3155,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(Compare compare, String field, DataSet items, String[] fixs, String... keys) {
         return dispatch(compare, field, false, false, items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(Compare compare, String field, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(Compare compare, String field, DataSet items, List<String> fixs, String... keys) {
         return dispatch(compare, field, false, false, items, BeanUtil.merge(fixs, keys));
     }
 
@@ -3165,7 +3165,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(Compare compare, DataSet items, String[] fixs, String... keys) {
         return dispatch(compare, "ITEM", items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(Compare compare, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(Compare compare, DataSet items, List<String> fixs, String... keys) {
         return dispatch(compare, "ITEM", items, BeanUtil.merge(fixs, keys));
     }
 
@@ -3175,7 +3175,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(Compare compare, boolean unique, boolean recursion, String[] fixs, String... keys) {
         return dispatch(compare, "ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(Compare compare, boolean unique, boolean recursion, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(Compare compare, boolean unique, boolean recursion, List<String> fixs, String... keys) {
         return dispatch(compare, "ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
@@ -3185,12 +3185,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
         return dispatch(compare, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
         return dispatch(compare, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
 
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
        return dispatchs(Compare.EQUAL, field, unique, recursion, items, fixs, keys);
     }
 
@@ -3204,7 +3204,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
         return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, items, keys);
     }
-    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
@@ -3218,14 +3218,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatchs(String field, DataSet items, String[] fixs, String... keys) {
         return dispatchs(Compare.EQUAL, field,false, false, items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatchs(String field, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(String field, DataSet items, List<String> fixs, String... keys) {
         return dispatchs(Compare.EQUAL, field,false, false, items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatchs(DataSet items, String... keys) {
         return dispatchs(Compare.EQUAL, "ITEMS", items, keys);
     }
-    public DataSet dispatchs(DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(DataSet items, List<String> fixs, String... keys) {
         return dispatchs(Compare.EQUAL, "ITEMS", items, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(DataSet items, String[] fixs, String... keys) {
@@ -3236,7 +3236,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, this, keys);
     }
 
-    public DataSet dispatchs(boolean unique, boolean recursion, Collection<String> fixs,  String... keys) {
+    public DataSet dispatchs(boolean unique, boolean recursion, List<String> fixs,  String... keys) {
         return dispatchs(Compare.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(boolean unique, boolean recursion, String[] fixs,  String... keys) {
@@ -3246,14 +3246,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
         return dispatchs(Compare.EQUAL, field, unique, recursion, this, keys);
     }
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, Collection<String> fixs, String... keys) {
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
         return dispatchs(Compare.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
     public DataSet dispatchs(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
         return dispatchs(Compare.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
 
-    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         return dispatch(Compare.EQUAL, field, unique, recursion, items, fixs, keys);
     }
 
@@ -3269,7 +3269,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(String field, DataSet items, String[] fixs, String... keys) {
         return dispatch(Compare.EQUAL, field, false, false, items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(String field, DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(String field, DataSet items, List<String> fixs, String... keys) {
         return dispatch(Compare.EQUAL, field, false, false, items, BeanUtil.merge(fixs, keys));
     }
 
@@ -3279,7 +3279,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(DataSet items, String[] fixs, String... keys) {
         return dispatch(Compare.EQUAL, "ITEM", items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(DataSet items, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(DataSet items, List<String> fixs, String... keys) {
         return dispatch(Compare.EQUAL, "ITEM", items, BeanUtil.merge(fixs, keys));
     }
 
@@ -3289,7 +3289,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(boolean unique, boolean recursion, String[] fixs, String... keys) {
         return dispatch(Compare.EQUAL, "ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(boolean unique, boolean recursion, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(boolean unique, boolean recursion, List<String> fixs, String... keys) {
         return dispatch(Compare.EQUAL, "ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
@@ -3299,7 +3299,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet dispatch(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
         return dispatch(Compare.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatch(String field, boolean unique, boolean recursion, Collection<String> fixs, String... keys) {
+    public DataSet dispatch(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
         return dispatch(Compare.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
@@ -3376,7 +3376,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys  关联条件列
      * @return DataSet
      */
-    public DataSet join(DataSet items, Collection<String> fixs,  String... keys) {
+    public DataSet join(DataSet items, List<String> fixs,  String... keys) {
         List<String> list = BeanUtil.merge(fixs, keys);
         if (null == items || list.size() == 0) {
             return this;
@@ -3461,7 +3461,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         result.dispatchs(true,false, this, keys);
         return result;
     }
-    public DataSet group(Collection<String> fixs, String... keys) {
+    public DataSet group(List<String> fixs, String... keys) {
         DataSet result = distinct(BeanUtil.merge(fixs, keys));
         result.dispatchs(true,false, this, keys);
         return result;
@@ -4624,7 +4624,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
 
     }
-    public DataSet copy(boolean regex, DataRow data, Collection<String> fixs, String... keys) {
+    public DataSet copy(boolean regex, DataRow data, List<String> fixs, String... keys) {
         if (null == data || data.isEmpty()) {
             return this;
         }
@@ -4641,7 +4641,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet copy(DataRow data, String... keys) {
         return copy(false, data, keys);
     }
-    public DataSet copy(DataRow data, Collection<String> fixs, String... keys) {
+    public DataSet copy(DataRow data, List<String> fixs, String... keys) {
         return copy(false, data, fixs, keys);
     }
 
