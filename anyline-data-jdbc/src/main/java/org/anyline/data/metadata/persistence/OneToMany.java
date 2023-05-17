@@ -4,8 +4,11 @@ public class OneToMany {
 
     /*
         //考勤记录
-        @OneToMany(mappedBy = "EMPLOYEE_ID")
+        //这里写成AttendanceRecord的一个属性也可以写成对应的列名
+        //把当前主键值赋值给AttendanceRecord.employeeId
+        @OneToMany(mappedBy = "employeeId")
         private List<AttendanceRecord> records = null;
+
     */
-    public String joinColumn		; // EMPLOYEE_ID				: 外键
+    public String joinColumn		; // employeeId/EMPLOYEE_ID				: 外键
 }
