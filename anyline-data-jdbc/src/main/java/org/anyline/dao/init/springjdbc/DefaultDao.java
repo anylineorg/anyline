@@ -999,8 +999,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				try {
 					OneToMany join = PersistenceAdapter.oneToMany(field);
 					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
-					Collection items = (Collection)BeanUtil.getFieldValue(obj, field);
-					if(null == items || items.size() ==0){
+					Object fv = BeanUtil.getFieldValue(obj, field);
+					if(null == fv){
 						continue;
 					}
 
@@ -1018,9 +1018,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(mode == 1) {
 						deletes(join.dependencyTable, join.joinColumn, pv + "");
 					}
-
-					for(Object item:items){
-						BeanUtil.setFieldValue(item, join.joinField, pv);
+					Collection items = new ArrayList();
+					if(fv.getClass().isArray()){
+						Object[] objs = (Object[])fv;
+						for(Object item:objs){
+							BeanUtil.setFieldValue(item, join.joinField, pv);
+							items.add(item);
+						}
+					}else if(fv instanceof Collection){
+						Collection cols = (Collection) fv;
+						for(Object item:cols){
+							BeanUtil.setFieldValue(item, join.joinField, pv);
+							items.add(item);
+						}
 					}
 					insert(join.dependencyTable, items);
 
