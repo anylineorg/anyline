@@ -1396,7 +1396,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						//通过子表完整查询 List<AttendanceRecord> records
 						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
-						String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.joinColumn + " =?" + ")";
 						List<Object> params = new ArrayList<>();
 						params.add(primaryValueMap.get(pk.toUpperCase()));
 						EntitySet<T> dependencys = querys(join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
@@ -1416,10 +1415,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					//通过子表完整查询 List<Department> departments
 					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
 					ConfigStore conditions = new DefaultConfigStore();
-					conditions.param("JOIN_PVS", pvs);
+					conditions.and(join.joinColumn, pvs);
 					EntitySet<T> alls = querys(join.dependencyClass, conditions);
 					for(T entity:set){
-						EntitySet items = alls.gets(join.joinColumn, idmap.get(entity)+"");
+						EntitySet items = alls.gets(join.joinColumn, idmap.get(entity));
 						BeanUtil.setFieldValue(entity, field, items);
 					}
 
