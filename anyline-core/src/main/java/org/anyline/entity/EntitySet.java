@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -84,6 +85,16 @@ public class EntitySet<T> implements Collection<T>, Serializable {
         EntitySet<T> result = new EntitySet<>();
         for(T entity:datas){
             Object v = BeanUtil.getFieldValue(entity, key);
+            if(null != v && v.equals(value)){
+                result.add(entity);
+            }
+        }
+        return result;
+    }
+    public EntitySet<T> gets(Field field, Object value){
+        EntitySet<T> result = new EntitySet<>();
+        for(T entity:datas){
+            Object v = BeanUtil.getFieldValue(entity, field);
             if(null != v && v.equals(value)){
                 result.add(entity);
             }

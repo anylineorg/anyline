@@ -1418,7 +1418,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					conditions.and(join.joinColumn, pvs);
 					EntitySet<T> alls = querys(join.dependencyClass, conditions);
 					for(T entity:set){
-						EntitySet items = alls.gets(join.joinColumn, idmap.get(entity));
+						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
 						BeanUtil.setFieldValue(entity, field, items);
 					}
 
