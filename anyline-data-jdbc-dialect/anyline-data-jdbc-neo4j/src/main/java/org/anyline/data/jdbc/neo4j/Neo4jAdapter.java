@@ -451,7 +451,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 构造 LIKE 查询条件
      * MATCH (n:Dept) where n.name CONTAINS '财务' RETURN n
      * MATCH (n:Dept) where n.name STARTS WITH  '财' RETURN n
-     * MATCH (n:Dept) where n.name END WITH  '财' RETURN n
+     * MATCH (n:Dept) where n.name ENDS WITH  '财' RETURN n
      *
      * @param builder builder
      * @param compare compare
@@ -463,9 +463,9 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(compare == Compare.LIKE){
             builder.append(" CONTAINS ?");
         }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH){
-            builder.append(" START WITH ?");
+            builder.append(" STARTS WITH ?");
         }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH){
-            builder.append(" END WITH ?");
+            builder.append(" ENDS WITH ?");
         }
         return value;
     }
