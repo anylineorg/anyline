@@ -40,6 +40,12 @@ public class EntityAdapterProxy {
         }
         return null;
     }
+
+    /**
+     * Entity对应的表名
+     * @param clazz 类
+     * @return 表
+     */
     public static Table table(Class clazz){
         return table(adapter, clazz);
     }
