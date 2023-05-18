@@ -143,7 +143,9 @@ public class ConvertAdapter {
             }
             if(!success && warn){
                 log.warn("[{}][origin:{}][target:{}]", LogUtil.format("convert定位失败",31), ClassUtil.type(clazz), ClassUtil.type(target));
-                //throw new RuntimeException();
+                if(ConfigTable.IS_THROW_CONVERT_EXCEPTION){
+                    throw new RuntimeException();
+                }
             }
         }
         return result;
