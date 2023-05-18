@@ -12,7 +12,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     BIGINT                  (StandardColumnType.INT8                  ), //mysql         ,mssql,
     BIGSERIAL               (StandardColumnType.BIGSERIAL             ), //     ,pg,
     BINARY                  (StandardColumnType.BIT                   ), //mysql         ,mssql,
-    BIT                     (StandardColumnType.BIT                   ), //mysql,pg(     ,mssql,
+    BIT                     (StandardColumnType.BIT                   ), //mysql,pg,     ,mssql,
     BLOB                    (StandardColumnType.BYTEA                 ), //mysql  ,oracle(    ,sqlite
     BOOL                    (StandardColumnType.BOOL                   ), //     ,pg
     BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
@@ -51,7 +51,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     LONGTEXT                (StandardColumnType.TEXT                  ), //mysql
     LSEG                    (StandardColumnType.LSEG                  ), //     ,pg
     MACADDR                 (StandardColumnType.MACADDR               ), //     ,pg
-    MONEY                   (StandardColumnType.MONEY                 ), //     ,pg(     ,mssql
+    MONEY                   (StandardColumnType.MONEY                 ), //     ,pg,     ,mssql
     NUMBER                  (StandardColumnType.DECIMAL               ), //       ,oracle
     NCHAR                   (StandardColumnType.VARCHAR               ), //       ,oracle,mssql
     NCLOB                   (StandardColumnType.BYTEA                 ), //       ,oracle
@@ -82,8 +82,8 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     SMALLSERIAL             (StandardColumnType.SMALLSERIAL           ), //     ,pg,
     SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //              ,mssql
     SYSNAME                 (StandardColumnType.ILLEGAL               ), //              ,mssql
-    TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg(     ,mssql,sqlite
-    TIME                    (StandardColumnType.TIME                  ), //mysql,pg(     ,mssql
+    TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg,     ,mssql,sqlite
+    TIME                    (StandardColumnType.TIME                  ), //mysql,pg,     ,mssql
     TIMEZ                   (StandardColumnType.TIMEZ                 ), //     ,pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql,pg,oracle,mssql
     TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_LOCAL_ZONE  ), //     ,pg
@@ -91,7 +91,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     TSQUERY                 (StandardColumnType.TSQUERY               ), //     ,pg
     TSVECTOR                (StandardColumnType.TSVECTOR              ), //     ,pg
     TXID_SNAPSHOT           (StandardColumnType.TXID_SNAPSHOT         ), //     ,pg
-    UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ), //     ( ，     ,mssql
+    UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ), //       ，     ,mssql
     UUID                    (StandardColumnType.UUID                  ), //     ,pg
     UROWID                  (StandardColumnType.ILLEGAL               ), //       ,oracle
     VARBIT                  (StandardColumnType.VARBIT                ), //     ,pg

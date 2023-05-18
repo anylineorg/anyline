@@ -11,7 +11,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         BIGINT                  (StandardColumnType.BIGINT                ), //mysql,  ,     ,mssql,
         BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
         BINARY                  (StandardColumnType.BINARY                ), //mysql,  ,     ,mssql,
-        BIT                     (StandardColumnType.BIT                   ), //mysql,pg(     ,mssql,
+        BIT                     (StandardColumnType.BIT                   ), //mysql,pg,     ,mssql,
         BLOB                    (StandardColumnType.BLOB                  ), //mysql,  ,oracle(    ,sqlite
         BOOL                    (StandardColumnType.BIT                   ), //     ,pg
         BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
@@ -50,7 +50,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         LONGTEXT                (StandardColumnType.LONGTEXT              ), //mysql
         LSEG                    (StandardColumnType.ILLEGAL               ), //     ,pg
         MACADDR                 (StandardColumnType.ILLEGAL               ), //     ,pg
-        MONEY                   (StandardColumnType.DECIMAL               ), //     ,pg(     ,mssql
+        MONEY                   (StandardColumnType.DECIMAL               ), //     ,pg,     ,mssql
         NUMBER                  (StandardColumnType.NUMERIC               ), //     ,  ,oracle
         NCHAR                   (StandardColumnType.VARCHAR               ), //     ,  ,oracle,mssql
         NCLOB                   (StandardColumnType.TEXT                  ), //     ,  ,oracle
@@ -81,8 +81,8 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         SMALLSERIAL             (StandardColumnType.TINYINT               ), //     ,pg,
         SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
         SYSNAME                 (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
-        TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg(     ,mssql,sqlite
-        TIME                    (StandardColumnType.TIME                  ), //mysql,pg(     ,mssql
+        TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg,     ,mssql,sqlite
+        TIME                    (StandardColumnType.TIME                  ), //mysql,pg,     ,mssql
         TIMEZ                   (StandardColumnType.TIME                  ), //     ,pg
         TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql,pg,oracle,mssql
         TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //     ,pg
@@ -90,7 +90,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         TSQUERY                 (StandardColumnType.ILLEGAL               ), //     ,pg
         TSVECTOR                (StandardColumnType.ILLEGAL               ), //     ,pg
         TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //     ,pg
-        UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ), //     ( ，     ,mssql
+        UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ), //       ，     ,mssql
         UUID                    (StandardColumnType.ILLEGAL               ), //     ,pg
         UROWID                  (StandardColumnType.ILLEGAL               ), //     ,  ,oracle
         VARBIT                  (StandardColumnType.VARBINARY             ), //     ,pg
