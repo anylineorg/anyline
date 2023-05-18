@@ -1893,7 +1893,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != pc){
 			pk = pc.getName();
 		}
-		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
 		for(Field field:fields) {
 			try {
 				OneToMany join = PersistenceAdapter.oneToMany(field);
