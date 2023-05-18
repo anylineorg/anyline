@@ -1,5 +1,5 @@
  
-package org.anyline.oscar;
+package org.anyline.data.jdbc.oscar;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
@@ -12,7 +12,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
-import org.anyline.entity.metadata.init.AbstractColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;

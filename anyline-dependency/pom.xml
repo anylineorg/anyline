@@ -963,10 +963,11 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>src/main/resources</directory>
+				<directory>src/main/resources/META-INF</directory>
 				<includes>
 					<include>*.tld</include>
 					<include>*.xsd</include>
+					<include>*.factories</include>
 				</includes>
 				<targetPath>META-INF</targetPath>
 			</resource>

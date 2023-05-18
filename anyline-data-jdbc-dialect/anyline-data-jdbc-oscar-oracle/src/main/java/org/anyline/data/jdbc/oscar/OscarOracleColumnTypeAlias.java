@@ -1,4 +1,4 @@
-package org.anyline.oscar;
+package org.anyline.data.jdbc.oscar;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
