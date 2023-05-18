@@ -29,6 +29,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	public TDengineAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
+		for (TDengineColumnTypeAlias alias: TDengineColumnTypeAlias.values()){
+			types.put(alias.name(), alias.standard());
+		}
 	}
 
 	@Value("${anyline.jdbc.delimiter.tdengine:}")
