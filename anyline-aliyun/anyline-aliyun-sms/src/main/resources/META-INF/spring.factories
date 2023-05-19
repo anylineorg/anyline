@@ -1,1 +1,1 @@
-org.anyline.aliyun.sms.util.SMSBean=org.anyline.aliyun.sms.util.SMSBean
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.aliyun.sms.util.SMSBean

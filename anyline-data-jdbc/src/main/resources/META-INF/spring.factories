@@ -1,7 +1,8 @@
-org.anyline.data.listener.DDListener=org.anyline.data.listener.init.DefaultDDListener
-org.anyline.adapter.EntityAdapter=org.anyline.data.adapter.DefaultEntityAdapter
-org.springframework.context.EnvironmentAware=org.anyline.listener.EnvironmentListener
-org.anyline.proxy.CacheProxy=org.anyline.proxy.CacheProxy
-org.anyline.proxy.ServiceProxy=org.anyline.proxy.ServiceProxy
-org.anyline.dao.AnylineDao=org.anyline.dao.init.springjdbc.DefaultDao
-org.anyline.service.AnylineService=org.anyline.service.init.DefaultService
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.listener.init.DefaultDDListener,\
+org.anyline.data.adapter.DefaultEntityAdapter,\
+org.anyline.data.jdbc.ds.EnvironmentListener,\
+org.anyline.proxy.CacheProxy,\
+org.anyline.proxy.ServiceProxy,\
+org.anyline.dao.init.springjdbc.DefaultDao,\
+org.anyline.service.init.DefaultService

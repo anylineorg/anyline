@@ -1,1 +1,1 @@
-org.anyline.wechat.util.WechatBean=org.anyline.wechat.util.WechatBean
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.wechat.util.WechatBean

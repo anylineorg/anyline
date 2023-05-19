@@ -1,1 +1,1 @@
-org.anyline.redis.util.RedisProvider=org.anyline.redis.util.RedisProvider
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.redis.util.RedisProvider

@@ -1,1 +1,1 @@
-org.anyline.cache.ehcache.EHCacheProvider=org.anyline.cache.ehcache.EHCacheProvider
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.cache.ehcache.EHCacheProvider

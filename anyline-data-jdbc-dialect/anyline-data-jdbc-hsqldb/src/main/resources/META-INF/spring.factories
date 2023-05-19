@@ -1,1 +1,1 @@
-org.anyline.data.adapter.JDBCAdapter=org.anyline.data.jdbc.hsqldb.HSQLAdapter
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.data.jdbc.hsqldb.HSQLAdapter

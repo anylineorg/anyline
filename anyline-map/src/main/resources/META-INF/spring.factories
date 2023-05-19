@@ -1,1 +1,1 @@
-org.anyline.map.MapProxy=org.anyline.map.MapProxy
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.map.MapProxy

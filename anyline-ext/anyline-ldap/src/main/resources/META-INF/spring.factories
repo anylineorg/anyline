@@ -1,1 +1,1 @@
-org.anyline.ldap.util.LdapBean=org.anyline.ldap.util.LdapBean
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.ldap.util.LdapBean
