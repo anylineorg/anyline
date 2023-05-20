@@ -21,7 +21,7 @@ public class RuntimeHolder {
 
     private static Logger log = LoggerFactory.getLogger(RuntimeHolder.class);
     private static Map<String, JDBCRuntime> runtimes = new Hashtable();
-     private static DefaultListableBeanFactory factory;
+    private static DefaultListableBeanFactory factory;
     public static void init(DefaultListableBeanFactory factory){
         RuntimeHolder.factory = factory;
     }
