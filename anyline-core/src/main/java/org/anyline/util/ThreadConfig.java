@@ -114,19 +114,34 @@ public class ThreadConfig extends ConfigTable{
         ThreadConfig instance = instances.get(datasource);
         if(null == instance){
             instance = new ThreadConfig();
-            instances.put(datasource, instance);
+            ThreadConfig all = instances.get("all");
             Field[] fields = ThreadConfig.class.getFields();
-            for(Field field:fields){
-                try {
-                    Field cField = ConfigTable.class.getField(field.getName());
-                    if(null != cField){
-                        Object value = cField.get(null);
-                        field.set(instance, value);
+            if(!"all".equals(datasource) && null != all){
+                for(Field field:fields){
+                    try {
+                        Field cField = ConfigTable.class.getField(field.getName());
+                        if(null != cField){
+                            Object value = cField.get(all);
+                            field.set(instance, value);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
+                }
+            }else{
+                for(Field field:fields){
+                    try {
+                        Field cField = ConfigTable.class.getField(field.getName());
+                        if(null != cField){
+                            Object value = cField.get(null);
+                            field.set(instance, value);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
+            instances.put(datasource, instance);
         }
         return instance;
     }
