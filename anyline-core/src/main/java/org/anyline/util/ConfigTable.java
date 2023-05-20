@@ -138,6 +138,9 @@ public class ConfigTable {
 	static{
 		init();
 	}
+	public static ThreadConfig threadInstance(){
+		return ThreadConfig.instance();
+	}
 	public ConfigTable(){
 		debug();
 	}
