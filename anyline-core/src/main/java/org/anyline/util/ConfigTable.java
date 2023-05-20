@@ -138,9 +138,6 @@ public class ConfigTable {
 	static{
 		init();
 	}
-	public static ThreadConfig threadInstance(){
-		return ThreadConfig.instance();
-	}
 	public ConfigTable(){
 		debug();
 	}
@@ -668,5 +665,294 @@ public class ConfigTable {
 	}
 	public static void setEnvironment(Environment env){
 		environment = env;
+	}
+
+
+	public boolean  IS_DEBUG() {
+		return IS_DEBUG;
+	}
+
+	public boolean  IS_SHOW_SQL() {
+		return IS_SHOW_SQL;
+	}
+
+	public boolean  IS_THROW_CONVERT_EXCEPTION() {
+		return IS_THROW_CONVERT_EXCEPTION;
+	}
+
+	public long SLOW_SQL_MILLIS() {
+		return SLOW_SQL_MILLIS;
+	}
+
+	public boolean  IS_SHOW_SQL_PARAM() {
+		return IS_SHOW_SQL_PARAM;
+	}
+
+	public boolean  IS_SHOW_SQL_WHEN_ERROR() {
+		return IS_SHOW_SQL_WHEN_ERROR;
+	}
+
+	public boolean  IS_SHOW_SQL_PARAM_WHEN_ERROR() {
+		return IS_SHOW_SQL_PARAM_WHEN_ERROR;
+	}
+
+	public boolean  IS_SQL_DEBUG() {
+		return IS_SQL_DEBUG;
+	}
+
+	public boolean  IS_HTTP_LOG() {
+		return IS_HTTP_LOG;
+	}
+
+	public boolean  IS_HTTP_PARAM_AUTO_TRIM() {
+		return IS_HTTP_PARAM_AUTO_TRIM;
+	}
+
+	public boolean  IS_IGNORE_EMPTY_HTTP_KEY() {
+		return IS_IGNORE_EMPTY_HTTP_KEY;
+	}
+
+	public int HTTP_PARAM_ENCODE() {
+		return HTTP_PARAM_ENCODE;
+	}
+
+	public boolean  IS_MULTIPLE_SERVICE() {
+		return IS_MULTIPLE_SERVICE;
+	}
+
+	public boolean  IS_AUTO_CONVERT_BYTES() {
+		return IS_AUTO_CONVERT_BYTES;
+	}
+
+	public boolean  IS_AUTO_SPLIT_ARRAY() {
+		return IS_AUTO_SPLIT_ARRAY;
+	}
+
+	public boolean  IS_UPPER_KEY() {
+		return IS_UPPER_KEY;
+	}
+
+	public boolean  IS_LOWER_KEY() {
+		return IS_LOWER_KEY;
+	}
+
+	public boolean  IS_KEY_IGNORE_CASE() {
+		return IS_KEY_IGNORE_CASE;
+	}
+
+	public boolean  IS_THROW_SQL_QUERY_EXCEPTION() {
+		return IS_THROW_SQL_QUERY_EXCEPTION;
+	}
+
+	public boolean  IS_THROW_SQL_UPDATE_EXCEPTION() {
+		return IS_THROW_SQL_UPDATE_EXCEPTION;
+	}
+
+	public boolean  IS_UPDATE_NULL_COLUMN() {
+		return IS_UPDATE_NULL_COLUMN;
+	}
+
+	public boolean  IS_UPDATE_EMPTY_COLUMN() {
+		return IS_UPDATE_EMPTY_COLUMN;
+	}
+
+	public boolean  IS_INSERT_NULL_COLUMN() {
+		return IS_INSERT_NULL_COLUMN;
+	}
+
+	public boolean  IS_INSERT_EMPTY_COLUMN() {
+		return IS_INSERT_EMPTY_COLUMN;
+	}
+
+	public boolean  IS_UPDATE_NULL_FIELD() {
+		return IS_UPDATE_NULL_FIELD;
+	}
+
+	public boolean  IS_UPDATE_EMPTY_FIELD() {
+		return IS_UPDATE_EMPTY_FIELD;
+	}
+
+	public boolean  IS_INSERT_NULL_FIELD() {
+		return IS_INSERT_NULL_FIELD;
+	}
+
+	public boolean  IS_INSERT_EMPTY_FIELD() {
+		return IS_INSERT_EMPTY_FIELD;
+	}
+
+	public String LIST2STRING_FORMAT() {
+		return LIST2STRING_FORMAT;
+	}
+
+	public boolean  IS_REPLACE_EMPTY_NULL() {
+		return IS_REPLACE_EMPTY_NULL;
+	}
+
+	public boolean  IS_SQL_DELIMITER_OPEN() {
+		return IS_SQL_DELIMITER_OPEN;
+	}
+
+	public boolean  IS_SQL_DELIMITER_PLACEHOLDER_OPEN() {
+		return IS_SQL_DELIMITER_PLACEHOLDER_OPEN;
+	}
+
+	public String SQL_DELIMITER_PLACEHOLDER() {
+		return SQL_DELIMITER_PLACEHOLDER;
+	}
+
+	public boolean  IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL() {
+		return IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL;
+	}
+
+	public boolean  IS_AUTO_CHECK_METADATA() {
+		return IS_AUTO_CHECK_METADATA;
+	}
+
+	public boolean  IS_DISABLED_DEFAULT_ENTITY_ADAPTER() {
+		return IS_DISABLED_DEFAULT_ENTITY_ADAPTER;
+	}
+
+	public boolean  IS_REMOVE_EMPTY_HTTP_KEY() {
+		return IS_REMOVE_EMPTY_HTTP_KEY;
+	}
+
+	public boolean  IS_CACHE_DISABLED() {
+		return IS_CACHE_DISABLED;
+	}
+
+	public String DEFAULT_PRIMARY_KEY() {
+		return DEFAULT_PRIMARY_KEY;
+	}
+
+	public boolean  IS_OPEN_PRIMARY_TRANSACTION_MANAGER() {
+		return IS_OPEN_PRIMARY_TRANSACTION_MANAGER;
+	}
+
+	public boolean PRIMARY_GENERATOR_UUID_ACTIVE() {
+		return PRIMARY_GENERATOR_UUID_ACTIVE;
+	}
+
+	public boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE() {
+		return PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE;
+	}
+
+	public boolean PRIMARY_GENERATOR_RANDOM_ACTIVE() {
+		return PRIMARY_GENERATOR_RANDOM_ACTIVE;
+	}
+
+	public boolean PRIMARY_GENERATOR_TIMESTAMP_ACTIVE() {
+		return PRIMARY_GENERATOR_TIMESTAMP_ACTIVE;
+	}
+
+	public boolean PRIMARY_GENERATOR_TIME_ACTIVE() {
+		return PRIMARY_GENERATOR_TIME_ACTIVE;
+	}
+
+	public int PRIMARY_GENERATOR_WORKER_ID() {
+		return PRIMARY_GENERATOR_WORKER_ID;
+	}
+
+	public String PRIMARY_GENERATOR_PREFIX() {
+		return PRIMARY_GENERATOR_PREFIX;
+	}
+
+	public int PRIMARY_GENERATOR_RANDOM_LENGTH() {
+		return PRIMARY_GENERATOR_RANDOM_LENGTH;
+	}
+
+	public boolean PRIMARY_GENERATOR_UPPER() {
+		return PRIMARY_GENERATOR_UPPER;
+	}
+
+	public boolean PRIMARY_GENERATOR_LOWER() {
+		return PRIMARY_GENERATOR_LOWER;
+	}
+
+	public String PRIMARY_GENERATOR_TIME_FORMAT() {
+		return PRIMARY_GENERATOR_TIME_FORMAT;
+	}
+
+	public int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH() {
+		return PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH;
+	}
+
+	public String SNOWFLAKE_TWEPOCH() {
+		return SNOWFLAKE_TWEPOCH;
+	}
+
+	public int AFTER_ALTER_COLUMN_EXCEPTION_ACTION() {
+		return AFTER_ALTER_COLUMN_EXCEPTION_ACTION;
+	}
+
+	public boolean  IS_DDL_AUTO_DROP_COLUMN() {
+		return IS_DDL_AUTO_DROP_COLUMN;
+	}
+
+	public String SQL_STORE_DIR() {
+		return SQL_STORE_DIR;
+	}
+
+	public boolean  IS_OPEN_PARSE_MYBATIS() {
+		return IS_OPEN_PARSE_MYBATIS;
+	}
+
+	public String ENTITY_FIELD_COLUMN_MAP() {
+		return ENTITY_FIELD_COLUMN_MAP;
+	}
+
+	public String ENTITY_CLASS_TABLE_MAP() {
+		return ENTITY_CLASS_TABLE_MAP;
+	}
+
+	public String ENTITY_TABLE_ANNOTATION() {
+		return ENTITY_TABLE_ANNOTATION;
+	}
+
+	public String ENTITY_COLUMN_ANNOTATION() {
+		return ENTITY_COLUMN_ANNOTATION;
+	}
+
+	public String ENTITY_PRIMARY_KEY_ANNOTATION() {
+		return ENTITY_PRIMARY_KEY_ANNOTATION;
+	}
+
+	public int ENTITY_FIELD_SELECT_DEPENDENCY() {
+		return ENTITY_FIELD_SELECT_DEPENDENCY;
+	}
+
+	public int ENTITY_FIELD_INSERT_DEPENDENCY() {
+		return ENTITY_FIELD_INSERT_DEPENDENCY;
+	}
+
+	public int ENTITY_FIELD_UPDATE_DEPENDENCY() {
+		return ENTITY_FIELD_UPDATE_DEPENDENCY;
+	}
+
+	public int ENTITY_FIELD_DELETE_DEPENDENCY() {
+		return ENTITY_FIELD_DELETE_DEPENDENCY;
+	}
+
+	public Compare ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE() {
+		return ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE;
+	}
+
+	public String HTTP_PARAM_KEY_CASE() {
+		return HTTP_PARAM_KEY_CASE;
+	}
+
+	public String TABLE_METADATA_CACHE_KEY() {
+		return TABLE_METADATA_CACHE_KEY;
+	}
+
+	public int TABLE_METADATA_CACHE_SECOND() {
+		return TABLE_METADATA_CACHE_SECOND;
+	}
+
+	public String MIX_DEFAULT_SEED() {
+		return MIX_DEFAULT_SEED;
+	}
+
+	public String EL_ATTRIBUTE_PREFIX() {
+		return EL_ATTRIBUTE_PREFIX;
 	}
 }

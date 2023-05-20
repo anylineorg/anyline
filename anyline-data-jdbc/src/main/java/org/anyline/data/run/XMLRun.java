@@ -22,6 +22,7 @@ package org.anyline.data.run;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
@@ -35,10 +36,7 @@ import org.anyline.entity.DefaultOrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigParser;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DefaultOgnlMemberAccess;
+import org.anyline.util.*;
 
 import java.util.*;
 
@@ -198,7 +196,8 @@ public class XMLRun extends BasicRun implements Run {
 						result = result.replace( "#{" + var.getKey() + "}", value);
 					}
 				} 
-			} 
+			}
+			boolean IS_AUTO_SPLIT_ARRAY = ThreadConfig.check(DataSourceHolder.curDataSource()).IS_AUTO_SPLIT_ARRAY();
 			for(Variable var:variables){
 				if(null == var){ 
 					continue; 
@@ -215,26 +214,26 @@ public class XMLRun extends BasicRun implements Run {
 						if(var.getCompare() == Compare.LIKE){ 
 							// CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
 							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), ConfigTable.IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						}else if(var.getCompare() == Compare.LIKE_SUFFIX){ 
 							result = result.replace("'%"+replaceKey+"'", adapter.concat("'%'","?"));
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), ConfigTable.IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						}else if(var.getCompare() == Compare.LIKE_PREFIX){ 
 							result = result.replace("'"+replaceKey+"%'", adapter.concat("?","'%'"));
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), ConfigTable.IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						}else if(var.getCompare() == Compare.IN){ 
 							// 多个值IN 
 							String replaceDst = "";  
 							for(Object tmp:varValues){
 								replaceDst += " ?"; 
 							}
-							addValues(Compare.IN, var.getKey(), varValues, ConfigTable.IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.IN, var.getKey(), varValues, IS_AUTO_SPLIT_ARRAY);
 							replaceDst = replaceDst.trim().replace(" ", ","); 
 							result = result.replace(replaceKey, replaceDst); 
 						}else{ 
 							// 单个值 
 							result = result.replace(replaceKey, "?"); 
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), ConfigTable.IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						} 
 					} 
 				} 
@@ -251,7 +250,7 @@ public class XMLRun extends BasicRun implements Run {
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
 						value = (String)varValues.get(0); 
 					} 
-					addValues(Compare.EQUAL, var.getKey(), value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
+					addValues(Compare.EQUAL, var.getKey(), value, IS_AUTO_SPLIT_ARRAY);
 				} 
 			} 
 		}

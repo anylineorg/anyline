@@ -270,7 +270,7 @@ public class DefaultService<E> implements AnylineService<E> {
             DataRow row = set.getRow(0);
             return row;
         }
-        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             return new DataRow();
         }
         return null;
@@ -318,7 +318,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
         // 是否启动缓存
-        if(null == cache || null == cacheProvider ||  ConfigTable.IS_CACHE_DISABLED){
+        if(null == cache || null == cacheProvider ||  ThreadConfig.check(DataSourceHolder.curDataSource()).IS_CACHE_DISABLED()){
             return query(src, configs, obj, conditions);
         }
         DefaultPageNavi navi = new DefaultPageNavi();
@@ -358,7 +358,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != row && null != cacheProvider){
             cacheProvider.put(cache, key, row);
         }
-        if(null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(null == row && ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             row = new DataRow();
         }
         return row;
@@ -457,7 +457,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null != list && list.size() > 0) {
             return list.get(0);
         }
-        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             try {
                 return (T) clazz.newInstance();
             }catch (Exception e){
@@ -539,7 +539,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null != list && list.size() > 0) {
             return list.get(0);
         }
-        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             try {
                 return (T) clazz.newInstance();
             }catch (Exception e){
@@ -730,7 +730,7 @@ public class DefaultService<E> implements AnylineService<E> {
             DataRow row = set.getRow(0);
             return row;
         }
-        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             return new DataRow();
         }
         return null;
@@ -793,7 +793,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != row && null != cacheProvider){
             cacheProvider.put(cache, key, row);
         }
-        if(null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(null == row && ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             row = new DataRow();
         }
         return row;
@@ -1416,7 +1416,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if(set.size()>0){
             return set.getRow(0);
         }
-        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+        if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL()){
             return new DataRow();
         }
         return null;

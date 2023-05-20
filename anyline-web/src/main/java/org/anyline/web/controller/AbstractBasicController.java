@@ -19,6 +19,7 @@
 
 package org.anyline.web.controller;
 
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
@@ -198,7 +199,7 @@ public class AbstractBasicController {
 				ParseResult parser = ConfigParser.parse(param,true);
 				String col = parser.getVar();
 				String key = parser.getKey();
-				if(!ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY || requestValues.containsKey(key)) {
+				if(!ThreadConfig.check(DataSourceHolder.curDataSource()).IS_IGNORE_EMPTY_HTTP_KEY() || requestValues.containsKey(key)) {
 					Object value = ConfigParser.getValue(requestValues, parser);
 					row.put(col, value);
 				}

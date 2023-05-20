@@ -352,7 +352,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						listener.beforeQuery(run, total);
 					}
 					fr = System.currentTimeMillis();
-					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY);
+					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_SELECT_DEPENDENCY());
 					if (null != listener) {
 						listener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
@@ -498,8 +498,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.afterExists(run, result, millis);
 				}
 				boolean slow = false;
-				if(ConfigTable.SLOW_SQL_MILLIS > 0){
-					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				if(SLOW_SQL_MILLIS > 0){
+					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 						if(null != listener){
@@ -607,8 +608,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.afterUpdate(run, result, dest, data, columns, millis);
 				}
 				boolean slow = false;
-				if(ConfigTable.SLOW_SQL_MILLIS > 0){
-					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				if(SLOW_SQL_MILLIS > 0){
+					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 						if(null != listener){
@@ -841,16 +843,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(listenerResult) {
 				cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
-				checkMany2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-				checkOne2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+				int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_INSERT_DEPENDENCY();
+				checkMany2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+				checkOne2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 				Long millis = System.currentTimeMillis() - fr;
 				if (null != listener) {
 					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
 				}
 
 				boolean slow = false;
-				if(ConfigTable.SLOW_SQL_MILLIS > 0){
-					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				if(SLOW_SQL_MILLIS > 0){
+					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 						if(null != listener){
@@ -1105,8 +1109,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
-			if(ConfigTable.SLOW_SQL_MILLIS > 0){
-				if(mid-fr > ConfigTable.SLOW_SQL_MILLIS){
+			long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+			if(SLOW_SQL_MILLIS > 0){
+				if(mid-fr > SLOW_SQL_MILLIS){
 					slow = true;
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid-fr, sql, paramLogFormat(values));
 					if(null != listener){
@@ -1192,7 +1197,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		//在DataRow中 如果检测到准确类型 JSON XML POINT 等 返回相应的类型,不返回byte[]（所以需要开启自动检测）
 		//Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-		if(ConfigTable.IS_AUTO_CHECK_METADATA && null != table){
+
+		if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_AUTO_CHECK_METADATA() && null != table){
 			columns = CacheProxy.columns(table);
 			if(null == columns){
 				columns = columns(table);
@@ -1234,9 +1240,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				mid[0] = System.currentTimeMillis();
 			}
 			boolean slow = false;
-			if(ConfigTable.SLOW_SQL_MILLIS > 0){
+			long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+			if(SLOW_SQL_MILLIS > 0){
 				slow = true;
-				if(mid[0] - fr > ConfigTable.SLOW_SQL_MILLIS){
+				if(mid[0] - fr > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, paramLogFormat(values));
 					if(null != listener){
 						listener.slow("select", null, sql, values, null, mid[0] - fr);
@@ -1310,10 +1317,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		Compare compare = ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
 		for(Field field:fields){
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
-				if(Compare.EQUAL == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE || set.size() == 1) {
+				if(Compare.EQUAL == compare || set.size() == 1) {
 					//逐行查询
 					for (T entity : set) {
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
@@ -1333,7 +1341,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							BeanUtil.setFieldValue(entity, field, dependencys);
 						}
 					}
-				}else if(Compare.IN == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE){
+				}else if(Compare.IN == compare){
 					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
 					Map<T,Object> idmap = new HashMap<>();
@@ -1386,12 +1394,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+		Compare compare = ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
 		for(Field field:fields){
 			try {
 				OneToMany join = PersistenceAdapter.oneToMany(field);
-				if(Compare.EQUAL == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE || set.size() == 1) {
+				if(Compare.EQUAL == compare || set.size() == 1) {
 					//逐行查询
 					for (T entity : set) {
+
 						Object pv = EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase());
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						//通过子表完整查询 List<AttendanceRecord> records
@@ -1402,7 +1412,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						BeanUtil.setFieldValue(entity, field, dependencys);
 
 					}
-				}else if(Compare.IN == ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE){
+				}else if(Compare.IN == compare){
 					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
 					Map<T,Object> idmap = new HashMap<>();
@@ -1464,8 +1474,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				boolean slow = false;
-				if(ConfigTable.SLOW_SQL_MILLIS > 0){
-					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				if(SLOW_SQL_MILLIS > 0){
+					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 						if(null != listener){
@@ -1587,8 +1598,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				Long millis = System.currentTimeMillis() - fr;
 
 				boolean slow = false;
-				if(ConfigTable.SLOW_SQL_MILLIS > 0){
-					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				if(SLOW_SQL_MILLIS > 0){
+					if(millis > SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
 						if(null != listener){
 							listener.slow("procedure",null, sql, inputs, list, millis);
@@ -1738,8 +1750,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			});
 			Long millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
-			if(ConfigTable.SLOW_SQL_MILLIS > 0){
-				if(millis > ConfigTable.SLOW_SQL_MILLIS){
+			long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+			if(SLOW_SQL_MILLIS > 0){
+				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
 							, random
 							, millis
@@ -1946,9 +1959,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				boolean slow = false;
-				if(ConfigTable.SLOW_SQL_MILLIS > 0){
+				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				if(SLOW_SQL_MILLIS > 0){
 					slow = true;
-					if(millis > ConfigTable.SLOW_SQL_MILLIS){
+					if(millis > SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 						if(null != listener){
 							listener.slow("delete", run, sql, values, null, millis);
