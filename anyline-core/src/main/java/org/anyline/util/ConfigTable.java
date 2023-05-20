@@ -41,6 +41,7 @@ import java.util.jar.JarFile;
 @Component("anyline.config")
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
+	private static boolean IS_LOG = false;
 	private static Environment environment;
 	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
 	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
@@ -594,6 +595,10 @@ public class ConfigTable {
 		if(!IS_DEBUG){
 			return;
 		}
+		if(IS_LOG){
+			return;
+		}
+		IS_LOG = true;
 		try{
 			String time = null;
 			String version = ConfigTable.version;
