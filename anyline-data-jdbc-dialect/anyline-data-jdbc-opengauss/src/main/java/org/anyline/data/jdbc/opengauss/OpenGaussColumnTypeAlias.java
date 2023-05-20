@@ -4,7 +4,7 @@ import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.entity.metadata.ColumnType;
 
-public enum OpengaussColumnTypeAlias implements ColumnTypeAlias {
+public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
 
     BFILE                   (StandardColumnType.ILLEGAL               ), //       ,oracle,
     BINARY_DOUBLE           (StandardColumnType.BINARY_DOUBLE         ), //       ,oracle,
@@ -104,7 +104,7 @@ public enum OpengaussColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardColumnType.XML                   ), //     ,pg，      ,mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
     private final ColumnType standard;
-    private OpengaussColumnTypeAlias(ColumnType standard){
+    private OpenGaussColumnTypeAlias(ColumnType standard){
         this.standard = standard;
     }
 

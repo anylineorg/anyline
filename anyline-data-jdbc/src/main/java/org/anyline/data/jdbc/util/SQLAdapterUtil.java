@@ -115,8 +115,8 @@ public class SQLAdapterUtil {
 			adapter =  adapters.get(DatabaseType.GBase.name());
 		}else if(adapters.containsKey(DatabaseType.OceanBase.name()) && name.contains("oceanbase")){
 			adapter =  adapters.get(DatabaseType.OceanBase.name());
-		}else if(adapters.containsKey(DatabaseType.Opengauss.name()) && name.contains("opengauss")){
-			adapter =  adapters.get(DatabaseType.Opengauss.name());
+		}else if(adapters.containsKey(DatabaseType.OpenGauss.name()) && name.contains("opengauss")){
+			adapter =  adapters.get(DatabaseType.OpenGauss.name());
 		}else if(adapters.containsKey(DatabaseType.PolarDB.name()) && name.contains("polardb")){
 			adapter =  adapters.get(DatabaseType.PolarDB.name());
 		}else if(adapters.containsKey(DatabaseType.SQLite.name()) && name.contains("sqlite")){

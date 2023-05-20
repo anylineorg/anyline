@@ -22,7 +22,7 @@ public enum DatabaseType {
         MYSQL				("MySQL"		, KEY_CASE.SRC,"com.mysql.cj.jdbc.Driver"),
         Neo4j  				("Neo4j"		, KEY_CASE.SRC,"org.neo4j.jdbc.Driver"),
         OceanBase 			("OceanBase"	, KEY_CASE.SRC,"com.oceanbase.jdbc.Driver"),
-        Opengauss 			("高斯"			, KEY_CASE.SRC,"org.opengauss.Driver"),
+        OpenGauss           ("高斯"			, KEY_CASE.SRC,"org.opengauss.Driver"),
         ORACLE				("Oracle"		, KEY_CASE.SRC,"oracle.jdbc.OracleDriver"),
         oscar				("神舟通用"		, KEY_CASE.SRC,"com.oscar.Driver"),
         PolarDB  			("PolarDB"		, KEY_CASE.SRC,"com.aliyun.polardb.Driver"),

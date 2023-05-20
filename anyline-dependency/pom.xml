@@ -972,6 +972,13 @@
 				<targetPath>META-INF</targetPath>
 			</resource>
 			<resource>
+				<directory>src/main/resources/META-INF/spring</directory>
+				<includes>
+					<include>*.imports</include>
+				</includes>
+				<targetPath>META-INF/spring</targetPath>
+			</resource>
+			<resource>
 				<directory>/src/main/webapp/WEB-INF</directory>
 				<includes>
 					<include>*.tld</include>

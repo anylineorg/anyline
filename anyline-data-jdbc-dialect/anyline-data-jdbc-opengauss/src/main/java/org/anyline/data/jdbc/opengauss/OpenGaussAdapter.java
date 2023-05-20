@@ -24,10 +24,10 @@ import java.sql.ResultSet;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.opengauss")
-public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
+public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
-		return DatabaseType.Opengauss;
+		return DatabaseType.OpenGauss;
 	}
 
 	@Value("${anyline.jdbc.delimiter.opengauss:}")
@@ -38,11 +38,11 @@ public class OpengaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 		setDelimiter(delimiter);
 	}
 
-	public OpengaussAdapter(){
+	public OpenGaussAdapter(){
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (OpengaussColumnTypeAlias alias: OpengaussColumnTypeAlias.values()){
+		for (OpenGaussColumnTypeAlias alias: OpenGaussColumnTypeAlias.values()){
 			types.put(alias.name(), alias.standard());
 		}
 	}
