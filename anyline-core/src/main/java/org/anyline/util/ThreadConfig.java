@@ -162,9 +162,9 @@ public class ThreadConfig extends ConfigTable{
             if(null == instance){
                 instance = instances.get("all");
             }
-            if(null == instance){
-                instance = new ConfigTable();
-            }
+        }
+        if(null == instance){
+            instance = new ConfigTable();
         }
         return instance;
     }
