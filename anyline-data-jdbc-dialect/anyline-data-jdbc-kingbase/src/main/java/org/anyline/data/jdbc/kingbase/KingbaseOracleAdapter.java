@@ -40,7 +40,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	public DatabaseType type(){
 		return DatabaseType.KingBase;
 	}
-	@Value("${anyline.jdbc.delimiter.kingbase:}")
+	@Value("${anyline.data.jdbc.delimiter.kingbase:}")
 	private String delimiter;
 
 	@Override

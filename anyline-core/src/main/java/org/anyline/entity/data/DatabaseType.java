@@ -6,18 +6,24 @@ import org.anyline.adapter.KeyAdapter.KEY_CASE;
 public enum DatabaseType {
         Cassandra			("CASSANDRA"	, KEY_CASE.SRC,""),
         ClickHouse			( "CLICKHOUSE"	, KEY_CASE.SRC, "ru.yandex.clickhouse.ClickHouseDriver"),
+        Citus   			("Citus"	    , KEY_CASE.SRC,""),
         CockroachDB			("CockroachDB"	, KEY_CASE.SRC,""),
         DB2					("db2"			, KEY_CASE.SRC,"com.ibm.db2.jcc.DB2Driver"),
         Derby  				("Derby"		, KEY_CASE.SRC,"org.apache.derby.jdbc.EmbeddedDriver"),
         DM		 			("达梦"			, KEY_CASE.SRC,"dm.jdbc.driver.DmDriver"),
+        GoldenDB  			("中兴GoldenDB"	, KEY_CASE.SRC,""),
         GBase  				("南大通用"		, KEY_CASE.SRC,"com.gbase.jdbc.Driver"),
+        GaiaDB  			("百度GaiaDB-X"	, KEY_CASE.SRC,""),
+        GreatDB  			("万里数据库"	, KEY_CASE.SRC,""),
         H2  				("H2"			, KEY_CASE.SRC,"org.h2.Driver"),
         HighGo				("瀚高"			, KEY_CASE.SRC,"com.highgo.jdbc.Driver"),
         HSQLDB  			("HSQLDB"		, KEY_CASE.SRC,"org.hsqldb.jdbcDriver"),
         InfluxDB			("InfluxDB"	, KEY_CASE.SRC,""),
         KingBase			("人大金仓"		, KEY_CASE.UPPER,"com.kingbase8.Driver"),
+        LightDB			    ("LightDB"		, KEY_CASE.UPPER,""),
         MariaDB				("MariaDB"		, KEY_CASE.SRC,"org.mariadb.jdbc.Driver"),
         MongoDB				("MongoDB"		, KEY_CASE.SRC,""),
+        MogoDB				("云和恩墨"		, KEY_CASE.SRC,""),
         MSSQL				("SQL Server"	, KEY_CASE.SRC,"com.microsoft.sqlserver.jdbc.SQLServerDriver"),
         MYSQL				("MySQL"		, KEY_CASE.SRC,"com.mysql.cj.jdbc.Driver"),
         Neo4j  				("Neo4j"		, KEY_CASE.SRC,"org.neo4j.jdbc.Driver"),
@@ -31,7 +37,10 @@ public enum DatabaseType {
         RethinkDB  			("RethinkDB"	, KEY_CASE.SRC,""),
         SQLite  			("SQLite"		, KEY_CASE.SRC,"org.sqlite.JDBC"),
         TDengine  			("TDengine"	, KEY_CASE.SRC,"com.taosdata.jdbc.TSDBDriver"),
-        Timescale			("Timescale"	, KEY_CASE.SRC,"org.postgresql.Driver");
+        UXDB			    ("优炫数据库"	, KEY_CASE.SRC,"com.uxsino.uxdb.Driver"),
+        TiDB    			("TiDB"	    , KEY_CASE.SRC,""),
+        Timescale			("Timescale"	, KEY_CASE.SRC,"org.postgresql.Driver"),
+        Vastbase			("Timescale"	, KEY_CASE.SRC,"org.postgresql.Driver");
         private DatabaseType(String title, KeyAdapter.KEY_CASE objectNameCase, String driver){
                 this.title = title;
                 this.driver = driver;

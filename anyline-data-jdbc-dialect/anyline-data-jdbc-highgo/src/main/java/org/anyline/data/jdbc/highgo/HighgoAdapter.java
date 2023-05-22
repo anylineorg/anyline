@@ -38,7 +38,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 	}
 
-	@Value("${anyline.jdbc.delimiter.highgo:}")
+	@Value("${anyline.data.jdbc.delimiter.highgo:}")
 	private String delimiter;
 
 	@Override

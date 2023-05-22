@@ -30,7 +30,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 		return DatabaseType.OpenGauss;
 	}
 
-	@Value("${anyline.jdbc.delimiter.opengauss:}")
+	@Value("${anyline.data.jdbc.delimiter.opengauss:}")
 	private String delimiter;
 
 	@Override

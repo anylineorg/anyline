@@ -41,7 +41,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			types.put(alias.name(), alias.standard());
 		}
 	}
-	@Value("${anyline.jdbc.delimiter.oscar:}")
+	@Value("${anyline.data.jdbc.delimiter.oscar:}")
 	private String delimiter;
 
 	@Override

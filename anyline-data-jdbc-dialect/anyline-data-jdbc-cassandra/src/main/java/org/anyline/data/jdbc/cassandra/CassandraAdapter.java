@@ -23,7 +23,7 @@ public class CassandraAdapter extends SQLAdapter implements JDBCAdapter, Initial
         delimiterTo = "";
     }
 
-    @Value("${anyline.jdbc.delimiter.clickhouse:}")
+    @Value("${anyline.data.jdbc.delimiter.cassandra:}")
     private String delimiter;
 
     @Override

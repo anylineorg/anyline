@@ -34,7 +34,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 	}
 
-	@Value("${anyline.jdbc.delimiter.tdengine:}")
+	@Value("${anyline.data.jdbc.delimiter.tdengine:}")
 	private String delimiter;
 
 	@Override

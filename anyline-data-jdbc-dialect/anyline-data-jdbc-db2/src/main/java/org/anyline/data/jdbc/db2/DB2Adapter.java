@@ -48,7 +48,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 	}
-	@Value("${anyline.jdbc.delimiter.db2:}")
+	@Value("${anyline.data.jdbc.delimiter.db2:}")
 	private String delimiter;
 
 	@Override

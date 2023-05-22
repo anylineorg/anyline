@@ -34,7 +34,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			types.put(alias.name(), alias.standard());
 		}
 	}
-	@Value("${anyline.jdbc.delimiter.sqlite:}")
+	@Value("${anyline.data.jdbc.delimiter.sqlite:}")
 	private String delimiter;
 
 	@Override

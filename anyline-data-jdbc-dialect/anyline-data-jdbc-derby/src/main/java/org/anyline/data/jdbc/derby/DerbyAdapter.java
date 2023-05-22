@@ -33,7 +33,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		delimiterTo = "";
 	}
 
-	@Value("${anyline.jdbc.delimiter.derby:}")
+	@Value("${anyline.data.jdbc.delimiter.derby:}")
 	private String delimiter;
 
 	@Override

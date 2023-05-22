@@ -29,7 +29,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	public DatabaseType type(){
 		return DatabaseType.KingBase;
 	}
-	@Value("${anyline.jdbc.delimiter.kingbase:}")
+	@Value("${anyline.data.jdbc.delimiter.kingbase:}")
 	private String delimiter;
 
 	@Override

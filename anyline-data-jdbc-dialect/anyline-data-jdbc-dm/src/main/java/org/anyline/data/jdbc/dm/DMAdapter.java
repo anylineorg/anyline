@@ -40,7 +40,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return DatabaseType.DM;
 	}
 
-	@Value("${anyline.jdbc.delimiter.dm:}")
+	@Value("${anyline.data.jdbc.delimiter.dm:}")
 	private String delimiter;
 
 	@Override

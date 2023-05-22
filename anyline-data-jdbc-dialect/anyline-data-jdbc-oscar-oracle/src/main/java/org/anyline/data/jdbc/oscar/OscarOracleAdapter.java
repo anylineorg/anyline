@@ -42,7 +42,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		return DatabaseType.oscar;
 	}
 
-	@Value("${anyline.jdbc.delimiter.oscar.oracle:}")
+	@Value("${anyline.data.jdbc.delimiter.oscar.oracle:}")
 	private String delimiter;
 
 	@Override

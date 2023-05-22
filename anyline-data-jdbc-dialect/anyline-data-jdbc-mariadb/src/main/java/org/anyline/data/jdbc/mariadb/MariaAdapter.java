@@ -34,7 +34,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		delimiterTo = "`";
 	}
 
-	@Value("${anyline.jdbc.delimiter.mariadb:}")
+	@Value("${anyline.data.jdbc.delimiter.mariadb:}")
 	private String delimiter;
 
 	@Override

@@ -29,7 +29,7 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	public DatabaseType type(){
 		return DatabaseType.GBase;
 	}
-	@Value("${anyline.jdbc.delimiter.gbase:}")
+	@Value("${anyline.data.jdbc.delimiter.gbase:}")
 	private String delimiter;
 
 	@Override

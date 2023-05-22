@@ -32,7 +32,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		return DatabaseType.PostgreSQL;
 	}
 
-	@Value("${anyline.jdbc.delimiter.postgresql:}")
+	@Value("${anyline.data.jdbc.delimiter.postgresql:}")
 	private String delimiter;
 
 	@Override

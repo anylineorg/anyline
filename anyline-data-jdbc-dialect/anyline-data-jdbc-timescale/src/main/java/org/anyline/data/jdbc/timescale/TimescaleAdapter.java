@@ -11,7 +11,7 @@ public class TimescaleAdapter extends PostgresqlAdapter {
     public DatabaseType type(){
         return DatabaseType.Timescale;
     }
-    @Value("${anyline.jdbc.delimiter.timescale:}")
+    @Value("${anyline.data.jdbc.delimiter.timescale:}")
     private String delimiter;
 
     @Override

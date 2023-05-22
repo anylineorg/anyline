@@ -21,7 +21,7 @@ public class HSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		delimiterFr = "";
 		delimiterTo = "";
 	}
-	@Value("${anyline.jdbc.delimiter.hsqldb:}")
+	@Value("${anyline.data.jdbc.delimiter.hsqldb:}")
 	private String delimiter;
 
 	@Override

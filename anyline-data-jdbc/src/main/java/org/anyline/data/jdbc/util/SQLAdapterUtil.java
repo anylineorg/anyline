@@ -129,6 +129,8 @@ public class SQLAdapterUtil {
 			adapter =  adapters.get(DatabaseType.TDengine.name());
 		}else if(adapters.containsKey(DatabaseType.Neo4j.name()) && name.contains("neo4j")){
 			adapter =  adapters.get(DatabaseType.Neo4j.name());
+		}else if(adapters.containsKey(DatabaseType.Neo4j.name()) && name.contains("uxdb")){
+			adapter =  adapters.get(DatabaseType.UXDB.name());
 		}
 		if(null != adapter) {
 			adapters.put(name, adapter);

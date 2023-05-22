@@ -21,7 +21,7 @@ public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		delimiterTo = "";
 	}
 
-	@Value("${anyline.jdbc.delimiter.gbase:}")
+	@Value("${anyline.data.jdbc.delimiter.gbase:}")
 	private String delimiter;
 
 	@Override

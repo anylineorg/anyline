@@ -28,7 +28,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 	}
-	@Value("${anyline.jdbc.delimiter.influxdb:}")
+	@Value("${anyline.data.jdbc.delimiter.influxdb:}")
 	private String delimiter;
 
 	@Override

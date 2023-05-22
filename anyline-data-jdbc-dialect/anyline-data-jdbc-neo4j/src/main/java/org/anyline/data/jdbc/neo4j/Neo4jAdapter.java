@@ -45,7 +45,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         delimiterFr = "`";
         delimiterTo = "`";
     }
-    @Value("${anyline.jdbc.delimiter.neo4j:}")
+    @Value("${anyline.data.jdbc.delimiter.neo4j:}")
     private String delimiter;
 
     @Override

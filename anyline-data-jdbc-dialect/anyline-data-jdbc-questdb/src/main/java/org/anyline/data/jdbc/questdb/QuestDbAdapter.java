@@ -11,7 +11,7 @@ public class QuestDbAdapter extends PostgresqlAdapter {
     public DatabaseType type(){
         return DatabaseType.QuestDB;
     }
-    @Value("${anyline.jdbc.delimiter.questdb:}")
+    @Value("${anyline.data.jdbc.delimiter.questdb:}")
     private String delimiter;
 
     @Override

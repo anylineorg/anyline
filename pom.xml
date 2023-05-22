@@ -52,6 +52,7 @@
 
 		<module>anyline-data-mongodb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cassandra</module>
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-citus</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cockroachdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-couchdb</module>
@@ -61,6 +62,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gaiadb</module>						<!--百度-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用(postgresql)-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-goldendb</module>					<!--中兴-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-greatdb</module>					<!--万里数据库-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-highgo</module>						<!--瀚高-->
@@ -71,7 +73,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase-postgresql</module>		<!--人大金仓(postgresql)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-lightdb</module>					<!--恒生电子-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mariadb</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mogdb</module>
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mogdb</module>						<!--云和恩墨-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mssql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mysql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-neo4j</module>
@@ -87,8 +89,10 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-sqlite</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-tdengine</module>
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-tidb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-timescale</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-vastdata</module>					<!--海量数据-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-uxdb</module>						<!--优炫数据库-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-vastbase</module>					<!--海量数据-->
 
 		<module>anyline-start</module>
 		<module>anyline-start/anyline-start-jdbc</module>

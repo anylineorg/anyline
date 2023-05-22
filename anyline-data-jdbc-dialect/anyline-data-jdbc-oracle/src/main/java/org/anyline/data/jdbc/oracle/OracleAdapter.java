@@ -47,7 +47,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return DatabaseType.ORACLE; 
 	}
 
-	@Value("${anyline.jdbc.delimiter.oracle:}")
+	@Value("${anyline.data.jdbc.delimiter.oracle:}")
 	private String delimiter;
 
 	@Override

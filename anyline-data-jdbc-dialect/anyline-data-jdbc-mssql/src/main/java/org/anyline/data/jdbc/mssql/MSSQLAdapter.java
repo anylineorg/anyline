@@ -40,7 +40,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return DatabaseType.MSSQL; 
 	}
 
-	@Value("${anyline.jdbc.delimiter.mssql:}")
+	@Value("${anyline.data.jdbc.delimiter.mssql:}")
 	private String delimiter;
 
 	@Override

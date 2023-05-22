@@ -31,7 +31,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		delimiterFr = "";
 		delimiterTo = "";
 	}
-	@Value("${anyline.jdbc.delimiter.h2:}")
+	@Value("${anyline.data.jdbc.delimiter.h2:}")
 	private String delimiter;
 
 	@Override

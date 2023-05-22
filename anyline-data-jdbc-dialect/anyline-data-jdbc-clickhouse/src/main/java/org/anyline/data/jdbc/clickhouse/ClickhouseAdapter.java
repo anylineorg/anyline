@@ -22,7 +22,7 @@ public class ClickhouseAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		delimiterTo = "";
 	}
 
-	@Value("${anyline.jdbc.delimiter.clickhouse:}")
+	@Value("${anyline.data.jdbc.delimiter.clickhouse:}")
 	private String delimiter;
 
 	@Override

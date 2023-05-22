@@ -42,7 +42,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			types.put(alias.name(), alias.standard());
 		}
 	}
-	@Value("${anyline.jdbc.delimiter.mysql:}")
+	@Value("${anyline.data.jdbc.delimiter.mysql:}")
 	private String delimiter;
 
 	@Override
