@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.tidb")
-public class TidbAdapter extends MySQLAdapter {
+public class TiDBAdapter extends MySQLAdapter {
     
     public DatabaseType type(){
         return DatabaseType.TiDB;
