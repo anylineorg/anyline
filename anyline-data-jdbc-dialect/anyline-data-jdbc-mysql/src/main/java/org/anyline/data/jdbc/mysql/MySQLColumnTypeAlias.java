@@ -12,7 +12,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
         BINARY                  (StandardColumnType.BINARY                ), //mysql,  ,     ,mssql,
         BIT                     (StandardColumnType.BIT                   ), //mysql,pg,     ,mssql,
-        BLOB                    (StandardColumnType.BLOB                  ), //mysql,  ,oracle(    ,sqlite
+        BLOB                    (StandardColumnType.BLOB                  ), //mysql,  ,oracle,   ,sqlite
         BOOL                    (StandardColumnType.BIT                   ), //     ,pg
         BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
         BYTEA                   (StandardColumnType.VARBINARY             ), //     ,pg

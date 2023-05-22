@@ -13,7 +13,7 @@ public enum OscarColumnTypeAlias implements ColumnTypeAlias {
     BIGSERIAL               (StandardColumnType.NUMBER                ), //     ,pg,
     BINARY                  (StandardColumnType.BLOB                  ), //mysql         ,mssql,
     BIT                     (StandardColumnType.NUMBER                ), //mysql,pg,     ,mssql,
-    BLOB                    (StandardColumnType.BLOB                  ), //mysql  ,oracle(    ,sqlite
+    BLOB                    (StandardColumnType.BLOB                  ), //mysql  ,oracle,   ,sqlite
     BOOL                    (StandardColumnType.NUMBER                ), //     ,pg
     BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
     BYTEA                   (StandardColumnType.BLOB                  ), //     ,pg

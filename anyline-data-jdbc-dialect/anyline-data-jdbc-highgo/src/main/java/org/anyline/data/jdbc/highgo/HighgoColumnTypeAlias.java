@@ -13,7 +13,7 @@ public enum HighgoColumnTypeAlias implements ColumnTypeAlias {
     BIGSERIAL               (StandardColumnType.BIGSERIAL             ), //     ,pg,
     BINARY                  (StandardColumnType.BIT                   ), //mysql         ,mssql,
     BIT                     (StandardColumnType.BIT                   ), //mysql,pg,     ,mssql,
-    BLOB                    (StandardColumnType.BYTEA                 ), //mysql  ,oracle(    ,sqlite
+    BLOB                    (StandardColumnType.BYTEA                 ), //mysql  ,oracle,   ,sqlite
     BOOL                    (StandardColumnType.BOOL                  ), //     ,pg
     BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
     BYTEA                   (StandardColumnType.BYTEA                 ), //     ,pg

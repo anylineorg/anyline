@@ -24,7 +24,7 @@ public enum DatabaseType {
         HotDB  			    ("热璞"         , KEY_CASE.SRC,""),
         HSQLDB  			("HSQLDB"		, KEY_CASE.SRC,"org.hsqldb.jdbcDriver"),
         InfluxDB			("InfluxDB"	, KEY_CASE.SRC,""),
-        Informix			("Informix"	, KEY_CASE.SRC,""),
+        Informix			("Informix"	, KEY_CASE.SRC,"com.informix.jdbc.IfxDriver"),
         KingBase			("人大金仓"		, KEY_CASE.UPPER,"com.kingbase8.Driver"),
         KunDB			    ("星环"		    , KEY_CASE.UPPER,""),
         LightDB			    ("LightDB"		, KEY_CASE.UPPER,""),
@@ -52,7 +52,7 @@ public enum DatabaseType {
         TiDB    			("TiDB"	    , KEY_CASE.SRC,""),
         TDSQL    			("TDSQL"	    , KEY_CASE.SRC,""),
         Timescale			("Timescale"	, KEY_CASE.SRC,"org.postgresql.Driver"),
-        Vastbase			("Timescale"	, KEY_CASE.SRC,""),
+        Vastbase			("Vastbase"	, KEY_CASE.SRC,""),
         xigemaDB			("华胜信泰"	    , KEY_CASE.SRC,""),
         YiDB			    ("天翼数智"	    , KEY_CASE.SRC,"");
         private DatabaseType(String title, KeyAdapter.KEY_CASE objectNameCase, String driver){
