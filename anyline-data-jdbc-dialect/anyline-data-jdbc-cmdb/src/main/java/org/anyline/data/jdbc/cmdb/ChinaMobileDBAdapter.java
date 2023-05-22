@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.cmdb;
 
-import org.anyline.data.jdbc.postgresql.PostgresqlAdapter;
+import org.anyline.data.jdbc.opengauss.OpenGaussAdapter;
 import org.anyline.entity.data.DatabaseType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
