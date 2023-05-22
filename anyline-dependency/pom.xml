@@ -47,6 +47,7 @@
 		<jdbc-neo4j.veriosn>4.0.0</jdbc-neo4j.veriosn>
 		<jdbc-tdengine.version>3.0.0</jdbc-tdengine.version>
 		<jdbc-jcouchdb.version>1.0.1-1</jdbc-jcouchdb.version>
+		<jdbc-informix.version>4.50.10</jdbc-informix.version>
 
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>
@@ -177,7 +178,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-antdb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-cassandra</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-citus</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -187,7 +198,22 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-cmdb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-cockroachdb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-couchdb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-cudb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -207,7 +233,27 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-gaiadb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-gbase</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-gbase-postgresql</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-goldendb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-greatdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -217,7 +263,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-hashdata</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-highgo</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-hotdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -232,12 +288,27 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-informix</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-kingbase</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-kingbase-postgresql</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-kundb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-lightdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -262,17 +333,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-tidb</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-neo4j</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-informix</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -317,12 +378,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-redis</artifactId>
+				<artifactId>anyline-data-jdbc-rethinkdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-rethinkdb</artifactId>
+				<artifactId>anyline-data-jdbc-sinodb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -332,12 +393,62 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-stardb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-redis</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-sybase</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-tdengine</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-tdsql</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-tidb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-timescale</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-ubisql</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-uxdb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-vastbase</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-xigemadb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-yidb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -534,6 +645,11 @@
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${jdbc-mysql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ibm.informix</groupId>
+				<artifactId>jdbc</artifactId>
+				<version>${jdbc-informix.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.taosdata.jdbc</groupId>
