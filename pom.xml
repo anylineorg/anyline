@@ -127,7 +127,8 @@
         <module>anyline-sms</module>
         <module>anyline-encrypt</module>
         <module>anyline-boot</module>
-	</modules>
+        <module>anyline-data-jdbc-dialect/anyline-data-jdbc-tdsql</module>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>

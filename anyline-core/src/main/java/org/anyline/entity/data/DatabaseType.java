@@ -39,6 +39,7 @@ public enum DatabaseType {
         TDengine  			("TDengine"	, KEY_CASE.SRC,"com.taosdata.jdbc.TSDBDriver"),
         UXDB			    ("优炫数据库"	, KEY_CASE.SRC,"com.uxsino.uxdb.Driver"),
         TiDB    			("TiDB"	    , KEY_CASE.SRC,""),
+        TDSQL    			("TDSQL"	    , KEY_CASE.SRC,""),
         Timescale			("Timescale"	, KEY_CASE.SRC,"org.postgresql.Driver"),
         Vastbase			("Timescale"	, KEY_CASE.SRC,"org.postgresql.Driver");
         private DatabaseType(String title, KeyAdapter.KEY_CASE objectNameCase, String driver){
