@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.cmdb")
-public class ChinaMobileDBAdapter extends PostgresqlAdapter {
+public class ChinaMobileDBAdapter extends OpenGaussAdapter {
     
     public DatabaseType type(){
         return DatabaseType.ChinaMobileDB;
