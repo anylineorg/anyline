@@ -262,7 +262,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-tidb</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-neo4j</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-informix</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>

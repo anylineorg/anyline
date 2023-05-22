@@ -11,11 +11,11 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-data-jdbc-citus</artifactId>
+    <artifactId>anyline-data-jdbc-cudb</artifactId>
     <packaging>pom</packaging>
-    <name>anyline-data-jdbc-citus</name>
-    <url>http://www.anyline.org/citus</url>
-    <description>基于postgresql,https://docs.citusdata.com/</description>
+    <name>anyline-data-jdbc-cudb</name>
+    <url>http://www.anyline.org/cudb</url>
+    <description>中国联通,基于opengauss</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-data-jdbc-postgresql</artifactId>
+            <artifactId>anyline-data-jdbc-opengauss</artifactId>
         </dependency>
     </dependencies>
 </project>
