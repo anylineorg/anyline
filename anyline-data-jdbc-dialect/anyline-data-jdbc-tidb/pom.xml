@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-tidb</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-tidb</name>
     <url>http://www.anyline.org/tidb</url>
     <description>TiDB,兼容MySQL,https://cn.pingcap.com/</description>
