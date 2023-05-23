@@ -121,6 +121,8 @@ public class SQLAdapterUtil {
 			adapter =  adapters.get(DatabaseType.PolarDB.name());
 		}else if(adapters.containsKey(DatabaseType.SQLite.name()) && name.contains("sqlite")){
 			adapter =  adapters.get(DatabaseType.SQLite.name());
+		}else if(adapters.containsKey(DatabaseType.SQLite.name()) && name.contains("informix")){
+			adapter =  adapters.get(DatabaseType.Informix.name());
 		}else if(adapters.containsKey(DatabaseType.H2.name()) && name.contains(":h2:")){
 			adapter =  adapters.get(DatabaseType.H2.name());
 		}else if(adapters.containsKey(DatabaseType.HSQLDB.name()) && name.contains("hsqldb")){
