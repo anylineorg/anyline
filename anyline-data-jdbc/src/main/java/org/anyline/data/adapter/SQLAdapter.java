@@ -252,7 +252,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         /*确定需要插入的列*/
         List<String> keys = confirmInsertColumns(dest, obj, columns, false);
         if(null == keys || keys.size() == 0){
-            throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
+            throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
         }
         boolean replaceEmptyNull = false;
         if(obj instanceof DataRow){
@@ -361,7 +361,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         /*确定需要插入的列*/
         List<String> keys = confirmInsertColumns(dest, first, columns, true);
         if(null == keys || keys.size() == 0){
-            throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
+            throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
         createInserts(template, run, dest, list, keys);
 
