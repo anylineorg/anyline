@@ -230,7 +230,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * oracle,mssql
      */
-    ,NCHAR("NCHAR", new DatabaseType[]{ORACLE, MSSQL},String.class, false, true){
+    ,NCHAR("NCHAR", new DatabaseType[]{ORACLE, MSSQL, Informix},String.class, false, true){
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -435,6 +435,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      */
     ,VARBIT("VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true)
     ,SHORT("SHORT", new DatabaseType[]{}, Short.class, true, true)
+
     /**
      * mysql,mssql,kingbase
      */
@@ -982,7 +983,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,INTERVAL("INTERVAL", new DatabaseType[]{PostgreSQL}, null, true, true)
+    ,INTERVAL("INTERVAL", new DatabaseType[]{PostgreSQL, Informix}, null, true, true)
     /**
      * pg
      */
