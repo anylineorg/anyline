@@ -71,8 +71,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
 
 
-	@Autowired(required=false)
-	protected DMListener listener;
+	protected static DMListener listener;
 
 	protected static boolean isBatchInsertRun = false;
 
@@ -90,12 +89,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 
+	/**
+	 * 是否固定数据源
+	 * @return boolean
+	 */
+	public boolean isFix(){
+		return false;
+	}
 	public DMListener getListener() {
 		return listener;
 	}
 
+	@Autowired(required=false)
 	public void setListener(DMListener listener) {
-		this.listener = listener;
+		DefaultDao.listener = listener;
 	}
 
 	public JDBCRuntime getRuntime() {
@@ -184,8 +191,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				maps = new ArrayList<>();
 			}
 		}finally {
-			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			// 自动切换回切换前的数据源  runtime有值时表示固定数据源
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -294,7 +301,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally {
 			// 自动还原数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -410,7 +417,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally {
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -481,7 +488,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}*/
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -567,7 +574,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally {
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -686,7 +693,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -932,7 +939,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -1197,13 +1204,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return maps;
 	}
-	protected static DataRow row(JDBCRuntime runtime, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
+
+	/**
+	 * 封装查询结果
+	 * @param system 系统表不检测列属性
+	 * @param runtime  runtime
+	 * @param metadatas metadatas
+	 * @param rs jdbc返回结果
+	 * @return DataRow
+	 */
+	protected static DataRow row(boolean system, JDBCRuntime runtime, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
 		DataRow row = new DataRow();
 		try {
 			JDBCAdapter adapter = runtime.getAdapter();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int qty = rsmd.getColumnCount();
-			if (metadatas.isEmpty()) {
+			if (!system && metadatas.isEmpty()) {
 				for (int i = 1; i <= qty; i++) {
 					String name = rsmd.getColumnName(i);
 					if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
@@ -1285,7 +1301,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
-						DataRow row = row(runtime, metadatas, rs);
+						DataRow row = row(system, runtime, metadatas, rs);
 						set.add(row);
 						process[0] = true;
 					}
@@ -1297,7 +1313,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
-						DataRow row = row(runtime, metadatas, rs);
+						DataRow row = row(system, runtime, metadatas, rs);
 						set.add(row);
 						process[0] = true;
 					}
@@ -1573,7 +1589,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -1702,7 +1718,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -1867,7 +1883,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -2080,7 +2096,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}finally{
 			// 自动切换回切换前的数据源
-			if(recover && DataSourceHolder.isAutoRecover()){
+			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
