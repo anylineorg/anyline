@@ -118,6 +118,12 @@ public class DataSourceHolder {
     public static void recoverDataSource(){
 		String fr = THREAD_CUR_SOURCE.get();
 		String to = THREAD_RECALL_SOURCE.get();
+		if(null == fr && null == to){
+			return;
+		}
+		if(null != fr && fr.equals(to)){
+			return;
+		}
     	THREAD_CUR_SOURCE.set(to);
 		log.warn("[还原数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), fr, to);
     } 
