@@ -1566,10 +1566,11 @@ public interface JDBCAdapter {
 	/**
 	 * 内置函数
 	 * 如果需要引号,方法应该一块返回
+	 * @param column 列属性,不同的数据类型解析出来的值可能不一样
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String value(SQL_BUILD_IN_VALUE value);
+	public String value(Column column, SQL_BUILD_IN_VALUE value);
 
 	/**
 	 * 转换成相应数据库的数据类型包含精度
