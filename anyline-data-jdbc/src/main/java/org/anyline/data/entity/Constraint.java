@@ -2,7 +2,9 @@ package org.anyline.data.entity;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.listener.DDListener;
+import org.anyline.data.listener.init.DefaultDDListener;
 import org.anyline.service.AnylineService;
+import org.anyline.util.SpringContextUtil;
 
 import java.util.LinkedHashMap;
 
@@ -18,7 +20,13 @@ public class Constraint {
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
     private Index update;
     private transient DDListener listener ;
-
+    public Constraint(){
+        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+        if(null == listener){
+            listener = new DefaultDDListener();
+        }
+        this.listener = listener;
+    }
 
     public String getCatalog() {
         return catalog;
