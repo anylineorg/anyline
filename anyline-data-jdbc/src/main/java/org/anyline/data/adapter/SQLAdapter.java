@@ -36,7 +36,6 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.metadata.ColumnType;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -292,7 +291,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 valuesBuilder.append(value);
             }else if(null != value && value instanceof SQL_BUILD_IN_VALUE){
                 //内置函数值
-                value = value((SQL_BUILD_IN_VALUE)value);
+                value = value(null, (SQL_BUILD_IN_VALUE)value);
                 valuesBuilder.append(value);
             }else{
                 insertColumns.add(key);

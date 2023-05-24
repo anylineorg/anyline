@@ -670,7 +670,6 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * 添加列
 	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
 	 * @param column 列
-	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
@@ -1178,7 +1177,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * public boolean isBooleanColumn(Column column)
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
-	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
+	 * public String value(Column column, SQL_BUILD_IN_VALUE value)
 	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
@@ -1217,11 +1216,11 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public String value(SQL_BUILD_IN_VALUE value){
+	public String value(Column column, SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "(datetime('now', 'localtime'))";
 		}
-		return super.value(value);
+		return super.value(column,value);
 	}
 
 

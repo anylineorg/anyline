@@ -248,7 +248,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mssql
      */
-    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL}, String.class, false, true){
+    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL, Informix}, String.class, false, true){
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -552,6 +552,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         }
     }
     /**
+     * mysql(p,s)
+     * pg:
+     * informix(p)
+     * oracle(p)
      * mysql,  ,oracle(BigDecimal)
      */
     ,FLOAT("FLOAT", new DatabaseType[]{MYSQL, ORACLE, Informix}, Float.class, false, false){
@@ -1097,20 +1101,30 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         return value;
     }
 
+
+    /**
+     *
+     * 以String类型拼接SQL需要引号或类型转换函数
+     * @param value  value
+     * @param def def
+     * @param placeholder 是否需要占位符
+     * @return Object
+     */
     @Override
     public Object write(Object value, Object def, boolean placeholder) {
         if(null != value){
-            if(value.getClass() == compatible){
-                return value;
+            if(value.getClass() != compatible) {
+                if (null != transfer) {
+                    value = ConvertAdapter.convert(value, transfer, def);
+                }
+                value = ConvertAdapter.convert(value, compatible, def);
             }
-            if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, def);
+            if(null != value && compatible == String.class && !placeholder){
+                value = "'" + value + "'";
             }
-            value = ConvertAdapter.convert(value, compatible, def);
         }
         return value;
     }
-
 
 
 

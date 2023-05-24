@@ -6,9 +6,7 @@ import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
-import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -1772,7 +1770,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * public boolean isBooleanColumn(Column column)
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
-	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
+	 * public String value(Column column, SQL_BUILD_IN_VALUE value)
 	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
@@ -1802,7 +1800,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 
 	@Override
-	public String value(SQL_BUILD_IN_VALUE value){
+	public String value(Column column, SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "now()";
 		}

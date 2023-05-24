@@ -1695,7 +1695,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * public boolean isBooleanColumn(Column column)
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
-	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
+	 * public String value(Column column, SQL_BUILD_IN_VALUE value)
 	 * public String type(String type)
 	 * public String type2class(String type)
 	 ******************************************************************************************************************/
@@ -1724,7 +1724,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return String
 	 */
 	@Override
-	public String value(SQL_BUILD_IN_VALUE value){
+	public String value(Column column, SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "NOW";
 		}

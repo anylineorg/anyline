@@ -39,7 +39,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
-import org.anyline.entity.metadata.DataType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
@@ -2961,7 +2960,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append(" DEFAULT ");
 			boolean isCharColumn = isCharColumn(column);
 			if(def instanceof SQL_BUILD_IN_VALUE){
-				String value = value((SQL_BUILD_IN_VALUE)def);
+				String value = value(column, (SQL_BUILD_IN_VALUE)def);
 				if(null != value){
 					builder.append(value);
 				}
@@ -3504,7 +3503,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * public boolean isBooleanColumn(Column column)
 	 * public  boolean isNumberColumn(Column column)
 	 * public boolean isCharColumn(Column column)
-	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
+	 * public String value(Column column, SQL_BUILD_IN_VALUE value)
 	 * public String type(String type)
 	 * public String type2class(String type)
 	 *
@@ -3587,10 +3586,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	/**
 	 * 内置函数
+	 * @param column 列属性
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String value(SQL_BUILD_IN_VALUE value){
+	@Override
+	public String value(Column column, SQL_BUILD_IN_VALUE value){
 		return null;
 	}
 
@@ -3720,7 +3721,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null != ctype){
 				//拼接SQL需要引号或转换函数
 				if(!placeholder){
-					result = ctype.concat(value);
+					result = ctype.write(value, null, false);
 				}else{
 					Class writeClass = ctype.compatible();
 					result = ConvertAdapter.convert(value, writeClass);
@@ -3790,11 +3791,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		if(null == value){
 			if(value instanceof SQL_BUILD_IN_VALUE){
-				builder.append(value((SQL_BUILD_IN_VALUE)value));
+				builder.append(value(null, (SQL_BUILD_IN_VALUE)value));
 			}else {
 				ColumnType type = type(value.getClass().getName());
 				if (null != type) {
-					value = type.concat(value);
+					value = type.write(value, null, false);
 				}
 				builder.append(value);
 
