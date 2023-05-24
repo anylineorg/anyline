@@ -46,7 +46,7 @@ public class EnvironmentListener implements ApplicationContextAware {
                         log.info("[创建数据源][prefix:{}]", prefix);
                     }
                 }catch (Exception e){
-                    log.error("[创建数据源失败][prefix:{}][msg:{}]", e.toString());
+                    log.error("[创建数据源失败][prefix:{}][msg:{}]", prefix, e.toString());
                 }
             }
         }
