@@ -62,16 +62,15 @@ public class DefaultService<E> implements AnylineService<E> {
     @Qualifier("anyline.dao")
     protected AnylineDao dao;
 
-    @Autowired(required = false)
-    @Qualifier("anyline.cache.provider")
-    protected CacheProvider cacheProvider;
+    protected static CacheProvider cacheProvider;
 
     public CacheProvider getCacheProvider() {
         return cacheProvider;
     }
 
+    @Autowired(required = false)
     public void setCacheProvider(CacheProvider cacheProvider) {
-        this.cacheProvider = cacheProvider;
+        DefaultService.cacheProvider = cacheProvider;
     }
 
     public AnylineDao getDao() {
