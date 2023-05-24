@@ -67,4 +67,17 @@ public interface Column extends Serializable {
     public JavaType getJavaType();
     public void setColumnType(ColumnType type);
     public void setJavaType(JavaType type);
+
+    /**
+     * 日期类型的精度
+     * YEAR：用于表示年份。
+     * MONTH：用于表示年和月。
+     * DAY：用于表示年、月和日。
+     * HOUR：用于表示年、月、日和小时。
+     * MINUTE：用于表示年、月、日、小时和分钟。
+     * SECOND：用于表示年、月、日、小时、分钟和秒。
+     * FRACTION：用于表示年、月、日、小时、分钟、秒和更高精度的分数部分。
+     * @return String
+     */
+    public String getDateScale();
 }

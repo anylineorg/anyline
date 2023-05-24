@@ -33,6 +33,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
+    protected String dateScale                    ; //  日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
     protected int caseSensitive              = -1 ; // 是否区分大小写
     protected int isCurrency                 = -1 ; // 是否是货币
@@ -98,6 +99,15 @@ public class Column implements org.anyline.entity.data.Column{
         BeanUtil.copyFieldValueNvl(update, this);
         this.update = update;
         return this;
+    }
+
+    @Override
+    public String getDateScale() {
+        return dateScale;
+    }
+
+    public void setDateScale(String dateScale) {
+        this.dateScale = dateScale;
     }
 
     public String getCatalog() {
