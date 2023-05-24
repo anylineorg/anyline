@@ -1,7 +1,6 @@
 package org.anyline.entity.metadata;
 
 
-import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.data.DatabaseType;
 
 import java.lang.reflect.Field;
@@ -35,11 +34,6 @@ public interface ColumnType {
 
         @Override
         public Class transfer() {
-            return null;
-        }
-
-        @Override
-        public String concat(Object value) {
             return null;
         }
 
@@ -97,19 +91,6 @@ public interface ColumnType {
      */
     public abstract Class transfer();
 
-    /**
-     * 以String类型拼接SQL需要引号或类型转换函数
-     * @return Class
-     */
-    public default String concat(Object value){
-        if(null != value) {
-            value = ConvertAdapter.convert(value, compatible());
-        }
-        if(null != value){
-            return value.toString();
-        }
-        return null;
-    }
 
     /**
      * 支持的数据库
