@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public class CitusAdapter extends PostgresqlAdapter {
     
     public DatabaseType type(){
-        return DatabaseType.ClickHouse;
+        return DatabaseType.Citus;
     }
     @Value("${anyline.data.jdbc.delimiter.citus:}")
     private String delimiter;
