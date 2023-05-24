@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public class MogdbAdapter extends OpenGaussAdapter {
 	
 	public DatabaseType type(){
-		return DatabaseType.MogoDB;
+		return DatabaseType.MogDB;
 	}
 	@Value("${anyline.data.jdbc.delimiter.mogdb:}")
 	private String delimiter;
