@@ -1947,6 +1947,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public byte[] getBytes(String key){
         return (byte[]) get(key);
     }
+
+    /**
+     * {id:1, code:a, value:100}<br/>
+     * toSet("k","v")转换成<br/>
+     * [{k:id,v:1},{k:code,v:a},[k:value,v:100]]
+     * @param key 原map中的key存放位置
+     * @param value 原map中的value存放位置
+     * @return DataSet
+     */
+    public DataSet toSet(String key, String value){
+        DataSet set = new DataSet();
+        for(String k:keySet()){
+            DataRow row = new DataRow();
+            row.put(key, k);
+            row.put(value, get(k));
+            set.add(row);
+        }
+        return set;
+    }
     /**
      * 转换成json格式
      * @return String
