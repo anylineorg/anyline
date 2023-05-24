@@ -8,6 +8,7 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SpringContextUtil;
 
 import java.util.*;
 
@@ -48,7 +49,7 @@ public class Table implements org.anyline.entity.data.Table{
 
 
     public Table(){
-        this.listener = new DefaultDDListener();
+        this(null);
     }
     public Table(String name){
         this(null, name);
@@ -60,7 +61,11 @@ public class Table implements org.anyline.entity.data.Table{
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
-        this.listener = new DefaultDDListener();
+        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+        if(null == listener){
+            listener = new DefaultDDListener();
+        }
+        this.listener = listener;
     }
 
     public List<Column> primarys(){
