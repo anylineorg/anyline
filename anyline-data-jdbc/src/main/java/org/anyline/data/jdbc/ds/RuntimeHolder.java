@@ -1,11 +1,9 @@
 package org.anyline.data.jdbc.ds;
 
-import org.anyline.dao.init.springjdbc.DefaultDao;
+import org.anyline.dao.init.springjdbc.FixDao;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.listener.DMListener;
-import org.anyline.service.init.DefaultService;
+import org.anyline.service.init.FixService;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -16,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.Hashtable;
 import java.util.Map;
+
 
 public class RuntimeHolder {
 
@@ -65,18 +64,27 @@ public class RuntimeHolder {
         String service_key = "anyline.service." + datasource;
         log.warn("[instance service][data source:{}][instance id:{}]", datasource, service_key);
 
-        BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultDao.class);
+        BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixDao.class);
+        //daoBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         daoBuilder.addPropertyValue("runtime", runtime);
+        daoBuilder.addPropertyValue("datasource", datasource);
+
+        //daoBuilder.addPropertyValue("listener", SpringContextUtil.getBean(DMListener.class));
         //daoBuilder.addAutowiredProperty("listener");
-        daoBuilder.addPropertyValue("listener", SpringContextUtil.getBean(DMListener.class));
+        daoBuilder.setLazyInit(true);
         BeanDefinition daoDefinition = daoBuilder.getBeanDefinition();
         factory.registerBeanDefinition(dao_key, daoDefinition);
 
-        BeanDefinitionBuilder serviceBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultService.class);
+
+        BeanDefinitionBuilder serviceBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixService.class);
+        //serviceBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+        serviceBuilder.addPropertyValue("datasource", datasource);
         serviceBuilder.addPropertyReference("dao", dao_key);
-        serviceBuilder.addPropertyValue("cacheProvider", SpringContextUtil.getBean("anyline.cache.provider"));
+        //serviceBuilder.addAutowiredProperty("cacheProvider");
+        serviceBuilder.setLazyInit(true);
         BeanDefinition serviceDefinition = serviceBuilder.getBeanDefinition();
         factory.registerBeanDefinition(service_key, serviceDefinition);
+
 
     }
     public static JDBCRuntime getRuntime(){
