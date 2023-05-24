@@ -4,11 +4,11 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 
 public enum DatabaseType {
-        AntDB			    ("AntDB"	, KEY_CASE.SRC,""),
+        AntDB			    ("AntDB"	    , KEY_CASE.SRC,""),
         Cassandra			("CASSANDRA"	, KEY_CASE.SRC,""),
         ClickHouse			( "CLICKHOUSE"	, KEY_CASE.SRC, "ru.yandex.clickhouse.ClickHouseDriver"),
         ChinaMobileDB   	("磐维数据库"    , KEY_CASE.SRC,""),
-        ChinaUnicomDB   	("中国联通"    , KEY_CASE.SRC,""),
+        ChinaUnicomDB   	("中国联通"      , KEY_CASE.SRC,""),
         Citus   			("Citus"	    , KEY_CASE.SRC,""),
         CockroachDB			("CockroachDB"	, KEY_CASE.SRC,""),
         DB2					("db2"			, KEY_CASE.SRC,"com.ibm.db2.jcc.DB2Driver"),
@@ -30,7 +30,7 @@ public enum DatabaseType {
         LightDB			    ("LightDB"		, KEY_CASE.UPPER,""),
         MariaDB				("MariaDB"		, KEY_CASE.SRC,"org.mariadb.jdbc.Driver"),
         MongoDB				("MongoDB"		, KEY_CASE.SRC,""),
-        MogoDB				("云和恩墨"		, KEY_CASE.SRC,""),
+        MogDB				("云和恩墨"		, KEY_CASE.SRC,""),
         MSSQL				("SQL Server"	, KEY_CASE.SRC,"com.microsoft.sqlserver.jdbc.SQLServerDriver"),
         MuDB				("沐融信息科技"	, KEY_CASE.SRC,""),
         MYSQL				("MySQL"		, KEY_CASE.SRC,"com.mysql.cj.jdbc.Driver"),
@@ -55,7 +55,7 @@ public enum DatabaseType {
         Vastbase			("Vastbase"	, KEY_CASE.SRC,""),
         xigemaDB			("华胜信泰"	    , KEY_CASE.SRC,""),
         YiDB			    ("天翼数智"	    , KEY_CASE.SRC,"");
-        private DatabaseType(String title, KeyAdapter.KEY_CASE objectNameCase, String driver){
+        DatabaseType(String title, KeyAdapter.KEY_CASE objectNameCase, String driver){
                 this.title = title;
                 this.driver = driver;
                 this.objectNameCase = objectNameCase;
