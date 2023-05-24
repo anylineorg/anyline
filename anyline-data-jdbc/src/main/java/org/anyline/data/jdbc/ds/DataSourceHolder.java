@@ -115,8 +115,11 @@ public class DataSourceHolder {
     	THREAD_AUTO_RECOVER.set(auto); 
     } 
     // 恢复切换前数据源 
-    public static void recoverDataSource(){ 
-    	THREAD_CUR_SOURCE.set(THREAD_RECALL_SOURCE.get()); 
+    public static void recoverDataSource(){
+		String fr = THREAD_CUR_SOURCE.get();
+		String to = THREAD_RECALL_SOURCE.get();
+    	THREAD_CUR_SOURCE.set(to);
+		log.warn("[还原数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), fr, to);
     } 
     public static void setDefaultDataSource(){ 
     	clearDataSource();
@@ -133,7 +136,7 @@ public class DataSourceHolder {
     public static void clearDataSource() { 
     	THREAD_CUR_SOURCE.remove(); 
     } 
-    public static boolean isAutoDefault(){ 
+    public static boolean isAutoRecover(){
     	if(null == THREAD_AUTO_RECOVER || null == THREAD_AUTO_RECOVER.get()){ 
     		return false; 
     	} 
