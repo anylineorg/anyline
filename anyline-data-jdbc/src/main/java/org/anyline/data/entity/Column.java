@@ -9,6 +9,7 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
+import org.anyline.util.SpringContextUtil;
 
 public class Column implements org.anyline.entity.data.Column{
     static {
@@ -62,7 +63,7 @@ public class Column implements org.anyline.entity.data.Column{
 
 
     public Column(){
-        this.listener = new DefaultDDListener();
+        this(null);
     }
     public Column(String name){
         this(null, name);
@@ -78,7 +79,11 @@ public class Column implements org.anyline.entity.data.Column{
         setSchema(schema);
         setName(name);
         setTable(table);
-        this.listener = new DefaultDDListener();
+        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+        if(null == listener){
+            listener = new DefaultDDListener();
+        }
+        this.listener = listener;
     }
     public Column update(){
         update = (Column) this.clone();
