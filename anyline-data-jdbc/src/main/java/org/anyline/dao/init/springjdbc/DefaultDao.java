@@ -19,7 +19,6 @@
 
 package org.anyline.dao.init.springjdbc;
 
-import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
@@ -53,7 +52,6 @@ import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -64,9 +62,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
 @Primary
@@ -86,8 +82,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	protected JDBCRuntime runtime(){
 		if(null != runtime){
+			//固定数据源
 			return runtime;
 		}
+		//可切换数据源
 		return RuntimeHolder.getRuntime();
 	}
 
@@ -104,8 +102,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime;
 	}
 
+
 	public void setRuntime(JDBCRuntime runtime) {
 		this.runtime = runtime;
+	}
+
+	@Override
+	public void setDatasource(String datasource) {
+
 	}
 
 	/* *****************************************************************************************************************
@@ -113,11 +117,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													DML
 	 *
 	 ******************************************************************************************************************/
+
 	/**
-	 * 查询
+	 * 查询<br/>
+	 * 注意:如果设置了自动还原,maps会自动还原数据源(dao内部执行过程中不要调用除非是一些重载),而protected maps不会
+	 * @param prepare RunPrepare
+	 * @param configs 查询条件
+	 * @param conditions 查询条件
+	 * @return maps
 	 */
+
 	@Override
 	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return maps(true, prepare, configs, conditions);
+	}
+
+	protected List<Map<String,Object>> maps(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
 
@@ -169,8 +184,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				maps = new ArrayList<>();
 			}
 		}finally {
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -179,11 +194,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions){
 		return maps(prepare, null, conditions);
 	}
+
 	/**
-	 * 查询
+	 * 查询<br/>
+	 * 注意:如果设置了自动还原,querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载),而select不会
+	 * @param prepare RunPrepare
+	 * @param configs 查询条件
+	 * @param conditions 查询条件
+	 * @return DataSet
 	 */
 	@Override
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return querys(true, prepare, configs, conditions);
+	}
+	protected DataSet querys(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
 			boolean exe = true;
@@ -269,8 +293,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
 			}
 		}finally {
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动还原数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -279,11 +303,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
-		RunPrepare prepare = new DefaultTablePrepare();
-		return querys(prepare, clazz, configs, conditions);
+		return querys(true, clazz, configs, conditions);
 	}
+	protected  <T> EntitySet<T> querys(boolean recover , Class<T> clazz, ConfigStore configs, String... conditions) {
+		RunPrepare prepare = new DefaultTablePrepare();
+		return querys(recover, prepare, clazz, configs, conditions);
+	}
+	/**
+	 * 查询<br/>
+	 * 注意:如果设置了自动还原,querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载),而select不会
+	 * @param prepare RunPrepare
+	 * @param configs 查询条件
+	 * @param conditions 查询条件
+	 * @return DataSet
+	 */
 	@Override
 	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
+		return querys(true, prepare, clazz, configs, conditions);
+	}
+	protected <T> EntitySet<T> querys(boolean recover, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
 
@@ -371,8 +409,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
 			}
 		}finally {
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -407,6 +445,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return count(true, prepare, configs, conditions);
+	}
+	protected int count(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
 			boolean exe = true;
@@ -439,8 +480,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				queryInterceptor.after(run, count, System.currentTimeMillis() - fr);
 			}*/
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -449,7 +490,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int count(RunPrepare prepare, String ... conditions){
 		return count(prepare, null, conditions);
 	}
+
 	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return exists(true, prepare, configs, conditions);
+	}
+	protected boolean exists(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		try {
 
@@ -521,8 +566,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}finally {
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -554,6 +599,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(true, dest, data, configs, columns);
+	}
+	protected int update(boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
 		if(null != listener){
@@ -637,8 +685,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				e.printStackTrace();
 			}
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -794,6 +842,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
+		return insert(true, dest, data, checkPrimary, columns);
+	}
+	protected int insert(boolean recover,String dest, Object data, boolean checkPrimary, List<String> columns) {
 		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
 		if(null != listener){
@@ -880,8 +931,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				e.printStackTrace();
 			}
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -964,9 +1015,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						set.add(row);
 					}
 					if(mode == 1) {
-						deletes(join.joinTable, join.joinColumn, pv + "");
+						deletes(false, join.joinTable, join.joinColumn, pv + "");
 					}
-					insert(join.joinTable, set);
+					insert(false, join.joinTable, set);
 
 				}catch (Exception e){
 					e.printStackTrace();
@@ -1020,7 +1071,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						throw new RuntimeException(field+"关联表异常");
 					}
 					if(mode == 1) {
-						deletes(join.dependencyTable, join.joinColumn, pv + "");
+						deletes(false, join.dependencyTable, join.joinColumn, pv + "");
 					}
 					Collection items = new ArrayList();
 					if(fv.getClass().isArray()){
@@ -1036,7 +1087,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							items.add(item);
 						}
 					}
-					insert(join.dependencyTable, items);
+					insert(false, join.dependencyTable, items);
 
 				}catch (Exception e){
 					e.printStackTrace();
@@ -1072,6 +1123,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public int insert(String dest, Object data, String ... columns){
 		return insert(dest, data, false, BeanUtil.array2list(columns));
+	}
+	protected int insert(boolean recover, String dest, Object data, String ... columns){
+		return insert(recover, dest, data, false, BeanUtil.array2list(columns));
 	}
 	@Override
 	public int insert(Object data, String ... columns){
@@ -1178,6 +1232,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	protected DataSet select(JDBCRuntime runtime, String table, String sql, List<Object> values){
+		return select(false, runtime, table, sql, values);
+	}
+
+	/**
+	 * 查询
+	 * @param system 系统表不查询表结构
+	 * @param runtime runtime
+	 * @param table 查询表结构时使用
+	 * @param sql sql
+	 * @param values 参数
+	 * @return DataSet
+	 */
+	protected DataSet select(boolean system, JDBCRuntime runtime, String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				throw new SQLQueryException("未指定SQL");
@@ -1198,7 +1265,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		//Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
-		if(ThreadConfig.check(DataSourceHolder.curDataSource()).IS_AUTO_CHECK_METADATA() && null != table){
+		if(!system && ThreadConfig.check(DataSourceHolder.curDataSource()).IS_AUTO_CHECK_METADATA() && null != table){
 			columns = CacheProxy.columns(table);
 			if(null == columns){
 				columns = columns(table);
@@ -1328,7 +1395,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if (null == join.dependencyTable) {
 							//只通过中间表查主键 List<Long> departmentIds
 							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-							DataSet items = selects(new DefaultTablePrepare(join.joinTable), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							DataSet items = querys(false, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
 						} else {
@@ -1356,7 +1424,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?,?,?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet allItems = selects(new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet allItems = querys(false, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set){
 							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
@@ -1368,7 +1436,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet alls = selects(new DefaultTextPrepare(sql), conditions);
+						DataSet alls = querys(false, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set){
 							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
@@ -1408,7 +1476,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
 						List<Object> params = new ArrayList<>();
 						params.add(primaryValueMap.get(pk.toUpperCase()));
-						EntitySet<T> dependencys = querys(join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
+						EntitySet<T> dependencys = querys(false, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
 						BeanUtil.setFieldValue(entity, field, dependencys);
 
 					}
@@ -1426,7 +1494,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
 					ConfigStore conditions = new DefaultConfigStore();
 					conditions.and(join.joinColumn, pvs);
-					EntitySet<T> alls = querys(join.dependencyClass, conditions);
+					EntitySet<T> alls = querys(false, join.dependencyClass, conditions);
 					for(T entity:set){
 						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
 						BeanUtil.setFieldValue(entity, field, items);
@@ -1441,6 +1509,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return execute(true, prepare, configs, conditions);
+	}
+	protected int execute(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
 
 		JDBCRuntime runtime = runtime();
@@ -1501,8 +1572,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -1515,6 +1586,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean execute(Procedure procedure){
+		return execute(true, procedure);
+	}
+	protected boolean execute(boolean recover, Procedure procedure){
 		boolean result = false;
 		List<Object> list = new ArrayList<Object>();
 		final List<ProcedureParam> inputs = procedure.getInputs();
@@ -1627,8 +1701,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				e.printStackTrace();
 			}
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -1636,13 +1710,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	/**
-	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
+	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)<br/>
 	 * @param procedure  procedure
 	 * @param navi  navi
 	 * @return DataSet
 	 */
 	@Override
 	public DataSet querys(Procedure procedure, PageNavi navi){
+		return querys(true, procedure, navi);
+	}
+	protected DataSet querys(boolean recover, Procedure procedure, PageNavi navi){
 		final List<ProcedureParam> inputs = procedure.getInputs();
 		final List<ProcedureParam> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
@@ -1789,8 +1866,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				e.printStackTrace();
 			}
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -1802,10 +1879,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, values);
-		int result = exeDelete(runtime, run);
+		int result = exeDelete(true, runtime, run);
 		return result;
 	}
+
 	public int deletes(String table, String key, String ... values){
+		return deletes(true, table, key, values);
+	}
+	protected int deletes(boolean recover, String table, String key, String ... values){
 		table = DataSourceHolder.parseDataSource(table, null);
 		List<String> list = new ArrayList<>();
 		if(null != values){
@@ -1824,7 +1905,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, list);
-		int result = exeDelete(runtime, run);
+		int result = exeDelete(recover, runtime, run);
 		return result;
 	}
 	@Override
@@ -1855,7 +1936,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				JDBCRuntime runtime = runtime();
 				JDBCAdapter adapter = runtime.getAdapter();
 				Run run = adapter.buildDeleteRun(dest, obj, columns);
-				size = exeDelete(runtime, run);
+				size = exeDelete(true, runtime, run);
 				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 					if(!(obj instanceof DataRow)){
 						checkMany2ManyDependencyDelete(runtime, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
@@ -1885,7 +1966,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				deletes(join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+				deletes(false, join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
 
 			}catch (Exception e){
 				e.printStackTrace();
@@ -1911,7 +1992,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				OneToMany join = PersistenceAdapter.oneToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				deletes(join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+				deletes(false, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
 
 			}catch (Exception e){
 				e.printStackTrace();
@@ -1932,11 +2013,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, configs, conditions);
-		int result = exeDelete(runtime, run);
+		int result = exeDelete(true, runtime, run);
 		return result;
 	}
 
-	protected int exeDelete(JDBCRuntime runtime, Run run){
+	/**
+	 * 执行删除
+	 * @param recover 执行完成后是否根据设置自动还原数据源
+	 * @param runtime JDBCRuntime
+	 * @param run Run
+	 * @return int
+	 */
+	protected int exeDelete(boolean recover, JDBCRuntime runtime, Run run){
 		int result = 0;
 		final String sql = run.getFinalDelete();
 		final List<Object> values = run.getValues();
@@ -1991,8 +2079,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				e.printStackTrace();
 			}
 		}finally{
-			// 自动切换回默认数据源
-			if(DataSourceHolder.isAutoDefault()){
+			// 自动切换回切换前的数据源
+			if(recover && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
 		}
@@ -2735,7 +2823,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				int idx = 0;
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(runtime, (String)null, sql, null);
+						DataSet set = select(true, runtime, (String)null, sql, null);
 						columns = adapter.columns(idx, true, table, columns, set);
 					}
 					idx ++;
