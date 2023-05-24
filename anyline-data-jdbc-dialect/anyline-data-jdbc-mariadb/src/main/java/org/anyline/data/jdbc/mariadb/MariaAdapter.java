@@ -26,7 +26,7 @@ import java.util.*;
 public class MariaAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
-		return DatabaseType.MYSQL;
+		return DatabaseType.MariaDB;
 	} 
 	 
 	public MariaAdapter(){
