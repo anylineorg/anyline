@@ -149,7 +149,7 @@ public class ThreadConfig extends ConfigTable{
     /**
      * 检测线程内配置，当前数据源》全部数据源》ConfigTable
      * @param datasource
-     * @return
+     * @return ConfigTable
      */
     public static ConfigTable check(String datasource){
         ConfigTable instance = null;
