@@ -1,7 +1,9 @@
 package org.anyline.data.entity;
 
+import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
 import org.anyline.util.ClassUtil;
+import org.anyline.util.SpringContextUtil;
 
 public class View extends Table implements org.anyline.entity.data.View{
     static {
@@ -21,7 +23,7 @@ public class View extends Table implements org.anyline.entity.data.View{
 
 
     public View(){
-        this.listener = new DefaultDDListener();
+        this(null);
     }
     public View(String name){
         this(null, name);
@@ -33,7 +35,11 @@ public class View extends Table implements org.anyline.entity.data.View{
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
-        this.listener = new DefaultDDListener();
+        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+        if(null == listener){
+            listener = new DefaultDDListener();
+        }
+        this.listener = listener;
     }
 
     public View clone(){
