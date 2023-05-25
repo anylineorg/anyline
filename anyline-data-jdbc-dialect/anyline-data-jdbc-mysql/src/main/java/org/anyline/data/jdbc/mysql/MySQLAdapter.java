@@ -728,6 +728,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(set.size() > 0){
 			primary = new PrimaryKey();
 			for(DataRow row:set){
+				primary.setName(row.getString("Key_name"));
 				Column column = new Column(row.getString("Column_name"));
 				primary.addColumn(column);
 			}
