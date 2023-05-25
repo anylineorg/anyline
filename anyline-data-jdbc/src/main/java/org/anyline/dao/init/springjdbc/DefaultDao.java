@@ -2273,21 +2273,23 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 
-			// 根据jdbc接口补充
-			try {
-				LinkedHashMap<String,Table> jdbcTables = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
-				for(String key:jdbcTables.keySet()){
-					if(!tables.containsKey(key.toUpperCase())) {
-						Table item = jdbcTables.get(key);
-						if (null != item) {
-							if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
-								tables.put(key.toUpperCase(), item);
+			// 根据系统表查询失败后根据jdbc接口补充
+			if(null == tables || tables.size() == 0) {
+				try {
+					LinkedHashMap<String, Table> jdbcTables = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+					for (String key : jdbcTables.keySet()) {
+						if (!tables.containsKey(key.toUpperCase())) {
+							Table item = jdbcTables.get(key);
+							if (null != item) {
+								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+									tables.put(key.toUpperCase(), item);
+								}
 							}
 						}
 					}
+				} catch (Exception e) {
+					log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 				}
-			}catch (Exception e){
-				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
 			}
 			//表备注
 			try{
