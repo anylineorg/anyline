@@ -3709,8 +3709,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
+		if(null == value){
+			return value;
+		}
 		Object result = value;
 		if(null != metadata && null != value){
+			//根据列类型
 			ColumnType ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
@@ -3725,6 +3729,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}else{
 					Class writeClass = ctype.compatible();
 					result = ConvertAdapter.convert(value, writeClass);
+				}
+			}
+		}else{
+			//根据值类型
+			if(!placeholder) {
+				if (null == value || BasicUtil.isNumber(value)) {
+
+				} else {
+					result = "'" + result + "'";
 				}
 			}
 		}
