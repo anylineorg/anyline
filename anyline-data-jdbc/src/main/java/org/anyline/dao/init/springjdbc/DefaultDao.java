@@ -3083,7 +3083,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
+				log.warn("{}[primary][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
 			}
 		}
 		return primary;

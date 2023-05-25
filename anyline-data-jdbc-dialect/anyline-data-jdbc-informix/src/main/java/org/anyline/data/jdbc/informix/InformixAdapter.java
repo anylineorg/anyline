@@ -11,11 +11,17 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +31,8 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.informix")
 public class InformixAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
+	public static Map<Integer,String> column_types = new HashMap<>();
+	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
 	public DatabaseType type(){
 		return DatabaseType.Informix;
@@ -45,6 +53,37 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		for (InformixColumnTypeAlias alias: InformixColumnTypeAlias.values()){
 			types.put(alias.name(), alias.standard());
 		}
+	}
+	static{
+		column_types.put(0,"CHAR");
+		column_types.put(1,"SMALLINT");
+		column_types.put(2,"INTEGER");
+		column_types.put(3,"FLOAT");
+		column_types.put(4,"SMALLFLOAT");
+		column_types.put(5,"DECIMAL");
+		column_types.put(6,"SERIAL");
+		column_types.put(7,"DATE");
+		column_types.put(8,"MONEY");
+		column_types.put(9,"NULL");
+		column_types.put(10,"DATETIME");
+		column_types.put(11,"BYTE");
+		column_types.put(12,"TEXT");
+		column_types.put(13,"VARCHAR");
+		column_types.put(14,"INTERVAL");
+		column_types.put(15,"NCHAR");
+		column_types.put(16,"NVARCHAR");
+		column_types.put(17,"INT8");
+		column_types.put(18,"SERIAL8");
+		column_types.put(19,"SET");
+		column_types.put(20,"MULTISET");
+		column_types.put(21,"LIST");
+		column_types.put(22,"ROW");
+		column_types.put(23,"COLLECTION");
+		column_types.put(24,"UDT");
+		column_types.put(40,"LVARCHAR");
+		column_types.put(41,"BLOB");
+		column_types.put(42,"CLOB");
+		column_types.put(43,"BOOLEAN");
 	}
 	@Override
 	public String parseFinalQuery(Run run){
@@ -105,11 +144,229 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 					builder.append(",");
 				}
 				first = false;
-				builder.append(key).append("('").append(name).append("') AS ").append(name);
+				builder.append(name).append(".").append(key).append(" AS ").append(name);
 			}
+			builder.append(" FROM DUAL");
 		}
 		return builder.toString();
 	}
+
+	@Override
+	public String parseExists(Run run){
+		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		return sql;
+	}
+	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
+		int size = list.size();
+		for(int i=0; i<size; i++){
+			builder.append("SELECT NULL FROM DUAL\n");
+			if(i<size-1){
+				builder.append("UNION ALL\n");
+			}
+		}
+		builder.append(") M");
+		List<Map<String,Object>> ids = template.queryForList(builder.toString());
+		int i=0;
+		for(Object obj:list){
+			Object value = ids.get(i++).get("ID");
+			setPrimaryValue(obj, value);
+		}
+	}
+
+	/**
+	 * 批量插入
+	 *
+	 * 有序列时 只支持插入同一张表
+	 * INSERT INTO CRM_USER(ID, NAME)
+	 *  SELECT gloable_seq.nextval  AS ID  , M.* FROM (
+	 * 		SELECT  'A1' AS NM FROM  DUAL
+	 * 		UNION ALL SELECT    'A2' FROM DUAL
+	 * 		UNION ALL SELECT    'A3' FROM DUAL
+	 * ) M
+	 * @param template JdbcTemplate
+	 * @param run run
+	 * @param dest dest
+	 * @param keys keys
+	 */
+	@Override
+	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
+		if(null == set || set.size() ==0){
+			return;
+		}
+		StringBuilder builder = run.getBuilder();
+		DataRow first = set.getRow(0);
+		Map<String,String> seqs = new HashMap<>();
+		for(String key:keys){
+			Object value = first.getStringNvl(key);
+			if(null != value && value instanceof String) {
+				String str = (String)value;
+				if (str.toUpperCase().contains(".NEXTVAL")) {
+					if (str.startsWith("${") && str.endsWith("}")) {
+						str = str.substring(2, str.length() - 1);
+					}
+					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
+						createPrimaryValue(template, set, str);
+					}else {
+						seqs.put(key, str);
+					}
+				}
+			}
+		}
+		for(DataRow row:set){
+			builder.append("INSERT INTO ");
+			SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
+			boolean start = true;
+			for(String key:keys){
+				if(!start){
+					builder.append(",");
+				}
+				builder.append(key);
+				start = false;
+			}
+			builder.append(")");
+			insertValue(template, run, row, false, false,true, keys);
+			builder.append(";");
+		}
+	}
+	@Override
+	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys){
+		if(null == list || list.isEmpty()){
+			return;
+		}
+		StringBuilder builder = run.getBuilder();
+		if(null == builder){
+			builder = new StringBuilder();
+			run.setBuilder(builder);
+		}
+		if(list instanceof DataSet){
+			DataSet set = (DataSet) list;
+			createInserts(template, run, dest, set, keys);
+			return;
+		}
+
+		Object first = list.iterator().next();
+		Map<String,String> seqs = new HashMap<>();
+		for(String key:keys){
+			Object value = BeanUtil.getFieldValue(first, key);
+			if(null != value && value instanceof String) {
+				String str = (String)value;
+				if (str.toUpperCase().contains(".NEXTVAL")) {
+					if (str.startsWith("${") && str.endsWith("}")) {
+						str = str.substring(2, str.length() - 1);
+					}
+					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
+						createPrimaryValue(template, list, str);
+					}else {
+						seqs.put(key, str);
+					}
+				}
+			}
+		}
+		builder.append("INSERT INTO ");
+		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			builder.append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append(") \n");
+		builder.append("SELECT ");
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			String seq = seqs.get(key);
+			if(null != seq){
+				builder.append(seq);
+			}else{
+				builder.append("M.").append(key);
+			}
+			builder.append(" AS ").append(key);
+			if(i<keySize-1){
+				builder.append(", ");
+			}
+		}
+		builder.append("\nFROM( ");
+		keys.removeAll(seqs.keySet());
+		int col = 0;
+
+		for(Object obj:list){
+			if(obj instanceof DataRow) {
+				DataRow row = (DataRow)obj;
+				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
+					String pk = row.getPrimaryKey();
+					if (null == pk) {
+						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
+					}
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				}
+			}else{
+				if(EntityAdapterProxy.hasAdapter()){
+
+					EntityAdapterProxy.createPrimaryValue(obj);
+				}else{
+					if(null != primaryGenerator){
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+					}
+				}
+			}
+
+			if(col > 0){
+				builder.append("\n\tUNION ALL");
+			}
+			builder.append("\n\tSELECT ");
+			insertValue(template, run, obj, true, true,false, keys);
+			builder.append(" FROM DUAL ");
+			col ++;
+		}
+		builder.append(") M ");
+	}
+
+	/**
+	 * 执行 insert
+	 * @param template JdbcTemplate
+	 * @param random random
+	 * @param data entity|DataRow|DataSet
+	 * @param sql sql
+	 * @param values 占位参数值
+	 * @return int 影响行数
+	 * @throws Exception 异常
+	 */
+	@Override
+	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+		int cnt = 0;
+		if(data instanceof Collection) {
+			if (null == values || values.isEmpty()) {
+				cnt = template.update(sql);
+			} else {
+				int size = values.size();
+				Object[] params = new Object[size];
+				for (int i = 0; i < size; i++) {
+					params[i] = values.get(i);
+				}
+				cnt = template.update(sql, params);
+			}
+		}else{
+			//单行的可以返回序列号
+			pks = new String[]{getPrimayKey(data)};
+			cnt = super.insert(template, random, data, sql, values, pks);
+		}
+		return cnt;
+	}
+
+	@Override
+	public boolean identity(String random, Object data, KeyHolder keyholder){
+		if(data instanceof Collection) {
+			return false;
+		}else{
+			return super.identity(random, data, keyholder);
+		}
+	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -146,7 +403,11 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRunSQL(catalog, schema, pattern, types);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM SYSTABLES  WHERE TABID > 99 AND TABTYPE = 'T'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -159,11 +420,26 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
+		//return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
+		return null;
 	}
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		return super.tables(index, create, catalog, schema, tables, set);
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABNAME");
+			Table table = tables.get(name.toUpperCase());
+			if(null == table){
+				table = new Table();
+			}
+			table.setCatalog(catalog);
+			table.setSchema(schema);
+			table.setName(name);
+			tables.put(name.toUpperCase(), table);
+		}
+		return tables;
 	}
 	@Override
 	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
@@ -310,17 +586,14 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}else{
 			String catalog = table.getCatalog();
 			String schema = table.getSchema();
-			builder.append("SELECT M.* ,FD.DESCRIPTION AS COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS M\n");
-			builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
-			builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
-			builder.append("WHERE 1= 1\n");
+			builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
+			builder.append("WHERE 1 = 1\n");
 			if(BasicUtil.isNotEmpty(catalog)){
-				builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
 			}
 			if(BasicUtil.isNotEmpty(schema)){
-				builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
+				builder.append(" AND F.OWNER = '").append(schema).append("'");
 			}
-			builder.append(" AND M.TABLE_NAME = '").append(table.getName()).append("'");
+			builder.append(" AND F.TABNAME = '").append(table.getName()).append("'");
 		}
 		sqls.add(builder.toString());
 		return sqls;
@@ -338,8 +611,43 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
-		set.changeKey("UDT_NAME","DATA_TYPE");
-		return super.columns(index, create, table, columns, set);
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+
+		for(DataRow row:set){
+			String name = row.getString("COLNAME");
+			Column column = columns.get(name.toUpperCase());
+			if(null == column){
+				column = new Column();
+			}
+			column.setTable(table);
+			column.setTableName(BasicUtil.evl(row.getString("TABNAME"), table.getName(), column.getTableName()));
+			column.setName(name);
+			Integer coltype = row.getInt("COLTYPE", null);
+			if(null != coltype){
+				if(coltype >= 256){
+					coltype -= 256;
+					column.setNullable(false);
+				}
+				String typeName = column_types.get(coltype);
+				column.setTypeName(typeName);
+			}
+			int len = row.getInt("COLLENGTH",0);
+			column.setPrecision(len);
+			if(coltype == 8 || coltype == 5){
+				int scale = len%256;
+				len = len/256;
+				column.setPrecision(len, scale);
+			}
+			if(null == column.getColumnType()) {
+				ColumnType columnType = type(column.getTypeName());
+				column.setColumnType(columnType);
+			}
+			columns.put(name.toUpperCase(), column);
+		}
+		return columns;
+
 	}
 	@Override
 	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
@@ -408,15 +716,16 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		//test_pk_pkey	| p	| {2,1}	| 	PRIMARY KEY (id, name)
-		builder.append("SELECT  m.conname,  pg_get_constraintdef(m.oid, true) AS define\n");
-		builder.append("FROM pg_constraint m \n");
-		builder.append("LEFT JOIN pg_namespace ns ON m.connamespace = ns.oid \n");
-		builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
-		builder.append("WHERE ft.relname = '").append(table.getName()).append("'");
+		builder.append("SELECT T.TABNAME AS TABLE_NAME, C.CONSTRNAME AS CONSTRAINT_NAME, C.CONSTRTYPE AS CONSTRAINT_TYPE, K.COLNAME AS COLUMN_NAME\n");
+		builder.append("FROM SYSTABLES T\n");
+		builder.append("JOIN SYSCONSTRAINTS C ON T.TABID = C.TABID\n");
+		builder.append("JOIN SYSINDEXES I ON C.IDXNAME = I.IDXNAME AND C.TABID = I.TABID\n");
+		builder.append("JOIN SYSCOLUMNS K ON T.TABID = K.TABID AND I.PART1 = K.COLNO\n");
+		builder.append("WHERE  C.CONSTRTYPE = 'P'\n");
+		builder.append("AND T.TABNAME = '").append(table.getName()).append("'\n");
 		String schema = table.getSchema();
 		if(BasicUtil.isNotEmpty(schema)){
-			builder.append(" AND ns.nspname = '").append(schema).append("'");
+			builder.append(" AND T.OWNER = '").append(schema).append("'");
 		}
 		list.add(builder.toString());
 		return list;
@@ -430,20 +739,20 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception 异常
 	 */
 	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
-		PrimaryKey primary = null;
-		if(set.size()>0){
-			DataRow row = set.getRow(0);
-			primary = new PrimaryKey();
-			//conname 	    |contype	|conkey |  define
-			//test_pk_pkey	| p			| {2,1}	| 	PRIMARY KEY (id, name)
-			primary.setName(row.getString("conname"));
-			String define = row.getString("define");
-			String[] cols = RegularUtil.cut(define, "(",")").split(",");
-			for(String col:cols){
-				Column column = new Column(col.trim());
-				column.setTable(table);
-				primary.addColumn(column);
+		PrimaryKey primary = table.getPrimaryKey();
+		for(DataRow row:set){
+			if(null == primary){
+				primary = new PrimaryKey();
+				primary.setName(row.getString("CONSTRAINT_NAME"));
+				primary.setTable(table);
 			}
+			String col = row.getString("COLUMN_NAME");
+			Column column = primary.getColumn(col);
+			if(null == column){
+				column = new Column(col);
+			}
+			column.setTable(table);
+			primary.addColumn(column);
 		}
 		return primary;
 	}
@@ -616,7 +925,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Table table) throws Exception{
-		String comment = table.getComment();
+		/*String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON TABLE ");
@@ -625,7 +934,8 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			return builder.toString();
 		}else{
 			return null;
-		}
+		}*/
+		return null;
 	}
 
 	/**
@@ -757,7 +1067,8 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 	@Override
 	public String buildChangeCommentRunSQL(MasterTable table) throws Exception{
-		return super.buildChangeCommentRunSQL(table);
+		//return super.buildChangeCommentRunSQL(table);
+		return null;
 	}
 
 
@@ -793,7 +1104,8 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 	@Override
 	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception{
-		return super.buildChangeCommentRunSQL(table);
+		//return super.buildChangeCommentRunSQL(table);
+		return null;
 	}
 
 	/* *****************************************************************************************************************
@@ -1003,7 +1315,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Column column) throws Exception{
-		String comment = null;
+		/*String comment = null;
 		Column update = column.getUpdate();
 		if(null != update){
 			comment = update.getComment();
@@ -1020,7 +1332,8 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			return builder.toString();
 		}else{
 			return null;
-		}
+		}*/
+		return null;
 	}
 
 
@@ -1271,7 +1584,8 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Tag tag) throws Exception{
-		return super.buildChangeCommentRunSQL(tag);
+		//return super.buildChangeCommentRunSQL(tag);
+		return null;
 	}
 
 	/**

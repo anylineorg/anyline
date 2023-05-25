@@ -30,9 +30,9 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql       ,Informix
     DOUBLE                  (StandardColumnType.DOUBLE                ), //mysql,                      ,Informix
     ENUM                    (StandardColumnType.ILLEGAL               ), //mysql,
-    FLOAT                   (StandardColumnType.FLOAT                 ), //mysql  ,oracle,mssql        ,Informix
-    FLOAT4                  (StandardColumnType.FLOAT                 ), //     ,pg
-    FLOAT8                  (StandardColumnType.FLOAT                 ), //     ,pg
+    FLOAT                   (StandardColumnType.FLOAT_INFORMIX        ), //mysql  ,oracle,mssql        ,Informix
+    FLOAT4                  (StandardColumnType.FLOAT_INFORMIX        ), //     ,pg
+    FLOAT8                  (StandardColumnType.FLOAT_INFORMIX        ), //     ,pg
     GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //              ,mssql
     GEOMETRY                (StandardColumnType.ILLEGAL               ), //mysql
     GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ), //mysql
@@ -70,7 +70,7 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     NUMERIC                 (StandardColumnType.DECIMAL               ), //mysql          ,mssql,sqlite ,Informix
     POINT                   (StandardColumnType.ILLEGAL               ), //mysql,pg
     POLYGON                 (StandardColumnType.ILLEGAL               ), //mysql,pg
-    REAL                    (StandardColumnType.FLOAT                 ), //mysql         ,mssql,sqlite  ,Informix
+    REAL                    (StandardColumnType.FLOAT_INFORMIX        ), //mysql         ,mssql,sqlite  ,Informix
     RAW                     (StandardColumnType.ILLEGAL               ), //       ,oracle
     ROWID                   (StandardColumnType.ILLEGAL               ), //       ,oracle
     SERIAL                  (StandardColumnType.SERIAL                ), //     ,pg,                    ,Informix
@@ -79,7 +79,7 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     SERIAL8                 (StandardColumnType.SERIAL8               ), //     ,pg,                    ,Informix
     SET                     (StandardColumnType.ILLEGAL               ), //mysql,
     SMALLDATETIME           (StandardColumnType.DATETIME              ), //              ,mssql
-    SMALLFLOAT              (StandardColumnType.FLOAT                 ), //              ,              ,Informix
+    SMALLFLOAT              (StandardColumnType.FLOAT_INFORMIX        ), //              ,              ,Informix
     SMALLMONEY              (StandardColumnType.DECIMAL               ), //              ,mssql
     SMALLINT                (StandardColumnType.INT                   ), //mysql,                       ,Informix
     SMALLSERIAL             (StandardColumnType.SERIAL                ), //     ,pg,
