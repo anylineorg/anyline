@@ -7,7 +7,7 @@ import org.anyline.entity.metadata.ColumnType;
 public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  ,oracle,
         BINARY_DOUBLE           (StandardColumnType.DOUBLE                ), //     ,  ,oracle,
-        BINARY_FLOAT            (StandardColumnType.FLOAT                 ), //     ,  ,oracle,
+        BINARY_FLOAT            (StandardColumnType.FLOAT_MYSQL           ), //     ,  ,oracle,
         BIGINT                  (StandardColumnType.BIGINT                ), //mysql,  ,     ,mssql,
         BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
         BINARY                  (StandardColumnType.BINARY                ), //mysql,  ,     ,mssql,
@@ -27,9 +27,9 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql
         DOUBLE                  (StandardColumnType.DECIMAL               ), //mysql,
         ENUM                    (StandardColumnType.ENUM                  ), //mysql,
-        FLOAT                   (StandardColumnType.FLOAT                 ), //mysql,  ,oracle,mssql
-        FLOAT4                  (StandardColumnType.FLOAT                 ), //     ,pg
-        FLOAT8                  (StandardColumnType.FLOAT                 ), //     ,pg
+        FLOAT                   (StandardColumnType.FLOAT_MYSQL           ), //mysql,  ,oracle,mssql
+        FLOAT4                  (StandardColumnType.FLOAT_MYSQL           ), //     ,pg
+        FLOAT8                  (StandardColumnType.FLOAT_MYSQL           ), //     ,pg
         GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
         GEOMETRY                (StandardColumnType.GEOMETRY              ), //mysql
         GEOMETRYCOLLECTION      (StandardColumnType.GEOMETRYCOLLECTION    ), //mysql

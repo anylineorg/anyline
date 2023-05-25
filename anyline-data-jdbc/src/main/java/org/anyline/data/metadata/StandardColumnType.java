@@ -558,7 +558,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * oracle(p)
      * mysql,  ,oracle(BigDecimal)
      */
-    ,FLOAT("FLOAT", new DatabaseType[]{MYSQL, ORACLE, Informix}, Float.class, false, false){
+    ,FLOAT_MYSQL("FLOAT", new DatabaseType[]{MYSQL}, Float.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
                 value = def;
@@ -570,26 +570,26 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return result;
         }
     }
+    ,FLOAT_INFORMIX("FLOAT", new DatabaseType[]{Informix}, Float.class, true, true){
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
+    }
+    ,FLOAT_ORACLE("FLOAT", new DatabaseType[]{ORACLE}, Float.class, false, true){
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
+    }
     ,SMALLFLOAT("SMALLFLOAT", new DatabaseType[]{Informix}, Float.class, false, true){
-        public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
     }
     /**
      * ms
      */
-    ,MS_FLOAT("FLOAT", new DatabaseType[]{MSSQL}, Float.class, false, true){
-        public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,FLOAT_MSSQL("FLOAT", new DatabaseType[]{MSSQL}, Float.class, false, true){
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
     }
     /**
      * pg
      */
     ,FLOAT4("FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
-    }
-    /**
-     * ORACLE
-     */
-    ,ORACLE_FLOAT("FLOAT", new DatabaseType[]{ORACLE}, BigDecimal.class, true, true){
-        public Object write(Object value, Object def, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
     }
     /**
      * pg
@@ -637,7 +637,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * mysql(Double),sqlite
      */
     ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite, Informix}, Double.class, false, false){
-        public Object write(Object value, Object def, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
      *

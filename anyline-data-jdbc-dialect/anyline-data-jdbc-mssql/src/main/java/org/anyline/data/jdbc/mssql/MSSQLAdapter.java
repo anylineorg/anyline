@@ -1540,7 +1540,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT  *  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \nWHERE TABLE_NAME='").append(objectName(table.getName())).append("'");
+		builder.append("SELECT  *  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n");
+		builder.append("WHERE TABLE_NAME='").append(objectName(table.getName())).append("'");
 		String catalog = table.getCatalog();
 		if(BasicUtil.isNotEmpty(catalog)){
 			builder.append("\nAND TABLE_CATALOG = '").append(catalog).append("'");
@@ -1566,7 +1567,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		for(DataRow row:set){
 			if(null == primary){
 				primary = new PrimaryKey();
-				primary.setName(row.getString("TABLE_NAME"));
+				primary.setName(row.getString("CONSTRAINT_NAME"));
 				primary.setTable(table);
 			}
 			String col = row.getString("COLUMN_NAME");

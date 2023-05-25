@@ -2154,6 +2154,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 table = tables.values().iterator().next();
                 table.setColumns(columns(table));
                 table.setTags(tags(table));
+                table.setPrimaryKey(primary(table));
                 table.setIndexs(indexs(table));
             }
             return table;

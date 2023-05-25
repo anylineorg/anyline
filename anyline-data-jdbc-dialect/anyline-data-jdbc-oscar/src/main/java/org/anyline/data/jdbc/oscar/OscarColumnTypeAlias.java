@@ -8,7 +8,7 @@ public enum OscarColumnTypeAlias implements ColumnTypeAlias {
 
     BFILE                   (StandardColumnType.BFILE                 ), //       ,oracle,
     BINARY_DOUBLE           (StandardColumnType.BINARY_DOUBLE         ), //       ,oracle,
-    BINARY_FLOAT            (StandardColumnType.FLOAT                 ), //       ,oracle,
+    BINARY_FLOAT            (StandardColumnType.FLOAT_ORACLE                 ), //       ,oracle,
     BIGINT                  (StandardColumnType.NUMBER                ), //mysql         ,mssql,
     BIGSERIAL               (StandardColumnType.NUMBER                ), //     ,pg,
     BINARY                  (StandardColumnType.BLOB                  ), //mysql         ,mssql,
@@ -28,9 +28,9 @@ public enum OscarColumnTypeAlias implements ColumnTypeAlias {
     DECIMAL                 (StandardColumnType.NUMBER                ), //mysql,pg,oracle,mssql
     DOUBLE                  (StandardColumnType.NUMBER                ), //mysql,
     ENUM                    (StandardColumnType.ILLEGAL               ), //mysql,
-    FLOAT                   (StandardColumnType.ORACLE_FLOAT          ), //mysql  ,oracle,mssql
-    FLOAT4                  (StandardColumnType.ORACLE_FLOAT          ), //     ,pg
-    FLOAT8                  (StandardColumnType.ORACLE_FLOAT          ), //     ,pg
+    FLOAT                   (StandardColumnType.FLOAT_ORACLE          ), //mysql  ,oracle,mssql
+    FLOAT4                  (StandardColumnType.FLOAT_ORACLE          ), //     ,pg
+    FLOAT8                  (StandardColumnType.FLOAT_ORACLE          ), //     ,pg
     GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //              ,mssql
     GEOMETRY                (StandardColumnType.ILLEGAL               ), //mysql
     GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ), //mysql
@@ -68,7 +68,7 @@ public enum OscarColumnTypeAlias implements ColumnTypeAlias {
     NUMERIC                 (StandardColumnType.NUMBER                ), //mysql          ,mssql,sqlite
     POINT                   (StandardColumnType.ILLEGAL               ), //mysql,pg
     POLYGON                 (StandardColumnType.ILLEGAL               ), //mysql,pg
-    REAL                    (StandardColumnType.ORACLE_FLOAT          ), //mysql         ,mssql,sqlite
+    REAL                    (StandardColumnType.FLOAT_ORACLE          ), //mysql         ,mssql,sqlite
     RAW                     (StandardColumnType.RAW                   ), //       ,oracle
     ROWID                   (StandardColumnType.ROWID                 ), //       ,oracle
     SERIAL                  (StandardColumnType.NUMBER                ), //     ,pg,

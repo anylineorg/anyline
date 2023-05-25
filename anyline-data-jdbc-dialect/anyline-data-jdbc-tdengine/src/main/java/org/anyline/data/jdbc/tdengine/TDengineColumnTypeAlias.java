@@ -28,8 +28,8 @@ public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
     DECIMAL                 (StandardColumnType.DOUBLE              ), //mysql,pg,oracle,mssql
     DOUBLE                  (StandardColumnType.DOUBLE              ), //mysql,                         ,td
     ENUM                    (StandardColumnType.ILLEGAL             ), //mysql,
-    FLOAT                   (StandardColumnType.FLOAT               ), //mysql   ,oracle,mssql          ,td
-    FLOAT4                  (StandardColumnType.FLOAT               ), //     ,pg
+    FLOAT                   (StandardColumnType.FLOAT_MYSQL         ), //mysql   ,oracle,mssql          ,td
+    FLOAT4                  (StandardColumnType.FLOAT_MYSQL         ), //     ,pg
     FLOAT8                  (StandardColumnType.DOUBLE              ), //     ,pg
     GEOGRAPHY               (StandardColumnType.ILLEGAL             ), //             ,  mssql
     GEOMETRY                (StandardColumnType.ILLEGAL             ), //mysql

@@ -315,7 +315,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 			builder.append("SELECT M.* ,FD.DESCRIPTION AS COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS M\n");
 			builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
 			builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
-			builder.append("WHERE 1= 1\n");
+			builder.append("WHERE 1 = 1\n");
 			if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
 			}

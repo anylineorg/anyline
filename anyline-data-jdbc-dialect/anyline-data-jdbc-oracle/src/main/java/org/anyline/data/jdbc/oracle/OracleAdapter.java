@@ -1752,7 +1752,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		for(DataRow row:set){
 			if(null == primary){
 				primary = new PrimaryKey();
-				primary.setName(row.getString("TABLE_NAME"));
+				primary.setName(row.getString("CONSTRAINT_NAME"));
 				primary.setTable(table);
 			}
 			String col = row.getString("COLUMN_NAME");
