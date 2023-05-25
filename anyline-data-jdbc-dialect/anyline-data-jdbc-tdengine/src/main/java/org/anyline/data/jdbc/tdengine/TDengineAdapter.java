@@ -1309,6 +1309,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
+		if(null == builder){
+			builder = new StringBuilder();
+		}
 		String typeName = column.getTypeName();
 		if(BasicUtil.isEmpty(typeName)){
 			return builder;
