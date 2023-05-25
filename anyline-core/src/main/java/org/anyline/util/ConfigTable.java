@@ -649,13 +649,13 @@ public class ConfigTable {
 			}
 			line(""," ", 0, true);
 			line("","*", 0, true);
-			line("","*", 0, true);
+			//line("","*", 0, true);
 			if(null != project){
-				line(" project root > " + project, "", 0, false);
+			//	line(" project root > " + project, "", 0, false);
 			}
-			line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", 0, false);
-			line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", 0, false);
-			line("","*", 0, true);
+			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", 0, false);
+			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", 0, false);
+			//line("","*", 0, true);
 			System.out.println();
 		}catch(Exception e){
 			e.printStackTrace();
