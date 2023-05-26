@@ -1162,12 +1162,14 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 * 添加列引导
+	 * @param builder StringBuilder
+	 * @param column column
 	 * @return String
 	 */
-	public String addColumnGuide(){
-		return "ADD";
+	public StringBuilder addColumnGuide(StringBuilder builder, Column column){
+		builder.append("ADD ");
+		return builder;
 	}
-
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
 	 * @param column 列

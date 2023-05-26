@@ -832,7 +832,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		Column update = column.getUpdate();
 		if(null == update){
 			// 添加列
-			builder.append(addColumnGuide());
+			addColumnGuide(builder, column);
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			// 数据类型
 			type(builder, column);

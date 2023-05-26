@@ -2540,7 +2540,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		// Column update = column.getUpdate();
 		// if(null == update){
 		// 添加列
-		builder.append(" ADD ").append(column.getKeyword()).append(" ");
+		//builder.append(" ADD ").append(column.getKeyword()).append(" ");
+		addColumnGuide(builder, column);
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
 		// }
@@ -2555,10 +2556,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * 添加列引导
+	 * @param builder StringBuilder
+	 * @param column column
 	 * @return String
 	 */
-	public String addColumnGuide(){
-		return "ADD cOLUMN ";
+	public StringBuilder addColumnGuide(StringBuilder builder, Column column){
+		return builder.append("ADD ").append(column.getKeyword()).append(" ");
 	}
 
 	/**

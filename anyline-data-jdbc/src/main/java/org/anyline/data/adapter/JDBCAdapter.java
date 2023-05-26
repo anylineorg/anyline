@@ -1098,9 +1098,11 @@ public interface JDBCAdapter {
 
 	/**
 	 * 添加列引导
+	 * @param builder StringBuilder
+	 * @param column column
 	 * @return String
 	 */
-	public String addColumnGuide();
+	public StringBuilder addColumnGuide(StringBuilder builder, Column column);
 
 	/**
 	 * 修改列
