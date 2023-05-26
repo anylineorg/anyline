@@ -1167,7 +1167,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return String
 	 */
 	public StringBuilder addColumnGuide(StringBuilder builder, Column column){
-		builder.append("ADD ");
+		builder.append(" ADD ");
 		return builder;
 	}
 	/**

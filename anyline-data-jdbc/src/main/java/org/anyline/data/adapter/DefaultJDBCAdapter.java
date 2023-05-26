@@ -2561,7 +2561,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public StringBuilder addColumnGuide(StringBuilder builder, Column column){
-		return builder.append("ADD ").append(column.getKeyword()).append(" ");
+		return builder.append(" ADD ").append(column.getKeyword()).append(" ");
 	}
 
 	/**
