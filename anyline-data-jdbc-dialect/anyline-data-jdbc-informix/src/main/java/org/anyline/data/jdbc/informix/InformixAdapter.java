@@ -1638,6 +1638,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
+	 * alter table  simple:informix.TEST_PK   add constraint primary key(id) constraint pk_name;
 	 * @param primary 主键
 	 * @return String
 	 */
@@ -1648,7 +1649,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
 			name(builder, primary.getTable());
-			builder.append(" ADD PRIMARY KEY (");
+			builder.append(" ADD CONSTRAINT PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
 				if(!first){
@@ -1658,7 +1659,9 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				first = false;
 			}
 			builder.append(")");
-
+			if(BasicUtil.isNotEmpty(primary.getName())){
+				builder.append(" CONSTRAINT ").append(primary.getName());
+			}
 		}
 		return builder.toString();
 	}
