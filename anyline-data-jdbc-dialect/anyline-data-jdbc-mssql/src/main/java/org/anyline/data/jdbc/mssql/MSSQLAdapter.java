@@ -1,7 +1,6 @@
  
 package org.anyline.data.jdbc.mssql;
 
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.entity.*;
@@ -17,8 +16,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -31,11 +28,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.mssql") 
 public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-	
-	@Autowired(required = false) 
-	@Qualifier("anyline.dao") 
-	protected AnylineDao dao; 
-	 
+
 	public DatabaseType type(){
 		return DatabaseType.MSSQL; 
 	}
@@ -48,7 +41,6 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		setDelimiter(delimiter);
 	}
 
-	private static String dbVersion = ConfigTable.getString("DATABASE_VERSION"); 
 	public MSSQLAdapter(){
 		super();
 		delimiterFr = "[";
@@ -58,23 +50,26 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 	}
 
-	private String getDbVersion(){ 
-		if(null == dbVersion){ 
+	public String getDatabaseVersion(){
+		if(null == databaseVersion){
+			databaseVersion = ConfigTable.getString("DATABASE_VERSION_MSSQL");
+		}
+		if(null == databaseVersion){
 			DataSet set = dao.querys(new DefaultTextPrepare("SELECT @@VERSION AS VS"));
-			if(set.size()>0){ 
-				dbVersion = set.getString(0,"VS","")+"";
-				dbVersion = dbVersion.toUpperCase().replaceAll("\\s{2,}", ""); 
+			if(set.size()>0){
+				databaseVersion = set.getString(0,"VS","")+"";
+				databaseVersion = databaseVersion.toUpperCase().replaceAll("\\s{2,}", "");
 				 
-				if(null != dbVersion && dbVersion.contains("SERVER2000")){ 
-					dbVersion = "2000"; 
-				}else{ 
-					dbVersion = "2005"; 
+				if(null != databaseVersion && databaseVersion.contains("SERVER2000")){
+					databaseVersion = "2000";
+				}else{
+					databaseVersion = "2005";
 				} 
-			}else{ 
-				dbVersion = "2005"; 
+			}else{
+				databaseVersion = "2005";
 			} 
 		} 
-		return dbVersion; 
+		return databaseVersion;
 	}
 
 	/* *****************************************************************************************************
@@ -116,7 +111,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
 			// 分页
-			if("2000".equals(getDbVersion())){ 
+			if("2000".equals(getDatabaseVersion())){
 				int rows = navi.getPageRows(); 
 				if(rows * navi.getCurPage() > navi.getTotalRow()){ 
 					// 最后一页不足10条
@@ -164,7 +159,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
-		if(!"2000".equals(getDbVersion())){
+		if(!"2000".equals(getDatabaseVersion())){
 			super.createInserts(template, run, dest, set, keys);
 			return;
 		}
@@ -221,7 +216,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
-		if(!"2000".equals(getDbVersion())){
+		if(!"2000".equals(getDatabaseVersion())){
 			super.createInserts(template, run, dest, list, keys);
 			return;
 		}
@@ -774,7 +769,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		if("2000".equals(getDbVersion())){
+		if("2000".equals(getDatabaseVersion())){
 			builder.append("EXEC sp_addextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
@@ -800,7 +795,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		if("2000".equals(getDbVersion())){
+		if("2000".equals(getDatabaseVersion())){
 			builder.append("EXEC sp_updateextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
@@ -1144,7 +1139,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isEmpty(schema)){
 			schema = column.getTable().getSchema();
 		}
-		if("2000".equals(getDbVersion())){
+		if("2000".equals(getDatabaseVersion())){
 			builder.append("EXEC sp_addextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
@@ -1197,7 +1192,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isEmpty(schema)){
 			schema = column.getTable().getSchema();
 		}
-		if("2000".equals(getDbVersion())){
+		if("2000".equals(getDatabaseVersion())){
 			builder.append("EXEC sp_updateextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");

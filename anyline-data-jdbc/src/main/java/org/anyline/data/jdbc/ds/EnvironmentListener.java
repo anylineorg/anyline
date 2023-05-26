@@ -37,10 +37,14 @@ public class EnvironmentListener implements ApplicationContextAware {
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 try {
+                    //返回bean id
                     String ds = DataSourceUtil.buildDataSource(prefix, "spring.datasource." + prefix, env);
                     if(null != ds) {
+                        //注册事务管理器
                         DataSourceHolder.regTransactionManager(prefix, ds);
+                        //记录数据源列表
                         DataSourceHolder.reg(prefix);
+                        //注册运行环境
                         RuntimeHolder.reg(prefix, ds);
                         multiple = true;
                         log.info("[创建数据源][prefix:{}]", prefix);
@@ -58,12 +62,14 @@ public class EnvironmentListener implements ApplicationContextAware {
         JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
         if(null != template) {
             if(multiple) {
+                //注册一个默认运行环境
                 RuntimeHolder.reg("default", template, null);
-                //注册一个主事务管理器
                 if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
+                    //注册一个主事务管理器
                     DataSourceHolder.regTransactionManager("primary", template.getDataSource(), true);
                 }
             }
+            //注册一个通用运行环境(可切换数据源)
             JDBCRuntime runtime = new JDBCRuntime("common", template, null);
             RuntimeHolder.reg("common", runtime);
         }

@@ -2,7 +2,6 @@
 package org.anyline.data.jdbc.dm;
 
 
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.entity.*;
@@ -14,10 +13,11 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -32,9 +32,7 @@ import java.util.*;
 public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
-	@Autowired(required = false)
-	@Qualifier("anyline.dao")
-	protected AnylineDao dao;
+
 
 	public DatabaseType type(){
 		return DatabaseType.DM;

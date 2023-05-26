@@ -642,8 +642,8 @@ public class HttpUtil {
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
-					if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-						log.warn("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
+					if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+						log.info("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
 					}
 				}
 			}

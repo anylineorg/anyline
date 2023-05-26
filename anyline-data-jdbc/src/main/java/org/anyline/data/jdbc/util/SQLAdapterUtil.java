@@ -136,7 +136,7 @@ public class SQLAdapterUtil {
 		}
 		if(null != adapter) {
 			adapters.put(name, adapter);
-			log.warn("[检测数据库适配器][根据url检测完成][url:{}][适配器:{}]", name, adapter);
+			log.info("[检测数据库适配器][根据url检测完成][url:{}][适配器:{}]", name, adapter);
 		}
 
 

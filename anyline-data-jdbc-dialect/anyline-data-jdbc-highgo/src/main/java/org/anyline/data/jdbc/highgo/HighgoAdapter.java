@@ -1367,7 +1367,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 		StringBuilder builder = new StringBuilder();
 		if(index.isPrimary()){
-			log.warn("[主键索引,忽略删除][index:{}]", index.getName());
+			log.info("[主键索引,忽略删除][index:{}]", index.getName());
 		}else {
 			builder.append("DROP INDEX ").append(index.getName());
 		}

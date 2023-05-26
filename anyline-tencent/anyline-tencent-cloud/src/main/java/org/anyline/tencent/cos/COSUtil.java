@@ -105,8 +105,8 @@ public class COSUtil {
 		}
 		try {
 			client.putObject(config.BUCKET, path, url.openStream());
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				log.warn("[COS upload file][result:true][file:{}]",path);
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[COS upload file][result:true][file:{}]",path);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,8 +121,8 @@ public class COSUtil {
 			path = path.substring(1);
 		}
 		client.putObject(config.BUCKET, path, in);
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[COS upload file][result:true][file:{}]",path);
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[COS upload file][result:true][file:{}]",path);
 		}
 		return createUrl(path);
 	}
@@ -202,8 +202,8 @@ public class COSUtil {
 		        }catch(Exception e){
 		        	e.printStackTrace();
 		        }
-		        if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-		        	log.warn("[COS download file][local:{}][remote:{}]",file.getAbsolutePath(),key);
+		        if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+		        	log.info("[COS download file][local:{}][remote:{}]",file.getAbsolutePath(),key);
 		        }
 		    }
 		    nextMarker = objectListing.getNextMarker();
@@ -228,8 +228,8 @@ public class COSUtil {
 		try{
 			result = client.doesObjectExist(config.BUCKET,key);
 		}catch(Exception e){}
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[check exists][path:{}][key:{}]", path, key);
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[check exists][path:{}][key:{}]", path, key);
 		}
 		return result;
 	}
@@ -244,7 +244,7 @@ public class COSUtil {
 		try{
 			String key = key(path);
 			client.deleteObject(config.BUCKET, key);
-			log.warn("[COS delete file][result:true][file:{}]", path);
+			log.info("[COS delete file][result:true][file:{}]", path);
 			result = true;
 		}catch(Exception e){
 			log.warn("[COS delete file][result:true][file:{}]",path);

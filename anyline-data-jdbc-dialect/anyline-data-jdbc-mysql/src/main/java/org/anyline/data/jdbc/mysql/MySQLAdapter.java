@@ -167,16 +167,16 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		*/
 		Connection con = null;
 		try {
-			con = DataSourceUtils.getConnection(dataSource);
 			//注意这里与数据库不一致
 			if (null == table.getSchema()) {
+				con = DataSourceUtils.getConnection(dataSource);
 				table.setSchema(con.getCatalog());
 			}
 			table.setCheckSchemaTime(new Date());
 		}catch (Exception e){
 			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, dataSource)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, dataSource)){
 				DataSourceUtils.releaseConnection(con, dataSource);
 			}
 		}

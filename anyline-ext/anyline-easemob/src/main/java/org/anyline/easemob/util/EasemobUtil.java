@@ -95,8 +95,8 @@ public class EasemobUtil {
 					result = set.getRow(0); 
 				} 
 			} 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[reg user][result:{}]",txt); 
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[reg user][result:{}]",txt);
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
@@ -141,8 +141,8 @@ public class EasemobUtil {
 			if(null != row && row.containsKey("entities")){ 
 				result = row.getSet("entities"); 
 			} 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[reg users][result:{}]",txt); 
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[reg users][result:{}]",txt);
 			} 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
@@ -166,8 +166,8 @@ public class EasemobUtil {
 			Map<String,String> headers = new HashMap<String,String>(); 
 			headers.put("Authorization", "Bearer " + getAccessToken()); 
 			String txt = HttpUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText(); 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[reset password][json:{}][result:{}]",json,txt);
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[reset password][json:{}][result:{}]",json,txt);
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
@@ -189,8 +189,8 @@ public class EasemobUtil {
 		try { 
 			String txt = HttpUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText(); 
 			result = parseUser(txt); 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[reset nickname][result:{}]",txt); 
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[reset nickname][result:{}]",txt);
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 

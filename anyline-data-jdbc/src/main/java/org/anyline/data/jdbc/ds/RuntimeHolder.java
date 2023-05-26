@@ -24,6 +24,12 @@ public class RuntimeHolder {
     public static void init(DefaultListableBeanFactory factory){
         RuntimeHolder.factory = factory;
     }
+
+    /**
+     * 注册运行环境
+     * @param key 数据源前缀
+     * @param ds 数据源bean id
+     */
     public static void reg(String key, String ds){
         //DataSourceHolder.reg(key);
         String template_key = "anyline.jdbc.template." + key;
@@ -53,6 +59,13 @@ public class RuntimeHolder {
         JdbcTemplate template = factory.getBean(template_key, JdbcTemplate.class);
         reg(key, template, null);
     }
+
+    /**
+     * 注册运行环境
+     * @param datasource 数据源前缀
+     * @param template template
+     * @param adapter adapter 可以为空 第一次执行时补齐
+     */
     public static void reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
         log.info("[create jdbc runtime][key:{}]", datasource);
         JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
@@ -62,7 +75,7 @@ public class RuntimeHolder {
         }
         String dao_key = "anyline.dao." + datasource;
         String service_key = "anyline.service." + datasource;
-        log.warn("[instance service][data source:{}][instance id:{}]", datasource, service_key);
+        log.info("[instance service][data source:{}][instance id:{}]", datasource, service_key);
 
         BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixDao.class);
         //daoBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
@@ -113,9 +126,10 @@ public class RuntimeHolder {
     public static JDBCRuntime getRuntime(String datasource){
         JDBCRuntime runtime = null;
         if(null == datasource){
-            runtime = runtimes.get("default");
             if(null == runtime){
-                runtime = runtimes.get("common");
+                //通用数据源
+                datasource = "common";
+                runtime = runtimes.get(datasource);
             }
         }else {
             runtime = runtimes.get(datasource);

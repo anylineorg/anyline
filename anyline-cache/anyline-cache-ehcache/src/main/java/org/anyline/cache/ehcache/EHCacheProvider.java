@@ -49,34 +49,34 @@ public class EHCacheProvider implements CacheProvider {
 	public static InputStream getConfigFile() throws Exception{
 		File file = null;
 		String path = ConfigTable.getString("EHCACHE_CONFIG_PATH");
-		log.warn("[检测ehcache配置文件][path={}]", path);
+		log.info("[检测ehcache配置文件][path={}]", path);
 		if(null != path) {
 			file = new File(path);
 			if (file.exists()) {
-				log.warn("[加载ehcache配置文件][path={}]", path);
+				log.info("[加载ehcache配置文件][path={}]", path);
 				return new FileInputStream(file);
 			}
 		}
 		if("jar".equals(ConfigTable.getPackageType())){
 			path = FileUtil.merge(ConfigTable.getRoot(),"config", "ehcache.xml");
-			log.warn("[检测ehcache配置文件][path={}]", path);
+			log.info("[检测ehcache配置文件][path={}]", path);
 			file = new File(path);
 			if(file.exists()){
-				log.warn("[加载ehcache配置文件][path={}]", path);
+				log.info("[加载ehcache配置文件][path={}]", path);
 				return new FileInputStream(file);
 			}
 			path = FileUtil.merge(ConfigTable.getRoot(), "ehcache.xml");
-			log.warn("[检测ehcache配置文件][path={}]", path);
+			log.info("[检测ehcache配置文件][path={}]", path);
 			file = new File(path);
 			if(file.exists()){
-				log.warn("[加载ehcache配置文件][path={}]", path);
+				log.info("[加载ehcache配置文件][path={}]", path);
 				return new FileInputStream(file);
 			}
 			path = FileUtil.merge(ConfigTable.getClassPath(), "ehcache.xml");
-			log.warn("[检测ehcache配置文件][path={}]", path);
+			log.info("[检测ehcache配置文件][path={}]", path);
 			file = new File(path);
 			if(file.exists()){
-				log.warn("[加载ehcache配置文件][path={}]", path);
+				log.info("[加载ehcache配置文件][path={}]", path);
 				return new FileInputStream(file);
 			}
 			InputStream in = ConfigTable.class.getClassLoader().getResourceAsStream("/ehcache.xml");
@@ -95,9 +95,9 @@ public class EHCacheProvider implements CacheProvider {
 					manager = CacheManager.create();
 				}
 				if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-					log.warn("[加载ehcache配置文件][耗时:{}", System.currentTimeMillis() - fr);
+					log.info("[加载ehcache配置文件][耗时:{}", System.currentTimeMillis() - fr);
 					for (String name : manager.getCacheNames()) {
-						log.warn("[解析ehcache配置文件] [name:{}]", name);
+						log.info("[解析ehcache配置文件] [name:{}]", name);
 					}
 				}
 			}catch(Exception e){
@@ -161,7 +161,7 @@ public class EHCacheProvider implements CacheProvider {
 		    	result = null;
 			}else{
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-		    		log.warn("[缓存数据提取成功并有效][耗时:{}][cnannel:{}][key:{}][命中:{}][生存:{}/{}]",System.currentTimeMillis()-fr,channel,key,result.getHitCount(),(System.currentTimeMillis() - result.getCreationTime())/1000,result.getTimeToLive());
+		    		log.info("[缓存数据提取成功并有效][耗时:{}][cnannel:{}][key:{}][命中:{}][生存:{}/{}]",System.currentTimeMillis()-fr,channel,key,result.getHitCount(),(System.currentTimeMillis() - result.getCreationTime())/1000,result.getTimeToLive());
 		    	}
 			}
 		}
@@ -177,8 +177,8 @@ public class EHCacheProvider implements CacheProvider {
 		Cache cache = getCache(channel);
 		if(null != cache){
 			cache.put(element);
-	    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-	    		log.warn("[存储缓存数据][channel:{}][key:{}][生存:0/{}]",channel,element.getObjectKey(),cache.getCacheConfiguration().getTimeToLiveSeconds());
+	    	if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+	    		log.info("[存储缓存数据][channel:{}][key:{}][生存:0/{}]",channel,element.getObjectKey(),cache.getCacheConfiguration().getTimeToLiveSeconds());
 	    	}
 		}
 	}
@@ -190,8 +190,8 @@ public class EHCacheProvider implements CacheProvider {
 			if(null != cache){
 				cache.remove(key);
 			}
-	    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-	    		log.warn("[删除缓存数据] [channel:{}][key:{}]",channel, key);
+	    	if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+	    		log.info("[删除缓存数据] [channel:{}][key:{}]",channel, key);
 	    	}
 		}catch(Exception e){
 			result = false;
@@ -203,8 +203,8 @@ public class EHCacheProvider implements CacheProvider {
 		try{
 			CacheManager manager = createManager();
 			manager.removeCache(channel);
-	    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-	    		log.warn("[清空缓存数据] [channel:{}]",channel);
+	    	if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+	    		log.info("[清空缓存数据] [channel:{}]",channel);
 	    	}
 		}catch(Exception e){
 			result = false;

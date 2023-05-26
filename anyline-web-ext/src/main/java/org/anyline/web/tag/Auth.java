@@ -58,7 +58,7 @@ public class Auth extends BaseBodyTag {
 		}
 		 
 		try {
-			log.warn("[第三方登录][type:{}]",type);
+			log.info("[第三方登录][type:{}]",type);
 			if(encode){
 				String stateValue = state;
 				state = BasicUtil.getRandomLowerString(20);
@@ -133,7 +133,7 @@ public class Auth extends BaseBodyTag {
 				}
 				url = AlipayUtil.getInstance(key).ceateAuthUrl(redirect,scope,state);
 			}
-			log.warn("[第三方登录][result:{}][url:{}]",result,url);
+			log.info("[第三方登录][result:{}][url:{}]",result,url);
 			if(result){
 				html = "<a href=\""+url+"\" id=\""+id+"\">";
 				if(BasicUtil.isNotEmpty(body)){

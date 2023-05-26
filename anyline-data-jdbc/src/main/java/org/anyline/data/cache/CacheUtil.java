@@ -64,12 +64,12 @@ public class CacheUtil {
     	}
     	if(result){
     		reflushFlag.put(key, System.currentTimeMillis());
-    		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-    			log.warn("[频率控制放行][key:{}][间隔:{}/{}]", key, age, sec);
+    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+    			log.info("[频率控制放行][key:{}][间隔:{}/{}]", key, age, sec);
     		}
     	}else{
-    		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-    			log.warn("[频率控制拦截][key:{}][间隔:{}/{}]", key, age, sec);
+    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+    			log.info("[频率控制拦截][key:{}][间隔:{}/{}]", key, age, sec);
     		}
     	}
     	return result;
@@ -86,8 +86,8 @@ public class CacheUtil {
     public static void stop(String key, int sec){
     	Long fr = reflushFlag.get(key);
     	if(null == fr){
-    		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-    			log.warn("[频率控制还原完成 有可能key拼写有误][key:{}]",key);
+    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+    			log.info("[频率控制还原完成 有可能key拼写有误][key:{}]",key);
     		}
     		return;
     	}
@@ -96,8 +96,8 @@ public class CacheUtil {
     	if(age > sec){
     		reflushFlag.remove(key);
     	}
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[频率控制还原完成][key:{}][间隔:{}/{}]", key, age, sec);
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[频率控制还原完成][key:{}][间隔:{}/{}]", key, age, sec);
 		}
     }
     public static void stop(String key){
@@ -189,8 +189,8 @@ public class CacheUtil {
 				}
 			}
 		}
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[create cache key][key:{}]",result);
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[create cache key][key:{}]",result);
 		}
 		return MD5Util.crypto(result);
 	} 

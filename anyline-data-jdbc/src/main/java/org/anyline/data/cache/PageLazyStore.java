@@ -46,12 +46,12 @@ public class PageLazyStore {
 			// 新计数 或 更新计数 
 			lazyTime.put(key, System.currentTimeMillis()); 
 			lazyTotal.put(key, total); 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[重置记录总数][key:{}][old:{}]" + "[new:{}]", key, old, total); 
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[重置记录总数][key:{}][old:{}]" + "[new:{}]", key, old, total);
 			} 
 		}else{ 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-				log.warn("[缓存记录总数][key:{}][total:{}]", key, total); 
+			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+				log.info("[缓存记录总数][key:{}][total:{}]", key, total);
 			} 
 		} 
 	} 

@@ -108,7 +108,7 @@ public class DataSourceHolder {
 			throw new RuntimeException("数据源未注册:"+dataSource);
 		}
     	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-    		log.warn("[切换数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get(), dataSource, auto);
+    		log.info("[切换数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get(), dataSource, auto);
     	} 
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
     	THREAD_CUR_SOURCE.set(dataSource); 
@@ -125,7 +125,7 @@ public class DataSourceHolder {
 			return;
 		}
     	THREAD_CUR_SOURCE.set(to);
-		log.warn("[还原数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), fr, to);
+		log.info("[还原数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), fr, to);
     } 
     public static void setDefaultDataSource(){ 
     	clearDataSource();
@@ -136,7 +136,7 @@ public class DataSourceHolder {
 		}
     	THREAD_AUTO_RECOVER.set(false);
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[切换数据源][thread:{}][数据源:{}>默认数据源]",Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get());
+			log.info("[切换数据源][thread:{}][数据源:{}>默认数据源]",Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get());
 		}
 	}
     public static void clearDataSource() { 
@@ -323,7 +323,7 @@ public class DataSourceHolder {
 		tm_builder.setPrimary(primary);
 		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
 		factory.registerBeanDefinition(tm_id, tm_definition);
-		log.warn("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		log.info("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
 		return tm_id;
 	}
 
@@ -339,7 +339,7 @@ public class DataSourceHolder {
 		tm_builder.setPrimary(primary);
 		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
 		factory.registerBeanDefinition(tm_id, tm_definition);
-		log.warn("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		log.info("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
 		return tm_id;
 	}
 

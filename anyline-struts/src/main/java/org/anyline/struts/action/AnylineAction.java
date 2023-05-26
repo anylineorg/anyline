@@ -310,8 +310,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				this.data = data; 
 			} 
 		} 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
-			log.warn("[result:success][url:{}][action return][action:{}]",request.getRequestURI(),getClass().getName()); 
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+			log.info("[result:success][url:{}][action return][action:{}]",request.getRequestURI(),getClass().getName());
 		} 
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) { 
 			result = true; 
@@ -403,7 +403,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			} 
 		} 
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim(); 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[result:fail][message:{}][url:{}][action return][action:{}]",msg, request.getRequestURI(),getClass().getName()); 
 		} 
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg); 

@@ -23,6 +23,7 @@ package org.anyline.data.adapter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
+import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
@@ -75,11 +76,29 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
+	protected String databaseVersion;
 
+	protected AnylineDao dao;
 
-	@Autowired(required = false)
-	@Qualifier("anyline.service")
-	protected AnylineService service;
+	@Override
+	public AnylineDao getDao() {
+		return dao;
+	}
+
+	@Override
+	public void setDao(AnylineDao dao) {
+		this.dao = dao;
+	}
+
+	@Override
+	public String getDatabaseVersion() {
+		return databaseVersion;
+	}
+
+	@Override
+	public void setDatabaseVersion(String version) {
+		this.databaseVersion = version;
+	}
 
 
 	public DatabaseType type(){
@@ -488,13 +507,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	public List<String> checkMetadata(String table, List<String> columns){
-		if(!ConfigTable.IS_AUTO_CHECK_METADATA || null == service){
+		if(!ConfigTable.IS_AUTO_CHECK_METADATA || null == dao){
 			return columns;
 		}
 		List<String> list = new ArrayList<>();
-		List<String> metadatas = service.columns(table);
+		Set<String> metadatas = dao.columns(table).keySet();
 		if(metadatas.size() > 0) {
-			metadatas = BeanUtil.toUpperCase(metadatas);
 			for (String item : columns) {
 				if (metadatas.contains(item.toUpperCase())) {
 					list.add(item);
@@ -897,12 +915,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		Connection con = null;
 		try {
-			con = DataSourceUtils.getConnection(dataSource);
-			checkSchema(con, table);
+			if (null == table.getCatalog() || null == table.getSchema()) {
+				con = DataSourceUtils.getConnection(dataSource);
+				checkSchema(con, table);
+			}
 		}catch (Exception e){
 			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, dataSource)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, dataSource)){
 				DataSourceUtils.releaseConnection(con, dataSource);
 			}
 		}
@@ -3858,8 +3878,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public boolean convert(String catalog, String schema, String table, RunValue run){
 		boolean result = false;
-		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table);
+		if(ConfigTable.IS_AUTO_CHECK_METADATA || null != dao){
+			LinkedHashMap<String, Column> columns = dao.columns(catalog, schema, table);
 			result = convert(columns, run);
 		}else{
 			result = convert((Column)null, run);

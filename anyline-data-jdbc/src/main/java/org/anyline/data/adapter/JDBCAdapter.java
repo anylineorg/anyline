@@ -19,6 +19,7 @@
 
 package org.anyline.data.adapter;
 
+import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -58,7 +59,10 @@ public interface JDBCAdapter {
 	public static final String BR 		= "\n"		;
 	public static final String BR_TAB 	= "\n\t"	;
 
-
+	public String getDatabaseVersion();
+	public void setDatabaseVersion(String version);
+	public AnylineDao getDao();
+	public void setDao(AnylineDao dao);
 	/**
 	 * 界定符
 	 * @return String

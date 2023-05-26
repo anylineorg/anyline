@@ -34,9 +34,7 @@ import java.util.*;
 public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
-	@Autowired(required = false)
-	@Qualifier("anyline.dao")
-	protected AnylineDao dao;
+
 
 	public DatabaseType type(){
 		return DatabaseType.oscar;

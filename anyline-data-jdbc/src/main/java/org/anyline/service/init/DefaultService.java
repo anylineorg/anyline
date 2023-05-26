@@ -1449,7 +1449,7 @@ public class DefaultService<E> implements AnylineService<E> {
         for (int i = 0; i < size; i++) {
             cnt += delete(dest, set.getRow(i), columns);
         }
-        log.warn("[delete DataSet][影响行数:{}]", LogUtil.format(cnt, 34));
+        log.info("[delete DataSet][影响行数:{}]", LogUtil.format(cnt, 34));
         return cnt;
     }
 
