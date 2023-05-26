@@ -1097,6 +1097,12 @@ public interface JDBCAdapter {
 	public List<String> buildAddRunSQL(Column column) throws Exception;
 
 	/**
+	 * 添加列引导
+	 * @return String
+	 */
+	public String addColumnGuide();
+
+	/**
 	 * 修改列
 	 * 有可能生成多条SQL
 	 * @param column 列

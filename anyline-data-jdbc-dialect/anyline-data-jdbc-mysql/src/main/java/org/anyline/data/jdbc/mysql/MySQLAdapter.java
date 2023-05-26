@@ -1205,7 +1205,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		Column update = column.getUpdate();
 		if(null == update){
 			// 添加列
-			builder.append(" ADD COLUMN ");
+			builder.append(addColumnGuide());
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			// 数据类型
 			type(builder, column);
