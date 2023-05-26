@@ -2566,8 +2566,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSource ds = null;
 		Connection con = null;
 		
-			JDBCRuntime runtime = runtime();
-			JDBCAdapter adapter = runtime.getAdapter();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		String random = random();
 		try{
 			long fr = System.currentTimeMillis();
@@ -2736,8 +2736,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSource ds = null;
 		Connection con = null;
 		
-			JDBCRuntime runtime = runtime();
-			JDBCAdapter adapter = runtime.getAdapter();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
 		String random = random();
 		try{
 			long fr = System.currentTimeMillis();
@@ -2826,76 +2826,81 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		
-		JDBCRuntime runtime = runtime();
-		JDBCAdapter adapter = runtime.getAdapter();
-		if(!greedy) {
-			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
-		}
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
 		try {
-			ds = runtime.getTemplate().getDataSource();
-			con = DataSourceUtils.getConnection(ds);
-			metadata = con.getMetaData();;
-		}catch (Exception e){}
-		int qty_dialect  = 0 ; //优先根据系统表查询
-		int qty_metadata = 0 ; //再根据metadata解析
-		int qty_jdbc	 = 0 ; //根据jdbc接口补充
-		// 优先根据系统表查询
-		try{
-			List<String> sqls = adapter.buildQueryColumnRunSQL(table, false);
-			if(null != sqls){
-				int idx = 0;
-				for(String sql:sqls){
-					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(true, runtime, (String)null, sql, null);
-						columns = adapter.columns(idx, true, table, columns, set);
-					}
-					idx ++;
-				}
+			JDBCRuntime runtime = runtime();
+			JDBCAdapter adapter = runtime.getAdapter();
+			if (!greedy) {
+				adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 			}
-		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
-			}
-		}
-		qty_dialect = columns.size();
-		// 根据系统表查询失败 再根据metadata解析 SELECT * FROM T WHERE 1=0
-		if(columns.size() == 0) {
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
 			try {
-				List<String> sqls = adapter.buildQueryColumnRunSQL(table, true);
+				ds = runtime.getTemplate().getDataSource();
+				con = DataSourceUtils.getConnection(ds);
+				metadata = con.getMetaData();
+				;
+			} catch (Exception e) {
+			}
+			int qty_dialect = 0; //优先根据系统表查询
+			int qty_metadata = 0; //再根据metadata解析
+			int qty_jdbc = 0; //根据jdbc接口补充
+			// 优先根据系统表查询
+			try {
+				List<String> sqls = adapter.buildQueryColumnRunSQL(table, false);
 				if (null != sqls) {
+					int idx = 0;
 					for (String sql : sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
-							columns = adapter.columns(true, columns, table, set);
+							DataSet set = select(true, runtime, (String) null, sql, null);
+							columns = adapter.columns(idx, true, table, columns, set);
 						}
+						idx++;
 					}
 				}
 			} catch (Exception e) {
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
 			}
-			qty_metadata = columns.size() - qty_dialect;
-		}
-		// 根据jdbc接口补充
+			qty_dialect = columns.size();
+			// 根据系统表查询失败 再根据metadata解析 SELECT * FROM T WHERE 1=0
+			if (columns.size() == 0) {
+				try {
+					List<String> sqls = adapter.buildQueryColumnRunSQL(table, true);
+					if (null != sqls) {
+						for (String sql : sqls) {
+							if (BasicUtil.isNotEmpty(sql)) {
+								SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
+								columns = adapter.columns(true, columns, table, set);
+							}
+						}
+					}
+				} catch (Exception e) {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+					}
+				}
+				qty_metadata = columns.size() - qty_dialect;
+			}
+			// 根据jdbc接口补充
 
-		if(columns.size() == 0) {
-			try {
-				columns = adapter.columns(true, columns, metadata, table, null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
-					DataSourceUtils.releaseConnection(con, ds);
+			if (columns.size() == 0) {
+				try {
+					columns = adapter.columns(true, columns, metadata, table, null);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				qty_jdbc = columns.size() - qty_metadata - qty_dialect;
 			}
-			qty_jdbc = columns.size() - qty_metadata - qty_dialect;
-		}
-		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return columns;
 	}
@@ -2944,76 +2949,80 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		
-		JDBCRuntime runtime = runtime();
-		JDBCAdapter adapter = runtime.getAdapter();
-		if(!greedy) {
-			checkSchema(runtime, table);
-		}
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
 		try {
-			ds = runtime.getTemplate().getDataSource();
-			con = DataSourceUtils.getConnection(ds);
-			metadata = con.getMetaData();
-		}catch (Exception e){}
-
-
-		// 先根据系统表查询
-		try{
-			List<String> sqls = adapter.buildQueryTagRunSQL(table, false);
-			if(null != sqls){
-				int idx = 0;
-				for(String sql:sqls){
-					if(BasicUtil.isNotEmpty(sql)) {
-						DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
-						tags = adapter.tags(idx, true, table, tags, set);
-					}
-					idx ++;
-				}
+			JDBCRuntime runtime = runtime();
+			JDBCAdapter adapter = runtime.getAdapter();
+			if (!greedy) {
+				checkSchema(runtime, table);
 			}
-		}catch (Exception e){
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
-			}
-		}
-		if(tags.size() == 0) {
-			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
 			try {
-				List<String> sqls = adapter.buildQueryTagRunSQL(table, true);
+				ds = runtime.getTemplate().getDataSource();
+				con = DataSourceUtils.getConnection(ds);
+				metadata = con.getMetaData();
+			} catch (Exception e) {
+			}
+
+
+			// 先根据系统表查询
+			try {
+				List<String> sqls = adapter.buildQueryTagRunSQL(table, false);
 				if (null != sqls) {
+					int idx = 0;
 					for (String sql : sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
-							SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
-							tags = adapter.tags(true, table, tags, set);
+							DataSet set = select(runtime, (String) null, sql, null).toUpperKey();
+							tags = adapter.tags(idx, true, table, tags, set);
 						}
+						idx++;
 					}
 				}
 			} catch (Exception e) {
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
 			}
-
-		}
-
-		if(tags.size() == 0) {
-			// 根据jdbc接口补充
-			try {
-				// isAutoIncrement isGenerated remark default
-				// 这一步会查出所有列(包括非tag列)
-				tags = adapter.tags(false, tags, metadata, table, null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
-					DataSourceUtils.releaseConnection(con, ds);
+			if (tags.size() == 0) {
+				// 再根据metadata解析 SELECT * FROM T WHERE 1=0
+				try {
+					List<String> sqls = adapter.buildQueryTagRunSQL(table, true);
+					if (null != sqls) {
+						for (String sql : sqls) {
+							if (BasicUtil.isNotEmpty(sql)) {
+								SqlRowSet set = runtime.getTemplate().queryForRowSet(sql);
+								tags = adapter.tags(true, table, tags, set);
+							}
+						}
+					}
+				} catch (Exception e) {
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+					}
 				}
+
 			}
 
-		}
-		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
+			if (tags.size() == 0) {
+				// 根据jdbc接口补充
+				try {
+					// isAutoIncrement isGenerated remark default
+					// 这一步会查出所有列(包括非tag列)
+					tags = adapter.tags(false, tags, metadata, table, null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return tags;
 	}
@@ -3072,7 +3081,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		DataSource ds = null;
-		Connection con = null;
 		String random = null;
 		DatabaseMetaData metadata = null;
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
