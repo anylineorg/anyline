@@ -570,11 +570,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 
 			} catch (Exception e) {
-				if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), prepare,  paramLogFormat(values));
-				}
 				if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 					throw e;
+				}else if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), prepare,  paramLogFormat(values));
 				}
 			}
 		}finally {
@@ -691,10 +692,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常:", 33)+e.toString(), sql, paramLogFormat(run.getUpdateColumns(),values));
 				}
-				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回切换前的数据源
@@ -937,10 +939,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, paramLogFormat(run.getInsertColumns(),values));
 				}
-				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回切换前的数据源
@@ -1032,7 +1035,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					insert(false, join.joinTable, set);
 
 				}catch (Exception e){
-					e.printStackTrace();
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else{
+						log.warn("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
+					}
 				}
 			}
 		}
@@ -1102,7 +1109,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					insert(false, join.dependencyTable, items);
 
 				}catch (Exception e){
-					e.printStackTrace();
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else{
+						log.warn("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
+					}
 				}
 			}
 		}
@@ -1201,10 +1212,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, paramLogFormat(values));
 				}
-				e.printStackTrace();
 			}
 		}
 		return maps;
@@ -1247,7 +1260,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			row.setMetadatas(metadatas);
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("[封装结果集][result:fail][msg:{}]", e.toString());
+			}
 		}
 		return row;
 	}
@@ -1352,10 +1369,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, paramLogFormat(values));
 				}
-				e.printStackTrace();
 			}
 		}
 		return set;
@@ -1465,7 +1483,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				e.printStackTrace();
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.warn("[check Many2ManyDependency query][result:fail][msg:{}]", e.toString());
+				}
 			}
 		}
 	}
@@ -1523,7 +1545,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 				}
 			}catch (Exception e){
-				e.printStackTrace();
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.warn("[check One2ManyDependency query][result:fail][msg:{}]", e.toString());
+				}
 			}
 
 		}
@@ -1588,7 +1614,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				throw e;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]" , random, LogUtil.format("SQL执行异常:", 33)+e.toString(),prepare, paramLogFormat(values));
 				}
 			}
@@ -1716,10 +1744,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ex.setSql(sql);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, paramLogFormat(inputs), paramLogFormat(outputs));
 				}
-				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回切换前的数据源
@@ -1876,7 +1905,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
 							, random
 							, LogUtil.format("存储过程查询异常:", 33)+e.toString()
@@ -1884,7 +1915,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							, paramLogFormat(inputs)
 							, paramLogFormat(outputs));
 				}
-				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回切换前的数据源
@@ -1990,7 +2020,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				deletes(false, join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
 
 			}catch (Exception e){
-				e.printStackTrace();
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.warn("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
+				}
 			}
 		}
 		return result;
@@ -2016,7 +2050,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				deletes(false, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
 
 			}catch (Exception e){
-				e.printStackTrace();
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.warn("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
+				}
 			}
 		}
 		return result;
@@ -2094,10 +2132,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("删除异常:", 33)+e.toString(), sql, paramLogFormat(values));
 				}
-				e.printStackTrace();
 			}
 		}finally{
 			// 自动切换回切换前的数据源
@@ -2170,7 +2209,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
 				}
 			}
@@ -2178,7 +2219,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[databases][result:{}][执行耗时:{}ms]", random, databases.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("[databases][result:fail][msg:{}]", e.toString());
+			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2273,7 +2318,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
@@ -2293,7 +2340,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 				} catch (Exception e) {
-					log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+					}
 				}
 			}
 			//表备注
@@ -2309,7 +2360,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.info("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
@@ -2330,7 +2383,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				tables = tmps;
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("[tables][result:fail][msg:{}]", e.toString());
+			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2466,7 +2523,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
@@ -2485,7 +2544,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 				} catch (Exception e) {
-					log.warn("{}[views][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						log.warn("{}[views][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+					}
 				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
@@ -2504,7 +2567,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				views = tmps;
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("[views][result:fail][msg:{}]", e.toString());
+			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2616,7 +2683,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
@@ -2636,14 +2705,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 				} catch (Exception e) {
-					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.toString());
+					}
 				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("[mtables][result:fail][msg:{}]", e.toString());
+			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2757,7 +2834,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			}catch (Exception e){
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.toString());
 				}
 			}
@@ -2766,7 +2845,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, master.getName(), tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.toString());
+			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2838,8 +2921,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ds = runtime.getTemplate().getDataSource();
 				con = DataSourceUtils.getConnection(ds);
 				metadata = con.getMetaData();
-				;
 			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.warn("[metadata][resutl:fail][msg:{}]", e.toString());
+				}
 			}
 			int qty_dialect = 0; //优先根据系统表查询
 			int qty_metadata = 0; //再根据metadata解析
@@ -2858,7 +2945,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			} catch (Exception e) {
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				} if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
 			}
@@ -2876,8 +2965,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 				} catch (Exception e) {
-					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-						log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+							log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+						}
 					}
 				}
 				qty_metadata = columns.size() - qty_dialect;
@@ -2888,7 +2981,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				try {
 					columns = adapter.columns(true, columns, metadata, table, null);
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
 				}
 				qty_jdbc = columns.size() - qty_metadata - qty_dialect;
 			}
@@ -2896,7 +2991,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.warn("{}[columns][{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table, e.toString());
+			}
 		}finally {
 			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
 				DataSourceUtils.releaseConnection(con, ds);
@@ -2962,6 +3061,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				con = DataSourceUtils.getConnection(ds);
 				metadata = con.getMetaData();
 			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.warn("[][result:fail][msg:{}]", e.toString());
+				}
 			}
 
 
@@ -2979,6 +3083,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
 				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
@@ -2996,6 +3103,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
 					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 						log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
 					}
@@ -3010,7 +3120,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					// 这一步会查出所有列(包括非tag列)
 					tags = adapter.tags(false, tags, metadata, table, null);
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
 				}
 
 			}
@@ -3018,7 +3130,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 		}finally {
 			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
 				DataSourceUtils.releaseConnection(con, ds);
@@ -3103,6 +3217,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
 				log.warn("{}[primary][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
 			}
@@ -3174,7 +3291,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				indexs = adapter.indexs(true, indexs, con.getMetaData(), table, false, false);
 				table.setIndexs(indexs);
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
 			} finally {
 				if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
 					DataSourceUtils.releaseConnection(con, ds);
@@ -3196,7 +3315,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					try {
 						indexs = adapter.indexs(idx, true, table, indexs, set);
 					}catch (Exception e){
-						e.printStackTrace();
+						if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+							e.printStackTrace();
+						}
 					}
 				}
 				idx ++;
@@ -4168,6 +4289,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.toString());
 			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
 				boolean exe = false;
@@ -4327,6 +4451,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改tag执行异常", 33), e.toString());
 			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {

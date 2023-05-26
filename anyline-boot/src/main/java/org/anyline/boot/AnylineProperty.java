@@ -18,6 +18,16 @@ public class AnylineProperty {
      * 执行sql时是否输出日志
      */
     protected boolean showSql									= true			;	// 执行sql时是否输出日志
+
+    /**
+     * 是否抛出convert异常提示
+     */
+    protected boolean throwConvertException					= false			;   // 是否抛出convert异常提示()
+    /**
+     * 捕捉但未抛出的异常是否显示详细信息
+     */
+    protected boolean printExceptionStackTrace						= false			;   // 捕捉但未抛出的异常是否显示详细信息
+
     /**
      * 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用DMListener.slow
      */
@@ -932,5 +942,23 @@ public class AnylineProperty {
     public void setList2stringFormat(String list2stringFormat) {
         this.list2stringFormat = list2stringFormat;
         ConfigTable.LIST2STRING_FORMAT =  list2stringFormat;
+    }
+
+    public boolean isThrowConvertException() {
+        return throwConvertException;
+    }
+
+    public void setThrowConvertException(boolean throwConvertException) {
+        this.throwConvertException = throwConvertException;
+        ConfigTable.IS_THROW_CONVERT_EXCEPTION = throwConvertException;
+    }
+
+    public boolean isPrintExceptionStackTrace() {
+        return printExceptionStackTrace;
+    }
+
+    public void setPrintExceptionStackTrace(boolean printExceptionStackTrace) {
+        this.printExceptionStackTrace = printExceptionStackTrace;
+        ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE = printExceptionStackTrace;
     }
 }
