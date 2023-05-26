@@ -1200,6 +1200,16 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 
 	/**
+	 * 删除列引导
+	 * @param builder StringBuilder
+	 * @param column column
+	 * @return String
+	 */
+	public StringBuilder dropColumnGuide(StringBuilder builder, Column column){
+		builder.append(" DROP ");
+		return builder;
+	}
+	/**
 	 * 修改列名
 	 * ALTER TABLE T  RENAME  A  to B ;
 	 * @param column column
@@ -1215,7 +1225,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 
 	/**
-	 * alter table T alter column C type varchar(64);
+	 *  alter table simple:informix.a_test  modify  names varchar(20) ;
 	 * @param column column
 	 * @return String
 	 */
@@ -1226,15 +1236,13 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		Column update = column.getUpdate();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable());
-		builder.append(" ALTER COLUMN ");
+		builder.append(" MODIFY ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-		builder.append(" TYPE ");
-		type(builder, update);
 		String type = update.getTypeName();
 		if(type.contains("(")){
 			type = type.substring(0,type.indexOf("("));
 		}
-		builder.append(" USING ").append(column.getName()).append("::").append(type);
+		builder.append(" ").append(type);
 		sqls.add(builder.toString());
 		return sqls;
 	}

@@ -1122,6 +1122,13 @@ public interface JDBCAdapter {
 	 */
 	public String buildDropRunSQL(Column column, boolean slice) throws Exception;
 	public String buildDropRunSQL(Column column) throws Exception;
+	/**
+	 * 删除列引导
+	 * @param builder StringBuilder
+	 * @param column column
+	 * @return String
+	 */
+	public StringBuilder dropColumnGuide(StringBuilder builder, Column column);
 
 	/**
 	 * 修改列名

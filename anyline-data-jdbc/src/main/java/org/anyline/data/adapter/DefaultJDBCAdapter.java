@@ -2662,7 +2662,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
 			name(builder, table);
 		}
-		builder.append(" DROP ").append(column.getKeyword()).append(" ");
+		dropColumnGuide(builder, column);
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
@@ -2670,6 +2670,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildDropRunSQL(Column column) throws Exception{
 		return buildDropRunSQL(column, false);
+	}
+
+	/**
+	 * 删除列引导
+	 * @param builder StringBuilder
+	 * @param column column
+	 * @return String
+	 */
+	public StringBuilder dropColumnGuide(StringBuilder builder, Column column){
+		return builder.append(" DROP ").append(column.getKeyword()).append(" ");
 	}
 	/**
 	 * 修改列名
