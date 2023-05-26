@@ -13,6 +13,7 @@ public class ThreadConfig extends ConfigTable{
     public boolean IS_DEBUG 									= true			;	// DEBUG状态会输出更多日志
     public boolean IS_SHOW_SQL									= true			;	// 执行SQL时是否输出日志
     public boolean IS_THROW_CONVERT_EXCEPTION					= false			;   // 是否抛出convert异常提示()
+    public boolean IS_PRINT_EXCEPTION_STACK_TRACE				= false			;   // 捕捉但未抛出的异常是否显示详细信息
     public long SLOW_SQL_MILLIS									= 0				; 	// 慢SQL,如果配置了>0的毫秒数,在SQL执行超出时限后会输出日志,并调用DMListener.slow
     public boolean IS_SHOW_SQL_PARAM							= true			;	// 执行SQL时是否输出日志
     public boolean IS_SHOW_SQL_WHEN_ERROR						= true			;	// 执行SQL异常时是否输出日志
@@ -179,6 +180,9 @@ public class ThreadConfig extends ConfigTable{
 
     public boolean  IS_THROW_CONVERT_EXCEPTION() {
         return IS_THROW_CONVERT_EXCEPTION;
+    }
+    public boolean  IS_PRINT_EXCEPTION_STACK_TRACE() {
+        return IS_PRINT_EXCEPTION_STACK_TRACE;
     }
 
     public long SLOW_SQL_MILLIS() {
