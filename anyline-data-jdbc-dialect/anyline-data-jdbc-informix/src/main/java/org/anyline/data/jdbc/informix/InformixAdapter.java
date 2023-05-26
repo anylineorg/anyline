@@ -1638,7 +1638,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
-	 * alter table  simple:informix.TEST_PK   add constraint primary key(id) constraint pk_name;
+	 * ALTER TABLE SIMPLE:INFORMIX.TEST_PK ADD CONSTRAINT PRIMARY KEY(ID) CONSTRAINT PK_NAME;
 	 * @param primary 主键
 	 * @return String
 	 */
