@@ -2747,30 +2747,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param idx idx
      * @return Object
      */
-    public Object getChildren(int idx) {
+  /*  public Object getChildren(int idx) {
         DataRow row = getRow(idx);
         if (null != row) {
             return row.getChildren();
         }
         return null;
     }
-
-    public Object getChildren() {
-        return getChildren(0);
-    }
-
+*/
+   // public Object getChildren() {
+    //    return getChildren(0);
+   // }
+/*
     public DataSet setChildren(int idx, Object children) {
         DataRow row = getRow(idx);
         if (null != row) {
             row.setChildren(children);
         }
         return this;
-    }
-
+    }*/
+/*
     public DataSet setChildren(Object children) {
         setChildren(0, children);
         return this;
-    }
+    }*/
 
     /**
      * 父类
@@ -2778,14 +2778,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param idx idx
      * @return Object
      */
-    public Object getParent(int idx) {
+   /* public Object getParent(int idx) {
         DataRow row = getRow(idx);
         if (null != row) {
             return row.getParent();
         }
         return null;
-    }
-
+    }*/
+/*
     public Object getParent() {
         return getParent(0);
     }
@@ -2796,12 +2796,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
             row.setParent(parent);
         }
         return this;
-    }
-
+    }*/
+/*
     public DataSet setParent(Object parent) {
         setParent(0, parent);
         return this;
-    }
+    }*/
 
     /**
      * 转换成对象
@@ -3001,6 +3001,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return params;
     }
+    public DataSet setParent(String key, DataRow parent){
+        for(DataRow row:rows){
+            row.setParent(key, parent);
+        }
+        return this;
+    }
 
     /**
      * 从items中按相应的key提取数据 存入
@@ -3031,7 +3037,27 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == row.get(field)) {
                 String[] kvs = packParam(row, reverseKey(list));
                 DataSet set = items.getRows(compare, kvs(kvs));
-                set.remove(row);//避免无限递归
+                //避免无限递归
+
+                //引用自己
+                set.remove(row);
+                //检测相互引用
+                DataSet parents = row.getAllParent(field);
+
+                int size = set.size();
+                for(DataRow parent:parents){
+                    for(int i=0; i<size; i++){
+                        DataRow chk = set.getRow(i);
+                        if(parent == chk){
+                            DataRow copy = new DataRow();
+                            copy.copy(chk);
+                            copy.put(false, field, new DataSet());
+                            set.set(i, copy);
+                            break;
+                        }
+                    }
+                }
+
                 if (recursion) {
                     set.dispatchs(compare, field, unique, recursion, items, list);
                 }
@@ -3039,6 +3065,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     set.skip(true);
                 }
                 row.put(false, field, set);
+                set.setParent(field, row);
             }
         }
         items.skip(false);

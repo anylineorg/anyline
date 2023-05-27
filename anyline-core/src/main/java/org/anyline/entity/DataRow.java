@@ -48,8 +48,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private static final long serialVersionUID = -2098827041540802313L;
     protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
-    public static String KEY_PARENT             = "PARENT"              ; // 上级
-    public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级
+    //public static String KEY_PARENT             = "PARENT"              ; // 上级
+    //public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级
     public static String KEY_CHILDREN           = "CHILDREN"            ; // 子级
     public static String KEY_ALL_CHILDREN       = "ALL_CHILDREN"        ; // 所有子级
     public static String KEY_ITEMS              = "ITEMS"               ; // items
@@ -72,9 +72,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private String category                         = null                  ; // 分类
     private LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     private transient DataSet container             = null                  ; // 包含当前对象的容器
-    private List<String> primaryKeys                = new ArrayList<>()     ; // 主键
-    private List<String> updateColumns              = new ArrayList<>()     ; // 需要参与update insert操作
-    private List<String> ignoreUpdateColumns        = new ArrayList<>()     ; // 不参与update insert操作
+    private transient Map<String,DataSet> containers= new HashMap()         ; // 包含当前对象的容器s
+    private transient Map<String,DataRow> parents   = new Hashtable()       ; // 上级
+    private List<String> primaryKeys                = new ArrayList()       ; // 主键
+    private List<String> updateColumns              = new ArrayList()       ; // 需要参与update insert操作
+    private List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
     private String datalink                         = null                  ; // 超链接
     private String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
     private String schema                           = null                  ; // schema
@@ -557,7 +559,29 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static DataRow parseArray(String... kvs) {
         return parseArray((DataRow)null, kvs);
     }
-
+    public DataRow setContainer(String key, DataSet container){
+        containers.put(key, container);
+        return this;
+    }
+    public DataSet getContainer(String key){
+        return containers.get(key);
+    }
+    public DataRow setParent(String key, DataRow parent){
+        parents.put(key, parent);
+        return this;
+    }
+    public DataRow getParent(String key){
+        return parents.get(key);
+    }
+    public DataSet getAllParent(String key){
+        DataSet set = new DataSet();
+        DataRow parent = this.getParent(key);
+        while (null != parent){
+            set.add(parent);
+            parent = parent.getParent(key);
+        }
+        return set;
+    }
 
     public Boolean getOverride() {
         return override;
@@ -1173,32 +1197,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    /**
-     * 父类
-     * @return Object
-     */
-    public Object getParent() {
-        return getParent(KEY_PARENT);
-    }
-    public Object getParent(String key) {
-        return get(key);
-    }
-
-    public DataRow setParent(Object parent) {
-        put(KEY_PARENT, parent);
-        return this;
-    }
-    public DataRow setParent(String key, Object parent) {
-        put(key, parent);
-        return this;
-    }
 
     /**
      * 所有上级数据(递归)
      * @return List
      */
     @SuppressWarnings("unchecked")
-    public List<Object> getAllParent(String key) {
+  /*  public List<Object> getAllParent(String key) {
         if (null != get(KEY_ALL_PARENT)) {
             return (List<Object>) get(KEY_ALL_PARENT);
         }
@@ -1217,7 +1222,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public List<Object> getAllParent() {
         return getAllParent(KEY_PARENT);
-    }
+    }*/
     public DataSet getAllChild(String key){
         Object obj = get(KEY_ALL_CHILDREN);
         if (null != obj) {
