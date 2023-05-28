@@ -1,15 +1,14 @@
 package org.anyline.data.entity;
 
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
+import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.entity.metadata.JavaType;
 import org.anyline.service.AnylineService;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ClassUtil;
-import org.anyline.util.SpringContextUtil;
+import org.anyline.util.*;
 
 public class Column implements org.anyline.entity.data.Column{
     static {
@@ -80,7 +79,14 @@ public class Column implements org.anyline.entity.data.Column{
         setSchema(schema);
         setName(name);
         setTable(table);
-        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+        DDListener listener = null;
+        ConfigTable config = ThreadConfig.check(DataSourceHolder.curDataSource());
+        if(config instanceof ThreadConfig){
+            listener = ((ThreadConfig)config).getDdListener();
+        }
+        if(null == listener) {
+            listener = SpringContextUtil.getBean(DDListener.class);
+        }
         if(null == listener){
             listener = new DefaultDDListener();
         }

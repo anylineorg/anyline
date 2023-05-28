@@ -1,8 +1,10 @@
 package org.anyline.data.entity;
 
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
+import org.anyline.data.util.ThreadConfig;
 import org.anyline.exception.AnylineException;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
@@ -61,7 +63,15 @@ public class Table implements org.anyline.entity.data.Table{
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
-        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+
+        DDListener listener = null;
+        ConfigTable config = ThreadConfig.check(DataSourceHolder.curDataSource());
+        if(config instanceof ThreadConfig){
+            listener = ((ThreadConfig)config).getDdListener();
+        }
+        if(null == listener) {
+            listener = SpringContextUtil.getBean(DDListener.class);
+        }
         if(null == listener){
             listener = new DefaultDDListener();
         }

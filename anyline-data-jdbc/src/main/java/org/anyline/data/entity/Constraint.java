@@ -1,9 +1,12 @@
 package org.anyline.data.entity;
 
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.init.DefaultDDListener;
+import org.anyline.data.util.ThreadConfig;
 import org.anyline.service.AnylineService;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 
 import java.util.LinkedHashMap;
@@ -21,7 +24,14 @@ public class Constraint {
     private Index update;
     private transient DDListener listener ;
     public Constraint(){
-        DDListener listener = SpringContextUtil.getBean(DDListener.class);
+        DDListener listener = null;
+        ConfigTable config = ThreadConfig.check(DataSourceHolder.curDataSource());
+        if(config instanceof ThreadConfig){
+            listener = ((ThreadConfig)config).getDdListener();
+        }
+        if(null == listener) {
+            listener = SpringContextUtil.getBean(DDListener.class);
+        }
         if(null == listener){
             listener = new DefaultDDListener();
         }
@@ -139,7 +149,7 @@ public class Constraint {
     }
 
     public DDListener getListener() {
-        return listener;
+            return listener;
     }
 
     public Constraint setListener(DDListener listener) {
