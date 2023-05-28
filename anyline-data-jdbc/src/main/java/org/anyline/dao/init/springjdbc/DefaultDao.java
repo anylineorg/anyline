@@ -20,10 +20,10 @@
 package org.anyline.dao.init.springjdbc;
 
 import org.anyline.dao.AnylineDao;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
-import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.jdbc.ds.RuntimeHolder;
@@ -41,6 +41,7 @@ import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
+import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
