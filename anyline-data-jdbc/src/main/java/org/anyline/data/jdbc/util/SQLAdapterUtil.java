@@ -31,7 +31,12 @@ public class SQLAdapterUtil {
 	@Autowired(required = false)
 	public void setAdapters(Map<String, JDBCAdapter> map){
 		for (JDBCAdapter adapter:map.values()){
-			adapters.put(adapter.type().name()+"_"+adapter.version(), adapter);
+			String version = adapter.version();
+			if(null == version) {
+				adapters.put(adapter.type().name(), adapter);
+			}else{
+				adapters.put(adapter.type().name() + "_" + adapter.version(), adapter);
+			}
 			supports.put(adapter.type().name(), true);
 		}
 	}
@@ -104,12 +109,9 @@ public class SQLAdapterUtil {
 		if(null != version){
 			version = version.toLowerCase();
 		}
-		adapter = adapters.get(name+"_"+version);
-		if(null != adapter){
-			return adapter;
-		}
+
 		if(support(DatabaseType.MYSQL) && name.contains("mysql")){
-			adapter = adapters.get(DatabaseType.MYSQL.name()+"_"+version);
+			adapter = adapters.get(DatabaseType.MYSQL.name());
 		}else if(support(DatabaseType.MSSQL) && (name.contains("mssql") || name.contains("sqlserver"))){
 			if(null != version ){
 				double v = BasicUtil.parseDouble(version, 0d);
@@ -143,47 +145,47 @@ public class SQLAdapterUtil {
 				adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
 			}
 		}else if(support(DatabaseType.PostgreSQL) && name.contains("postgresql")){
-			adapter =  adapters.get(DatabaseType.PostgreSQL.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.PostgreSQL.name());
 		}
 
 		else if(support(DatabaseType.ClickHouse) && name.contains("clickhouse")){
-			adapter =  adapters.get(DatabaseType.ClickHouse.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.ClickHouse.name());
 		}else if(support(DatabaseType.DB2) && name.contains("db2")){
-			adapter =  adapters.get(DatabaseType.DB2.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.DB2.name());
 		}else if(support(DatabaseType.Derby) && name.contains("derby")){
-			adapter =  adapters.get(DatabaseType.Derby.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.Derby.name());
 		}else if(support(DatabaseType.DM) && name.contains("dmdbms")){
-			adapter =  adapters.get(DatabaseType.DM.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.DM.name());
 		}else if(support(DatabaseType.HighGo) && name.contains("hgdb") || name.contains("highgo")){
-			adapter =  adapters.get(DatabaseType.HighGo.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.HighGo.name());
 		}else if(support(DatabaseType.KingBase) && name.contains("kingbase")){
-			adapter =  adapters.get(DatabaseType.KingBase.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.KingBase.name());
 		}else if(support(DatabaseType.GBase) && name.contains("gbase")){
-			adapter =  adapters.get(DatabaseType.GBase.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.GBase.name());
 		}else if(support(DatabaseType.OceanBase) && name.contains("oceanbase")){
-			adapter =  adapters.get(DatabaseType.OceanBase.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.OceanBase.name());
 		}else if(support(DatabaseType.OpenGauss) && name.contains("opengauss")){
-			adapter =  adapters.get(DatabaseType.OpenGauss.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.OpenGauss.name());
 		}else if(support(DatabaseType.PolarDB) && name.contains("polardb")){
-			adapter =  adapters.get(DatabaseType.PolarDB.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.PolarDB.name());
 		}else if(support(DatabaseType.SQLite) && name.contains("sqlite")){
-			adapter =  adapters.get(DatabaseType.SQLite.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.SQLite.name());
 		}else if(support(DatabaseType.SQLite) && name.contains("informix")){
-			adapter =  adapters.get(DatabaseType.Informix.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.Informix.name());
 		}else if(support(DatabaseType.H2) && name.contains(":h2:")){
-			adapter =  adapters.get(DatabaseType.H2.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.H2.name());
 		}else if(support(DatabaseType.HSQLDB) && name.contains("hsqldb")){
-			adapter =  adapters.get(DatabaseType.HSQLDB.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.HSQLDB.name());
 		}else if(support(DatabaseType.TDengine) && name.contains("taos")){
-			adapter =  adapters.get(DatabaseType.TDengine.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.TDengine.name());
 		}else if(support(DatabaseType.Neo4j) && name.contains("neo4j")){
-			adapter =  adapters.get(DatabaseType.Neo4j.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.Neo4j.name());
 		}else if(support(DatabaseType.Neo4j) && name.contains("uxdb")){
-			adapter =  adapters.get(DatabaseType.UXDB.name()+"_"+version);
+			adapter =  adapters.get(DatabaseType.UXDB.name());
 		}
 		if(null != adapter) {
 			adapters.put("al-ds:"+datasource, adapter);
-			log.info("[检测数据库适配器][根据url检测完成][url:{}][适配器:{}]", name, adapter);
+			log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]",datasource, name, adapter);
 		}
 		return adapter;
 	}

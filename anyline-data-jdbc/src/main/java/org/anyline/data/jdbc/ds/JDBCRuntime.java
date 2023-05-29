@@ -50,7 +50,11 @@ public class JDBCRuntime {
 
     public JDBCAdapter getAdapter() {
         if(null == adapter){
-            adapter = SQLAdapterUtil.getAdapter(key, template);
+            String ds = key;
+            if("common".equals(ds)){
+                ds = DataSourceHolder.curDataSource();
+            }
+            adapter = SQLAdapterUtil.getAdapter(ds, template);
             if(null != adapter && null == adapter.getDao()){
                 adapter.setDao(dao);
             }
