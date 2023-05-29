@@ -571,10 +571,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 
 			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
 				if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 					throw e;
-				}else if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
 				}else if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), prepare,  paramLogFormat(values));
 				}
@@ -687,15 +688,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
+				SQLUpdateException ex = new SQLUpdateException("update异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常:", 33)+e.toString(), sql, paramLogFormat(run.getUpdateColumns(),values));
 				}
 			}
@@ -934,15 +936,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, paramLogFormat(run.getInsertColumns(),values));
 				}
 			}
@@ -1207,16 +1210,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, maps.size());
 			}
 		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
 			}else{
-
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, paramLogFormat(values));
 				}
 			}
@@ -1364,15 +1367,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
 			}
 		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, paramLogFormat(values));
 				}
 			}
@@ -1612,12 +1616,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				throw e;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]" , random, LogUtil.format("SQL执行异常:", 33)+e.toString(),prepare, paramLogFormat(values));
 				}
 			}
@@ -1740,14 +1745,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			result = false;
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(),e);
 				ex.setSql(sql);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, paramLogFormat(inputs), paramLogFormat(outputs));
 				}
 			}
@@ -1902,13 +1908,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[执行耗时:{}ms]", random, millis);
 			}
 		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
 							, random
 							, LogUtil.format("存储过程查询异常:", 33)+e.toString()
@@ -2127,15 +2134,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			result = 0;
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("delete异常:"+e.toString(),e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
 					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("删除异常:", 33)+e.toString(), sql, paramLogFormat(values));
 				}
 			}
