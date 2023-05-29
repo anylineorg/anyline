@@ -484,9 +484,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null == dest){
 			dest = DataSourceHolder.parseDataSource(null,obj);
 		}
-		if(obj instanceof Map){
+		if(obj instanceof DataRow){
+		}else if(obj instanceof Map){
 			obj = new DataRow((Map)obj);
 		}
+
 		if(obj instanceof DataRow){
 			return buildUpdateRunFromDataRow(dest, (DataRow)obj, configs, checkPrimary, columns);
 		}else{
