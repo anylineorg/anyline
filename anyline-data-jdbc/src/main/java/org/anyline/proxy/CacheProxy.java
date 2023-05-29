@@ -94,13 +94,13 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public static LinkedHashMap<String, Column> columns(String table){
+    public static LinkedHashMap<String, Column> columns(String datasource, String table){
         if(null == table){
             return null;
         }
         LinkedHashMap<String, Column> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.curDataSource()+"_COLUMNS_" + table.toUpperCase();
+        String key = datasource+"_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
@@ -121,12 +121,12 @@ public class CacheProxy {
      * @param table 表
      * @param columns 列
      */
-    public static void columns(String table, LinkedHashMap<String, Column> columns){
+    public static void columns(String datasource, String table, LinkedHashMap<String, Column> columns){
         if(null == table){
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.curDataSource()+"_COLUMNS_" + table.toUpperCase();
+        String key = datasource + "_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, columns);
         }else{

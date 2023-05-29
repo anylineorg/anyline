@@ -3902,10 +3902,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public boolean convert(String catalog, String schema, String table, RunValue run){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = CacheProxy.columns(table);
-			if(null == columns && null != dao) {
+			LinkedHashMap<String, Column> columns = null;
+			if(null != dao) {
 				columns = dao.columns(catalog, schema, table);
-				CacheProxy.columns(table, columns);
 			}
 			result = convert(columns, run);
 		}else{

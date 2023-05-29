@@ -2624,11 +2624,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public LinkedHashMap<String,Column> columns(boolean greedy, Table table){
-            LinkedHashMap<String,Column> columns = CacheProxy.columns(table.getName());
-            if(null == columns){
-                columns = dao.columns(greedy, table);
-                CacheProxy.columns(table.getName(), columns);
-            }
+            LinkedHashMap<String,Column> columns =  dao.columns(greedy, table);
             return columns;
 
         }

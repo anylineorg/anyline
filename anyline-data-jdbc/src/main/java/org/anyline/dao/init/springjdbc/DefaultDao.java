@@ -1307,11 +1307,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		//Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
-		if(!system && ThreadConfig.check(DataSourceHolder.curDataSource()).IS_AUTO_CHECK_METADATA() && null != table){
-			columns = CacheProxy.columns(table);
+		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
+			columns = CacheProxy.columns(runtime.getKey(), table);
 			if(null == columns){
-				columns = columns(table);
-				CacheProxy.columns(table, columns);
+				columns = columns(runtime, false,  new Table(null, null, table));
+				CacheProxy.columns(runtime.getKey(), table, columns);
 			}
 		}
 		try{
@@ -2903,8 +2903,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Column> columns(String table)
 	 * public LinkedHashMap<String, Column> columns(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
+
 	@Override
 	public LinkedHashMap<String, Column> columns(boolean greedy, Table table){
+		return columns(runtime(), greedy, table);
+	}
+	public LinkedHashMap<String, Column> columns(JDBCRuntime runtime, boolean greedy, Table table){
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return columns;
@@ -2919,7 +2923,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		try {
-			JDBCRuntime runtime = runtime();
 			JDBCAdapter adapter = runtime.getAdapter();
 			if (!greedy) {
 				adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
