@@ -74,9 +74,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
-	//单数据源 或 固定数据源(不可切换)时赋值
-	protected String version;
-	protected String datasource;
+	//单数据源 或 固定数据源(不可切换)时赋
 	protected AnylineDao dao;
 
 	protected Map<String,String> versions = new Hashtable<>();
@@ -91,20 +89,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		this.dao = dao;
 	}
 
-	@Override
-	public String getVersion() {
-		return version;
-	}
 
-	@Override
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-
-	public DatabaseType type(){
-		return this.db;
-	}
+	public String version(){return null;}
 	public DatabaseType compatible(){
 		return null;
 	}
@@ -121,7 +107,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 		}
 	}
-
 
 	@Override
 	public String getDelimiterFr(){

@@ -54,15 +54,16 @@ public interface JDBCAdapter {
 		public abstract String getName();
 	}
 	public DatabaseType type();
+	public String version();
+
 
 	public static final String TAB 		= "\t"		;
 	public static final String BR 		= "\n"		;
 	public static final String BR_TAB 	= "\n\t"	;
 
-	public String getVersion();
-	public void setVersion(String version);
 	public AnylineDao getDao();
 	public void setDao(AnylineDao dao);
+
 	/**
 	 * 界定符
 	 * @return String
