@@ -28,6 +28,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * 12及以上版本
+ */
 @Repository("anyline.data.jdbc.adapter.oracle") 
 public class OracleAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	
@@ -35,6 +38,9 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 	public DatabaseType type(){
 		return DatabaseType.ORACLE; 
+	}
+	public String version(){
+		return "12";
 	}
 
 	@Value("${anyline.data.jdbc.delimiter.oracle:}")
@@ -99,33 +105,24 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 	@Override 
 	public String parseFinalQuery(Run run){
-		StringBuilder builder = new StringBuilder(); 
-		String cols = run.getQueryColumns(); 
+		StringBuilder builder = new StringBuilder();
 		PageNavi navi = run.getPageNavi(); 
 		String sql = run.getBaseQuery(); 
 		OrderStore orders = run.getOrderStore(); 
-		int first = 0; 
-		int last = 0; 
+		int first = 0;
 		String order = ""; 
 		if(null != orders){ 
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
 		if(null != navi){ 
-			first = navi.getFirstRow(); 
-			last = navi.getLastRow(); 
+			first = navi.getFirstRow();
 		} 
 		if(null == navi){
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
-			// 分页 
-				builder.append("SELECT "+cols+" FROM( \n");
-				builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
-				builder.append("FROM( \n"); 
-				builder.append(sql);
-				builder.append("\n").append(order);
-				builder.append(")  TAB_I \n");
-				builder.append(")  TAB_O WHERE PAGE_ROW_NUMBER_ >= "+(first+1)+" AND PAGE_ROW_NUMBER_ <= "+(last+1));
-
+			// 分页
+			builder.append(sql).append("\n").append(order);
+			builder.append(" OFFSET ").append(first).append(" ROWS FETCH NEXT ").append(navi.getPageRows()).append(" ROWS ONLY");
 		} 
 		 
 		return builder.toString(); 
