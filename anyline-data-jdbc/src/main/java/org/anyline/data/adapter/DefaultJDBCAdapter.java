@@ -40,6 +40,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
@@ -3898,8 +3899,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public boolean convert(String catalog, String schema, String table, RunValue run){
 		boolean result = false;
-		if(ConfigTable.IS_AUTO_CHECK_METADATA || null != dao){
-			LinkedHashMap<String, Column> columns = dao.columns(catalog, schema, table);
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			LinkedHashMap<String, Column> columns = CacheProxy.columns(table);
+			if(null == columns && null != dao) {
+				columns = dao.columns(catalog, schema, table);
+				CacheProxy.columns(table, columns);
+			}
 			result = convert(columns, run);
 		}else{
 			result = convert((Column)null, run);
