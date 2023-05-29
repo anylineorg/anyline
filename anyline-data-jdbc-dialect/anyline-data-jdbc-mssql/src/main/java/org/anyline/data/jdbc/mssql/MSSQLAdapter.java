@@ -4,14 +4,12 @@ package org.anyline.data.jdbc.mssql;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.SQLAdapter;
 import org.anyline.data.entity.*;
-import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
-import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
@@ -26,12 +24,16 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * 2005(9.0)及以上版本
+ */
 @Repository("anyline.data.jdbc.adapter.mssql") 
 public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type(){
 		return DatabaseType.MSSQL; 
 	}
+	public String version(){return "2005";}
 
 	@Value("${anyline.data.jdbc.delimiter.mssql:}")
 	private String delimiter;
@@ -50,104 +52,63 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 	}
 
-	public String getVersion(){
-		if(null == version){
-			version = ConfigTable.getString("DATABASE_VERSION_MSSQL");
-		}
-		if(null == version){
-			DataSet set = dao.querys(new DefaultTextPrepare("SELECT @@VERSION AS VS"));
-			if(set.size()>0){
-				version = set.getString(0,"VS","")+"";
-				version = version.toUpperCase().replaceAll("\\s{2,}", "");
-				 
-				if(null != version && version.contains("SERVER2000")){
-					version = "2000";
-				}else{
-					version = "2005";
-				} 
-			}else{
-				version = "2005";
-			} 
-		} 
-		return version;
-	}
 
 	/* *****************************************************************************************************
 	 *
 	 * 											DML
 	 *
 	 * ****************************************************************************************************/
-	/** 
-	 * 查询SQL 
+
+	/**
+	 * 查询SQL
 	 * Run 反转调用
 	 * @param run  run
 	 * @return String
-	 */ 
-	@Override 
+	 */
+	@Override
 	public String parseFinalQuery(Run run){
-		StringBuilder builder = new StringBuilder(); 
-		String cols = run.getQueryColumns(); 
-		PageNavi navi = run.getPageNavi(); 
-		String sql = run.getBaseQuery(); 
-		OrderStore orders = run.getOrderStore(); 
-		int first = 0; 
-		int last = 0; 
-		String order = ""; 
-		if(null != orders){ 
+		StringBuilder builder = new StringBuilder();
+		String cols = run.getQueryColumns();
+		PageNavi navi = run.getPageNavi();
+		String sql = run.getBaseQuery();
+		OrderStore orders = run.getOrderStore();
+		int first = 0;
+		int last = 0;
+		String order = "";
+		if(null != orders){
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		} 
-		if(null != navi){ 
-			first = navi.getFirstRow(); 
-			last = navi.getLastRow(); 
-		} 
-		if(first == 0 && null != navi){ 
+		}
+		if(null != navi){
+			first = navi.getFirstRow();
+			last = navi.getLastRow();
+		}
+		if(first == 0 && null != navi){
 			// top
-			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n"); 
-			builder.append(sql).append("\n) AS _TAB_O \n"); 
-			builder.append(order); 
-			return builder.toString(); 
-		} 
-		if(null == navi){ 
-			builder.append(sql).append("\n").append(order); 
-		}else{ 
+			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
+			builder.append(sql).append("\n) AS _TAB_O \n");
+			builder.append(order);
+			return builder.toString();
+		}
+		if(null == navi){
+			builder.append(sql).append("\n").append(order);
+		}else{
 			// 分页
-			if("2000".equals(this.getVersion())){
-				int rows = navi.getPageRows(); 
-				if(rows * navi.getCurPage() > navi.getTotalRow()){ 
-					// 最后一页不足10条
-					rows = navi.getTotalRow() % navi.getPageRows(); 
-				} 
-				String asc = order; 
-				String desc = order.replace("ASC", "<A_ORDER>"); 
-				desc = desc.replace("DESC", "ASC"); 
-				desc = desc.replace("<A_ORDER>", "DESC"); 
-				builder.append("SELECT "+cols+" FROM (\n "); 
-				builder.append("SELECT TOP ").append(rows).append(" * FROM (\n"); 
-				builder.append("SELECT TOP ").append(navi.getPageRows()*navi.getCurPage()).append(" * "); 
-				builder.append(" FROM (" + sql + ") AS T0 ").append(asc).append("\n"); 
-				builder.append(") AS T1 ").append(desc).append("\n"); 
-				builder.append(") AS T2").append(asc); 
-			}else{ 
-				// 2005 及以上
-				if(BasicUtil.isEmpty(order)){ 
-					order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
-				} 
-				builder.append("SELECT "+cols+" FROM( \n"); 
-				builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(") 
-				.append(order) 
-				.append(") AS PAGE_ROW_NUMBER_ \n");
-				builder.append("FROM( \n"); 
-				builder.append(sql); 
-				builder.append(") AS _TAB_I \n"); 
-				builder.append(") AS _TAB_O WHERE PAGE_ROW_NUMBER_ BETWEEN "+(first+1)+" AND "+(last+1));
-			} 
-			 
-		} 
-		 
-		return builder.toString(); 
-		 
-	}
+			// 2005 及以上
+			if(BasicUtil.isEmpty(order)){
+				order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
+			}
+			builder.append("SELECT "+cols+" FROM( \n");
+			builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(")
+					.append(order)
+					.append(") AS PAGE_ROW_NUMBER_ \n");
+			builder.append("FROM( \n");
+			builder.append(sql);
+			builder.append(") AS _TAB_I \n");
+			builder.append(") AS _TAB_O WHERE PAGE_ROW_NUMBER_ BETWEEN "+(first+1)+" AND "+(last+1));
+		}
+		return builder.toString();
 
+	}
 	/**
 	 * 根据DataSet创建批量INSERT RunPrepare
 	 * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
@@ -159,50 +120,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
-		if(!"2000".equals(this.getVersion())){
-			super.createInserts(template, run, dest, set, keys);
-			return;
-		}
-		StringBuilder builder = run.getBuilder();
-		if(null == builder){
-			builder = new StringBuilder();
-			run.setBuilder(builder);
-		}
-		builder.append("INSERT INTO ").append(parseTable(dest));
-		builder.append("(");
-
-		int keySize = keys.size();
-		for(int i=0; i<keySize; i++){
-			String key = keys.get(i);
-			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-			if(i<keySize-1){
-				builder.append(",");
-			}
-		}
-		builder.append(")");
-		int dataSize = set.size();
-		for(int i=0; i<dataSize; i++){
-			DataRow row = set.getRow(i);
-			if(null == row){
-				continue;
-			}
-			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-				List<String> pks = row.getPrimaryKeys();
-				if(null == pks){
-					pks = new ArrayList<>();
-				}
-				if(pks.size() ==0){
-					pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
-				}
-				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-			}
-			builder.append("\n SELECT ");
-			insertValue(template, run, row, true, false,false, keys);
-			if(i<dataSize-1){
-				//多行数据之间的分隔符
-				builder.append("\n UNION ALL ");
-			}
-		}
+		super.createInserts(template, run, dest, set, keys);
 	}
 
 	/**
@@ -216,57 +134,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
-		if(!"2000".equals(this.getVersion())){
-			super.createInserts(template, run, dest, list, keys);
-			return;
-		}
-		StringBuilder builder = run.getBuilder();
-		if(null == builder){
-			builder = new StringBuilder();
-			run.setBuilder(builder);
-		}
-		if(list instanceof DataSet){
-			DataSet set = (DataSet) list;
-			createInserts(template, run, dest, set, keys);
-			return;
-		}
-		builder.append("INSERT INTO ").append(parseTable(dest));
-		builder.append("(");
-
-		int keySize = keys.size();
-		for(int i=0; i<keySize; i++){
-			String key = keys.get(i);
-			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-			if(i<keySize-1){
-				builder.append(",");
-			}
-		}
-		builder.append(")\n ");
-		int dataSize = list.size();
-		int idx = 0;
-		for(Object obj:list){
-			builder.append("\n SELECT ");
-			if(obj instanceof DataRow) {
-				DataRow row = (DataRow)obj;
-				if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-				}
-				insertValue(template, run, row, true, false,false, keys);
-			}else{
-				if(EntityAdapterProxy.hasAdapter()){
-					EntityAdapterProxy.createPrimaryValue(obj);
-				}else{
-					createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
-				}
-				insertValue(template, run, obj, true, false, false, keys);
-			}
-			if(idx<dataSize-1){
-				//多行数据之间的分隔符
-				builder.append("\n UNION ALL ");
-
-			}
-			idx ++;
-		}
+		super.createInserts(template, run, dest, list, keys);
 	}
 
 	@Override 
@@ -769,22 +637,12 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		if("2000".equals(this.getVersion())){
-			builder.append("EXEC sp_addextendedproperty ");
-			builder.append("'MS_Description',");
-			builder.append("N'").append(comment).append("',");
-			builder.append("'USER',");
-			builder.append("'").append(table.getSchema()).append("',");
-			builder.append("'TABLE',");
-			builder.append("'").append(table.getName()).append("'");
-		}else {
-			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
-			builder.append(",@value=N'").append(comment).append("'");
-			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(table.getSchema()).append("'");
-			builder.append(",@level1type=N'TABLE'");
-			builder.append(",@level1name=N'").append(table.getName()).append("'");
-		}
+		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+		builder.append(",@value=N'").append(comment).append("'");
+		builder.append(",@level0type=N'SCHEMA'");
+		builder.append(",@level0name=N'").append(table.getSchema()).append("'");
+		builder.append(",@level1type=N'TABLE'");
+		builder.append(",@level1name=N'").append(table.getName()).append("'");
 		return builder.toString();
 	}
 
@@ -795,22 +653,14 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		if("2000".equals(this.getVersion())){
-			builder.append("EXEC sp_updateextendedproperty ");
-			builder.append("'MS_Description',");
-			builder.append("N'").append(comment).append("',");
-			builder.append("'USER',");
-			builder.append("'").append(table.getSchema()).append("',");
-			builder.append("'TABLE',");
-			builder.append("'").append(table.getName()).append("'");
-		}else {
-			builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
-			builder.append(",@value=N'").append(comment).append("'");
-			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(table.getSchema()).append("'");
-			builder.append(",@level1type=N'TABLE'");
-			builder.append(",@level1name=N'").append(table.getName()).append("'");
-		}
+
+		builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
+		builder.append(",@value=N'").append(comment).append("'");
+		builder.append(",@level0type=N'SCHEMA'");
+		builder.append(",@level0name=N'").append(table.getSchema()).append("'");
+		builder.append(",@level1type=N'TABLE'");
+		builder.append(",@level1name=N'").append(table.getName()).append("'");
+
 		return builder.toString();
 	}
 	/**
@@ -1139,26 +989,16 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isEmpty(schema)){
 			schema = column.getTable().getSchema();
 		}
-		if("2000".equals(this.getVersion())){
-			builder.append("EXEC sp_addextendedproperty ");
-			builder.append("'MS_Description',");
-			builder.append("N'").append(comment).append("',");
-			builder.append("'USER',");
-			builder.append("'").append(schema).append("',");
-			builder.append("'TABLE',");
-			builder.append("'").append(column.getTableName()).append("',");
-			builder.append("'COLUMN',");
-			builder.append("'").append(column.getName()).append("'");
-		}else {
-			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
-			builder.append(",@value=N'").append(comment).append("'");
-			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(schema).append("'");
-			builder.append(",@level1type=N'TABLE'");
-			builder.append(",@level1name=N'").append(column.getTableName()).append("'");
-			builder.append(",@level2type=N'COLUMN'");
-			builder.append(",@level2name=N'").append(column.getName()).append("'");
-		}
+
+		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+		builder.append(",@value=N'").append(comment).append("'");
+		builder.append(",@level0type=N'SCHEMA'");
+		builder.append(",@level0name=N'").append(schema).append("'");
+		builder.append(",@level1type=N'TABLE'");
+		builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+		builder.append(",@level2type=N'COLUMN'");
+		builder.append(",@level2name=N'").append(column.getName()).append("'");
+
 		return builder.toString();
 	}
 	/**
@@ -1192,26 +1032,14 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isEmpty(schema)){
 			schema = column.getTable().getSchema();
 		}
-		if("2000".equals(this.getVersion())){
-			builder.append("EXEC sp_updateextendedproperty ");
-			builder.append("'MS_Description',");
-			builder.append("N'").append(comment).append("',");
-			builder.append("'USER',");
-			builder.append("'").append(schema).append("',");
-			builder.append("'TABLE',");
-			builder.append("'").append(column.getTableName()).append("',");
-			builder.append("'COLUMN',");
-			builder.append("'").append(column.getName()).append("'");
-		}else {
-			builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
-			builder.append(",@value=N'").append(comment).append("'");
-			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(schema).append("'");
-			builder.append(",@level1type=N'TABLE'");
-			builder.append(",@level1name=N'").append(column.getTableName()).append("'");
-			builder.append(",@level2type=N'COLUMN'");
-			builder.append(",@level2name=N'").append(column.getName()).append("'");
-		}
+		builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
+		builder.append(",@value=N'").append(comment).append("'");
+		builder.append(",@level0type=N'SCHEMA'");
+		builder.append(",@level0name=N'").append(schema).append("'");
+		builder.append(",@level1type=N'TABLE'");
+		builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+		builder.append(",@level2type=N'COLUMN'");
+		builder.append(",@level2name=N'").append(column.getName()).append("'");
 		return builder.toString();
 	}
 
