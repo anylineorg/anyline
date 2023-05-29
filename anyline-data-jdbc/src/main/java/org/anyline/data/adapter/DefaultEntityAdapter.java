@@ -242,6 +242,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         return list;
     }
 
+
     @Override
     public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map metadatas) {
         List<Field> fields = ClassUtil.getFields(clazz, false, false);
@@ -259,24 +260,40 @@ public class DefaultEntityAdapter implements EntityAdapter {
             row = (DataRow) map;
         }
         for(Field field:fields){
-            Column column = column(clazz, field);//列名
-            String columnName = column.getName();
             Object value = null;
+             String columnName = field.getName();
+            //属性与列同名
             if(null != row){
                 value = row.get(columnName);
-            }else {
+            }else{
                 value = map.get(columnName);
                 if (null == value) {
                     value = map.get(columnName.toUpperCase());
                 }
             }
+
+            if(null == value) {
+                //根据默认转换规则
+                Column column = column(clazz, field);//列名
+                columnName = column.getName();
+                if (null != row) {
+                    value = row.get(columnName);
+                } else {
+                    value = map.get(columnName);
+                    if (null == value) {
+                        value = map.get(columnName.toUpperCase());
+                    }
+                }
+            }
+
+
             if(null != value) {
                 Column metadata = null;  //列属性
                 if(map instanceof DataRow){
-                    metadata = ((DataRow)map).getMetadata(column.getName());
+                    metadata = ((DataRow)map).getMetadata(columnName);
                 }
                 if(null == metadata && null != metadatas){
-                    metadata = (Column) metadatas.get(column.getName().toUpperCase());
+                    metadata = (Column) metadatas.get(columnName.toUpperCase());
                 }
                 BeanUtil.setFieldValue(entity, field, metadata, value);
 
