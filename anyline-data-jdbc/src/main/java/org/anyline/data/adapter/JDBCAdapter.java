@@ -59,8 +59,8 @@ public interface JDBCAdapter {
 	public static final String BR 		= "\n"		;
 	public static final String BR_TAB 	= "\n\t"	;
 
-	public String getDatabaseVersion();
-	public void setDatabaseVersion(String version);
+	public String getVersion();
+	public void setVersion(String version);
 	public AnylineDao getDao();
 	public void setDao(AnylineDao dao);
 	/**

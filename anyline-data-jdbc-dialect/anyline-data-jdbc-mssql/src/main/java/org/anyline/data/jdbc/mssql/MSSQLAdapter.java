@@ -50,26 +50,26 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 	}
 
-	public String getDatabaseVersion(){
-		if(null == databaseVersion){
-			databaseVersion = ConfigTable.getString("DATABASE_VERSION_MSSQL");
+	public String getVersion(){
+		if(null == version){
+			version = ConfigTable.getString("DATABASE_VERSION_MSSQL");
 		}
-		if(null == databaseVersion){
+		if(null == version){
 			DataSet set = dao.querys(new DefaultTextPrepare("SELECT @@VERSION AS VS"));
 			if(set.size()>0){
-				databaseVersion = set.getString(0,"VS","")+"";
-				databaseVersion = databaseVersion.toUpperCase().replaceAll("\\s{2,}", "");
+				version = set.getString(0,"VS","")+"";
+				version = version.toUpperCase().replaceAll("\\s{2,}", "");
 				 
-				if(null != databaseVersion && databaseVersion.contains("SERVER2000")){
-					databaseVersion = "2000";
+				if(null != version && version.contains("SERVER2000")){
+					version = "2000";
 				}else{
-					databaseVersion = "2005";
+					version = "2005";
 				} 
 			}else{
-				databaseVersion = "2005";
+				version = "2005";
 			} 
 		} 
-		return databaseVersion;
+		return version;
 	}
 
 	/* *****************************************************************************************************
@@ -111,7 +111,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
 			// 分页
-			if("2000".equals(getDatabaseVersion())){
+			if("2000".equals(this.getVersion())){
 				int rows = navi.getPageRows(); 
 				if(rows * navi.getCurPage() > navi.getTotalRow()){ 
 					// 最后一页不足10条
@@ -159,7 +159,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
-		if(!"2000".equals(getDatabaseVersion())){
+		if(!"2000".equals(this.getVersion())){
 			super.createInserts(template, run, dest, set, keys);
 			return;
 		}
@@ -216,7 +216,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
-		if(!"2000".equals(getDatabaseVersion())){
+		if(!"2000".equals(this.getVersion())){
 			super.createInserts(template, run, dest, list, keys);
 			return;
 		}
@@ -769,7 +769,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		if("2000".equals(getDatabaseVersion())){
+		if("2000".equals(this.getVersion())){
 			builder.append("EXEC sp_addextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
@@ -795,7 +795,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		if("2000".equals(getDatabaseVersion())){
+		if("2000".equals(this.getVersion())){
 			builder.append("EXEC sp_updateextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
@@ -1139,7 +1139,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isEmpty(schema)){
 			schema = column.getTable().getSchema();
 		}
-		if("2000".equals(getDatabaseVersion())){
+		if("2000".equals(this.getVersion())){
 			builder.append("EXEC sp_addextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
@@ -1192,7 +1192,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isEmpty(schema)){
 			schema = column.getTable().getSchema();
 		}
-		if("2000".equals(getDatabaseVersion())){
+		if("2000".equals(this.getVersion())){
 			builder.append("EXEC sp_updateextendedproperty ");
 			builder.append("'MS_Description',");
 			builder.append("N'").append(comment).append("',");
