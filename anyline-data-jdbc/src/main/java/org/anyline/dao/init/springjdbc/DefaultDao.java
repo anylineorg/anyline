@@ -21,7 +21,7 @@ package org.anyline.dao.init.springjdbc;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.PersistenceAdapter;
+import org.anyline.data.adapter.init.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;

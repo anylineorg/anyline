@@ -17,13 +17,16 @@
  */
 
 
-package org.anyline.data.adapter;
+package org.anyline.data.adapter.init;
 
 
+import org.anyline.adapter.DataReader;
+import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.dao.AnylineDao;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
@@ -38,6 +41,7 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.Point;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -51,6 +55,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import javax.sql.DataSource;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -70,7 +75,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public String delimiterFr = "";
 	public String delimiterTo = "";
 
-	protected Map<String, ColumnType> types = new Hashtable<>();
+	//根据名称定准数据类型
+	protected Map<String, ColumnType> types = new Hashtable();
+
+	//从数据库中读取(有些数据库会返回特定类型如PgPoint,可以根据Class定位reader,有些数据库返回通用类型好byte[]需要根据ColumnType定位reader)
+	protected Map<Object, DataReader> readers = new Hashtable();
+	//写入数据库
+	protected Map<Object, DataWriter> writers = new Hashtable();
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -95,7 +106,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 	public DefaultJDBCAdapter(){
-		//当前数据库支持的数据类型
+		//当前数据库支持的数据类型,子类根据情况覆盖
 		for(StandardColumnType type: StandardColumnType.values()){
 			DatabaseType[] dbs = type.dbs();
 			for(DatabaseType db:dbs){
@@ -148,6 +159,42 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				this.delimiterTo = delimiter.substring(1,2);
 			}
 		}
+	}
+
+
+	/**
+	 * 转换成相应数据库类型
+	 * @param type type
+	 * @return String
+	 */
+	@Override
+	public ColumnType type(String type){
+		if(null == type){
+			return null;
+		}
+		return types.get(type.toUpperCase());
+	}
+
+	@Override
+	public DataReader reader(Class clazz){
+		if(null == clazz){
+			return null;
+		}
+		return readers.get(clazz);
+	}
+	@Override
+	public DataReader reader(ColumnType type){
+		if(null == type){
+			return null;
+		}
+		return readers.get(type);
+	}
+	@Override
+	public DataWriter writer(Class clazz){
+		if(null == clazz){
+			return null;
+		}
+		return writers.get(clazz);
 	}
 
 
@@ -2852,19 +2899,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return builder;
 	}
 
-	/**
-	 * 转换成相应数据库类型
-	 * @param type type
-	 * @return String
-	 */
-	@Override
-	public ColumnType type(String type){
-		if(null == type){
-			return null;
-		}
-		return types.get(type.toUpperCase());
-	}
-
 	@Override
 	public Boolean checkIgnorePrecision(String datatype) {
 		return null;
@@ -3790,7 +3824,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
 		//Object result = ConvertAdapter.convert(value, clazz);
 		Object result = value;
-		if (null != metadata && null != value) {
+		if(null == value){
+			return null;
+		}
+
+		if (null != metadata) {
 			ColumnType ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
@@ -3800,19 +3838,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 			if(null != ctype){
 				result = ctype.read(value, null, clazz);
-			}
-			/*if(null == result){
-				DataType jType = metadata.getJavaType();
-				if(null == jType){
-					String className = metadata.getClassName();
-					if(null != className){
-						jType = dataTypeAdapter.type(className);
+				if(null == result){
+					DataReader reader = reader(ctype);
+					if(null != reader){
+						result = reader.read(value);
 					}
 				}
-				if(null != jType){
-					result = jType.read(value, null, clazz);
-				}
-			}*/
+			}
+		}
+		if(null == result){
+			DataReader reader = reader(value.getClass());
+			if(null != reader){
+				result = reader.read(value);
+			}
 		}
 		return result;
 	}
@@ -3923,9 +3961,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		try {
 			if(null != metadata) {
+				//根据列属性转换(最终也是根据java类型转换)
 				value = convert(metadata, value);
-				run.setValue(value);
+			}else{
+				DataWriter writer = writer(value.getClass());
+				if(null != writer){
+					value = writer.write(value,true);
+				}
 			}
+			run.setValue(value);
 
 		}catch (Exception e){
 			e.printStackTrace();
@@ -3938,39 +3982,43 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		try {
 			if(null != metadata) {
-				String typeNmae = metadata.getTypeName().toUpperCase();
 				ColumnType columnType = metadata.getColumnType();
-				if (null == columnType) {
-					columnType = type(typeNmae);
-				}
-
-				boolean parseJson = false;
-				if(null != typeNmae && !(value instanceof String)){
-					if(typeNmae.contains("JSON")){
-						//对象转换成json string
-						value = BeanUtil.object2json(value);
-						parseJson = true;
-					}else if(typeNmae.contains("XML")){
-						value = BeanUtil.object2xml(value);
-						parseJson = true;
-					}
-				}
-				if(!parseJson){
-					if (null != columnType) {
-						Class transfer = columnType.transfer();
-						Class compatible = columnType.compatible();
-
-						if(null != transfer){
-							value = ConvertAdapter.convert(value, transfer);
-						}
-						if(null != compatible) {
-							value = ConvertAdapter.convert(value, compatible);
-						}
-					}
-				}
+				value = convert(columnType, value);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
+		}
+		return value;
+	}
+	public Object convert(ColumnType columnType, Object value){
+		if(null == columnType){
+			return value;
+		}
+		String typeName = columnType.getName();
+
+		boolean parseJson = false;
+		if(null != typeName && !(value instanceof String)){
+			if(typeName.contains("JSON")){
+				//对象转换成json string
+				value = BeanUtil.object2json(value);
+				parseJson = true;
+			}else if(typeName.contains("XML")){
+				value = BeanUtil.object2xml(value);
+				parseJson = true;
+			}
+		}
+		if(!parseJson){
+			if (null != columnType) {
+				Class transfer = columnType.transfer();
+				Class compatible = columnType.compatible();
+
+				if(null != transfer){
+					value = ConvertAdapter.convert(value, transfer);
+				}
+				if(null != compatible) {
+					value = ConvertAdapter.convert(value, compatible);
+				}
+			}
 		}
 		return value;
 	}

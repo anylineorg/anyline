@@ -91,11 +91,13 @@ public interface JDBCAdapter {
 	 * 根据java数据类型定位数据库数据类型
 	 * 在不开启自动检测数据类型时会调用
 	 * @param clazz clazz
-	 * @return ColumnType
+	 * @return DataWriter
 	 */
-	public ColumnType type(Class clazz);
 	public DataWriter writer(Class clazz);
+	//根据Java类型
 	public DataReader reader(Class clazz);
+	//根据数据库数据类型
+	public DataReader reader(ColumnType type);
 
 	/* *****************************************************************************************************************
 	 *
