@@ -14,7 +14,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     BINARY                  (StandardColumnType.BIT                   ), //mysql         ,mssql,
     BIT                     (StandardColumnType.BIT                   ), //mysql,pg,     ,mssql,
     BLOB                    (StandardColumnType.BYTEA                 ), //mysql  ,oracle,   ,sqlite
-    BOOL                    (StandardColumnType.BOOL                   ), //     ,pg
+    BOOL                    (StandardColumnType.BOOL                  ), //     ,pg
     BOX                     (StandardColumnType.ILLEGAL               ), //     ,pg
     BYTEA                   (StandardColumnType.BYTEA                 ), //     ,pg
     CHAR                    (StandardColumnType.CHAR                  ), //mysql,pg,oracle,mssql,

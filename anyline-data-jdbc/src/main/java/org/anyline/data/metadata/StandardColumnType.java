@@ -3,9 +3,7 @@ package org.anyline.data.metadata;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.Point;
+import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.Base64Util;
@@ -923,15 +921,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql
      */
-    ,MULTIPOLYGON("MULTIPOLYGON", new DatabaseType[]{MYSQL}, byte[].class, true, true)
+    ,MULTIPOLYGON("MULTIPOLYGON", new DatabaseType[]{MYSQL}, MultiPolygon.class, byte[].class, true, true)
     /**
      * mysql
      */
-    ,MULTIPOINT("MULTIPOINT", new DatabaseType[]{MYSQL}, byte[].class, true, true)
+    ,MULTIPOINT("MULTIPOINT", new DatabaseType[]{MYSQL}, MultiPoint.class, byte[].class, true, true)
     /**
      * mysql,pg
      */
-    ,POLYGON("POLYGON", new DatabaseType[]{MYSQL, PostgreSQL}, byte[].class, true, true)
+    ,POLYGON("POLYGON", new DatabaseType[]{MYSQL, PostgreSQL}, Polygon.class, byte[].class, true, true)
     /**
      * mysql
      */
@@ -945,9 +943,13 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      */
     ,HIERARCHYID("HIERARCHYID", new DatabaseType[]{MSSQL}, byte[].class, true, true)
     /**
-     * mysql,pg
+     * pg
      */
-    ,LINE("LINE", new DatabaseType[]{MYSQL, PostgreSQL}, byte[].class, true, true)
+    ,LINE("LINE", new DatabaseType[]{PostgreSQL}, Line.class, byte[].class, true, true)
+    /**
+     * mysql
+     */
+    ,LINESTRING("LINESTRING", new DatabaseType[]{MYSQL}, Line.class, byte[].class, true, true)
     /**
      * pg
      */
