@@ -416,6 +416,12 @@ public class NumberUtil {
 		num = num | temp;
 		return num;
 	}
+	public static int byte2int(byte[] bytes, int offset) {
+		return (bytes[offset] & 0xFF) |
+				((bytes[offset + 1] & 0xFF) << 8) |
+				((bytes[offset + 2] & 0xFF) << 16) |
+				((bytes[offset + 3] & 0xFF) << 24);
+	}
 
 	/**
 	 * 长整形转换成网络传输的字节流（字节数组）型数据
