@@ -8,6 +8,7 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -45,7 +46,17 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 			types.put(alias.name(), alias.standard());
 		}
 		for(PostgresqlWriter writer: PostgresqlWriter.values()){
-			writers.put(writer.support(), writer.writer());
+			Class clazz = writer.supportClass();
+			if(null != clazz) {
+				writers.put(clazz, writer.writer());
+			}
+			ColumnType type = writer.supportType();
+			if(null != type){
+				writers.put(type, writer.writer());
+			}
+		}
+		for(PostgresqlReader reader: PostgresqlReader.values()){
+			readers.put(reader.support(), reader.reader());
 		}
 	}
 	@Override
