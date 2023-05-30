@@ -1,9 +1,8 @@
  
 package org.anyline.data.jdbc.kingbase;
 
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
@@ -17,8 +16,6 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;

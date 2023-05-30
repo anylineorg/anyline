@@ -17,10 +17,11 @@
  */
 
 
-package org.anyline.data.adapter;
+package org.anyline.data.adapter.init;
 
 
 import org.anyline.adapter.EntityAdapter;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.entity.Column;
 import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.ds.DataSourceHolder;

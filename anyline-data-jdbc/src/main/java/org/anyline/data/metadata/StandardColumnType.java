@@ -1041,7 +1041,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     private final Class compatible          ; //从数据库中读写数据的类型
     private final Boolean ignorePrecision;
     private final Boolean ignoreScale;
-    private StandardColumnType(String name, DatabaseType[] dbs, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    StandardColumnType(String name, DatabaseType[] dbs, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
         this.name = name;
         this.dbs = dbs;
         this.transfer = transfer;
@@ -1049,7 +1049,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    private StandardColumnType(String name, DatabaseType[] dbs,  Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    StandardColumnType(String name, DatabaseType[] dbs,  Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
         this.name = name;
         this.dbs = dbs;
         this.compatible = compatible;

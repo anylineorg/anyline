@@ -2,14 +2,11 @@
 package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
@@ -46,6 +43,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		delimiterTo = "\"";
 		for (PostresqlColumnTypeAlias alias: PostresqlColumnTypeAlias.values()){
 			types.put(alias.name(), alias.standard());
+		}
+		for(PostgresqlWriter writer: PostgresqlWriter.values()){
+			writers.put(writer.support(), writer.writer());
 		}
 	}
 	@Override

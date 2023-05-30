@@ -1,4 +1,4 @@
-package org.anyline.data.adapter;
+package org.anyline.data.adapter.init;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;

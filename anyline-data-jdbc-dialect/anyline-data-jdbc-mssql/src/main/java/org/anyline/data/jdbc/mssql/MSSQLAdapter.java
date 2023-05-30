@@ -2,7 +2,7 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;

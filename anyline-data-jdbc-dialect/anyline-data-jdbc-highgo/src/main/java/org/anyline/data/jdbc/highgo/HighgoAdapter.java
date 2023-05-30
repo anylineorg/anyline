@@ -2,7 +2,7 @@
 package org.anyline.data.jdbc.highgo;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.highgo")

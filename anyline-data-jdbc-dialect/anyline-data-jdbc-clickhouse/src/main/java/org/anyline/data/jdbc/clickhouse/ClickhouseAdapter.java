@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.clickhouse;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.SQLAdapter;
+import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;

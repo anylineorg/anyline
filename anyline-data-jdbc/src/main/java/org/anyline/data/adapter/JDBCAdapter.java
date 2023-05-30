@@ -19,6 +19,8 @@
 
 package org.anyline.data.adapter;
 
+import org.anyline.adapter.DataReader;
+import org.anyline.adapter.DataWriter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
@@ -77,6 +79,23 @@ public interface JDBCAdapter {
 	 * @return DatabaseType
 	 */
 	public DatabaseType compatible();
+
+	/**
+	 * 转换成相应数据库支持类型
+	 * @param type type
+	 * @return ColumnType
+	 */
+	public ColumnType type(String type);
+
+	/**
+	 * 根据java数据类型定位数据库数据类型
+	 * 在不开启自动检测数据类型时会调用
+	 * @param clazz clazz
+	 * @return ColumnType
+	 */
+	public ColumnType type(Class clazz);
+	public DataWriter writer(Class clazz);
+	public DataReader reader(Class clazz);
 
 	/* *****************************************************************************************************************
 	 *
@@ -1204,12 +1223,6 @@ public interface JDBCAdapter {
 	 */
 	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
 
-	/**
-	 * 转换成相应数据库支持类型
-	 * @param type type
-	 * @return StandardColumnType
-	 */
-	public ColumnType type(String type);
 
 	public boolean isIgnorePrecision(Column column);
 	public boolean isIgnoreScale(Column column);
