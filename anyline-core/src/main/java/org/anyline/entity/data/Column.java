@@ -58,8 +58,11 @@ public interface Column extends Serializable {
 
     public String getCollate();
     public void delete();
+    public void drop();
     public boolean isDelete();
-    public void setDelete(boolean delete);
+    public boolean isDrop();
+    public void setDelete(boolean drop);
+    public void setDrop(boolean drop);
     //完整的数据类型 varchar(32)
     public String getFullType();
     public boolean equals(Column column);

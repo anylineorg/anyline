@@ -56,7 +56,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected Object value                        ;
 
     protected Column update                       ;
-    protected boolean delete = false              ;
+    protected boolean drop = false              ;
     protected String action = null                ; //ddl命令 add drop alter
 
     protected transient DDListener listener       ;
@@ -632,17 +632,32 @@ public class Column implements org.anyline.entity.data.Column{
 
     @Override
     public void delete() {
-        this.delete = true;
+        this.drop = true;
     }
 
     @Override
     public boolean isDelete() {
-        return delete;
+        return drop;
     }
 
     @Override
-    public void setDelete(boolean delete) {
-        this.delete = delete;
+    public void setDelete(boolean drop) {
+        this.drop = drop;
+    }
+
+    @Override
+    public void drop() {
+        this.drop = true;
+    }
+
+    @Override
+    public boolean isDrop() {
+        return drop;
+    }
+
+    @Override
+    public void setDrop(boolean drop) {
+        this.drop = drop;
     }
 
     @Override
