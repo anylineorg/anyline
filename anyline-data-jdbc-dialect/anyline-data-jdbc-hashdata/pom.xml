@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-hashdata</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-hashdata</name>
     <url>http://www.anyline.org/hashdata</url>
     <description>酷克数据HashData,基于postgresql,https://www.hashdata.xyz/</description>

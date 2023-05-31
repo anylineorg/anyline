@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-ubisql</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-ubisql</name>
     <url>http://www.anyline.org/ubisql</url>
     <description>平安科技,基于TiDB</description>

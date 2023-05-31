@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-kundb</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-kundb</name>
     <url>http://www.anyline.org/kundb</url>
     <description>星环,基于MySQL,https://www.transwarp.cn/product/kundb</description>

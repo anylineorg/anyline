@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-uxdb</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-uxdb</name>
     <url>http://www.anyline.org/uxdb</url>
     <description>优炫数据库,基于postgresql</description>

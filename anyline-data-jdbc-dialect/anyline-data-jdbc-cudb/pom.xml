@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-cudb</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-cudb</name>
     <url>http://www.anyline.org/cudb</url>
     <description>中国联通,基于opengauss</description>

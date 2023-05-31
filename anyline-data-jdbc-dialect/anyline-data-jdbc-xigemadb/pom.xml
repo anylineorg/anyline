@@ -12,7 +12,7 @@
 </parent>
 
 <artifactId>anyline-data-jdbc-xigemadb</artifactId>
-<packaging>pom</packaging>
+<packaging>jar</packaging>
 <name>anyline-data-jdbc-xigemadb</name>
 <url>http://www.anyline.org/xigemadb</url>
 <description>华胜信泰,基于Informix,http://www.vsettan.com.cn/7824.html</description>

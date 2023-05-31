@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-gaiadb</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-gaiadb</name>
     <url>http://www.anyline.org/gaiadb</url>
     <description>百度GaiaDB-X,基于MySQL</description>

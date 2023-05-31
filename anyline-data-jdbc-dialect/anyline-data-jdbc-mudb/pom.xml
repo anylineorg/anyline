@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-mudb</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-mudb</name>
     <url>http://www.anyline.org/mudb</url>
     <description>沐融信息科技,基于opengauss,http://www.murongtech.com/</description>

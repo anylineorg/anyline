@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>anyline-data-jdbc-tdsql</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>anyline-data-jdbc-tdsql</name>
     <url>http://www.anyline.org/tdsql</url>
     <description>腾讯TDSQL PostgreSQL(TBase),基于postgresql</description>

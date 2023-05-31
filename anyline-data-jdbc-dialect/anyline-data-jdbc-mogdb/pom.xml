@@ -12,7 +12,7 @@
 </parent>
 
 <artifactId>anyline-data-jdbc-mogdb</artifactId>
-<packaging>pom</packaging>
+<packaging>jar</packaging>
 <name>anyline-data-jdbc-mogdb</name>
 <url>http://www.anyline.org/mogdb</url>
 <description>云和恩墨,基于openGauss</description>
