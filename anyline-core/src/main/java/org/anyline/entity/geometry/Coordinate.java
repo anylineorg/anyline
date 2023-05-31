@@ -1,4 +1,4 @@
-package org.anyline.entity; 
+package org.anyline.entity.geometry;
  
 import org.anyline.util.BasicUtil;
 import org.anyline.util.GISUtil;

@@ -1,4 +1,4 @@
-package org.anyline.entity;
+package org.anyline.entity.geometry;
 
 import java.util.ArrayList;
 import java.util.List;

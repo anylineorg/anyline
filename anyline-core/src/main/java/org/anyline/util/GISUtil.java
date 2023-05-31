@@ -1,6 +1,6 @@
 package org.anyline.util;
 
-import org.anyline.entity.Coordinate;
+import org.anyline.entity.geometry.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;

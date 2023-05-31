@@ -1,6 +1,6 @@
 package org.anyline.client.map;
 
-import org.anyline.entity.Coordinate;
+import org.anyline.entity.geometry.Coordinate;
 
 public interface MapClient {
 

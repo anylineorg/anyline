@@ -1,6 +1,6 @@
 package org.anyline.client.map;
 
-import org.anyline.entity.Coordinate;
+import org.anyline.entity.geometry.Coordinate;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.LogUtil;
 import org.slf4j.Logger;

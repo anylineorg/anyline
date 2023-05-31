@@ -1,6 +1,7 @@
 package org.anyline.amap.util;
 
 import org.anyline.entity.*;
+import org.anyline.entity.geometry.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;

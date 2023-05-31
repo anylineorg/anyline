@@ -1,8 +1,9 @@
-package org.anyline.entity;
+package org.anyline.entity.geometry;
 
 import org.anyline.util.NumberUtil;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Point {
     boolean isInt = false;
@@ -50,6 +51,18 @@ public class Point {
         byte[] bx= NumberUtil.double2bytes(x);
         byte[] by= NumberUtil.double2bytes(y);
         byte[] bytes =new byte[25];
+        bytes[4]=0x01;
+        bytes[5]=0x01;
+        for(int i=0;i<8;++i){
+            bytes[9+i]=bx[i];
+            bytes[17+i]=by[i];
+        }
+        return bytes;
+    }
+    public Byte[] Bytes(){
+        Byte[] bx= NumberUtil.double2Bytes(x);
+        Byte[] by= NumberUtil.double2Bytes(y);
+        Byte[] bytes =new Byte[25];
         bytes[4]=0x01;
         bytes[5]=0x01;
         for(int i=0;i<8;++i){

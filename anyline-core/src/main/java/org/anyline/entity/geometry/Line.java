@@ -1,4 +1,4 @@
-package org.anyline.entity;
+package org.anyline.entity.geometry;
 
 import org.anyline.util.NumberUtil;
 
@@ -7,7 +7,19 @@ import java.util.List;
 
 public class Line {
     private List<Point> points = new ArrayList<>();
+    public Line add(Point point){
+        points.add(point);
+        return this;
+    }
+    public List<Point> points(){
+        return points;
+    }
+    public Line(){}
     public Line(byte[] bytes) {
+
+    }
+    public void parse(byte[] bytes){
+
         // MySQL Linestring 的格式是 WKB (Well-Known Binary) 格式
         // 在 WKB 格式中，前四个字节表示几何类型，接下来的字节表示坐标值
 
@@ -43,5 +55,25 @@ public class Line {
             offset += 16; // 每个坐标点 16 字节
         }
     }
+
+    public byte[] bytes(){
+        byte[] result = null;
+        for(Point point:points){
+            byte[] bytes = point.bytes();
+            if(null == result){
+                result = bytes;
+            }else{
+                result = merge(result, bytes);
+            }
+        }
+        return result;
+    }
+    public static byte[] merge(byte[] bt1, byte[] bt2){
+        byte[] bt3 = new byte[bt1.length+bt2.length];
+        System.arraycopy(bt1, 0, bt3, 0, bt1.length);
+        System.arraycopy(bt2, 0, bt3, bt1.length, bt2.length);
+        return bt3;
+    }
+
 }
 
