@@ -30,7 +30,8 @@ import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
- 
+import java.util.Locale;
+
 public class DefaultAutoConditionChain extends DefaultConditionChain implements ConditionChain {
 	public DefaultAutoConditionChain(){}
 	public DefaultAutoConditionChain(ConfigChain chain){
@@ -93,14 +94,29 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
  
 		if(joinSize > 0){
 			StringBuilder builder = new StringBuilder();
+			//没有上一级 或者上一级中的已经添加了其他条件
 			if(!hasContainer() || getContainerJoinSize() > 0){
 				builder.append("\nAND");
 			}else{
 				builder.append("\n\t");
 			}
-			builder.append("(");
-			builder.append(subBuilder.toString());
-			builder.append(")\n\t");
+			String sub = subBuilder.toString().trim();
+			String chk = sub.toUpperCase().replaceAll("\\s", " ");
+			if(chk.startsWith("AND(") || chk.startsWith("AND ")){
+				sub = sub.substring(3).trim();
+			}
+			if(chk.startsWith("OR(") || chk.startsWith("OR ")){
+				sub = sub.substring(2).trim();
+			}
+			boolean pack = sub.startsWith("(") && sub.endsWith(")");
+			if(!pack) {
+				builder.append("(");
+			}
+			builder.append(sub);
+			if(!pack) {
+				builder.append(")");
+			}
+			builder.append("\n\t");
 			return builder.toString(); 
 		}else{
 			return "";
