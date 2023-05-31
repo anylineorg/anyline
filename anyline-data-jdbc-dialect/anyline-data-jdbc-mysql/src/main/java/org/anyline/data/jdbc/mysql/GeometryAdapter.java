@@ -116,8 +116,8 @@ public class GeometryAdapter {
         int count = NumberUtil.byte2int(bytes, 9, 4, bigEndian);
         List<Point> points = new ArrayList<>();
         for(int i=0; i<count; i++){
-            double x = NumberUtil.byte2double(bytes, 13+8*i);
-            double y = NumberUtil.byte2double(bytes, 21+8*i);
+            double x = NumberUtil.byte2double(bytes, 13+8*i*2);
+            double y = NumberUtil.byte2double(bytes, 21+8*i*2);
             Point point = new Point(x, y);
             points.add(point);
         }
