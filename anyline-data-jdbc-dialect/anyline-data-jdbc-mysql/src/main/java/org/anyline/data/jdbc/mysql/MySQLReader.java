@@ -5,11 +5,25 @@ import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.entity.geometry.Line;
 
 public enum MySQLReader {
-    PointReader(new Object[]{StandardColumnType.LINESTRING}, new DataReader() {
+    GeometryReader(new Object[]{StandardColumnType.GEOMETRY}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return new Line(bytes);
+            return GeometryParser.parse(bytes);
+        }
+    }),
+    PointReader(new Object[]{StandardColumnType.POINT}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            byte[] bytes = (byte[]) value;
+            return GeometryParser.parsePoint(bytes);
+        }
+    }),
+    LineReader(new Object[]{StandardColumnType.LINESTRING}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            byte[] bytes = (byte[]) value;
+            return GeometryParser.parseLine(bytes);
         }
     })
     ;
