@@ -65,7 +65,7 @@ public class MultiPoint {
                 builder.append(",");
             }
             first = false;
-            builder.append(point.sql(false));
+            builder.append(point.sql(false, false));
         }
         builder.append(")");
         return builder.toString();
