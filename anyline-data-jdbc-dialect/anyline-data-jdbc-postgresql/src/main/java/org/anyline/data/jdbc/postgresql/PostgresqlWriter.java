@@ -2,38 +2,35 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.entity.Point;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.geometry.Point;
 import org.postgresql.geometric.PGpoint;
 
 public enum PostgresqlWriter {
-    PointWriter(Point.class, StandardColumnType.POINT, new DataWriter() {
+    PointWriter(new Object[]{Point.class, StandardColumnType.POINT}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
-            Point point = (Point)value;
-            if(placeholder) {
-                return new PGpoint(point.getX(), point.getY());
-            }else{
-                return "POINT("+point.getX()+","+point.getY()+")";
+            if(value instanceof Point) {
+                Point point = (Point) value;
+                if (placeholder) {
+                    return new PGpoint(point.getX(), point.getY());
+                } else {
+                    return "POINT(" + point.getX() + "," + point.getY() + ")";
+                }
             }
+            return value;
         }
     })
     ;
-    public Class supportClass(){
-        return clazz;
-    }
-    public ColumnType supportType(){
-        return type;
+    public Object[] supports(){
+        return supports;
     }
     public DataWriter writer(){
         return writer;
     }
-    private final Class clazz;
-    private final ColumnType type;
+    private final Object[] supports;
     private final DataWriter writer;
-    PostgresqlWriter(Class clazz, ColumnType type, DataWriter writer){
-        this.clazz = clazz;
-        this.type = type;
+    PostgresqlWriter(Object[] supports, DataWriter writer){
+        this.supports = supports;
         this.writer = writer;
     }
 }

@@ -2,11 +2,10 @@ package org.anyline.data.jdbc.mysql;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.entity.Line;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.geometry.Line;
 
 public enum MySQLReader {
-    PointReader(StandardColumnType.LINESTRING, new DataReader() {
+    PointReader(new Object[]{StandardColumnType.LINESTRING}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
@@ -14,16 +13,16 @@ public enum MySQLReader {
         }
     })
     ;
-    public ColumnType support(){
-        return type;
+    public Object[] supports(){
+        return supports;
     }
     public DataReader reader(){
         return reader;
     }
-    private final ColumnType type;
+    private final Object[] supports;
     private final DataReader reader;
-    MySQLReader(ColumnType type, DataReader reader){
-        this.type = type;
+    MySQLReader(Object[] supports, DataReader reader){
+        this.supports = supports;
         this.reader = reader;
     }
 }

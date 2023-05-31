@@ -41,7 +41,6 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.Point;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -190,11 +189,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return readers.get(type);
 	}
 	@Override
-	public DataWriter writer(Class clazz){
-		if(null == clazz){
+	public DataWriter writer(Object support){
+		if(null == support){
 			return null;
 		}
-		return writers.get(clazz);
+		return writers.get(support);
 	}
 
 
@@ -3827,9 +3826,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null == value){
 			return null;
 		}
-
+		DataReader reader = null;
+		ColumnType ctype = null;
 		if (null != metadata) {
-			ColumnType ctype = metadata.getColumnType();
+			ctype = metadata.getColumnType();
 			if(null == ctype) {
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
@@ -3837,19 +3837,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 			if(null != ctype){
-				result = ctype.read(value, null, clazz);
-				if(null == result){
-					DataReader reader = reader(ctype);
-					if(null != reader){
-						result = reader.read(value);
-					}
-				}
+				reader = reader(ctype);
 			}
 		}
-		if(null == result){
-			DataReader reader = reader(value.getClass());
-			if(null != reader){
-				result = reader.read(value);
+		if(null == reader){
+			reader = reader(value.getClass());
+		}
+		if(null != reader){
+			result = reader.read(value);
+		}
+		if(null == reader || null == result){
+			if(null != ctype) {
+				result = ctype.read(value, null, clazz);
 			}
 		}
 		return result;
@@ -4009,14 +4008,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		if(!parseJson){
 			if (null != columnType) {
-				Class transfer = columnType.transfer();
-				Class compatible = columnType.compatible();
+				DataWriter writer = writer(columnType);
+				if(null != writer){
+					value = writer.write(value, true);
+				}else {
+					Class transfer = columnType.transfer();
+					Class compatible = columnType.compatible();
 
-				if(null != transfer){
-					value = ConvertAdapter.convert(value, transfer);
-				}
-				if(null != compatible) {
-					value = ConvertAdapter.convert(value, compatible);
+					if (null != transfer) {
+						value = ConvertAdapter.convert(value, transfer);
+					}
+					if (null != compatible) {
+						value = ConvertAdapter.convert(value, compatible);
+					}
 				}
 			}
 		}

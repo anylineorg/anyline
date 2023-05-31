@@ -3576,7 +3576,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> deletes = new ArrayList<>();
 		// 删除列(根据删除标记)
 		for (Column column : ucolumns.values()) {
-			if (column.isDelete()) {
+			if (column.isDrop()) {
 				/*drop(column);*/
 				deletes.add(column.getName().toUpperCase());
 				column.setAction("drop");
@@ -3589,7 +3589,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (column instanceof Tag) {
 					continue;
 				}
-				if (column.isDelete() || deletes.contains(column.getName().toUpperCase()) || "drop".equals(column.getAction())) {
+				if (column.isDrop() || deletes.contains(column.getName().toUpperCase()) || "drop".equals(column.getAction())) {
 					//上一步已删除
 					continue;
 				}

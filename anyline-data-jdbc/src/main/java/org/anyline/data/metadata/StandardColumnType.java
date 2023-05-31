@@ -5,6 +5,7 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.geometry.*;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;

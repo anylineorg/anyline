@@ -46,17 +46,18 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 			types.put(alias.name(), alias.standard());
 		}
 		for(PostgresqlWriter writer: PostgresqlWriter.values()){
-			Class clazz = writer.supportClass();
-			if(null != clazz) {
-				writers.put(clazz, writer.writer());
-			}
-			ColumnType type = writer.supportType();
-			if(null != type){
-				writers.put(type, writer.writer());
+			Object[] supports = writer.supports();
+			if(null != supports) {
+				for(Object support:supports)
+				writers.put(support, writer.writer());
 			}
 		}
 		for(PostgresqlReader reader: PostgresqlReader.values()){
-			readers.put(reader.support(), reader.reader());
+			Object[] supports = reader.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					readers.put(support, reader.reader());
+			}
 		}
 	}
 	@Override

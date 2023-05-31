@@ -3,7 +3,7 @@ package org.anyline.adapter.init;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.Point;
+import org.anyline.entity.geometry.Point;
 import org.anyline.entity.metadata.Convert;
 import org.anyline.entity.metadata.ConvertException;
 import org.anyline.entity.metadata.DataType;
@@ -117,8 +117,9 @@ public class ConvertAdapter {
 
             //根据注册的Convert类型转换
             Map<Class, Convert> map = converts.get(clazz);
+            Convert convert = null;
             if(null != map) {
-                Convert convert = map.get(target);
+                convert = map.get(target);
                 if(null != convert) {
                     try {
                         result = convert.exe(value, def);

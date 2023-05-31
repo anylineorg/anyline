@@ -45,7 +45,8 @@ public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
     INTEGER                 (StandardColumnType.INT4                  ), //mysql                 ,,sqlite
     JSON                    (StandardColumnType.JSON                  ), //mysql,pg
     JSONB                   (StandardColumnType.JSONB                 ), //     ,pg
-    LINE                    (StandardColumnType.LINE                  ), //mysql,pg
+    LINE                    (StandardColumnType.LINE                  ), //     ,pg
+    LINESTRING              (StandardColumnType.LINE                  ), //mysql
     LONG                    (StandardColumnType.INT8                  ), //       ,oracle
     LONGBLOB                (StandardColumnType.BYTEA                 ), //mysql
     LONGTEXT                (StandardColumnType.TEXT                  ), //mysql

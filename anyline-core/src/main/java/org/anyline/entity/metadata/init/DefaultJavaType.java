@@ -1,7 +1,7 @@
 package org.anyline.entity.metadata.init;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.Point;
+import org.anyline.entity.geometry.Point;
 import org.anyline.entity.metadata.Convert;
 import org.anyline.entity.metadata.ConvertException;
 import org.anyline.entity.metadata.DataType;

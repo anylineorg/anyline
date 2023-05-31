@@ -44,7 +44,8 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         INTEGER                 (StandardColumnType.INT                   ), //mysql                 ,sqlite
         JSON                    (StandardColumnType.JSON                  ), //mysql,pg
         JSONB                   (StandardColumnType.BLOB                  ), //     ,pg
-        LINE                    (StandardColumnType.LINE                  ), //mysql,pg
+        LINE                    (StandardColumnType.LINESTRING            ), //     ,pg
+        LINESTRING              (StandardColumnType.LINESTRING            ), //mysql
         LONG                    (StandardColumnType.BIGINT                ), //     ,  ,oracle
         LONGBLOB                (StandardColumnType.VARBINARY             ), //mysql
         LONGTEXT                (StandardColumnType.LONGTEXT              ), //mysql

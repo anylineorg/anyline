@@ -39,6 +39,20 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
 			types.put(alias.name(), alias.standard());
 		}
+		for(MySQLWriter writer: MySQLWriter.values()){
+			Object[] supports = writer.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					writers.put(support, writer.writer());
+			}
+		}
+		for(MySQLReader reader: MySQLReader.values()){
+			Object[] supports = reader.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					readers.put(support, reader.reader());
+			}
+		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.mysql:}")
 	private String delimiter;
