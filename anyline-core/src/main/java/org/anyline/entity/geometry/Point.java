@@ -123,20 +123,12 @@ public class Point extends Geometry{
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("point");
+            builder.append("Point");
         }
         builder.append("(");
-        if (isInt) {
-            builder.append(x.intValue());
-        }else{
-            builder.append(x);
-        }
+        builder.append(NumberUtil.format(x, "0.###########"));
         builder.append(",");
-        if (isInt) {
-            builder.append(y.intValue());
-        }else{
-            builder.append(y);
-        }
+        builder.append(NumberUtil.format(y, "0.###########"));
         builder.append(")");
         return builder.toString();
     }
@@ -146,17 +138,26 @@ public class Point extends Geometry{
      * @param tag 是否包含tag<br/>
      *             false:(120 36)<br/>
      *             true: Point(120 36)
+     * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag){
+    public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag){
             builder.append("Point");
         }
-        builder.append("(").append(x).append(" ").append(y).append(")");
+        if(bracket){
+            builder.append("(");
+        }
+        builder.append(NumberUtil.format(x, "0.###########"))
+                .append(" ")
+                .append(NumberUtil.format(y, "0.###########"));
+        if(bracket){
+            builder.append(")");
+        }
         return builder.toString();
     }
     public String sql(){
-        return sql(true);
+        return sql(true, true);
     }
 }
