@@ -5,7 +5,9 @@ import org.anyline.entity.geometry.Line;
 import org.anyline.entity.geometry.Point;
 import org.anyline.util.NumberUtil;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 public class GeometryParser {
@@ -89,6 +91,16 @@ public class GeometryParser {
      */
     public static Line parseLine(byte[] bytes){
         Line line = new Line();
+        boolean bigEndian = (bytes[4] == 0x00);
+        int count = NumberUtil.byte2int(bytes, 9, 4, bigEndian);
+        List<Point> points = new ArrayList<>();
+        for(int i=0; i<count; i++){
+            double x = NumberUtil.byte2double(bytes, 13+8*i);
+            double y = NumberUtil.byte2double(bytes, 21+8*i);
+            Point point = new Point(x, y);
+            points.add(point);
+        }
+        line = new Line(points);
         return line;
     }
 }
