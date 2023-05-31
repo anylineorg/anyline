@@ -509,8 +509,11 @@ public class NumberUtil {
 		return byte2hex(bytes, len, null);
 	}
 	public static String byte2hex(byte[] bytes, int len, String split) {
+		return byte2hex(bytes, 0, len, split);
+	}
+	public static String byte2hex(byte[] bytes, int start, int len, String split) {
 		StringBuffer builder = new StringBuffer();
-		for(int i = 0; i < len; i++) {
+		for(int i = start; i < start+len; i++) {
 			String hex = Integer.toHexString(bytes[i] & 0xFF);
 			if(hex.length() < 2){
 				builder.append(0);
@@ -840,5 +843,27 @@ public class NumberUtil {
 			byteRet[i] = (byte) ((value >> 8 * i) & 0xff);
 		}
 		return byteRet;
+	}
+
+	/**
+	 * 字节数组中解析整型数据
+	 * @param bytes byte数组
+	 * @param start 开始位置
+	 * @param length 长度
+	 * @param order 1:Big Endian 0:Little Endian
+	 * @return int
+	 */
+	public static int byte2int(byte[] bytes, int start, int length, int order) {
+		int value = 0;
+		if (order == 1) { // Big Endian
+			for (int i = start; i < start + length; i++) {
+				value = (value << 8) | (bytes[i] & 0xFF);
+			}
+		} else { // Little Endian
+			for (int i = start + length - 1; i >= start; i--) {
+				value = (value << 8) | (bytes[i] & 0xFF);
+			}
+		}
+		return value;
 	}
 } 
