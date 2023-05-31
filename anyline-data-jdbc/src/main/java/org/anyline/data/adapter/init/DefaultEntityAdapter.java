@@ -87,7 +87,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         if(null == columns) {
             columns = new LinkedHashMap<>();
             List<Field> fields = ClassUtil.getFields(clazz, false, false);
-            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient");
+            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient", "OneToMany", "ManyToMany");
             fields.removeAll(ignores);
             for (Field field : fields) {
                 Column column = column(clazz, field);
