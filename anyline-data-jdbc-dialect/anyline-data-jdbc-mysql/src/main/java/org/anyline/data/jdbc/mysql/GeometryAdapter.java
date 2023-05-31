@@ -10,7 +10,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-public class GeometryParser {
+public class GeometryAdapter {
 
     private static Map<Integer, Geometry.Type> types = new Hashtable<>();
     static {
@@ -24,6 +24,27 @@ public class GeometryParser {
     }
     public static Geometry.Type type(Integer type){
         return types.get(type);
+    }
+    public static byte[] bytes(Geometry geometry){
+        return null;
+    }
+    public static String sql(Geometry geometry){
+        return null;
+    }
+    public static byte[] bytes(Point point){
+        byte[] bx= NumberUtil.double2bytes(point.getX());
+        byte[] by= NumberUtil.double2bytes(point.getY());
+        byte[] bytes =new byte[25];
+        bytes[4]=0x01;
+        bytes[5]=0x01;
+        for(int i=0;i<8;++i){
+            bytes[9+i]=bx[i];
+            bytes[17+i]=by[i];
+        }
+        return bytes;
+    }
+    public static String sql(Point point){
+        return "Point(" + point.getX() + " " + point.getY() + ")";
     }
     public static Geometry parse(byte[] bytes){
         Geometry geometry = null;

@@ -2,28 +2,27 @@ package org.anyline.data.jdbc.mysql;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.entity.geometry.Line;
 
 public enum MySQLReader {
     GeometryReader(new Object[]{StandardColumnType.GEOMETRY}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return GeometryParser.parse(bytes);
+            return GeometryAdapter.parse(bytes);
         }
     }),
     PointReader(new Object[]{StandardColumnType.POINT}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return GeometryParser.parsePoint(bytes);
+            return GeometryAdapter.parsePoint(bytes);
         }
     }),
     LineReader(new Object[]{StandardColumnType.LINESTRING}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return GeometryParser.parseLine(bytes);
+            return GeometryAdapter.parseLine(bytes);
         }
     })
     ;

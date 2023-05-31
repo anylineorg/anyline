@@ -13,9 +13,9 @@ public enum MySQLWriter {
             if(value instanceof Point) {
                 Point point = (Point) value;
                 if (placeholder) {
-                    return point.bytes();
+                    return GeometryAdapter.bytes(point);
                 } else {
-                    return "POINT(" + point.getX() + "," + point.getY() + ")";
+                    return GeometryAdapter.sql(point);
                 }
             }
             return value;
@@ -28,9 +28,9 @@ public enum MySQLWriter {
             if(value instanceof Line) {
                 Line line = (Line) value;
                 if (placeholder) {
-                    return line.bytes();
+                    return GeometryAdapter.bytes(line);
                 } else {
-                    return value;
+                    return GeometryAdapter.sql(line);
                 }
             }
             return value;
