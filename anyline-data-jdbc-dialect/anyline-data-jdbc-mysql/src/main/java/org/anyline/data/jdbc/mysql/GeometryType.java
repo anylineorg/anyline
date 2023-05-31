@@ -10,7 +10,7 @@ public enum GeometryType {
     MultiLineString( MultiLine.class),
     MultiPolygon(MultiPolygon.class),
     GeometryCollection(GeometryCollection.class);
-     private Class clazz;
+    private Class clazz;
     GeometryType(Class clazz){
         this.clazz = clazz;
     }
