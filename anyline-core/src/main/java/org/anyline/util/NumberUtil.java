@@ -850,12 +850,12 @@ public class NumberUtil {
 	 * @param bytes byte数组
 	 * @param start 开始位置
 	 * @param length 长度
-	 * @param order 1:Big Endian 0:Little Endian
+	 * @param big 是否Big Endian
 	 * @return int
 	 */
-	public static int byte2int(byte[] bytes, int start, int length, int order) {
+	public static int byte2int(byte[] bytes, int start, int length, boolean big) {
 		int value = 0;
-		if (order == 1) { // Big Endian
+		if (big) { // Big Endian
 			for (int i = start; i < start + length; i++) {
 				value = (value << 8) | (bytes[i] & 0xFF);
 			}
@@ -865,5 +865,8 @@ public class NumberUtil {
 			}
 		}
 		return value;
+	}
+	public static int byte2int(byte[] bytes, int start, int length) {
+		return byte2int(bytes, start, length, true);
 	}
 } 
