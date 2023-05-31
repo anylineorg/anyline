@@ -5,7 +5,7 @@ import org.anyline.util.NumberUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Line {
+public class Line extends Geometry {
     private List<Point> points = new ArrayList<>();
     public Line add(Point point){
         points.add(point);

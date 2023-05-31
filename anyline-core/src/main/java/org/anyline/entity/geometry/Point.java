@@ -5,7 +5,7 @@ import org.anyline.util.NumberUtil;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Point {
+public class Point extends Geometry{
     boolean isInt = false;
     private Double x;
     private Double y;
