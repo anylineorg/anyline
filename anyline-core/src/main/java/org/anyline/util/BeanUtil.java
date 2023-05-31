@@ -33,7 +33,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.Point;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.entity.metadata.Convert;
@@ -46,7 +45,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 import java.io.*;

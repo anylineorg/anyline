@@ -19,7 +19,7 @@
 
 package org.anyline.util;
 
-import org.anyline.entity.Point;
+import org.anyline.entity.geometry.Point;
 import org.anyline.util.regular.RegularUtil;
 
 import java.math.BigDecimal;
