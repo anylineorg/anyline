@@ -8,21 +8,21 @@ public enum MySQLReader {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return GeometryAdapter.parse(bytes);
+            return MySQLGeometryAdapter.parse(bytes);
         }
     }),
     PointReader(new Object[]{StandardColumnType.POINT}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return GeometryAdapter.parsePoint(bytes);
+            return MySQLGeometryAdapter.parsePoint(bytes);
         }
     }),
     LineReader(new Object[]{StandardColumnType.LINESTRING}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
-            return GeometryAdapter.parseLine(bytes);
+            return MySQLGeometryAdapter.parseLine(bytes);
         }
     })
     ;
