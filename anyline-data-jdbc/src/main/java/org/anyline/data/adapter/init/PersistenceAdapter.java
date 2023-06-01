@@ -51,8 +51,8 @@ public class PersistenceAdapter {
          *     //多对多关系  一个在多个部门任职
          *     @ManyToMany
          *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
-         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键(这里可以是列名也可以是Department属性名)
-         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键(这里可以是列名也可以是Department属性名)
+         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
          *     private List<Department> departments;//查部门完整信息
          *
          *
