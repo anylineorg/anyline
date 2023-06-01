@@ -821,10 +821,17 @@ public class NumberUtil {
 		}
 		return result;
 	}
-	public static double byte2double(byte[] arr,int start) {
+
+	/**
+	 * byte数组转double,默认Double占用8个字节（64位）
+	 * @param bytes byte数组
+	 * @param start 开始位置
+	 * @return double
+	 */
+	public static double byte2double(byte[] bytes, int start) {
 		long value = 0;
 		for (int i = 0; i < 8; i++) {
-			value |= ((long) (arr[start+i] & 0xff)) << (8 * i);
+			value |= ((long) (bytes[start+i] & 0xff)) << (8 * i);
 		}
 		return Double.longBitsToDouble(value);
 	}
