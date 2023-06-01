@@ -15,4 +15,22 @@ public class Geometry {
              this.clazz = clazz;
         }
     }
+    protected int srid;
+    protected int type;
+
+    public int getSrid() {
+        return srid;
+    }
+
+    public void setSrid(int srid) {
+        this.srid = srid;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 }

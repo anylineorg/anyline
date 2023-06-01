@@ -49,26 +49,19 @@ public class GeometryAdapter {
     public static Geometry parse(byte[] bytes){
         Geometry geometry = null;
         //取字节数组的前4个来解析srid
-        byte[] srids = new byte[4];
-        System.arraycopy(bytes, 0, srids, 0, 4);
+        byte[] srid_bytes = new byte[4];
+        System.arraycopy(bytes, 0, srid_bytes, 0, 4);
+        //是否大端格式
         boolean bigEndian = (bytes[4] == 0x00);
-        // 解析srid
-        int srid = 0;
-        if (bigEndian) {
-            for (int i = 0; i < srids.length; i++) {
-                srid = (srid << 8) + (srids[i] & 0xff);
-            }
-        } else {
-            for (int i = 0; i < srids.length; i++) {
-                srid += (srids[i] & 0xff) << (8 * i);
-            }
-        }
+        // 解析SRID
+        int srid = NumberUtil.byte2int(bytes, 0, 4, bigEndian);
         int type = NumberUtil.byte2int(bytes, 5, 4, bigEndian);
         if(type == 1){
             geometry = parsePoint(bytes);
         }else if(type == 2){
             geometry = parseLine(bytes);
         }
+        geometry.setSrid(srid);
         return geometry;
     }
     /*
@@ -111,7 +104,6 @@ public class GeometryAdapter {
      * @return
      */
     public static Line parseLine(byte[] bytes){
-        Line line = new Line();
         boolean bigEndian = (bytes[4] == 0x00);
         int count = NumberUtil.byte2int(bytes, 9, 4, bigEndian);
         List<Point> points = new ArrayList<>();
@@ -121,7 +113,7 @@ public class GeometryAdapter {
             Point point = new Point(x, y);
             points.add(point);
         }
-        line = new Line(points);
+        Line line = new Line(points);
         return line;
     }
 }
