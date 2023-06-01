@@ -2,6 +2,7 @@ package org.anyline.data.adapter.init;
 
 import org.anyline.data.metadata.persistence.ManyToMany;
 import org.anyline.data.metadata.persistence.OneToMany;
+import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ClassUtil;
@@ -21,6 +22,13 @@ public class PersistenceAdapter {
         if(null == join.joinField){
             //提供的是列名
             join.joinField = EntityAdapterProxy.field(join.dependencyClass, join.joinColumn);
+        }
+        //检测joinField对应的列表
+        if(null != join.joinField){
+            Column column = EntityAdapterProxy.column(join.dependencyClass,join.joinField);
+            if(null != column){
+                join.joinColumn = column.getName();
+            }
         }
         Table table = EntityAdapterProxy.table(join.dependencyClass);
         if(null != table){
