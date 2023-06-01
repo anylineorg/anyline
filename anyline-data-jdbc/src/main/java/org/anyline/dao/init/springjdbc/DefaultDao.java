@@ -38,8 +38,10 @@ import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.ProcedureParam;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
@@ -346,8 +348,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				return new EntitySet();
 			}
 			if(BasicUtil.isEmpty(prepare.getDataSource())) {
-				if (EntityAdapterProxy.hasAdapter()) {
-					prepare.setDataSource(EntityAdapterProxy.table(clazz).getName());
+				//text xml格式的 不检测表名，避免一下步根据表名检测表结构
+				if(prepare instanceof TextPrepare || prepare instanceof XMLPrepare){
+
+				}else {
+					if (EntityAdapterProxy.hasAdapter()) {
+						prepare.setDataSource(EntityAdapterProxy.table(clazz).getName());
+					}
 				}
 			}
 

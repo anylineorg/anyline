@@ -15,6 +15,16 @@ public class PersistenceAdapter {
 
 
     public static OneToMany oneToMany(Field field) throws Exception{
+        /*
+         *     //考勤记录
+         *     @OneToMany(mappedBy = "EMPLOYEE_ID")              // 关联表中与当前表关联的外键(这里可以是列名也可以是AttendanceRecord属性名)
+         *     private List<AttendanceRecord> records = null;    //
+         *
+         *
+         *     //考勤记录
+         *     @OneToMany(mappedBy = "EMPLOYEE_ID")              //关联表中与当前表关联的外键(这里可以是列名也可以是AttendanceRecord属性名)
+         *     private AttendanceRecord[] recordArray  = null;   //
+         */
         OneToMany join = new OneToMany();
         join.joinColumn = ClassUtil.parseAnnotationFieldValue(field, "OneToMany.mappedBy");
         join.dependencyClass = ClassUtil.getComponentClass(field);;
@@ -37,6 +47,22 @@ public class PersistenceAdapter {
         return join;
     }
     public static ManyToMany manyToMany(Field field) throws Exception{
+        /*
+         *     //多对多关系  一个在多个部门任职
+         *     @ManyToMany
+         *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
+         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键(这里可以是列名也可以是Department属性名)
+         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键(这里可以是列名也可以是Department属性名)
+         *     private List<Department> departments;//查部门完整信息
+         *
+         *
+         *     @ManyToMany
+         *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
+         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
+         *     @Transient
+         *     private List<Long> departmentIds;//只查部门主键
+         * */
         ManyToMany join = new ManyToMany();
         join.joinTable = ClassUtil.parseAnnotationFieldValue(field, "JoinTable.name");
         Annotation anJoinTable = ClassUtil.getFieldAnnotation(field, "JoinTable");
