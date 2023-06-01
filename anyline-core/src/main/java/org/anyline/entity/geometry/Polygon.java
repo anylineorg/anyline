@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Polygon extends Geometry{
-    private List<Point> points = new ArrayList<>();
-    public Polygon add(Point point){
-        points.add(point);
+    private List<Ring> rings = new ArrayList<>();
+    public Polygon add(Ring ring){
+        rings.add(ring);
         return this;
     }
-    public List<Point> points(){
-        return points;
+    public List<Ring> rings(){
+        return rings;
     }
     public Polygon(){}
-    public Polygon(List<Point> points) {
-        this.points = points;
+    public Polygon(List<Ring> rings) {
+        this.rings = rings;
     }
 
     public String toString(){
@@ -26,23 +26,37 @@ public class Polygon extends Geometry{
             builder.append("Polygon");
         }
         builder.append("(");
+        //顺时针(外部环)
         boolean first = true;
-        for(Point point:points){
-            if(!first){
-                builder.append(", ");
+        for(Ring ring:rings){
+            if(ring.clockwise() == true){
+                if(!first){
+                    builder.append(", ");
+                }
+                builder.append(ring.toString(false));
+                first = false;
             }
-            builder.append(point.toString(false));
-            first = false;
         }
+        //逆时针(内部环)(可选)
+        for(Ring ring:rings){
+            if(ring.clockwise() == false){
+                if(!first){
+                    builder.append(", ");
+                }
+                builder.append(ring.toString(false));
+                first = false;
+            }
+        }
+
         builder.append(")");
         return builder.toString();
     }
 
     /**
      * sql格式
-     * @param tag 是否包含tag<br/>
-     *             false:(120 36)<br/>
-     *             true: Point(120 36)
+     * POLYGON((121.415703 31.172893,121.415805 31.172664,121.416127 31.172751,121.41603 31.172976,121.415703 31.172893)<br/>
+     * POLYGON ((30 20, 45 40, 10 40, 30 20), (20 30, 35 35, 30 20, 20 30), (25 25, 30 35, 15 30, 25 25))
+     * @param tag 是否包含tag
      * @param bracket 是否包含()
      * @return String
      */
@@ -56,12 +70,24 @@ public class Polygon extends Geometry{
         }
 
         boolean first = true;
-        for(Point point:points){
-            if(!first){
-                builder.append(", ");
+        for(Ring ring:rings){
+            if(ring.clockwise() == true){
+                if(!first){
+                    builder.append(", ");
+                }
+                builder.append(ring.sql(false, true));
+                first = false;
             }
-            builder.append(point.sql(false, false));
-            first = false;
+        }
+        //逆时针(内部环)(可选)
+        for(Ring ring:rings){
+            if(ring.clockwise() == false){
+                if(!first){
+                    builder.append(", ");
+                }
+                builder.append(ring.sql(false, true));
+                first = false;
+            }
         }
         if(bracket){
             builder.append(")");
