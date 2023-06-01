@@ -26,6 +26,7 @@ public class Table implements org.anyline.entity.data.Table{
     protected String name                         ;
     protected String type                         ;
     protected String comment                      ;
+    protected int srid                            ;
 
     protected String typeCat                      ;
     protected String typeSchema                   ;
@@ -475,6 +476,14 @@ public class Table implements org.anyline.entity.data.Table{
             listener.setAdapter(adapter);
         }
         return this;
+    }
+
+    public int getSrid() {
+        return srid;
+    }
+
+    public void setSrid(int srid) {
+        this.srid = srid;
     }
 
     public Date getCheckSchemaTime() {

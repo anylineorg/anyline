@@ -45,6 +45,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected Object defaultValue                 ; // 默认值
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
+    protected int srid                            ; // SRID
 
 
     protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
@@ -724,6 +725,14 @@ public class Column implements org.anyline.entity.data.Column{
         this.action = action;
     }
 
+    public int getSrid() {
+        return srid;
+    }
+
+    public void setSrid(int srid) {
+        this.srid = srid;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -803,6 +812,7 @@ public class Column implements org.anyline.entity.data.Column{
         copy.setCollate(collate);
         copy.setColumnType(columnType);
         copy.setAction(action);
+        copy.setSrid(srid);
 
         return copy;
     }
