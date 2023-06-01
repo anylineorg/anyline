@@ -3,7 +3,7 @@ package org.anyline.data.jdbc.mysql;
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.entity.metadata.ColumnType;
-/**/
+
 public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  ,oracle,
         BINARY_DOUBLE           (StandardColumnType.DOUBLE                ), //     ,  ,oracle,

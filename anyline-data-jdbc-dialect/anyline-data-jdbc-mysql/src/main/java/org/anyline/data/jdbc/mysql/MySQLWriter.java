@@ -10,8 +10,21 @@ public enum MySQLWriter {
     PointWriter(new Object[]{Point.class, StandardColumnType.POINT}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
+            Point point = null;
             if(value instanceof Point) {
-                Point point = (Point) value;
+                point = (Point) value;
+            }else if(value instanceof double[]){
+                double[] doubles = (double[]) value;
+                if(doubles.length >= 2){
+                    point = new Point(doubles[0], doubles[1]);
+                }
+            }else if(value instanceof Double[]){
+                Double[] doubles = (Double[]) value;
+                if(doubles.length >= 2){
+                    point = new Point(doubles[0], doubles[1]);
+                }
+            }
+            if(null != point) {
                 if (placeholder) {
                     return MySQLGeometryAdapter.bytes(point);
                 } else {
