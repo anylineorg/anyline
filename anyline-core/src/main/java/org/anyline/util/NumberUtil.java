@@ -398,30 +398,6 @@ public class NumberUtil {
 		return bytes;
 	}
 
-	/**
-	 * 四个字节的字节数据转换成一个整形数据
-	 * @param bytes 4个字节的字节数组
-	 * @return 一个整型数据
-	 */
-	public static int byte2int(byte[] bytes) {
-		int num = 0;
-		int temp;
-		temp = (0x000000ff & (bytes[0])) << 0;
-		num = num | temp;
-		temp = (0x000000ff & (bytes[1])) << 8;
-		num = num | temp;
-		temp = (0x000000ff & (bytes[2])) << 16;
-		num = num | temp;
-		temp = (0x000000ff & (bytes[3])) << 24;
-		num = num | temp;
-		return num;
-	}
-	public static int byte2int(byte[] bytes, int offset) {
-		return (bytes[offset] & 0xFF) |
-				((bytes[offset + 1] & 0xFF) << 8) |
-				((bytes[offset + 2] & 0xFF) << 16) |
-				((bytes[offset + 3] & 0xFF) << 24);
-	}
 
 	/**
 	 * 长整形转换成网络传输的字节流（字节数组）型数据
@@ -876,4 +852,11 @@ public class NumberUtil {
 	public static int byte2int(byte[] bytes, int start, int length) {
 		return byte2int(bytes, start, length, true);
 	}
+	public static int byte2int(byte[] bytes, int start) {
+		return byte2int(bytes, start, 4, true);
+	}
+	public static int byte2int(byte[] bytes, int start, boolean big) {
+		return byte2int(bytes, start, 4, big);
+	}
+
 } 
