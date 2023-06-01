@@ -583,6 +583,8 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据多列条件删除<br/>
+	 * 注意:为了避免整表删除,values必须提供否则会抛出异常<br/>
+	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
 	 * 以k,v,k,v或"k:v"形式提供参数<br/>
 	 * delete("HR_EMPLOYEE","type","1", "age:20");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE TYPE = 1 AND AGE = 20<br/>
@@ -602,8 +604,8 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据一列的多个值删除<br/>
-	 * 注意:为了避免整表删除,values必须提供否则会抛出异常 <br/>
-	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
+	 * 注意:为了避免整表删除,values必须提供否则会抛出异常<br/>
+	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
 	 * delete("USER", "TYPE", [1,2,3])<br/>
 	 * DELETE FROM USER WHERE TYPE IN(1,2,3)
 	 * @param table 表
@@ -615,8 +617,8 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据一列的多个值删除<br/>
-	 * 注意:为了避免整表删除,values必须提供否则会抛出异常 <br/>
-	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
+	 * 注意:为了避免整表删除,values必须提供否则会抛出异常<br/>
+	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
 	 * delete("USER", "TYPE", "1","2","3")<br/>
 	 * DELETE FROM USER WHERE TYPE IN(1,2,3)
 	 * @param table 表
