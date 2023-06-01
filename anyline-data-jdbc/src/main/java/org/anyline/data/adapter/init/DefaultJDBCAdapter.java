@@ -28,6 +28,7 @@ import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.entity.*;
+import org.anyline.data.generator.GeneratorConfig;
 import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.data.generator.init.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
@@ -129,16 +130,21 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	public Object createPrimaryValue(Object entity, DatabaseType type, String table, List<String> columns, String other){
 		if(null == primaryGenerator){
-			if(ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE){
-				primaryGenerator = new SnowflakeGenerator();
-			}else if(ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE){
-				primaryGenerator = new RandomGenerator();
-			}else if(ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE){
-				primaryGenerator = new UUIDGenerator();
-			}else if(ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE){
-				primaryGenerator = new TimeGenerator();
-			}else if(ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE){
-				primaryGenerator = new TimestampGenerator();
+			//单表配置
+			primaryGenerator = GeneratorConfig.get(table);
+			if(null == primaryGenerator) {
+				//全局配置
+				if (ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE) {
+					primaryGenerator = new SnowflakeGenerator();
+				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
+					primaryGenerator = new RandomGenerator();
+				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
+					primaryGenerator = new UUIDGenerator();
+				} else if (ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE) {
+					primaryGenerator = new TimeGenerator();
+				} else if (ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE) {
+					primaryGenerator = new TimestampGenerator();
+				}
 			}
 		}
 		if(null != primaryGenerator) {
