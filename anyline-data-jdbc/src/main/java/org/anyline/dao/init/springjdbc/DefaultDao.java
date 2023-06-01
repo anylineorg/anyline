@@ -403,7 +403,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						listener.beforeQuery(run, total);
 					}
 					fr = System.currentTimeMillis();
-					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_SELECT_DEPENDENCY());
+					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
 					if (null != listener) {
 						listener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
@@ -556,7 +556,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.afterExists(run, result, millis);
 				}
 				boolean slow = false;
-				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 				if(SLOW_SQL_MILLIS > 0){
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
@@ -671,7 +671,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.afterUpdate(run, result, dest, data, columns, millis);
 				}
 				boolean slow = false;
-				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 				if(SLOW_SQL_MILLIS > 0){
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
@@ -911,7 +911,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(listenerResult) {
 				cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
-				int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_INSERT_DEPENDENCY();
+				int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
 				checkMany2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 				checkOne2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 				Long millis = System.currentTimeMillis() - fr;
@@ -920,7 +920,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 
 				boolean slow = false;
-				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 				if(SLOW_SQL_MILLIS > 0){
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
@@ -1042,7 +1042,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}else{
-						log.warn("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
+						log.error("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
 					}
 				}
 			}
@@ -1116,7 +1116,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}else{
-						log.warn("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
+						log.error("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
 					}
 				}
 			}
@@ -1190,7 +1190,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
-			long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
 				if(mid-fr > SLOW_SQL_MILLIS){
 					slow = true;
@@ -1267,7 +1267,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("[封装结果集][result:fail][msg:{}]", e.toString());
+				log.error("[封装结果集][result:fail][msg:{}]", e.toString());
 			}
 		}
 		return row;
@@ -1349,7 +1349,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				mid[0] = System.currentTimeMillis();
 			}
 			boolean slow = false;
-			long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
 				slow = true;
 				if(mid[0] - fr > SLOW_SQL_MILLIS){
@@ -1428,7 +1428,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
-		Compare compare = ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
+		Compare compare = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
 		for(Field field:fields){
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
@@ -1491,7 +1491,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else{
-					log.warn("[check Many2ManyDependency query][result:fail][msg:{}]", e.toString());
+					log.error("[check Many2ManyDependency query][result:fail][msg:{}]", e.toString());
 				}
 			}
 		}
@@ -1510,7 +1510,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
-		Compare compare = ThreadConfig.check(DataSourceHolder.curDataSource()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
+		Compare compare = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
 		for(Field field:fields){
 			try {
 				OneToMany join = PersistenceAdapter.oneToMany(field);
@@ -1553,7 +1553,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else{
-					log.warn("[check One2ManyDependency query][result:fail][msg:{}]", e.toString());
+					log.error("[check One2ManyDependency query][result:fail][msg:{}]", e.toString());
 				}
 			}
 
@@ -1597,7 +1597,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				boolean slow = false;
-				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 				if(SLOW_SQL_MILLIS > 0){
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
@@ -1727,7 +1727,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				Long millis = System.currentTimeMillis() - fr;
 
 				boolean slow = false;
-				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 				if(SLOW_SQL_MILLIS > 0){
 					if(millis > SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
@@ -1884,7 +1884,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			});
 			Long millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
-			long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
@@ -2031,7 +2031,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else{
-					log.warn("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
+					log.error("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
 				}
 			}
 		}
@@ -2061,7 +2061,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else{
-					log.warn("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
+					log.error("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
 				}
 			}
 		}
@@ -2114,7 +2114,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				boolean slow = false;
-				long SLOW_SQL_MILLIS = ThreadConfig.check(DataSourceHolder.curDataSource()).SLOW_SQL_MILLIS();
+				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 				if(SLOW_SQL_MILLIS > 0){
 					slow = true;
 					if(millis > SLOW_SQL_MILLIS){
@@ -2231,7 +2231,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("[databases][result:fail][msg:{}]", e.toString());
+				log.error("[databases][result:fail][msg:{}]", e.toString());
 			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
@@ -2395,7 +2395,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("[tables][result:fail][msg:{}]", e.toString());
+				log.error("[tables][result:fail][msg:{}]", e.toString());
 			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
@@ -2579,7 +2579,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("[views][result:fail][msg:{}]", e.toString());
+				log.error("[views][result:fail][msg:{}]", e.toString());
 			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
@@ -2728,7 +2728,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("[mtables][result:fail][msg:{}]", e.toString());
+				log.error("[mtables][result:fail][msg:{}]", e.toString());
 			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
@@ -2857,7 +2857,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.toString());
+				log.error("[ptables][result:fail][msg:{}]", e.toString());
 			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
@@ -3006,7 +3006,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.warn("{}[columns][{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table, e.toString());
+				log.error("[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
 			}
 		}finally {
 			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
@@ -3144,6 +3144,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
+			}else{
+
 			}
 		}finally {
 			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
