@@ -1,9 +1,13 @@
 package org.anyline.boot;
 
 import org.anyline.entity.Compare;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.util.ConfigTable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "anyline")
@@ -22,11 +26,11 @@ public class AnylineProperty {
     /**
      * 是否抛出convert异常提示
      */
-    protected boolean throwConvertException					= false			;   // 是否抛出convert异常提示()
+    protected boolean throwConvertException					    = false			;   // 是否抛出convert异常提示()
     /**
      * 捕捉但未抛出的异常是否显示详细信息
      */
-    protected boolean printExceptionStackTrace						= false			;   // 捕捉但未抛出的异常是否显示详细信息
+    protected boolean printExceptionStackTrace					= false			;   // 捕捉但未抛出的异常是否显示详细信息
 
     /**
      * 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用DMListener.slow
@@ -170,66 +174,7 @@ public class AnylineProperty {
      * DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
      */
     protected boolean removeEmptyHttpKey                        = false         ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
-    /**
-     * 默认主键
-     */
-    protected String defaultPrimaryKey							= "id"			;	// 默认主键
-    /**
-     * 是否需要提供主事务管理器,多数据源时需要
-     */
-    protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器,多数据源时需要
-    /**
-     * 主键生成器机器id
-     */
-    public int primaryGeneratorWorkerId					        = 1				;	// 主键生成器机器id
-    /**
-     * 主键前缀(随机主键)
-     */
-    public String primaryGeneratorPrefix					    = ""			;	// 主键前缀(随机主键)
-    /**
-     * 主随机主键总长度
-     */
-    public int primaryGeneratorRandomLength				        = 32			;	// 主随机主键总长度
-    /**
-     * 生成主键大写
-     */
-    public boolean primaryGeneratorUpper					    = true			;	// 生成主键大写
-    /**
-     * 生成主键小写
-     */
-    public boolean primaryGeneratorLower					    = false			;	// 生成主键小写
-    /**
-     * 生成主键日期格式(默认yyyyMMddhhmmssSSS)
-     */
-    public String primaryGeneratorTimeFormat					= null		    ;	// 生成主键日期格式(默认yyyyMMddhhmmssSSS)
-    /**
-     * 生成主键time/timestamp后缀随机数长度
-     */
-    public int primaryGeneratorTimeSuffixLength				    = 3			    ;   // 生成主键time/timestamp后缀随机数长度
-    /**
-     * 雪花算法开始日期
-     */
-    public String snowflakeTwepoch                              = "2000-01-01"  ;   //雪花算法开始日期
-    /**
-     * 是否开启默认的主键生成器(UUID)
-     */
-    public boolean primaryGeneratorUuidActive			        = false			;	// 是否开启默认的主键生成器(UUID)
-    /**
-     * 是否开启默认的主键生成器(雪花)
-     */
-    public boolean primaryGeneratorSnowflakeActive		        = false			;	// 是否开启默认的主键生成器(雪花)
-    /**
-     * 是否开启默认的主键生成器(随机)
-     */
-    public boolean primaryGeneratorRandomActive			        = false			;	// 是否开启默认的主键生成器(随机)
-    /**
-     * 是否开启默认的主键生成器(时间戳)
-     */
-    public boolean primaryGeneratorTimestampActive			    = false			;	// 是否开启默认的主键生成器(时间戳)
-    /**
-     * 是否开启默认的主键生成器(年月日时分秒毫秒)
-     */
-    public boolean primaryGeneratorTimeActive					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
+
 
     /**
      * ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
@@ -305,6 +250,74 @@ public class AnylineProperty {
      */
     protected String mixDefaultSeed                             = "al"          ;   // MixUtil.mix默认seed
     protected String elAttributePrefix      					= "al"		    ;
+
+    /**
+     * 默认主键
+     */
+    protected String defaultPrimaryKey							= "id"			;	// 默认主键
+    /**
+     * 是否需要提供主事务管理器,多数据源时需要
+     */
+    protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器,多数据源时需要
+    /**
+     * 主键生成器机器id
+     */
+    public int primaryGeneratorWorkerId					        = 1				;	// 主键生成器机器id
+    /**
+     * 主键前缀(随机主键)
+     */
+    public String primaryGeneratorPrefix					    = ""			;	// 主键前缀(随机主键)
+    /**
+     * 主随机主键总长度
+     */
+    public int primaryGeneratorRandomLength				        = 32			;	// 主随机主键总长度
+    /**
+     * 生成主键大写
+     */
+    public boolean primaryGeneratorUpper					    = true			;	// 生成主键大写
+    /**
+     * 生成主键小写
+     */
+    public boolean primaryGeneratorLower					    = false			;	// 生成主键小写
+    /**
+     * 生成主键日期格式(默认yyyyMMddhhmmssSSS)
+     */
+    public String primaryGeneratorTimeFormat					= null		    ;	// 生成主键日期格式(默认yyyyMMddhhmmssSSS)
+    /**
+     * 生成主键time/timestamp后缀随机数长度
+     */
+    public int primaryGeneratorTimeSuffixLength				    = 3			    ;   // 生成主键time/timestamp后缀随机数长度
+    /**
+     * 雪花算法开始日期
+     */
+    public String snowflakeTwepoch                              = "2000-01-01"  ;   //雪花算法开始日期
+    /**
+     * 是否开启默认的主键生成器(UUID)
+     */
+    public boolean primaryGeneratorUuidActive			        = false			;	// 是否开启默认的主键生成器(UUID)
+    /**
+     * 是否开启默认的主键生成器(雪花)
+     */
+    public boolean primaryGeneratorSnowflakeActive		        = false			;	// 是否开启默认的主键生成器(雪花)
+    /**
+     * 是否开启默认的主键生成器(随机)
+     */
+    public boolean primaryGeneratorRandomActive			        = false			;	// 是否开启默认的主键生成器(随机)
+    /**
+     * 是否开启默认的主键生成器(时间戳)
+     */
+    public boolean primaryGeneratorTimestampActive			    = false			;	// 是否开启默认的主键生成器(时间戳)
+    /**
+     * 是否开启默认的主键生成器(年月日时分秒毫秒)
+     */
+    public boolean primaryGeneratorTimeActive					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
+
+    public PrimaryGenerator.GENERATORS generator                = null          ;   // 全局默认主键生成器
+
+    public Map<String, PrimaryGenerator.GENERATORS> generators          = new HashMap();
+
+
+
     public boolean isDebug() {
         return debug;
     }
@@ -960,5 +973,27 @@ public class AnylineProperty {
     public void setPrintExceptionStackTrace(boolean printExceptionStackTrace) {
         this.printExceptionStackTrace = printExceptionStackTrace;
         ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE = printExceptionStackTrace;
+    }
+
+    public PrimaryGenerator.GENERATORS getGenerator() {
+        return generator;
+    }
+
+    public void setGenerator(PrimaryGenerator.GENERATORS generator) {
+        this.generator = generator;
+        ConfigTable.GENERATOR.set(generator);
+    }
+
+    public Map<String, PrimaryGenerator.GENERATORS> getGenerators() {
+        return generators;
+    }
+
+    public void setGenerators(Map<String, PrimaryGenerator.GENERATORS> generators) {
+        this.generators = generators;
+        if(null != generators){
+            for(String key:generators.keySet()){
+                ConfigTable.GENERATOR.put(key, generators.get(key));
+            }
+        }
     }
 }
