@@ -173,13 +173,19 @@ public class CacheProxy {
     }
 
 
-    public static LinkedHashMap<String, Tag> tags(String table){
+
+    /**
+     * 表或视图的Tag
+     * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
+     * @return LinkedHashMap
+     */
+    public static LinkedHashMap<String, Tag> tags(String datasource, String table){
         if(null == table){
             return null;
         }
         LinkedHashMap<String, Tag> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.curDataSource()+"_TAGS_" + table.toUpperCase();
+        String key = datasource+"_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
@@ -194,12 +200,18 @@ public class CacheProxy {
         }
         return tags;
     }
-    public static void tags(String table, LinkedHashMap<String, Tag> tags){
+
+    /**
+     * 设置缓存
+     * @param table 表
+     * @param tags Tag
+     */
+    public static void tags(String datasource, String table, LinkedHashMap<String, Tag> tags){
         if(null == table){
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.curDataSource()+"_TAGS_" + table.toUpperCase();
+        String key = datasource + "_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, tags);
         }else{
@@ -208,7 +220,11 @@ public class CacheProxy {
             cache_metadatas.put(key, static_cache);
         }
     }
+
     public static void clearTagCache(boolean greedy, String catalog, String schema, String table){
+        if(null == table){
+            return;
+        }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = DataSourceHolder.curDataSource()+"_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
@@ -217,7 +233,29 @@ public class CacheProxy {
             cache_metadatas.remove(key);
         }
     }
+    public static void clearTagCache(boolean greedy, String table){
+        clearTagCache(greedy, null, null, table);
+    }
+    public static void clearTagCache(boolean greedy){
+        if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
+            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+            if(BasicUtil.isNotEmpty(cache)) {
+                provider.clear(cache);
+            }
+        }else{
+            cache_metadatas.clear();
+        }
+    }
+
     public static void clearTagCache(String catalog, String schema, String table){
         clearTagCache(false, catalog, schema, table);
     }
+    public static void clearTagCache(String table){
+        clearTagCache(false, table);
+    }
+    public static void clearTagCache(){
+        clearTagCache(false);
+    }
+
+
 }
