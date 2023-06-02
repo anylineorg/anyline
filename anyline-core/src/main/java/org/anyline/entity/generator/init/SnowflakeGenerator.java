@@ -19,8 +19,10 @@
 
 package org.anyline.entity.generator.init;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SnowflakeWorker;
@@ -29,15 +31,25 @@ import java.util.List;
 
 public class SnowflakeGenerator implements PrimaryGenerator {
 	private static SnowflakeWorker worker = null;
-	public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other){
+	public boolean create(Object entity, DatabaseType type, String table, List<String> columns, List<String> inserts, String other){
+		if(null == columns){
+			if(entity instanceof DataRow){
+				columns = ((DataRow)entity).getPrimaryKeys();
+			}else{
+				columns = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
+			}
+		}
 		if(null == worker){
 			worker = newInstance();
 		}
 		for(String column:columns){
 			Long value = worker.next();
 			BeanUtil.setFieldValue(entity, column, value, false);
+			if(!inserts.contains(column)){
+				inserts.add(column);
+			}
 		}
-		return entity;
+		return true;
 	}
 	private SnowflakeWorker newInstance(){
 		int workerId = ConfigTable.PRIMARY_GENERATOR_WORKER_ID;

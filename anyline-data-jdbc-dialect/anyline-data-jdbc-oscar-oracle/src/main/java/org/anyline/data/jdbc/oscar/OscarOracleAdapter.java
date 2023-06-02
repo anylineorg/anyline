@@ -312,10 +312,10 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
 
-					EntityAdapterProxy.createPrimaryValue(obj);
+					EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}else{
 					if(null != primaryGenerator){
-						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
 					}
 				}
 			}

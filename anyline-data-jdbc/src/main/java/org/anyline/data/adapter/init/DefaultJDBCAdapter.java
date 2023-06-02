@@ -42,8 +42,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.entity.generator.init.TimeGenerator;
-import org.anyline.entity.generator.init.TimestampGenerator;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
@@ -130,11 +128,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return this.delimiterTo;
 	}
 
-	public Object createPrimaryValue(Object entity, DatabaseType type, String table, List<String> columns, String other){
+	public boolean createPrimaryValue(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other){
 		//针对当前表的生成器
 		PrimaryGenerator generator = GeneratorConfig.get(table);
 		if(null != generator){
-			return generator.create(entity, type, table, columns, other);
+			return generator.create(entity, type, table, pks, inserts, other);
 		}
 		//全局配置
 		if(null == primaryGenerator){
@@ -157,9 +155,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 		}
 		if(null != primaryGenerator) {
-			return primaryGenerator.create(entity, type, table, columns, other);
+			return primaryGenerator.create(entity, type, table, pks, inserts, other);
 		}else{
-			return entity;
+			return false;
 		}
 	}
 	public void setDelimiter(String delimiter){

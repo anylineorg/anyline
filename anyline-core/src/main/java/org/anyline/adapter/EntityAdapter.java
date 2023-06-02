@@ -102,9 +102,11 @@ public interface EntityAdapter {
 
     /**
      * 生成主键值
-     * @param obj obj
+     * @param obj entity或DataRow
+     * @param inserts 需要插入的列,注意成功创建主键后需要把主键key添加到inserts中
+     * @return boolean 是否成功
      */
-    public void createPrimaryValue(Object obj);
+    public boolean createPrimaryValue(Object obj, List<String> inserts);
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<br/>
      * 如果不实现当前可以返回null,将继续执行默认处理方式<br/>

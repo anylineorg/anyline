@@ -29,35 +29,46 @@ public interface PrimaryGenerator {
 	public enum GENERATORS implements PrimaryGenerator{
 		RANDOM{
 			@Override
-			public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
-				return new RandomGenerator().create(entity, type, table, columns, other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
+				return new RandomGenerator().create(entity, type, table, pks, inserts, other);
 			}
 		},
 		SNOWFLAKE{
 			@Override
-			public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
-				return new SnowflakeGenerator().create(entity, type, table, columns, other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
+				return new SnowflakeGenerator().create(entity, type, table, pks, inserts, other);
 			}
 		},
 		UUID{
 			@Override
-			public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
-				return new UUIDGenerator().create(entity, type, table, columns, other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
+				return new UUIDGenerator().create(entity, type, table, pks, inserts, other);
 			}
 		},
 		TIME{
 			@Override
-			public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
-				return new TimeGenerator().create(entity, type, table, columns, other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
+				return new TimeGenerator().create(entity, type, table, pks, inserts, other);
 			}
 		},
 		TIMESTAMP{
 			@Override
-			public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
-				return new TimestampGenerator().create(entity, type, table, columns, other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
+				return new TimestampGenerator().create(entity, type, table, pks, inserts, other);
 			}
 		}
 		;
 	};
-	public Object create(Object entity, DatabaseType type, String table, List<String> columns, String other);
+
+	/**
+	 * 生成主键值并完成赋值
+	 * @param entity entity或DataRow
+	 * @param type 数据库类型
+	 * @param table 表
+	 * @param pks 主键,有可能是空,可以通过EntityAdapterProxy提取
+	 * @param inserts 需要插入的列,成功生成主键后,需要把主键key添加到inserts中,注意要检测一下inserts中是否已包含了主键key
+	 * @param other 其他参数
+	 * @return 是否成功创建
+	 */
+	public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other);
 } 

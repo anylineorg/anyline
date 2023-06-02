@@ -301,15 +301,15 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 				}
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
 
-					EntityAdapterProxy.createPrimaryValue(obj);
+					EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}else{
 					if(null != primaryGenerator){
-						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
 					}
 				}
 			}

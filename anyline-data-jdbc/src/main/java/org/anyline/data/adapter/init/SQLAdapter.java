@@ -46,7 +46,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -144,7 +143,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 if(pks.size() ==0){
                     pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
                 }
-                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, keys,null);
             }
             insertValue(template, run, row, true, false,true, keys);
             if(i<dataSize-1){
@@ -192,14 +191,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys,null);
                 }
                 insertValue(template, run, row, true, false,true, keys);
             }else{
                 if(EntityAdapterProxy.hasAdapter()){
-                    EntityAdapterProxy.createPrimaryValue(obj);
+                    EntityAdapterProxy.createPrimaryValue(obj, keys);
                 }else{
-                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys,null);
                 }
                 insertValue(template, run, obj, true, false, true, keys);
             }
@@ -217,7 +216,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param dest 表
      * @param obj 数据
      * @param checkPrimary 是否需要检查重复主键,默认不检查
-     * @param columns 列
+     * @param columns 需要插入的列
      * @return Run
      */
     @Override
@@ -237,16 +236,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(obj instanceof DataRow){
             row = (DataRow)obj;
             if(row.hasPrimaryKeys()){
-                 createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                 createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), columns, null);
             }
         }else{
             from = 2;
-            String pk = null;
-            Object pv = null;
             if(EntityAdapterProxy.hasAdapter()){
-                EntityAdapterProxy.createPrimaryValue(obj);
+                EntityAdapterProxy.createPrimaryValue(obj, columns);
             }else{
-                createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""),  null, null);
+                createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""),  null, columns,null);
             }
         }
         run.setFrom(from);

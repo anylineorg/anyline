@@ -123,7 +123,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 if(pks.size() ==0){
                     pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
                 }
-                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, keys, null);
             }
             builder.append("\n SELECT ");
             insertValue(template, run, row, true, false,false, keys);
@@ -174,14 +174,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
                 }
                 insertValue(template, run, row, true, false,false, keys);
             }else{
                 if(EntityAdapterProxy.hasAdapter()){
-                    EntityAdapterProxy.createPrimaryValue(obj);
+                    EntityAdapterProxy.createPrimaryValue(obj, keys);
                 }else{
-                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
                 }
                 insertValue(template, run, obj, true, false, false, keys);
             }

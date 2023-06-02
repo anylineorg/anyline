@@ -135,7 +135,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
 	}
-	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
+	protected boolean createPrimaryValue(JdbcTemplate template, Collection list, String seq){
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
 		int size = list.size();
@@ -152,6 +152,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 			Object value = ids.get(i++).get("ID");
 			setPrimaryValue(obj, value);
 		}
+		return true;
 	}
 
 	/**
@@ -223,7 +224,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		int col = 0;
 		for(DataRow row:set) {
 			if(row.hasPrimaryKeys() && null != primaryGenerator){
-				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 			}
 
 			if(col > 0){
@@ -300,6 +301,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		int col = 0;
 
 		for(Object obj:list){
+			List<String> inserts = keys;
 			if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
 				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
@@ -307,15 +309,14 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 				}
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
-
-					EntityAdapterProxy.createPrimaryValue(obj);
+					EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}else{
 					if(null != primaryGenerator){
-						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
 					}
 				}
 			}

@@ -10,6 +10,7 @@ import org.anyline.entity.data.Table;
 import org.anyline.util.ConfigTable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +127,14 @@ public class EntityAdapterProxy {
         return primaryKey(adapter, clazz);
     }
 
+    public static String primaryKey(Class clazz, boolean simple){
+        Column column = primaryKey(adapter, clazz);
+        if(null != column){
+            return column.getName();
+        }
+        return null;
+    }
+
     /**
      * 获取clazz类相关的主键s
      * @param adapter adapter
@@ -140,6 +149,16 @@ public class EntityAdapterProxy {
     }
     public static LinkedHashMap<String, Column> primaryKeys(Class clazz){
         return primaryKeys(adapter, clazz);
+    }
+    public static List<String> primaryKeys(Class clazz, boolean simple){
+        LinkedHashMap<String, Column> cols =  primaryKeys(adapter, clazz);
+        List<String> list = new ArrayList<>();
+        if(null != cols){
+            for(Column col:cols.values()){
+                list.add(col.getName());
+            }
+        }
+        return list;
     }
 
     /**
@@ -177,15 +196,18 @@ public class EntityAdapterProxy {
     /**
      * 生成主键值
      * @param adapter adapter
-     * @param obj obj
+     * @param obj entity或DataRow
+     * @param inserts 需要插入的列,注意成功创建主键后需要把主键key添加到inserts中
+     * @return boolean 是否成功
      */
-    public static void createPrimaryValue(EntityAdapter adapter, Object obj){
+    public static boolean createPrimaryValue(EntityAdapter adapter, Object obj, List<String> inserts){
         if(null != adapter){
-            adapter.createPrimaryValue(obj);
+            return adapter.createPrimaryValue(obj, inserts);
         }
+        return false;
     }
-    public static void createPrimaryValue(Object obj){
-        createPrimaryValue(adapter, obj);
+    public static boolean createPrimaryValue(Object obj, List<String> inserts){
+        return createPrimaryValue(adapter, obj, inserts);
     }
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity

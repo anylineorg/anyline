@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 @Component("anyline.listener.EnvironmentListener")
 public class EnvironmentListener implements EnvironmentAware {
@@ -22,6 +23,9 @@ public class EnvironmentListener implements EnvironmentAware {
             String name = field.getName();
             String value = BeanUtil.value("anyline", environment, "." + name);
             if(BasicUtil.isNotEmpty(value)) {
+                if(Modifier.isFinal(field.getModifiers())){
+                    continue;
+                }
                 BeanUtil.setFieldValue(null, field, value);
             }
         }

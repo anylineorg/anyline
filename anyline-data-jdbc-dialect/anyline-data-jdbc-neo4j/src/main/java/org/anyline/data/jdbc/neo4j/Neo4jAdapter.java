@@ -234,14 +234,14 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(obj instanceof DataRow){
             row = (DataRow)obj;
             if(row.hasPrimaryKeys() && null != primaryGenerator){
-                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), columns,null);
             }
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                EntityAdapterProxy.createPrimaryValue(obj);
+                EntityAdapterProxy.createPrimaryValue(obj, keys);
             }else{
                 if(null != primaryGenerator){
-                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, columns,null);
                 }
             }
         }

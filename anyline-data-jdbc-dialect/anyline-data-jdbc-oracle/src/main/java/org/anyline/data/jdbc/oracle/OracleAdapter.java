@@ -228,7 +228,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		int col = 0;
 		for(DataRow row:set) {
 			if(row.hasPrimaryKeys() && null != primaryGenerator){
-				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 			}
 
 			if(col > 0){
@@ -305,6 +305,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		int col = 0;
 
 		for(Object obj:list){
+			List<String> inserts = keys;
 			if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
 				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
@@ -312,15 +313,14 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 				}
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
-
-					EntityAdapterProxy.createPrimaryValue(obj);
+					EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}else{
 					if(null != primaryGenerator){
-						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
 					}
 				}
 			}

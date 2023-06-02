@@ -212,7 +212,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		int col = 0;
 		for(DataRow row:set) {
 			if(row.hasPrimaryKeys() && null != primaryGenerator){
-				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 			}
 
 			if(col > 0){
@@ -296,15 +296,15 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 				}
 			}else{
 				if(EntityAdapterProxy.hasAdapter()){
 
-					EntityAdapterProxy.createPrimaryValue(obj);
+					EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}else{
 					if(null != primaryGenerator){
-						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
 					}
 				}
 			}
