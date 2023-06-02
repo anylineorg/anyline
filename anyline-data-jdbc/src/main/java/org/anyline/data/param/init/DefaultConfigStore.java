@@ -155,6 +155,14 @@ public class DefaultConfigStore implements ConfigStore {
 		return and(cross, Compare.IN, var, BeanUtil.array2list(values));
 	}
 	@Override
+	public ConfigStore ands(Compare compare, String col, Object ... values){
+		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, col, BeanUtil.array2list(values));
+	}
+	@Override
+	public ConfigStore ands(EMPTY_VALUE_CROSS cross,Compare compare, String col, Object ... values){
+		return and(cross, compare, col, BeanUtil.array2list(values));
+	}
+	@Override
 	public ConfigStore ands(String var, Object ... values){
 		return ands(EMPTY_VALUE_CROSS.DEFAULT, var, values);
 	}
