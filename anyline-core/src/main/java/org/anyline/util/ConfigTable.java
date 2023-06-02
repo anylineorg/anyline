@@ -20,6 +20,7 @@
 package org.anyline.util;
 
 import org.anyline.entity.Compare;
+import org.anyline.entity.generator.GeneratorConfig;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -55,6 +56,8 @@ public class ConfigTable {
 	protected static final String minVersion 			= "0007"			;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
+
+	public static String CONFIG_NAME = "anyline-config.xml";
 
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
 	public static boolean IS_DEBUG 										= true			;	// DEBUG状态会输出更多日志
@@ -99,20 +102,6 @@ public class ConfigTable {
 	public static String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
 	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要提供主事务管理器,多数据源时需要
 
-	public static boolean PRIMARY_GENERATOR_UUID_ACTIVE					= false			;	// 是否开启默认的主键生成器(UUID)
-	public static boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false			;	// 是否开启默认的主键生成器(雪花)
-	public static boolean PRIMARY_GENERATOR_RANDOM_ACTIVE				= false			;	// 是否开启默认的主键生成器(随机)
-	public static boolean PRIMARY_GENERATOR_TIMESTAMP_ACTIVE			= false			;	// 是否开启默认的主键生成器(时间戳)
-	public static boolean PRIMARY_GENERATOR_TIME_ACTIVE					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
-
-	public static int PRIMARY_GENERATOR_WORKER_ID						= 1				;	// 主键生成器机器ID
-	public static String PRIMARY_GENERATOR_PREFIX						= ""			;	// 主键前缀(随机主键)
-	public static int PRIMARY_GENERATOR_RANDOM_LENGTH					= 32			;	// 主随机主键总长度
-	public static boolean PRIMARY_GENERATOR_UPPER						= true			;	// 生成主键大写
-	public static boolean PRIMARY_GENERATOR_LOWER						= false			;	// 生成主键小写
-	public static String PRIMARY_GENERATOR_TIME_FORMAT					= null			;	// 生成主键日期格式(默认yyyyMMddHHmmssSSS)
-	public static int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3				;   // 生成主键TIME/TIMESTAMP后缀随机数长度
-	public static String SNOWFLAKE_TWEPOCH								= "2000-01-01"	;	// 雪花算法开始日期
 
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000			;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false			;   // DDL执行时是否自动删除定义中不存在的列
@@ -135,8 +124,25 @@ public class ConfigTable {
 	public static String MIX_DEFAULT_SEED								= "al"			;   // MixUti.mix默认seed
 	public static String EL_ATTRIBUTE_PREFIX							= "al"			;
 
-	public static String CONFIG_NAME = "anyline-config.xml";
 
+
+	//主键生成器
+	public static boolean PRIMARY_GENERATOR_UUID_ACTIVE					= false			;	// 是否开启默认的主键生成器(UUID)
+	public static boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false			;	// 是否开启默认的主键生成器(雪花)
+	public static boolean PRIMARY_GENERATOR_RANDOM_ACTIVE				= false			;	// 是否开启默认的主键生成器(随机)
+	public static boolean PRIMARY_GENERATOR_TIMESTAMP_ACTIVE			= false			;	// 是否开启默认的主键生成器(时间戳)
+	public static boolean PRIMARY_GENERATOR_TIME_ACTIVE					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
+
+	public static int PRIMARY_GENERATOR_WORKER_ID						= 1				;	// 主键生成器机器ID
+	public static String PRIMARY_GENERATOR_PREFIX						= ""			;	// 主键前缀(随机主键)
+	public static int PRIMARY_GENERATOR_RANDOM_LENGTH					= 32			;	// 主随机主键总长度
+	public static boolean PRIMARY_GENERATOR_UPPER						= true			;	// 生成主键大写
+	public static boolean PRIMARY_GENERATOR_LOWER						= false			;	// 生成主键小写
+	public static String PRIMARY_GENERATOR_TIME_FORMAT					= null			;	// 生成主键日期格式(默认yyyyMMddHHmmssSSS)
+	public static int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3				;   // 生成主键TIME/TIMESTAMP后缀随机数长度
+	public static String SNOWFLAKE_TWEPOCH								= "2000-01-01"	;	// 雪花算法开始日期
+
+	public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
 	static{
 		init();
 	}
