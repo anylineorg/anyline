@@ -1945,15 +1945,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 
-	public int deletes(String table, String key, String ... values){
+	public int deletes(String table, String key, Object ... values){
 		return deletes(true, table, key, values);
 	}
-	protected int deletes(boolean recover, String table, String key, String ... values){
+	protected int deletes(boolean recover, String table, String key, Object ... values){
 		table = DataSourceHolder.parseDataSource(table, null);
-		List<String> list = new ArrayList<>();
+		List<Object> list = new ArrayList<>();
 		if(null != values){
-			for(String value:values){
-				list.add(value);
+			for(Object value:values){
+				if(value instanceof Collection){
+					list.addAll((Collection)value);
+				}else {
+					list.add(value);
+				}
 			}
 		}
 
