@@ -19,7 +19,6 @@
 
 package org.anyline.data.param;
 
-import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Condition.EMPTY_VALUE_CROSS;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
@@ -67,12 +66,15 @@ public interface ConfigStore {
 	/**
 	 * 构造IN查询条件,如果只提供一个值与and一样
 	 * @param cross 遇到空值处理方式
-	 * @param var 列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用 这与cross作用一样,不要与cross混用
+	 * @param compare 默认IN,可以换成FIND_IN_SET
+	 * @param col 列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用 这与cross作用一样,不要与cross混用
 	 * @param values 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore ands(EMPTY_VALUE_CROSS cross, String var, Object ... values);
+	public ConfigStore ands(EMPTY_VALUE_CROSS cross, Compare compare, String col, Object ... values);
+	public ConfigStore ands(EMPTY_VALUE_CROSS cross, String col, Object ... values);
 	public ConfigStore ands(String col, Object ... values);
+	public ConfigStore ands(Compare compare, String col, Object ... values);
 
 	/**
 	 * 构造查询条件
