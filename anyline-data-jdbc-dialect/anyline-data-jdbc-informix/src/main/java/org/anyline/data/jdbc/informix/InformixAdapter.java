@@ -304,13 +304,12 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
 				}
 			}else{
+				boolean create = false;
 				if(EntityAdapterProxy.hasAdapter()){
-
-					EntityAdapterProxy.createPrimaryValue(obj, keys);
-				}else{
-					if(null != primaryGenerator){
-						createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
-					}
+					create = EntityAdapterProxy.createPrimaryValue(obj, keys);
+				}
+				if(!create){
+					createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
 				}
 			}
 

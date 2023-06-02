@@ -44,9 +44,9 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 		}
 		for(String column:columns){
 			Long value = worker.next();
-			BeanUtil.setFieldValue(entity, column, value, false);
-			if(!inserts.contains(column)){
-				inserts.add(column);
+			BeanUtil.setFieldValue(entity, column, value, true);
+			if(!inserts.contains(column) && !inserts.contains("+"+column)){
+				inserts.add("+"+column);
 			}
 		}
 		return true;

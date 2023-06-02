@@ -29,9 +29,9 @@ public class RandomGenerator implements PrimaryGenerator {
             }else if(ConfigTable.PRIMARY_GENERATOR_LOWER){
                 value = value.toLowerCase();
             }
-            BeanUtil.setFieldValue(entity, column, value, false);
-            if(!inserts.contains(column)){
-                inserts.add(column);
+            BeanUtil.setFieldValue(entity, column, value, true);
+            if(!inserts.contains(column) && !inserts.contains("+"+column)){
+                inserts.add("+"+column);
             }
         }
         return true;

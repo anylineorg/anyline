@@ -30,9 +30,9 @@ public class TimeGenerator implements PrimaryGenerator {
             if(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH > 0){
                 value += BasicUtil.getRandomNumberString(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH);
             }
-            BeanUtil.setFieldValue(entity, column, value, false);
-            if(!inserts.contains(column)){
-                inserts.add(column);
+            BeanUtil.setFieldValue(entity, column, value, true);
+            if(!inserts.contains(column) && !inserts.contains("+"+column)){
+                inserts.add("+"+column);
             }
         }
         return true;

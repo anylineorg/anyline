@@ -178,9 +178,11 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 }
                 insertValue(template, run, row, true, false,false, keys);
             }else{
+                boolean create = false;
                 if(EntityAdapterProxy.hasAdapter()){
-                    EntityAdapterProxy.createPrimaryValue(obj, keys);
-                }else{
+                    create = EntityAdapterProxy.createPrimaryValue(obj, keys);
+                }
+                if(!create){
                     createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
                 }
                 insertValue(template, run, obj, true, false, false, keys);

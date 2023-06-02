@@ -21,9 +21,9 @@ public class UUIDGenerator implements PrimaryGenerator {
         }
         for(String column:columns){
             String value = UUID.randomUUID().toString();
-            BeanUtil.setFieldValue(entity, column, value, false);
-            if(!inserts.contains(column)){
-                inserts.add(column);
+            BeanUtil.setFieldValue(entity, column, value, true);
+            if(!inserts.contains(column) && !inserts.contains("+"+column)){
+                inserts.add("+"+column);
             }
         }
         return true;
