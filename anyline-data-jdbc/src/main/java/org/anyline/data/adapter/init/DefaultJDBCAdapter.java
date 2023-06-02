@@ -300,21 +300,21 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 确认需要插入的列
 	 * @param obj  Entity或DataRow
 	 * @param batch  是否批量，批量时不检测值是否为空
-	 * @param columns 提供额外的判断依据
-	 *                列可以加前缀
-	 *                +:表示必须插入
-	 *                -:表示必须不插入
-	 *                ?:根据是否有值
+	 * @param columns 提供额外的判断依据<br/>
+	 *                列可以加前缀<br/>
+	 *                +:表示必须插入<br/>
+	 *                -:表示必须不插入<br/>
+	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供
-	 *        则解析obj(遍历所有的属性工Key)获取insert列
+	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
-	 *        如果提供了columns则根据columns获取insert列
+	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
-	 *        则把执行结果与表结构对比,删除表中没有的列
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
