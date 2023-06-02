@@ -28,9 +28,6 @@ import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.entity.*;
-import org.anyline.data.generator.GeneratorConfig;
-import org.anyline.data.generator.PrimaryGenerator;
-import org.anyline.data.generator.init.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
@@ -43,6 +40,10 @@ import org.anyline.data.run.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.generator.GeneratorConfig;
+import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.entity.generator.init.TimeGenerator;
+import org.anyline.entity.generator.init.TimestampGenerator;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
@@ -55,7 +56,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import javax.sql.DataSource;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -85,6 +85,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
+
+
 	//单数据源 或 固定数据源(不可切换)时赋
 	protected AnylineDao dao;
 
@@ -129,21 +131,28 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	public Object createPrimaryValue(Object entity, DatabaseType type, String table, List<String> columns, String other){
+		//针对当前表的生成器
+		PrimaryGenerator generator = GeneratorConfig.get(table);
+		if(null != generator){
+			return generator.create(entity, type, table, columns, other);
+		}
+		//全局配置
 		if(null == primaryGenerator){
-			//单表配置
-			primaryGenerator = GeneratorConfig.get(table);
+			if(null == primaryGenerator){
+				primaryGenerator = GeneratorConfig.get();
+			}
 			if(null == primaryGenerator) {
 				//全局配置
 				if (ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE) {
-					primaryGenerator = new SnowflakeGenerator();
+					primaryGenerator = PrimaryGenerator.GENERATORS.SNOWFLAKE;
 				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
-					primaryGenerator = new RandomGenerator();
+					primaryGenerator = PrimaryGenerator.GENERATORS.RANDOM;
 				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
-					primaryGenerator = new UUIDGenerator();
+					primaryGenerator = PrimaryGenerator.GENERATORS.UUID;
 				} else if (ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE) {
-					primaryGenerator = new TimeGenerator();
+					primaryGenerator = PrimaryGenerator.GENERATORS.TIME;
 				} else if (ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE) {
-					primaryGenerator = new TimestampGenerator();
+					primaryGenerator = PrimaryGenerator.GENERATORS.TIMESTAMP;
 				}
 			}
 		}

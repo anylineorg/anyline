@@ -3,6 +3,7 @@ package org.anyline.data.util;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.entity.Compare;
+import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.listener.EntityListener;
 import org.anyline.util.ConfigTable;
@@ -58,20 +59,6 @@ public class ThreadConfig extends ConfigTable {
     public String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
     public boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要提供主事务管理器,多数据源时需要
 
-    public boolean PRIMARY_GENERATOR_UUID_ACTIVE				= false			;	// 是否开启默认的主键生成器(UUID)
-    public boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false			;	// 是否开启默认的主键生成器(雪花)
-    public boolean PRIMARY_GENERATOR_RANDOM_ACTIVE				= false			;	// 是否开启默认的主键生成器(随机)
-    public boolean PRIMARY_GENERATOR_TIMESTAMP_ACTIVE			= false			;	// 是否开启默认的主键生成器(时间戳)
-    public boolean PRIMARY_GENERATOR_TIME_ACTIVE				= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
-
-    public int PRIMARY_GENERATOR_WORKER_ID						= 1				;	// 主键生成器机器ID
-    public String PRIMARY_GENERATOR_PREFIX						= ""			;	// 主键前缀(随机主键)
-    public int PRIMARY_GENERATOR_RANDOM_LENGTH					= 32			;	// 主随机主键总长度
-    public boolean PRIMARY_GENERATOR_UPPER						= true			;	// 生成主键大写
-    public boolean PRIMARY_GENERATOR_LOWER						= false			;	// 生成主键小写
-    public String PRIMARY_GENERATOR_TIME_FORMAT					= null			;	// 生成主键日期格式(默认yyyyMMddHHmmssSSS)
-    public int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3				;   // 生成主键TIME/TIMESTAMP后缀随机数长度
-    public String SNOWFLAKE_TWEPOCH								= "2000-01-01"	;	// 雪花算法开始日期
 
     public int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000			;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
     public boolean IS_DDL_AUTO_DROP_COLUMN						= false			;   // DDL执行时是否自动删除定义中不存在的列
@@ -93,6 +80,23 @@ public class ThreadConfig extends ConfigTable {
     public int TABLE_METADATA_CACHE_SECOND						= 3600*24		;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
     public String MIX_DEFAULT_SEED								= "al"			;   // MixUti.mix默认seed
     public String EL_ATTRIBUTE_PREFIX							= "al"			;
+
+    public boolean PRIMARY_GENERATOR_UUID_ACTIVE				= false			;	// 是否开启默认的主键生成器(UUID)
+    public boolean PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE			= false			;	// 是否开启默认的主键生成器(雪花)
+    public boolean PRIMARY_GENERATOR_RANDOM_ACTIVE				= false			;	// 是否开启默认的主键生成器(随机)
+    public boolean PRIMARY_GENERATOR_TIMESTAMP_ACTIVE			= false			;	// 是否开启默认的主键生成器(时间戳)
+    public boolean PRIMARY_GENERATOR_TIME_ACTIVE				= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
+
+    public int PRIMARY_GENERATOR_WORKER_ID						= 1				;	// 主键生成器机器ID
+    public String PRIMARY_GENERATOR_PREFIX						= ""			;	// 主键前缀(随机主键)
+    public int PRIMARY_GENERATOR_RANDOM_LENGTH					= 32			;	// 主随机主键总长度
+    public boolean PRIMARY_GENERATOR_UPPER						= true			;	// 生成主键大写
+    public boolean PRIMARY_GENERATOR_LOWER						= false			;	// 生成主键小写
+    public String PRIMARY_GENERATOR_TIME_FORMAT					= null			;	// 生成主键日期格式(默认yyyyMMddHHmmssSSS)
+    public int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3				;   // 生成主键TIME/TIMESTAMP后缀随机数长度
+    public String SNOWFLAKE_TWEPOCH								= "2000-01-01"	;	// 雪花算法开始日期
+
+    public GeneratorConfig GENERATOR 						    = new GeneratorConfig();
 
     protected DDListener ddListener;
     protected DMListener dmListener;
@@ -520,5 +524,8 @@ public class ThreadConfig extends ConfigTable {
 
     public String MIX_DEFAULT_SEED() {
         return MIX_DEFAULT_SEED;
+    }
+    public GeneratorConfig GENERATOR(){
+        return GENERATOR;
     }
 }

@@ -17,10 +17,10 @@
  */
 
 
-package org.anyline.data.generator.init;
+package org.anyline.entity.generator.init;
 
-import org.anyline.data.generator.PrimaryGenerator;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SnowflakeWorker;
