@@ -5,17 +5,17 @@ import java.util.List;
 
 public class MultiPoint extends Geometry{
     private List<Point> points = new ArrayList<>();
+    public MultiPoint(){
 
+    }
+    public MultiPoint(List<Point> points){
+        this.points = points;
+    }
     public MultiPoint add(Point point){
         points.add(point);
         return this;
     }
-    public MultiPoint add(MultiPoint points){
-        if(null != points){
-            points.add(points.getPoints());
-        }
-        return this;
-    }
+
     public MultiPoint add(List<Point> points){
         if(null != points) {
             points.addAll(points);
@@ -31,7 +31,6 @@ public class MultiPoint extends Geometry{
         return points;
     }
     public String toString(){
-
         StringBuilder builder = new StringBuilder();
         builder.append("MULTIPOINT");
         builder.append("(");
