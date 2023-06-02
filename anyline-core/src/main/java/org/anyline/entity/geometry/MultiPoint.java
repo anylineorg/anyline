@@ -3,7 +3,7 @@ package org.anyline.entity.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiPoint {
+public class MultiPoint extends Geometry{
     private List<Point> points = new ArrayList<>();
 
     public MultiPoint add(Point point){
