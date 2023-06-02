@@ -178,6 +178,17 @@ public class DefaultEntityAdapter implements EntityAdapter {
             fields(clazz);
             field = column2field.get(clazz.getName().toUpperCase()+":"+column.toUpperCase());
         }
+        //可能是父类属性
+        if(null == field || field.getDeclaringClass() != clazz){
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
+            for(Field f:fields){
+                if(f.getName().equalsIgnoreCase(column) && f.getDeclaringClass() == clazz){
+                    field = f;
+                    column2field.put(clazz.getName().toUpperCase()+":"+column.toUpperCase(), field);
+                    break;
+                }
+            }
+        }
         return field;
     }
     public void fields(Class clazz){
@@ -318,8 +329,8 @@ public class DefaultEntityAdapter implements EntityAdapter {
     }
 
     @Override
-    public void createPrimaryValue(Object obj) {
-
+    public boolean createPrimaryValue(Object obj, List<String> inserts) {
+        return false;
     }
 
     @Override
