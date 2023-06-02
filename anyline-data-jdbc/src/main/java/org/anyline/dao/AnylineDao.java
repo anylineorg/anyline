@@ -138,7 +138,7 @@ public interface AnylineDao<E>{
 	 * @return 影响行数
 	 */
 	public int deletes(String table, String key, Collection<Object> values);
-	public int deletes(String table, String key, String ... values);
+	public int deletes(String table, String key, Object ... values);
 	public int truncate(String table);
 
 	/* *****************************************************************************************************************

@@ -626,7 +626,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public int deletes(String table, String key, String ... values);
+	public int deletes(String table, String key, Object ... values);
 
 	public int truncate(String table);
 
