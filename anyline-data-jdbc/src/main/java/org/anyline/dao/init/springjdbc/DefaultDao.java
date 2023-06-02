@@ -1315,11 +1315,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
 		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
-			columns = CacheProxy.columns(runtime.getKey(), table);
-			if(null == columns){
-				columns = columns(runtime, false,  new Table(null, null, table));
-				CacheProxy.columns(runtime.getKey(), table, columns);
-			}
+			columns = columns(runtime, false,  new Table(null, null, table));
 		}
 		try{
 			final long[] mid = {System.currentTimeMillis()};
@@ -2916,10 +2912,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return columns(runtime(), greedy, table);
 	}
 	public LinkedHashMap<String, Column> columns(JDBCRuntime runtime, boolean greedy, Table table){
-		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+
 		if(null == table || BasicUtil.isEmpty(table.getName())){
+			return new LinkedHashMap();
+		}
+
+		LinkedHashMap<String,Column> columns = CacheProxy.columns(runtime.getKey(), table.getName());
+		if(null != columns && !columns.isEmpty()){
 			return columns;
 		}
+
 		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
@@ -3020,6 +3022,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
+		CacheProxy.columns(runtime.getKey(), table.getName(), columns);
 		return columns;
 	}
 	@Override
@@ -3052,12 +3055,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean greedy, Table table) {
-		LinkedHashMap<String,Tag> tags = new LinkedHashMap<>();
 
+	public LinkedHashMap<String, Tag> tags(boolean greedy, Table table) {
+		return tags(runtime(), greedy, table);
+	}
+	public LinkedHashMap<String, Tag> tags(JDBCRuntime runtime, boolean greedy, Table table) {
 		if(null == table || BasicUtil.isEmpty(table.getName())){
+			return new LinkedHashMap();
+		}
+		LinkedHashMap<String,Tag> tags = CacheProxy.tags(runtime.getKey(), table.getName());
+		if(null != tags && !tags.isEmpty()){
 			return tags;
 		}
+
 		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
@@ -3068,7 +3078,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		try {
-			JDBCRuntime runtime = runtime();
 			JDBCAdapter adapter = runtime.getAdapter();
 			if (!greedy) {
 				checkSchema(runtime, table);
@@ -3159,6 +3168,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
+		CacheProxy.tags(runtime.getKey(), table.getName(), tags);
 		return tags;
 	}
 
