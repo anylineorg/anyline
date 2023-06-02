@@ -60,6 +60,10 @@ public class MySQLGeometryAdapter {
             geometry = parseLine(bytes);
         }else if(type == 3){
             geometry = parsePolygon(bytes);
+        }else if(type == 4){
+            geometry = parseMultiPoint(bytes);
+        }else if(type == 5){
+            geometry = parseMultiLine(bytes);
         }
         geometry.setSrid(srid);
         return geometry;
@@ -142,7 +146,7 @@ public class MySQLGeometryAdapter {
         00 00 00 00, 01, 03 00 00 00, 01 00 00 00, 05 00 00 00, 57 76 C1 E0 9A 5A 5E 40, 13 B5 34 B7 42 2C 3F 40, DA 20 93 8C 9C 5A 5E 40, 51 32 39 B5 33 2C 3F 40, E3 FE 23 D3 A1 5A 5E 40, EF 59 D7 68 39 2C 3F 40, EA 09 4B 3C A0 5A 5E 40, 2E FE B6 27 48 2C 3F 40, 57 76 C1 E0 9A 5A 5E 40, 13 B5 34 B7 42 2C 3F 40
         component        size(起-止) decimal      hex
         SRID            4(0-3)       0            00 00 00 00
-        Byte order      1(4-4)     1            01
+        Byte order      1(4-4)       1            01
         WKB type        4(5-8)       3            03 00 00 00
         rings count     4(9-12)      1            01 00 00 00
         外部环(注意这里的外部环只能有一个，如果有多个就是MultiPolygon了)
@@ -169,7 +173,7 @@ public class MySQLGeometryAdapter {
         component        size(起-止)   decimal      hex
         SRID             4(0-3)       0            00 00 00 00
         Byte order       1(4-4)       1            01
-        WKB type         4(5-8)       1            03 00 00 00
+        WKB type         4(5-8)       3            03 00 00 00
         rings count      4(9-12)      3            03 00 00 00
         外环(注意这里的外环只能有一个，如果有多个就是MultiPolygon了)
         外环points数量    4(13-16)      4            04 00 00 00
@@ -251,5 +255,123 @@ public class MySQLGeometryAdapter {
             }
         }
         return polygon;
+    }
+
+    /*
+    MULTIPOINT(30 20, 25 25, 55 85)
+    byte[76]
+    00 00 00 00, 01, 04 00 00 00, 03 00 00 00,
+    (01, 01 00 00 00, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 34 40),
+    (01, 01 00 00 00, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 39 40),
+    (01, 01 00 00 00, 00 00 00 00 00 80 4B 40, 00 00 00 00 00 40 55 40)
+
+    component        size(起-止)   decimal       hex
+    SRID              4(0-3)       0            00 00 00 00
+    Byte order        1(4-4)       1            01
+    WKB type          4(5-8)       4(MultiPoint)04 00 00 00
+    points count     4(9-12)       3            03 00 00 00
+    Byte order      1(13-13)       1            01
+    WKB type        4(14-17)       1(point)     01 00 00 00(好像也没别的值可选，有点多余)
+    X(经度)          8(18-25)      30            00 00 00 00 00 00 3E 40
+    Y(纬度)          8(26-33)      20            00 00 00 00 00 00 34 40
+    Byte order      1(34-34)       1            01
+    WKB type        4(35-38)       1(point)     01 00 00 00
+    X(经度)          8(39-46)      25            00 00 00 00 00 00 39 40
+    Y(纬度)          8(47-54)      25            00 00 00 00 00 00 39 40
+    Byte order      1(55-55)       1            01
+    WKB type        4(56-59)       1(point)     01 00 00 00
+    X(经度)          8(60-67)      55            00 00 00 00 00 80 4B 40
+    Y(纬度)          8(68-75)      85            00 00 00 00 00 40 55 40
+     */
+    /**
+     * 解析MultiPoint
+     * @param bytes bytes
+     * @return MultiPoint
+     */
+    public static MultiPoint parseMultiPoint(byte[] bytes){
+        boolean bigEndian = (bytes[4] == 0x00);
+        //点数量
+        int index = 9;
+        int count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
+        index+=4;
+        List<Point> points = new ArrayList<>();
+        for(int i=0; i<count; i++){
+            //跳过 byte order(1位)和 WKB type(4位)
+            index += 5;
+            double x = NumberUtil.byte2double(bytes, index);
+            index+=8;
+            double y = NumberUtil.byte2double(bytes, index);
+            index+=8;
+            Point point = new Point(x, y);
+            points.add(point);
+        }
+        MultiPoint multiPoint = new MultiPoint(points);
+        return multiPoint;
+    }
+    /*
+    两条线段，每条线段3个点
+    MULTILINESTRING((120 36.1, 120 36.2, 120 36.3), (121 36.1, 121 36.2, 121 36.3))
+    byte[127]
+    00 00 00 00, 01, 05 00 00 00, 02 00 00 00,
+    01, 02 00 00 00, 03 00 00 00, 00 00 00 00 00 00 5E 40(x), CD CC CC CC CC 0C 42 40(y), 00 00 00 00 00 00 5E 40, 9A 99 99 99 99 19 42 40, 00 00 00 00 00 00 5E 40, 66 66 66 66 66 26 42 40,
+    01, 02 00 00 00, 03 00 00 00, 00 00 00 00 00 40 5E 40(x), CD CC CC CC CC 0C 42 40(y), 00 00 00 00 00 40 5E 40, 9A 99 99 99 99 19 42 40, 00 00 00 00 00 40 5E 40, 66 66 66 66 66 26 42 40
+
+    component        size(起-止)   decimal       hex
+    SRID              4(0-3)       0            00 00 00 00
+    Byte order        1(4-4)       1            01
+    WKB type          4(5-8)       5            05 00 00 00
+    line count       4(9-12)       2            02 00 00 00
+    Byte order      1(13-13)       1            01(第0条)
+    WKB type        4(14-17)       1(line)      02 00 00 00(好像也没别的值可选，有点多余)
+    point count     4(18-21)       3            03 00 00 00(第0条线段3个点)
+    X(经度)          8(22-29)      120           00 00 00 00 00 00 5E 40
+    Y(纬度)          8(30-37)      36.1          CD CC CC CC CC 0C 42 40
+    X(经度)          8(38-45)      120           00 00 00 00 00 00 5E 40
+    Y(纬度)          8(46-53)      36.2          9A 99 99 99 99 19 42 40
+    X(经度)          8(54-61)      120           00 00 00 00 00 00 5E 40
+    Y(纬度)          8(62-69)      36.3          66 66 66 66 66 26 42 40
+    Byte order      1(70-70)       1            01(第1条)
+    WKB type        4(71-74)       1(line)      02 00 00 00(好像也没别的值可选，有点多余)
+    point count     4(75-79)       3            03 00 00 00(第0条线段3个点)
+    X(经度)          8(80-87)      121           00 00 00 00 00 40 5E 40
+    Y(纬度)          8(88-95)      36.1          CD CC CC CC CC 0C 42 40
+    X(经度)          8(96-103)     121           00 00 00 00 00 40 5E 40
+    Y(纬度)          8(104-111)    36.2          9A 99 99 99 99 19 42 40
+    X(经度)          8(112-119)    121           00 00 00 00 00 40 5E 40
+    Y(纬度)          8(120-127)    36.3          66 66 66 66 66 26 42 40
+
+    * */
+    /**
+     * 解析MultiLine
+     * @param bytes bytes
+     * @return MultiPoint
+     */
+    public static MultiLine parseMultiLine(byte[] bytes){
+        boolean bigEndian = (bytes[4] == 0x00);
+        //线段数量
+        int index = 9;
+        int line_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
+        index+=4;
+        List<Line> lines = new ArrayList<>();
+        for(int l=0; l<line_count; l++){
+            //跳过 byte order(1位)和 WKB type(4位)
+            index += 5;
+            //当前线段点数量
+            int point_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
+            index += 4;
+            List<Point> points = new ArrayList<>();
+            for(int p=0; p<point_count; p++){
+                double x = NumberUtil.byte2double(bytes, index);
+                index+=8;
+                double y = NumberUtil.byte2double(bytes, index);
+                index+=8;
+                Point point = new Point(x, y);
+                points.add(point);
+            }
+            Line line = new Line(points);
+            lines.add(line);
+        }
+        MultiLine multiLine = new MultiLine(lines);
+        return multiLine;
     }
 }
