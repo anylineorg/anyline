@@ -27,6 +27,12 @@ import java.util.List;
 
 public interface PrimaryGenerator {
 	public enum GENERATORS implements PrimaryGenerator{
+		DISABLE{
+			@Override
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
+				return false;
+			}
+		},
 		RANDOM{
 			@Override
 			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other) {
