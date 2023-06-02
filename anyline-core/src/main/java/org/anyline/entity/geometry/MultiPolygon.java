@@ -1,4 +1,4 @@
 package org.anyline.entity.geometry;
 
-public class MultiPolygon {
+public class MultiPolygon extends Geometry{
 }
