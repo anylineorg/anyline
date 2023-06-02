@@ -2698,12 +2698,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public LinkedHashMap<String,Tag> tags(boolean greedy, Table table){
-            LinkedHashMap<String,Tag> tags = CacheProxy.tags(table.getName());
-            if(null == tags){
-                tags = dao.tags(greedy, table);
-                CacheProxy.tags(table.getName(), tags);
-            }
-            return tags;
+            return dao.tags(greedy, table);
         }
         @Override
         public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table){
