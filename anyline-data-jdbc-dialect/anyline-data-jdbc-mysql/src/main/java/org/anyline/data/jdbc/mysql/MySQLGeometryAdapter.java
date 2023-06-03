@@ -368,4 +368,103 @@ public class MySQLGeometryAdapter {
         MultiLine multiLine = new MultiLine(lines);
         return multiLine;
     }
+    /*
+    SRID(4 byte) + Byte order (1 byte) + WKB type (4 bytes) + Number of polygons (4 bytes) + Polygon 1 + Polygon 2 + ... + Polygon n
+    其中，Byte order指定字节顺序（大端或小端），WKB type表示几何类型（0x0606），Number of polygons表示该MultiPolygon包含的多边形数量，后面跟着每个多边形的WKB结构。
+
+    每个多边形的WKB结构如下：
+    Byte order (1 byte) + WKB type (4 bytes) + Number of rings (4 bytes) + Exterior ring + Interior ring 1 + Interior ring 2 + ... + Interior ring n
+    其中，Byte order和WKB type与MultiPolygon相同，Number of rings表示该多边形包含的环数（通常为1个外环和若干个内环），后面跟着每个环的WKB结构。
+
+    每个环的WKB结构如下：
+    Byte order (1 byte) + WKB type (4 bytes) + Number of points (4 bytes) + Point 1 + Point 2+ ...+ Point n
+    其中，Byte order和WKB type与前两者相同，Number of points表示该环包含的点数，后面跟着每个点的坐标信息（通常为二维平面坐标或三维空间坐标）。
+    需要注意的是，MySQL中的WKB结构采用了标准的OGC格式，但字节顺序与大多数数据库和编程语言不同。因此，在使用MySQL WKB时需要进行字节顺序转换。
+
+    带有内环的MultiPolygon,由两个多边形组成的集合，其中第一个多边形包含了一个内环。
+    MULTIPOLYGON (((0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 8, 8 8, 8 2, 2 2)), ((15 15,15 20,20 20,20 15,15 15)))
+    byte[283]
+    00 00 00 00, 01, 06 00 00 00, 02 00 00 00,
+    面0
+    01, 03 00 00 00, 02 00 00 00,
+    外环
+    05 00 00 00, 00 00 00 00 00 00 00 00(x1), 00 00 00 00 00 00 00 00(y1), 00 00 00 00 00 00 00 00(x2), 00 00 00 00 00 00 24 40(y2), 00 00 00 00 00 00 24 40(x3), 00 00 00 00 00 00 24 40(y3), 00 00 00 00 00 00 24 40(x4), 00 00 00 00 00 00 00 00(y4), 00 00 00 00 00 00 00 00(x5), 00 00 00 00 00 00 00 00(y5)
+    内环
+    05 00 00 00, 00 00 00 00 00 00 00 40(x1), 00 00 00 00 00 00 00 40(y1), 00 00 00 00 00 00 00 40(x2), 00 00 00 00 00 00 20 40(y2), 00 00 00 00 00 00 20 40(y3), 00 00 00 00 00 00 20 40(y3), 00 00 00 00 00 00 20 40(x4), 00 00 00 00 00 00 00 40(y4), 00 00 00 00 00 00 00 40(x5), 00 00 00 00 00 00 00 40(y5),
+    面1
+    01, 03 00 00 00, 01 00 00 00, 05 00 00 00,
+    00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 2E 40 00 00 00 00 00 00 2E 40
+
+    component        size(起-止)   decimal         hex                          comment
+    SRID              4(0-3)       0              00 00 00 00
+    Byte order        1(4-4)       1              01
+    WKB type          4(5-8)       6              06 00 00 00                  MultiPolygon
+    polygon count    4(9-12)       2              02 00 00 00                  共2个直接子元素(Polygon)
+
+    面0
+    Byte order      1(13-13)       1              01                           针对第0个直接子元素(Polygon)
+    WKB type        4(14-17)       3              03 00 00 00                  第0个直接子元素(Polygon)类型:Polygon
+    ring count      4(18-21)       2              02 00 00 00                  第0个Polygon中共2个环
+
+    面0外环
+    point count     4(22-25)      5              05 00 00 00                  第0个Polygon外环点数量
+    X1(经度)         8(26-33)      0              00 00 00 00 00 00 00 00
+    Y1(纬度)         8(34-41)      0              00 00 00 00 00 00 00 00
+    X2(经度)         8(42-49)      0              00 00 00 00 00 00 00 00
+    Y2(纬度)         8(50-57)      10             00 00 00 00 00 00 24 40
+    X3(经度)         8(58-65)      10             00 00 00 00 00 00 24 40
+    Y3(纬度)         8(66-73)      10             00 00 00 00 00 00 24 40
+    X4(经度)         8(74-81)      10             00 00 00 00 00 00 24 40
+    Y4(纬度)         8(82-89)      0              00 00 00 00 00 00 24 40
+    X5(经度)         8(90-97)      0              00 00 00 00 00 00 00 00
+    Y6(纬度)         8(98-105)     0              00 00 00 00 00 00 00 00
+    面0内环0
+    point count     4(106-109)    5              05 00 00 00                  第0个Polygon第0个内环点数量
+    X1(经度)         8(110-117)    2              00 00 00 00 00 00 00 40
+    Y1(纬度)         8(118-125)    2              00 00 00 00 00 00 00 40
+    X2(经度)         8(126-133)    2              00 00 00 00 00 00 00 40
+    Y2(纬度)         8(134-141)    8              00 00 00 00 00 00 20 40
+    X3(经度)         8(142-149)    8              00 00 00 00 00 00 20 40
+    Y3(纬度)         8(150-157)    8              00 00 00 00 00 00 20 40
+    X4(经度)         8(158-165)    8              00 00 00 00 00 00 20 40
+    Y4(纬度)         8(166-173)    2              00 00 00 00 00 00 00 40
+    X5(经度)         8(174-181)    2              00 00 00 00 00 00 00 40
+    Y5(纬度)         8(182-189)    2              00 00 00 00 00 00 00 40
+    面1
+    Byte order      1(190-190)    1              01                           针对第1个直接子元素(Polygon)
+    WKB type        4(191-194)    3              03 00 00 00                  第1个直接子元素(Polygon)类型:Polygon
+    ring count      4(195-198)    1              01 00 00 00                  第1个Polygon中共2个环
+    面1外环
+    point count     4(199-202)    5              05 00 00 00                  第0个Polygon外环点数量
+    X1(经度)         8(203-210)   15              00 00 00 00 00 00 2E 40
+    Y1(纬度)         8(211-218)   15              00 00 00 00 00 00 2E 40
+    X2(经度)         8(219-226)   15              00 00 00 00 00 00 2E 40
+    Y2(纬度)         8(227-234)   20              00 00 00 00 00 00 34 40
+    X3(经度)         8(235-242)   20              00 00 00 00 00 00 34 40
+    Y3(纬度)         8(243-250)   20              00 00 00 00 00 00 34 40
+    X4(经度)         8(251-258)   20              00 00 00 00 00 00 34 40
+    Y4(纬度)         8(259-266)   15              00 00 00 00 00 00 2E 40
+    X5(经度)         8(267-274)   15              00 00 00 00 00 00 2E 40
+    Y5(纬度)         8(275-282)   15              00 00 00 00 00 00 2E 40
+    */
+    /**
+     * 解析MultiPolygon
+     * @param bytes bytes
+     * @return MultiPolygon
+     */
+    public static MultiPolygon parseMultiPolygon(byte[] bytes){
+        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
+        //面数量
+        int polygon_count = buffer.readInt();
+        List<Polygon> polygons = new ArrayList<>();
+        for(int py=0; py<polygon_count; py++){
+            //跳过Byte order(1)+WKB type(4)
+            buffer.step(5);
+            Polygon polygon = polygon(buffer);
+            polygons.add(polygon);
+        }
+        MultiPolygon multiPolygon = new MultiPolygon(polygons);
+
+        return multiPolygon;
+    }
 }
