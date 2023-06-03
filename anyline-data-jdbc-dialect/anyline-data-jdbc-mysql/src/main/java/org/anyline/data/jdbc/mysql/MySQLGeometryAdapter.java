@@ -1,6 +1,7 @@
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.entity.geometry.*;
+import org.anyline.util.ByteBuffer;
 import org.anyline.util.NumberUtil;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MySQLGeometryAdapter {
-
     private static Map<Integer, Geometry.Type> types = new Hashtable<>();
     static {
         types.put(1, Geometry.Type.Point);
@@ -64,6 +64,8 @@ public class MySQLGeometryAdapter {
             geometry = parseMultiPoint(bytes);
         }else if(type == 5){
             geometry = parseMultiLine(bytes);
+        }else if(type == 6){
+            geometry = parseMultiPolygon(bytes);
         }
         geometry.setSrid(srid);
         return geometry;
@@ -86,12 +88,17 @@ public class MySQLGeometryAdapter {
      * @return Point
      */
     public static Point parsePoint(byte[] bytes){
-        double x = NumberUtil.byte2double(bytes, 9);
-        double y = NumberUtil.byte2double(bytes, 17);
-        Point point = new Point(x, y);
+        Point point = point(bytes, 9);
         return point;
     }
 
+    public static Point point(byte[] bytes, int offset){
+        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
+        return point(buffer);
+    }
+    public static Point point(ByteBuffer buffer){
+        return new Point(buffer.readDouble(), buffer.readDouble());
+    }
     /*
         LINESTRING(1 2, 15 15, 11 22)
         bytes[61]:
@@ -114,13 +121,25 @@ public class MySQLGeometryAdapter {
      * @return Line
      */
     public static Line parseLine(byte[] bytes){
-        boolean bigEndian = (bytes[4] == 0x00);
-        int count = NumberUtil.byte2int(bytes, 9, 4, bigEndian);
+        Line line = line(bytes, 9);
+        return line;
+    }
+
+    /**
+     *
+     * @param bytes bytes
+     * @param offset point count的开始位置
+     * @return Line
+     */
+    public static Line line(byte[] bytes, int offset){
+        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
+        return line(buffer);
+    }
+    public static Line line(ByteBuffer buffer){
         List<Point> points = new ArrayList<>();
+        int count = buffer.readInt();
         for(int i=0; i<count; i++){
-            double x = NumberUtil.byte2double(bytes, 13+8*i*2);
-            double y = NumberUtil.byte2double(bytes, 21+8*i*2);
-            Point point = new Point(x, y);
+            Point point = point(buffer);
             points.add(point);
         }
         Line line = new Line(points);
@@ -137,7 +156,6 @@ public class MySQLGeometryAdapter {
             点的数量（Number of Points）：表示构成外部环的点的数量。
             点的坐标（Coordinates）：按照顺序列出外部环中每个点的坐标，每个点的坐标由X和Y值组成。
         内部环（Interior Rings）（可选）：
-            环的数量（Number of Rings）：表示内部环的数量。
             点的数量（Number of Points）：表示每个内部环中点的数量。
             点的坐标（Coordinates）：按照顺序列出每个内部环中每个点的坐标，每个点的坐标由X和Y值组成。
         单个环
@@ -212,49 +230,47 @@ public class MySQLGeometryAdapter {
      * @return Polygon
      */
     public static Polygon parsePolygon(byte[] bytes){
-        boolean bigEndian = (bytes[4] == 0x00);
+        Polygon polygon = polygon(bytes, 9);
+        return polygon;
+    }
+
+    /**
+     *
+     * @param bytes byte
+     * @param offset 环数量开始位置
+     * @return Polygon
+     */
+    public static Polygon polygon(byte[] bytes, int offset){
+        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
+        return polygon(buffer);
+    }
+    public static Polygon polygon(ByteBuffer buffer){
         Polygon polygon = new Polygon();
-        //环数量
-        int index = 9;
-        int ring_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
-        index+=4;
+        int ring_count = buffer.readInt();
         //外环(只有一个)
         //外环中Point数量
-        int point_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
-        index+=4;
-        List<Point> points = new ArrayList<>();
-        for(int p=0; p<point_count; p++){
-            double x = NumberUtil.byte2double(bytes, index);
-            index+=8;
-            double y = NumberUtil.byte2double(bytes, index);
-            index+=8;
-            Point point = new Point(x, y);
-            points.add(point);
-        }
-        Ring out = new Ring(points);
+        Ring out = ring(buffer);
         out.clockwise(true);
         polygon.add(out);
         if(ring_count > 1){
             //内环(可能有多个)
             for(int r=1; r<ring_count; r++){
                 //内环中Point数量
-                points = new ArrayList<>();
-                point_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
-                index+=4;
-                for(int p=0; p<point_count; p++){
-                    double x = NumberUtil.byte2double(bytes, index);
-                    index+=8;
-                    double y = NumberUtil.byte2double(bytes, index);
-                    index+=8;
-                    Point point = new Point(x, y);
-                    points.add(point);
-                }
-                Ring in = new Ring(points);
+                Ring in = ring(buffer);
                 in.clockwise(false);
                 polygon.add(in);
             }
         }
         return polygon;
+    }
+    public static Ring ring(ByteBuffer buffer){
+        List<Point> points = new ArrayList<>();
+        int point_count = buffer.readInt();
+        for(int p=0; p<point_count; p++){
+            points.add(point(buffer));
+        }
+        Ring ring = new Ring(points);
+        return ring;
     }
 
     /*
@@ -289,21 +305,14 @@ public class MySQLGeometryAdapter {
      * @return MultiPoint
      */
     public static MultiPoint parseMultiPoint(byte[] bytes){
-        boolean bigEndian = (bytes[4] == 0x00);
+        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
         //点数量
-        int index = 9;
-        int count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
-        index+=4;
+        int count = buffer.readInt();
         List<Point> points = new ArrayList<>();
         for(int i=0; i<count; i++){
             //跳过 byte order(1位)和 WKB type(4位)
-            index += 5;
-            double x = NumberUtil.byte2double(bytes, index);
-            index+=8;
-            double y = NumberUtil.byte2double(bytes, index);
-            index+=8;
-            Point point = new Point(x, y);
-            points.add(point);
+            buffer.step(5);
+            points.add(point(buffer));
         }
         MultiPoint multiPoint = new MultiPoint(points);
         return multiPoint;
@@ -347,29 +356,14 @@ public class MySQLGeometryAdapter {
      * @return MultiPoint
      */
     public static MultiLine parseMultiLine(byte[] bytes){
-        boolean bigEndian = (bytes[4] == 0x00);
+        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
         //线段数量
-        int index = 9;
-        int line_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
-        index+=4;
+        int line_count = buffer.readInt();
         List<Line> lines = new ArrayList<>();
         for(int l=0; l<line_count; l++){
             //跳过 byte order(1位)和 WKB type(4位)
-            index += 5;
-            //当前线段点数量
-            int point_count = NumberUtil.byte2int(bytes, index, 4, bigEndian);
-            index += 4;
-            List<Point> points = new ArrayList<>();
-            for(int p=0; p<point_count; p++){
-                double x = NumberUtil.byte2double(bytes, index);
-                index+=8;
-                double y = NumberUtil.byte2double(bytes, index);
-                index+=8;
-                Point point = new Point(x, y);
-                points.add(point);
-            }
-            Line line = new Line(points);
-            lines.add(line);
+            buffer.step(5);
+            lines.add(line(buffer));
         }
         MultiLine multiLine = new MultiLine(lines);
         return multiLine;
