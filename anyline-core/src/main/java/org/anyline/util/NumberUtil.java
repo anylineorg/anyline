@@ -389,7 +389,7 @@ public class NumberUtil {
 	 * @param i 一个整型数据
 	 * @return 4个字节的byte数组
 	 */
-	public byte[] dec2bytes(int i){
+	public byte[] int2bytes(int i){
 		byte[] bytes = new byte[4];
 		bytes[0] = (byte) (0xff & (i >> 0));
 		bytes[1] = (byte) (0xff & (i >> 8));
@@ -397,15 +397,13 @@ public class NumberUtil {
 		bytes[3] = (byte) (0xff & (i >> 24));
 		return bytes;
 	}
-
-
 	/**
 	 * 长整形转换成网络传输的字节流（字节数组）型数据
 	 *
 	 * @param l 一个长整型数据
-	 * @return 4个字节的byte数组
+	 * @return 8个字节的byte数组
 	 */
-	public static byte[] dec2bytes(long l) {
+	public static byte[] long2bytes(long l) {
 		byte[] bytes = new byte[8];
 		for (int i = 0; i < 8; i++) {
 			bytes[i] = (byte) (0xff & (l >> (i * 8)));
@@ -419,25 +417,25 @@ public class NumberUtil {
 	 * @param n 十进制
 	 * @return bytes
 	 */
-	public static byte[] dec2bytes(BigInteger n) {
-		byte tmpd[] = (byte[]) null;
+	public static byte[] int2bytes(BigInteger n) {
+		byte bytes[] = (byte[]) null;
 		if (n == null) {
 			return null;
 		}
 
 		if (n.toByteArray().length == 33) {
-			tmpd = new byte[32];
-			System.arraycopy(n.toByteArray(), 1, tmpd, 0, 32);
+			bytes = new byte[32];
+			System.arraycopy(n.toByteArray(), 1, bytes, 0, 32);
 		} else if (n.toByteArray().length == 32) {
-			tmpd = n.toByteArray();
+			bytes = n.toByteArray();
 		} else {
-			tmpd = new byte[32];
+			bytes = new byte[32];
 			for (int i = 0; i < 32 - n.toByteArray().length; i++) {
-				tmpd[i] = 0;
+				bytes[i] = 0;
 			}
-			System.arraycopy(n.toByteArray(), 0, tmpd, 32 - n.toByteArray().length, n.toByteArray().length);
+			System.arraycopy(n.toByteArray(), 0, bytes, 32 - n.toByteArray().length, n.toByteArray().length);
 		}
-		return tmpd;
+		return bytes;
 	}
 
 	/**
