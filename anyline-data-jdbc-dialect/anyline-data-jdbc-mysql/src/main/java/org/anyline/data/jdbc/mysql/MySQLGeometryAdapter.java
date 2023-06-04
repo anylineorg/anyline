@@ -542,4 +542,17 @@ public class MySQLGeometryAdapter {
             wkb(buffer, point);
         }
     }
+    public static byte[] wkb(MultiPoint multiPoint){
+        List<Point> points = multiPoint.getPoints();
+        int len = 13 + points.size()*(16+1+4); //xy + endian + type
+        ByteBuffer buffer = new ByteBuffer(len, multiPoint.getEndian());
+        head(buffer, multiPoint);
+        buffer.put(points.size());
+        for(Point point:points){
+            buffer.put((byte)multiPoint.getEndian());
+            buffer.put(point.getType());
+            wkb(buffer, point);
+        }
+        return buffer.bytes();
+    }
 }
