@@ -30,7 +30,6 @@ public class MySQLGeometryAdapter {
         return "Point(" + point.getX() + " " + point.getY() + ")";
     }
     public static Geometry parse(byte[] bytes){
-        System.out.println("parse\t\t:"+NumberUtil.byte2hex(bytes," "));
         Geometry geometry = null;
         //取字节数组的前4个来解析srid
         byte[] srid_bytes = new byte[4];
@@ -56,6 +55,12 @@ public class MySQLGeometryAdapter {
         geometry.setEndian(endian);
         geometry.setSrid(srid);
         geometry.setType(type);
+        System.out.println("parse("+type+")["+bytes.length+"]\t\t:"+NumberUtil.byte2hex(bytes," "));
+        bytes = wkb(geometry);
+        if(null != bytes) {
+            System.out.println("format(" + type + ")[" + bytes.length + "]\t\t:" + NumberUtil.byte2hex(bytes, " "));
+        }
+        System.out.println();
         return geometry;
     }
     /*
@@ -136,19 +141,7 @@ public class MySQLGeometryAdapter {
         Line line = new Line(points);
         return line;
     }
-/*
-    public static byte[] bytes(Polygon polygon){
-        ByteBuffer buffer = new ByteBuffer();
 
-        head(buffer, line);
-        buffer.put(points.size());
-        for(Point point:points){
-            buffer.put(point.getX());
-            buffer.put(point.getY());
-        }
-        byte[] bytes = buffer.bytes();
-        return bytes;
-    }*/
     /*
 
         头部（Header）：
@@ -521,6 +514,29 @@ public class MySQLGeometryAdapter {
     }
     public static void wkb(ByteBuffer buffer, Line line){
         List<Point> points = line.points();
+        buffer.put(points.size());
+        for(Point point:points){
+            wkb(buffer, point);
+        }
+    }
+
+    public static byte[] wkb(Polygon polygon){
+        List<Ring> rings = polygon.rings();
+        int len  = 13;
+        for(Ring ring:rings){
+            len += ring.points().size()*16 + 4;
+        }
+        ByteBuffer buffer = new ByteBuffer(len, polygon.getEndian());
+        head(buffer, polygon);
+        buffer.put(rings.size());
+        for(Ring ring:rings){
+            wkb(buffer, ring);
+        }
+        byte[] bytes = buffer.bytes();
+        return bytes;
+    }
+    public static void wkb(ByteBuffer buffer, Ring ring){
+        List<Point> points = ring.points();
         buffer.put(points.size());
         for(Point point:points){
             wkb(buffer, point);
