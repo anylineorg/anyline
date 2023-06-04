@@ -16,7 +16,8 @@ public class Geometry {
         }
     }
     protected int srid;
-    protected byte type;
+    protected int type;
+    protected int endian;
 
     public int getSrid() {
         return srid;
@@ -26,11 +27,19 @@ public class Geometry {
         this.srid = srid;
     }
 
-    public byte getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(byte type) {
+    public void setType(int type) {
         this.type = type;
+    }
+
+    public int getEndian() {
+        return endian;
+    }
+
+    public void setEndian(int endian) {
+        this.endian = endian;
     }
 }
