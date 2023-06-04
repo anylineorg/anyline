@@ -389,7 +389,7 @@ public class NumberUtil {
 	 * @param i 一个整型数据
 	 * @return 4个字节的byte数组
 	 */
-	public byte[] int2bytes(int i){
+	public static byte[] int2bytes(int i){
 		byte[] bytes = new byte[4];
 		bytes[0] = (byte) (0xff & (i >> 0));
 		bytes[1] = (byte) (0xff & (i >> 8));
