@@ -508,4 +508,16 @@ public class MySQLGeometryAdapter {
         return bytes;
     }
 
+    public static byte[] wkb(Line line){
+        List<Point> points = line.points();
+        ByteBuffer buffer = new ByteBuffer(points.size()*16+13, line.getEndian());
+        head(buffer, line);
+        buffer.put(points.size());
+        for(Point point:points){
+            buffer.put(point.getX());
+            buffer.put(point.getY());
+        }
+        byte[] bytes = buffer.bytes();
+        return bytes;
+    }
 }
