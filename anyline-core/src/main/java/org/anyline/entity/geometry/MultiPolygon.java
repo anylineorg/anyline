@@ -18,7 +18,7 @@ public class MultiPolygon extends Geometry{
         return this;
     }
 
-    public MultiPolygon add(List<Line> polygons){
+    public MultiPolygon add(List<Polygon> polygons){
         if(null != polygons) {
             polygons.addAll(polygons);
         }
@@ -29,7 +29,7 @@ public class MultiPolygon extends Geometry{
         polygons = new ArrayList<>();
         return this;
     }
-    public List<Polygon> getLines(){
+    public List<Polygon> polygons(){
         return polygons;
     }
     public String toString(){
