@@ -2,105 +2,40 @@ package org.anyline.entity.geometry;
 
 import org.anyline.util.NumberUtil;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 public class Point extends Geometry{
-    boolean isInt = false;
     private Double x;
     private Double y;
-    public Point(){}
+    public Point(){
+        type = 1;
+    }
     public Point(Double x, Double y){
+        this();
         this.x = x ;
         this.y = y;
     }
     public Point(Integer[] xy){
-        this.x = new Double(x) ;
-        this.y = new Double(y);
-        isInt = true;
+        this(new Double(xy[0]), new Double(xy[1]));
     }
     public Point(int[] xy){
-        this.x = new Double(x) ;
-        this.y = new Double(y);
-        isInt = true;
+        this(xy[0], xy[1]);
     }
     public Point(Double[] xy){
-        this.x = xy[0] ;
-        this.y = xy[1];
+        this(xy[0], xy[1]);
     }
     public Point(double[] xy){
-        this.x = xy[0] ;
-        this.y = xy[1];
+        this(xy[0], xy[1]);
     }
     public Point(int x, int y){
-        this.x = new Double(x) ;
-        this.y = new Double(y);
-        isInt = true;
+        this(new Double(x), new Double(y));
     }
     public Point(Integer x, Integer y){
-        this.x = new Double(x) ;
-        this.y = new Double(y);
-        isInt = true;
-    }
-    public Point(byte[] bytes){
-        x = NumberUtil.byte2double(bytes,9);
-        y = NumberUtil.byte2double(bytes,17);
+        this(new Double(x), new Double(y));
     }
 
-    public byte[] bytes(){
-        byte[] bx= NumberUtil.double2bytes(x);
-        byte[] by= NumberUtil.double2bytes(y);
-        byte[] bytes =new byte[25];
-        bytes[4]=0x01;
-        bytes[5]=0x01;
-        for(int i=0;i<8;++i){
-            bytes[9+i]=bx[i];
-            bytes[17+i]=by[i];
-        }
-        return bytes;
-    }
-    public Byte[] Bytes(){
-        Byte[] bx= NumberUtil.double2Bytes(x);
-        Byte[] by= NumberUtil.double2Bytes(y);
-        Byte[] bytes =new Byte[25];
-        bytes[4]=0x01;
-        bytes[5]=0x01;
-        for(int i=0;i<8;++i){
-            bytes[9+i]=bx[i];
-            bytes[17+i]=by[i];
-        }
-        return bytes;
-    }
-    public Double[] getArray(){
-        return new Double[]{x,y};
-    }
-    public Double[] getDoubles(){
-        return new Double[]{x,y};
-    }
-    public Float[] getFloats(){
-        return new Float[]{x.floatValue(),y.floatValue()};
-    }
-    public BigDecimal[] getDecimals(){
-        return new BigDecimal[]{BigDecimal.valueOf(x),BigDecimal.valueOf(y)};
-    }
-    public float[] floats(){
-        return new float[]{x.floatValue(),y.floatValue()};
-    }
     public double[] doubles() throws Exception{
         return new double[]{x, y};
     }
-    public Long[] getLongs(){
-        return new Long[]{x.longValue(),y.longValue()};
-    }
-    public long[] longs() throws Exception{
-        return new long[]{x.longValue(), y.longValue()};
-    }
-    public Integer[] getIntegers(){
-        return new Integer[]{x.intValue(),y.intValue()};
-    }
-    public int[] ints() throws Exception{
-        return new int[]{x.intValue(), y.intValue()};
-    }
+
     public Double getX() {
         return x;
     }
