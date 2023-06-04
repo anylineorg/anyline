@@ -1,6 +1,7 @@
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.entity.geometry.*;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ByteBuffer;
 import org.anyline.util.NumberUtil;
 
@@ -55,11 +56,13 @@ public class MySQLGeometryAdapter {
         geometry.setEndian(endian);
         geometry.setSrid(srid);
         geometry.setType(type);
+        System.out.println(geometry.getClass());
         System.out.println("parse("+type+")["+bytes.length+"]\t\t:"+NumberUtil.byte2hex(bytes," "));
-        bytes = wkb(geometry);
-        if(null != bytes) {
-            System.out.println("format(" + type + ")[" + bytes.length + "]\t\t:" + NumberUtil.byte2hex(bytes, " "));
+        byte[] bytes2 = wkb(geometry);
+        if(null != bytes2) {
+            System.out.println("format(" + type + ")[" + bytes2.length + "]\t\t:" + NumberUtil.byte2hex(bytes2, " "));
         }
+        System.out.println(BasicUtil.equals(bytes, bytes2));
         System.out.println();
         return geometry;
     }
@@ -69,7 +72,7 @@ public class MySQLGeometryAdapter {
         00 00 00 00, 01, 01 00 00 00, 00 00 00 00 00 00 5E 40, CD CC CC CC CC 0C 42 40
         component	    size(起-止) decimal hex
         SRID            4(0-3)      0       00 00 00 00
-        Byte order	    1(4-4)  	1       01(1:小端,0:大端)
+        Endian	        1(4-4)  	1       01(1:小端,0:大端)
         WKB type	    4(5-8)  	1       01 00 00 00
         X(经度)	        8(9-16) 	120.0   00 00 00 00 00 00 5e 40
         Y(纬度)	        8(17-24)	36.1    cd cc cc cc cc 0c 42 40
@@ -90,7 +93,10 @@ public class MySQLGeometryAdapter {
         return point(buffer);
     }
     public static Point point(ByteBuffer buffer){
-        return new Point(buffer.readDouble(), buffer.readDouble());
+        Point point = new Point(buffer.readDouble(), buffer.readDouble());
+        point.setType(1);
+        point.setEndian(1);
+        return point;
     }
 
     /*
@@ -99,7 +105,7 @@ public class MySQLGeometryAdapter {
         00 00 00 00, 01, 02 00 00 00, 03 00 00 00, 00 00 00 00 00 00 F0 3F, 00 00 00 00 00 00 00 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 26 40 00 00 00 00 00 00 36 40
         component	    size(起-止) decimal  hex
         SRID            4(0-3)      0       00 00 00 00
-        Byte order	    1(4-4)      1       01
+        Endian	        1(4-4)      1       01
         WKB type	    4(5-8)      1       01 00 00 00
         point count     4(9-12)     3       03 00 00 00
         X(经度)          8(13-20)    1 	    00 00 00 00 00 00 f0 3f
@@ -139,6 +145,8 @@ public class MySQLGeometryAdapter {
             points.add(point);
         }
         Line line = new Line(points);
+        line.setType(2);
+        line.setEndian(1);
         return line;
     }
 
@@ -146,7 +154,7 @@ public class MySQLGeometryAdapter {
 
         头部（Header）：
             SRID
-            字节顺序（Byte Order）：表示二进制数据的字节顺序，通常为大端序（Big Endian）或小端序（Little Endian）。
+            字节顺序（Endian）：表示二进制数据的字节顺序，通常为大端序（Big Endian）或小端序（Little Endian）。
             类型标识符（Type Identifier）：标识几何对象的类型，对于多边形（Polygon）来说，它的值是十六进制的0103。
             环的数量（Number of Rings）：表示多边形中环的数量，包括外部环和内部环（孔）。
         外部环（Exterior Ring）：
@@ -161,7 +169,7 @@ public class MySQLGeometryAdapter {
         00 00 00 00, 01, 03 00 00 00, 01 00 00 00, 05 00 00 00, 57 76 C1 E0 9A 5A 5E 40, 13 B5 34 B7 42 2C 3F 40, DA 20 93 8C 9C 5A 5E 40, 51 32 39 B5 33 2C 3F 40, E3 FE 23 D3 A1 5A 5E 40, EF 59 D7 68 39 2C 3F 40, EA 09 4B 3C A0 5A 5E 40, 2E FE B6 27 48 2C 3F 40, 57 76 C1 E0 9A 5A 5E 40, 13 B5 34 B7 42 2C 3F 40
         component        size(起-止) decimal      hex
         SRID            4(0-3)       0            00 00 00 00
-        Byte order      1(4-4)       1            01
+        Endian          1(4-4)       1            01
         WKB type        4(5-8)       3            03 00 00 00
         rings count     4(9-12)      1            01 00 00 00
         外部环(注意这里的外部环只能有一个，如果有多个就是MultiPolygon了)
@@ -187,7 +195,7 @@ public class MySQLGeometryAdapter {
         04 00 00 00, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 80 41 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 39 40 ,00 00 00 00 00 00 39 40
         component        size(起-止)   decimal      hex
         SRID             4(0-3)       0            00 00 00 00
-        Byte order       1(4-4)       1            01
+        Endian           1(4-4)       1            01
         WKB type         4(5-8)       3            03 00 00 00
         rings count      4(9-12)      3            03 00 00 00
         外环(注意这里的外环只能有一个，如果有多个就是MultiPolygon了)
@@ -243,6 +251,8 @@ public class MySQLGeometryAdapter {
     }
     public static Polygon polygon(ByteBuffer buffer){
         Polygon polygon = new Polygon();
+        polygon.setType(3);
+        polygon.setEndian(1);
         int ring_count = buffer.readInt();
         //外环(只有一个)
         //外环中Point数量
@@ -269,7 +279,6 @@ public class MySQLGeometryAdapter {
         Ring ring = new Ring(points);
         return ring;
     }
-
     /*
     MULTIPOINT(30 20, 25 25, 55 85)
     byte[76]
@@ -278,20 +287,21 @@ public class MySQLGeometryAdapter {
     (01, 01 00 00 00, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 39 40),
     (01, 01 00 00 00, 00 00 00 00 00 80 4B 40, 00 00 00 00 00 40 55 40)
 
+
     component        size(起-止)   decimal       hex
     SRID              4(0-3)       0            00 00 00 00
-    Byte order        1(4-4)       1            01
+    Endian            1(4-4)       1            01
     WKB type          4(5-8)       4(MultiPoint)04 00 00 00
     points count     4(9-12)       3            03 00 00 00
-    Byte order      1(13-13)       1            01
+    Endian          1(13-13)       1            01
     WKB type        4(14-17)       1(point)     01 00 00 00(好像也没别的值可选，有点多余)
     X(经度)          8(18-25)      30            00 00 00 00 00 00 3E 40
     Y(纬度)          8(26-33)      20            00 00 00 00 00 00 34 40
-    Byte order      1(34-34)       1            01
+    Endian          1(34-34)       1            01
     WKB type        4(35-38)       1(point)     01 00 00 00
     X(经度)          8(39-46)      25            00 00 00 00 00 00 39 40
     Y(纬度)          8(47-54)      25            00 00 00 00 00 00 39 40
-    Byte order      1(55-55)       1            01
+    Endian          1(55-55)       1            01
     WKB type        4(56-59)       1(point)     01 00 00 00
     X(经度)          8(60-67)      55            00 00 00 00 00 80 4B 40
     Y(纬度)          8(68-75)      85            00 00 00 00 00 40 55 40
@@ -307,11 +317,13 @@ public class MySQLGeometryAdapter {
         int count = buffer.readInt();
         List<Point> points = new ArrayList<>();
         for(int i=0; i<count; i++){
-            //跳过 byte order(1位)和 WKB type(4位)
+            //跳过 Endian(1位)和 WKB type(4位)
             buffer.step(5);
             points.add(point(buffer));
         }
         MultiPoint multiPoint = new MultiPoint(points);
+        multiPoint.setType(4);
+        multiPoint.setEndian(1);
         return multiPoint;
     }
     /*
@@ -324,10 +336,10 @@ public class MySQLGeometryAdapter {
 
     component        size(起-止)   decimal       hex
     SRID              4(0-3)       0            00 00 00 00
-    Byte order        1(4-4)       1            01
+    Endian            1(4-4)       1            01
     WKB type          4(5-8)       5            05 00 00 00
     line count       4(9-12)       2            02 00 00 00
-    Byte order      1(13-13)       1            01(第0条)
+    Endian          1(13-13)       1            01(第0条)
     WKB type        4(14-17)       1(line)      02 00 00 00(好像也没别的值可选，有点多余)
     point count     4(18-21)       3            03 00 00 00(第0条线段3个点)
     X(经度)          8(22-29)      120           00 00 00 00 00 00 5E 40
@@ -336,7 +348,7 @@ public class MySQLGeometryAdapter {
     Y(纬度)          8(46-53)      36.2          9A 99 99 99 99 19 42 40
     X(经度)          8(54-61)      120           00 00 00 00 00 00 5E 40
     Y(纬度)          8(62-69)      36.3          66 66 66 66 66 26 42 40
-    Byte order      1(70-70)       1            01(第1条)
+    Endian          1(70-70)       1            01(第1条)
     WKB type        4(71-74)       1(line)      02 00 00 00(好像也没别的值可选，有点多余)
     point count     4(75-79)       3            03 00 00 00(第0条线段3个点)
     X(经度)          8(80-87)      121           00 00 00 00 00 40 5E 40
@@ -358,24 +370,26 @@ public class MySQLGeometryAdapter {
         int line_count = buffer.readInt();
         List<Line> lines = new ArrayList<>();
         for(int l=0; l<line_count; l++){
-            //跳过 byte order(1位)和 WKB type(4位)
+            //跳过 Endian(1位)和 WKB type(4位)
             buffer.step(5);
             lines.add(line(buffer));
         }
         MultiLine multiLine = new MultiLine(lines);
+        multiLine.setType(5);
+        multiLine.setEndian(1);
         return multiLine;
     }
     /*
-    SRID(4 byte) + Byte order (1 byte) + WKB type (4 bytes) + Number of polygons (4 bytes) + Polygon 1 + Polygon 2 + ... + Polygon n
-    其中，Byte order指定字节顺序（大端或小端），WKB type表示几何类型（0x0606），Number of polygons表示该MultiPolygon包含的多边形数量，后面跟着每个多边形的WKB结构。
+    SRID(4 byte) + Endian (1 byte) + WKB type (4 bytes) + Number of polygons (4 bytes) + Polygon 1 + Polygon 2 + ... + Polygon n
+    其中，Endian指定字节顺序（大端或小端），WKB type表示几何类型（0x0606），Number of polygons表示该MultiPolygon包含的多边形数量，后面跟着每个多边形的WKB结构。
 
     每个多边形的WKB结构如下：
-    Byte order (1 byte) + WKB type (4 bytes) + Number of rings (4 bytes) + Exterior ring + Interior ring 1 + Interior ring 2 + ... + Interior ring n
-    其中，Byte order和WKB type与MultiPolygon相同，Number of rings表示该多边形包含的环数（通常为1个外环和若干个内环），后面跟着每个环的WKB结构。
+    Endian (1 byte) + WKB type (4 bytes) + Number of rings (4 bytes) + Exterior ring + Interior ring 1 + Interior ring 2 + ... + Interior ring n
+    其中，Endian和WKB type与MultiPolygon相同，Number of rings表示该多边形包含的环数（通常为1个外环和若干个内环），后面跟着每个环的WKB结构。
 
     每个环的WKB结构如下：
-    Byte order (1 byte) + WKB type (4 bytes) + Number of points (4 bytes) + Point 1 + Point 2+ ...+ Point n
-    其中，Byte order和WKB type与前两者相同，Number of points表示该环包含的点数，后面跟着每个点的坐标信息（通常为二维平面坐标或三维空间坐标）。
+    Endian (1 byte) + WKB type (4 bytes) + Number of points (4 bytes) + Point 1 + Point 2+ ...+ Point n
+    其中，Endian和WKB type与前两者相同，Number of points表示该环包含的点数，后面跟着每个点的坐标信息（通常为二维平面坐标或三维空间坐标）。
     需要注意的是，MySQL中的WKB结构采用了标准的OGC格式，但字节顺序与大多数数据库和编程语言不同。因此，在使用MySQL WKB时需要进行字节顺序转换。
 
     带有内环的MultiPolygon,由两个多边形组成的集合，其中第一个多边形包含了一个内环。
@@ -394,12 +408,12 @@ public class MySQLGeometryAdapter {
 
     component        size(起-止)   decimal         hex                          comment
     SRID              4(0-3)       0              00 00 00 00
-    Byte order        1(4-4)       1              01
+    Endian            1(4-4)       1              01
     WKB type          4(5-8)       6              06 00 00 00                  MultiPolygon
     polygon count    4(9-12)       2              02 00 00 00                  共2个直接子元素(Polygon)
 
     面0
-    Byte order      1(13-13)       1              01                           针对第0个直接子元素(Polygon)
+    Endian          1(13-13)       1              01                           针对第0个直接子元素(Polygon)
     WKB type        4(14-17)       3              03 00 00 00                  第0个直接子元素(Polygon)类型:Polygon
     ring count      4(18-21)       2              02 00 00 00                  第0个Polygon中共2个环
 
@@ -428,7 +442,7 @@ public class MySQLGeometryAdapter {
     X5(经度)         8(174-181)    2              00 00 00 00 00 00 00 40
     Y5(纬度)         8(182-189)    2              00 00 00 00 00 00 00 40
     面1
-    Byte order      1(190-190)    1              01                           针对第1个直接子元素(Polygon)
+    Endian          1(190-190)    1              01                           针对第1个直接子元素(Polygon)
     WKB type        4(191-194)    3              03 00 00 00                  第1个直接子元素(Polygon)类型:Polygon
     ring count      4(195-198)    1              01 00 00 00                  第1个Polygon中共2个环
     面1外环
@@ -455,13 +469,14 @@ public class MySQLGeometryAdapter {
         int polygon_count = buffer.readInt();
         List<Polygon> polygons = new ArrayList<>();
         for(int py=0; py<polygon_count; py++){
-            //跳过Byte order(1)+WKB type(4)
+            //跳过Endian(1)+WKB type(4)
             buffer.step(5);
             Polygon polygon = polygon(buffer);
             polygons.add(polygon);
         }
         MultiPolygon multiPolygon = new MultiPolygon(polygons);
-
+        multiPolygon.setType(6);
+        multiPolygon.setEndian(1);
         return multiPolygon;
     }
 
@@ -478,6 +493,12 @@ public class MySQLGeometryAdapter {
             return wkb((Line)geometry);
         }else if(geometry instanceof Polygon){
             return wkb((Polygon)geometry);
+        }else if(geometry instanceof MultiPoint){
+            return wkb((MultiPoint)geometry);
+        }else if(geometry instanceof MultiLine){
+            return wkb((MultiLine)geometry);
+        }else if(geometry instanceof MultiPolygon){
+            return wkb((MultiPolygon)geometry);
         }
         return null;
     }
@@ -528,13 +549,18 @@ public class MySQLGeometryAdapter {
         }
         ByteBuffer buffer = new ByteBuffer(len, polygon.getEndian());
         head(buffer, polygon);
+        wkb(buffer, polygon);
+        return buffer.bytes();
+    }
+
+    public static void wkb(ByteBuffer buffer, Polygon polygon){
+        List<Ring> rings = polygon.rings();
         buffer.put(rings.size());
         for(Ring ring:rings){
             wkb(buffer, ring);
         }
-        byte[] bytes = buffer.bytes();
-        return bytes;
     }
+
     public static void wkb(ByteBuffer buffer, Ring ring){
         List<Point> points = ring.points();
         buffer.put(points.size());
@@ -555,7 +581,6 @@ public class MySQLGeometryAdapter {
         }
         return buffer.bytes();
     }
-
     public static byte[] wkb(MultiLine multiLine){
         int len = 13;
         List<Line> lines = multiLine.getLines();
@@ -571,6 +596,27 @@ public class MySQLGeometryAdapter {
             buffer.put((byte)line.getEndian());
             buffer.put(line.getType());
             wkb(buffer, line);
+        }
+        return buffer.bytes();
+    }
+    public static byte[] wkb(MultiPolygon multiPolygon){
+        int len = 13;
+        List<Polygon> polygons = multiPolygon.polygons();
+        for(Polygon polygon:polygons){
+            len += 9;
+            List<Ring> rings = polygon.rings();
+            for(Ring ring:rings){
+                len += 4;
+                len += ring.points().size()*16;
+            }
+        }
+        ByteBuffer buffer = new ByteBuffer(len, multiPolygon.getEndian());
+        head(buffer, multiPolygon);
+        buffer.put(polygons.size());
+        for(Polygon polygon:polygons){
+            buffer.put((byte)polygon.getEndian());
+            buffer.put(polygon.getType());
+            wkb(buffer, polygon);
         }
         return buffer.bytes();
     }
