@@ -26,7 +26,7 @@ public enum MySQLWriter {
             }
             if(null != point) {
                 if (placeholder) {
-                    return MySQLGeometryAdapter.bytes(point);
+                    return MySQLGeometryAdapter.wkb(point);
                 } else {
                     return MySQLGeometryAdapter.sql(point);
                 }
@@ -41,7 +41,7 @@ public enum MySQLWriter {
             if(value instanceof Line) {
                 Line line = (Line) value;
                 if (placeholder) {
-                    return MySQLGeometryAdapter.bytes(line);
+                    return MySQLGeometryAdapter.wkb(line);
                 } else {
                     return MySQLGeometryAdapter.sql(line);
                 }
