@@ -23,37 +23,23 @@ public class MySQLGeometryAdapter {
     public static Geometry.Type type(Integer type){
         return types.get(type);
     }
-    public static byte[] bytes(Geometry geometry){
-        return null;
-    }
     public static String sql(Geometry geometry){
         return null;
-    }
-    public static byte[] bytes(Point point){
-        byte[] bx= NumberUtil.double2bytes(point.getX());
-        byte[] by= NumberUtil.double2bytes(point.getY());
-        byte[] bytes =new byte[25];
-        bytes[4]=0x01;
-        bytes[5]=0x01;
-        for(int i=0;i<8;++i){
-            bytes[9+i]=bx[i];
-            bytes[17+i]=by[i];
-        }
-        return bytes;
     }
     public static String sql(Point point){
         return "Point(" + point.getX() + " " + point.getY() + ")";
     }
     public static Geometry parse(byte[] bytes){
+        System.out.println("parse\t\t:"+NumberUtil.byte2hex(bytes," "));
         Geometry geometry = null;
         //取字节数组的前4个来解析srid
         byte[] srid_bytes = new byte[4];
         System.arraycopy(bytes, 0, srid_bytes, 0, 4);
         //是否大端格式
-        boolean bigEndian = (bytes[4] == 0x00);
+        byte endian = bytes[4];
         // 解析SRID
-        int srid = NumberUtil.byte2int(bytes, 0, 4, bigEndian);
-        int type = NumberUtil.byte2int(bytes, 5, 4, bigEndian);
+        int srid = NumberUtil.byte2int(bytes, 0, 4, endian==0);
+        int type = NumberUtil.byte2int(bytes, 5, 4, endian==0);
         if(type == 1){
             geometry = parsePoint(bytes);
         }else if(type == 2){
@@ -67,13 +53,16 @@ public class MySQLGeometryAdapter {
         }else if(type == 6){
             geometry = parseMultiPolygon(bytes);
         }
+        geometry.setEndian(endian);
         geometry.setSrid(srid);
+        geometry.setType(type);
+        System.out.println("format("+type+")\t:"+NumberUtil.byte2hex(bytes(geometry), " "));
         return geometry;
     }
     /*
         POINT(120 36.1)
         bytes[25]:
-        00 00 00 00, 01, 01 00 00 00, 00 00 00 00 00 00 5e 40, cd cc cc cc cc 0c 42 40
+        00 00 00 00, 01, 01 00 00 00, 00 00 00 00 00 00 5E 40, CD CC CC CC CC 0C 42 40
         component	    size(起-止) decimal hex
         SRID            4(0-3)      0       00 00 00 00
         Byte order	    1(4-4)  	1       01(1:小端,0:大端)
@@ -99,22 +88,25 @@ public class MySQLGeometryAdapter {
     public static Point point(ByteBuffer buffer){
         return new Point(buffer.readDouble(), buffer.readDouble());
     }
+
     /*
         LINESTRING(1 2, 15 15, 11 22)
         bytes[61]:
-        00 00 00 00, 01, 02 00 00 00 ,03 00 00 00, 00 00 00 00 00 00 f0 3f, 00 00 00 00 00 00 00 40, 00 00 00 00 00 00 2e 40, 00 00 00 00 00 00 2e 40, 00 00 00 00 00 00 26 40 00 00 00 00 00 00 36 40
+        00 00 00 00, 01, 02 00 00 00, 03 00 00 00, 00 00 00 00 00 00 F0 3F, 00 00 00 00 00 00 00 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 26 40 00 00 00 00 00 00 36 40
         component	    size(起-止) decimal  hex
-        SRID            4(0-3)     0        00 00 00 00
-        Byte order	    1(4-4)     1        01
-        WKB type	    4(5-8)     1        01 00 00 00
-        point count     4(9-12)    3        03 00 00 00
-        X(经度)          8(13-20)   1 	    00 00 00 00 00 00 f0 3f
-        Y(纬度)          8(21-28)   2 	    00 00 00 00 00 00 00 40
+        SRID            4(0-3)      0       00 00 00 00
+        Byte order	    1(4-4)      1       01
+        WKB type	    4(5-8)      1       01 00 00 00
+        point count     4(9-12)     3       03 00 00 00
+        X(经度)          8(13-20)    1 	    00 00 00 00 00 00 f0 3f
+        Y(纬度)          8(21-28)    2 	    00 00 00 00 00 00 00 40
         X(经度)          8(29-36)   15 	    00 00 00 00 00 00 2e 40
         Y(纬度)          8(37-44)   15       00 00 00 00 00 00 2e 40
         X(经度)          8(45-52)   11       00 00 00 00 00 00 2e 40
         Y(纬度)          8(53-60)   22       00 00 00 00 00 00 2e 40
    */
+
+
     /**
      * 解析Line
      * @param bytes bytes
@@ -145,6 +137,19 @@ public class MySQLGeometryAdapter {
         Line line = new Line(points);
         return line;
     }
+/*
+    public static byte[] bytes(Polygon polygon){
+        ByteBuffer buffer = new ByteBuffer();
+
+        head(buffer, line);
+        buffer.put(points.size());
+        for(Point point:points){
+            buffer.put(point.getX());
+            buffer.put(point.getY());
+        }
+        byte[] bytes = buffer.bytes();
+        return bytes;
+    }*/
     /*
 
         头部（Header）：
@@ -467,4 +472,40 @@ public class MySQLGeometryAdapter {
 
         return multiPolygon;
     }
+
+
+    /**
+     * 生成wkb格式要
+     * @param geometry geometry
+     * @return bytes
+     */
+    public static byte[] wkb(Geometry geometry){
+        if(geometry instanceof Point){
+            return wkb((Point)geometry);
+        }else if(geometry instanceof Line){
+            return wkb((Line)geometry);
+        }
+        return null;
+    }
+    /**
+     * 生成头部格式
+     * @param buffer buffer
+     * @param geometry geometry
+     */
+
+    public static void head(ByteBuffer buffer, Geometry geometry){
+        buffer.put(geometry.getSrid());
+        buffer.put((byte) geometry.getEndian());
+        buffer.put(geometry.getType());
+    }
+
+    public static byte[] wkb(Point point){
+        ByteBuffer buffer = new ByteBuffer(25, point.getEndian());
+        head(buffer, point);
+        buffer.put(point.getX());
+        buffer.put(point.getY());
+        byte[] bytes = buffer.bytes();
+        return bytes;
+    }
+
 }
