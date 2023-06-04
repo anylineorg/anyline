@@ -3404,12 +3404,6 @@ public class ConvertAdapter {
                 return new String((byte[]) value);
             }
         });
-        reg(new AbstractConvert(byte[].class, Point.class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                return new Point((byte[]) value);
-            }
-        });
 
         /* *****************************************************************************************************************
          *                                               Point
@@ -3417,73 +3411,7 @@ public class ConvertAdapter {
          * java.entity.Point
          *
          * *****************************************************************************************************************/
-        reg(new AbstractConvert(Point.class, byte[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                return point.bytes();
-            }
-        });
-        reg(new AbstractConvert(Point.class, Double[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                return point.getDoubles();
-            }
-        });
-        reg(new AbstractConvert(Point.class, double[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                try{
-                    value = point.doubles();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return value;
-            }
-        });
-        reg(new AbstractConvert(Point.class, Float[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                return point.getFloats();
-            }
-        });
-        reg(new AbstractConvert(Point.class, float[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                return point.floats();
-            }
-        });
 
-        reg(new AbstractConvert(Point.class, BigDecimal[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                return point.getDecimals();
-            }
-        });
-        reg(new AbstractConvert(Point.class, Integer[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                return point.getIntegers();
-            }
-        });
-        reg(new AbstractConvert(Point.class, int[].class){
-            @Override
-            public Object exe(Object value, Object def) throws ConvertException {
-                Point point = (Point) value;
-                try{
-                    value = point.ints();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return value;
-            }
-        });
 
         reg(new AbstractConvert(DataRow.class, String.class){
             @Override
