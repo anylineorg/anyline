@@ -1,9 +1,61 @@
 package org.anyline.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ByteBuffer {
+    private List list = new ArrayList<>();
     private byte[] bytes;
     private int offset = 0;
     private int endian = 0; //大端
+    public ByteBuffer(int length, int endian){
+        bytes = new byte[length];
+        this.endian = endian;
+    }
+    public ByteBuffer put(byte[] bs){
+        for(byte b:bs){
+            bytes[offset++] = b;
+        }
+        return this;
+    }
+    public ByteBuffer put(byte b){
+        bytes[offset++] = b;
+        return this;
+    }
+    public ByteBuffer put(int b){
+        put(NumberUtil.int2bytes(b));
+        return this;
+    }
+    public ByteBuffer put(long b){
+        put(NumberUtil.long2bytes(b));
+        return this;
+    }
+    public ByteBuffer put(double b){
+        put(NumberUtil.double2bytes(b));
+        return this;
+    }
+    public ByteBuffer add(byte[] bs){
+        for(byte b:bs){
+            list.add(b);
+        }
+        return this;
+    }
+    public ByteBuffer add(byte b){
+        list.add(b);
+        return this;
+    }
+    public ByteBuffer add(int b){
+        add(NumberUtil.int2bytes(b));
+        return this;
+    }
+    public ByteBuffer add(long b){
+        add(NumberUtil.long2bytes(b));
+        return this;
+    }
+    public ByteBuffer add(double b){
+        add(NumberUtil.double2bytes(b));
+        return this;
+    }
     public ByteBuffer offset(int offset){
         this.offset = offset;
         return this;
@@ -33,6 +85,30 @@ public class ByteBuffer {
     }
     public ByteBuffer step(int count){
         offset = offset + count;
+        return this;
+    }
+    public byte[] bytes(){
+        return bytes;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getEndian() {
+        return endian;
+    }
+
+    public void setEndian(int endian) {
+        this.endian = endian;
+    }
+    public ByteBuffer clear(){
+        list = new ArrayList();
+        bytes = null;
         return this;
     }
 }
