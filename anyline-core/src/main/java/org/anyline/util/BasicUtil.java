@@ -101,7 +101,29 @@ public class BasicUtil {
 	public static boolean isNotEmpty(boolean recursion, Object obj) {
 		return !isEmpty(recursion, obj);
 	}
-
+	public static boolean equals(byte[] bytes1, byte[] bytes2){
+		if(null == bytes1){
+			if(null == bytes2){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		if(null == bytes2){
+			return false;
+		}
+		int l1 = bytes1.length;
+		int l2 = bytes2.length;
+		if(l1 != l2){
+			return false;
+		}
+		for (int i=0; i<l1; i++){
+			if(bytes1[i] != bytes2[i]){
+				return false;
+			}
+		}
+		return true;
+	}
 	public static boolean equals(Object obj1, Object obj2) {
 		if (null == obj1) {
 			if (null == obj2) {
