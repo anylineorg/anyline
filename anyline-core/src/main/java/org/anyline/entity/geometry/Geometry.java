@@ -16,7 +16,7 @@ public class Geometry {
         }
     }
     protected int srid;
-    protected int type;
+    protected byte type;
 
     public int getSrid() {
         return srid;
@@ -26,11 +26,11 @@ public class Geometry {
         this.srid = srid;
     }
 
-    public int getType() {
+    public byte getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(byte type) {
         this.type = type;
     }
 }
