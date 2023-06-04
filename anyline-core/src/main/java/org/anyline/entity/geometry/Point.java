@@ -6,10 +6,8 @@ public class Point extends Geometry{
     private Double x;
     private Double y;
     public Point(){
-        type = 1;
     }
     public Point(Double x, Double y){
-        this();
         this.x = x ;
         this.y = y;
     }
@@ -32,7 +30,7 @@ public class Point extends Geometry{
         this(new Double(x), new Double(y));
     }
 
-    public double[] doubles() throws Exception{
+    public double[] doubles() {
         return new double[]{x, y};
     }
 
