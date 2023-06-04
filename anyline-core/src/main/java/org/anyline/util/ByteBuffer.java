@@ -8,6 +8,7 @@ public class ByteBuffer {
     private byte[] bytes;
     private int offset = 0;
     private int endian = 0; //大端
+    public ByteBuffer(){}
     public ByteBuffer(int length, int endian){
         bytes = new byte[length];
         this.endian = endian;
@@ -89,6 +90,22 @@ public class ByteBuffer {
     }
     public byte[] bytes(){
         return bytes;
+    }
+
+    public List getList() {
+        return list;
+    }
+
+    public void setList(List list) {
+        this.list = list;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
     public int getOffset() {
