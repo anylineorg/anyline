@@ -56,7 +56,6 @@ public class MySQLGeometryAdapter {
         geometry.setEndian(endian);
         geometry.setSrid(srid);
         geometry.setType(type);
-        System.out.println("format("+type+")\t:"+NumberUtil.byte2hex(bytes(geometry), " "));
         return geometry;
     }
     /*
@@ -484,6 +483,8 @@ public class MySQLGeometryAdapter {
             return wkb((Point)geometry);
         }else if(geometry instanceof Line){
             return wkb((Line)geometry);
+        }else if(geometry instanceof Polygon){
+            return wkb((Polygon)geometry);
         }
         return null;
     }
@@ -502,22 +503,27 @@ public class MySQLGeometryAdapter {
     public static byte[] wkb(Point point){
         ByteBuffer buffer = new ByteBuffer(25, point.getEndian());
         head(buffer, point);
-        buffer.put(point.getX());
-        buffer.put(point.getY());
+        wkb(buffer, point);
         byte[] bytes = buffer.bytes();
         return bytes;
     }
-
+    public static void wkb(ByteBuffer buffer, Point point){
+        buffer.put(point.getX());
+        buffer.put(point.getY());
+    }
     public static byte[] wkb(Line line){
         List<Point> points = line.points();
         ByteBuffer buffer = new ByteBuffer(points.size()*16+13, line.getEndian());
         head(buffer, line);
-        buffer.put(points.size());
-        for(Point point:points){
-            buffer.put(point.getX());
-            buffer.put(point.getY());
-        }
+        wkb(buffer, line);
         byte[] bytes = buffer.bytes();
         return bytes;
+    }
+    public static void wkb(ByteBuffer buffer, Line line){
+        List<Point> points = line.points();
+        buffer.put(points.size());
+        for(Point point:points){
+            wkb(buffer, point);
+        }
     }
 }
