@@ -555,4 +555,23 @@ public class MySQLGeometryAdapter {
         }
         return buffer.bytes();
     }
+
+    public static byte[] wkb(MultiLine multiLine){
+        int len = 13;
+        List<Line> lines = multiLine.getLines();
+        for(Line line:lines){
+            len += (1 + 4 + 4);
+            List<Point> points = line.points();
+            len += points.size()*16;
+        }
+        ByteBuffer buffer = new ByteBuffer(len, multiLine.getEndian());
+        head(buffer, multiLine);
+        buffer.put(lines.size());
+        for(Line line:lines){
+            buffer.put((byte)line.getEndian());
+            buffer.put(line.getType());
+            wkb(buffer, line);
+        }
+        return buffer.bytes();
+    }
 }
