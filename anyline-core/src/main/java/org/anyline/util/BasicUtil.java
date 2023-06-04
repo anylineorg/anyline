@@ -19,7 +19,6 @@
 
 package org.anyline.util;
 
-import org.anyline.entity.geometry.Point;
 import org.anyline.util.regular.RegularUtil;
 
 import java.math.BigDecimal;
@@ -502,27 +501,6 @@ public class BasicUtil {
 		} else {
 			return Boolean.parseBoolean(obj.toString());
 		}
-	}
-	public static Point parsePoint(Object value){
-		Point point = null;
-		if(value instanceof Point){
-
-		}else if(value instanceof byte[]){
-			point = new Point((byte[])value);
-		}else if(value instanceof double[]){
-			double[] ds = (double[]) value;
-			if(ds.length == 2){
-				if (ds.length >= 2) {
-					point = new Point(ds[0], ds[1]);
-				}
-			}
-		}else if(value instanceof Double[]){
-			Double[] ds = (Double[]) value;
-			if(ds.length == 2 && null != ds[0] && null != ds[1]){
-				point = new Point(ds[0], ds[1]);
-			}
-		}
-		return point;
 	}
  
 	/** 
