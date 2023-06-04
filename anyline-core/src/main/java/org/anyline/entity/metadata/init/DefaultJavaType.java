@@ -1,7 +1,6 @@
 package org.anyline.entity.metadata.init;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.geometry.Point;
 import org.anyline.entity.metadata.Convert;
 import org.anyline.entity.metadata.ConvertException;
 import org.anyline.entity.metadata.DataType;
@@ -311,36 +310,6 @@ public enum DefaultJavaType implements DataType {
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
-            }
-            return value;
-        }
-        public Object write(Object value, Object def, boolean placeholder){return value;}
-    }
-    ,ANYLINE_POINT("", Point.class, true, true){
-        public Object read(Object value, Object def, Class clazz){
-            if(null == value){
-                return null;
-            }
-            Point point = (Point) value;
-            try {
-                if (Point.class == clazz) {
-                } else if (double[].class == clazz) {
-                    value = point.doubles();
-                } else if (Double[].class == clazz) {
-                    value = point.getDoubles();
-                } else if (long[].class == clazz) {
-                    value = point.longs();
-                } else if (Long[].class == clazz) {
-                    value = point.getLongs();
-                } else if (int[].class == clazz) {
-                    value = point.ints();
-                } else if (Integer[].class == clazz) {
-                    value = point.getIntegers();
-                }else if(byte[].class == clazz){
-                    value = point.bytes();
-                }
-            }catch (Exception e){
-                e.printStackTrace();
             }
             return value;
         }
