@@ -3,6 +3,8 @@ package org.anyline.data.jdbc.postgresql;
 import org.anyline.entity.geometry.*;
 import org.postgresql.geometric.*;
 
+import java.util.List;
+
 public class PostgresqlGeometryAdapter {
     /**
      * 点
@@ -88,5 +90,46 @@ public class PostgresqlGeometryAdapter {
         Box box = new Box(parsePoint(points[0]), parsePoint(points[1]));
         box.origin(pg);
         return box;
+    }
+
+    public static PGpoint convert(Point point){
+        PGpoint pg = new PGpoint(point.x(), point.y());
+        return pg;
+    }
+    public static PGlseg convert(LineSegment segment){
+        PGlseg  pg = new PGlseg(convert(segment.p1()), convert(segment.p2()));
+        return pg;
+    }
+    public static PGpath convert(LineString string){
+        List<Point> points = string.points();
+        if(points.size() > 0) {
+            int size = points.size();
+            Point first = points.get(0);
+            Point last = points.get(size - 1);
+            boolean open = true;
+            if(first.x() == last.x() && first.y() == last.y()){
+                open = false;
+            }
+            PGpoint[] pgs = new PGpoint[size];
+            int index = 0;
+            for(Point point:points){
+                pgs[index++] = convert(point);
+            }
+            PGpath pg = new PGpath(pgs, open);
+            return pg;
+        }
+        return new PGpath();
+    }
+    public static PGline convert(Line line){
+        PGline pg = new PGline(line.a(), line.b(), line.c());
+        return pg;
+    }
+    public static PGbox convert(Box box){
+        PGbox pg = new PGbox(convert(box.p1()), convert(box.p2()));
+        return pg;
+    }
+    public static PGcircle convert(Circle circle){
+        PGcircle pg = new PGcircle(convert(circle.center()), circle.radius());
+        return pg;
     }
 }
