@@ -878,7 +878,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             if(null == value){
                 return value;
             }
-            Point point = BasicUtil.parsePoint(value);
+            /*Point point = BasicUtil.parsePoint(value);
             if(null == clazz){
                 value = point;
             }else if(null != point){
@@ -891,7 +891,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                 } else if (clazz == byte[].class) {
                     value = point.bytes();
                 }
-            }
+            }*/
             return value;
         }
         public Object write(Object value, Object def, boolean placeholder){
@@ -901,7 +901,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             if(value instanceof byte[]){
                 return value;
             }
-            if(value instanceof Point){
+           /* if(value instanceof Point){
                 value = ((Point)value).bytes();
             }else if(value instanceof double[]){
                 double[] ds = (double[]) value;
@@ -915,7 +915,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                 if(ds.length == 2 && null != ds[0] && null != ds[1]){
                     value = new Point(ds[0], ds[1]).bytes();
                 }
-            }
+            }*/
             return value;
         }
     }
