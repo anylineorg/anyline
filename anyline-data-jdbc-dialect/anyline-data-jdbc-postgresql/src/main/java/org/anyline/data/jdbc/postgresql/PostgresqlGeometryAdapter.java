@@ -14,6 +14,7 @@ public class PostgresqlGeometryAdapter {
     public static Point parsePoint(PGpoint pg){
         Point point = new Point(pg.x, pg.y);
         point.origin(pg);
+        point.tag("Point");
         return point;
     }
     /**
@@ -25,6 +26,7 @@ public class PostgresqlGeometryAdapter {
         PGpoint[] points = pg.point;
         LineSegment segment = new LineSegment(parsePoint(points[0]), parsePoint(points[1]));
         segment.origin(pg);
+        segment.tag("Lseg");
         return segment;
     }
     /**
@@ -39,6 +41,7 @@ public class PostgresqlGeometryAdapter {
             string.add(parsePoint(point));
         }
         string.origin(pg);
+        string.tag("Path");
         return string;
     }
     /**
@@ -57,6 +60,7 @@ public class PostgresqlGeometryAdapter {
         }
         polygon.add(ring);
         polygon.origin(pg);
+        polygon.tag("Polygon");
         return polygon;
     }
     /**
@@ -67,6 +71,7 @@ public class PostgresqlGeometryAdapter {
     public static Circle parseCircle(PGcircle pg){
         Circle circle = new Circle(parsePoint(pg.center), pg.radius);
         circle.origin(pg);
+        circle.tag("Circle");
         return circle;
     }
 
@@ -78,6 +83,7 @@ public class PostgresqlGeometryAdapter {
     public static Line parseLine(PGline pg){
         Line line = new Line(pg.a, pg.b, pg.c);
         line.origin(pg);
+        line.tag("Line");
         return line;
     }
     /**
@@ -89,6 +95,7 @@ public class PostgresqlGeometryAdapter {
         PGpoint[] points = pg.point;
         Box box = new Box(parsePoint(points[0]), parsePoint(points[1]));
         box.origin(pg);
+        box.tag("Box");
         return box;
     }
 

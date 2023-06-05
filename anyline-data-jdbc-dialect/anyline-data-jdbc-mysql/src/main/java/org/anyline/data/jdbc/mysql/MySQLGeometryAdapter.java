@@ -88,6 +88,7 @@ public class MySQLGeometryAdapter {
     }
     public static Point point(ByteBuffer buffer){
         Point point = new Point(buffer.readDouble(), buffer.readDouble());
+        point.tag("Point");
         point.type(1);
         point.endian(1);
         return point;
@@ -139,6 +140,7 @@ public class MySQLGeometryAdapter {
             points.add(point);
         }
         LineString line = new LineString(points);
+        line.tag("LineString");
         line.type(2);
         line.endian(1);
         return line;
@@ -245,6 +247,7 @@ public class MySQLGeometryAdapter {
     }
     public static Polygon polygon(ByteBuffer buffer){
         Polygon polygon = new Polygon();
+        polygon.tag("Polygon");
         polygon.type(3);
         polygon.endian(1);
         int ring_count = buffer.readInt();
@@ -319,6 +322,7 @@ public class MySQLGeometryAdapter {
             points.add(point(buffer));
         }
         MultiPoint multiPoint = new MultiPoint(points);
+        multiPoint.tag("MultiPoint");
         multiPoint.type(4);
         multiPoint.endian(1);
         return multiPoint;
@@ -375,6 +379,7 @@ public class MySQLGeometryAdapter {
             lines.add(line(buffer));
         }
         MultiLine multiLine = new MultiLine(lines);
+        multiLine.tag("MultiLine");
         multiLine.type(5);
         multiLine.endian(1);
         return multiLine;
@@ -478,6 +483,7 @@ public class MySQLGeometryAdapter {
             polygons.add(polygon);
         }
         MultiPolygon multiPolygon = new MultiPolygon(polygons);
+        multiPolygon.tag("MultiPolygon");
         multiPolygon.type(6);
         multiPolygon.endian(1);
         return multiPolygon;
@@ -613,6 +619,9 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
                 collection.add(geometry);
             }
         }
+        collection.tag("GeometryCollection");
+        collection.type(7);
+        collection.endian(1);
 
         return collection;
     }
