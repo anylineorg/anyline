@@ -19,7 +19,7 @@ public abstract class Geometry {
     protected int srid;
     protected int type;
     protected byte endian;
-
+    protected Object origin;
     public int srid() {
         return srid;
     }
@@ -45,6 +45,14 @@ public abstract class Geometry {
     }
     public void endian(int endian) {
         this.endian = (byte) endian;
+    }
+
+    public Object origin() {
+        return origin;
+    }
+
+    public void origin(Object origin) {
+        this.origin = origin;
     }
 
     public String tag() {
