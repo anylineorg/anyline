@@ -137,8 +137,8 @@ public interface AnylineDao<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public int deletes(String table, String key, Collection<Object> values);
-	public int deletes(String table, String key, Object ... values);
+	public <T> int deletes(String table, String key, Collection<T> values);
+	public <T> int deletes(String table, String key, T ... values);
 	public int truncate(String table);
 
 	/* *****************************************************************************************************************

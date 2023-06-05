@@ -864,7 +864,7 @@ public class ServiceProxy {
      * @param values 值集合
      * @return 影响行数
      */
-    public static int deletes(String table, String key, String ... values){
+    public static <T> int deletes(String table, String key, T ... values){
         return service.deletes(table, key, values);
     }
 

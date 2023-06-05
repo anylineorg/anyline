@@ -1936,7 +1936,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return set;
 	}
 
-	public int deletes(String table, String key, Collection<Object> values){
+	public <T> int deletes(String table, String key, Collection<T> values){
 		table = DataSourceHolder.parseDataSource(table, null);
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();

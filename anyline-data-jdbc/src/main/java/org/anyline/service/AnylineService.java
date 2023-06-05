@@ -21,14 +21,12 @@ package org.anyline.service;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.proxy.CacheProxy;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -613,7 +611,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public int deletes(String table, String key, Collection<Object> values);
+	public<T> int deletes(String table, String key, Collection<T> values);
 
 	/**
 	 * 根据一列的多个值删除<br/>
@@ -626,7 +624,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public int deletes(String table, String key, Object ... values);
+	public<T> int deletes(String table, String key, T ... values);
 
 	public int truncate(String table);
 

@@ -1495,13 +1495,13 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public int deletes(String table, String key, Collection<Object> values){
+    public <T> int deletes(String table, String key, Collection<T> values){
         table = DataSourceHolder.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
     @Override
-    public int deletes(String table, String key, Object ... values){
+    public <T> int deletes(String table, String key, T ... values){
         table = DataSourceHolder.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
