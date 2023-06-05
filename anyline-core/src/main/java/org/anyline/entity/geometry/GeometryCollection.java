@@ -15,7 +15,7 @@ public class GeometryCollection extends Geometry{
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag) {
-            builder.append("GeometryCollection");
+            builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
@@ -53,7 +53,7 @@ public class GeometryCollection extends Geometry{
     public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
-            builder.append("GeometryCollection");
+            builder.append(tag());
         }
         if(bracket) {
             builder.append("(");

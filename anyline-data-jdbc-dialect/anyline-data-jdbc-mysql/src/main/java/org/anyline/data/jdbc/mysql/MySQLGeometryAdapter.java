@@ -113,10 +113,10 @@ public class MySQLGeometryAdapter {
     /**
      * 解析Line
      * @param bytes bytes
-     * @return Line
+     * @return LineString
      */
-    public static Line parseLine(byte[] bytes){
-        Line line = line(bytes, 9);
+    public static LineString parseLine(byte[] bytes){
+        LineString line = line(bytes, 9);
         return line;
     }
 
@@ -124,20 +124,20 @@ public class MySQLGeometryAdapter {
      *
      * @param bytes bytes
      * @param offset point count的开始位置
-     * @return Line
+     * @return LineString
      */
-    public static Line line(byte[] bytes, int offset){
+    public static LineString line(byte[] bytes, int offset){
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
         return line(buffer);
     }
-    public static Line line(ByteBuffer buffer){
+    public static LineString line(ByteBuffer buffer){
         List<Point> points = new ArrayList<>();
         int count = buffer.readInt();
         for(int i=0; i<count; i++){
             Point point = point(buffer);
             points.add(point);
         }
-        Line line = new Line(points);
+        LineString line = new LineString(points);
         line.type(2);
         line.endian(1);
         return line;
@@ -367,7 +367,7 @@ public class MySQLGeometryAdapter {
     public static MultiLine multiLine(ByteBuffer buffer){
         //线段数量
         int line_count = buffer.readInt();
-        List<Line> lines = new ArrayList<>();
+        List<LineString> lines = new ArrayList<>();
         for(int l=0; l<line_count; l++){
             //跳过 Endian(1位)和 WKB type(4位)
             buffer.step(5);
@@ -625,8 +625,8 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
     public static byte[] wkb(Geometry geometry){
         if(geometry instanceof Point){
             return wkb((Point)geometry);
-        }else if(geometry instanceof Line){
-            return wkb((Line)geometry);
+        }else if(geometry instanceof LineString){
+            return wkb((LineString)geometry);
         }else if(geometry instanceof Polygon){
             return wkb((Polygon)geometry);
         }else if(geometry instanceof MultiPoint){
@@ -644,8 +644,8 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
     public static void wkb(ByteBuffer buffer, Geometry geometry, boolean head){
         if(geometry instanceof Point){
             wkb(buffer, (Point)geometry, head);
-        }else if(geometry instanceof Line){
-            wkb(buffer, (Line)geometry, head);
+        }else if(geometry instanceof LineString){
+            wkb(buffer, (LineString)geometry, head);
         }else if(geometry instanceof Polygon){
             wkb(buffer, (Polygon)geometry, head);
         }else if(geometry instanceof MultiPoint){
@@ -677,7 +677,7 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         buffer.put(point.x());
         buffer.put(point.y());
     }
-    public static byte[] wkb(Line line){
+    public static byte[] wkb(LineString line){
         List<Point> points = line.points();
         ByteBuffer buffer = new ByteBuffer(points.size()*16+13, line.endian());
         buffer.put(line.srid());
@@ -685,7 +685,7 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         byte[] bytes = buffer.bytes();
         return bytes;
     }
-    public static void wkb(ByteBuffer buffer, Line line, boolean head){
+    public static void wkb(ByteBuffer buffer, LineString line, boolean head){
         if(head){
             buffer.put((byte)line.endian());
             buffer.put(line.type());
@@ -752,8 +752,8 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
     }
     public static byte[] wkb(MultiLine multiLine){
         int len = 13;
-        List<Line> lines = multiLine.lines();
-        for(Line line:lines){
+        List<LineString> lines = multiLine.lines();
+        for(LineString line:lines){
             len += (1 + 4 + 4);
             List<Point> points = line.points();
             len += points.size()*16;
@@ -768,9 +768,9 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
             buffer.put((byte)multiLine.endian());
             buffer.put(multiLine.type());
         }
-        List<Line> lines = multiLine.lines();
+        List<LineString> lines = multiLine.lines();
         buffer.put(lines.size());
-        for(Line line:lines){
+        for(LineString line:lines){
             wkb(buffer, line, true);
         }
     }

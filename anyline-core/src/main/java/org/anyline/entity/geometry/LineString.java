@@ -3,17 +3,17 @@ package org.anyline.entity.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Line extends Geometry {
+public class LineString extends Geometry {
     private List<Point> points = new ArrayList<>();
-    public Line add(Point point){
+    public LineString add(Point point){
         points.add(point);
         return this;
     }
     public List<Point> points(){
         return points;
     }
-    public Line(){}
-    public Line(List<Point> points) {
+    public LineString(){}
+    public LineString(List<Point> points) {
         this.points = points;
     }
 
@@ -23,7 +23,7 @@ public class Line extends Geometry {
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("Line");
+            builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
@@ -49,7 +49,7 @@ public class Line extends Geometry {
     public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("Line");
+            builder.append(tag());
         }
         if(bracket){
             builder.append("(");

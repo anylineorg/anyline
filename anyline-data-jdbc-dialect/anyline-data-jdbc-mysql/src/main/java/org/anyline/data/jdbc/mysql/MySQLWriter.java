@@ -44,11 +44,11 @@ public enum MySQLWriter {
         }
     }),
 
-    LineWriter(new Object[]{Line.class, StandardColumnType.LINESTRING}, new DataWriter() {
+    LineWriter(new Object[]{LineString.class, StandardColumnType.LINESTRING}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
-            if(value instanceof Line) {
-                Line line = (Line) value;
+            if(value instanceof LineString) {
+                LineString line = (LineString) value;
                 if (placeholder) {
                     return MySQLGeometryAdapter.wkb(line);
                 } else {

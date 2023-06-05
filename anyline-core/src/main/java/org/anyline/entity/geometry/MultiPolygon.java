@@ -35,7 +35,7 @@ public class MultiPolygon extends Geometry{
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag) {
-            builder.append("MultiPolygon");
+            builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
@@ -69,7 +69,7 @@ public class MultiPolygon extends Geometry{
     public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
-            builder.append("MultiPolygon");
+            builder.append(tag());
         }
         if(bracket) {
             builder.append("(");

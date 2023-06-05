@@ -23,7 +23,7 @@ public class Polygon extends Geometry{
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("Polygon");
+            builder.append(tag());
         }
         builder.append("(");
         //顺时针(外部环)
@@ -63,7 +63,7 @@ public class Polygon extends Geometry{
     public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("Polygon");
+            builder.append(tag());
         }
         if(bracket){
             builder.append("(");

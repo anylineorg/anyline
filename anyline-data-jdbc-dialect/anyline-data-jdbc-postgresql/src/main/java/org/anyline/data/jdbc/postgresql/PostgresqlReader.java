@@ -2,6 +2,7 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.entity.geometry.Point;
+import org.postgresql.geometric.PGline;
 import org.postgresql.geometric.PGpoint;
 
 public enum PostgresqlReader {
@@ -11,7 +12,14 @@ public enum PostgresqlReader {
             PGpoint point = (PGpoint)value;
             return new Point(point.x, point.y);
         }
-    })
+    }),
+    LineReader(new Object[]{PGline.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            PGline pg = (PGline)value;
+            return pg;
+        }
+    }),
     ;
     public Object[] supports(){
         return supports;

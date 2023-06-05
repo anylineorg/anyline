@@ -3,7 +3,7 @@ package org.anyline.entity.geometry;
 public abstract class Geometry {
     public enum Type{
         Point(Point.class),
-        Line(Line.class),
+        Line(LineString.class),
         Polygon(Polygon.class),
         MultiPoint(MultiPoint.class),
         MultiLine(MultiLine.class),
@@ -15,6 +15,7 @@ public abstract class Geometry {
              this.clazz = clazz;
         }
     }
+    protected String tag;
     protected int srid;
     protected int type;
     protected byte endian;
@@ -46,6 +47,16 @@ public abstract class Geometry {
         this.endian = (byte) endian;
     }
 
+    public String tag() {
+        if(null == tag){
+            return this.getClass().getSimpleName();
+        }
+        return tag;
+    }
+
+    public void tag(String tag) {
+        this.tag = tag;
+    }
 
     public abstract String toString();
     public abstract String toString(boolean tag);

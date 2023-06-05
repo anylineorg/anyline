@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiLine extends Geometry{
-    private List<Line> lines = new ArrayList<>();
+    private List<LineString> lines = new ArrayList<>();
 
     public MultiLine(){
 
     }
-    public MultiLine(List<Line> lines){
+    public MultiLine(List<LineString> lines){
         this.lines = lines;
     }
-    public MultiLine add(Line line){
+    public MultiLine add(LineString line){
         lines.add(line);
         return this;
     }
 
-    public MultiLine add(List<Line> lines){
+    public MultiLine add(List<LineString> lines){
         if(null != lines) {
             lines.addAll(lines);
         }
@@ -28,17 +28,17 @@ public class MultiLine extends Geometry{
         lines = new ArrayList<>();
         return this;
     }
-    public List<Line> lines(){
+    public List<LineString> lines(){
         return lines;
     }
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag) {
-            builder.append("MultiLine");
+            builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(Line line:lines){
+        for(LineString line:lines){
             if(!first){
                 builder.append(",");
             }
@@ -62,13 +62,13 @@ public class MultiLine extends Geometry{
     public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
-            builder.append("MultiLine");
+            builder.append(tag());
         }
         if(bracket) {
             builder.append("(");
         }
         boolean first = true;
-        for(Line line:lines){
+        for(LineString line:lines){
             if(!first){
                 builder.append(",");
             }
@@ -84,7 +84,7 @@ public class MultiLine extends Geometry{
         return sql(true, true);
     }
 
-    public List<Line> getLines() {
+    public List<LineString> getLines() {
         return lines;
     }
 }

@@ -64,7 +64,7 @@ public class Point extends Geometry{
     public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("Point");
+            builder.append(tag());
         }
         builder.append("(");
         builder.append(NumberUtil.format(x, "0.###########"));
@@ -85,7 +85,7 @@ public class Point extends Geometry{
     public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag){
-            builder.append("Point");
+            builder.append(tag());
         }
         if(bracket){
             builder.append("(");
