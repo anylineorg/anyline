@@ -3398,6 +3398,46 @@ public class ConvertAdapter {
                 return point;
             }
         });
+
+        reg(new AbstractConvert(Point.class, int[].class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                Point point = (Point) value;
+                try{
+                    int[] ints = new int[2];
+                    ints[0] = point.x().intValue();
+                    ints[1] = point.y().intValue();
+                    value = ints;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return value;
+            }
+        });
+
+        reg(new AbstractConvert(Point.class, Double[].class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                Point point = (Point) value;
+                Double[] xy = new Double[2];
+                xy[0] = point.x();
+                xy[1] = point.y();
+                value = xy;
+                return value;
+            }
+        });
+        reg(new AbstractConvert(Point.class, double[].class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                Point point = (Point) value;
+                try{
+                    value = point.doubles();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return value;
+            }
+        });
         reg(new AbstractConvert(byte[].class, String.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
