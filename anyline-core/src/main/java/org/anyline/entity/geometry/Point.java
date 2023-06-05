@@ -50,6 +50,14 @@ public class Point extends Geometry{
         this.y = y;
     }
 
+    public Double getX() {
+        return x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
     public String toString(){
         return toString(true);
     }

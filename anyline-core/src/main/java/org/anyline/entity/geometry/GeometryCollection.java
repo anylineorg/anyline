@@ -40,6 +40,10 @@ public class GeometryCollection extends Geometry{
         return sql(true, true);
     }
 
+    public List<Geometry> getCollection() {
+        return collection;
+    }
+
     /**
      * sql格式
      * @param tag 是否包含tag<br/>

@@ -1,7 +1,5 @@
 package org.anyline.entity.geometry;
 
-import org.anyline.util.NumberUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +70,10 @@ public class Line extends Geometry {
     }
     public String sql(){
         return sql(true, true);
+    }
+
+    public List<Point> getPoints() {
+        return points;
     }
 }
 

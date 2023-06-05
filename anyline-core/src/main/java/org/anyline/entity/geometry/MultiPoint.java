@@ -83,4 +83,8 @@ public class MultiPoint extends Geometry{
     public String sql(){
         return sql(true, true);
     }
+
+    public List<Point> getPoints() {
+        return points;
+    }
 }

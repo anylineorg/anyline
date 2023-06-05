@@ -18,6 +18,10 @@ public class Ring extends Geometry{
         this.points = points;
     }
 
+    public List<Point> getPoints() {
+        return points;
+    }
+
     public Boolean clockwise() {
         return clockwise;
     }

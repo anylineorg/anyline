@@ -17,7 +17,7 @@ public abstract class Geometry {
     }
     protected int srid;
     protected int type;
-    protected int endian;
+    protected byte endian;
 
     public int srid() {
         return srid;
@@ -35,12 +35,15 @@ public abstract class Geometry {
         this.type = type;
     }
 
-    public int endian() {
+    public byte endian() {
         return endian;
     }
 
-    public void endian(int endian) {
+    public void endian(byte endian) {
         this.endian = endian;
+    }
+    public void endian(int endian) {
+        this.endian = (byte) endian;
     }
 
 

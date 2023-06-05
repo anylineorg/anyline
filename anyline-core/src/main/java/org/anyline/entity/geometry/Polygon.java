@@ -97,4 +97,8 @@ public class Polygon extends Geometry{
     public String sql(){
         return sql(true, true);
     }
+
+    public List<Ring> getRings() {
+        return rings;
+    }
 }

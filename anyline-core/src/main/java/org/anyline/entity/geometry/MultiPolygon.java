@@ -87,4 +87,8 @@ public class MultiPolygon extends Geometry{
         }
         return builder.toString();
     }
+
+    public List<Polygon> getPolygons() {
+        return polygons;
+    }
 }

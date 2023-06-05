@@ -83,4 +83,8 @@ public class MultiLine extends Geometry{
     public String sql(){
         return sql(true, true);
     }
+
+    public List<Line> getLines() {
+        return lines;
+    }
 }
