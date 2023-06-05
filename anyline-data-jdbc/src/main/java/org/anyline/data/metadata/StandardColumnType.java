@@ -946,11 +946,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,LINE("LINE", new DatabaseType[]{PostgreSQL}, Line.class, byte[].class, true, true)
+    ,LINE("LINE", new DatabaseType[]{PostgreSQL}, LineString.class, byte[].class, true, true)
     /**
      * mysql
      */
-    ,LINESTRING("LINESTRING", new DatabaseType[]{MYSQL}, Line.class, byte[].class, true, true)
+    ,LINESTRING("LINESTRING", new DatabaseType[]{MYSQL}, LineString.class, byte[].class, true, true)
+    /**
+     * pg
+     */
+    ,PATH("PATH",  new DatabaseType[]{PostgreSQL},LineString.class, true, true)
     /**
      * pg
      */
@@ -991,10 +995,6 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * pg
      */
     ,INTERVAL("INTERVAL", new DatabaseType[]{PostgreSQL, Informix}, null, true, true)
-    /**
-     * pg
-     */
-    ,PATH("PATH",  new DatabaseType[]{PostgreSQL},null, true, true)
     /**
      * oracle
      */
