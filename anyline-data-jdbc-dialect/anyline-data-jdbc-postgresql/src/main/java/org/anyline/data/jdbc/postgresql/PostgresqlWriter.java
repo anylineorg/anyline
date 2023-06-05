@@ -12,9 +12,9 @@ public enum PostgresqlWriter {
             if(value instanceof Point) {
                 Point point = (Point) value;
                 if (placeholder) {
-                    return new PGpoint(point.getX(), point.getY());
+                    return new PGpoint(point.x(), point.y());
                 } else {
-                    return "POINT(" + point.getX() + "," + point.getY() + ")";
+                    return "POINT(" + point.x() + "," + point.y() + ")";
                 }
             }
             return value;

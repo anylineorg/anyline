@@ -34,19 +34,19 @@ public class Point extends Geometry{
         return new double[]{x, y};
     }
 
-    public Double getX() {
+    public Double x() {
         return x;
     }
 
-    public void setX(Double x) {
+    public void x(Double x) {
         this.x = x;
     }
 
-    public Double getY() {
+    public Double y() {
         return y;
     }
 
-    public void setY(Double y) {
+    public void y(Double y) {
         this.y = y;
     }
 

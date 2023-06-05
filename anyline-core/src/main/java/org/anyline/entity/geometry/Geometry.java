@@ -1,6 +1,6 @@
 package org.anyline.entity.geometry;
 
-public class Geometry {
+public abstract class Geometry {
     public enum Type{
         Point(Point.class),
         Line(Line.class),
@@ -19,27 +19,35 @@ public class Geometry {
     protected int type;
     protected int endian;
 
-    public int getSrid() {
+    public int srid() {
         return srid;
     }
 
-    public void setSrid(int srid) {
+    public void srid(int srid) {
         this.srid = srid;
     }
 
-    public int getType() {
+    public int type() {
         return type;
     }
 
-    public void setType(int type) {
+    public void type(int type) {
         this.type = type;
     }
 
-    public int getEndian() {
+    public int endian() {
         return endian;
     }
 
-    public void setEndian(int endian) {
+    public void endian(int endian) {
         this.endian = endian;
     }
+
+
+    public abstract String toString();
+    public abstract String toString(boolean tag);
+    public abstract String sql(boolean tag, boolean bracket);
+    public abstract String sql();
+/*    public abstract String tag(String tag);
+    public abstract String tag();*/
 }

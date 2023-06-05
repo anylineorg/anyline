@@ -28,12 +28,14 @@ public class MultiLine extends Geometry{
         lines = new ArrayList<>();
         return this;
     }
-    public List<Line> getLines(){
+    public List<Line> lines(){
         return lines;
     }
-    public String toString(){
+    public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
-        builder.append("MultiLine");
+        if(tag) {
+            builder.append("MultiLine");
+        }
         builder.append("(");
         boolean first = true;
         for(Line line:lines){
@@ -46,19 +48,25 @@ public class MultiLine extends Geometry{
         builder.append(")");
         return builder.toString();
     }
+    public String toString(){
+        return toString(true);
+    }
     /**
      * sql格式
      * @param tag 是否包含tag<br/>
      *             false:((120 36.1, 120 36.2, 120 36.3), (121 36.1, 121 36.2, 121 36.3))<br/>
      *             true: MultiLine((120 36.1, 120 36.2, 120 36.3), (121 36.1, 121 36.2, 121 36.3))
+     * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag){
+    public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append("MultiLine");
         }
-        builder.append("(");
+        if(bracket) {
+            builder.append("(");
+        }
         boolean first = true;
         for(Line line:lines){
             if(!first){
@@ -67,10 +75,12 @@ public class MultiLine extends Geometry{
             first = false;
             builder.append(line.sql(false, false));
         }
-        builder.append(")");
+        if(bracket) {
+            builder.append(")");
+        }
         return builder.toString();
     }
     public String sql(){
-        return sql(true);
+        return sql(true, true);
     }
 }

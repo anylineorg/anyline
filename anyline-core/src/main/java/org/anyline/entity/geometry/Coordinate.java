@@ -69,13 +69,13 @@ public class Coordinate {
 		point = new Point(lng,lat);
 	}
 	public Coordinate convert(TYPE type){
-		Double[] loc = GISUtil.convert(this.type, point.getX(), point.getY(), type);
+		Double[] loc = GISUtil.convert(this.type, point.x(), point.y(), type);
 		point = new Point(loc[0], loc[1]);
 		this.setType(type);
 		return this;
 	}
 	public boolean isEmpty(){ 
-		if(null == point || null == point.getX() || null == point.getY()){
+		if(null == point || null == point.x() || null == point.y()){
 			return true; 
 		} 
 		return false; 
@@ -129,28 +129,28 @@ public class Coordinate {
 	}
 
 	public Double getLng() {
-		return this.point.getX();
+		return this.point.x();
 	}
 
 	public void setLng(Double lng) {
 		if(null == point){
 			point = new Point();
 		}
-		this.point.setX(lng);
+		this.point.x(lng);
 	}
 	public void setLng(String lng) {
 		setLng(BasicUtil.parseDouble(lng, null));
 	}
 
 	public Double getLat() {
-		return this.point.getY();
+		return this.point.y();
 	}
 
 	public void setLat(Double lat) {
 		if(null == point){
 			point = new Point();
 		}
-		point.setY(lat);
+		point.y(lat);
 	}
 	public void setLat(String lat) {
 		setLat(BasicUtil.parseDouble(lat, null));
@@ -207,7 +207,7 @@ public class Coordinate {
 		this.address = address;
 	}
 	public String toString(){
-		return "["+point.getX()+","+point.getY()+"]";
+		return "["+point.x()+","+point.y()+"]";
 	}
 
 	public TYPE getType() {

@@ -27,12 +27,14 @@ public class MultiPoint extends Geometry{
         points = new ArrayList<>();
         return this;
     }
-    public List<Point> getPoints(){
+    public List<Point> points(){
         return points;
     }
-    public String toString(){
+    public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
-        builder.append("MULTIPOINT");
+        if(tag) {
+            builder.append("MULTIPOINT");
+        }
         builder.append("(");
         boolean first = true;
         for(Point point:points){
@@ -45,19 +47,26 @@ public class MultiPoint extends Geometry{
         builder.append(")");
         return builder.toString();
     }
+
+    public String toString(){
+        return toString(true);
+    }
     /**
      * sql格式
      * @param tag 是否包含tag<br/>
      *             false:((1 1),(2 2))<br/>
      *             true: MULTIPOINT((1 1),(2 2))
+     * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag){
+    public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append("MULTIPOINT");
         }
-        builder.append("(");
+        if(bracket) {
+            builder.append("(");
+        }
         boolean first = true;
         for(Point point:points){
             if(!first){
@@ -66,10 +75,12 @@ public class MultiPoint extends Geometry{
             first = false;
             builder.append(point.sql(false, false));
         }
-        builder.append(")");
+        if(bracket) {
+            builder.append(")");
+        }
         return builder.toString();
     }
     public String sql(){
-        return sql(true);
+        return sql(true, true);
     }
 }

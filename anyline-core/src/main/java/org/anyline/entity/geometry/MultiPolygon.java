@@ -32,9 +32,11 @@ public class MultiPolygon extends Geometry{
     public List<Polygon> polygons(){
         return polygons;
     }
-    public String toString(){
+    public String toString(boolean tag){
         StringBuilder builder = new StringBuilder();
-        builder.append("MultiPolygon");
+        if(tag) {
+            builder.append("MultiPolygon");
+        }
         builder.append("(");
         boolean first = true;
         for(Polygon polygon:polygons){
@@ -47,17 +49,31 @@ public class MultiPolygon extends Geometry{
         builder.append(")");
         return builder.toString();
     }
+
+    @Override
+    public String toString() {
+        return toString(true);
+    }
+
+    @Override
+    public String sql() {
+        return sql(true, true);
+    }
+
     /**
      * sql格式
      * @param tag 是否包含tag<br/>
+     * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag){
+    public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append("MultiPolygon");
         }
-        builder.append("(");
+        if(bracket) {
+            builder.append("(");
+        }
         boolean first = true;
         for(Polygon polygon:polygons){
             if(!first){
@@ -66,10 +82,9 @@ public class MultiPolygon extends Geometry{
             first = false;
             builder.append(polygon.sql(false, false));
         }
-        builder.append(")");
+        if(bracket) {
+            builder.append(")");
+        }
         return builder.toString();
-    }
-    public String sql(){
-        return sql(true);
     }
 }
