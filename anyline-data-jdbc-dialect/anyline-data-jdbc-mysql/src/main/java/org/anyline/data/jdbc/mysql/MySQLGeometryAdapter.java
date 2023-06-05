@@ -57,6 +57,7 @@ public class MySQLGeometryAdapter {
         geometry.endian(endian);
         geometry.srid(srid);
         geometry.type(type);
+        geometry.origin(bytes);
         return geometry;
     }
     /*
