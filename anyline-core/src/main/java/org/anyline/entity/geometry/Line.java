@@ -1,9 +1,9 @@
 package org.anyline.entity.geometry;
 
 public class Line extends Geometry{
-    private double a;
-    private double b;
-    private double c;
+    private Double a;
+    private Double b;
+    private Double c;
 
     private Point p1;
     private Point p2;
@@ -19,6 +19,70 @@ public class Line extends Geometry{
         this.c = c;
         point();
     }
+
+    public double a() {
+        return a;
+    }
+
+    public void a(double a) {
+        this.a = a;
+        point();
+    }
+
+    public double b() {
+        return b;
+    }
+
+    public void b(double b) {
+        this.b = b;
+        point();
+    }
+
+    public double c() {
+        return c;
+    }
+
+    public void c(double c) {
+        this.c = c;
+        point();
+    }
+
+    public Point p1() {
+        return p1;
+    }
+
+    public void p1(Point p1) {
+        this.p1 = p1;
+        slope();
+    }
+
+    public Point p2() {
+        return p2;
+    }
+
+    public void p2(Point p2) {
+        this.p2 = p2;
+        slope();
+    }
+
+    public Point getP1() {
+        return p1;
+    }
+
+    public void setP1(Point p1) {
+        this.p1 = p1;
+        slope();
+    }
+
+    public Point getP2() {
+        return p2;
+    }
+
+    public void setP2(Point p2) {
+        this.p2 = p2;
+        slope();
+    }
+
     @Override
     public String toString() {
         return toString(true);
@@ -63,6 +127,9 @@ public class Line extends Geometry{
     }
 
     public void slope(){
+        if(null != p1 || null == p2){
+            return;
+        }
         double x1 = p1.x();
         double x2 = p2.x();
         double y1 = p1.y();
@@ -78,7 +145,9 @@ public class Line extends Geometry{
         this.c = y1 - this.a * x1;
     }
     public void point() {
-
+        if(null==a || null==b || null==c){
+            return;
+        }
         if (b != 0) {
             double x1 = 0;
             double y1 = (-a * x1 - c) / b;
