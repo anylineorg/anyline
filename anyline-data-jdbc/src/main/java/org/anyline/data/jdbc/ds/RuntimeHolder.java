@@ -116,6 +116,9 @@ public class RuntimeHolder {
             if(factory.containsBeanDefinition("anyline.jdbc.template." + key)){
                 factory.destroySingleton("anyline.jdbc.template." + key);
             }
+            if(factory.containsBeanDefinition("anyline.transaction." + key)){
+                factory.destroySingleton("anyline.transaction." + key);
+            }
             if(factory.containsBeanDefinition("anyline.datasource." + key)){
                 factory.destroySingleton("anyline.datasource." + key);
             }
