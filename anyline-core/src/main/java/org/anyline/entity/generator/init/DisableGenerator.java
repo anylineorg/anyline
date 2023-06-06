@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class DisableGenerator implements PrimaryGenerator {
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, List<String> inserts, String other) {
+    public boolean create(Object entity, DatabaseType type, String table, List<String> columns,  String other) {
        return false;
     }
 }

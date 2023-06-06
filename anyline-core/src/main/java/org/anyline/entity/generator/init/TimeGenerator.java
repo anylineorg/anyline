@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TimeGenerator implements PrimaryGenerator {
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, List<String> inserts, String other) {
+    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
         if(null == columns){
             if(entity instanceof DataRow){
                 columns = ((DataRow)entity).getPrimaryKeys();
@@ -22,6 +22,9 @@ public class TimeGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns){
+            if(null == BeanUtil.getFieldValue(entity, column)) {
+                continue;
+            }
             String format = ConfigTable.PRIMARY_GENERATOR_TIME_FORMAT;
             if(null == format){
                 format = "yyyyMMddHHmmssSSS";
@@ -31,9 +34,6 @@ public class TimeGenerator implements PrimaryGenerator {
                 value += BasicUtil.getRandomNumberString(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH);
             }
             BeanUtil.setFieldValue(entity, column, value, true);
-            if(!inserts.contains(column) && !inserts.contains("+"+column)){
-                inserts.add("+"+column);
-            }
         }
         return true;
     }

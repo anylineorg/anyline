@@ -31,7 +31,7 @@ import java.util.List;
 
 public class SnowflakeGenerator implements PrimaryGenerator {
 	private static SnowflakeWorker worker = null;
-	public boolean create(Object entity, DatabaseType type, String table, List<String> columns, List<String> inserts, String other){
+	public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other){
 		if(null == columns){
 			if(entity instanceof DataRow){
 				columns = ((DataRow)entity).getPrimaryKeys();
@@ -43,11 +43,11 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 			worker = newInstance();
 		}
 		for(String column:columns){
+			if(null == BeanUtil.getFieldValue(entity, column)) {
+				continue;
+			}
 			Long value = worker.next();
 			BeanUtil.setFieldValue(entity, column, value, true);
-			if(!inserts.contains(column) && !inserts.contains("+"+column)){
-				inserts.add("+"+column);
-			}
 		}
 		return true;
 	}
