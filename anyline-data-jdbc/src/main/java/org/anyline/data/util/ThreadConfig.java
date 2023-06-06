@@ -57,6 +57,7 @@ public class ThreadConfig extends ConfigTable {
     public boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
     public boolean IS_CACHE_DISABLED							= false			; 	// 是否禁用查询缓存
     public String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
+    public boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供主管理器,会根据数据源生成相应的事务管理器
     public boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要提供主事务管理器,多数据源时需要
 
 
@@ -400,6 +401,9 @@ public class ThreadConfig extends ConfigTable {
 
     public boolean  IS_OPEN_PRIMARY_TRANSACTION_MANAGER() {
         return IS_OPEN_PRIMARY_TRANSACTION_MANAGER;
+    }
+    public boolean  IS_OPEN_TRANSACTION_MANAGER() {
+        return IS_OPEN_TRANSACTION_MANAGER;
     }
 
     public boolean PRIMARY_GENERATOR_UUID_ACTIVE() {
