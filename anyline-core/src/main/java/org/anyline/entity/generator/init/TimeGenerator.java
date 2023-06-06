@@ -22,7 +22,7 @@ public class TimeGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns){
-            if(null == BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity, column)) {
                 continue;
             }
             String format = ConfigTable.PRIMARY_GENERATOR_TIME_FORMAT;

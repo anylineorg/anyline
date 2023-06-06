@@ -43,7 +43,7 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 			worker = newInstance();
 		}
 		for(String column:columns){
-			if(null == BeanUtil.getFieldValue(entity, column)) {
+			if(null != BeanUtil.getFieldValue(entity, column)) {
 				continue;
 			}
 			Long value = worker.next();

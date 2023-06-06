@@ -20,7 +20,7 @@ public class UUIDGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns){
-            if(null == BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity, column)) {
                 continue;
             }
             String value = UUID.randomUUID().toString();

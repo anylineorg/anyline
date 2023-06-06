@@ -21,7 +21,7 @@ public class RandomGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns){
-            if(null == BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity, column)) {
                 continue;
             }
             String prefix = ConfigTable.PRIMARY_GENERATOR_PREFIX;

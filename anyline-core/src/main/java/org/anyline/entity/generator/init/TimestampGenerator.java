@@ -21,7 +21,7 @@ public class TimestampGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns){
-            if(null == BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity, column)) {
                 continue;
             }
             String value = System.currentTimeMillis()+"";

@@ -3,8 +3,12 @@ package org.anyline.entity.geometry;
 public abstract class Geometry {
     public enum Type{
         Point(Point.class),
-        Line(LineString.class),
+        LineString(LineString.class),
+        Line(Line.class),
+        LineSegment(LineSegment.class),
         Polygon(Polygon.class),
+        Box(Box.class),
+        Circle(Circle.class),
         MultiPoint(MultiPoint.class),
         MultiLine(MultiLine.class),
         MultiPolygon(MultiPolygon.class),
@@ -16,11 +20,11 @@ public abstract class Geometry {
         }
     }
     protected String tag;
-    protected int srid;
-    protected int type;
-    protected byte endian;
+    protected Integer srid = 0;
+    protected Integer type;
+    protected Byte endian;
     protected Object origin;
-    public int srid() {
+    public Integer srid() {
         return srid;
     }
 
@@ -28,7 +32,7 @@ public abstract class Geometry {
         this.srid = srid;
     }
 
-    public int type() {
+    public Integer type() {
         return type;
     }
 
@@ -36,7 +40,7 @@ public abstract class Geometry {
         this.type = type;
     }
 
-    public byte endian() {
+    public Byte endian() {
         return endian;
     }
 
