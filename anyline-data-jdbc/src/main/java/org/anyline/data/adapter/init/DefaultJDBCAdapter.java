@@ -127,12 +127,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public String getDelimiterTo(){
 		return this.delimiterTo;
 	}
-
-	public boolean createPrimaryValue(Object entity, DatabaseType type, String table, List<String> pks, List<String> inserts, String other){
+	protected PrimaryGenerator checkPrimaryGenerator(DatabaseType type, String table){
 		//针对当前表的生成器
 		PrimaryGenerator generator = GeneratorConfig.get(table);
 		if(null != generator){
-			return generator.create(entity, type, table, pks, inserts, other);
+			return generator;
 		}
 		//全局配置
 		if(null == primaryGenerator){
@@ -155,11 +154,43 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}
 		}
 		if(null != primaryGenerator) {
-			return primaryGenerator.create(entity, type, table, pks, inserts, other);
+			return primaryGenerator;
+		}else{
+			return null;
+		}
+	}/*
+	public boolean createPrimaryValue(Object entity, DatabaseType type, String table, List<String> pks, String other){
+		//针对当前表的生成器
+		PrimaryGenerator generator = GeneratorConfig.get(table);
+		if(null != generator){
+			return generator.create(entity, type, table, pks, other);
+		}
+		//全局配置
+		if(null == primaryGenerator){
+			if(null == primaryGenerator){
+				primaryGenerator = GeneratorConfig.get();
+			}
+			if(null == primaryGenerator) {
+				//全局配置
+				if (ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE) {
+					primaryGenerator = PrimaryGenerator.GENERATORS.SNOWFLAKE;
+				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
+					primaryGenerator = PrimaryGenerator.GENERATORS.RANDOM;
+				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
+					primaryGenerator = PrimaryGenerator.GENERATORS.UUID;
+				} else if (ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE) {
+					primaryGenerator = PrimaryGenerator.GENERATORS.TIME;
+				} else if (ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE) {
+					primaryGenerator = PrimaryGenerator.GENERATORS.TIMESTAMP;
+				}
+			}
+		}
+		if(null != primaryGenerator) {
+			return primaryGenerator.create(entity, type, table, pks, other);
 		}else{
 			return false;
 		}
-	}
+	}*/
 	public void setDelimiter(String delimiter){
 		if(BasicUtil.isNotEmpty(delimiter)){
 			delimiter = delimiter.replaceAll("\\s", "");
@@ -323,11 +354,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(null == obj){
 			return new ArrayList<>();
 		}
-		boolean each = true;//是否需要从row中查找列
 		List<String> mastKeys = new ArrayList<>();		// 必须插入列
 		List<String> ignores = new ArrayList<>();		// 必须不插入列
 		List<String> factKeys = new ArrayList<>();		// 根据是否空值
 
+		boolean each = true;//是否需要从row中查找列
 		if(null != columns && columns.size()>0){
 			each = false;
 			keys = new ArrayList<>();
