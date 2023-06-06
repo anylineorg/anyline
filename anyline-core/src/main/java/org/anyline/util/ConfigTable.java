@@ -52,7 +52,7 @@ public class ConfigTable {
 	protected static Hashtable<String,Object> configs;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
-	protected static final String version 				= "8.6.3-SNAPSHOT"	;	// 版本号
+	protected static final String version 				= "8.6.3-20230606"	;	// 版本号
 	protected static final String minVersion 			= "0007"			;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
@@ -100,6 +100,7 @@ public class ConfigTable {
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false			; 	// 是否禁用查询缓存
 	public static String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
+	public static boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供主管理器,会根据数据源生成相应的事务管理器
 	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要提供主事务管理器,多数据源时需要
 
 
@@ -838,6 +839,10 @@ public class ConfigTable {
 
 	public boolean  IS_OPEN_PRIMARY_TRANSACTION_MANAGER() {
 		return IS_OPEN_PRIMARY_TRANSACTION_MANAGER;
+	}
+
+	public boolean  IS_OPEN_TRANSACTION_MANAGER() {
+		return IS_OPEN_TRANSACTION_MANAGER;
 	}
 
 	public boolean PRIMARY_GENERATOR_UUID_ACTIVE() {

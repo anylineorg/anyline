@@ -260,6 +260,10 @@ public class AnylineProperty {
      */
     protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器,多数据源时需要
     /**
+     * 是否需要提供主管理器,会根据数据源生成相应的事务管理器
+     */
+    protected boolean openTransactionManager                    = true         ;   // 是否需要提供主管理器,会根据数据源生成相应的事务管理器
+    /**
      * 主键生成器机器id
      */
     public int primaryGeneratorWorkerId					        = 1				;	// 主键生成器机器id
@@ -964,6 +968,15 @@ public class AnylineProperty {
     public void setThrowConvertException(boolean throwConvertException) {
         this.throwConvertException = throwConvertException;
         ConfigTable.IS_THROW_CONVERT_EXCEPTION = throwConvertException;
+    }
+
+    public boolean isOpenTransactionManager() {
+        return openTransactionManager;
+    }
+
+    public void setOpenTransactionManager(boolean openTransactionManager) {
+        this.openTransactionManager = openTransactionManager;
+        ConfigTable.IS_OPEN_TRANSACTION_MANAGER = openTransactionManager;
     }
 
     public boolean isPrintExceptionStackTrace() {

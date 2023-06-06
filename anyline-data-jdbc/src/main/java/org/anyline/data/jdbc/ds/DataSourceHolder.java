@@ -211,7 +211,7 @@ public class DataSourceHolder {
 	 */
 	public static TransactionStatus startTransaction(String datasource, DefaultTransactionDefinition definition){
 		DataSourceTransactionManager dtm = null;
-		if(BasicUtil.isEmpty(datasource)){
+		if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
 			datasource = "";
 		}else {
@@ -277,7 +277,7 @@ public class DataSourceHolder {
 	public static void commit(TransactionStatus status){
 		String datasource = transactionStatus.get(status);
 		DataSourceTransactionManager dtm = null;
-		if(BasicUtil.isEmpty(datasource)){
+		if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
 		}else {
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("anyline.transaction." + datasource);
@@ -293,7 +293,7 @@ public class DataSourceHolder {
 	public static void rollback(TransactionStatus status){
 		String datasource = transactionStatus.get(status);
 		DataSourceTransactionManager dtm = null;
-		if(BasicUtil.isEmpty(datasource)){
+		if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("transactionManager");
 		}else {
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean("anyline.transaction." + datasource);
@@ -316,14 +316,16 @@ public class DataSourceHolder {
 	}
 	public static String regTransactionManager(String key, DataSource ds, boolean primary){
 		String tm_id = "anyline.transaction." + key;
-		//事务管理器
-		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
-		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
-		tm_builder.addPropertyValue("dataSource", ds);
-		tm_builder.setPrimary(primary);
-		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
-		factory.registerBeanDefinition(tm_id, tm_definition);
-		log.info("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
+			//事务管理器
+			DefaultListableBeanFactory factory = (DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+			BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
+			tm_builder.addPropertyValue("dataSource", ds);
+			tm_builder.setPrimary(primary);
+			BeanDefinition tm_definition = tm_builder.getBeanDefinition();
+			factory.registerBeanDefinition(tm_id, tm_definition);
+			log.info("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		}
 		return tm_id;
 	}
 
@@ -332,14 +334,16 @@ public class DataSourceHolder {
 	}
 	public static String regTransactionManager(String key, String ds, boolean primary){
 		String tm_id = "anyline.transaction." + key;
-		//事务管理器
-		DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
-		BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
-		tm_builder.addPropertyReference("dataSource", ds);
-		tm_builder.setPrimary(primary);
-		BeanDefinition tm_definition = tm_builder.getBeanDefinition();
-		factory.registerBeanDefinition(tm_id, tm_definition);
-		log.info("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
+			//事务管理器
+			DefaultListableBeanFactory factory = (DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
+			BeanDefinitionBuilder tm_builder = BeanDefinitionBuilder.genericBeanDefinition(DataSourceTransactionManager.class);
+			tm_builder.addPropertyReference("dataSource", ds);
+			tm_builder.setPrimary(primary);
+			BeanDefinition tm_definition = tm_builder.getBeanDefinition();
+			factory.registerBeanDefinition(tm_id, tm_definition);
+			log.info("[创建事务控制器][数据源:{}][bean:{}]", key, tm_id);
+		}
 		return tm_id;
 	}
 
