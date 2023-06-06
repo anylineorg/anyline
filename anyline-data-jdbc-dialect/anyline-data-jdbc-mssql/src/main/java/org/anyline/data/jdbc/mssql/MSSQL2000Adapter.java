@@ -8,15 +8,15 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -97,6 +97,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
+
+        List<String> pks = null;
+        PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        if(null != generator){
+            pks = set.getRow(0).getPrimaryKeys();
+            BeanUtil.join(true, keys, pks);
+        }
+
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
@@ -116,14 +124,10 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 continue;
             }
             if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-                List<String> pks = row.getPrimaryKeys();
-                if(null == pks){
-                    pks = new ArrayList<>();
+                if(null != generator){
+                    generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 }
-                if(pks.size() ==0){
-                    pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
-                }
-                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, keys, null);
+                //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
             insertValue(template, run, row, true, false,false, keys);
@@ -155,6 +159,15 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             createInserts(template, run, dest, set, keys);
             return;
         }
+
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        List<String> pks = null;
+        if(null != generator) {
+            Object entity = list.iterator().next();
+            pks = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
+            BeanUtil.join(true, keys, pks);
+        }
+
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
@@ -171,22 +184,23 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         int idx = 0;
         for(Object obj:list){
             builder.append("\n SELECT ");
-            if(obj instanceof DataRow) {
+           /* if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
+                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 }
                 insertValue(template, run, row, true, false,false, keys);
-            }else{
+            }else{*/
                 boolean create = false;
                 if(EntityAdapterProxy.hasAdapter()){
                     create = EntityAdapterProxy.createPrimaryValue(obj, keys);
                 }
-                if(!create){
-                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
+                if(!create && null != generator){
+                    generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
                 insertValue(template, run, obj, true, false, false, keys);
-            }
+           // }
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");

@@ -37,6 +37,7 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -117,6 +118,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
+        List<String> pks = null;
+        PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        if(null != generator){
+            pks = set.getRow(0).getPrimaryKeys();
+            BeanUtil.join(true, keys, pks);
+        }
+
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
@@ -136,14 +144,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 continue;
             }
             if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-                List<String> pks = row.getPrimaryKeys();
-                if(null == pks){
-                    pks = new ArrayList<>();
+                if(null != generator){
+                    generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 }
-                if(pks.size() ==0){
-                    pks.add(ConfigTable.DEFAULT_PRIMARY_KEY);
-                }
-                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, keys,null);
+                //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             insertValue(template, run, row, true, false,true, keys);
             if(i<dataSize-1){
@@ -168,10 +172,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
+
+
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
             createInserts(template, run, dest, set, keys);
             return;
+        }
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        Object entity = list.iterator().next();
+        List<String> pks = null;
+        if(null != generator) {
+            pks = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
+            BeanUtil.join(true, keys, pks);
         }
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
@@ -188,22 +201,23 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         int dataSize = list.size();
         int idx = 0;
         for(Object obj:list){
-            if(obj instanceof DataRow) {
+            /*if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys,null);
+                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 }
                 insertValue(template, run, row, true, false,true, keys);
-            }else{
+            }else{*/
                 boolean create = false;
                 if(EntityAdapterProxy.hasAdapter()){
                     create = EntityAdapterProxy.createPrimaryValue(obj, keys);
                 }
-                if(!create){
-                    createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
+                if(!create && null != generator){
+                    generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
                 insertValue(template, run, obj, true, false, true, keys);
-            }
+            //}
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append(batchInsertSeparator());
@@ -229,6 +243,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(BasicUtil.isEmpty(dest)){
             throw new SQLException("未指定表");
         }
+
+        PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+
         int from = 1;
         StringBuilder valuesBuilder = new StringBuilder();
         DataRow row = null;
@@ -237,8 +254,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
         if(obj instanceof DataRow){
             row = (DataRow)obj;
-            if(row.hasPrimaryKeys()){
-                 createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), columns, null);
+            if(row.hasPrimaryKeys() && null != generator){
+                generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             from = 2;
@@ -246,8 +264,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             if(EntityAdapterProxy.hasAdapter()){
                 create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             }
-            if(!create){
-                createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, columns, null);
+            if(!create && null != generator){
+                generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
         run.setFrom(from);

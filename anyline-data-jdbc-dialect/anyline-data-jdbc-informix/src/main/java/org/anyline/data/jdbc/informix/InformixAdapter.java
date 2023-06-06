@@ -11,6 +11,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
@@ -214,6 +215,13 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				}
 			}
 		}
+
+		List<String> pks = null;
+		PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		if(null != generator){
+			pks = first.getPrimaryKeys();
+			BeanUtil.join(true, keys, pks);
+		}
 		for(DataRow row:set){
 			builder.append("INSERT INTO ");
 			SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
@@ -226,6 +234,13 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				start = false;
 			}
 			builder.append(")");
+
+			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
+				if(null != generator){
+					generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				}
+				//createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+			}
 			insertValue(template, run, row, false, false,true, keys);
 			builder.append(";");
 		}
@@ -264,6 +279,16 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				}
 			}
 		}
+
+
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		Object entity = list.iterator().next();
+		List<String> pks = null;
+		if(null != generator) {
+			pks = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
+			BeanUtil.join(true, keys, pks);
+		}
+
 		builder.append("INSERT INTO ");
 		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
 		int keySize = keys.size();
@@ -294,24 +319,25 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		int col = 0;
 
 		for(Object obj:list){
-			if(obj instanceof DataRow) {
+			/*if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
 				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
 					String pk = row.getPrimaryKey();
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(),  null);
 				}
-			}else{
+			}else{*/
 				boolean create = false;
 				if(EntityAdapterProxy.hasAdapter()){
 					create = EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}
-				if(!create){
-					createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
+				if(!create && null != generator){
+					generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks,  null);
+					//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
 				}
-			}
+			//}
 
 			if(col > 0){
 				builder.append("\n\tUNION ALL");

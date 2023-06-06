@@ -14,6 +14,7 @@ import org.anyline.data.run.TextRun;
 import org.anyline.data.run.XMLRun;
 import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -230,19 +231,23 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
+
+        PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         DataRow row = null;
         if(obj instanceof DataRow){
             row = (DataRow)obj;
-            if(row.hasPrimaryKeys() && null != primaryGenerator){
-                createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), columns,null);
+            if(row.hasPrimaryKeys() && null != generator){
+                generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             boolean create = false;
             if(EntityAdapterProxy.hasAdapter()){
                 create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             }
-            if(!create){
-                createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, columns, null);
+            if(!create && null != generator){
+                generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
+                //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
             }
         }
 

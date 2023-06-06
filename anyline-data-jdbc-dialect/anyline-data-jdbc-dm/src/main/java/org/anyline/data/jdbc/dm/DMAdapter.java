@@ -12,6 +12,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -194,6 +195,13 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				}
 			}
 		}
+
+		List<String> pks = null;
+		PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		if(null != generator){
+			pks = first.getPrimaryKeys();
+			BeanUtil.join(true, keys, pks);
+		}
 		builder.append("INSERT INTO ");
 		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
 		int keySize = keys.size();
@@ -223,8 +231,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		keys.removeAll(seqs.keySet());
 		int col = 0;
 		for(DataRow row:set) {
-			if(row.hasPrimaryKeys() && null != primaryGenerator){
-				createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
+			if(row.hasPrimaryKeys() && null != generator){
+				generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				//createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 			}
 
 			if(col > 0){
@@ -271,6 +280,14 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				}
 			}
 		}
+
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		List<String> pks = null;
+		if(null != generator) {
+			pks = EntityAdapterProxy.primaryKeys(first.getClass(), true);;
+			BeanUtil.join(true, keys, pks);
+		}
+
 		builder.append("INSERT INTO ");
 		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
 		int keySize = keys.size();
@@ -302,25 +319,26 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 		for(Object obj:list){
 			List<String> inserts = keys;
-			if(obj instanceof DataRow) {
+			/*if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
 				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
 					String pk = row.getPrimaryKey();
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), keys, null);
+					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				}
-			}else{
+			}else{*/
 				boolean create = false;
 				if(EntityAdapterProxy.hasAdapter()){
 					create = EntityAdapterProxy.createPrimaryValue(obj, keys);
 				}
-				if(!create){
-					createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, keys, null);
+				if(!create && null != generator){
+					generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks,  null);
+					//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
 				}
 
-			}
+			//}
 
 			if(col > 0){
 				builder.append("\n\tUNION ALL");
