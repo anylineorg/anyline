@@ -10,6 +10,13 @@ public class Ring extends Geometry{
         points.add(point);
         return this;
     }
+
+    public Ring add(double x, double y){
+        return add(new Point(x, y));
+    }
+    public Ring add(int x, int y){
+        return add(new Point(x, y));
+    }
     public List<Point> points(){
         return points;
     }

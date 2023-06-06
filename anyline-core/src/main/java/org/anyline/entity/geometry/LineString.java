@@ -9,6 +9,12 @@ public class LineString extends Geometry {
         points.add(point);
         return this;
     }
+    public LineString add(double x, double y){
+        return add(new Point(x, y));
+    }
+    public LineString add(int x, int y){
+        return add(new Point(x, y));
+    }
     public List<Point> points(){
         return points;
     }

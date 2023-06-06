@@ -22,6 +22,12 @@ public class MultiPoint extends Geometry{
         }
         return this;
     }
+    public MultiPoint add(double x, double y){
+        return add(new Point(x, y));
+    }
+    public MultiPoint add(int x, int y){
+        return add(new Point(x, y));
+    }
     public MultiPoint clear(){
         //points.clear();
         points = new ArrayList<>();
