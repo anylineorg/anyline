@@ -109,18 +109,23 @@ public class RuntimeHolder {
             //注销 service dao template
             if(factory.containsBeanDefinition("anyline.service." + key)){
                 factory.destroySingleton("anyline.service." + key);
+                factory.removeBeanDefinition("anyline.service." + key);
             }
             if(factory.containsBeanDefinition("anyline.dao." + key)){
                 factory.destroySingleton("anyline.dao." + key);
+                factory.removeBeanDefinition("anyline.dao." + key);
             }
             if(factory.containsBeanDefinition("anyline.jdbc.template." + key)){
                 factory.destroySingleton("anyline.jdbc.template." + key);
+                factory.removeBeanDefinition("anyline.jdbc.template." + key);
             }
             if(factory.containsBeanDefinition("anyline.transaction." + key)){
                 factory.destroySingleton("anyline.transaction." + key);
+                factory.removeBeanDefinition("anyline.transaction." + key);
             }
             if(factory.containsBeanDefinition("anyline.datasource." + key)){
                 factory.destroySingleton("anyline.datasource." + key);
+                factory.removeBeanDefinition("anyline.datasource." + key);
             }
         }catch (Exception e){
             e.printStackTrace();
