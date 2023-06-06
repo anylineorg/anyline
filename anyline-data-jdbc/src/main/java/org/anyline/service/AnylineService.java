@@ -947,6 +947,23 @@ public interface AnylineService<E>{
 		public PrimaryKey primary(String catalog, String schema, String table);
 
 		/* *****************************************************************************************************************
+		 * 													foreign
+		 ******************************************************************************************************************/
+
+		public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy,Table table);
+		public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy,String table);
+		public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy,String catalog, String schema, String table);
+		public LinkedHashMap<String, ForeignKey> foreigns(Table table);
+		public LinkedHashMap<String, ForeignKey> foreigns(String table);
+		public LinkedHashMap<String, ForeignKey> foreigns(String catalog, String schema, String table);
+
+		public ForeignKey foreign(boolean greedy,Table table, String ... columns);
+		public ForeignKey foreign(boolean greedy,String table, String ... columns);
+		public ForeignKey foreign(boolean greedy,String catalog, String schema, String table, String ... columns);
+		public ForeignKey foreign(Table table, String ... columns);
+		public ForeignKey foreign(String table, String ... columns);
+		public ForeignKey foreign(String catalog, String schema, String table, String ... columns);
+		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
 
@@ -983,6 +1000,54 @@ public interface AnylineService<E>{
 		public Constraint constraint(Table table, String name);
 		public Constraint constraint(String table, String name);
 		public Constraint constraint(String name);
+
+
+		/* *****************************************************************************************************************
+		 * 													trigger
+		 ******************************************************************************************************************/
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String catalog, String schema, String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String schema, String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy);
+
+		public LinkedHashMap<String,Trigger> triggers(String catalog, String schema, String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(String schema, String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(String actions);
+		public LinkedHashMap<String,Trigger> triggers();
+
+
+		public Trigger trigger(boolean greedy, String catalog, String schema, String name);
+		public Trigger trigger(boolean greedy, String schema, String name);
+		public Trigger trigger(boolean greedy, String name);
+
+		public Trigger trigger(String catalog, String schema, String name);
+		public Trigger trigger(String schema, String name);
+		public Trigger trigger(String name);
+
+		/* *****************************************************************************************************************
+		 * 													procedure
+		 ******************************************************************************************************************/
+
+		public LinkedHashMap<String,Procedure> procedures(boolean greedy, String catalog, String schema, String name);
+		public LinkedHashMap<String,Procedure> procedures(boolean greedy, String schema, String name);
+		public LinkedHashMap<String,Procedure> procedures(boolean greedy, String name);
+		public LinkedHashMap<String,Procedure> procedures(boolean greedy);
+
+		public LinkedHashMap<String,Procedure> procedures(String catalog, String schema, String name);
+		public LinkedHashMap<String,Procedure> procedures(String schema, String name);
+		public LinkedHashMap<String,Procedure> procedures(String name);
+		public LinkedHashMap<String,Procedure> procedures();
+
+
+		public Procedure procedure(boolean greedy, String catalog, String schema, String name);
+		public Procedure procedure(boolean greedy, String schema, String name);
+		public Procedure procedure(boolean greedy, String name);
+
+		public Procedure procedure(String catalog, String schema, String name);
+		public Procedure procedure(String schema, String name);
+		public Procedure procedure(String name);
 
 	}
 
@@ -1078,6 +1143,13 @@ public interface AnylineService<E>{
 		public boolean add(PrimaryKey primary) throws Exception;
 		public boolean alter(PrimaryKey primary) throws Exception;
 		public boolean drop(PrimaryKey primary) throws Exception;
+		/* *****************************************************************************************************************
+		 * 													foreign
+		 ******************************************************************************************************************/
+
+		public boolean add(ForeignKey foreign) throws Exception;
+		public boolean alter(ForeignKey foreign) throws Exception;
+		public boolean drop(ForeignKey foreign) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													index
@@ -1101,5 +1173,30 @@ public interface AnylineService<E>{
 		public boolean alter(Constraint constraint) throws Exception;
 		public boolean drop(Constraint constraint) throws Exception;
 
+		/* *****************************************************************************************************************
+		 * 													procedure
+		 ******************************************************************************************************************/
+		/**
+		 * 存储过程
+		 * @param procedure 存储过程
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
+		public boolean create(Procedure procedure) throws Exception;
+		public boolean alter(Procedure procedure) throws Exception;
+		public boolean drop(Procedure procedure) throws Exception;
+
+		/* *****************************************************************************************************************
+		 * 													trigger
+		 ******************************************************************************************************************/
+		/**
+		 * 触发器
+		 * @param trigger 触发器
+		 * @return trigger
+		 * @throws Exception 异常 Exception
+		 */
+		public boolean create(Trigger trigger) throws Exception;
+		public boolean alter(Trigger trigger) throws Exception;
+		public boolean drop(Trigger trigger) throws Exception;
 	}
 }
