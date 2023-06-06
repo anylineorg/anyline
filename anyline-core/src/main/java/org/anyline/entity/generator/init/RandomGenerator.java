@@ -12,7 +12,7 @@ import java.util.List;
 
 public class RandomGenerator implements PrimaryGenerator {
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, List<String> inserts, String other) {
+    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
         if(null == columns){
             if(entity instanceof DataRow){
                 columns = ((DataRow)entity).getPrimaryKeys();
@@ -21,6 +21,9 @@ public class RandomGenerator implements PrimaryGenerator {
             }
         }
         for(String column:columns){
+            if(null == BeanUtil.getFieldValue(entity, column)) {
+                continue;
+            }
             String prefix = ConfigTable.PRIMARY_GENERATOR_PREFIX;
             int len = ConfigTable.PRIMARY_GENERATOR_RANDOM_LENGTH - prefix.length();
             String value = prefix + BasicUtil.getRandomString(len);
@@ -30,9 +33,7 @@ public class RandomGenerator implements PrimaryGenerator {
                 value = value.toLowerCase();
             }
             BeanUtil.setFieldValue(entity, column, value, true);
-            if(!inserts.contains(column) && !inserts.contains("+"+column)){
-                inserts.add("+"+column);
-            }
+
         }
         return true;
     }
