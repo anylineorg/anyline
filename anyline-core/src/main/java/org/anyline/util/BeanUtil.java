@@ -3205,6 +3205,44 @@ public class BeanUtil {
 		return list;
 	}
 
+	/**
+	 * 添加集合,并去重(不区分大小写)
+	 * @param list list
+	 * @param appends appends
+	 * @param distinct 去重
+	 */
+	public static <T> void join(boolean distinct, Collection<T> list, Collection<T> appends){
+		for(T append:appends){
+			if(!distinct || !contains(list, append)){
+				list.add(append);
+			}
+		}
+	}
+	public static <T> void join(boolean distinct, Collection<T> list, T ... appends){
+		for(T append:appends){
+			if(!distinct || !contains(list, append)){
+				list.add(append);
+			}
+		}
+	}
+
+	/**
+	 * list中是否包含item 不区分大小写
+	 * @param list list
+	 * @param item item
+	 * @return boolean
+	 */
+	public static <T> boolean contains(Collection<T> list, Object item){
+		for(T i:list){
+			if(null ==i && null == item){
+				return true;
+			}
+			if(null != i && i.toString().equalsIgnoreCase(item.toString())){
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 	public static String parseRuntimeValue(Object obj, String key){
