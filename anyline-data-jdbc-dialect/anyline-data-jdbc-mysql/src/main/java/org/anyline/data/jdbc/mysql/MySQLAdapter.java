@@ -774,7 +774,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				builder.append(" AND TABLE_NAME = '").append(name).append("'\n");
 			}
 		}
-		sqls.add("ORDER BY ORDINAL_POSITION");
+		builder.append("ORDER BY ORDINAL_POSITION");
 		sqls.add(builder.toString());
 		return sqls;
 	}
