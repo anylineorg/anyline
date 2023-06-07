@@ -86,20 +86,6 @@ public class Table implements org.anyline.entity.data.Table{
                 pks.add(column);
             }
         }
-        Collections.sort(pks, new Comparator<Column>() {
-            @Override
-            public int compare(Column o1, Column o2) {
-                Integer p1 = o1.getPosition();
-                Integer p2 = o2.getPosition();
-                if(null == p1){
-                    return -1;
-                }
-                if(null == p2){
-                    return 1;
-                }
-                return p1 > p2 ? 1:-1;
-            }
-        });
         return pks;
     }
     public Column primary(){
