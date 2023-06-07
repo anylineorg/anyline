@@ -1144,6 +1144,94 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public StringBuilder name(StringBuilder builder, Table table){
 		return super.name(builder, table);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildCreateRunSQL(View view);
+	 * public String buildCreateCommentRunSQL(View view);
+	 * public List<String> buildAlterRunSQL(View view);
+	 * public String buildRenameRunSQL(View view);
+	 * public String buildChangeCommentRunSQL(View view);
+	 * public String buildDropRunSQL(View view);
+	 * public StringBuilder checkViewExists(StringBuilder builder, boolean exists)
+	 * public StringBuilder primary(StringBuilder builder, View view)
+	 * public StringBuilder comment(StringBuilder builder, View view)
+	 * public StringBuilder name(StringBuilder builder, View view)
+	 ******************************************************************************************************************/
+
+
+	@Override
+	public List<String> buildCreateRunSQL(View view) throws Exception{
+		List<String> list = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		view.setCreater(this);
+		builder.append("CREATE OR REPLACE VIEW ");
+		name(builder, view);
+		builder.append(" AS \n").append(view.getDefinition());
+		list.add(builder.toString());
+		list.add(buildCreateCommentRunSQL(view));
+		return list;
+	}
+
+	@Override
+	public String buildCreateCommentRunSQL(View view) throws Exception{
+		return super.buildCreateCommentRunSQL(view);
+	}
+
+
+	@Override
+	public List<String> buildAlterRunSQL(View view) throws Exception{
+		return super.buildAlterRunSQL(view);
+	}
+	/**
+	 * 修改视图名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param view 视图
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(View view) throws Exception{
+		return super.buildRenameRunSQL(view);
+	}
+
+	@Override
+	public String buildChangeCommentRunSQL(View view) throws Exception{
+		return super.buildChangeCommentRunSQL(view);
+	}
+	/**
+	 * 删除视图
+	 * @param view 视图
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(View view) throws Exception{
+		return super.buildDropRunSQL(view);
+	}
+
+	/**
+	 * 创建或删除视图时检测视图是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
+		return super.checkViewExists(builder, exists);
+	}
+
+	/**
+	 * 备注 不支持创建视图时带备注的 在子视图中忽略
+	 * @param builder builder
+	 * @param view 视图
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder comment(StringBuilder builder, View view){
+		return super.comment(builder, view);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------

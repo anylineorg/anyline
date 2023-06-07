@@ -1046,6 +1046,64 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 
+
+	/* *****************************************************************************************************************
+	 * 													view
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildCreateRunSQL(View view);
+	 * public String buildCreateCommentRunSQL(View view);
+	 * public List<String> buildAlterRunSQL(View view);
+	 * public String buildRenameRunSQL(View view);
+	 * public String buildChangeCommentRunSQL(View view);
+	 * public String buildDropRunSQL(View view);
+	 * public StringBuilder checkViewExists(StringBuilder builder, boolean exists)
+	 * public StringBuilder primary(StringBuilder builder, View view)
+	 * public StringBuilder comment(StringBuilder builder, View view)
+	 * public StringBuilder name(StringBuilder builder, View view)
+	 ******************************************************************************************************************/
+
+
+	@Override
+	public List<String> buildCreateRunSQL(View view) throws Exception{
+		return super.buildCreateRunSQL(view);
+	}
+
+	@Override
+	public String buildCreateCommentRunSQL(View view) throws Exception{
+		return super.buildCreateCommentRunSQL(view);
+	}
+
+
+	@Override
+	public List<String> buildAlterRunSQL(View view) throws Exception{
+		return super.buildAlterRunSQL(view);
+	}
+	/**
+	 * 修改视图名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param view 视图
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(View view) throws Exception{
+		return super.buildRenameRunSQL(view);
+	}
+
+	@Override
+	public String buildChangeCommentRunSQL(View view) throws Exception{
+		return super.buildChangeCommentRunSQL(view);
+	}
+	/**
+	 * 删除视图
+	 * @param view 视图
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(View view) throws Exception{
+		return super.buildDropRunSQL(view);
+	}
+
 	/**
 	 * 创建或删除视图时检测视图是否存在
 	 * @param builder builder
@@ -1054,12 +1112,18 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
-		return builder;
+		return super.checkViewExists(builder, exists);
 	}
 
+	/**
+	 * 备注 不支持创建视图时带备注的 在子视图中忽略
+	 * @param builder builder
+	 * @param view 视图
+	 * @return builder
+	 */
 	@Override
-	public String buildCreateCommentRunSQL(View view) throws Exception{
-		return buildCreateCommentRunSQL((Table)view);
+	public StringBuilder comment(StringBuilder builder, View view){
+		return super.comment(builder, view);
 	}
 
 	/* *****************************************************************************************************************

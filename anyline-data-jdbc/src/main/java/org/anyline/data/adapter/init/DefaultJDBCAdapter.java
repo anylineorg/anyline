@@ -2227,6 +2227,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		if(pks.size() > 1){
 			PrimaryKey primary = new PrimaryKey();
+			primary.setTable(table);
 			for (Column col:pks){
 				primary.addColumn(col);
 			}
@@ -2411,7 +2412,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		view.setCreater(this);
-		builder.append("CREATE OR REPLACE VIEW ");
+		builder.append("CREATE VIEW ");
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
 		list.add(builder.toString());

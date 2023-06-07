@@ -1061,22 +1061,6 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-	/**
-	 * 创建或删除视图时检测视图是否存在
-	 * @param builder builder
-	 * @param exists exists
-	 * @return StringBuilder
-	 */
-	@Override
-	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
-		return builder;
-	}
-
-	@Override
-	public String buildCreateCommentRunSQL(View view) throws Exception{
-		return buildCreateCommentRunSQL((Table)view);
-	}
-
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
