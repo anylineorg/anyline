@@ -2189,6 +2189,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		name(builder, table);
 		LinkedHashMap columMap = table.getColumns();
 		Collection<Column> columns = null;
+		List<Column> pks = table.primarys();
 		if(null != columMap){
 			columns = columMap.values();
 			if(null != columns && columns.size() >0){
@@ -2204,7 +2205,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					idx ++;
 				}
 				builder.append("\t");
-				primary(builder, table);
+				if(pks.size()== 1) {
+					primary(builder, table);
+				}
 				builder.append(")");
 			}
 		}
@@ -2220,6 +2223,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				if(null != columnComment){
 					list.add(columnComment);
 				}
+			}
+		}
+		if(pks.size() > 1){
+			PrimaryKey primary = new PrimaryKey();
+			for (Column col:pks){
+				primary.addColumn(col);
+			}
+			String pksql = buildAddRunSQL(primary);
+			if(BasicUtil.isNotEmpty(pksql)){
+				list.add(pksql);
 			}
 		}
 		return list;
