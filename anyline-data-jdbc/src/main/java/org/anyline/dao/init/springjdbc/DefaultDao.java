@@ -34,8 +34,6 @@ import org.anyline.data.metadata.persistence.OneToMany;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.Procedure;
-import org.anyline.data.prepare.ProcedureParam;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
@@ -45,6 +43,7 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
+import org.anyline.entity.data.ProcedureParam;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
@@ -3059,7 +3058,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-
 	public LinkedHashMap<String, Tag> tags(boolean greedy, Table table) {
 		return tags(runtime(), greedy, table);
 	}
@@ -3122,7 +3120,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
 			}
-			if (tags.size() == 0) {
+			if (null == tags || tags.size() == 0) {
 				// 再根据metadata解析 SELECT * FROM T WHERE 1=0
 				try {
 					List<String> sqls = adapter.buildQueryTagRunSQL(table, true);
@@ -3145,7 +3143,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}
 
-			if (tags.size() == 0) {
+			if (null == tags || tags.size() == 0) {
 				// 根据jdbc接口补充
 				try {
 					// isAutoIncrement isGenerated remark default
