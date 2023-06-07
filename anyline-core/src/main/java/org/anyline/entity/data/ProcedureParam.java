@@ -1,7 +1,10 @@
-package org.anyline.data.prepare;
+package org.anyline.entity.data;
+
+import org.anyline.entity.metadata.ColumnType;
 
 public class ProcedureParam {
     private Object value;
+    private ColumnType columnType;
     private Integer type = java.sql.Types.VARCHAR;
 
     public Object getValue() {
@@ -16,6 +19,9 @@ public class ProcedureParam {
         return type;
     }
 
+    public void setType(ColumnType type) {
+        this.columnType = type;
+    }
     public void setType(Integer type) {
         this.type = type;
     }

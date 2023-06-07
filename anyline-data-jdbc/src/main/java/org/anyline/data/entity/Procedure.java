@@ -17,18 +17,17 @@
  */
 
 
-package org.anyline.data.prepare.init;
+package org.anyline.data.entity;
 
-import org.anyline.data.prepare.Procedure;
-import org.anyline.data.prepare.ProcedureParam;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.ProcedureParam;
 
 import java.util.ArrayList;
 import java.util.List;
  
  
  
-public class DefaultProcedure implements Procedure {
+public class Procedure implements org.anyline.entity.data.Procedure {
 	private static final long serialVersionUID = -1421673036222025241L;
 	private String name;
 	private List<ProcedureParam> inputs = new ArrayList<ProcedureParam>();
@@ -38,11 +37,32 @@ public class DefaultProcedure implements Procedure {
 	private PageNavi navi;
 	
 	
-	public DefaultProcedure(String name){
+	public Procedure(String name){
 		this();
 		this.name = name;
 	}
-	public DefaultProcedure(){}
+	public Procedure(){}
+
+	@Override
+	public String getDefinition() {
+		return null;
+	}
+
+	@Override
+	public void setDefinition(String definition) {
+
+	}
+
+	@Override
+	public void addInput(ProcedureParam... params) {
+
+	}
+
+	@Override
+	public void addOutput(ProcedureParam... params) {
+
+	}
+
 	/**
 	 * 添加输入参数
 	 * @param value	值 value	值
