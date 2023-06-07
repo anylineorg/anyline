@@ -1445,6 +1445,39 @@ public interface JDBCAdapter {
 	String buildRenameRunSQL(PrimaryKey primary) throws Exception;
 
 
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	String buildAddRunSQL(ForeignKey foreign) throws Exception;
+
+	/**
+	 * 修改外键
+	 * @param foreign 外键
+	 * @return List
+	 */
+	List<String> buildAlterRunSQL(ForeignKey foreign) throws Exception;
+
+	/**
+	 * 删除外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	String buildDropRunSQL(ForeignKey foreign) throws Exception;
+
+	/**
+	 * 修改外键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param foreign 外键
+	 * @return String
+	 */
+	String buildRenameRunSQL(ForeignKey foreign) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/

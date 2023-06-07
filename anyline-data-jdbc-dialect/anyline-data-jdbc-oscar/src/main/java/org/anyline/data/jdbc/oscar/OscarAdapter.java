@@ -1770,6 +1770,46 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
+		return super.buildAddRunSQL(foreign);
+	}
+	/**
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(ForeignKey foreign) throws Exception{
+		return super.buildAlterRunSQL(foreign);
+	}
+
+	/**
+	 * 删除外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
+		return super.buildDropRunSQL(foreign);
+	}
+
+	/**
+	 * 修改外键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildRenameRunSQL(ForeignKey foreign) throws Exception{
+		return super.buildRenameRunSQL(foreign);
+	}
+
+	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception

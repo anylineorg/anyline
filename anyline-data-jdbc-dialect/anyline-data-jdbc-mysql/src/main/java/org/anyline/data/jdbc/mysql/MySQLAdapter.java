@@ -1821,6 +1821,85 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+
+	/** ALTER TABLE bb
+	 ADD CONSTRAINT fk_constraint_name
+	 FOREIGN KEY (aid, acode)
+	 REFERENCES aa(id,code);
+
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		Map<String,Column> columns = foreign.getColumns();
+		if(columns.size()>0) {
+			builder.append("ALTER TABLE ");
+			name(builder, foreign.getTable());
+			builder.append(" ADD ");
+			if(BasicUtil.isNotEmpty(foreign.getName())){
+				builder.append("CONSTRAINT ").append(foreign.getName());
+			}
+			builder.append("FOREIGN KEY (");
+			boolean first = true;
+			for(Column column:columns.values()){
+				if(!first){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+				first = false;
+			}
+			builder.append(")");
+			builder.append(" REFERENCES ").append(foreign.getReference().getName()).append("(");
+			first = true;
+			for(Column column:columns.values()){
+				if(!first){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, column.getReference(), getDelimiterFr(), getDelimiterTo());
+				first = false;
+			}
+			builder.append(")");
+
+		}
+		return builder.toString();
+	}
+	/**
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(ForeignKey foreign) throws Exception{
+		return super.buildAlterRunSQL(foreign);
+	}
+
+	/**
+	 * 删除外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE");
+		name(builder, foreign.getTable());
+		builder.append(" DROP FOREIGN KEY ").append(foreign.getName());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改外键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildRenameRunSQL(ForeignKey foreign) throws Exception{
+		return super.buildRenameRunSQL(foreign);
+	} 
+	
+	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public String buildAddRunSQL(Index index) throws Exception

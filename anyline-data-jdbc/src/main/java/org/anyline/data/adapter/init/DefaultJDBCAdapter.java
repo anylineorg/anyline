@@ -3502,6 +3502,58 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		return null;
 	}
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
+	/**
+	 * 添加外键
+	 * @param foreign 外键
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(ForeignKey foreign) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAlterRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
+
+	/**
+	 * 删除外键
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildDropRunSQL(PrimaryKey primary)", 37));
+		}
+		return null;
+	}
+
+	/**
+	 * 修改外键名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param foreign 外键
+	 * @return String
+	 */
+	public String buildRenameRunSQL(ForeignKey foreign) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(ForeignKey foreign) ", 37));
+		}
+		return null;
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
