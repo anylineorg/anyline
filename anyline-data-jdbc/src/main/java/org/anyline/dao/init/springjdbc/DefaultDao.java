@@ -3290,8 +3290,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return primary(false, catalog, schema, table);
 	}
 
+
 	/* *****************************************************************************************************************
 	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table){
 		LinkedHashMap<String, ForeignKey> foreigns = new LinkedHashMap<>();

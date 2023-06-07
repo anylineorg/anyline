@@ -254,8 +254,12 @@ public interface AnylineDao<E>{
 	public PrimaryKey primary(String table);
 	public PrimaryKey primary(String catalog, String schema, String table);
 
+
 	/* *****************************************************************************************************************
 	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table);
 	/* *****************************************************************************************************************

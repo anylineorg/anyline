@@ -7,6 +7,7 @@ import org.anyline.data.run.Run;
 import org.anyline.entity.*;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -748,6 +749,62 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		}
 		return primary;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的外键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where REFERENCED_TABLE_NAME IS NOT NULL\n");
+		if(null != table){
+			String name = table.getName();
+			if(BasicUtil.isNotEmpty(name)){
+				builder.append(" AND TABLE_NAME = '").append(name).append("'\n");
+			}
+		}
+		sqls.add("ORDER BY ORDINAL_POSITION");
+		sqls.add(builder.toString());
+		return sqls;
+	}
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRunSQL 返回顺序
+	 * @param table 表
+	 * @param foreigns 上一步查询结果
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception{
+		if(null == foreigns){
+			foreigns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("CONSTRAINT_NAME");
+			ForeignKey foreign = foreigns.get(name.toUpperCase());
+			if(null == foreign){
+				foreign = new ForeignKey();
+				foreign.setName(name);
+				foreign.setTable(row.getString("TABLE_NAME"));
+				foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
+				foreigns.put(name.toUpperCase(), foreign);
+			}
+			foreign.addColumn(row.getString("COLUMN_NAME"), row.getString("REFERENCED_COLUMN_NAME"));
+
+		}
+		return foreigns;
 	}
 
 	/* *****************************************************************************************************************

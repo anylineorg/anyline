@@ -10,6 +10,9 @@ public class ForeignKey extends Constraint{
     }
 
     public ForeignKey(){}
+    public ForeignKey(String name){
+        this.setName(name);
+    }
 
     /**
      * 外键

@@ -46,7 +46,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-interface JDBCAdapter {
+public interface JDBCAdapter {
 
 	// 内置VALUE
 	 enum SQL_BUILD_IN_VALUE{
@@ -736,8 +736,12 @@ interface JDBCAdapter {
 	PrimaryKey primary(int index, Table table, DataSet set) throws Exception;
 
 
+
 	/* *****************************************************************************************************************
 	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**

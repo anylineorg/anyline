@@ -780,6 +780,35 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		return primary;
 	}
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的外键
+	 * @param table 表
+	 * @return sqls
+	 */
+	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
+		return super.buildQueryForeignsRunSQL(table);
+	}
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRunSQL 返回顺序
+	 * @param table 表
+	 * @param foreigns 上一步查询结果
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception{
+		return super.foreigns(index, table, foreigns, set);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
