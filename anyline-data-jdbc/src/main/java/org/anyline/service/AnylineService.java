@@ -1005,9 +1005,9 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													trigger
 		 ******************************************************************************************************************/
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String catalog, String schema, String name, String actions);
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String schema, String name, String actions);
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String name, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String catalog, String schema, String table, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String schema, String table, String actions);
+		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String table, String actions);
 		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String actions);
 		public LinkedHashMap<String,Trigger> triggers(boolean greedy);
 

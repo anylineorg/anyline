@@ -46,46 +46,55 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface JDBCAdapter {
+interface JDBCAdapter {
 
 	// 内置VALUE
-	public static enum SQL_BUILD_IN_VALUE{
-		CURRENT_TIME  		{public String getCode(){return "CURRENT_TIME";}	public String getName(){return "当前时间";}};
-
-		public abstract String getCode();
-		public abstract String getName();
+	 enum SQL_BUILD_IN_VALUE{
+		CURRENT_TIME("CURRENT_TIME","当前时间");
+		private final String code;
+		private final String name;
+		SQL_BUILD_IN_VALUE(String code, String name){
+			this.code = code;
+			this.name = name;
+		}
+		String getCode(){
+			return code;
+		}
+		String getName(){
+			return name;
+		}
 	}
-	public DatabaseType type();
-	public String version();
+	DatabaseType type();
+	String version();
 
 
-	public static final String TAB 		= "\t"		;
-	public static final String BR 		= "\n"		;
-	public static final String BR_TAB 	= "\n\t"	;
+	String TAB 		= "\t"		;
+	String BR 		= "\n"		;
+	String BR_TAB 	= "\n\t"	;
 
-	public AnylineDao getDao();
-	public void setDao(AnylineDao dao);
+	AnylineDao getDao();
+	void setDao(AnylineDao dao);
 
 	/**
 	 * 界定符
 	 * @return String
 	 */
-	public String getDelimiterFr();
-	public String getDelimiterTo();
+	String getDelimiterFr();
+	String getDelimiterTo();
 
 	/**
 	 * 对应的兼容模式，有些数据库会兼容oracle或pg,需要分别提供两个JDBCAdapter或者直接依赖oracle/pg的adapter
 	 * 参考SQLAdapterUtil定位adapter的方法
 	 * @return DatabaseType
 	 */
-	public DatabaseType compatible();
+	DatabaseType compatible();
 
 	/**
 	 * 转换成相应数据库支持类型
 	 * @param type type
 	 * @return ColumnType
 	 */
-	public ColumnType type(String type);
+	ColumnType type(String type);
 
 	/**
 	 * 根据java数据类型定位数据库数据类型
@@ -93,11 +102,11 @@ public interface JDBCAdapter {
 	 * @param support class或ColumnType
 	 * @return DataWriter
 	 */
-	public DataWriter writer(Object support);
+	DataWriter writer(Object support);
 	//根据Java类型
-	public DataReader reader(Class clazz);
+	DataReader reader(Class clazz);
 	//根据数据库数据类型
-	public DataReader reader(ColumnType type);
+	DataReader reader(ColumnType type);
 
 	/* *****************************************************************************************************************
 	 *
@@ -128,7 +137,7 @@ public interface JDBCAdapter {
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
-	public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns);
+	Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
 	/**
 	 * 根据Collection创建批量插入SQL
@@ -138,7 +147,7 @@ public interface JDBCAdapter {
 	 * @param list 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys);
+	void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
@@ -148,41 +157,37 @@ public interface JDBCAdapter {
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys);
+	void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys);
 
 	/**
 	 * 确认需要插入的列
 	 * @param data  Entity或DataRow
 	 * @param batch  是否批量
-	 * @param columns 提供额外的判断依据
-	 *                列可以加前缀
-	 *                +:表示必须插入
-	 *                -:表示必须不插入
-	 *                ?:根据是否有值
-	 *
-	 *        如果没有提供columns,长度为0也算没有提供
-	 *        则解析obj(遍历所有的属性工Key)获取insert列
-	 *
-	 *        如果提供了columns则根据columns获取insert列
-	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj
-	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true
+	 * @param columns 提供额外的判断依据<br/>
+	 *                列可以加前缀<br/>
+	 *                +:表示必须插入<br/>
+	 *                -:表示必须不插入<br/>
+	 *                ?:根据是否有值<br/>
+	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
+	 *        如果提供了columns则根据columns获取insert列<br/>
+	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
 	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
-	public List<String> confirmInsertColumns(String dest, Object data, List<String> columns, boolean batch);
+	List<String> confirmInsertColumns(String dest, Object data, List<String> columns, boolean batch);
 
 	/**
 	 * 批量插入数据时,多行数据之间分隔符
 	 * @return String
 	 */
-	public String batchInsertSeparator ();
+	String batchInsertSeparator ();
 	/**
 	 * 插入数据时是否支持占位符
 	 * @return boolean
 	 */
-	public boolean supportInsertPlaceholder ();
+	boolean supportInsertPlaceholder ();
 
 	/**
 	 * 执行 insert
@@ -195,7 +200,7 @@ public interface JDBCAdapter {
 	 * @return int
 	 * @throws Exception 异常
 	 */
-	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
+	int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
 
 	/**
 	 * insert执行后 通过KeyHolder获取主键值赋值给data
@@ -204,8 +209,8 @@ public interface JDBCAdapter {
 	 * @param keyholder  keyholder
 	 * @return boolean
 	 */
-	public boolean identity(String random, Object data, KeyHolder keyholder);
-	public String generatedKey();
+	boolean identity(String random, Object data, KeyHolder keyholder);
+	String generatedKey();
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
@@ -219,7 +224,7 @@ public interface JDBCAdapter {
 	 * @param configs 更新条件
 	 * @return Run
 	 */
-	public Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+	Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
 
 
 
@@ -234,20 +239,20 @@ public interface JDBCAdapter {
 	 * @param conditions 查询条件
 	 * @return Run
 	 */
-	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 创建查询序列SQL
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param names names
 	 * @return String
 	 */
-	public String buildQuerySequence(boolean next, String ... names);
+	String buildQuerySequence(boolean next, String ... names);
 
 	/**
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
 	 * @param run run
 	 */
-	public void buildQueryRunContent(Run run);
+	void buildQueryRunContent(Run run);
 
 
 	/**
@@ -255,7 +260,7 @@ public interface JDBCAdapter {
 	 * @param run  run
 	 * @return String
 	 */
-	public String parseFinalQuery(Run run);
+	String parseFinalQuery(Run run);
 
 
 	/**
@@ -266,7 +271,7 @@ public interface JDBCAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	public Object buildConditionLike(StringBuilder builder, Compare compare, Object value);
+	Object buildConditionLike(StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * 构造 FIND_IN_SET 查询条件
@@ -277,7 +282,7 @@ public interface JDBCAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value);
+	Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value);
 	/**
 	 * 构造(NOT) IN 查询条件
 	 * @param builder builder
@@ -285,14 +290,14 @@ public interface JDBCAdapter {
 	 * @param value value
 	 * @return builder
 	 */
-	public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value);
+	StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * JDBC执行完成后的结果处理
 	 * @param list JDBC执行结果
 	 * @return  DataSet
 	 */
-	public List<Map<String,Object>> process(List<Map<String,Object>> list);
+	List<Map<String,Object>> process(List<Map<String,Object>> list);
 
 
 	/* *****************************************************************************************************************
@@ -304,7 +309,7 @@ public interface JDBCAdapter {
 	 * @param run  Run
 	 * @return String
 	 */
-	public String parseTotalQuery(Run run);
+	String parseTotalQuery(Run run);
 
 
 	/* *****************************************************************************************************************
@@ -316,7 +321,7 @@ public interface JDBCAdapter {
 	 * @param run run
 	 * @return String
 	 */
-	public String parseExists(Run run);
+	String parseExists(Run run);
 
 
 	/* *****************************************************************************************************************
@@ -330,13 +335,13 @@ public interface JDBCAdapter {
 	 * @param conditions conditions
 	 * @return Run
 	 */
-	public Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 构造执行主体
 	 * @param run run
 	 */
-	public void buildExecuteRunContent(Run run);
+	void buildExecuteRunContent(Run run);
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
@@ -349,7 +354,7 @@ public interface JDBCAdapter {
 	 * @param columns 删除条件的我
 	 * @return Run
 	 */
-	public Run buildDeleteRun(String dest, Object obj, String ... columns);
+	Run buildDeleteRun(String dest, Object obj, String ... columns);
 	/**
 	 * 根据key values删除
 	 * @param table 表
@@ -357,16 +362,16 @@ public interface JDBCAdapter {
 	 * @param values values
 	 * @return Run
 	 */
-	public Run buildDeleteRun(String table, String key, Object values);
+	Run buildDeleteRun(String table, String key, Object values);
 
 	/**
 	 * 构造删除主体
 	 * @param run run
 	 * @return Run
 	 */
-	public Run buildDeleteRunContent(Run run);
+	Run buildDeleteRunContent(Run run);
 
-	public String buildTruncateSQL(String table);
+	String buildTruncateSQL(String table);
 
 
 	/* *****************************************************************************************************************
@@ -386,8 +391,8 @@ public interface JDBCAdapter {
 	 *
 	 ******************************************************************************************************************/
 
-	public void checkSchema(DataSource dataSource, Table table);
-	public void checkSchema(Connection con, Table table);
+	void checkSchema(DataSource dataSource, Table table);
+	void checkSchema(Connection con, Table table);
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/
@@ -397,7 +402,7 @@ public interface JDBCAdapter {
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
-	public List<String> buildQueryDatabaseRunSQL() throws Exception;
+	List<String> buildQueryDatabaseRunSQL() throws Exception;
 
 	/**
 	 *  根据查询结果集构造 Database
@@ -408,7 +413,7 @@ public interface JDBCAdapter {
 	 * @return databases
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
+	LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													table
@@ -422,7 +427,7 @@ public interface JDBCAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 * 查询表备注
@@ -432,7 +437,7 @@ public interface JDBCAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -445,7 +450,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC补充
@@ -459,7 +464,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -473,7 +478,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -487,7 +492,7 @@ public interface JDBCAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造View
@@ -500,7 +505,7 @@ public interface JDBCAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception;
+	LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC补充
@@ -514,7 +519,7 @@ public interface JDBCAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -528,7 +533,7 @@ public interface JDBCAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -541,7 +546,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
+	LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -553,7 +558,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -568,7 +573,7 @@ public interface JDBCAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 * 根据主表查询分区表
@@ -578,8 +583,8 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception;
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception;
+	List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception;
+	List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -594,7 +599,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -607,7 +612,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
+	LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -620,7 +625,7 @@ public interface JDBCAdapter {
 	 * @param metadata 是否根据metadata(true:SELEC * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
-	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception;
+	List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Tag
@@ -632,7 +637,7 @@ public interface JDBCAdapter {
 	 * @return tags tags
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
+	LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
 
 	/**
 	 * 解析查询结果metadata(0=1)
@@ -643,7 +648,7 @@ public interface JDBCAdapter {
 	 * @return columns columns
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
+	LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
 
 	/**
 	 * 解析JDBC getcolumns结果
@@ -654,11 +659,11 @@ public interface JDBCAdapter {
 	 * @return attern attern
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
-	public Column column(Column column, SqlRowSetMetaData rsm, int index);
-	public Column column(Column column, ResultSetMetaData rsm, int index);
-	public Column column(Column column, ResultSet rs);
+	Column column(Column column, SqlRowSetMetaData rsm, int index);
+	Column column(Column column, ResultSetMetaData rsm, int index);
+	Column column(Column column, ResultSet rs);
 
 
 	/* *****************************************************************************************************************
@@ -671,7 +676,7 @@ public interface JDBCAdapter {
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
-	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception;
+	List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Tag
@@ -683,7 +688,7 @@ public interface JDBCAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+	LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
 
 	/**
 	 * 解析查询结果metadata(0=1)
@@ -694,7 +699,7 @@ public interface JDBCAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
+	LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
 
 	/**
 	 *
@@ -707,7 +712,7 @@ public interface JDBCAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -719,7 +724,7 @@ public interface JDBCAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception;
+	List<String> buildQueryPrimaryRunSQL(Table table) throws Exception;
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
@@ -728,7 +733,29 @@ public interface JDBCAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception;
+	PrimaryKey primary(int index, Table table, DataSet set) throws Exception;
+
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的外键
+	 * @param table 表
+	 * @return sqls
+	 */
+	List<String> buildQueryForeignsRunSQL(Table table) throws Exception;
+
+	/**
+	 *  根据查询结果集构造PrimaryKey
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRunSQL 返回顺序
+	 * @param table 表
+	 * @param foreigns 上一步查询结果
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -741,7 +768,7 @@ public interface JDBCAdapter {
 	 * @param name 名称
 	 * @return sqls
 	 */
-	public List<String> buildQueryIndexRunSQL(Table table, String name);
+	List<String> buildQueryIndexRunSQL(Table table, String name);
 
 	/**
 	 *  根据查询结果集构造Index
@@ -753,7 +780,7 @@ public interface JDBCAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
+	LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
 
 	/**
 	 *
@@ -764,7 +791,7 @@ public interface JDBCAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
+	LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
 
 	/**
 	 * 解析JDBC getIndex结果
@@ -774,7 +801,7 @@ public interface JDBCAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
+	LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -787,7 +814,7 @@ public interface JDBCAdapter {
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
-	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception;
+	List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Constraint
@@ -799,9 +826,9 @@ public interface JDBCAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
-	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
+	LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
+	LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
 
 
 
@@ -833,7 +860,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateRunSQL(Table table) throws Exception;
+	List<String> buildCreateRunSQL(Table table) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -841,7 +868,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Table table) throws Exception;
+	String buildCreateCommentRunSQL(Table table) throws Exception;
 
 	/**
 	 * 修改表
@@ -849,7 +876,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildAlterRunSQL(Table table) throws Exception;
+	List<String> buildAlterRunSQL(Table table) throws Exception;
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
@@ -857,7 +884,7 @@ public interface JDBCAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception;
+	List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception;
 
 	/**
 	 * 重命名
@@ -865,7 +892,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildRenameRunSQL(Table table) throws Exception;
+	String buildRenameRunSQL(Table table) throws Exception;
 
 	/**
 	 * 修改备注
@@ -873,7 +900,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildChangeCommentRunSQL(Table table) throws Exception;
+	String buildChangeCommentRunSQL(Table table) throws Exception;
 
 	/**
 	 * 删除表
@@ -881,7 +908,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildDropRunSQL(Table table) throws Exception;
+	String buildDropRunSQL(Table table) throws Exception;
 
 	/**
 	 * 创建或删除表之前  检测表是否存在
@@ -890,7 +917,7 @@ public interface JDBCAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	public StringBuilder checkTableExists(StringBuilder builder, boolean exists);
+	StringBuilder checkTableExists(StringBuilder builder, boolean exists);
 
 
 	/**
@@ -899,13 +926,13 @@ public interface JDBCAdapter {
 	 * @param table 表
 	 * @return StringBuilder
 	 */
-	public StringBuilder primary(StringBuilder builder, Table table);
+	StringBuilder primary(StringBuilder builder, Table table);
 
 	/**
 	 * 单独创建主键
 	 * @return String
 	 */
-	//public String primary(Table table);
+	//String primary(Table table);
 
 	/**
 	 * 表备注
@@ -913,7 +940,7 @@ public interface JDBCAdapter {
 	 * @param table 表
 	 * @return StringBuilder
 	 */
-	public StringBuilder comment(StringBuilder builder, Table table);
+	StringBuilder comment(StringBuilder builder, Table table);
 
 	/**
 	 * 构造表名
@@ -921,7 +948,7 @@ public interface JDBCAdapter {
 	 * @param table 表
 	 * @return builder
 	 */
-	public StringBuilder name(StringBuilder builder, Table table);
+	StringBuilder name(StringBuilder builder, Table table);
 
 
 
@@ -935,7 +962,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateRunSQL(View view) throws Exception;
+	List<String> buildCreateRunSQL(View view) throws Exception;
 
 	/**
 	 * 添加视图备注(视图创建完成后调用,创建过程能添加备注的不需要实现)
@@ -943,7 +970,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(View view) throws Exception;
+	String buildCreateCommentRunSQL(View view) throws Exception;
 
 	/**
 	 * 修改视图
@@ -951,7 +978,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildAlterRunSQL(View view) throws Exception;
+	List<String> buildAlterRunSQL(View view) throws Exception;
 
 	/**
 	 * 重命名
@@ -959,7 +986,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildRenameRunSQL(View view) throws Exception;
+	String buildRenameRunSQL(View view) throws Exception;
 
 	/**
 	 * 修改备注
@@ -967,7 +994,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildChangeCommentRunSQL(View view) throws Exception;
+	String buildChangeCommentRunSQL(View view) throws Exception;
 
 	/**
 	 * 删除视图
@@ -975,7 +1002,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildDropRunSQL(View view) throws Exception;
+	String buildDropRunSQL(View view) throws Exception;
 
 	/**
 	 * 创建或删除视图之前  检测视图是否存在
@@ -984,7 +1011,7 @@ public interface JDBCAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	public StringBuilder checkViewExists(StringBuilder builder, boolean exists);
+	StringBuilder checkViewExists(StringBuilder builder, boolean exists);
 
 	/**
 	 * 视图备注
@@ -992,7 +1019,7 @@ public interface JDBCAdapter {
 	 * @param view 视图
 	 * @return StringBuilder
 	 */
-	public StringBuilder comment(StringBuilder builder, View view);
+	StringBuilder comment(StringBuilder builder, View view);
 
 	/* *****************************************************************************************************************
 	 * 													master table
@@ -1004,7 +1031,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateRunSQL(MasterTable table) throws Exception;
+	List<String> buildCreateRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1012,7 +1039,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(MasterTable table) throws Exception;
+	String buildCreateCommentRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表
@@ -1020,7 +1047,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildAlterRunSQL(MasterTable table) throws Exception;
+	List<String> buildAlterRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 主表重命名
@@ -1028,7 +1055,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildRenameRunSQL(MasterTable table) throws Exception;
+	String buildRenameRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表备注
@@ -1036,7 +1063,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildChangeCommentRunSQL(MasterTable table) throws Exception;
+	String buildChangeCommentRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 删除主表
@@ -1044,7 +1071,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildDropRunSQL(MasterTable table) throws Exception;
+	String buildDropRunSQL(MasterTable table) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1057,7 +1084,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildCreateRunSQL(PartitionTable table) throws Exception;
+	List<String> buildCreateRunSQL(PartitionTable table) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1065,14 +1092,14 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(PartitionTable table) throws Exception;
+	String buildCreateCommentRunSQL(PartitionTable table) throws Exception;
 	/**
 	 * 修改分区表
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildAlterRunSQL(PartitionTable table) throws Exception;
+	List<String> buildAlterRunSQL(PartitionTable table) throws Exception;
 
 	/**
 	 * 分区表重命名
@@ -1080,7 +1107,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildRenameRunSQL(PartitionTable table) throws Exception;
+	String buildRenameRunSQL(PartitionTable table) throws Exception;
 
 	/**
 	 * 修改分区表备注
@@ -1088,7 +1115,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception;
+	String buildChangeCommentRunSQL(PartitionTable table) throws Exception;
 
 	/**
 	 * 删除分区表
@@ -1096,7 +1123,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildDropRunSQL(PartitionTable table) throws Exception;
+	String buildDropRunSQL(PartitionTable table) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1107,7 +1134,7 @@ public interface JDBCAdapter {
 	 * 修改表的关键字
 	 * @return String
 	 */
-	public String alterColumnKeyword();
+	String alterColumnKeyword();
 
 	/**
 	 * 添加列
@@ -1115,8 +1142,8 @@ public interface JDBCAdapter {
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
-	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception;
-	public List<String> buildAddRunSQL(Column column) throws Exception;
+	List<String> buildAddRunSQL(Column column, boolean slice) throws Exception;
+	List<String> buildAddRunSQL(Column column) throws Exception;
 
 	/**
 	 * 添加列引导
@@ -1124,7 +1151,7 @@ public interface JDBCAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public StringBuilder addColumnGuide(StringBuilder builder, Column column);
+	StringBuilder addColumnGuide(StringBuilder builder, Column column);
 
 	/**
 	 * 修改列
@@ -1133,8 +1160,8 @@ public interface JDBCAdapter {
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception;
-	public List<String> buildAlterRunSQL(Column column) throws Exception;
+	List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception;
+	List<String> buildAlterRunSQL(Column column) throws Exception;
 
 	/**
 	 * 删除列
@@ -1142,15 +1169,15 @@ public interface JDBCAdapter {
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
-	public String buildDropRunSQL(Column column, boolean slice) throws Exception;
-	public String buildDropRunSQL(Column column) throws Exception;
+	String buildDropRunSQL(Column column, boolean slice) throws Exception;
+	String buildDropRunSQL(Column column) throws Exception;
 	/**
 	 * 删除列引导
 	 * @param builder StringBuilder
 	 * @param column column
 	 * @return String
 	 */
-	public StringBuilder dropColumnGuide(StringBuilder builder, Column column);
+	StringBuilder dropColumnGuide(StringBuilder builder, Column column);
 
 	/**
 	 * 修改列名
@@ -1158,7 +1185,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Column column) throws Exception;
+	String buildRenameRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改数据类型
@@ -1166,7 +1193,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	public List<String> buildChangeTypeRunSQL(Column column) throws Exception;
+	List<String> buildChangeTypeRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改默认值
@@ -1174,7 +1201,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	public String buildChangeDefaultRunSQL(Column column) throws Exception;
+	String buildChangeDefaultRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改非空限制
@@ -1182,7 +1209,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	public String buildChangeNullableRunSQL(Column column) throws Exception;
+	String buildChangeNullableRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改备注
@@ -1190,7 +1217,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	public String buildChangeCommentRunSQL(Column column) throws Exception;
+	String buildChangeCommentRunSQL(Column column) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1198,14 +1225,14 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Column column) throws Exception;
+	String buildCreateCommentRunSQL(Column column) throws Exception;
 	/**
 	 * 定义列
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder define(StringBuilder builder, Column column);
+	StringBuilder define(StringBuilder builder, Column column);
 
 	/**
 	 * 数据类型
@@ -1213,7 +1240,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder type(StringBuilder builder, Column column);
+	StringBuilder type(StringBuilder builder, Column column);
 	/**
 	 * 列数据类型定义
 	 * @param builder builder
@@ -1223,20 +1250,20 @@ public interface JDBCAdapter {
 	 * @param isIgnoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
+	StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
 
 
-	public boolean isIgnorePrecision(Column column);
-	public boolean isIgnoreScale(Column column);
-	public Boolean checkIgnorePrecision(String datatype);
-	public Boolean checkIgnoreScale(String datatype);
+	boolean isIgnorePrecision(Column column);
+	boolean isIgnoreScale(Column column);
+	Boolean checkIgnorePrecision(String datatype);
+	Boolean checkIgnoreScale(String datatype);
 	/**
 	 * 非空
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder nullable(StringBuilder builder, Column column);
+	StringBuilder nullable(StringBuilder builder, Column column);
 
 	/**
 	 * 编码
@@ -1244,7 +1271,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder charset(StringBuilder builder, Column column);
+	StringBuilder charset(StringBuilder builder, Column column);
 
 	/**
 	 * 默认值
@@ -1252,7 +1279,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder defaultValue(StringBuilder builder, Column column);
+	StringBuilder defaultValue(StringBuilder builder, Column column);
 
 	/**
 	 * 主键(注意不要跟表定义中的主键重复)
@@ -1260,14 +1287,14 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder primary(StringBuilder builder, Column column);
+	StringBuilder primary(StringBuilder builder, Column column);
 	/**
 	 * 递增列
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder increment(StringBuilder builder, Column column);
+	StringBuilder increment(StringBuilder builder, Column column);
 
 	/**
 	 * 更新行事件
@@ -1275,7 +1302,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder onupdate(StringBuilder builder, Column column);
+	StringBuilder onupdate(StringBuilder builder, Column column);
 
 	/**
 	 * 位置
@@ -1283,7 +1310,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder position(StringBuilder builder, Column column);
+	StringBuilder position(StringBuilder builder, Column column);
 
 	/**
 	 * 备注
@@ -1291,7 +1318,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	public StringBuilder comment(StringBuilder builder, Column column);
+	StringBuilder comment(StringBuilder builder, Column column);
 
 	/**
 	 * 创建或删除列之前  检测表是否存在
@@ -1300,7 +1327,7 @@ public interface JDBCAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists);
+	StringBuilder checkColumnExists(StringBuilder builder, boolean exists);
 
 
 	/* *****************************************************************************************************************
@@ -1312,7 +1339,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	public String buildAddRunSQL(Tag tag) throws Exception;
+	String buildAddRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改标签
@@ -1320,14 +1347,14 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Tag tag) throws Exception;
+	List<String> buildAlterRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 删除标签
 	 * @param tag 标签
 	 * @return String
 	 */
-	public String buildDropRunSQL(Tag tag) throws Exception;
+	String buildDropRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改标签名
@@ -1335,7 +1362,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Tag tag) throws Exception;
+	String buildRenameRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改默认值
@@ -1343,7 +1370,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	public String buildChangeDefaultRunSQL(Tag tag) throws Exception;
+	String buildChangeDefaultRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改非空限制
@@ -1351,7 +1378,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	public String buildChangeNullableRunSQL(Tag tag) throws Exception;
+	String buildChangeNullableRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改备注
@@ -1359,7 +1386,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	public String buildChangeCommentRunSQL(Tag tag) throws Exception;
+	String buildChangeCommentRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改数据类型
@@ -1367,7 +1394,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception;
+	List<String> buildChangeTypeRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 创建或删除标签之前  检测表是否存在
@@ -1376,7 +1403,7 @@ public interface JDBCAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	public StringBuilder checkTagExists(StringBuilder builder, boolean exists);
+	StringBuilder checkTagExists(StringBuilder builder, boolean exists);
 
 
 	/* *****************************************************************************************************************
@@ -1388,7 +1415,7 @@ public interface JDBCAdapter {
 	 * @param primary 主键
 	 * @return String
 	 */
-	public String buildAddRunSQL(PrimaryKey primary) throws Exception;
+	String buildAddRunSQL(PrimaryKey primary) throws Exception;
 
 	/**
 	 * 修改主键
@@ -1396,14 +1423,14 @@ public interface JDBCAdapter {
 	 * @param primary 主键
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception;
+	List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception;
 
 	/**
 	 * 删除主键
 	 * @param primary 主键
 	 * @return String
 	 */
-	public String buildDropRunSQL(PrimaryKey primary) throws Exception;
+	String buildDropRunSQL(PrimaryKey primary) throws Exception;
 
 	/**
 	 * 修改主键名
@@ -1411,7 +1438,7 @@ public interface JDBCAdapter {
 	 * @param primary 主键
 	 * @return String
 	 */
-	public String buildRenameRunSQL(PrimaryKey primary) throws Exception;
+	String buildRenameRunSQL(PrimaryKey primary) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1423,7 +1450,7 @@ public interface JDBCAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
-	public String buildAddRunSQL(Index index) throws Exception;
+	String buildAddRunSQL(Index index) throws Exception;
 
 	/**
 	 * 修改索引
@@ -1431,14 +1458,14 @@ public interface JDBCAdapter {
 	 * @param index 索引
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Index index) throws Exception;
+	List<String> buildAlterRunSQL(Index index) throws Exception;
 
 	/**
 	 * 删除索引
 	 * @param index 索引
 	 * @return String
 	 */
-	public String buildDropRunSQL(Index index) throws Exception;
+	String buildDropRunSQL(Index index) throws Exception;
 
 	/**
 	 * 修改索引名
@@ -1446,7 +1473,7 @@ public interface JDBCAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Index index) throws Exception;
+	String buildRenameRunSQL(Index index) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1458,7 +1485,7 @@ public interface JDBCAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
-	public String buildAddRunSQL(Constraint constraint) throws Exception;
+	String buildAddRunSQL(Constraint constraint) throws Exception;
 
 	/**
 	 * 修改约束
@@ -1466,14 +1493,14 @@ public interface JDBCAdapter {
 	 * @param constraint 约束
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception;
+	List<String> buildAlterRunSQL(Constraint constraint) throws Exception;
 
 	/**
 	 * 删除约束
 	 * @param constraint 约束
 	 * @return String
 	 */
-	public String buildDropRunSQL(Constraint constraint) throws Exception;
+	String buildDropRunSQL(Constraint constraint) throws Exception;
 
 	/**
 	 * 修改约束名
@@ -1481,7 +1508,7 @@ public interface JDBCAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Constraint constraint) throws Exception;
+	String buildRenameRunSQL(Constraint constraint) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1495,14 +1522,14 @@ public interface JDBCAdapter {
 	 * @param obj obj
 	 * @return String
 	 */
-	public String getPrimaryKey(Object obj);
+	String getPrimaryKey(Object obj);
 
 	/**
 	 * 获取单主键值
 	 * @param obj obj
 	 * @return Object
 	 */
-	public Object getPrimaryValue(Object obj);
+	Object getPrimaryValue(Object obj);
 /*
 	*//**
 	 * 数据类型转换
@@ -1513,7 +1540,7 @@ public interface JDBCAdapter {
 	 * @param run  值
 	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
 	 */
-	public boolean convert(String catalog, String schema, String table, RunValue run);
+	boolean convert(String catalog, String schema, String table, RunValue run);
 
 	/**
 	 * 数据类型转换
@@ -1521,7 +1548,7 @@ public interface JDBCAdapter {
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
-	public boolean convert(Map<String, Column> columns, RunValue run);
+	boolean convert(Map<String, Column> columns, RunValue run);
 
 	/**
 	 * 数据类型转换,没有提供column的根据value类型
@@ -1529,8 +1556,8 @@ public interface JDBCAdapter {
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
-	public boolean convert(Column column, RunValue run);
-	public Object convert(Column column, Object value);
+	boolean convert(Column column, RunValue run);
+	Object convert(Column column, Object value);
 
 	/**
 	 * 在不检测数据库结构时才生效,否则会被convert代替
@@ -1541,14 +1568,14 @@ public interface JDBCAdapter {
 	 * @param row DataRow 或 Entity
 	 * @param key 列名
 	 */
-	public void value(StringBuilder builder, Object row, String key);
+	void value(StringBuilder builder, Object row, String key);
 
 	/**
 	 * 根据数据类型生成SQL(如是否需要'',是否需要格式转换函数)
 	 * @param builder builder
 	 * @param value value
 	 */
-	//public void format(StringBuilder builder, Object value);
+	//void format(StringBuilder builder, Object value);
 
 	/**
 	 * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
@@ -1557,7 +1584,7 @@ public interface JDBCAdapter {
 	 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
 	 * @return Object
 	 */
-	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz);
+	Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz);
 
 	/**
 	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
@@ -1566,27 +1593,27 @@ public interface JDBCAdapter {
 	 * @param value value
 	 * @return Object
 	 */
-	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
+	Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
  	/**
 	 * 拼接字符串
 	 * @param args args
 	 * @return String
 	 */
-	public String concat(String ... args);
+	String concat(String ... args);
 
 	/**
 	 * 是否是数字列
 	 * @param column 列
 	 * @return boolean
 	 */
-	public boolean isNumberColumn(Column column);
+	boolean isNumberColumn(Column column);
 
 	/**
 	 * 是否是boolean列
 	 * @param column 列
 	 * @return boolean
 	 */
-	public boolean isBooleanColumn(Column column);
+	boolean isBooleanColumn(Column column);
 
 	/**
 	 * 是否是字符类型
@@ -1596,7 +1623,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return boolean
 	 */
-	public boolean isCharColumn(Column column);
+	boolean isCharColumn(Column column);
 
 	/**
 	 * 内置函数
@@ -1605,26 +1632,26 @@ public interface JDBCAdapter {
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	public String value(Column column, SQL_BUILD_IN_VALUE value);
+	String value(Column column, SQL_BUILD_IN_VALUE value);
 
 	/**
 	 * 转换成相应数据库的数据类型包含精度
 	 * @param column column
 	 * @return String
 	 */
-	//public String type(Column column);
+	//String type(Column column);
 
 	/**
 	 * 数据库类型转换成java类型
 	 * @param type type
 	 * @return String
 	 */
-	//public String type2class(String type);
+	//String type2class(String type);
 
 	/**
 	 * 对象名称格式化(大小写转换)，在查询系统表时需要
 	 * @param name name
 	 * @return String
 	 */
-	public String objectName(String name);
+	String objectName(String name);
 }

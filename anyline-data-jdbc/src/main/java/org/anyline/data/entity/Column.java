@@ -45,6 +45,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected Object defaultValue                 ; // 默认值
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
+    protected String reference                    ;  // 外键依赖列
     protected int srid                            ; // SRID
 
 
@@ -733,6 +734,15 @@ public class Column implements org.anyline.entity.data.Column{
         this.srid = srid;
     }
 
+    public String getReference() {
+        return reference;
+    }
+
+    public Column setReference(String reference) {
+        this.reference = reference;
+        return this;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -813,6 +823,7 @@ public class Column implements org.anyline.entity.data.Column{
         copy.setColumnType(columnType);
         copy.setAction(action);
         copy.setSrid(srid);
+        copy.setReference(reference);
 
         return copy;
     }

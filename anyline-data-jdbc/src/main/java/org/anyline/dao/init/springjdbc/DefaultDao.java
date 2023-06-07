@@ -3289,6 +3289,36 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public PrimaryKey primary(String catalog, String schema, String table) {
 		return primary(false, catalog, schema, table);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+	public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table){
+		LinkedHashMap<String, ForeignKey> foreigns = new LinkedHashMap<>();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		if(!greedy) {
+			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		}
+		try {
+			List<String> sqls = adapter.buildQueryForeignsRunSQL(table);
+			if (null != sqls) {
+				int idx = 0;
+				for (String sql : sqls) {
+					if (BasicUtil.isNotEmpty(sql)) {
+						DataSet set = select(runtime, (String) null, sql, null).toUpperKey();
+						foreigns = adapter.foreigns(idx,  table, foreigns, set);
+					}
+					idx++;
+				}
+			}
+		}catch (Exception e){
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+		}
+		return foreigns;
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------

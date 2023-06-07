@@ -2923,50 +2923,76 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													foreign
          ******************************************************************************************************************/
 
+        @Override
         public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table) {
-            return null;
+            return dao.foreigns(greedy, table);
         }
 
+        @Override
         public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, String table) {
             return foreigns(greedy, new Table(table));
         }
 
+        @Override
         public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, String catalog, String schema, String table) {
             return foreigns(greedy, new Table(catalog, schema, table));
         }
 
+        @Override
         public LinkedHashMap<String, ForeignKey> foreigns(Table table) {
             return foreigns(false, table);
         }
 
+        @Override
         public LinkedHashMap<String, ForeignKey> foreigns(String table) {
             return foreigns(false, new Table(table));
         }
 
+        @Override
         public LinkedHashMap<String, ForeignKey> foreigns(String catalog, String schema, String table) {
             return foreigns(false, new Table(catalog, schema, table));
         }
 
+        @Override
         public ForeignKey foreign(boolean greedy, Table table, String... columns) {
+            if(null == columns || columns.length ==0){
+                return null;
+            }
+            LinkedHashMap<String, ForeignKey> foreigns = foreigns(greedy, table);
+            List<String> cols = BeanUtil.array2list(columns);
+            Collections.sort(cols);
+            String id = BeanUtil.concat(cols).toUpperCase();
+            for(ForeignKey foreign:foreigns.values()){
+                List<String> fcols = BeanUtil.getMapKeys(foreign.getColumns());
+                Collections.sort(fcols);
+                if(id.equals(BeanUtil.concat(fcols).toUpperCase())){
+                    return foreign;
+                }
+            }
             return null;
         }
 
+        @Override
         public ForeignKey foreign(boolean greedy, String table, String... columns) {
             return foreign(greedy, new Table(table), columns);
         }
 
+        @Override
         public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, String... columns) {
             return foreign(greedy, new Table(catalog, schema, table), columns);
         }
 
+        @Override
         public ForeignKey foreign(Table table, String... columns) {
             return foreign(false, table, columns);
         }
 
+        @Override
         public ForeignKey foreign(String table, String... columns) {
             return foreign(false, new Table(table), columns);
         }
 
+        @Override
         public ForeignKey foreign(String catalog, String schema, String table, String... columns) {
             return foreign(false, new Table(catalog, schema, table), columns);
         }
@@ -3126,136 +3152,136 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
 
-            /* *****************************************************************************************************************
-             * 													trigger
-             ******************************************************************************************************************/
-            public LinkedHashMap<String, Trigger> triggers(boolean greedy, String catalog, String schema, String name, String actions) {
-                return null;
-            }
+        /* *****************************************************************************************************************
+         * 													trigger
+         ******************************************************************************************************************/
+        public LinkedHashMap<String, Trigger> triggers(boolean greedy, String catalog, String schema, String table, String actions) {
+            return null;
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(boolean greedy, String schema, String name, String actions) {
-                return triggers(greedy, null, schema, name, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(boolean greedy, String schema, String table, String actions) {
+            return triggers(greedy, null, schema, table, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(boolean greedy, String name, String actions) {
-                return triggers(greedy, null, null, name, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(boolean greedy, String table, String actions) {
+            return triggers(greedy, null, null, table, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(boolean greedy, String actions) {
-                return triggers(greedy, null, null, null, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(boolean greedy, String actions) {
+            return triggers(greedy, null, null, null, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(boolean greedy) {
-                return triggers(greedy, null, null, null, null);
-            }
+        public LinkedHashMap<String, Trigger> triggers(boolean greedy) {
+            return triggers(greedy, null, null, null, null);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(String catalog, String schema, String name, String actions) {
-                return triggers(false, catalog, schema, name, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(String catalog, String schema, String name, String actions) {
+            return triggers(false, catalog, schema, name, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(String schema, String name, String actions) {
-                return triggers(false, null, schema, name, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(String schema, String name, String actions) {
+            return triggers(false, null, schema, name, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(String name, String actions) {
-                return triggers(false, null, null, name, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(String name, String actions) {
+            return triggers(false, null, null, name, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers(String actions) {
-                return triggers(false, null, null, null, actions);
-            }
+        public LinkedHashMap<String, Trigger> triggers(String actions) {
+            return triggers(false, null, null, null, actions);
+        }
 
-            public LinkedHashMap<String, Trigger> triggers() {
-                return triggers(false, null, null, null, null);
-            }
-
-
-            public Trigger trigger(boolean greedy, String catalog, String schema, String name) {
-                return null;
-            }
-
-            public Trigger trigger(boolean greedy, String schema, String name) {
-                return trigger(greedy, null, schema, name);
-            }
-
-            public Trigger trigger(boolean greedy, String name) {
-                return trigger(greedy, null, null, name);
-            }
-
-            public Trigger trigger(String catalog, String schema, String name) {
-                return trigger(false, null, schema, name);
-            }
-
-            public Trigger trigger(String schema, String name) {
-                return trigger(false, null, schema, name);
-            }
-
-            public Trigger trigger(String name) {
-                return trigger(false, null, null, name);
-            }
-
-            /* *****************************************************************************************************************
-             * 													procedure
-             ******************************************************************************************************************/
-
-            public LinkedHashMap<String, Procedure> procedures(boolean greedy, String catalog, String schema, String name) {
-                return null;
-            }
-
-            public LinkedHashMap<String, Procedure> procedures(boolean greedy, String schema, String name) {
-                return procedures(greedy, null, schema, name);
-            }
-
-            public LinkedHashMap<String, Procedure> procedures(boolean greedy, String name) {
-                return procedures(greedy, null, null, name);
-            }
-
-            public LinkedHashMap<String, Procedure> procedures(boolean greedy) {
-                return procedures(greedy, null, null, null);
-            }
-
-            public LinkedHashMap<String, Procedure> procedures(String catalog, String schema, String name) {
-                return procedures(false, null, schema, name);
-            }
-
-            public LinkedHashMap<String, Procedure> procedures(String schema, String name) {
-                return procedures(false, null, schema, name);
-            }
-
-            public LinkedHashMap<String, Procedure> procedures(String name) {
-                return procedures(false, null, null, name);
-            }
-
-            public LinkedHashMap<String, Procedure> procedures() {
-                return procedures(false, null, null, null);
-            }
+        public LinkedHashMap<String, Trigger> triggers() {
+            return triggers(false, null, null, null, null);
+        }
 
 
-            public Procedure procedure(boolean greedy, String catalog, String schema, String name) {
-                return null;
-            }
+        public Trigger trigger(boolean greedy, String catalog, String schema, String name) {
+            return null;
+        }
 
-            public Procedure procedure(boolean greedy, String schema, String name) {
-                return procedure(greedy, null, schema, name);
-            }
+        public Trigger trigger(boolean greedy, String schema, String name) {
+            return trigger(greedy, null, schema, name);
+        }
 
-            public Procedure procedure(boolean greedy, String name) {
-                return procedure(greedy, null, null, name);
-            }
+        public Trigger trigger(boolean greedy, String name) {
+            return trigger(greedy, null, null, name);
+        }
 
-            public Procedure procedure(String catalog, String schema, String name) {
-                return procedure(false, null, schema, name);
-            }
+        public Trigger trigger(String catalog, String schema, String name) {
+            return trigger(false, null, schema, name);
+        }
 
-            public Procedure procedure(String schema, String name) {
-                return procedure(false, null, schema, name);
-            }
+        public Trigger trigger(String schema, String name) {
+            return trigger(false, null, schema, name);
+        }
 
-            public Procedure procedure(String name) {
-                return procedure(false, null, null, name);
-            }
+        public Trigger trigger(String name) {
+            return trigger(false, null, null, name);
+        }
 
-        };
+        /* *****************************************************************************************************************
+         * 													procedure
+         ******************************************************************************************************************/
+
+        public LinkedHashMap<String, Procedure> procedures(boolean greedy, String catalog, String schema, String name) {
+            return dao.views();
+        }
+
+        public LinkedHashMap<String, Procedure> procedures(boolean greedy, String schema, String name) {
+            return procedures(greedy, null, schema, name);
+        }
+
+        public LinkedHashMap<String, Procedure> procedures(boolean greedy, String name) {
+            return procedures(greedy, null, null, name);
+        }
+
+        public LinkedHashMap<String, Procedure> procedures(boolean greedy) {
+            return procedures(greedy, null, null, null);
+        }
+
+        public LinkedHashMap<String, Procedure> procedures(String catalog, String schema, String name) {
+            return procedures(false, null, schema, name);
+        }
+
+        public LinkedHashMap<String, Procedure> procedures(String schema, String name) {
+            return procedures(false, null, schema, name);
+        }
+
+        public LinkedHashMap<String, Procedure> procedures(String name) {
+            return procedures(false, null, null, name);
+        }
+
+        public LinkedHashMap<String, Procedure> procedures() {
+            return procedures(false, null, null, null);
+        }
+
+
+        public Procedure procedure(boolean greedy, String catalog, String schema, String name) {
+            return null;
+        }
+
+        public Procedure procedure(boolean greedy, String schema, String name) {
+            return procedure(greedy, null, schema, name);
+        }
+
+        public Procedure procedure(boolean greedy, String name) {
+            return procedure(greedy, null, null, name);
+        }
+
+        public Procedure procedure(String catalog, String schema, String name) {
+            return procedure(false, null, schema, name);
+        }
+
+        public Procedure procedure(String schema, String name) {
+            return procedure(false, null, schema, name);
+        }
+
+        public Procedure procedure(String name) {
+            return procedure(false, null, null, name);
+        }
+
+    };
     /* *****************************************************************************************************************
      *
      * 													DDL

@@ -253,6 +253,11 @@ public interface AnylineDao<E>{
 	public PrimaryKey primary(Table table);
 	public PrimaryKey primary(String table);
 	public PrimaryKey primary(String catalog, String schema, String table);
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+	public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table);
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
