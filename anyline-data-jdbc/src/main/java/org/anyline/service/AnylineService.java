@@ -21,7 +21,7 @@ package org.anyline.service;
 
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.prepare.Procedure;
+import org.anyline.data.entity.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
