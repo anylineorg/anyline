@@ -28,11 +28,10 @@ import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.Procedure;
+import org.anyline.data.entity.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
-import org.anyline.data.prepare.init.DefaultProcedure;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
@@ -1403,7 +1402,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public boolean executeProcedure(String procedure, String... inputs) {
-        Procedure proc = new DefaultProcedure();
+        Procedure proc = new Procedure();
         proc.setName(procedure);
         for (String input : inputs) {
             proc.addInput(input);
@@ -1467,7 +1466,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DataSet querysProcedure(String procedure, PageNavi navi, String... inputs) {
-        Procedure proc = new DefaultProcedure();
+        Procedure proc = new Procedure();
         proc.setName(procedure);
         if (null != inputs) {
             for (String input : inputs) {
@@ -1489,7 +1488,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     public DataRow queryProcedure(String procedure, String... inputs) {
-        Procedure proc = new DefaultProcedure();
+        Procedure proc = new Procedure();
         proc.setName(procedure);
         return query(procedure, inputs);
     }
