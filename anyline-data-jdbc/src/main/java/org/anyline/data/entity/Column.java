@@ -10,6 +10,11 @@ import org.anyline.entity.metadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class Column implements org.anyline.entity.data.Column{
     static {
         ClassUtil.regImplement(org.anyline.entity.data.Column.class, Column.class);
@@ -93,6 +98,25 @@ public class Column implements org.anyline.entity.data.Column{
             listener = new DefaultDDListener();
         }
         this.listener = listener;
+    }
+    public static void sort(List<Column> columns){
+        Collections.sort(columns, new Comparator<Column>() {
+            @Override
+            public int compare(Column o1, Column o2) {
+                Integer p1 = o1.getPosition();
+                Integer p2 = o2.getPosition();
+                if(p1 == p2){
+                    return 0;
+                }
+                if(null == p1){
+                    return -1;
+                }
+                if(null == p2){
+                    return 1;
+                }
+                return p1 > p2 ? 1:-1;
+            }
+        });
     }
     public Column update(){
         update = (Column) this.clone();
