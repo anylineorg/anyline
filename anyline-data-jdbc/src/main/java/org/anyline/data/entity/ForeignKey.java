@@ -1,8 +1,5 @@
 package org.anyline.data.entity;
 
-import org.anyline.util.BasicUtil;
-
-import java.util.LinkedHashMap;
 
 public class ForeignKey extends Constraint{
     public boolean isForeign(){
@@ -50,9 +47,6 @@ public class ForeignKey extends Constraint{
      * @return
      */
     public ForeignKey addColumn(Column column){
-        if(BasicUtil.isEmpty(column.getReference())){
-            throw new RuntimeException("没有设置依赖Column");
-        }
         super.addColumn(column);
         return this;
     }

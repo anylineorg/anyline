@@ -4663,10 +4663,136 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != listener) {
 				listener.afterDrop(primary, result);
+			}
+		}
+		return result;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													foreign
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean add(ForeignKey foreign) throws Exception
+	 * public boolean alter(ForeignKey foreign) throws Exception
+	 * public boolean drop(PrimaryKey foreign) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean add(ForeignKey foreign) throws Exception {
+		boolean result = false;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, foreign);
+		String sql = adapter.buildAddRunSQL(foreign);
+		if(BasicUtil.isNotEmpty(sql)) {
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+			DDListener listener = foreign.getListener();
+
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeAdd(foreign);
+			}
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[add foreign][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(), foreign.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean alter(ForeignKey foreign) throws Exception {
+		Table table = foreign.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(false, foreign.getCatalog(), foreign.getSchema(), foreign.getTableName(), "TABLE");
+			if(tables.size() == 0){
+				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+					throw new AnylineException("表不存在:" + foreign.getTableName());
+				}else{
+					log.error("表不存在:" + foreign.getTableName());
+				}
+			}else {
+				table = tables.values().iterator().next();
+			}
+		}
+		return alter(table, foreign);
+	}
+	@Override
+	public boolean alter(Table table, ForeignKey foreign) throws Exception{
+		boolean result = true;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, foreign);
+		List<String> sqls = adapter.buildAlterRunSQL(foreign);
+
+		random = random();
+		DDListener listener = foreign.getListener();
+		for(String sql:sqls) {
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+					log.info("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(foreign);
+				}
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[update foreign][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, foreign.getTableName(), foreign.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+	@Override
+	public boolean drop(ForeignKey foreign) throws Exception {
+		boolean result = false;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		checkSchema(runtime, foreign);
+		String sql = adapter.buildDropRunSQL(foreign);
+		if(BasicUtil.isNotEmpty(sql)) {
+			String random = null;
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+			DDListener listener = foreign.getListener();
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeDrop(foreign);
+			}
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[drop foreign][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(), foreign.getName(), result, System.currentTimeMillis() - fr);
+			}
+			if (null != listener) {
+				listener.afterDrop(foreign, result);
 			}
 		}
 		return result;
