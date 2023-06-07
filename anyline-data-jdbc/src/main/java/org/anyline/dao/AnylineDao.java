@@ -357,6 +357,13 @@ public interface AnylineDao<E>{
 	public boolean drop(PrimaryKey primary) throws Exception;
 
 	/* *****************************************************************************************************************
+	 * 													foreign
+	 ******************************************************************************************************************/
+	public boolean add(ForeignKey foreign) throws Exception;
+	public boolean alter(ForeignKey foreign) throws Exception;
+	public boolean alter(Table table, ForeignKey foreign) throws Exception;
+	public boolean drop(ForeignKey foreign) throws Exception;
+	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
 	public boolean add(Index index) throws Exception;

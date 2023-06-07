@@ -1151,6 +1151,16 @@ public interface AnylineService<E>{
 		public boolean alter(ForeignKey foreign) throws Exception;
 		public boolean drop(ForeignKey foreign) throws Exception;
 
+		/**
+		 * 复合外键时调用
+		 * @param table 表
+		 * @param columns 如果有多列 按复合外键处理,如果需要删除外个外键应该调用多次drop
+		 * @return boolean
+		 * @throws Exception Exception
+		 */
+		public boolean drop(Table table, String ... columns) throws Exception;
+		public boolean add(String table, String column, String refTable, String refColumn) throws Exception;
+
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
