@@ -9,6 +9,7 @@ public class ForeignKey extends Constraint{
         return true;
     }
 
+    private Table reference;
     public ForeignKey(){}
     public ForeignKey(String name){
         this.setName(name);
@@ -26,7 +27,6 @@ public class ForeignKey extends Constraint{
         setReference(rtable);
         addColumn(column, rcolumn);
     }
-    private Table reference;
 
     public void setReference(Table reference){
         this.reference = reference;
@@ -38,6 +38,10 @@ public class ForeignKey extends Constraint{
      */
     public void setReference(String reference){
         this.reference = new Table(reference);
+    }
+
+    public Table getReference() {
+        return reference;
     }
 
     /**
