@@ -2279,45 +2279,77 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public Table table(boolean greedy, String catalog, String schema, String name) {
+        public Table table(boolean greedy, String catalog, String schema, String name, boolean struct) {
             Table table = null;
             LinkedHashMap<String, Table> tables = tables(greedy, catalog, schema, name, null);
             if (tables.size() > 0) {
                 table = tables.values().iterator().next();
-                table.setColumns(columns(table));
-                table.setTags(tags(table));
-                table.setPrimaryKey(primary(table));
-                table.setIndexs(indexs(table));
+                if(struct) {
+                    table.setColumns(columns(table));
+                    table.setTags(tags(table));
+                    table.setPrimaryKey(primary(table));
+                    table.setIndexs(indexs(table));
+                }
             }
             return table;
         }
 
         @Override
+        public Table table(boolean greedy, String catalog, String schema, String name) {
+            return table(greedy, catalog, schema, name, true);
+        }
+        @Override
+        public Table table(boolean greedy, String schema, String name, boolean struct) {
+            return table(greedy, null, schema, name, struct);
+        }
+
+        @Override
+        public Table table(boolean greedy, String name, boolean struct) {
+            return table(greedy, null, null, name, struct);
+        }
+
+
+        @Override
+        public Table table(String catalog, String schema, String name, boolean struct) {
+            return table(false, catalog, schema, name, struct);
+        }
+
+        @Override
+        public Table table(String schema, String name, boolean struct) {
+            return table(false, null, schema, name, struct);
+        }
+
+        @Override
+        public Table table(String name, boolean struct) {
+            return table(false, null, null, name, struct);
+        }
+
+
+        @Override
         public Table table(boolean greedy, String schema, String name) {
-            return table(greedy, null, schema, name);
+            return table(greedy, null, schema, name, true);
         }
 
         @Override
         public Table table(boolean greedy, String name) {
-            return table(greedy, null, null, name);
+            return table(greedy, null, null, name, false);
         }
 
 
         @Override
         public Table table(String catalog, String schema, String name) {
-            return table(false, catalog, schema, name);
+            return table(false, catalog, schema, name, true);
         }
 
         @Override
         public Table table(String schema, String name) {
-            return table(false, null, schema, name);
+            return table(false, null, schema, name, true);
         }
 
         @Override
         public Table table(String name) {
-            return table(false, null, null, name);
+            return table(false, null, null, name, true);
         }
-
 
         /* *****************************************************************************************************************
          * 													view
