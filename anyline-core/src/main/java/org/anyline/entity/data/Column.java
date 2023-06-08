@@ -84,4 +84,34 @@ public interface Column extends Serializable {
      * @return String
      */
     public String getDateScale();
+
+
+
+    public static <T extends Column> List<String> names(LinkedHashMap<String, T> columns){
+        List<String> names = new ArrayList<>();
+        for(T column:columns.values()){
+            names.add(column.getName());
+        }
+        return names;
+    }
+
+    public static  <T extends Column>  void sort(List<T> columns){
+        Collections.sort(columns, new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                Integer p1 = o1.getPosition();
+                Integer p2 = o2.getPosition();
+                if(p1 == p2){
+                    return 0;
+                }
+                if(null == p1){
+                    return -1;
+                }
+                if(null == p2){
+                    return 1;
+                }
+                return p1 > p2 ? 1:-1;
+            }
+        });
+    }
 }

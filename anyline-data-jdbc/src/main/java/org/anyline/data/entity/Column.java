@@ -97,33 +97,9 @@ public class Column implements org.anyline.entity.data.Column{
         this.listener = listener;
     }
 
-    public static List<String> names(LinkedHashMap<String, Column> columns){
-        List<String> names = new ArrayList<>();
-        for(org.anyline.entity.data.Column column:columns.values()){
-            names.add(column.getName());
-        }
-        return names;
-    }
 
-    public static void sort(List<Column> columns){
-        Collections.sort(columns, new Comparator<org.anyline.entity.data.Column>() {
-            @Override
-            public int compare(org.anyline.entity.data.Column o1, org.anyline.entity.data.Column o2) {
-                Integer p1 = o1.getPosition();
-                Integer p2 = o2.getPosition();
-                if(p1 == p2){
-                    return 0;
-                }
-                if(null == p1){
-                    return -1;
-                }
-                if(null == p2){
-                    return 1;
-                }
-                return p1 > p2 ? 1:-1;
-            }
-        });
-    }
+
+
     public Column update(){
         update = (Column) this.clone();
         return update;
