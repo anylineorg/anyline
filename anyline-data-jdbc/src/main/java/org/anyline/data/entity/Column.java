@@ -10,10 +10,7 @@ import org.anyline.entity.metadata.JavaType;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Column implements org.anyline.entity.data.Column{
     static {
@@ -99,10 +96,19 @@ public class Column implements org.anyline.entity.data.Column{
         }
         this.listener = listener;
     }
+
+    public static List<String> names(LinkedHashMap<String, Column> columns){
+        List<String> names = new ArrayList<>();
+        for(org.anyline.entity.data.Column column:columns.values()){
+            names.add(column.getName());
+        }
+        return names;
+    }
+
     public static void sort(List<Column> columns){
-        Collections.sort(columns, new Comparator<Column>() {
+        Collections.sort(columns, new Comparator<org.anyline.entity.data.Column>() {
             @Override
-            public int compare(Column o1, Column o2) {
+            public int compare(org.anyline.entity.data.Column o1, org.anyline.entity.data.Column o2) {
                 Integer p1 = o1.getPosition();
                 Integer p2 = o2.getPosition();
                 if(p1 == p2){
