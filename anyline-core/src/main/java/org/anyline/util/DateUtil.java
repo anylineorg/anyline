@@ -1809,7 +1809,7 @@ public class DateUtil {
 	public static java.sql.Time sqlTime(Date date){
 		java.sql.Time result = null;
 		if(null != date){
-			result = java.sql.Time.valueOf(format("HH:mm:ss"));
+			result = java.sql.Time.valueOf(format(date, "HH:mm:ss"));
 		}
 		return result;
 	}
