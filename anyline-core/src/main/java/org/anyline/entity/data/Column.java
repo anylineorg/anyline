@@ -4,6 +4,7 @@ import org.anyline.entity.metadata.ColumnType;
 import org.anyline.entity.metadata.JavaType;
 
 import java.io.Serializable;
+import java.util.*;
 
 public interface Column extends Serializable {
     public String getCatalog();
