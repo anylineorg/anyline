@@ -2954,14 +2954,13 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public ForeignKey foreign(boolean greedy, Table table, String... columns) {
-            if(null == columns || columns.length ==0){
+        public ForeignKey foreign(boolean greedy, Table table, List<String> columns) {
+            if(null == columns || columns.size() ==0){
                 return null;
             }
             LinkedHashMap<String, ForeignKey> foreigns = foreigns(greedy, table);
-            List<String> cols = BeanUtil.array2list(columns);
-            Collections.sort(cols);
-            String id = BeanUtil.concat(cols).toUpperCase();
+             Collections.sort(columns);
+            String id = BeanUtil.concat(columns).toUpperCase();
             for(ForeignKey foreign:foreigns.values()){
                 List<String> fcols = BeanUtil.getMapKeys(foreign.getColumns());
                 Collections.sort(fcols);
@@ -2973,27 +2972,52 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public ForeignKey foreign(boolean greedy, String table, String... columns) {
+        public ForeignKey foreign(boolean greedy, Table table, String ... columns) {
+            return foreign(greedy, table, BeanUtil.array2list(columns));
+        }
+        @Override
+        public ForeignKey foreign(boolean greedy, String table, List<String> columns) {
             return foreign(greedy, new Table(table), columns);
+        }
+        @Override
+        public ForeignKey foreign(boolean greedy, String table, String... columns) {
+            return foreign(greedy, new Table(table), BeanUtil.array2list(columns));
         }
 
         @Override
         public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, String... columns) {
+            return foreign(greedy, new Table(catalog, schema, table), BeanUtil.array2list(columns));
+        }
+        @Override
+        public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, List<String> columns) {
             return foreign(greedy, new Table(catalog, schema, table), columns);
         }
 
         @Override
-        public ForeignKey foreign(Table table, String... columns) {
+        public ForeignKey foreign(Table table, List<String> columns) {
             return foreign(false, table, columns);
+        }
+        @Override
+        public ForeignKey foreign(Table table, String... columns) {
+            return foreign(false, table, BeanUtil.array2list(columns));
         }
 
         @Override
-        public ForeignKey foreign(String table, String... columns) {
+        public ForeignKey foreign(String table, List<String> columns) {
             return foreign(false, new Table(table), columns);
         }
 
         @Override
+        public ForeignKey foreign(String table, String... columns) {
+            return foreign(false, new Table(table), BeanUtil.array2list(columns));
+        }
+
+        @Override
         public ForeignKey foreign(String catalog, String schema, String table, String... columns) {
+            return foreign(false, new Table(catalog, schema, table), BeanUtil.array2list(columns));
+        }
+        @Override
+        public ForeignKey foreign(String catalog, String schema, String table, List<String> columns) {
             return foreign(false, new Table(catalog, schema, table), columns);
         }
 
@@ -3755,6 +3779,10 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.alter(foreign);
         }
         public boolean drop(ForeignKey foreign) throws Exception{
+            if(BasicUtil.isEmpty(foreign.getName())){
+                List<String> names = Column.names(foreign.getColumns());
+                foreign = metadata.foreign(foreign.getTable(), names);
+            }
             return dao.drop(foreign);
         }
 
