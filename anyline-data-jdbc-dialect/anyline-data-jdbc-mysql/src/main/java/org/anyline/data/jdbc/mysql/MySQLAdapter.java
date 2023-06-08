@@ -1839,11 +1839,11 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
 			name(builder, foreign.getTable());
-			builder.append(" ADD ");
+			builder.append(" ADD");
 			if(BasicUtil.isNotEmpty(foreign.getName())){
-				builder.append("CONSTRAINT ").append(foreign.getName());
+				builder.append(" CONSTRAINT ").append(foreign.getName());
 			}
-			builder.append("FOREIGN KEY (");
+			builder.append(" FOREIGN KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
 				if(!first){

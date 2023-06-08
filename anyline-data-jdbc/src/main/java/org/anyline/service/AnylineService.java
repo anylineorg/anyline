@@ -961,13 +961,15 @@ public interface AnylineService<E>{
 		public ForeignKey foreign(boolean greedy,Table table, List<String> columns);
 		public ForeignKey foreign(boolean greedy,String table, String ... columns);
 		public ForeignKey foreign(boolean greedy,String table, List<String> columns);
-		public ForeignKey foreign(boolean greedy,String catalog, String schema, String table, String ... columns);
+		//与上面的foreign(boolean greedy,String table, String ... columns)冲突
+		//public ForeignKey foreign(boolean greedy,String catalog, String schema, String table, String ... columns);
 		public ForeignKey foreign(boolean greedy,String catalog, String schema, String table, List<String> columns);
 		public ForeignKey foreign(Table table, String ... columns);
 		public ForeignKey foreign(Table table, List<String> columns);
 		public ForeignKey foreign(String table, String ... columns);
 		public ForeignKey foreign(String table, List<String> columns);
-		public ForeignKey foreign(String catalog, String schema, String table, String ... columns);
+		//与上面的foreign(String table, String ... columns)冲突
+		//public ForeignKey foreign(String catalog, String schema, String table, String ... columns);
 		public ForeignKey foreign(String catalog, String schema, String table, List<String> columns);
 		/* *****************************************************************************************************************
 		 * 													index

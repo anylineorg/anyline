@@ -2984,10 +2984,10 @@ public class DefaultService<E> implements AnylineService<E> {
             return foreign(greedy, new Table(table), BeanUtil.array2list(columns));
         }
 
-        @Override
+       /* @Override
         public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, String... columns) {
             return foreign(greedy, new Table(catalog, schema, table), BeanUtil.array2list(columns));
-        }
+        }*/
         @Override
         public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, List<String> columns) {
             return foreign(greedy, new Table(catalog, schema, table), columns);
@@ -3012,10 +3012,10 @@ public class DefaultService<E> implements AnylineService<E> {
             return foreign(false, new Table(table), BeanUtil.array2list(columns));
         }
 
-        @Override
+       /*@Override
         public ForeignKey foreign(String catalog, String schema, String table, String... columns) {
             return foreign(false, new Table(catalog, schema, table), BeanUtil.array2list(columns));
-        }
+        }*/
         @Override
         public ForeignKey foreign(String catalog, String schema, String table, List<String> columns) {
             return foreign(false, new Table(catalog, schema, table), columns);
