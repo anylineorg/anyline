@@ -41,13 +41,13 @@ public interface AnylineService<E>{
 	 * 切换数据源
 	 * @param datasource 数据源
 	 */
-	public AnylineService datasource(String datasource);
-	public AnylineService datasource();
-	public AnylineService setDataSource(String datasource);
-	public AnylineService setDataSource(String datasource, boolean auto);
-	public AnylineService setDefaultDataSource();
-	public AnylineService recoverDataSource();
-	public String getDataSource();
+	AnylineService datasource(String datasource);
+	AnylineService datasource();
+	AnylineService setDataSource(String datasource);
+	AnylineService setDataSource(String datasource, boolean auto);
+	AnylineService setDefaultDataSource();
+	AnylineService recoverDataSource();
+	String getDataSource();
 
 	/* *****************************************************************************************************************
 	 *
@@ -80,20 +80,20 @@ public interface AnylineService<E>{
 	 * @param columns 需要插入哪些列
 	 * @return 影响行数
 	 */
-	public int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int insert(Object data, List<String> fixs, String ... columns);
-	public int insert(String dest, Object data, List<String> fixs, String ... columns);
+	int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	int insert(Object data, List<String> fixs, String ... columns);
+	int insert(String dest, Object data, List<String> fixs, String ... columns);
 
-	public int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int insert(Object data, String[] fixs, String ... columns);
-	public int insert(String dest, Object data, String[] fixs, String ... columns);
+	int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	int insert(Object data, String[] fixs, String ... columns);
+	int insert(String dest, Object data, String[] fixs, String ... columns);
 
-	public int insert(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int insert(Object data, boolean checkPriamry, String ... columns);
-	public int insert(Object data, String ... columns);
-	public int insert(String dest, Object data, String ... columns);
+	int insert(String dest, Object data, boolean checkPriamry, String ... columns);
+	int insert(Object data, boolean checkPriamry, String ... columns);
+	int insert(Object data, String ... columns);
+	int insert(String dest, Object data, String ... columns);
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE
@@ -113,35 +113,35 @@ public interface AnylineService<E>{
 	 * @param configs 	更新条件
 	 * @return int 影响行数
 	 */
-	public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	public int update(String dest, Object data, List<String> fixs, String ... columns);
-	public int update(String dest, Object data, String[] fixs, String ... columns);
-	public int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
-	public int update(String dest, Object data, String ... columns);
-	public int update(String dest, Object data, ConfigStore configs, String ... columns);
+	int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	int update(String dest, Object data, List<String> fixs, String ... columns);
+	int update(String dest, Object data, String[] fixs, String ... columns);
+	int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
+	int update(String dest, Object data, String ... columns);
+	int update(String dest, Object data, ConfigStore configs, String ... columns);
 
-	public int update(Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	public int update(Object data, List<String> fixs, String ... columns);
-	public int update(Object data, String[] fixs, String ... columns);
-	public int update(Object data, ConfigStore configs, String[] fixs, String ... columns);
-	public int update(Object data, String ... columns);
-	public int update(Object data, ConfigStore configs, String ... columns);
+	int update(Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	int update(Object data, List<String> fixs, String ... columns);
+	int update(Object data, String[] fixs, String ... columns);
+	int update(Object data, ConfigStore configs, String[] fixs, String ... columns);
+	int update(Object data, String ... columns);
+	int update(Object data, ConfigStore configs, String ... columns);
 
 
 
-	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
-	public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
-	public int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
-	public int update(boolean async, String dest, Object data, String ... columns);
-	public int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns);
+	int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
+	int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
+	int update(boolean async, String dest, Object data, String ... columns);
+	int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns);
 	
-	public int update(boolean async, Object data, List<String> fixs, String ... columns);
-	public int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	public int update(boolean async, Object data, String[] fixs, String ... columns);
-	public int update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns);
-	public int update(boolean async, Object data, String ... columns);
-	public int update(boolean async, Object data, ConfigStore configs, String ... columns);
+	int update(boolean async, Object data, List<String> fixs, String ... columns);
+	int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	int update(boolean async, Object data, String[] fixs, String ... columns);
+	int update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns);
+	int update(boolean async, Object data, String ... columns);
+	int update(boolean async, Object data, ConfigStore configs, String ... columns);
 
 
 	/* *****************************************************************************************************************
@@ -166,21 +166,21 @@ public interface AnylineService<E>{
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	public int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(Object data, List<String> fixs, String ... columns);
-	public int save(String dest, Object data, List<String> fixs, String ... columns);
+	int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	int save(Object data, List<String> fixs, String ... columns);
+	int save(String dest, Object data, List<String> fixs, String ... columns);
 
-	public int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(Object data, String[] fixs, String ... columns);
-	public int save(String dest, Object data, String[] fixs, String ... columns);
+	int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	int save(Object data, String[] fixs, String ... columns);
+	int save(String dest, Object data, String[] fixs, String ... columns);
 
 
-	public int save(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(Object data, boolean checkPriamry, String ... columns);
-	public int save(Object data, String ... columns);
-	public int save(String dest, Object data, String ... columns);
+	int save(String dest, Object data, boolean checkPriamry, String ... columns);
+	int save(Object data, boolean checkPriamry, String ... columns);
+	int save(Object data, String ... columns);
+	int save(String dest, Object data, String ... columns);
 
 
 	/**
@@ -193,20 +193,20 @@ public interface AnylineService<E>{
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(boolean async, Object data, List<String> fixs, String ... columns);
-	public int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	int save(boolean async, Object data, List<String> fixs, String ... columns);
+	int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
 
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(boolean async, Object data, String[] fixs, String ... columns);
-	public int save(boolean async, String dest, Object data, String[] fixs, String ... columns);
+	int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	int save(boolean async, Object data, String[] fixs, String ... columns);
+	int save(boolean async, String dest, Object data, String[] fixs, String ... columns);
 
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean async, Object data, String ... columns);
-	public int save(boolean async, String dest, Object data, String ... columns);
+	int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
+	int save(boolean async, Object data, boolean checkPriamry, String ... columns);
+	int save(boolean async, Object data, String ... columns);
+	int save(boolean async, String dest, Object data, String ... columns);
 
 
 	/* *****************************************************************************************************************
@@ -228,9 +228,9 @@ public interface AnylineService<E>{
 	 * 			
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet querys(String src, Object obj, String ... conditions);
-	public DataSet querys(String src, PageNavi navi, Object obj, String ... conditions);
+	DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
+	DataSet querys(String src, Object obj, String ... conditions);
+	DataSet querys(String src, PageNavi navi, Object obj, String ... conditions);
 
 	/**
 	 * 按条件查询
@@ -241,14 +241,14 @@ public interface AnylineService<E>{
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, int first, int last, Object obj, String ... conditions);
-	public DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow query(String src, Object obj, String ... conditions);
+	DataSet querys(String src, int first, int last, Object obj, String ... conditions);
+	DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
+	DataRow query(String src, Object obj, String ... conditions);
 
 
-	public DataSet querys(String src, ConfigStore configs, String ... conditions);
-	public DataSet querys(String src,  String ... conditions);
-	public DataSet querys(String src, PageNavi navi,  String ... conditions);
+	DataSet querys(String src, ConfigStore configs, String ... conditions);
+	DataSet querys(String src,  String ... conditions);
+	DataSet querys(String src, PageNavi navi,  String ... conditions);
 
 	/**
 	 * 按条件查询
@@ -258,9 +258,9 @@ public interface AnylineService<E>{
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, int first, int last,  String ... conditions);
-	public DataRow query(String src, ConfigStore configs,  String ... conditions);
-	public DataRow query(String src, String ... conditions);
+	DataSet querys(String src, int first, int last,  String ... conditions);
+	DataRow query(String src, ConfigStore configs,  String ... conditions);
+	DataRow query(String src, String ... conditions);
 
 	/**
 	 * 查询序列cur 或 next value
@@ -268,21 +268,21 @@ public interface AnylineService<E>{
 	 * @param name 	序列名
 	 * @return long 查询失败返回null
 	 */
-	public BigDecimal sequence(boolean next, String name);
+	BigDecimal sequence(boolean next, String name);
 	/**
 	 * 查询序列next value
 	 * @param name 序列名
 	 * @return long 查询失败返回null
 	 */
-	public BigDecimal sequence(String name);
+	BigDecimal sequence(String name);
 	/**
 	 * 查询序列cur 或 next value
 	 * @param names 序列名
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @return DataRow 查询结果按序列名保存到DataRow中，查询失败返回null
 	 */
-	public DataRow sequences(boolean next, String ... names);
-	public DataRow sequences(String ... names);
+	DataRow sequences(boolean next, String ... names);
+	DataRow sequences(String ... names);
 
 	/**
 	 * 根据calzz返回实体集合
@@ -295,30 +295,30 @@ public interface AnylineService<E>{
 	 * @param <T>  entity
 	 */
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions);
 	@Deprecated
-	public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	<T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	@Deprecated
-	public <T> T query(Class<T> clazz, T entity, String ... conditions);
+	<T> T query(Class<T> clazz, T entity, String ... conditions);
 
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
 	@Deprecated
-	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions);
 	@Deprecated
-	public <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
 	@Deprecated
-	public <T> T query(Class<T> clazz, String ... conditions);
+	<T> T query(Class<T> clazz, String ... conditions);
 
 
 	/**
@@ -331,19 +331,19 @@ public interface AnylineService<E>{
 	 * @return EntitySet
 	 * @param <T> T
 	 */
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions);
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions);
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, T entity, String ... conditions);
-	public <T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	public <T> T select(String src, Class<T> clazz, T entity, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, T entity, String ... conditions);
+	<T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	<T> T select(String src, Class<T> clazz, T entity, String ... conditions);
 
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions);
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions);
-	public <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, String ... conditions);
-	public <T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> T select(String src, Class<T> clazz, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions);
+	<T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, String ... conditions);
+	<T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> T select(String src, Class<T> clazz, String ... conditions);
 
 
 
@@ -356,32 +356,32 @@ public interface AnylineService<E>{
 	 * @return EntitySet
 	 * @param <T> T
 	 */
-	public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
-	public <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions);
-	public <T> EntitySet<T> selects(Class<T> clazz, int first, int last, T entity, String ... conditions);
-	public <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	public <T> T select(Class<T> clazz, T entity, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, int first, int last, T entity, String ... conditions);
+	<T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	<T> T select(Class<T> clazz, T entity, String ... conditions);
 
-	public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions);
-	public <T> EntitySet<T> selects(Class<T> clazz, String ... conditions);
-	public <T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions);
-	public <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> T select(Class<T> clazz, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, String ... conditions);
+	<T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions);
+	<T> T select(Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> T select(Class<T> clazz, String ... conditions);
 
 
 
 
 	/*根据service构造泛型查询*/
-	public EntitySet<E> gets(ConfigStore configs, String ... conditions);
-	public EntitySet<E> gets(PageNavi navi, String ... conditions);
+	EntitySet<E> gets(ConfigStore configs, String ... conditions);
+	EntitySet<E> gets(PageNavi navi, String ... conditions);
 
-	// 与public DataSet querys(String src, String ... conditions);  签名冲突
-	public EntitySet<E> gets(String ... conditions);
-	public EntitySet<E> gets(int first, int last, String ... conditions);
-	public E get(ConfigStore configs, String ... conditions);
-	public E get(String ... conditions);
+	// 与DataSet querys(String src, String ... conditions);  签名冲突
+	EntitySet<E> gets(String ... conditions);
+	EntitySet<E> gets(int first, int last, String ... conditions);
+	E get(ConfigStore configs, String ... conditions);
+	E get(String ... conditions);
 
 	/**
 	 * 直接返回Map集合不封装,不分页
@@ -391,12 +391,12 @@ public interface AnylineService<E>{
 	 * @param conditions	固定查询条件
 	 * @return List
 	 */
-	public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
-	public List<Map<String,Object>> maps(String src, Object obj, String ... conditions);
-	public List<Map<String,Object>> maps(String src, int first, int last, Object obj, String ... conditions);
-	public List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
-	public List<Map<String,Object>> maps(String src, String ... conditions);
-	public List<Map<String,Object>> maps(String src, int first, int last, String ... conditions);
+	List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
+	List<Map<String,Object>> maps(String src, Object obj, String ... conditions);
+	List<Map<String,Object>> maps(String src, int first, int last, Object obj, String ... conditions);
+	List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
+	List<Map<String,Object>> maps(String src, String ... conditions);
+	List<Map<String,Object>> maps(String src, int first, int last, String ... conditions);
 
 
 
@@ -405,7 +405,7 @@ public interface AnylineService<E>{
 	 * @param table 表
 	 * @return List
 	 */
-	public List<String> column2param(String table);
+	List<String> column2param(String table);
 
 
 
@@ -418,45 +418,45 @@ public interface AnylineService<E>{
 	 * @param conditions 	固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet caches(String cache, String src, Object obj, String ... conditions);
-	public DataSet caches(String cache, String src, int first, int last, Object obj, String ... conditions);
-	public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow cache(String cache, String src, Object obj, String ... conditions);
+	DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
+	DataSet caches(String cache, String src, Object obj, String ... conditions);
+	DataSet caches(String cache, String src, int first, int last, Object obj, String ... conditions);
+	DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
+	DataRow cache(String cache, String src, Object obj, String ... conditions);
 
-	public DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions);
-	public DataSet caches(String cache, String src, String ... conditions);
-	public DataSet caches(String cache, String src, int first, int last, String ... conditions);
-	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataRow cache(String cache, String src, String ... conditions);
+	DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions);
+	DataSet caches(String cache, String src, String ... conditions);
+	DataSet caches(String cache, String src, int first, int last, String ... conditions);
+	DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
+	DataRow cache(String cache, String src, String ... conditions);
 
 
 
 	/*多表查询,左右连接时使用*/
-	public DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet querys(RunPrepare prepare, Object obj, String ... conditions);
-	public DataSet querys(RunPrepare prepare, int first, int last, Object obj, String ... conditions);
-	public DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow query(RunPrepare prepare, Object obj, String ... conditions);
+	DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	DataSet querys(RunPrepare prepare, Object obj, String ... conditions);
+	DataSet querys(RunPrepare prepare, int first, int last, Object obj, String ... conditions);
+	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	DataRow query(RunPrepare prepare, Object obj, String ... conditions);
 
-	public DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions);
-	public DataSet querys(RunPrepare prepare,  String ... conditions);
-	public DataSet querys(RunPrepare prepare, int first, int last,  String ... conditions);
-	public DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions);
-	public DataRow query(RunPrepare prepare, String ... conditions);
+	DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions);
+	DataSet querys(RunPrepare prepare,  String ... conditions);
+	DataSet querys(RunPrepare prepare, int first, int last,  String ... conditions);
+	DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions);
+	DataRow query(RunPrepare prepare, String ... conditions);
 
 
-	public DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions);
-	public DataSet caches(String cache, RunPrepare prepare, int first, int last, Object obj, String ... conditions);
-	public DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions);
+	DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions);
+	DataSet caches(String cache, RunPrepare prepare, int first, int last, Object obj, String ... conditions);
+	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions);
 
-	public DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public DataSet caches(String cache, RunPrepare prepare, String ... conditions);
-	public DataSet caches(String cache, RunPrepare prepare, int first, int last, String ... conditions);
-	public DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public DataRow cache(String cache, RunPrepare prepare, String ... conditions);
+	DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	DataSet caches(String cache, RunPrepare prepare, String ... conditions);
+	DataSet caches(String cache, RunPrepare prepare, int first, int last, String ... conditions);
+	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	DataRow cache(String cache, RunPrepare prepare, String ... conditions);
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致
@@ -466,15 +466,15 @@ public interface AnylineService<E>{
 	 * @param conditions 	固定查询条件
 	 * @return boolean
 	 */
-	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
-	public boolean removeCache(String channel, String src, String ... conditions);
-	public boolean removeCache(String channel, String src, int first, int last, String ... conditions);
+	boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
+	boolean removeCache(String channel, String src, String ... conditions);
+	boolean removeCache(String channel, String src, int first, int last, String ... conditions);
 	/**
 	 * 清空缓存
 	 * @param channel channel
 	 * @return boolean
 	 */
-	public boolean clearCache(String channel);
+	boolean clearCache(String channel);
 
 	/* *****************************************************************************************************************
 	 * 													EXISTS
@@ -487,20 +487,20 @@ public interface AnylineService<E>{
 	 * @param conditions 	固定查询条件
 	 * @return boolean
 	 */
-	public boolean exists(String src, ConfigStore configs, Object obj, String ... conditions);
-	public boolean exists(String src, Object obj, String ... conditions);
-	public boolean exists(String src, ConfigStore configs, String ... conditions);
-	public boolean exists(String src, String ... conditions);
-	public boolean exists(String src, DataRow row);
-	public boolean exists(DataRow row);
+	boolean exists(String src, ConfigStore configs, Object obj, String ... conditions);
+	boolean exists(String src, Object obj, String ... conditions);
+	boolean exists(String src, ConfigStore configs, String ... conditions);
+	boolean exists(String src, String ... conditions);
+	boolean exists(String src, DataRow row);
+	boolean exists(DataRow row);
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 ******************************************************************************************************************/
-	public int count(String src, ConfigStore configs, Object obj, String ... conditions);
-	public int count(String src, Object obj, String ... conditions);
-	public int count(String src, ConfigStore configs, String ... conditions);
-	public int count(String src, String ... conditions);
+	int count(String src, ConfigStore configs, Object obj, String ... conditions);
+	int count(String src, Object obj, String ... conditions);
+	int count(String src, ConfigStore configs, String ... conditions);
+	int count(String src, String ... conditions);
 
 
 
@@ -515,16 +515,16 @@ public interface AnylineService<E>{
 	 * @param conditions  conditions
 	 * @return int
 	 */ 
-	public int execute(String src, ConfigStore configs, String ... conditions); 
-	public int execute(String src, String ... conditions); 
+	int execute(String src, ConfigStore configs, String ... conditions); 
+	int execute(String src, String ... conditions); 
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure
 	 * @param inputs  inputs
 	 * @return boolean
 	 */ 
-	public boolean executeProcedure(String procedure, String... inputs); 
-	public boolean execute(Procedure procedure, String... inputs);
+	boolean executeProcedure(String procedure, String... inputs); 
+	boolean execute(Procedure procedure, String... inputs);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
@@ -533,14 +533,14 @@ public interface AnylineService<E>{
 	 * @param inputs  inputs
 	 * @return DataSet
 	 */
-	public DataSet querysProcedure(String procedure, int first, int last , String ... inputs);
-	public DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs);
-	public DataSet querysProcedure(String procedure, String ... inputs);
-	public DataSet querys(Procedure procedure, int first, int last,  String ... inputs);
-	public DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
+	DataSet querysProcedure(String procedure, int first, int last , String ... inputs);
+	DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs);
+	DataSet querysProcedure(String procedure, String ... inputs);
+	DataSet querys(Procedure procedure, int first, int last,  String ... inputs);
+	DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
 
-	public DataRow queryProcedure(String procedure, String ... inputs);
-	public DataRow query(Procedure procedure, String ... inputs);
+	DataRow queryProcedure(String procedure, String ... inputs);
+	DataRow query(Procedure procedure, String ... inputs);
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
@@ -553,7 +553,7 @@ public interface AnylineService<E>{
 	 * @param conditions  匹配条件
 	 * @return 影响行数
 	 */
-	public int delete(String table, ConfigStore configs, String ... conditions);
+	int delete(String table, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据columns列删除 可设置复合主键<br/>
 	 * 注意:为了避免整表删除,columns必须提供否则会抛出异常 <br/>
@@ -563,9 +563,9 @@ public interface AnylineService<E>{
 	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
-	public int delete(String dest, DataSet set, String ... columns);
-	public int delete(DataSet set, String ... columns);
-	public int delete(String dest, DataRow row, String ... columns);
+	int delete(String dest, DataSet set, String ... columns);
+	int delete(DataSet set, String ... columns);
+	int delete(String dest, DataRow row, String ... columns);
 
 	/**
 	 * 根据columns列删除 <br/>
@@ -577,7 +577,7 @@ public interface AnylineService<E>{
 	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
-	public int delete(Object obj, String ... columns);
+	int delete(Object obj, String ... columns);
 
 	/**
 	 * 根据多列条件删除<br/>
@@ -598,7 +598,7 @@ public interface AnylineService<E>{
 	 * @param kvs key-value
 	 * @return 影响行数
 	 */
-	public int delete(String table, String ... kvs);
+	int delete(String table, String ... kvs);
 
 	/**
 	 * 根据一列的多个值删除<br/>
@@ -626,80 +626,80 @@ public interface AnylineService<E>{
 	 */
 	public<T> int deletes(String table, String key, T ... values);
 
-	public int truncate(String table);
+	int truncate(String table);
 
 
 	/* *****************************************************************************************************************
 	 * 													METADATA
 	 ******************************************************************************************************************/
 
-	public List<String> tables(boolean greedy, String catalog, String schema, String name, String types);
-	public List<String> tables(boolean greedy, String schema, String name, String types);
-	public List<String> tables(boolean greedy, String name, String types);
-	public List<String> tables(boolean greedy, String types);
-	public List<String> tables(boolean greedy);
+	List<String> tables(boolean greedy, String catalog, String schema, String name, String types);
+	List<String> tables(boolean greedy, String schema, String name, String types);
+	List<String> tables(boolean greedy, String name, String types);
+	List<String> tables(boolean greedy, String types);
+	List<String> tables(boolean greedy);
 
 
-	public List<String> tables(String catalog, String schema, String name, String types);
-	public List<String> tables(String schema, String name, String types);
-	public List<String> tables(String name, String types);
-	public List<String> tables(String types);
-	public List<String> tables();
+	List<String> tables(String catalog, String schema, String name, String types);
+	List<String> tables(String schema, String name, String types);
+	List<String> tables(String name, String types);
+	List<String> tables(String types);
+	List<String> tables();
 
 
-	public List<String> views(boolean greedy, String catalog, String schema, String name, String types);
-	public List<String> views(boolean greedy, String schema, String name, String types);
-	public List<String> views(boolean greedy, String name, String types);
-	public List<String> views(boolean greedy, String types);
-	public List<String> views(boolean greedy);
+	List<String> views(boolean greedy, String catalog, String schema, String name, String types);
+	List<String> views(boolean greedy, String schema, String name, String types);
+	List<String> views(boolean greedy, String name, String types);
+	List<String> views(boolean greedy, String types);
+	List<String> views(boolean greedy);
 
 
-	public List<String> views(String catalog, String schema, String name, String types);
-	public List<String> views(String schema, String name, String types);
-	public List<String> views(String name, String types);
-	public List<String> views(String types);
-	public List<String> views();
+	List<String> views(String catalog, String schema, String name, String types);
+	List<String> views(String schema, String name, String types);
+	List<String> views(String name, String types);
+	List<String> views(String types);
+	List<String> views();
 
 
-	public List<String> mtables(boolean greedy, String catalog, String schema, String name, String types);
-	public List<String> mtables(boolean greedy, String schema, String name, String types);
-	public List<String> mtables(boolean greedy, String name, String types);
-	public List<String> mtables(boolean greedy, String types);
-	public List<String> mtables(boolean greedy);
+	List<String> mtables(boolean greedy, String catalog, String schema, String name, String types);
+	List<String> mtables(boolean greedy, String schema, String name, String types);
+	List<String> mtables(boolean greedy, String name, String types);
+	List<String> mtables(boolean greedy, String types);
+	List<String> mtables(boolean greedy);
 
-	public List<String> mtables(String catalog, String schema, String name, String types);
-	public List<String> mtables(String schema, String name, String types);
-	public List<String> mtables(String name, String types);
-	public List<String> mtables(String types);
-	public List<String> mtables();
-
-
-	public List<String> columns(boolean greedy, Table table);
-	public List<String> columns(boolean greedy, String table);
-	public List<String> columns(boolean greedy, String catalog, String schema, String table);
-	public List<String> columns(Table table);
-	public List<String> columns(String table);
-	public List<String> columns(String catalog, String schema, String table);
-
-	public List<String> tags(boolean greedy,Table table);
-	public List<String> tags(boolean greedy, String catalog, String schema, String table);
-	public List<String> tags(boolean greedy, String table);
-	public List<String> tags(Table table);
-	public List<String> tags(String table);
-	public List<String> tags(String catalog, String schema, String table);
+	List<String> mtables(String catalog, String schema, String name, String types);
+	List<String> mtables(String schema, String name, String types);
+	List<String> mtables(String name, String types);
+	List<String> mtables(String types);
+	List<String> mtables();
 
 
-	public void clearColumnCache(boolean greedy, String catalog, String schema, String table);
-	public void clearColumnCache(boolean greedy, String table);
-	public void clearColumnCache(boolean greedy);
-	public void clearColumnCache(String catalog, String schema, String table);
-	public void clearColumnCache(String table);
-	public void clearColumnCache();
+	List<String> columns(boolean greedy, Table table);
+	List<String> columns(boolean greedy, String table);
+	List<String> columns(boolean greedy, String catalog, String schema, String table);
+	List<String> columns(Table table);
+	List<String> columns(String table);
+	List<String> columns(String catalog, String schema, String table);
 
-	public DDLService ddl();
-	public MetaDataService metadata();
+	List<String> tags(boolean greedy,Table table);
+	List<String> tags(boolean greedy, String catalog, String schema, String table);
+	List<String> tags(boolean greedy, String table);
+	List<String> tags(Table table);
+	List<String> tags(String table);
+	List<String> tags(String catalog, String schema, String table);
 
-	public ConfigStore condition();
+
+	void clearColumnCache(boolean greedy, String catalog, String schema, String table);
+	void clearColumnCache(boolean greedy, String table);
+	void clearColumnCache(boolean greedy);
+	void clearColumnCache(String catalog, String schema, String table);
+	void clearColumnCache(String table);
+	void clearColumnCache();
+
+	DDLService ddl();
+	MetaDataService metadata();
+
+	ConfigStore condition();
 
 	/* *****************************************************************************************************************
 	 *
@@ -716,7 +716,7 @@ public interface AnylineService<E>{
 	 * constraint		: 约束
 	 *
 	 ******************************************************************************************************************/
-	public interface MetaDataService{
+	interface MetaDataService{
 
 
 		/* *****************************************************************************************************************
@@ -727,7 +727,7 @@ public interface AnylineService<E>{
 		 * 查询所有数据库
 		 * @return databases
 		 */
-		public LinkedHashMap<String,Database> databases();
+		LinkedHashMap<String,Database> databases();
 
 
 		/* *****************************************************************************************************************
@@ -739,10 +739,10 @@ public interface AnylineService<E>{
 		 * @param table 表
 		 * @return boolean
 		 */
-		public boolean exists(Table table);
-		public boolean exists(boolean greedy, Table table);
-		public boolean exists(View view);
-		public boolean exists(boolean greedy, View view);
+		boolean exists(Table table);
+		boolean exists(boolean greedy, Table table);
+		boolean exists(View view);
+		boolean exists(boolean greedy, View view);
 		/**
 		 * tables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -752,17 +752,17 @@ public interface AnylineService<E>{
 		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 		 * @return tables
 		 */
-		public LinkedHashMap<String,Table> tables(boolean greedy, String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,Table> tables(boolean greedy, String schema, String name, String types);
-		public LinkedHashMap<String,Table> tables(boolean greedy, String name, String types);
-		public LinkedHashMap<String,Table> tables(boolean greedy, String types);
-		public LinkedHashMap<String,Table> tables(boolean greedy);
+		<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String schema, String name, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String name, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(boolean greedy);
 
-		public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,Table> tables(String schema, String name, String types);
-		public LinkedHashMap<String,Table> tables(String name, String types);
-		public LinkedHashMap<String,Table> tables(String types);
-		public LinkedHashMap<String,Table> tables();
+		<T extends Table> LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(String schema, String name, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(String name, String types);
+		<T extends Table> LinkedHashMap<String, T> tables(String types);
+		<T extends Table> LinkedHashMap<String, T> tables();
 
 
 		/**
@@ -773,48 +773,48 @@ public interface AnylineService<E>{
 		 * @param struct 是否查询详细结构(列、索引、主外键、约束等)
 		 * @return
 		 */
-		public Table table(boolean greedy, String catalog, String schema, String name, boolean struct);
-		public Table table(boolean greedy, String schema, String name, boolean struct);
-		public Table table(boolean greedy, String name, boolean struct);
+		Table table(boolean greedy, String catalog, String schema, String name, boolean struct);
+		Table table(boolean greedy, String schema, String name, boolean struct);
+		Table table(boolean greedy, String name, boolean struct);
 
-		public Table table(String catalog, String schema, String name, boolean struct);
-		public Table table(String schema, String name, boolean struct);
-		public Table table(String name, boolean struct);
+		Table table(String catalog, String schema, String name, boolean struct);
+		Table table(String schema, String name, boolean struct);
+		Table table(String name, boolean struct);
 
 
-		public Table table(boolean greedy, String catalog, String schema, String name);
-		public Table table(boolean greedy, String schema, String name);
-		public Table table(boolean greedy, String name);
+		Table table(boolean greedy, String catalog, String schema, String name);
+		Table table(boolean greedy, String schema, String name);
+		Table table(boolean greedy, String name);
 
-		public Table table(String catalog, String schema, String name);
-		public Table table(String schema, String name);
-		public Table table(String name);
+		Table table(String catalog, String schema, String name);
+		Table table(String schema, String name);
+		Table table(String name);
 
 		/* *****************************************************************************************************************
 		 * 													view
 		 ******************************************************************************************************************/
 
 
-		public LinkedHashMap<String,View> views(boolean greedy, String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,View> views(boolean greedy, String schema, String name, String types);
-		public LinkedHashMap<String,View> views(boolean greedy, String name, String types);
-		public LinkedHashMap<String,View> views(boolean greedy, String types);
-		public LinkedHashMap<String,View> views(boolean greedy);
+		<T extends View> LinkedHashMap<String, T> views(boolean greedy, String catalog, String schema, String name, String types);
+		<T extends View> LinkedHashMap<String, T> views(boolean greedy, String schema, String name, String types);
+		<T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, String types);
+		<T extends View> LinkedHashMap<String, T> views(boolean greedy, String types);
+		<T extends View> LinkedHashMap<String, T> views(boolean greedy);
 
-		public LinkedHashMap<String,View> views(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,View> views(String schema, String name, String types);
-		public LinkedHashMap<String,View> views(String name, String types);
-		public LinkedHashMap<String,View> views(String types);
-		public LinkedHashMap<String,View> views();
+		<T extends View> LinkedHashMap<String, T> views(String catalog, String schema, String name, String types);
+		<T extends View> LinkedHashMap<String, T> views(String schema, String name, String types);
+		<T extends View> LinkedHashMap<String, T> views(String name, String types);
+		<T extends View> LinkedHashMap<String, T> views(String types);
+		<T extends View> LinkedHashMap<String, T> views();
 
 
-		public View view(boolean greedy, String catalog, String schema, String name);
-		public View view(boolean greedy, String schema, String name);
-		public View view(boolean greedy, String name);
+		View view(boolean greedy, String catalog, String schema, String name);
+		View view(boolean greedy, String schema, String name);
+		View view(boolean greedy, String name);
 
-		public View view(String catalog, String schema, String name);
-		public View view(String schema, String name);
-		public View view(String name);
+		View view(String catalog, String schema, String name);
+		View view(String schema, String name);
+		View view(String name);
 
 		/* *****************************************************************************************************************
 		 * 													master table
@@ -826,28 +826,28 @@ public interface AnylineService<E>{
 		 * @param table 表名
 		 * @return LinkedHashMap
 		 */
-		public boolean exists(boolean greedy,MasterTable table);
-		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String catalog, String schema, String name, String types);
-		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String schema, String name, String types);
-		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String name, String types);
-		public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String types);
-		public LinkedHashMap<String, MasterTable> mtables(boolean greedy);
+		boolean exists(boolean greedy,MasterTable table);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String catalog, String schema, String name, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String schema, String name, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy);
 
 
-		public boolean exists(MasterTable table);
-		public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
-		public LinkedHashMap<String, MasterTable> mtables(String name, String types);
-		public LinkedHashMap<String, MasterTable> mtables(String types);
-		public LinkedHashMap<String, MasterTable> mtables();
+		boolean exists(MasterTable table);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(String catalog, String schema, String name, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(String schema, String name, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables(String types);
+		<T extends MasterTable> LinkedHashMap<String, T> mtables();
 
-		public MasterTable mtable(boolean greedy, String catalog, String schema, String name);
-		public MasterTable mtable(boolean greedy, String schema, String name);
-		public MasterTable mtable(boolean greedy, String name);
+		MasterTable mtable(boolean greedy, String catalog, String schema, String name);
+		MasterTable mtable(boolean greedy, String schema, String name);
+		MasterTable mtable(boolean greedy, String name);
 
-		public MasterTable mtable(String catalog, String schema, String name);
-		public MasterTable mtable(String schema, String name);
-		public MasterTable mtable(String name);
+		MasterTable mtable(String catalog, String schema, String name);
+		MasterTable mtable(String schema, String name);
+		MasterTable mtable(String name);
 
 
 		/* *****************************************************************************************************************
@@ -859,20 +859,20 @@ public interface AnylineService<E>{
 		 * @param table 表名
 		 * @return LinkedHashMap
 		 */
-		public boolean exists(boolean greedy, PartitionTable table);
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String catalog, String schema, String master, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String schema, String master, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master);
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master);
+		boolean exists(boolean greedy, PartitionTable table);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String catalog, String schema, String master, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String schema, String master, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master);
 
 
-		public boolean exists(PartitionTable table);
-		public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(String master, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(String master);
-		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
+		boolean exists(PartitionTable table);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(String catalog, String schema, String master, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(String schema, String master, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(String master);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master);
 
 		/**
 		 * 根据主表与标签值查询分区表(子表)
@@ -881,19 +881,19 @@ public interface AnylineService<E>{
 		 * @param name 子表名
 		 * @return PartitionTables
 		 */
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags);
 
-		public PartitionTable ptable(boolean greedy, String catalog, String schema, String master, String name);
-		public PartitionTable ptable(boolean greedy, String schema, String master, String name);
-		public PartitionTable ptable(boolean greedy, String master, String name);
+		PartitionTable ptable(boolean greedy, String catalog, String schema, String master, String name);
+		PartitionTable ptable(boolean greedy, String schema, String master, String name);
+		PartitionTable ptable(boolean greedy, String master, String name);
 
-		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags, String name);
-		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
+		<T extends PartitionTable>LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags, String name);
+		<T extends PartitionTable>LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags);
 
-		public PartitionTable ptable(String catalog, String schema, String master, String name);
-		public PartitionTable ptable(String schema, String master, String name);
-		public PartitionTable ptable(String master, String name);
+		PartitionTable ptable(String catalog, String schema, String master, String name);
+		PartitionTable ptable(String schema, String master, String name);
+		PartitionTable ptable(String master, String name);
 
 		/* *****************************************************************************************************************
 		 * 													column
@@ -904,25 +904,25 @@ public interface AnylineService<E>{
 		 * @param column 列
 		 * @return boolean
 		 */
-		public boolean exists(boolean greedy, Column column);
-		public boolean exists(boolean greedy,Table table, String column);
-		public boolean exists(boolean greedy, String table, String column);
-		public boolean exists(boolean greedy, String catalog, String schema, String table, String column);
-		public boolean exists(Column column);
-		public boolean exists(String table, String column);
-		public boolean exists(Table table, String column);
-		public boolean exists(String catalog, String schema, String table, String column);
+		boolean exists(boolean greedy, Column column);
+		boolean exists(boolean greedy,Table table, String column);
+		boolean exists(boolean greedy, String table, String column);
+		boolean exists(boolean greedy, String catalog, String schema, String table, String column);
+		boolean exists(Column column);
+		boolean exists(String table, String column);
+		boolean exists(Table table, String column);
+		boolean exists(String catalog, String schema, String table, String column);
 		/**
 		 * 查询表中所有的表,注意这里的map.KEY全部转大写
 		 * @param table 表
 		 * @return map
 		 */
-		public LinkedHashMap<String,Column> columns(boolean greedy, Table table);
-		public LinkedHashMap<String,Column> columns(boolean greedy, String table);
-		public LinkedHashMap<String,Column> columns(boolean greedy, String catalog, String schema, String table);
-		public LinkedHashMap<String,Column> columns(Table table);
-		public LinkedHashMap<String,Column> columns(String table);
-		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
+		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table);
+		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table);
+		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String catalog, String schema, String table);
+		<T extends Column> LinkedHashMap<String, T> columns(Table table);
+		<T extends Column> LinkedHashMap<String, T> columns(String table);
+		<T extends Column> LinkedHashMap<String, T> columns(String catalog, String schema, String table);
 
 		/**
 		 * 查询table中的column列
@@ -930,147 +930,147 @@ public interface AnylineService<E>{
 		 * @param name 列名(不区分大小写)
 		 * @return Column
 		 */
-		public Column column(boolean greedy, Table table, String name);
-		public Column column(boolean greedy, String table, String name);
-		public Column column(boolean greedy, String catalog, String schema, String table, String name);
-		public Column column(Table table, String name);
-		public Column column(String table, String name);
-		public Column column(String catalog, String schema, String table, String name);
+		Column column(boolean greedy, Table table, String name);
+		Column column(boolean greedy, String table, String name);
+		Column column(boolean greedy, String catalog, String schema, String table, String name);
+		Column column(Table table, String name);
+		Column column(String table, String name);
+		Column column(String catalog, String schema, String table, String name);
 
 
 		/* *****************************************************************************************************************
 		 * 													tag
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String, Tag> tags(boolean greedy,Table table);
-		public LinkedHashMap<String, Tag> tags(boolean greedy, String table);
-		public LinkedHashMap<String, Tag> tags(boolean greedy, String catalog, String schema, String table);
-		public LinkedHashMap<String, Tag> tags(Table table);
-		public LinkedHashMap<String, Tag> tags(String table);
-		public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
+		<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy,Table table);
+		<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table);
+		<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table);
+		<T extends Tag> LinkedHashMap<String, T> tags(Table table);
+		<T extends Tag> LinkedHashMap<String, T> tags(String table);
+		<T extends Tag> LinkedHashMap<String, T> tags(String catalog, String schema, String table);
 
 
 		/* *****************************************************************************************************************
 		 * 													primary
 		 ******************************************************************************************************************/
 
-		public PrimaryKey primary(boolean greedy,Table table);
-		public PrimaryKey primary(boolean greedy,String table);
-		public PrimaryKey primary(boolean greedy,String catalog, String schema, String table);
-		public PrimaryKey primary(Table table);
-		public PrimaryKey primary(String table);
-		public PrimaryKey primary(String catalog, String schema, String table);
+		PrimaryKey primary(boolean greedy,Table table);
+		PrimaryKey primary(boolean greedy,String table);
+		PrimaryKey primary(boolean greedy,String catalog, String schema, String table);
+		PrimaryKey primary(Table table);
+		PrimaryKey primary(String table);
+		PrimaryKey primary(String catalog, String schema, String table);
 
 		/* *****************************************************************************************************************
 		 * 													foreign
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy,Table table);
-		public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy,String table);
-		public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy,String catalog, String schema, String table);
-		public LinkedHashMap<String, ForeignKey> foreigns(Table table);
-		public LinkedHashMap<String, ForeignKey> foreigns(String table);
-		public LinkedHashMap<String, ForeignKey> foreigns(String catalog, String schema, String table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy,Table table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy,String table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy,String catalog, String schema, String table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(Table table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(String table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(String catalog, String schema, String table);
 
-		public ForeignKey foreign(boolean greedy,Table table, String ... columns);
-		public ForeignKey foreign(boolean greedy,Table table, List<String> columns);
-		public ForeignKey foreign(boolean greedy,String table, String ... columns);
-		public ForeignKey foreign(boolean greedy,String table, List<String> columns);
+		ForeignKey foreign(boolean greedy,Table table, String ... columns);
+		ForeignKey foreign(boolean greedy,Table table, List<String> columns);
+		ForeignKey foreign(boolean greedy,String table, String ... columns);
+		ForeignKey foreign(boolean greedy,String table, List<String> columns);
 		//与上面的foreign(boolean greedy,String table, String ... columns)冲突
-		//public ForeignKey foreign(boolean greedy,String catalog, String schema, String table, String ... columns);
-		public ForeignKey foreign(boolean greedy,String catalog, String schema, String table, List<String> columns);
-		public ForeignKey foreign(Table table, String ... columns);
-		public ForeignKey foreign(Table table, List<String> columns);
-		public ForeignKey foreign(String table, String ... columns);
-		public ForeignKey foreign(String table, List<String> columns);
+		//ForeignKey foreign(boolean greedy,String catalog, String schema, String table, String ... columns);
+		ForeignKey foreign(boolean greedy,String catalog, String schema, String table, List<String> columns);
+		ForeignKey foreign(Table table, String ... columns);
+		ForeignKey foreign(Table table, List<String> columns);
+		ForeignKey foreign(String table, String ... columns);
+		ForeignKey foreign(String table, List<String> columns);
 		//与上面的foreign(String table, String ... columns)冲突
-		//public ForeignKey foreign(String catalog, String schema, String table, String ... columns);
-		public ForeignKey foreign(String catalog, String schema, String table, List<String> columns);
+		//ForeignKey foreign(String catalog, String schema, String table, String ... columns);
+		ForeignKey foreign(String catalog, String schema, String table, List<String> columns);
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String, Index> indexs(boolean greedy,Table table);
-		public LinkedHashMap<String,Index> indexs(boolean greedy,String table);
-		public LinkedHashMap<String,Index> indexs(boolean greedy,String catalog, String schema, String table);
+		<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy,Table table);
+		<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy,String table);
+		<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy,String catalog, String schema, String table);
 
-		public LinkedHashMap<String, Index> indexs(Table table);
-		public LinkedHashMap<String,Index> indexs(String table);
-		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
+		<T extends Index> LinkedHashMap<String, T> indexs(Table table);
+		<T extends Index> LinkedHashMap<String, T> indexs(String table);
+		<T extends Index> LinkedHashMap<String, T> indexs(String catalog, String schema, String table);
 
 
-		public Index index(boolean greedy,Table table, String name);
-		public Index index(boolean greedy,String table, String name);
-		public Index index(boolean greedy,String name);
-		public Index index(Table table, String name);
-		public Index index(String table, String name);
-		public Index index(String name);
+		Index index(boolean greedy,Table table, String name);
+		Index index(boolean greedy,String table, String name);
+		Index index(boolean greedy,String name);
+		Index index(Table table, String name);
+		Index index(String table, String name);
+		Index index(String name);
 
 
 		/* *****************************************************************************************************************
 		 * 													constraint
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String, Constraint> constraints(boolean greedy,Table table);
-		public LinkedHashMap<String,Constraint> constraints(boolean greedy,String table);
-		public LinkedHashMap<String,Constraint> constraints(boolean greedy,String catalog, String schema, String table);
-		public LinkedHashMap<String, Constraint> constraints(Table table);
-		public LinkedHashMap<String,Constraint> constraints(String table);
-		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
-		public Constraint constraint(boolean greedy,Table table, String name);
-		public Constraint constraint(boolean greedy,String table, String name);
-		public Constraint constraint(boolean greedy,String name);
-		public Constraint constraint(Table table, String name);
-		public Constraint constraint(String table, String name);
-		public Constraint constraint(String name);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy,Table table);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy,String table);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy,String catalog, String schema, String table);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(Table table);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(String table);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(String catalog, String schema, String table);
+		Constraint constraint(boolean greedy,Table table, String name);
+		Constraint constraint(boolean greedy,String table, String name);
+		Constraint constraint(boolean greedy,String name);
+		Constraint constraint(Table table, String name);
+		Constraint constraint(String table, String name);
+		Constraint constraint(String name);
 
 
 		/* *****************************************************************************************************************
 		 * 													trigger
 		 ******************************************************************************************************************/
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String catalog, String schema, String table, String actions);
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String schema, String table, String actions);
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String table, String actions);
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy, String actions);
-		public LinkedHashMap<String,Trigger> triggers(boolean greedy);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy);
 
-		public LinkedHashMap<String,Trigger> triggers(String catalog, String schema, String name, String actions);
-		public LinkedHashMap<String,Trigger> triggers(String schema, String name, String actions);
-		public LinkedHashMap<String,Trigger> triggers(String name, String actions);
-		public LinkedHashMap<String,Trigger> triggers(String actions);
-		public LinkedHashMap<String,Trigger> triggers();
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String name, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers();
 
 
-		public Trigger trigger(boolean greedy, String catalog, String schema, String name);
-		public Trigger trigger(boolean greedy, String schema, String name);
-		public Trigger trigger(boolean greedy, String name);
+		Trigger trigger(boolean greedy, String catalog, String schema, String name);
+		Trigger trigger(boolean greedy, String schema, String name);
+		Trigger trigger(boolean greedy, String name);
 
-		public Trigger trigger(String catalog, String schema, String name);
-		public Trigger trigger(String schema, String name);
-		public Trigger trigger(String name);
+		Trigger trigger(String catalog, String schema, String name);
+		Trigger trigger(String schema, String name);
+		Trigger trigger(String name);
 
 		/* *****************************************************************************************************************
 		 * 													procedure
 		 ******************************************************************************************************************/
 
-		public LinkedHashMap<String,Procedure> procedures(boolean greedy, String catalog, String schema, String name);
-		public LinkedHashMap<String,Procedure> procedures(boolean greedy, String schema, String name);
-		public LinkedHashMap<String,Procedure> procedures(boolean greedy, String name);
-		public LinkedHashMap<String,Procedure> procedures(boolean greedy);
+		<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name);
+		<T extends Procedure>LinkedHashMap<String, T> procedures(boolean greedy, String schema, String name);
+		<T extends Procedure>LinkedHashMap<String, T> procedures(boolean greedy, String name);
+		<T extends Procedure>LinkedHashMap<String, T> procedures(boolean greedy);
 
-		public LinkedHashMap<String,Procedure> procedures(String catalog, String schema, String name);
-		public LinkedHashMap<String,Procedure> procedures(String schema, String name);
-		public LinkedHashMap<String,Procedure> procedures(String name);
-		public LinkedHashMap<String,Procedure> procedures();
+		<T extends Procedure>LinkedHashMap<String, T> procedures(String catalog, String schema, String name);
+		<T extends Procedure>LinkedHashMap<String, T> procedures(String schema, String name);
+		<T extends Procedure>LinkedHashMap<String, T> procedures(String name);
+		<T extends Procedure>LinkedHashMap<String, T> procedures();
 
 
-		public Procedure procedure(boolean greedy, String catalog, String schema, String name);
-		public Procedure procedure(boolean greedy, String schema, String name);
-		public Procedure procedure(boolean greedy, String name);
+		Procedure procedure(boolean greedy, String catalog, String schema, String name);
+		Procedure procedure(boolean greedy, String schema, String name);
+		Procedure procedure(boolean greedy, String name);
 
-		public Procedure procedure(String catalog, String schema, String name);
-		public Procedure procedure(String schema, String name);
-		public Procedure procedure(String name);
+		Procedure procedure(String catalog, String schema, String name);
+		Procedure procedure(String schema, String name);
+		Procedure procedure(String name);
 
 	}
 
@@ -1091,46 +1091,46 @@ public interface AnylineService<E>{
 	 * constraint		: 约束
 	 *
 	 ******************************************************************************************************************/
-	public interface DDLService{
+	interface DDLService{
 
 
 		/* *****************************************************************************************************************
 		 * 													table
 		 ******************************************************************************************************************/
 
-		public boolean save(Table table) throws Exception;
-		public boolean create(Table table) throws Exception;
-		public boolean alter(Table table) throws Exception;
-		public boolean drop(Table table) throws Exception;
+		boolean save(Table table) throws Exception;
+		boolean create(Table table) throws Exception;
+		boolean alter(Table table) throws Exception;
+		boolean drop(Table table) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													view
 		 ******************************************************************************************************************/
 
-		public boolean save(View view) throws Exception;
-		public boolean create(View view) throws Exception;
-		public boolean alter(View view) throws Exception;
-		public boolean drop(View view) throws Exception;
+		boolean save(View view) throws Exception;
+		boolean create(View view) throws Exception;
+		boolean alter(View view) throws Exception;
+		boolean drop(View view) throws Exception;
 
 
 		/* *****************************************************************************************************************
 		 * 													master table
 		 ******************************************************************************************************************/
 
-		public boolean save(MasterTable table) throws Exception;
-		public boolean create(MasterTable table) throws Exception;
-		public boolean alter(MasterTable table) throws Exception;
-		public boolean drop(MasterTable table) throws Exception;
+		boolean save(MasterTable table) throws Exception;
+		boolean create(MasterTable table) throws Exception;
+		boolean alter(MasterTable table) throws Exception;
+		boolean drop(MasterTable table) throws Exception;
 
 
 		/* *****************************************************************************************************************
 		 * 													partition table
 		 ******************************************************************************************************************/
 
-		public boolean save(PartitionTable table) throws Exception;
-		public boolean create(PartitionTable table) throws Exception;
-		public boolean alter(PartitionTable table) throws Exception;
-		public boolean drop(PartitionTable table) throws Exception;
+		boolean save(PartitionTable table) throws Exception;
+		boolean create(PartitionTable table) throws Exception;
+		boolean alter(PartitionTable table) throws Exception;
+		boolean drop(PartitionTable table) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1143,36 +1143,36 @@ public interface AnylineService<E>{
 		 * @param column 列
 		 * @throws Exception 异常 SQL异常
 		 */
-		public boolean save(Column column) throws Exception;
-		public boolean add(Column column) throws Exception;
-		public boolean alter(Column column) throws Exception;
-		public boolean drop(Column column) throws Exception;
+		boolean save(Column column) throws Exception;
+		boolean add(Column column) throws Exception;
+		boolean alter(Column column) throws Exception;
+		boolean drop(Column column) throws Exception;
 
 
 		/* *****************************************************************************************************************
 		 * 													tag
 		 ******************************************************************************************************************/
 
-		public boolean save(Tag tag) throws Exception;
-		public boolean add(Tag tag) throws Exception;
-		public boolean alter(Tag tag) throws Exception;
-		public boolean drop(Tag tag) throws Exception;
+		boolean save(Tag tag) throws Exception;
+		boolean add(Tag tag) throws Exception;
+		boolean alter(Tag tag) throws Exception;
+		boolean drop(Tag tag) throws Exception;
 
 
 		/* *****************************************************************************************************************
 		 * 													primary
 		 ******************************************************************************************************************/
 
-		public boolean add(PrimaryKey primary) throws Exception;
-		public boolean alter(PrimaryKey primary) throws Exception;
-		public boolean drop(PrimaryKey primary) throws Exception;
+		boolean add(PrimaryKey primary) throws Exception;
+		boolean alter(PrimaryKey primary) throws Exception;
+		boolean drop(PrimaryKey primary) throws Exception;
 		/* *****************************************************************************************************************
 		 * 													foreign
 		 ******************************************************************************************************************/
 
-		public boolean add(ForeignKey foreign) throws Exception;
-		public boolean alter(ForeignKey foreign) throws Exception;
-		public boolean drop(ForeignKey foreign) throws Exception;
+		boolean add(ForeignKey foreign) throws Exception;
+		boolean alter(ForeignKey foreign) throws Exception;
+		boolean drop(ForeignKey foreign) throws Exception;
 
 		/**
 		 * 复合外键时调用
@@ -1181,16 +1181,16 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 * @throws Exception Exception
 		 */
-		public boolean drop(Table table, String ... columns) throws Exception;
-		public boolean add(String table, String column, String refTable, String refColumn) throws Exception;
+		boolean drop(Table table, String ... columns) throws Exception;
+		boolean add(String table, String column, String refTable, String refColumn) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
 
-		public boolean add(Index index) throws Exception;
-		public boolean alter(Index index) throws Exception;
-		public boolean drop(Index index) throws Exception;
+		boolean add(Index index) throws Exception;
+		boolean alter(Index index) throws Exception;
+		boolean drop(Index index) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1202,9 +1202,9 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		public boolean add(Constraint constraint) throws Exception;
-		public boolean alter(Constraint constraint) throws Exception;
-		public boolean drop(Constraint constraint) throws Exception;
+		boolean add(Constraint constraint) throws Exception;
+		boolean alter(Constraint constraint) throws Exception;
+		boolean drop(Constraint constraint) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													procedure
@@ -1215,9 +1215,9 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		public boolean create(Procedure procedure) throws Exception;
-		public boolean alter(Procedure procedure) throws Exception;
-		public boolean drop(Procedure procedure) throws Exception;
+		boolean create(Procedure procedure) throws Exception;
+		boolean alter(Procedure procedure) throws Exception;
+		boolean drop(Procedure procedure) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													trigger
@@ -1228,8 +1228,8 @@ public interface AnylineService<E>{
 		 * @return trigger
 		 * @throws Exception 异常 Exception
 		 */
-		public boolean create(Trigger trigger) throws Exception;
-		public boolean alter(Trigger trigger) throws Exception;
-		public boolean drop(Trigger trigger) throws Exception;
+		boolean create(Trigger trigger) throws Exception;
+		boolean alter(Trigger trigger) throws Exception;
+		boolean drop(Trigger trigger) throws Exception;
 	}
 }

@@ -450,7 +450,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC补充
@@ -464,7 +464,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -478,7 +478,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -505,7 +505,7 @@ public interface JDBCAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, View> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, View> views, DataSet set) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC补充
@@ -519,7 +519,7 @@ public interface JDBCAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, View> views(boolean create, LinkedHashMap<String, View> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -546,7 +546,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -558,7 +558,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -599,7 +599,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -612,7 +612,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -637,7 +637,7 @@ public interface JDBCAdapter {
 	 * @return tags tags
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 
 	/**
 	 * 解析查询结果metadata(0=1)
@@ -648,7 +648,7 @@ public interface JDBCAdapter {
 	 * @return columns columns
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
 
 	/**
 	 * 解析JDBC getcolumns结果
@@ -659,7 +659,7 @@ public interface JDBCAdapter {
 	 * @return attern attern
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
 	Column column(Column column, SqlRowSetMetaData rsm, int index);
 	Column column(Column column, ResultSetMetaData rsm, int index);
@@ -688,7 +688,7 @@ public interface JDBCAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
 
 	/**
 	 * 解析查询结果metadata(0=1)
@@ -699,7 +699,7 @@ public interface JDBCAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
 
 	/**
 	 *
@@ -712,7 +712,7 @@ public interface JDBCAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -741,7 +741,7 @@ public interface JDBCAdapter {
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
+	 * public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -759,7 +759,7 @@ public interface JDBCAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception;
+	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -784,7 +784,7 @@ public interface JDBCAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
 
 	/**
 	 *
@@ -795,7 +795,7 @@ public interface JDBCAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
 
 	/**
 	 * 解析JDBC getIndex结果
@@ -805,7 +805,7 @@ public interface JDBCAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -830,9 +830,9 @@ public interface JDBCAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Constraint> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
-	LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
 
 
 

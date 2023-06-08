@@ -35,13 +35,13 @@ public class SpringContextUtil implements ApplicationContextAware {
 			return null;
 		}
     }  
-    public static <T> Map<String,T> getBeans(Class<T> clazz) throws BeansException{ 
+    public static <T> Map<String, T> getBeans(Class<T> clazz) throws BeansException{ 
     	return applicationContext.getBeansOfType(clazz); 
     }  
     public static <T> T getBean(Class<T> clazz) throws BeansException{ 
-    	Map<String,T> beans = getBeans(clazz);
+    	Map<String, T> beans = getBeans(clazz);
     	if(null != beans && !beans.isEmpty()){
-    		for(Entry<String,T> set:beans.entrySet()){
+    		for(Entry<String, T> set:beans.entrySet()){
     			T bean = set.getValue();
     			if(null != bean){
     				return bean;

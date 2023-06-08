@@ -2267,8 +2267,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean greedy, String catalog, String schema, String pattern, String types){
-		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
 		
@@ -2300,7 +2300,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-
 			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"_"+types);
 			if(null != pattern){
 				if(table_map.isEmpty()){
@@ -2343,10 +2342,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			// 根据系统表查询失败后根据jdbc接口补充
 			if(null == tables || tables.size() == 0) {
 				try {
-					LinkedHashMap<String, Table> jdbcTables = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> jdbcTables = adapter.tables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 					for (String key : jdbcTables.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
-							Table item = jdbcTables.get(key);
+							T item = jdbcTables.get(key);
 							if (null != item) {
 								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
 									tables.put(key.toUpperCase(), item);
@@ -2386,10 +2385,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
 			}
 			if(BasicUtil.isNotEmpty(pattern)){
-				LinkedHashMap<String,Table> tmps = new LinkedHashMap<>();
+				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
 				List<String> keys = BeanUtil.getMapKeys(tables);
 				for(String key:keys){
-					Table item = tables.get(key);
+					T item = tables.get(key);
 					String name = item.getName(greedy);
 					if(RegularUtil.match(name, pattern)){
 						tmps.put(name.toUpperCase(), item);
@@ -2412,40 +2411,40 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String,Table> tables(boolean greedy, String schema, String name, String types){
+	public <T extends Table> LinkedHashMap<String,T> tables(boolean greedy, String schema, String name, String types){
 		return tables(greedy, null, schema, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,Table> tables(boolean greedy, String name, String types){
+	public <T extends Table> LinkedHashMap<String,T> tables(boolean greedy, String name, String types){
 		return tables(greedy, null, null, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,Table> tables(boolean greedy, String types){
+	public <T extends Table> LinkedHashMap<String,T> tables(boolean greedy, String types){
 		return tables(greedy, null, null, types);
 	}
 	@Override
-	public LinkedHashMap<String,Table> tables(boolean greedy){
+	public <T extends Table> LinkedHashMap<String,T> tables(boolean greedy){
 		return tables(greedy, null, null, null, "TABLE");
 	}
 
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, String pattern, String types){
+	public <T extends Table> LinkedHashMap<String, T> tables(String catalog, String schema, String pattern, String types){
 		return tables(false, catalog, schema, pattern, types);
 	}
 
 	@Override
-	public LinkedHashMap<String,Table> tables(String schema, String name, String types){
+	public <T extends Table> LinkedHashMap<String,T> tables(String schema, String name, String types){
 		return tables(false, null, schema, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,Table> tables(String name, String types){
+	public <T extends Table> LinkedHashMap<String,T> tables(String name, String types){
 		return tables(false, null, null, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,Table> tables(String types){
+	public <T extends Table> LinkedHashMap<String,T> tables(String types){
 		return tables(false, null, null, types);
 	}
 	@Override
-	public LinkedHashMap<String,Table> tables(){
+	public <T extends Table> LinkedHashMap<String,T> tables(){
 		return tables(false, null, null, null, "TABLE");
 	}
 
@@ -2470,8 +2469,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, View> views(boolean greedy, String catalog, String schema, String pattern, String types){
-		LinkedHashMap<String,View> views = new LinkedHashMap<>();
+	public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String,T> views = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
 
@@ -2547,10 +2546,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null == views || views.size() ==0) {
 				// 根据jdbc接口补充
 				try {
-					LinkedHashMap<String, View> tmps = adapter.views(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> tmps = adapter.views(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 					for (String key : tmps.keySet()) {
 						if (!views.containsKey(key.toUpperCase())) {
-							View item = tmps.get(key);
+							T item = tmps.get(key);
 							if (null != item) {
 								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
 									views.put(key.toUpperCase(), item);
@@ -2570,10 +2569,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, views.size(), System.currentTimeMillis() - fr);
 			}
 			if(BasicUtil.isNotEmpty(pattern)){
-				LinkedHashMap<String,View> tmps = new LinkedHashMap<>();
+				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
 				List<String> keys = BeanUtil.getMapKeys(views);
 				for(String key:keys){
-					View item = views.get(key);
+					T item = views.get(key);
 					String name = item.getName(greedy);
 					if(RegularUtil.match(name, pattern)){
 						tmps.put(name.toUpperCase(), item);
@@ -2596,40 +2595,40 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String,View> views(boolean greedy, String schema, String name, String types){
+	public <T extends View> LinkedHashMap<String,T> views(boolean greedy, String schema, String name, String types){
 		return views(greedy, null, schema, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,View> views(boolean greedy, String name, String types){
+	public <T extends View> LinkedHashMap<String,T> views(boolean greedy, String name, String types){
 		return views(greedy, null, null, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,View> views(boolean greedy, String types){
+	public <T extends View> LinkedHashMap<String,T> views(boolean greedy, String types){
 		return views(greedy, null, null, types);
 	}
 	@Override
-	public LinkedHashMap<String,View> views(boolean greedy){
+	public <T extends View> LinkedHashMap<String,T> views(boolean greedy){
 		return views(greedy, null, null, null, "TABLE");
 	}
 
-	public LinkedHashMap<String, View> views(String catalog, String schema, String pattern, String types){
+	public <T extends View> LinkedHashMap<String, T> views(String catalog, String schema, String pattern, String types){
 		return views(false, catalog, schema, pattern, types);
 	}
 
 	@Override
-	public LinkedHashMap<String,View> views(String schema, String name, String types){
+	public <T extends View> LinkedHashMap<String,T> views(String schema, String name, String types){
 		return views(false, null, schema, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,View> views(String name, String types){
+	public <T extends View> LinkedHashMap<String,T> views(String name, String types){
 		return views(false, null, null, name, types);
 	}
 	@Override
-	public LinkedHashMap<String,View> views(String types){
+	public <T extends View> LinkedHashMap<String,T> views(String types){
 		return views(false, null, null, types);
 	}
 	@Override
-	public LinkedHashMap<String,View> views(){
+	public <T extends View> LinkedHashMap<String,T> views(){
 		return views(false, null, null, null, "TABLE");
 	}
 	/* *****************************************************************************************************************
@@ -2642,9 +2641,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, MasterTable> mtables()
 	 ******************************************************************************************************************/
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String catalog, String schema, String pattern, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String catalog, String schema, String pattern, String types) {
 
-		LinkedHashMap<String, MasterTable> tables = new LinkedHashMap<>();
+		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
 		
@@ -2708,10 +2707,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null == tables || tables.size() ==0 ) {
 				// 根据jdbc接口补充
 				try {
-					LinkedHashMap<String, MasterTable> tmps = adapter.mtables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> tmps = adapter.mtables(true, null, con.getMetaData(), catalog, schema, pattern, tps);
 					for (String key : tmps.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
-							MasterTable item = tmps.get(key);
+							T item = tmps.get(key);
 							if (null != item) {
 								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
 									tables.put(key.toUpperCase(), item);
@@ -2745,46 +2744,46 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String schema, String name, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String schema, String name, String types) {
 		return mtables(greedy, null, schema, name, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String name, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types) {
 		return mtables(greedy, null, null, name, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types) {
 		return mtables(greedy, null, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy) {
 		return mtables(greedy, "STABLE");
 	}
 
-	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String pattern, String types){
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(String catalog, String schema, String pattern, String types){
 		return mtables(false, catalog, schema, pattern, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(String schema, String name, String types) {
 		return mtables(false, null, schema, name, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(String name, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types) {
 		return mtables(false, null, null, name, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(String types) {
 		return mtables(false, null, types);
 	}
 
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables() {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables() {
 		return mtables(false, "STABLE");
 	}
 	/* *****************************************************************************************************************
@@ -2798,33 +2797,33 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String catalog, String schema, String master, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String catalog, String schema, String master, String name){
 		MasterTable mtable = new MasterTable(catalog, schema, master);
 		return ptables(greedy,mtable, null, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String schema, String master, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String schema, String master, String name){
 		return ptables(greedy,null, schema, master, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name){
 		return ptables(greedy,null, null, master, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master){
 		return ptables(greedy,null, null, master, null);
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(boolean greedy, MasterTable master){
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean greedy, MasterTable master){
 		return ptables(greedy,master, null);
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(boolean greedy, MasterTable master, Map<String, Object> tags){
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags){
 		return ptables(greedy,master, tags, null);
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name){
-		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name){
+		LinkedHashMap<String,T> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
 		
@@ -2874,32 +2873,32 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String catalog, String schema, String master, String name){
 		MasterTable mtable = new MasterTable(catalog, schema, master);
 		return ptables(false,mtable, null, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String schema, String master, String name){
 		return ptables(false,null, schema, master, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String master, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name){
 		return ptables(false,null, null, master, name);
 	}
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(String master){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master){
 		return ptables(false,null, null, master, null);
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master){
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(MasterTable master){
 		return ptables(false,master, null);
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master, Map<String, Object> tags){
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(MasterTable master, Map<String, Object> tags){
 		return ptables(false,master, tags, null);
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master, Map<String, Object> tags, String name){
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(MasterTable master, Map<String, Object> tags, String name){
 		return ptables(false, master, tags, name);
 	}
 	/* *****************************************************************************************************************
@@ -2911,16 +2910,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean greedy, Table table){
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table){
 		return columns(runtime(), greedy, table);
 	}
-	public LinkedHashMap<String, Column> columns(JDBCRuntime runtime, boolean greedy, Table table){
+	public <T extends Column> LinkedHashMap<String, T> columns(JDBCRuntime runtime, boolean greedy, Table table){
 
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return new LinkedHashMap();
 		}
 
-		LinkedHashMap<String,Column> columns = CacheProxy.columns(runtime.getKey(), table.getName());
+		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table.getName());
 		if(null != columns && !columns.isEmpty()){
 			return columns;
 		}
@@ -3029,24 +3028,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String,Column> columns(boolean greedy, String table){
+	public <T extends Column> LinkedHashMap<String,T> columns(boolean greedy, String table){
 		return columns(greedy, null, null, table);
 	}
 	@Override
-	public LinkedHashMap<String,Column>  columns(boolean greedy, String catalog, String schema, String table){
+	public <T extends Column> LinkedHashMap<String,T>  columns(boolean greedy, String catalog, String schema, String table){
 		Table tab = new Table(catalog, schema, table);
 		return columns(greedy, tab);
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(Table table){
+	public <T extends Column> LinkedHashMap<String, T> columns(Table table){
 		return columns(false, table);
 	}
 	@Override
-	public LinkedHashMap<String,Column> columns(String table){
+	public <T extends Column> LinkedHashMap<String,T> columns(String table){
 		return columns(false, null, null, table);
 	}
 	@Override
-	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table){
+	public <T extends Column> LinkedHashMap<String,T>  columns(String catalog, String schema, String table){
 		Table tab = new Table(catalog, schema, table);
 		return columns(false, tab);
 	}
@@ -3058,14 +3057,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean greedy, Table table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table) {
 		return tags(runtime(), greedy, table);
 	}
-	public LinkedHashMap<String, Tag> tags(JDBCRuntime runtime, boolean greedy, Table table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(JDBCRuntime runtime, boolean greedy, Table table) {
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return new LinkedHashMap();
 		}
-		LinkedHashMap<String,Tag> tags = CacheProxy.tags(runtime.getKey(), table.getName());
+		LinkedHashMap<String,T> tags = CacheProxy.tags(runtime.getKey(), table.getName());
 		if(null != tags && !tags.isEmpty()){
 			return tags;
 		}
@@ -3175,14 +3174,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean greedy, String table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table) {
 		Table tab = new Table();
 		tab.setName(table);
 		return tags(greedy, tab);
 	}
 
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean greedy, String catalog, String schema, String table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table) {
 		Table tab = new Table();
 		tab.setCatalog(catalog);
 		tab.setSchema(schema);
@@ -3190,17 +3189,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return tags(greedy, tab);
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(Table table){
+	public <T extends Tag> LinkedHashMap<String, T> tags(Table table){
 		return tags(false, table);
 	}
 
 	@Override
-	public LinkedHashMap<String, Tag> tags(String table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(String table) {
 		return tags(false, table);
 	}
 
 	@Override
-	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(String catalog, String schema, String table) {
 		return tags(false, catalog, schema, table);
 	}
 	/* *****************************************************************************************************************
@@ -3295,10 +3294,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
+	 * public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table){
-		LinkedHashMap<String, ForeignKey> foreigns = new LinkedHashMap<>();
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table){
+		LinkedHashMap<String, T> foreigns = new LinkedHashMap<>();
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		if(!greedy) {
@@ -3339,8 +3338,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return map
 	 */
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean greedy, Table table, String name){
-		LinkedHashMap<String,Index> indexs = null;
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, Table table, String name){
+		LinkedHashMap<String,T> indexs = null;
 		if(null == table){
 			table = new Table();
 		}
@@ -3367,7 +3366,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 			if(BasicUtil.isNotEmpty(name)){
-				Index index = indexs.get(name.toUpperCase());
+				T index = indexs.get(name.toUpperCase());
 				indexs = new LinkedHashMap<>();
 				indexs.put(name.toUpperCase(), index);
 			}
@@ -3394,43 +3393,43 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean greedy, Table table){
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, Table table){
 		return indexs(greedy, table, null);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean greedy, String table, String name) {
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String table, String name) {
 		return indexs(greedy, new Table(table), name);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean greedy, String table) {
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String table) {
 		return indexs(greedy, new Table(table), null);
 	}
 
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean greedy, String catalog, String schema, String table) {
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String catalog, String schema, String table) {
 		return indexs(greedy, new Table(catalog, schema, table), null);
 	}
 
 	@Override
-	public LinkedHashMap<String, Index> indexs(Table table, String name){
+	public <T extends Index> LinkedHashMap<String, T> indexs(Table table, String name){
 		return indexs(false, table, name);
 	}
 
 	@Override
-	public LinkedHashMap<String, Index> indexs(Table table){
+	public <T extends Index> LinkedHashMap<String, T> indexs(Table table){
 		return indexs(false, table);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(String table, String name) {
+	public <T extends Index> LinkedHashMap<String, T> indexs(String table, String name) {
 		return indexs(false, table, name);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs( String table) {
+	public <T extends Index> LinkedHashMap<String, T> indexs( String table) {
 		return indexs(false, table);
 	}
 
 	@Override
-	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
+	public <T extends Index> LinkedHashMap<String, T> indexs(String catalog, String schema, String table) {
 		return indexs(false, catalog, schema, table);
 	}
 	/* *****************************************************************************************************************
@@ -3443,49 +3442,49 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, Table table, String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table, String name) {
 		return null;
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, Table table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table) {
 		return constraints(greedy, table, null);
 	}
 
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table) {
 		return constraints(greedy, new Table(table));
 	}
 
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String table, String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table, String name) {
 		return constraints(greedy, new Table(table), name);
 	}
 
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String catalog, String schema, String table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String catalog, String schema, String table) {
 		return constraints(greedy, new Table(catalog, schema, table));
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(Table table, String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(Table table, String name) {
 		return constraints(false, table, name);
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(Table table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(Table table) {
 		return constraints(false, table);
 	}
 
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(String table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(String table) {
 		return constraints(false, new Table(table));
 	}
 
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(String table, String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(String table, String name) {
 		return constraints(false, new Table(table), name);
 	}
 
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(String catalog, String schema, String table) {
 		return constraints(false, new Table(catalog, schema, table));
 	}
 	/* *****************************************************************************************************************

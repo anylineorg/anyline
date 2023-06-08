@@ -320,11 +320,11 @@ public class Table implements org.anyline.entity.data.Table{
         return this;
     }
 
-    public LinkedHashMap<String, Column> getColumns() {
+    public <T extends Column> LinkedHashMap<String, T> getColumns() {
         if(null == columns){
             columns = new LinkedHashMap<>();
         }
-        return columns;
+        return (LinkedHashMap<String, T>) columns;
     }
 
     public Table setColumns(LinkedHashMap<String, Column> columns) {
@@ -337,11 +337,11 @@ public class Table implements org.anyline.entity.data.Table{
         return this;
     }
 
-    public LinkedHashMap<String, Tag> getTags() {
+    public <T extends Tag> LinkedHashMap<String, T> getTags() {
         if(null == tags){
             tags = new LinkedHashMap<>();
         }
-        return tags;
+        return (LinkedHashMap<String, T>) tags;
     }
 
     public Table setTags(LinkedHashMap<String, Tag> tags) {
@@ -353,11 +353,11 @@ public class Table implements org.anyline.entity.data.Table{
         }
         return this;
     }
-    public LinkedHashMap<String, Index> getIndexs() {
+    public <T extends Index> LinkedHashMap<String, T> getIndexs() {
         if(null == indexs){
             indexs = new LinkedHashMap<>();
         }
-        return indexs;
+        return (LinkedHashMap<String, T>) indexs;
     }
     public PrimaryKey getPrimaryKey(){
         if(null == primaryKey){
@@ -385,16 +385,16 @@ public class Table implements org.anyline.entity.data.Table{
         return primaryKey;
     }
 
-    public Table setIndexs(LinkedHashMap<String, Index> indexs) {
-        this.indexs = indexs;
+    public <T extends Index> Table setIndexs(LinkedHashMap<String, T> indexs) {
+        this.indexs = (LinkedHashMap<String, Index>) indexs;
         return this;
     }
 
-    public LinkedHashMap<String, Constraint> getConstraints() {
+    public <T extends Constraint> LinkedHashMap<String, T> getConstraints() {
         if(null == constraints){
             constraints = new LinkedHashMap<>();
         }
-        return constraints;
+        return (LinkedHashMap<String, T>) constraints;
     }
 
     public Table setConstraints(LinkedHashMap<String, Constraint> constraints) {

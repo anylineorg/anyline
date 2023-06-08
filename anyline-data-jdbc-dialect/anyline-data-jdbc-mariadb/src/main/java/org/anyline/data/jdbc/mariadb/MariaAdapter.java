@@ -97,9 +97,9 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
-	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
-	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
+	 * public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -177,12 +177,12 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			Table table = new Table();
+			T table = (T)new Table();
 			table.setCatalog(row.getString("TABLE_CATALOG"));
 			table.setSchema(row.getString("TABLE_SCHEMA"));
 			table.setName(row.getString("TABLE_NAME"));
@@ -193,7 +193,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return tables;
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
@@ -201,8 +201,8 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	 * public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	 * public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -227,7 +227,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
@@ -244,7 +244,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.mtables(index, create, catalog, schema, tables, set);
 	}
 
@@ -255,8 +255,8 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name);
 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags);
-	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
+	 * public <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	 * public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -294,7 +294,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.ptables(total, index, create, master, catalog, schema, tables, set);
 	}
 
@@ -310,7 +310,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
 		return super.ptables(create, tables, dbmd, catalog, schema, master);
 	}
 
@@ -319,9 +319,9 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
+	 * public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
+	 * public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -370,12 +370,12 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			Column column = new Column();
+			T column = (T)new Column();
 			column.setCatalog(row.getString("TABLE_CATALOG"));
 			column.setSchema(row.getString("TABLE_SCHEMA"));
 			column.setTable(row.getString("TABLE_NAME"));
@@ -400,11 +400,11 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
 		return super.columns(create, columns, table, set);
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return super.columns(create, columns, dbmd, table, pattern);
 	}
 
@@ -413,9 +413,9 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
+	 * public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
+	 * public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 不支持
@@ -440,15 +440,15 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
 		return null;
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
 		return null;
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return null;
 	}
 
@@ -456,9 +456,9 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
+	 * public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
+	 * public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
+	 * public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -482,15 +482,15 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
 		return super.indexs(index, create, table, indexs, set);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception{
 		return super.indexs(create, table, indexs, set);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
 		return super.indexs(create, indexs, dbmd, table, unique, approximate);
 	}
 
@@ -500,8 +500,8 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
 	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	 * public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
+	 * public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -525,16 +525,16 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(int index , boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(int index , boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception{
 
 		return super.constraints(index, create, table, constraints, set);
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception{
 		return super.constraints(create, table, constraints, set);
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
 		return super.constraints(create, table, constraints, set);
 	}
 

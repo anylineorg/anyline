@@ -35,30 +35,30 @@ import java.util.List;
 import java.util.Map;
 
 public interface AnylineDao<E>{
-	public void setRuntime(JDBCRuntime runtime);
-	public void setDatasource(String datasource);
+	void setRuntime(JDBCRuntime runtime);
+	void setDatasource(String datasource);
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
 	 *
 	 ******************************************************************************************************************/
-	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
-	public DataSet querys(RunPrepare prepare, String ... conditions);
-	public DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public DataSet selects(RunPrepare prepare, String ... conditions);
-	public DataRow sequence(boolean next, String ... names);
+	DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	<T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	<T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
+	DataSet querys(RunPrepare prepare, String ... conditions);
+	DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	DataSet selects(RunPrepare prepare, String ... conditions);
+	DataRow sequence(boolean next, String ... names);
 
 
-	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions);
+	List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions);
 
-	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public int count(RunPrepare prepare, String ... conditions);
+	int count(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	int count(RunPrepare prepare, String ... conditions);
 	
-	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public boolean exists(RunPrepare prepare, String ... conditions);
+	boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	boolean exists(RunPrepare prepare, String ... conditions);
 
 	/**
 	 * 更新记录
@@ -68,14 +68,14 @@ public interface AnylineDao<E>{
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @return int 影响行数
 	 */
-	public int update(String dest, Object data, ConfigStore configs, List<String> columns);
-	public int update(String dest, Object data, ConfigStore configs, String ... columns);
-	public int update(Object data, ConfigStore configs, String ... columns);
-	public int update(Object data, ConfigStore configs, List<String> columns);
-	public int update(String dest, Object data, String ... columns);
-	public int update(Object data, String ... columns);
-	public int update(String dest, Object data, List<String> columns);
-	public int update(Object data, List<String> columns);
+	int update(String dest, Object data, ConfigStore configs, List<String> columns);
+	int update(String dest, Object data, ConfigStore configs, String ... columns);
+	int update(Object data, ConfigStore configs, String ... columns);
+	int update(Object data, ConfigStore configs, List<String> columns);
+	int update(String dest, Object data, String ... columns);
+	int update(Object data, String ... columns);
+	int update(String dest, Object data, List<String> columns);
+	int update(Object data, List<String> columns);
 	 
 	/** 
 	 * 添加 
@@ -85,15 +85,15 @@ public interface AnylineDao<E>{
 	 * @param dest 表 
 	 * @return int
 	 */
-	public int insert(String dest, Object data, boolean checkPrimary, String ... columns);
-	public int insert(Object data, boolean checkPrimary, String ... columns);
-	public int insert(String dest, Object data, String ... columns);
-	public int insert(Object data, String ... columns);
+	int insert(String dest, Object data, boolean checkPrimary, String ... columns);
+	int insert(Object data, boolean checkPrimary, String ... columns);
+	int insert(String dest, Object data, String ... columns);
+	int insert(Object data, String ... columns);
 
-	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns);
-	public int insert(Object data, boolean checkPrimary, List<String> columns);
-	public int insert(String dest, Object data, List<String> columns);
-	public int insert(Object data, List<String> columns);
+	int insert(String dest, Object data, boolean checkPrimary, List<String> columns);
+	int insert(Object data, boolean checkPrimary, List<String> columns);
+	int insert(String dest, Object data, List<String> columns);
+	int insert(Object data, List<String> columns);
 
 
 	/** 
@@ -104,14 +104,14 @@ public interface AnylineDao<E>{
 	 * @param columns  columns
 	 * @return int
 	 */ 
-	public int save(String dest, Object data, boolean checkPrimary, String ... columns); 
-	public int save(Object data, boolean checkPrimary, String ... columns); 
-	public int save(String dest, Object data, String ... columns); 
-	public int save(Object data, String ... columns); 
+	int save(String dest, Object data, boolean checkPrimary, String ... columns); 
+	int save(Object data, boolean checkPrimary, String ... columns); 
+	int save(String dest, Object data, String ... columns); 
+	int save(Object data, String ... columns); 
  
 
-	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	public int execute(RunPrepare prepare, String ... conditions);
+	int execute(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	int execute(RunPrepare prepare, String ... conditions);
 
  
 	/** 
@@ -119,16 +119,16 @@ public interface AnylineDao<E>{
 	 * @param procedure  procedure
 	 * @return boolean
 	 */ 
-	public boolean execute(Procedure procedure);
+	boolean execute(Procedure procedure);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
 	 * @return DataSet
 	 */
-	// public DataSet querys(Procedure procedure);
-	public DataSet querys(Procedure procedure, PageNavi navi);
-	public int delete(String dest, Object obj, String ... columns);
-	public int delete(String table, ConfigStore configs, String ... conditions);
+	// DataSet querys(Procedure procedure);
+	DataSet querys(Procedure procedure, PageNavi navi);
+	int delete(String dest, Object obj, String ... columns);
+	int delete(String table, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 删除多行
@@ -137,9 +137,9 @@ public interface AnylineDao<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public <T> int deletes(String table, String key, Collection<T> values);
-	public <T> int deletes(String table, String key, T ... values);
-	public int truncate(String table);
+	<T> int deletes(String table, String key, Collection<T> values);
+	<T> int deletes(String table, String key, T ... values);
+	int truncate(String table);
 
 	/* *****************************************************************************************************************
 	 *
@@ -160,135 +160,135 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, Database> databases();
+	LinkedHashMap<String, Database> databases();
 
 
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, Table> tables(boolean greedy, String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, Table> tables(boolean greedy, String schema, String name, String types);
-	public LinkedHashMap<String, Table> tables(boolean greedy, String name, String types);
-	public LinkedHashMap<String, Table> tables(boolean greedy, String types);
-	public LinkedHashMap<String, Table> tables(boolean greedy);
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, Table> tables(String schema, String name, String types);
-	public LinkedHashMap<String, Table> tables(String name, String types);
-	public LinkedHashMap<String, Table> tables(String types);
-	public LinkedHashMap<String, Table> tables();
+	<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String schema, String name, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String name, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(boolean greedy);
+	<T extends Table> LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(String schema, String name, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(String name, String types);
+	<T extends Table> LinkedHashMap<String, T> tables(String types);
+	<T extends Table> LinkedHashMap<String, T> tables();
 
 
 	/* *****************************************************************************************************************
 	 * 													views
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, View> views(boolean greedy, String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, View> views(boolean greedy, String schema, String name, String types);
-	public LinkedHashMap<String, View> views(boolean greedy, String name, String types);
-	public LinkedHashMap<String, View> views(boolean greedy, String types);
-	public LinkedHashMap<String, View> views(boolean greedy);
-	public LinkedHashMap<String, View> views(String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, View> views(String schema, String name, String types);
-	public LinkedHashMap<String, View> views(String name, String types);
-	public LinkedHashMap<String, View> views(String types);
-	public LinkedHashMap<String, View> views();
+	<T extends View> LinkedHashMap<String, T> views(boolean greedy, String catalog, String schema, String name, String types);
+	<T extends View> LinkedHashMap<String, T> views(boolean greedy, String schema, String name, String types);
+	<T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, String types);
+	<T extends View> LinkedHashMap<String, T> views(boolean greedy, String types);
+	<T extends View> LinkedHashMap<String, T> views(boolean greedy);
+	<T extends View> LinkedHashMap<String, T> views(String catalog, String schema, String name, String types);
+	<T extends View> LinkedHashMap<String, T> views(String schema, String name, String types);
+	<T extends View> LinkedHashMap<String, T> views(String name, String types);
+	<T extends View> LinkedHashMap<String, T> views(String types);
+	<T extends View> LinkedHashMap<String, T> views();
 
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String schema, String name, String types);
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String name, String types);
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy, String types);
-	public LinkedHashMap<String, MasterTable> mtables(boolean greedy);
-	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
-	public LinkedHashMap<String, MasterTable> mtables(String name, String types);
-	public LinkedHashMap<String, MasterTable> mtables(String types);
-	public LinkedHashMap<String, MasterTable> mtables();
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String catalog, String schema, String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String schema, String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(String catalog, String schema, String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(String schema, String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(String types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables();
 
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String catalog, String schema, String master, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String schema, String master, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, String master);
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master);
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(boolean greedy, MasterTable master, Map<String,Object> tags);
-	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(String master, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(String master);
-	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
-	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags, String name);
-	public LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String catalog, String schema, String master, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String schema, String master, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(String catalog, String schema, String master, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(String schema, String master, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(String master);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags);
 
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, Column> columns(boolean greedy, Table table);
-	public LinkedHashMap<String, Column> columns(boolean greedy, String table);
-	public LinkedHashMap<String, Column> columns(boolean greedy, String catalog, String schema, String table);
-	public LinkedHashMap<String, Column> columns(Table table);
-	public LinkedHashMap<String, Column> columns(String table);
-	public LinkedHashMap<String, Column> columns(String catalog, String schema, String table);
+	<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table);
+	<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table);
+	<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String catalog, String schema, String table);
+	<T extends Column> LinkedHashMap<String, T> columns(Table table);
+	<T extends Column> LinkedHashMap<String, T> columns(String table);
+	<T extends Column> LinkedHashMap<String, T> columns(String catalog, String schema, String table);
 
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, Tag> tags(boolean greedy, Table table);
-	public LinkedHashMap<String, Tag> tags(boolean greedy, String table);
-	public LinkedHashMap<String, Tag> tags(boolean greedy, String catalog, String schema, String table);
-	public LinkedHashMap<String, Tag> tags(Table table);
-	public LinkedHashMap<String, Tag> tags(String table);
-	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
+	<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table);
+	<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table);
+	<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table);
+	<T extends Tag> LinkedHashMap<String, T> tags(Table table);
+	<T extends Tag> LinkedHashMap<String, T> tags(String table);
+	<T extends Tag> LinkedHashMap<String, T> tags(String catalog, String schema, String table);
 
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
-	public PrimaryKey primary(boolean greedy, Table table);
-	public PrimaryKey primary(boolean greedy, String table);
-	public PrimaryKey primary(boolean greedy, String catalog, String schema, String table);
-	public PrimaryKey primary(Table table);
-	public PrimaryKey primary(String table);
-	public PrimaryKey primary(String catalog, String schema, String table);
+	PrimaryKey primary(boolean greedy, Table table);
+	PrimaryKey primary(boolean greedy, String table);
+	PrimaryKey primary(boolean greedy, String catalog, String schema, String table);
+	PrimaryKey primary(Table table);
+	PrimaryKey primary(String table);
+	PrimaryKey primary(String catalog, String schema, String table);
 
 
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
+	 * List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, ForeignKey> foreigns(boolean greedy, Table table);
+	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table);
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, Index> indexs(boolean greedy, Table table, String name);
-	public LinkedHashMap<String, Index> indexs(boolean greedy, String table, String name);
-	public LinkedHashMap<String, Index> indexs(boolean greedy, Table table);
-	public LinkedHashMap<String, Index> indexs(boolean greedy, String table);
-	public LinkedHashMap<String, Index> indexs(boolean greedy, String catalog, String schema, String table);
-	public LinkedHashMap<String, Index> indexs(Table table, String name);
-	public LinkedHashMap<String, Index> indexs(String table, String name);
-	public LinkedHashMap<String, Index> indexs(Table table);
-	public LinkedHashMap<String, Index> indexs(String table);
-	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table);
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, Table table, String name);
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String table, String name);
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, Table table);
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String table);
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String catalog, String schema, String table);
+	<T extends Index> LinkedHashMap<String, T> indexs(Table table, String name);
+	<T extends Index> LinkedHashMap<String, T> indexs(String table, String name);
+	<T extends Index> LinkedHashMap<String, T> indexs(Table table);
+	<T extends Index> LinkedHashMap<String, T> indexs(String table);
+	<T extends Index> LinkedHashMap<String, T> indexs(String catalog, String schema, String table);
 
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, Table table, String name);
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String table, String name);
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, Table table);
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String table);
-	public LinkedHashMap<String, Constraint> constraints(boolean greedy, String catalog, String schema, String table);
-	public LinkedHashMap<String, Constraint> constraints(Table table, String name);
-	public LinkedHashMap<String, Constraint> constraints(String table, String name);
-	public LinkedHashMap<String, Constraint> constraints(Table table);
-	public LinkedHashMap<String, Constraint> constraints(String table);
-	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table, String name);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table, String name);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String catalog, String schema, String table);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(Table table, String name);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(String table, String name);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(Table table);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(String table);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(String catalog, String schema, String table);
 
 
 
@@ -310,74 +310,74 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
-	public boolean create(Table table) throws Exception;
-	public boolean alter(Table table) throws Exception;
-	public boolean drop(Table table) throws Exception;
+	boolean create(Table table) throws Exception;
+	boolean alter(Table table) throws Exception;
+	boolean drop(Table table) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
-	public boolean create(View view) throws Exception;
-	public boolean alter(View view) throws Exception;
-	public boolean drop(View view) throws Exception;
+	boolean create(View view) throws Exception;
+	boolean alter(View view) throws Exception;
+	boolean drop(View view) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
-	public boolean create(MasterTable table) throws Exception;
-	public boolean alter(MasterTable table) throws Exception;
-	public boolean drop(MasterTable table) throws Exception;
+	boolean create(MasterTable table) throws Exception;
+	boolean alter(MasterTable table) throws Exception;
+	boolean drop(MasterTable table) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	public boolean create(PartitionTable table) throws Exception;
-	public boolean alter(PartitionTable table) throws Exception;
-	public boolean drop(PartitionTable table) throws Exception;
+	boolean create(PartitionTable table) throws Exception;
+	boolean alter(PartitionTable table) throws Exception;
+	boolean drop(PartitionTable table) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
-	public boolean add(Column column) throws Exception;
-	public boolean alter(Table table, Column column) throws Exception;
-	public boolean alter(Column column) throws Exception;
-	public boolean drop(Column column) throws Exception;
+	boolean add(Column column) throws Exception;
+	boolean alter(Table table, Column column) throws Exception;
+	boolean alter(Column column) throws Exception;
+	boolean drop(Column column) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
-	public boolean add(Tag tag) throws Exception;
-	public boolean alter(Table table, Tag tag) throws Exception;
-	public boolean alter(Tag tag) throws Exception;
-	public boolean drop(Tag tag) throws Exception;
+	boolean add(Tag tag) throws Exception;
+	boolean alter(Table table, Tag tag) throws Exception;
+	boolean alter(Tag tag) throws Exception;
+	boolean drop(Tag tag) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
-	public boolean add(PrimaryKey primary) throws Exception;
-	public boolean alter(PrimaryKey primary) throws Exception;
-	public boolean alter(Table table, PrimaryKey primary) throws Exception;
-	public boolean drop(PrimaryKey primary) throws Exception;
+	boolean add(PrimaryKey primary) throws Exception;
+	boolean alter(PrimaryKey primary) throws Exception;
+	boolean alter(Table table, PrimaryKey primary) throws Exception;
+	boolean drop(PrimaryKey primary) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 ******************************************************************************************************************/
-	public boolean add(ForeignKey foreign) throws Exception;
-	public boolean alter(ForeignKey foreign) throws Exception;
-	public boolean alter(Table table, ForeignKey foreign) throws Exception;
-	public boolean drop(ForeignKey foreign) throws Exception;
+	boolean add(ForeignKey foreign) throws Exception;
+	boolean alter(ForeignKey foreign) throws Exception;
+	boolean alter(Table table, ForeignKey foreign) throws Exception;
+	boolean drop(ForeignKey foreign) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
-	public boolean add(Index index) throws Exception;
-	public boolean alter(Index index) throws Exception;
-	public boolean alter(Table table, Index index) throws Exception;
-	public boolean drop(Index index) throws Exception;
+	boolean add(Index index) throws Exception;
+	boolean alter(Index index) throws Exception;
+	boolean alter(Table table, Index index) throws Exception;
+	boolean drop(Index index) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
-	public boolean add(Constraint constraint) throws Exception;
-	public boolean alter(Constraint constraint) throws Exception;
-	public boolean alter(Table table, Constraint constraint) throws Exception;
-	public boolean drop(Constraint constraint) throws Exception;
+	boolean add(Constraint constraint) throws Exception;
+	boolean alter(Constraint constraint) throws Exception;
+	boolean alter(Table table, Constraint constraint) throws Exception;
+	boolean drop(Constraint constraint) throws Exception;
 
 
 } 

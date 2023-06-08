@@ -2,10 +2,10 @@ package org.anyline.proxy;
 
 import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
-import org.anyline.data.entity.Column;
 import org.anyline.data.entity.Tag;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.data.Column;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,23 +94,23 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public static LinkedHashMap<String, Column> columns(String datasource, String table){
+    public  static  <T extends Column> LinkedHashMap<String, T> columns(String datasource, String table){
         if(null == table){
             return null;
         }
-        LinkedHashMap<String, Column> columns = null;
+        LinkedHashMap<String, T> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = datasource+"_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
-                columns = (LinkedHashMap<String, Column>) cacheElement.getValue();
+                columns = (LinkedHashMap<String, T>) cacheElement.getValue();
             }
         }else{
             // 通过静态变量缓存
             DataRow static_cache = cache_metadatas.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                columns = (LinkedHashMap<String, Column>) static_cache.get("keys");
+                columns = (LinkedHashMap<String, T>) static_cache.get("keys");
             }
         }
         return columns;
@@ -121,7 +121,7 @@ public class CacheProxy {
      * @param table 表
      * @param columns 列
      */
-    public static void columns(String datasource, String table, LinkedHashMap<String, Column> columns){
+    public static  <T extends Column> void columns(String datasource, String table, LinkedHashMap<String, T> columns){
         if(null == table){
             return;
         }
@@ -179,23 +179,23 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public static LinkedHashMap<String, Tag> tags(String datasource, String table){
+    public static <T extends Tag> LinkedHashMap<String, T> tags(String datasource, String table){
         if(null == table){
             return null;
         }
-        LinkedHashMap<String, Tag> tags = null;
+        LinkedHashMap<String, T> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = datasource+"_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
-                tags = (LinkedHashMap<String, Tag>) cacheElement.getValue();
+                tags = (LinkedHashMap<String, T>) cacheElement.getValue();
             }
         }else{
             // 通过静态变量缓存
             DataRow static_cache = cache_metadatas.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                tags = (LinkedHashMap<String, Tag>) static_cache.get("keys");
+                tags = (LinkedHashMap<String, T>) static_cache.get("keys");
             }
         }
         return tags;
@@ -206,7 +206,7 @@ public class CacheProxy {
      * @param table 表
      * @param tags Tag
      */
-    public static void tags(String datasource, String table, LinkedHashMap<String, Tag> tags){
+    public static <T extends Tag> void tags(String datasource, String table, LinkedHashMap<String, T> tags){
         if(null == table){
             return;
         }

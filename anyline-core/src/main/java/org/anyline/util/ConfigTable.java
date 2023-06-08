@@ -61,6 +61,7 @@ public class ConfigTable {
 
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
 	public static boolean IS_DEBUG 										= true			;	// DEBUG状态会输出更多日志
+	public static int  DEBUG_LVL										= 0				;   //
 	public static boolean IS_SHOW_SQL									= true			;	// 执行SQL时是否输出日志
 	public static boolean IS_THROW_CONVERT_EXCEPTION					= false			;   // 是否抛出convert异常提示()
 	public static boolean IS_PRINT_EXCEPTION_STACK_TRACE				= false			;   // 捕捉但未抛出的异常是否显示详细信息

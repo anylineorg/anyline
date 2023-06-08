@@ -381,7 +381,7 @@ public class DataSourceHolder {
 	}
 
 	/**
-	 *
+	 * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
 	 * @param key 切换数据源依据 默认key=dataSource
 	 * @param pool 连接池类型 如 com.zaxxer.hikari.HikariDataSource
 	 * @param driver 驱动类 如 com.mysql.cj.jdbc.Driver
@@ -400,6 +400,16 @@ public class DataSourceHolder {
 		param.put("password", password);
 		return reg(key, param);
 	}
+	/**
+	 * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
+	 * @param key 切换数据源依据 默认key=dataSource
+	 * @param url url
+	 * @param type 数据库类型
+	 * @param user 用户名
+	 * @param password 密码
+	 * @return DataSource
+	 * @throws Exception 异常 Exception
+	 */
 	public static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
 		return reg(key, "om.zaxxer.hikari.HikariDataSource", type.driver(), url, user, password);
 	}

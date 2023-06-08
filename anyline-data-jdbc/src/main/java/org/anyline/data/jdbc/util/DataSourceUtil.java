@@ -123,7 +123,11 @@ public class DataSourceUtil {
             if(null == driver){
                 return null;
             }
-            Class.forName(driver.toString());
+            if(driver instanceof String) {
+                Class.forName(driver.toString());
+            }else if(driver instanceof Class){
+                driver = ((Class)driver).newInstance();
+            }
             Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
             Object user =  BeanUtil.propertyNvl(params,"user","username");
             Map<String,Object> map = new HashMap<String,Object>();

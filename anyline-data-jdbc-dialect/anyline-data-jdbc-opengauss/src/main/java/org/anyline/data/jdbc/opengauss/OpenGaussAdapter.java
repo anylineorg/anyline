@@ -131,9 +131,9 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
-	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
-	 * public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
-	 * public LinkedHashMap<String, Table> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
+	 * public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * public <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -162,11 +162,11 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 		return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.tables(index, create, catalog, schema, tables, set);
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(boolean create, LinkedHashMap<String, Table> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
@@ -174,8 +174,8 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	 * public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	 * public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -201,7 +201,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(boolean create, LinkedHashMap<String, MasterTable> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
@@ -218,7 +218,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.mtables(index, create, catalog, schema, tables, set);
 	}
 
@@ -263,7 +263,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.ptables(total, index, create, master, catalog, schema, tables, set);
 	}
 
@@ -279,7 +279,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, PartitionTable> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
 		return super.ptables(create, tables, dbmd, catalog, schema, master);
 	}
 
@@ -288,9 +288,9 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
+	 * public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
+	 * public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -337,16 +337,16 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
 		set.changeKey("UDT_NAME","DATA_TYPE");
 		return super.columns(index, create, table, columns, set);
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, Table table, SqlRowSet set) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
 		return super.columns(create, columns, table, set);
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(boolean create, LinkedHashMap<String, Column> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return super.columns(create, columns, dbmd, table, pattern);
 	}
 
@@ -355,9 +355,9 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
+	 * public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
+	 * public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -381,15 +381,15 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
 		return super.tags(index, create, table, tags, set);
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
 		return super.tags(create, table, tags, set);
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(boolean create, LinkedHashMap<String, Tag> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return super.tags(create, tags, dbmd, table, pattern);
 	}
 
@@ -452,7 +452,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception
+	 * public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -472,7 +472,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	public LinkedHashMap<String, ForeignKey> foreigns(int index, Table table, LinkedHashMap<String, ForeignKey> foreigns, DataSet set) throws Exception{
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
 		return super.foreigns(index, table, foreigns, set);
 	}
 
@@ -480,9 +480,9 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
+	 * public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
+	 * public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
+	 * public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -506,15 +506,15 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
 		return super.indexs(index, create, table, indexs, set);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception{
 		return super.indexs(create, table, indexs, set);
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(boolean create, LinkedHashMap<String, Index> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
 		return super.indexs(create, indexs, dbmd, table, unique, approximate);
 	}
 
@@ -524,8 +524,8 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
 	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	 * public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
+	 * public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -549,16 +549,16 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(int index , boolean create, Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(int index , boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception{
 
 		return super.constraints(index, create, table, constraints, set);
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception{
 		return super.constraints(create, table, constraints, set);
 	}
 	@Override
-	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
 		return super.constraints(create, table, constraints, set);
 	}
 
