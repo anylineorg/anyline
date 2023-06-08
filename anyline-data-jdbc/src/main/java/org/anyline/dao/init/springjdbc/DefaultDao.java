@@ -3599,6 +3599,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					listener.afterRename(table, result);
 				}
 			}
+			table.setName(uname);
 		}
 
 		Map<String, Column> cols = new LinkedHashMap<>();
