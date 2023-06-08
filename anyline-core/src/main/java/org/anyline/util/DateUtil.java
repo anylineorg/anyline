@@ -908,6 +908,10 @@ public class DateUtil {
 		Date date = new Date(value.getTime());
 		return date;
 	}
+	public static Date parse(java.sql.Time value){
+		Date date = new Date(value.getTime());
+		return date;
+	}
 	public static Date parse(LocalDate value){
 		Date date = Date.from(value.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		return date;
@@ -933,10 +937,14 @@ public class DateUtil {
 				date = parse((Timestamp)value);
 			}else if(value instanceof java.sql.Date){
 				date = parse((java.sql.Date)value);
+			}else if(value instanceof java.sql.Time){
+				date = parse((java.sql.Time)value);
 			}else if(value instanceof Long){
 				date = parse((Long)value);
 			}else if(value instanceof LocalDate){
 				date = parse((LocalDate)value);
+			}else if(value instanceof LocalTime){
+				date = parse((LocalTime)value);
 			}else if(value instanceof LocalDateTime){
 				date = parse((LocalDateTime)value);
 			}else if(value instanceof String){
