@@ -25,16 +25,18 @@ public class ForeignKey extends Constraint{
         addColumn(column, rcolumn);
     }
 
-    public void setReference(Table reference){
+    public ForeignKey setReference(Table reference){
         this.reference = reference;
+        return this;
     }
     /**
      * 添加依赖表
      * @param reference 依赖表
-     * @return
+     * @return ForeignKey
      */
-    public void setReference(String reference){
+    public ForeignKey setReference(String reference){
         this.reference = new Table(reference);
+        return this;
     }
 
     public Table getReference() {
@@ -44,7 +46,7 @@ public class ForeignKey extends Constraint{
     /**
      * 添加列
      * @param column 列 需要设置reference属性
-     * @return
+     * @return ForeignKey
      */
     public ForeignKey addColumn(Column column){
         super.addColumn(column);
@@ -56,7 +58,7 @@ public class ForeignKey extends Constraint{
      * @param column 列
      * @param table 依赖表
      * @param reference 依赖列
-     * @return
+     * @return ForeignKey
      */
     public ForeignKey addColumn(String column, String table, String reference){
         this.reference = new Table(table);
@@ -67,7 +69,7 @@ public class ForeignKey extends Constraint{
      * 添加列
      * @param column 列
      * @param reference 依赖列
-     * @return
+     * @return ForeignKey
      */
     public ForeignKey addColumn(String column,  String reference){
         addColumn(new Column(column).setReference(reference));
