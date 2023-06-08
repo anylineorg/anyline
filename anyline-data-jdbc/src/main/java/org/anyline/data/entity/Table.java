@@ -122,6 +122,14 @@ public class Table implements org.anyline.entity.data.Table{
         table.update = update;
         return table;
     }
+
+    public static List<String> names(LinkedHashMap<String, org.anyline.entity.data.Table> tables){
+        List<String> names = new ArrayList<>();
+        for(org.anyline.entity.data.Table table:tables.values()){
+            names.add(table.getName());
+        }
+        return names;
+    }
     public Table update(){
         update = clone();
         update.setUpdate(null);
