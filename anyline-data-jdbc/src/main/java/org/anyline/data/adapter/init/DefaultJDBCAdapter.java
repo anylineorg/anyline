@@ -3512,10 +3512,39 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(PrimaryKey primary)", 37));
+
+		StringBuilder builder = new StringBuilder();
+		Map<String,Column> columns = foreign.getColumns();
+		if(columns.size()>0) {
+			builder.append("ALTER TABLE ");
+			name(builder, foreign.getTable());
+			builder.append(" ADD");
+			if(BasicUtil.isNotEmpty(foreign.getName())){
+				builder.append(" CONSTRAINT ").append(foreign.getName());
+			}
+			builder.append(" FOREIGN KEY (");
+			boolean first = true;
+			for(Column column:columns.values()){
+				if(!first){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+				first = false;
+			}
+			builder.append(")");
+			builder.append(" REFERENCES ").append(foreign.getReference().getName()).append("(");
+			first = true;
+			for(Column column:columns.values()){
+				if(!first){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, column.getReference(), getDelimiterFr(), getDelimiterTo());
+				first = false;
+			}
+			builder.append(")");
+
 		}
-		return null;
+		return builder.toString();
 	}
 	/**
 	 * 添加外键
@@ -3535,10 +3564,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildDropRunSQL(PrimaryKey primary)", 37));
-		}
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE");
+		name(builder, foreign.getTable());
+		builder.append(" DROP FOREIGN KEY ").append(foreign.getName());
+		return builder.toString();
 	}
 
 	/**

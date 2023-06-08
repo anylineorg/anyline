@@ -1834,38 +1834,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
-		StringBuilder builder = new StringBuilder();
-		Map<String,Column> columns = foreign.getColumns();
-		if(columns.size()>0) {
-			builder.append("ALTER TABLE ");
-			name(builder, foreign.getTable());
-			builder.append(" ADD");
-			if(BasicUtil.isNotEmpty(foreign.getName())){
-				builder.append(" CONSTRAINT ").append(foreign.getName());
-			}
-			builder.append(" FOREIGN KEY (");
-			boolean first = true;
-			for(Column column:columns.values()){
-				if(!first){
-					builder.append(",");
-				}
-				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-				first = false;
-			}
-			builder.append(")");
-			builder.append(" REFERENCES ").append(foreign.getReference().getName()).append("(");
-			first = true;
-			for(Column column:columns.values()){
-				if(!first){
-					builder.append(",");
-				}
-				SQLUtil.delimiter(builder, column.getReference(), getDelimiterFr(), getDelimiterTo());
-				first = false;
-			}
-			builder.append(")");
-
-		}
-		return builder.toString();
+		return super.buildAddRunSQL(foreign);
 	}
 	/**
 	 * 添加外键
@@ -1882,11 +1851,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
-		StringBuilder builder = new StringBuilder();
-		builder.append("ALTER TABLE");
-		name(builder, foreign.getTable());
-		builder.append(" DROP FOREIGN KEY ").append(foreign.getName());
-		return builder.toString();
+		return super.buildDropRunSQL(foreign);
 	}
 
 	/**
