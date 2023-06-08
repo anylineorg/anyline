@@ -84,7 +84,7 @@ public class EHCacheProvider implements CacheProvider {
 		}
 		return null;
 	}
-	public CacheManager createManager(){
+	public CacheManager manager(){
 		long fr = System.currentTimeMillis();
 		if(null == manager){
 			try {
@@ -93,6 +93,10 @@ public class EHCacheProvider implements CacheProvider {
 					manager = CacheManager.create(in);
 				}else{
 					manager = CacheManager.create();
+				}
+				String[] names = manager.getCacheNames();
+				for(String name:names){
+					channels.add(name);
 				}
 				if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 					log.info("[加载ehcache配置文件][耗时:{}", System.currentTimeMillis() - fr);
@@ -108,7 +112,7 @@ public class EHCacheProvider implements CacheProvider {
 	}
 
 	public Cache getCache(String channel){
-		CacheManager manager = createManager();
+		CacheManager manager = manager();
 		Cache cache = manager.getCache(channel);
 		if(null == cache){
 			manager.addCache(channel);
@@ -118,7 +122,7 @@ public class EHCacheProvider implements CacheProvider {
 	}
 	public List<String> getCacheNames(){
 		List<String> names = new ArrayList<>();
-		CacheManager manager = createManager();
+		CacheManager manager = manager();
 		for(String name:manager.getCacheNames()){
 			names.add(name);
 		}
@@ -126,7 +130,7 @@ public class EHCacheProvider implements CacheProvider {
 	}
 	public List<Cache> getCaches(){
 		List<Cache> caches = new ArrayList<Cache>();
-		CacheManager manager = createManager();
+		CacheManager manager = manager();
 		for(String name:manager.getCacheNames()){
 			caches.add(manager.getCache(name));
 		}
@@ -201,7 +205,7 @@ public class EHCacheProvider implements CacheProvider {
 	public boolean clear(String channel){
 		boolean result = true;
 		try{
-			CacheManager manager = createManager();
+			CacheManager manager = manager();
 			manager.removeCache(channel);
 	    	if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 	    		log.info("[清空缓存数据] [channel:{}]",channel);
@@ -212,9 +216,10 @@ public class EHCacheProvider implements CacheProvider {
 		return result;
 	}
 	public boolean clears(){
-		for(String channel:channels){
+		manager().clearAll();
+		/*for(String channel:channels){
 			clear(channel);
-		}
+		}*/
 		return true;
 	}
 	public HashSet<String> channels(){
