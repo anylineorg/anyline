@@ -240,7 +240,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return writers.get(support);
 	}
 
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -400,7 +399,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
 				if(EntityAdapterProxy.hasAdapter()){
-					keys.addAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT).keySet());
+					keys.addAll(org.anyline.entity.data.Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT)));
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);

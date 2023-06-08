@@ -13,6 +13,7 @@ import org.anyline.data.run.TableRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.run.XMLRun;
 import org.anyline.entity.*;
+import org.anyline.entity.data.Column;
 import org.anyline.entity.data.DatabaseType;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
@@ -782,7 +783,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             keys = columns;
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE).keySet());
+                keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)));
             }
         }
         if(EntityAdapterProxy.hasAdapter()){

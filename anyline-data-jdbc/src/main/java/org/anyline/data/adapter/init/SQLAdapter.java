@@ -618,7 +618,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             keys = columns;
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE).keySet()) ;
+                keys.addAll(org.anyline.entity.data.Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE))) ;
             }
         }
         if(EntityAdapterProxy.hasAdapter()){

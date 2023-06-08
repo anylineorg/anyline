@@ -3780,7 +3780,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         public boolean drop(ForeignKey foreign) throws Exception{
             if(BasicUtil.isEmpty(foreign.getName())){
-                List<String> names = Column.names(foreign.getColumns());
+                List<String> names = org.anyline.entity.data.Column.names(foreign.getColumns());
                 foreign = metadata.foreign(foreign.getTable(), names);
             }
             return dao.drop(foreign);
