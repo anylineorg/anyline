@@ -3,7 +3,7 @@
 [http://doc.anyline.org/](http://doc.anyline.org/)  
 下载的源码在执行前，首先要配置好maven环境,请参考[【maven配置】](http://doc.anyline.org/ss/35_1148)
 
-关于多数据源，请先看一下 
+关于多数据源，请先阅读   
 [【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
 [【三种方式切换数据源】](http://doc.anyline.org/aa/64_3449)
 [【多数据源事务控制】](http://doc.anyline.org/ss/23_1189)
