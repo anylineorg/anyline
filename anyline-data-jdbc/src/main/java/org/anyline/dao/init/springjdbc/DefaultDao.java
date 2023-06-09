@@ -4933,7 +4933,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Constraint constraint) throws Exception {
 		boolean result = false;
-		
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
@@ -5018,7 +5017,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Constraint constraint) throws Exception {
 		boolean result = false;
-		
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
@@ -5048,8 +5046,70 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													trigger
+	 *
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * 	boolean create(Trigger trigger) throws Exception;
+	 *  boolean alter(Trigger trigger) throws Exception;
+	 *  boolean drop(Trigger trigger) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 触发器
+	 * @param trigger 触发器
+	 * @return trigger
+	 * @throws Exception 异常 Exception
+	 */
+	public boolean create(Trigger trigger) throws Exception{
+		boolean result = false;
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, trigger);
+		String sql = adapter.buildAddRunSQL(constraint);
+		if(BasicUtil.isNotEmpty(sql)) {
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+			DDListener listener = constraint.getListener();
 
-	public void checkSchema(JDBCRuntime runtime, Table table){
+			boolean exe = true;
+			if (null != listener) {
+				exe = listener.beforeAdd(constraint);
+			}
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[add constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
+
+	}
+	public boolean alter(Trigger trigger) throws Exception{
+
+	}
+	public boolean drop(Trigger trigger) throws Exception{
+
+	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													common
+	 *
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public void checkSchema(JDBCRuntime runtime, Table table)
+	 * protected String paramLogFormat(List<?> params)
+	 * protected String paramLogFormat(List<?> keys, List<?> values)
+	 * private static String random()
+	 ******************************************************************************************************************/
+
+	public void checkSchema(JDBCRuntime runtime, org.anyline.entity.data.Table table){
 		if(null != table){
 			JDBCAdapter adapter = runtime.getAdapter();
 			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
@@ -5081,16 +5141,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			constraint.setSchema(table.getSchema());
 		}
 	}
-
-	/* *****************************************************************************************************************
-	 *
-	 * 													common
-	 *
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * protected String paramLogFormat(List<?> params)
-	 * protected String paramLogFormat(List<?> keys, List<?> values)
-	 * private static String random()
-	 ******************************************************************************************************************/
+	public void checkSchema(JDBCRuntime runtime, Trigger trigger){
+		org.anyline.entity.data.Table table = trigger.getTable();
+		if(null != table){
+			checkSchema(runtime, table);
+		}
+	}
 
 
 

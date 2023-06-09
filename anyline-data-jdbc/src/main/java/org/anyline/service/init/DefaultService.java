@@ -3923,13 +3923,13 @@ public class DefaultService<E> implements AnylineService<E> {
          * @throws Exception 异常 Exception
          */
         public boolean create(Trigger trigger) throws Exception{
-            return false;
+            return dao.create(trigger);
         }
         public boolean alter(Trigger trigger) throws Exception{
-            return false;
+            return dao.alter(trigger);
         }
         public boolean drop(Trigger trigger) throws Exception{
-            return false;
+            return dao.drop(trigger);
         }
     };
 }

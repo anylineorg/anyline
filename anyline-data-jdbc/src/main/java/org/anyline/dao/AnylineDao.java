@@ -380,4 +380,16 @@ public interface AnylineDao<E>{
 	boolean drop(Constraint constraint) throws Exception;
 
 
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 ******************************************************************************************************************/
+	/**
+	 * 触发器
+	 * @param trigger 触发器
+	 * @return trigger
+	 * @throws Exception 异常 Exception
+	 */
+	boolean create(Trigger trigger) throws Exception;
+	boolean alter(Trigger trigger) throws Exception;
+	boolean drop(Trigger trigger) throws Exception;
 } 
