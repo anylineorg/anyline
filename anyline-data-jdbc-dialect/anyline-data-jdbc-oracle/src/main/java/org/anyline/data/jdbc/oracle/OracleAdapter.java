@@ -1890,7 +1890,21 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return sqls
 	 */
 	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
-		return super.buildQueryForeignsRunSQL(table);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT UC.CONSTRAINT_NAME, UC.TABLE_NAME, KCU.COLUMN_NAME, UC.R_CONSTRAINT_NAME, RC.TABLE_NAME AS REFERENCED_TABLE_NAME, RCC.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
+		builder.append("FROM USER_CONSTRAINTS UC \n");
+		builder.append("JOIN USER_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
+		builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
+		builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
+		if(null != table){
+			if(BasicUtil.isNotEmpty(table.getCatalog())){
+				builder.append(" AND OWNER = '").append(table.getCatalog()).append("'\n");
+			}
+			builder.append(" AND UC.TABLE_NAME = '").append(table.getName()).append("'\n");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
