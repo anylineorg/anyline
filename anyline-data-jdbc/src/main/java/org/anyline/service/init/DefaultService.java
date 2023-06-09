@@ -2285,9 +2285,19 @@ public class DefaultService<E> implements AnylineService<E> {
             if (tables.size() > 0) {
                 table = tables.values().iterator().next();
                 if(struct) {
-                    table.setColumns(columns(table));
+                    LinkedHashMap<String, Column> columns = columns(table);
+                    table.setColumns(columns);
                     table.setTags(tags(table));
-                    table.setPrimaryKey(primary(table));
+                    PrimaryKey pk = primary(table);
+                    if(null != pk){
+                        for(String col:pk.getColumns().keySet()){
+                            Column column = columns.get(col.toUpperCase());
+                            if(null != column){
+                                column.setPrimaryKey(true);
+                            }
+                        }
+                    }
+                    table.setPrimaryKey(pk);
                     table.setIndexs(indexs(table));
                 }
             }
