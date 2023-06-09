@@ -1892,7 +1892,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT UC.CONSTRAINT_NAME, UC.TABLE_NAME, KCU.COLUMN_NAME, UC.R_CONSTRAINT_NAME, RC.TABLE_NAME AS REFERENCED_TABLE_NAME, RCC.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
+		builder.append("SELECT UC.CONSTRAINT_NAME, UC.TABLE_NAME, KCU.COLUMN_NAME, UC.R_CONSTRAINT_NAME, RC.TABLE_NAME AS REFERENCED_TABLE_NAME, RCC.COLUMN_NAME AS REFERENCED_COLUMN_NAME, RCC.POSITION AS ORDINAL_POSITION\n");
 		builder.append("FROM USER_CONSTRAINTS UC \n");
 		builder.append("JOIN USER_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
 		builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
@@ -1916,7 +1916,23 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @throws Exception 异常
 	 */
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
-		return super.foreigns(index, table, foreigns, set);
+		if(null == foreigns){
+			foreigns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("CONSTRAINT_NAME");
+			T foreign = foreigns.get(name.toUpperCase());
+			if(null == foreign){
+				foreign = (T)new ForeignKey();
+				foreign.setName(name);
+				foreign.setTable(row.getString("TABLE_NAME"));
+				foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
+				foreigns.put(name.toUpperCase(), foreign);
+			}
+			foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(row.getString("REFERENCED_COLUMN_NAME")).setPosition(row.getInt("ORDINAL_POSITION", 0)));
+
+		}
+		return foreigns;
 	}
 
 	/* *****************************************************************************************************************

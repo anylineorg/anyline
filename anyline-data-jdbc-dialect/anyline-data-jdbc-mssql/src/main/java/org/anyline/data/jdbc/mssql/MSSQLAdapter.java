@@ -1539,7 +1539,16 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sqls
 	 */
 	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
-		return super.buildQueryForeignsRunSQL(table);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT F.NAME AS CONSTRAINT_NAME, OBJECT_NAME(F.PARENT_OBJECT_ID) AS TABLE_NAME, COL_NAME(FC.PARENT_OBJECT_ID, FC.PARENT_COLUMN_ID) AS COLUMN_NAME,");
+		builder.append(" OBJECT_NAME(F.REFERENCED_OBJECT_ID) AS REFERENCED_TABLE_NAME, COL_NAME(FC.REFERENCED_OBJECT_ID, FC.REFERENCED_COLUMN_ID) AS REFERENCED_COLUMN_NAME \n");
+		builder.append("FROM SYS.FOREIGN_KEYS AS F INNER JOIN SYS.FOREIGN_KEY_COLUMNS AS FC ON F.OBJECT_ID = FC.CONSTRAINT_OBJECT_ID \n");
+		if(null != table){
+			builder.append(" AND OBJECT_NAME(F.PARENT_OBJECT_ID) = '").append(table.getName()).append("'\n");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1551,7 +1560,23 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
-		return super.foreigns(index, table, foreigns, set);
+		if(null == foreigns){
+			foreigns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("CONSTRAINT_NAME");
+			T foreign = foreigns.get(name.toUpperCase());
+			if(null == foreign){
+				foreign = (T)new ForeignKey();
+				foreign.setName(name);
+				foreign.setTable(row.getString("TABLE_NAME"));
+				foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
+				foreigns.put(name.toUpperCase(), foreign);
+			}
+			foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(row.getString("REFERENCED_COLUMN_NAME")).setPosition(row.getInt("ORDINAL_POSITION", 0)));
+
+		}
+		return foreigns;
 	}
 
 	/* *****************************************************************************************************************

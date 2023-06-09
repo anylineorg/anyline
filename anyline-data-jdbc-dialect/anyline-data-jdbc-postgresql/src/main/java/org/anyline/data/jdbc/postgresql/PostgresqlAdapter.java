@@ -521,7 +521,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 				foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
 				foreigns.put(name.toUpperCase(), foreign);
 			}
-			foreign.addColumn(row.getString("COLUMN_NAME"), row.getString("REFERENCED_COLUMN"));
+			foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(row.getString("REFERENCED_COLUMN_NAME")).setPosition(row.getInt("ORDINAL_POSITION", 0)));
 
 		}
 		return foreigns;

@@ -1961,7 +1961,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set)", 37));
 		}
-		return null;
+		return new LinkedHashMap<>();
 	}
 
 
