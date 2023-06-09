@@ -47,7 +47,7 @@ public class Column implements org.anyline.entity.data.Column{
     protected Object defaultValue                 ; // 默认值
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
-    protected String reference                    ;  // 外键依赖列
+    protected String reference                    ; // 外键依赖列
     protected int srid                            ; // SRID
 
 

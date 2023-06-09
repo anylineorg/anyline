@@ -19,7 +19,8 @@ public class Constraint {
     private Table table         ;
     private String name         ;
     private boolean unique      ; // 是否唯一
-    private Integer type        ; //
+    private String type         ; //
+    protected String comment    ; // 备注
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
     private Index update;
     private transient DDListener listener ;
@@ -103,11 +104,11 @@ public class Constraint {
         return this;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public Constraint setType(Integer type) {
+    public Constraint setType(String type) {
         this.type = type;
         return this;
     }
@@ -136,6 +137,13 @@ public class Constraint {
 
     public Constraint addColumn(String column){
         return addColumn(new Column(column));
+    }
+
+    public Constraint addColumn(String column, String order){
+        return addColumn(new Column(column).setOrder(order));
+    }
+    public Constraint addColumn(String column, String order, int position){
+        return addColumn(new Column(column).setOrder(order).setPosition(position));
     }
 
 
@@ -167,5 +175,13 @@ public class Constraint {
             listener.setAdapter(adapter);
         }
         return this;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

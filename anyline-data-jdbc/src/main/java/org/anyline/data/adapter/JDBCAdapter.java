@@ -19,6 +19,7 @@
 
 package org.anyline.data.adapter;
 
+import javafx.util.Builder;
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.dao.AnylineDao;
@@ -1512,7 +1513,12 @@ public interface JDBCAdapter {
 	 */
 	String buildRenameRunSQL(Index index) throws Exception;
 
-
+	/**
+	 * 索引备注
+	 * @param builder
+	 * @param index
+	 */
+	void comment(StringBuilder builder, Index index);
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/

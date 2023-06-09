@@ -825,8 +825,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public List<String> buildQueryIndexRunSQL(Table table, String name){
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT A.TABLE_SCHEMA, A.TABLE_NAME, A.INDEX_NAME, A.INDEX_TYPE, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS COLS\n");
-		builder.append("FROM INFORMATION_SCHEMA.STATISTICS A\n");
+		builder.append("SELECT * FROM INFORMATION_SCHEMA.STATISTICS\n");
 		builder.append("WHERE 1=1\n");
 		if(null != table) {
 			if (null != table.getSchema()) {
@@ -839,7 +838,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isNotEmpty(name)){
 			builder.append("AND INDEX_NAME='").append(name).append("'\n");
 		}
-		builder.append("GROUP BY A.TABLE_SCHEMA,A.TABLE_NAME,A.INDEX_NAME,A.INDEX_TYPE");
+		builder.append("ORDER BY SEQ_IN_INDEX");
 		sqls.add(builder.toString());
 		return sqls;
 	}
@@ -869,6 +868,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			T idx = indexs.get(name.toUpperCase());
 			if(null == idx && create){
 				idx = (T)new Index();
+				indexs.put(name.toUpperCase(), idx);
 			}
 			idx.setTableName(tableName);
 			idx.setName(name);
@@ -883,14 +883,13 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			if("0".equals(row.getString("NON_UNIQUE"))){
 				idx.setUnique(true);
 			}
+			idx.setComment(row.getString("INDEX_COMMENT"));
+			idx.setType(row.getString("INDEX_TYPE"));
 
-			if(row.isNotEmpty("COLS")){
-				String[] cols = row.getString("COLS").split(",");
-				for(String col:cols){
-					if(null == idx.getColumn(col)){
-						idx.addColumn(col);
-					}
-				}
+			String col = row.getString("COLUMN_NAME");
+			Column column = idx.getColumn(col);
+			if(null == column){
+				idx.addColumn(col, null, row.getInt("SEQ_IN_INDEX", 0));
 			}
 			indexs.put(name.toUpperCase(), idx);
 		}
@@ -1917,6 +1916,17 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public String buildRenameRunSQL(Index index) throws Exception{
 		return super.buildRenameRunSQL(index);
+	}
+	/**
+	 * 索引备注
+	 * @param builder
+	 * @param index
+	 */
+	public void comment(StringBuilder builder, Index index){
+		String comment = index.getComment();
+		if(BasicUtil.isNotEmpty(comment)){
+			builder.append(" COMMENT '").append(comment).append("'");
+		};
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

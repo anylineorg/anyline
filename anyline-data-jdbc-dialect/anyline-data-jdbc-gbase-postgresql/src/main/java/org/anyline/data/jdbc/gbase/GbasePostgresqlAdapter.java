@@ -1532,6 +1532,14 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	public String buildRenameRunSQL(Index index) throws Exception{
 		return super.buildRenameRunSQL(index);
 	}
+	/**
+	 * 索引备注
+	 * @param builder
+	 * @param index
+	 */
+	public void comment(StringBuilder builder, Index index){
+		super.comment(builder, index);
+	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------

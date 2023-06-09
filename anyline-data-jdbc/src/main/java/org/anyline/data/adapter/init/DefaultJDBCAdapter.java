@@ -1438,7 +1438,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
 			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
 			column.setDefaultValue(BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue()));
-			if(0 == column.isNullable()) {
+			//非空
+			if(-1 == column.isNullable()) {
 				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE"));
 			}
 			Integer len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH");
@@ -2039,7 +2040,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					continue;
 				}
 				index.setName(string(keys, "INDEX_NAME", set));
-				index.setType(integer(keys, "TYPE", set, null));
+				//index.setType(integer(keys, "TYPE", set, null));
 				index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
 				index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), table.getCatalog()));
 				index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), table.getSchema()));
@@ -3593,6 +3594,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
+	 * ADD UNIQUE INDEX `A`(`ID`, `REG_TIME`) USING BTREE COMMENT '索引'
 	 * @param index 索引
 	 * @return String
 	 */
@@ -3606,6 +3608,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		builder.append("CREATE");
 		if(index.isUnique()){
 			builder.append(" UNIQUE");
+		}else if(index.isFulltext()){
+			builder.append(" FULLTEXT");
+		}else if(index.isSpatial()){
+			builder.append(" SPATIAL");
 		}
 		builder.append(" INDEX ").append(name)
 				.append(" ON ").append(index.getTableName())
@@ -3623,6 +3629,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			qty ++;
 		}
 		builder.append(")");
+		String type = index.getType();
+		if(BasicUtil.isNotEmpty(type)){
+			builder.append("USING ").append(type).append(" ");
+		}
+		comment(builder, index);
 		return builder.toString();
 	}
 	/**
@@ -3671,6 +3682,14 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(Index index)", 37));
 		}
 		return null;
+	}
+
+	/**
+	 * 索引备注
+	 * @param builder
+	 * @param index
+	 */
+	public void comment(StringBuilder builder, Index index){
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
