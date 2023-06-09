@@ -458,7 +458,22 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return sqls
 	 */
 	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
-		return super.buildQueryForeignsRunSQL(table);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT TC.CONSTRAINT_NAME,TC.TABLE_NAME AS TABLE_NAME, KCU.COLUMN_NAME AS COLUMN_NAME, KCU.ORDINAL_POSITION,CCU.TABLE_NAME AS REFERENCED_TABLE_NAME, CCU.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
+		builder.append("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC\n");
+		builder.append("JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME\n");
+		builder.append("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE AS CCU ON CCU.CONSTRAINT_NAME = TC.CONSTRAINT_NAME\n");
+		builder.append("WHERE TC.CONSTRAINT_TYPE = 'FOREIGN KEY'\n");
+		if(null != table){
+			String name = table.getName();
+			if(BasicUtil.isNotEmpty(name)){
+				builder.append(" AND TC.TABLE_NAME = '").append(name).append("'\n");
+			}
+		}
+		builder.append("ORDER BY KCU.ORDINAL_POSITION");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -470,8 +485,25 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @throws Exception 异常
 	 */
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
-		return super.foreigns(index, table, foreigns, set);
+		if(null == foreigns){
+			foreigns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("CONSTRAINT_NAME");
+			T foreign = foreigns.get(name.toUpperCase());
+			if(null == foreign){
+				foreign = (T)new ForeignKey();
+				foreign.setName(name);
+				foreign.setTable(row.getString("TABLE_NAME"));
+				foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
+				foreigns.put(name.toUpperCase(), foreign);
+			}
+			foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(row.getString("REFERENCED_COLUMN_NAME")).setPosition(row.getInt("ORDINAL_POSITION", 0)));
+
+		}
+		return foreigns;
 	}
+
 
 	/* *****************************************************************************************************************
 	 * 													index
