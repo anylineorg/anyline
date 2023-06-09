@@ -20,4 +20,8 @@ public interface Trigger {
     Trigger setEvent(EVENT event);
     boolean isEach() ;
     Trigger setEach(boolean each) ;
+
+    String getComment();
+
+    Trigger setComment(String comment);
 }

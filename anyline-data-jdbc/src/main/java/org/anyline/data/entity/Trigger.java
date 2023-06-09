@@ -7,6 +7,7 @@ public class Trigger implements org.anyline.entity.data.Trigger{
     private TIME time;
     private EVENT event;
     private boolean each; //每行触发发
+    private String comment;
 
     public org.anyline.entity.data.Table getTable() {
         return table;
@@ -64,6 +65,15 @@ public class Trigger implements org.anyline.entity.data.Trigger{
 
     public org.anyline.entity.data.Trigger setEach(boolean each) {
         this.each = each;
+        return this;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public org.anyline.entity.data.Trigger setComment(String comment) {
+        this.comment = comment;
         return this;
     }
 }
