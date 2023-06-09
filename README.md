@@ -1,7 +1,12 @@
 
 ***详细说明请参考:***  
-[http://doc.anyline.org/](http://doc.anyline.org/)
+[http://doc.anyline.org/](http://doc.anyline.org/)  
+下载的源码在执行前，首先要配置好maven环境,请参考[【maven配置】](http://doc.anyline.org/ss/35_1148)
 
+关于多数据源，请先看一下 
+[【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
+[【三种方式切换数据源】](http://doc.anyline.org/aa/64_3449)
+[【多数据源事务控制】](http://doc.anyline.org/ss/23_1189)
 
 ***快速开始请参考示例源码(各种各样最简单的hello world):***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
@@ -17,9 +22,9 @@
 
 
 ## 简介
-AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
+~~AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
 兼容各种数据库，其重点是:
-- 以最简单、快速、动态、统一的方式执行DML与DDL,读写表结构、索引等元数据  
+- 以最简单、快速、动态、统一的方式执行DML与DDL,读写表结构、索引等元数据~~  
 - 针对结果集的 数据二次处理能力  
 
 
