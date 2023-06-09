@@ -51,23 +51,23 @@
 		<module>anyline-ext/anyline-easemob</module>
 
 		<module>anyline-data-mongodb</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-antdb</module>						<!--亚信-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-antdb</module>				<!--亚信-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cassandra</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-citus</module>
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-citus</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-clickhouse</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cmdb</module>						<!--中国移动磐维数据库-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-cmdb</module>				<!--中国移动磐维数据库-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cockroachdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-couchdb</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cudb</module>						<!--中国联通-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-cudb</module>				<!--中国联通-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-db2</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hashdata</module>					<!--酷克数据-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hotdb</module>						<!--热璞-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-hashdata</module>			<!--酷克数据-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-hotdb</module>				<!--热璞-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-dm</module>							<!--达梦-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gaiadb</module>						<!--百度-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-gaiadb</module>				<!--百度-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用(postgresql)-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-goldendb</module>					<!--中兴-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-goldendb</module>			<!--中兴-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-greatdb</module>					<!--万里数据库-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-highgo</module>						<!--瀚高-->
@@ -76,36 +76,36 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-informix</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase</module>					<!--人大金仓(oracle)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kingbase-postgresql</module>		<!--人大金仓(postgresql)-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-kundb</module>						<!--星环-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-lightdb</module>					<!--恒生电子-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-kundb</module>				<!--星环-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-lightdb</module>			<!--恒生电子-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mariadb</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mogdb</module>						<!--云和恩墨-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-mogdb</module>				<!--云和恩墨-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mssql</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mudb</module>						<!--沐融信息科技-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-mudb</module>				<!--沐融信息科技-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-mysql</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-neo4j</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oceanbase</module>
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-oceanbase</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-opengauss</module>					<!--高斯-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oracle</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar</module>						<!--神舟通用-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-oscar-oracle</module>				<!--神舟通用(oracle)-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-polardb</module>
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-polardb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-postgresql</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-questdb</module>
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-questdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-rethinkdb</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-sinodb</module>				<!--星瑞格-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-sqlite</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-stardb</module>						<!--京东StarDB-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-stardb</module>				<!--京东StarDB-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-tdengine</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-tdsql</module>						<!--腾讯TDSQL PostgreSQL(TBase)-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-tidb</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-timescale</module>
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-ubisql</module>						<!--平安科技-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-uxdb</module>						<!--优炫数据库-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-xigemadb</module>					<!--华胜信泰-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-vastbase</module>					<!--海量数据-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-yidb</module>						<!--天翼数智-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-tdsql</module>				<!--腾讯TDSQL PostgreSQL(TBase)-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-tidb</module>
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-timescale</module>
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-ubisql</module>				<!--平安科技-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-uxdb</module>				<!--优炫数据库-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-xigemadb</module>			<!--华胜信泰-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-vastbase</module>			<!--海量数据-->
+		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-yidb</module>				<!--天翼数智-->
 
 		<module>anyline-start</module>
 		<module>anyline-start/anyline-start-jdbc</module>
