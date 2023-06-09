@@ -583,9 +583,9 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
-			int idx = 0;
+			boolean first = true;
 			for(Column pk:pks){
-				if(idx > 0){
+				if(!first){
 					builder.append(",");
 				}
 				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
@@ -593,8 +593,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 				if(BasicUtil.isNotEmpty(order)){
 					builder.append(" ").append(order);
 				}
+				first = false;
 			}
-			idx ++;
 			builder.append(")");
 		}
 		return builder;

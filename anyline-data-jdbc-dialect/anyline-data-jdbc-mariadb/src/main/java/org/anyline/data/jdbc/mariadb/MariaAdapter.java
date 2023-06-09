@@ -665,9 +665,9 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
-			int idx = 0;
+			boolean first = true;
 			for(Column pk:pks){
-				if(idx > 0){
+				if(!first){
 					builder.append(",");
 				}
 				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
@@ -675,7 +675,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				if(BasicUtil.isNotEmpty(order)){
 					builder.append(" ").append(order);
 				}
-				idx ++;
+				first = false;
 			}
 			builder.append(")");
 		}

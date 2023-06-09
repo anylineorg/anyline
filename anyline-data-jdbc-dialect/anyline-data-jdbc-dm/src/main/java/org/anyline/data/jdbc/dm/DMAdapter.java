@@ -1018,9 +1018,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
-			int idx = 0;
+			boolean first = true;
 			for(Column pk:pks){
-				if(idx > 0){
+				if(!first){
 					builder.append(",");
 				}
 				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1028,7 +1028,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				if(null != order){
 					builder.append(" ").append(order);
 				}
-				idx ++;
+				first = false;
 			}
 			builder.append(")");
 		}
@@ -1672,10 +1672,10 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 			builder.append(" ADD CONSTRAINT ").append(primary.getTableName()).append("_PK").append(" PRIMARY KEY(");
 			boolean first = true;
 			for(Column column:columns.values()){
-				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 				if(!first){
 					builder.append(",");
 				}
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 				first = false;
 			}
 			builder.append(")");

@@ -2341,13 +2341,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
-			int idx = 0;
+			boolean first = true;
 			for(Column pk:pks){
-				if(idx > 0){
+				if(!first){
 					builder.append(",");
 				}
 				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
-				idx ++;
+				first = false;
 			}
 			builder.append(")");
 		}
