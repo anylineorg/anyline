@@ -444,6 +444,7 @@ public class Column implements org.anyline.entity.data.Column{
         if(null != primaryKey){
             if(primaryKey){
                 this.isPrimaryKey = 1 ;
+                setNullable(false);
             }else{
                 this.isPrimaryKey = 0 ;
             }
