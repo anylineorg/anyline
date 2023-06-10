@@ -536,6 +536,7 @@ public interface AnylineService<E>{
 	DataSet querysProcedure(String procedure, int first, int last , String ... inputs);
 	DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs);
 	DataSet querysProcedure(String procedure, String ... inputs);
+	DataSet querys(Procedure procedure, String ... inputs);
 	DataSet querys(Procedure procedure, int first, int last,  String ... inputs);
 	DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
 
@@ -693,13 +694,24 @@ public interface AnylineService<E>{
 	void clearColumnCache(boolean greedy, String table);
 	void clearColumnCache(boolean greedy);
 	void clearColumnCache(String catalog, String schema, String table);
+	void clearTagCache(boolean greedy, String catalog, String schema, String table);
 	void clearColumnCache(String table);
 	void clearColumnCache();
+	void clearTagCache(String catalog, String schema, String table);
+
+
+
+
+	public boolean save(Table table) throws Exception;
+	public boolean save(Column column) throws Exception ;
+	public boolean drop(Table table) throws Exception;
+	public boolean drop(Column column) throws Exception;
 
 	DDLService ddl();
 	MetaDataService metadata();
 
 	ConfigStore condition();
+
 
 	/* *****************************************************************************************************************
 	 *
@@ -712,9 +724,12 @@ public interface AnylineService<E>{
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
 	 * index			: 索引
 	 * constraint		: 约束
-	 *
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
 	 ******************************************************************************************************************/
 	interface MetaDataService{
 
@@ -1028,16 +1043,17 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													trigger
 		 ******************************************************************************************************************/
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, String actions);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, String actions);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, String actions);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<Trigger.EVENT> events);
 		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy);
 
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, String actions);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, String actions);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String name, String actions);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String actions);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(String name, List<Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(List<Trigger.EVENT> events);
 		<T extends Trigger> LinkedHashMap<String, T> triggers();
 
 
@@ -1075,22 +1091,26 @@ public interface AnylineService<E>{
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
-	 * view 			: 视图
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
-	 * primary			: 主键
+	 * primary key      : 主键
+	 * foreign key		: 外键
 	 * index			: 索引
 	 * constraint		: 约束
-	 *
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
 	 ******************************************************************************************************************/
+
 	interface DDLService{
 
 

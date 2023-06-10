@@ -1,8 +1,23 @@
 package org.anyline.entity.data;
 
+import java.util.List;
+
 public interface Trigger {
-    enum EVENT{INSERT,DELETE,UPDATE}
-    enum TIME{BEFORE,AFTER}
+    enum EVENT{
+        INSERT,DELETE,UPDATE;
+    }
+    enum TIME{
+        BEFORE("BEFORE"),
+        AFTER("AFTER"),
+        INSTEAD ("INSTEAD OF");
+        final String sql;
+        TIME(String sql){
+            this.sql = sql;
+        }
+        public String sql(){
+            return sql;
+        }
+    }
 
     Table getTable();
     String getTableName();
@@ -17,8 +32,10 @@ public interface Trigger {
     Trigger setDefinition(String definition);
     TIME getTime();
     Trigger setTime(TIME time) ;
-    EVENT getEvent() ;
-    Trigger setEvent(EVENT event);
+    Trigger setTime(String time) ;
+    List<EVENT> getEvents() ;
+    Trigger addEvent(EVENT ... event);
+    Trigger addEvent(String ... event);
     boolean isEach() ;
     Trigger setEach(boolean each) ;
 

@@ -208,7 +208,7 @@ public class DESUtil {
 	} 
 	
 	/*
-	 * public static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
+	 * static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
 	 * "wwwanylineorgk"; // 参数名加密前缀 public static final String
 	 * HTTP_REQUEST_PARAM_VALUE_PREFIX = "wwwanylineorgv"; // 参数值加密前缀 public
 	 * static final String HPPT_REQUEST_PARAM_PREFIX = "wwwanylineorgf";

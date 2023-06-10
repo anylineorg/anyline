@@ -72,30 +72,35 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
 	 * index			: 索引
 	 * constraint		: 约束
-	 *
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
 	 ******************************************************************************************************************/
 
 
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
-	 * public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
-	 * public <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
+	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -135,9 +140,9 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
-	 * public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	 * List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -187,10 +192,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags);
-	 * public LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	 * List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags);
+	 * LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	 * LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -248,10 +253,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
-	 * public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
-	 * public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
-	 * public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
+	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -292,10 +297,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
-	 * public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
-	 * public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
-	 * public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * List<String> buildQueryTagRunSQL(Table table, boolean metadata);
+	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
+	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
+	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -334,10 +339,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
-	 * public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
-	 * public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
-	 * public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
+	 * List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
+	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
+	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
+	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -377,10 +382,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	 * public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
-	 * public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
+	 * List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
+	 * LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -422,35 +427,41 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
 	 * index			: 索引
 	 * constraint		: 约束
-	 *
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
 	 ******************************************************************************************************************/
+
 
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildCreateRunSQL(Table table)
-	 * public String buildCreateCommentRunSQL(Table table);
-	 * public List<String> buildAlterRunSQL(Table table)
-	 * public List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
-	 * public String buildRenameRunSQL(Table table)
-	 * public String buildChangeCommentRunSQL(Table table)
-	 * public String buildDropRunSQL(Table table)
-	 * public StringBuilder checkTableExists(StringBuilder builder, boolean exists)
-	 * public StringBuilder primary(StringBuilder builder, Table table)
-	 * public StringBuilder comment(StringBuilder builder, Table table)
-	 * public StringBuilder name(StringBuilder builder, Table table)
+	 * List<String> buildCreateRunSQL(Table table)
+	 * String buildCreateCommentRunSQL(Table table);
+	 * List<String> buildAlterRunSQL(Table table)
+	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
+	 * String buildRenameRunSQL(Table table)
+	 * String buildChangeCommentRunSQL(Table table)
+	 * String buildDropRunSQL(Table table)
+	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
+	 * StringBuilder primary(StringBuilder builder, Table table)
+	 * StringBuilder comment(StringBuilder builder, Table table)
+	 * StringBuilder name(StringBuilder builder, Table table)
 	 ******************************************************************************************************************/
 
 
@@ -563,16 +574,16 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildCreateRunSQL(View view);
-	 * public String buildCreateCommentRunSQL(View view);
-	 * public List<String> buildAlterRunSQL(View view);
-	 * public String buildRenameRunSQL(View view);
-	 * public String buildChangeCommentRunSQL(View view);
-	 * public String buildDropRunSQL(View view);
-	 * public StringBuilder checkViewExists(StringBuilder builder, boolean exists)
-	 * public StringBuilder primary(StringBuilder builder, View view)
-	 * public StringBuilder comment(StringBuilder builder, View view)
-	 * public StringBuilder name(StringBuilder builder, View view)
+	 * List<String> buildCreateRunSQL(View view);
+	 * String buildCreateCommentRunSQL(View view);
+	 * List<String> buildAlterRunSQL(View view);
+	 * String buildRenameRunSQL(View view);
+	 * String buildChangeCommentRunSQL(View view);
+	 * String buildDropRunSQL(View view);
+	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
+	 * StringBuilder primary(StringBuilder builder, View view)
+	 * StringBuilder comment(StringBuilder builder, View view)
+	 * StringBuilder name(StringBuilder builder, View view)
 	 ******************************************************************************************************************/
 
 
@@ -642,12 +653,12 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildCreateRunSQL(MasterTable table);
-	 * public String buildCreateCommentRunSQL(MasterTable table)
-	 * public List<String> buildAlterRunSQL(MasterTable table);
-	 * public String buildDropRunSQL(MasterTable table);
-	 * public String buildRenameRunSQL(MasterTable table);
-	 * public String buildChangeCommentRunSQL(MasterTable table);
+	 * List<String> buildCreateRunSQL(MasterTable table);
+	 * String buildCreateCommentRunSQL(MasterTable table)
+	 * List<String> buildAlterRunSQL(MasterTable table);
+	 * String buildDropRunSQL(MasterTable table);
+	 * String buildRenameRunSQL(MasterTable table);
+	 * String buildChangeCommentRunSQL(MasterTable table);
 	 ******************************************************************************************************************/
 	/**
 	 * 创建主表
@@ -679,11 +690,11 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildCreateRunSQL(PartitionTable table);
-	 * public List<String> buildAlterRunSQL(PartitionTable table);
-	 * public String buildDropRunSQL(PartitionTable table);
-	 * public String buildRenameRunSQL(PartitionTable table);
-	 * public String buildChangeCommentRunSQL(PartitionTable table);
+	 * String buildCreateRunSQL(PartitionTable table);
+	 * List<String> buildAlterRunSQL(PartitionTable table);
+	 * String buildDropRunSQL(PartitionTable table);
+	 * String buildRenameRunSQL(PartitionTable table);
+	 * String buildChangeCommentRunSQL(PartitionTable table);
 	 ******************************************************************************************************************/
 	/**
 	 * 创建分区表
@@ -714,33 +725,33 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String alterColumnKeyword()
-	 * public List<String> buildAddRunSQL(Column column, boolean slice)
-	 * public List<String> buildAddRunSQL(Column column)
-	 * public List<String> buildAlterRunSQL(Column column, boolean slice)
-	 * public List<String> buildAlterRunSQL(Column column)
-	 * public String buildDropRunSQL(Column column, boolean slice)
-	 * public String buildDropRunSQL(Column column)
-	 * public String buildRenameRunSQL(Column column)
-	 * public List<String> buildChangeTypeRunSQL(Column column)
-	 * public String buildChangeDefaultRunSQL(Column column)
-	 * public String buildChangeNullableRunSQL(Column column)
-	 * public String buildChangeCommentRunSQL(Column column)
-	 * public String buildCreateCommentRunSQL(Column column)
-	 * public StringBuilder define(StringBuilder builder, Column column)
-	 * public StringBuilder type(StringBuilder builder, Column column)
-	 * public boolean isIgnorePrecision(Column column);
-	 * public boolean isIgnoreScale(Column column);
-	 * public Boolean checkIgnorePrecision(String datatype);
-	 * public Boolean checkIgnoreScale(String datatype);
-	 * public StringBuilder nullable(StringBuilder builder, Column column)
-	 * public StringBuilder charset(StringBuilder builder, Column column)
-	 * public StringBuilder defaultValue(StringBuilder builder, Column column)
-	 * public StringBuilder increment(StringBuilder builder, Column column)
-	 * public StringBuilder onupdate(StringBuilder builder, Column column)
-	 * public StringBuilder position(StringBuilder builder, Column column)
-	 * public StringBuilder comment(StringBuilder builder, Column column)
-	 * public StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
+	 * String alterColumnKeyword()
+	 * List<String> buildAddRunSQL(Column column, boolean slice)
+	 * List<String> buildAddRunSQL(Column column)
+	 * List<String> buildAlterRunSQL(Column column, boolean slice)
+	 * List<String> buildAlterRunSQL(Column column)
+	 * String buildDropRunSQL(Column column, boolean slice)
+	 * String buildDropRunSQL(Column column)
+	 * String buildRenameRunSQL(Column column)
+	 * List<String> buildChangeTypeRunSQL(Column column)
+	 * String buildChangeDefaultRunSQL(Column column)
+	 * String buildChangeNullableRunSQL(Column column)
+	 * String buildChangeCommentRunSQL(Column column)
+	 * String buildCreateCommentRunSQL(Column column)
+	 * StringBuilder define(StringBuilder builder, Column column)
+	 * StringBuilder type(StringBuilder builder, Column column)
+	 * boolean isIgnorePrecision(Column column);
+	 * boolean isIgnoreScale(Column column);
+	 * Boolean checkIgnorePrecision(String datatype);
+	 * Boolean checkIgnoreScale(String datatype);
+	 * StringBuilder nullable(StringBuilder builder, Column column)
+	 * StringBuilder charset(StringBuilder builder, Column column)
+	 * StringBuilder defaultValue(StringBuilder builder, Column column)
+	 * StringBuilder increment(StringBuilder builder, Column column)
+	 * StringBuilder onupdate(StringBuilder builder, Column column)
+	 * StringBuilder position(StringBuilder builder, Column column)
+	 * StringBuilder comment(StringBuilder builder, Column column)
+	 * StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 	@Override
 	public String alterColumnKeyword(){
@@ -991,15 +1002,15 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildAddRunSQL(Tag tag);
-	 * public List<String> buildAlterRunSQL(Tag tag);
-	 * public String buildDropRunSQL(Tag tag);
-	 * public String buildRenameRunSQL(Tag tag);
-	 * public String buildChangeDefaultRunSQL(Tag tag);
-	 * public String buildChangeNullableRunSQL(Tag tag);
-	 * public String buildChangeCommentRunSQL(Tag tag);
-	 * public List<String> buildChangeTypeRunSQL(Tag tag);
-	 * public StringBuilder checkTagExists(StringBuilder builder, boolean exists)
+	 * String buildAddRunSQL(Tag tag);
+	 * List<String> buildAlterRunSQL(Tag tag);
+	 * String buildDropRunSQL(Tag tag);
+	 * String buildRenameRunSQL(Tag tag);
+	 * String buildChangeDefaultRunSQL(Tag tag);
+	 * String buildChangeNullableRunSQL(Tag tag);
+	 * String buildChangeCommentRunSQL(Tag tag);
+	 * List<String> buildChangeTypeRunSQL(Tag tag);
+	 * StringBuilder checkTagExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1110,10 +1121,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildAddRunSQL(PrimaryKey primary) throws Exception
-	 * public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
-	 * public String buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * public String buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * String buildAddRunSQL(PrimaryKey primary) throws Exception
+	 * List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
+	 * String buildDropRunSQL(PrimaryKey primary) throws Exception
+	 * String buildRenameRunSQL(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -1198,10 +1209,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildAddRunSQL(Index index) throws Exception
-	 * public List<String> buildAlterRunSQL(Index index) throws Exception
-	 * public String buildDropRunSQL(Index index) throws Exception
-	 * public String buildRenameRunSQL(Index index) throws Exception
+	 * String buildAddRunSQL(Index index) throws Exception
+	 * List<String> buildAlterRunSQL(Index index) throws Exception
+	 * String buildDropRunSQL(Index index) throws Exception
+	 * String buildRenameRunSQL(Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -1253,10 +1264,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildAddRunSQL(Constraint constraint) throws Exception
-	 * public List<String> buildAlterRunSQL(Constraint constraint) throws Exception
-	 * public String buildDropRunSQL(Constraint constraint) throws Exception
-	 * public String buildRenameRunSQL(Constraint constraint) throws Exception
+	 * String buildAddRunSQL(Constraint constraint) throws Exception
+	 * List<String> buildAlterRunSQL(Constraint constraint) throws Exception
+	 * String buildDropRunSQL(Constraint constraint) throws Exception
+	 * String buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -1303,12 +1314,12 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 * 													common
 	 *------------------------------------------------------------------------------------------------------------------
-	 * public boolean isBooleanColumn(Column column)
-	 * public  boolean isNumberColumn(Column column)
-	 * public boolean isCharColumn(Column column)
-	 * public String value(Column column, SQL_BUILD_IN_VALUE value)
-	 * public String type(String type)
-	 * public String type2class(String type)
+	 * boolean isBooleanColumn(Column column)
+	 *  boolean isNumberColumn(Column column)
+	 * boolean isCharColumn(Column column)
+	 * String value(Column column, SQL_BUILD_IN_VALUE value)
+	 * String type(String type)
+	 * String type2class(String type)
 	 ******************************************************************************************************************/
 
 	/**

@@ -2779,7 +2779,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param idx idx
      * @return Object
      */
-   /* public Object getParent(int idx) {
+   /* Object getParent(int idx) {
         DataRow row = getRow(idx);
         if (null != row) {
             return row.getParent();

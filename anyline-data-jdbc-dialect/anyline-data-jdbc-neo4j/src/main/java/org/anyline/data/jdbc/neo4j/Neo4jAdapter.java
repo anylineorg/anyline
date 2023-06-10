@@ -74,9 +74,9 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
-     * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
-     * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
-     * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
+     * Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * void createInserts(Run run, String dest, DataSet set,  List<String> keys)
+     * void createInserts(Run run, String dest, Collection list,  List<String> keys)
      *
      * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
@@ -379,10 +379,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * public String parseFinalQuery(Run run)
-     * public StringBuilder buildConditionLike(StringBuilder builder, Compare compare)
-     * public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value)
-     * public List<Map<String,Object>> process(List<Map<String,Object>> list)
+     * String parseFinalQuery(Run run)
+     * StringBuilder buildConditionLike(StringBuilder builder, Compare compare)
+     * StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value)
+     * List<Map<String,Object>> process(List<Map<String,Object>> list)
      *
      * protected void buildQueryRunContent(XMLRun run)
      * protected void buildQueryRunContent(TextRun run)
@@ -737,7 +737,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													COUNT
      * -----------------------------------------------------------------------------------------------------------------
-     * public String parseTotalQuery(Run run)
+     * String parseTotalQuery(Run run)
      ******************************************************************************************************************/
     /**
      * 求总数SQL
@@ -755,7 +755,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													EXISTS
      * -----------------------------------------------------------------------------------------------------------------
-     * public String parseExists(Run run)
+     * String parseExists(Run run)
      ******************************************************************************************************************/
     @Override
     public String parseExists(Run run){

@@ -556,7 +556,7 @@ class DownloaderThreadPool {
                 TimeUnit.SECONDS, // 线程存活时间的单位 
                 workQueue, // 线程缓存队列 
                 new ThreadFactory() {  // 线程创建工厂,如果线程池需要创建线程会调用newThread来创建 
-                    public Thread newThread(Runnable r) { 
+                    public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r); 
                         thread.setDaemon(false); 
                         return thread; 

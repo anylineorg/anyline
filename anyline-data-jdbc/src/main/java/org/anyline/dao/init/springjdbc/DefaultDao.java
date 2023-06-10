@@ -2174,6 +2174,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -2185,16 +2186,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
 	 * index			: 索引
 	 * constraint		: 约束
-	 *
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
 	 ******************************************************************************************************************/
 
 
 	/* *****************************************************************************************************************
 	 * 													database
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, Database> databases()
+	 * LinkedHashMap<String, Database> databases()
 	 ******************************************************************************************************************/
 
 	@Override
@@ -2250,11 +2254,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types)
-	 * public LinkedHashMap<String, Table> tables(String schema, String name, String types)
-	 * public LinkedHashMap<String, Table> tables(String name, String types)
-	 * public LinkedHashMap<String, Table> tables(String types)
-	 * public LinkedHashMap<String, Table> tables()
+	 * LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types)
+	 * LinkedHashMap<String, Table> tables(String schema, String name, String types)
+	 * LinkedHashMap<String, Table> tables(String name, String types)
+	 * LinkedHashMap<String, Table> tables(String types)
+	 * LinkedHashMap<String, Table> tables()
 	 ******************************************************************************************************************/
 
 	/**
@@ -2452,11 +2456,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, View> views(String catalog, String schema, String name, String types)
-	 * public LinkedHashMap<String, View> views(String schema, String name, String types)
-	 * public LinkedHashMap<String, View> views(String name, String types)
-	 * public LinkedHashMap<String, View> views(String types)
-	 * public LinkedHashMap<String, View> views()
+	 * LinkedHashMap<String, View> views(String catalog, String schema, String name, String types)
+	 * LinkedHashMap<String, View> views(String schema, String name, String types)
+	 * LinkedHashMap<String, View> views(String name, String types)
+	 * LinkedHashMap<String, View> views(String types)
+	 * LinkedHashMap<String, View> views()
 	 ******************************************************************************************************************/
 
 	/**
@@ -2634,11 +2638,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types)
-	 * public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types)
-	 * public LinkedHashMap<String, MasterTable> mtables(String name, String types)
-	 * public LinkedHashMap<String, MasterTable> mtables(String types)
-	 * public LinkedHashMap<String, MasterTable> mtables()
+	 * LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types)
+	 * LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types)
+	 * LinkedHashMap<String, MasterTable> mtables(String name, String types)
+	 * LinkedHashMap<String, MasterTable> mtables(String types)
+	 * LinkedHashMap<String, MasterTable> mtables()
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String catalog, String schema, String pattern, String types) {
@@ -2789,11 +2793,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name)
-	 * public LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name)
-	 * public LinkedHashMap<String, PartitionTable> ptables(String master, String name)
-	 * public LinkedHashMap<String, PartitionTable> ptables(String master)
-	 * public LinkedHashMap<String, PartitionTable> ptables(MasterTable table)
+	 * LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String master, String name)
+	 * LinkedHashMap<String, PartitionTable> ptables(String schema, String master, String name)
+	 * LinkedHashMap<String, PartitionTable> ptables(String master, String name)
+	 * LinkedHashMap<String, PartitionTable> ptables(String master)
+	 * LinkedHashMap<String, PartitionTable> ptables(MasterTable table)
 	 ******************************************************************************************************************/
 
 	@Override
@@ -2904,9 +2908,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, Column> columns(Table table)
-	 * public LinkedHashMap<String, Column> columns(String table)
-	 * public LinkedHashMap<String, Column> columns(String catalog, String schema, String table)
+	 * LinkedHashMap<String, Column> columns(Table table)
+	 * LinkedHashMap<String, Column> columns(String table)
+	 * LinkedHashMap<String, Column> columns(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 
 	@Override
@@ -3052,9 +3056,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, Tag> tags(Table table)
-	 * public LinkedHashMap<String, Tag> tags(String table)
-	 * public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table)
+	 * LinkedHashMap<String, Tag> tags(Table table)
+	 * LinkedHashMap<String, Tag> tags(String table)
+	 * LinkedHashMap<String, Tag> tags(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table) {
@@ -3205,9 +3209,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public PrimaryKey primary(Table table)
-	 * public PrimaryKey primary(String table)
-	 * public PrimaryKey primary(String catalog, String schema, String table)
+	 * PrimaryKey primary(Table table)
+	 * PrimaryKey primary(String table)
+	 * PrimaryKey primary(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	/**
 	 * 索引
@@ -3293,8 +3297,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table){
 		LinkedHashMap<String, T> foreigns = new LinkedHashMap<>();
@@ -3325,11 +3329,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, Index> indexs(Table table, String name)
-	 * public LinkedHashMap<String, Index> indexs(String table, String name)
-	 * public LinkedHashMap<String, Index> indexs(Table table)
-	 * public LinkedHashMap<String, Index> indexs(String table)
-	 * public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table)
+	 * LinkedHashMap<String, Index> indexs(Table table, String name)
+	 * LinkedHashMap<String, Index> indexs(String table, String name)
+	 * LinkedHashMap<String, Index> indexs(Table table)
+	 * LinkedHashMap<String, Index> indexs(String table)
+	 * LinkedHashMap<String, Index> indexs(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	/**
 	 * 索引
@@ -3435,11 +3439,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public LinkedHashMap<String, Constraint> constraints(Table table, String name)
-	 * public LinkedHashMap<String, Constraint> constraints(String table, String name)
-	 * public LinkedHashMap<String, Constraint> constraints(Table table)
-	 * public LinkedHashMap<String, Constraint> constraints(String table)
-	 * public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table)
+	 * LinkedHashMap<String, Constraint> constraints(Table table, String name)
+	 * LinkedHashMap<String, Constraint> constraints(String table, String name)
+	 * LinkedHashMap<String, Constraint> constraints(Table table)
+	 * LinkedHashMap<String, Constraint> constraints(String table)
+	 * LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table, String name) {
@@ -3488,27 +3492,68 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return constraints(false, new Table(catalog, schema, table));
 	}
 	/* *****************************************************************************************************************
+	 * 													trigger
+	 ******************************************************************************************************************/
+
+
+	@Override
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events){
+		LinkedHashMap<String,T> triggers = new LinkedHashMap<>();
+		if(null == table){
+			table = new Table();
+		}
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		if(!greedy) {
+			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
+		}
+		List<String> sqls = adapter.buildQueryTriggerRunSQL(table, events);
+
+		if(null != sqls){
+			int idx = 0;
+			for(String sql:sqls){
+				if(BasicUtil.isNotEmpty(sql)) {
+					DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+					try {
+						triggers = adapter.triggers(idx, true, table, triggers, set);
+					}catch (Exception e){
+						if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+							e.printStackTrace();
+						}
+					}
+				}
+				idx ++;
+			}
+		}
+		return triggers;
+	}
+
+	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
 	 * =================================================================================================================
+	 * database			: 数据库
 	 * table			: 表
-	 * view 			: 视图
 	 * master table		: 主表
 	 * partition table	: 分区表
 	 * column			: 列
 	 * tag				: 标签
+	 * primary key      : 主键
+	 * foreign key		: 外键
 	 * index			: 索引
 	 * constraint		: 约束
-	 *
+	 * trigger		    : 触发器
+	 * procedure        : 存储过程
 	 ******************************************************************************************************************/
+
 
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(Table table) throws Exception
-	 * public boolean alter(Table table) throws Exception
-	 * public boolean drop(Table table) throws Exception
+	 * boolean create(Table table) throws Exception
+	 * boolean alter(Table table) throws Exception
+	 * boolean drop(Table table) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Table table) throws Exception {
@@ -3757,9 +3802,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(View view) throws Exception
-	 * public boolean alter(View view) throws Exception
-	 * public boolean drop(View view) throws Exception
+	 * boolean create(View view) throws Exception
+	 * boolean alter(View view) throws Exception
+	 * boolean drop(View view) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(View view) throws Exception {
@@ -3881,9 +3926,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(MasterTable table) throws Exception
-	 * public boolean alter(MasterTable table) throws Exception
-	 * public boolean drop(MasterTable table) throws Exception
+	 * boolean create(MasterTable table) throws Exception
+	 * boolean alter(MasterTable table) throws Exception
+	 * boolean drop(MasterTable table) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(MasterTable table) throws Exception{
@@ -4063,9 +4108,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(PartitionTable table) throws Exception
-	 * public boolean alter(PartitionTable table) throws Exception
-	 * public boolean drop(PartitionTable table) throws Exception
+	 * boolean create(PartitionTable table) throws Exception
+	 * boolean alter(PartitionTable table) throws Exception
+	 * boolean drop(PartitionTable table) throws Exception
 	 ******************************************************************************************************************/
 
 	@Override
@@ -4219,10 +4264,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Column column) throws Exception
-	 * public boolean alter(Table table, Column column) throws Exception
-	 * public boolean alter(Column column) throws Exception
-	 * public boolean drop(Column column) throws Exception
+	 * boolean add(Column column) throws Exception
+	 * boolean alter(Table table, Column column) throws Exception
+	 * boolean alter(Column column) throws Exception
+	 * boolean drop(Column column) throws Exception
 	 *
 	 * private boolean alter(Table table, Column column, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
@@ -4387,10 +4432,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Tag tag) throws Exception
-	 * public boolean alter(Table table, Tag tag) throws Exception
-	 * public boolean alter(Tag tag) throws Exception
-	 * public boolean drop(Tag tag) throws Exception
+	 * boolean add(Tag tag) throws Exception
+	 * boolean alter(Table table, Tag tag) throws Exception
+	 * boolean alter(Tag tag) throws Exception
+	 * boolean drop(Tag tag) throws Exception
 	 *
 	 * private boolean alter(Table table, Tag tag, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
@@ -4549,9 +4594,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(PrimaryKey primary) throws Exception
-	 * public boolean alter(PrimaryKey primary) throws Exception
-	 * public boolean drop(PrimaryKey primary) throws Exception
+	 * boolean add(PrimaryKey primary) throws Exception
+	 * boolean alter(PrimaryKey primary) throws Exception
+	 * boolean drop(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(PrimaryKey primary) throws Exception {
@@ -4675,9 +4720,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(ForeignKey foreign) throws Exception
-	 * public boolean alter(ForeignKey foreign) throws Exception
-	 * public boolean drop(PrimaryKey foreign) throws Exception
+	 * boolean add(ForeignKey foreign) throws Exception
+	 * boolean alter(ForeignKey foreign) throws Exception
+	 * boolean drop(PrimaryKey foreign) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(ForeignKey foreign) throws Exception {
@@ -4801,9 +4846,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Index index) throws Exception
-	 * public boolean alter(Index index) throws Exception
-	 * public boolean drop(Index index) throws Exception
+	 * boolean add(Index index) throws Exception
+	 * boolean alter(Index index) throws Exception
+	 * boolean drop(Index index) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Index index) throws Exception {
@@ -4926,9 +4971,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean add(Constraint constraint) throws Exception
-	 * public boolean alter(Constraint constraint) throws Exception
-	 * public boolean drop(Constraint constraint) throws Exception
+	 * boolean add(Constraint constraint) throws Exception
+	 * boolean alter(Constraint constraint) throws Exception
+	 * boolean drop(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Constraint constraint) throws Exception {
@@ -5059,9 +5104,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public boolean create(Trigger trigger) throws Exception
-	 * public boolean alter(Trigger trigger) throws Exception
-	 * public boolean drop(Trigger trigger) throws Exception
+	 * boolean create(Trigger trigger) throws Exception
+	 * boolean alter(Trigger trigger) throws Exception
+	 * boolean drop(Trigger trigger) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Trigger trigger) throws Exception {
@@ -5153,7 +5198,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													common
 	 *
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public void checkSchema(JDBCRuntime runtime, Table table)
+	 * void checkSchema(JDBCRuntime runtime, Table table)
 	 * protected String paramLogFormat(List<?> params)
 	 * protected String paramLogFormat(List<?> keys, List<?> values)
 	 * private static String random()

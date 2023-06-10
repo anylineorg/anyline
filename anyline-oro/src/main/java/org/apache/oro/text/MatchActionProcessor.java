@@ -94,7 +94,7 @@ import org.apache.oro.text.regex.*;
  * import org.apache.oro.text.*;
  * import org.apache.oro.text.regex.*;
  *
- * public final class semicolon {
+ * final class semicolon {
  *
  *  public static final void main(String[] args) {
  *    MatchActionProcessor processor = new MatchActionProcessor();

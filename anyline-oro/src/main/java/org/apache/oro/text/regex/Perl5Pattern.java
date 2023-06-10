@@ -100,7 +100,7 @@ public final class Perl5Pattern implements Pattern, Serializable, Cloneable {
 
   /**
    * A dummy constructor with default visibility to override the default
-   * public constructor that would be created otherwise by the compiler.
+   * constructor that would be created otherwise by the compiler.
    */
   Perl5Pattern(){ }
 

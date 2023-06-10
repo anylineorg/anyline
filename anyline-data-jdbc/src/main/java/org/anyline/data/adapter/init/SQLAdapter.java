@@ -80,10 +80,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
-     * public Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
-     * public void createInserts(Run run, String dest, DataSet set,  List<String> keys)
-     * public void createInserts(Run run, String dest, Collection list,  List<String> keys)
-     * public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values) throws Exception
+     * Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * void createInserts(Run run, String dest, DataSet set,  List<String> keys)
+     * void createInserts(Run run, String dest, Collection list,  List<String> keys)
+     * int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values) throws Exception
      *
      * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
@@ -799,9 +799,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * public Object buildConditionLike(StringBuilder builder, Compare compare)
-     * public Object buildConditionFindInSet(StringBuilder builder, Compare compare, Object value)
-     * public Object buildConditionIn(StringBuilder builder, Compare compare, Object value)
+     * Object buildConditionLike(StringBuilder builder, Compare compare)
+     * Object buildConditionFindInSet(StringBuilder builder, Compare compare, Object value)
+     * Object buildConditionIn(StringBuilder builder, Compare compare, Object value)
      *
      * protected void buildQueryRunContent(XMLRun run)
      * protected void buildQueryRunContent(TextRun run)
@@ -1059,7 +1059,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXISTS
      * -----------------------------------------------------------------------------------------------------------------
-     * public String parseExists(Run run)
+     * String parseExists(Run run)
      ******************************************************************************************************************/
 
     @Override
@@ -1072,7 +1072,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
-     * public void buildExecuteRunContent(Run run);
+     * void buildExecuteRunContent(Run run);
      ******************************************************************************************************************/
 
     @Override
@@ -1085,7 +1085,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													TOTAL
      * -----------------------------------------------------------------------------------------------------------------
-     * public String parseTotalQuery(Run run)
+     * String parseTotalQuery(Run run)
      ******************************************************************************************************************/
 
     /**

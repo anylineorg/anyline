@@ -1,12 +1,15 @@
 package org.anyline.data.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Trigger implements org.anyline.entity.data.Trigger{
     private String name;
     private org.anyline.entity.data.Table table;
     private String definition;
     private TIME time;
-    private EVENT event;
-    private boolean each; //每行触发发
+    private List<EVENT> events = new ArrayList<>();
+    private boolean each = true; //每行触发发
     private String comment;
 
     public org.anyline.entity.data.Table getTable() {
@@ -53,13 +56,25 @@ public class Trigger implements org.anyline.entity.data.Trigger{
         this.time = time;
         return this;
     }
-
-    public EVENT getEvent() {
-        return event;
+    public org.anyline.entity.data.Trigger setTime(String time) {
+        this.time = TIME.valueOf(time);
+        return this;
     }
 
-    public org.anyline.entity.data.Trigger setEvent(EVENT event) {
-        this.event = event;
+    public List<EVENT> getEvents() {
+        return events;
+    }
+
+    public org.anyline.entity.data.Trigger addEvent(EVENT ... events) {
+        for(EVENT event:events){
+            this.events.add(event);
+        }
+        return this;
+    }
+    public org.anyline.entity.data.Trigger addEvent(String ... events) {
+        for(String event:events){
+            this.events.add(EVENT.valueOf(event));
+        }
         return this;
     }
 
