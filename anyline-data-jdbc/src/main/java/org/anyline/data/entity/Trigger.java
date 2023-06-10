@@ -13,6 +13,10 @@ public class Trigger implements org.anyline.entity.data.Trigger{
         return table;
     }
 
+    public String getTableName() {
+        return table.getName();
+    }
+
     @Override
     public org.anyline.entity.data.Trigger setTable(org.anyline.entity.data.Table table) {
         this.table = table;

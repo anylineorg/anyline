@@ -5,6 +5,7 @@ public interface Trigger {
     enum TIME{BEFORE,AFTER}
 
     Table getTable();
+    String getTableName();
 
     org.anyline.entity.data.Trigger setTable(Table table);
     org.anyline.entity.data.Trigger setTable(String table);
