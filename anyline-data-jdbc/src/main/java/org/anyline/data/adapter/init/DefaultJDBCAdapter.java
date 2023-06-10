@@ -3750,6 +3750,67 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(Trigger trigger) throws Exception
+	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
+	 * String buildDropRunSQL(Trigger trigger) throws Exception;
+	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 添加触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildCreateRunSQL(Trigger trigger) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		builder.append("CREATE TRIGGER ").append(trigger.getName());
+		builder.append(" ").append(trigger.getTime()).append(" ").append(trigger.getEvent());
+		builder.append(" ON ").append(trigger.getTableName());
+		if(trigger.isEach()){
+			builder.append(" FOR EACH ");
+		}
+		builder.append("\nBEGIN\n");
+		builder.append(trigger.getDefinition());
+		builder.append("\nEND");
+		return builder.toString();
+	}
+
+	/**
+	 * 修改触发器
+	 * 有可能生成多条SQL
+	 * @param trigger 触发器
+	 * @return List
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(Trigger trigger) throws Exception{
+		return null;
+	}
+
+	/**
+	 * 删除触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(Trigger trigger) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		builder.append("DROP TRIGGER ").append(trigger.getName());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改触发器名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Trigger trigger) throws Exception{
+		return null;
+	}
 
 	/* *****************************************************************************************************************
 	 *

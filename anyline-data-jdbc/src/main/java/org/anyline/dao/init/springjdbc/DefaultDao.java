@@ -5055,48 +5055,98 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 *  boolean alter(Trigger trigger) throws Exception;
 	 *  boolean drop(Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
-	/**
-	 * 触发器
-	 * @param trigger 触发器
-	 * @return trigger
-	 * @throws Exception 异常 Exception
-	 */
-	public boolean create(Trigger trigger) throws Exception{
+
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean create(Trigger trigger) throws Exception
+	 * public boolean alter(Trigger trigger) throws Exception
+	 * public boolean drop(Trigger trigger) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Trigger trigger) throws Exception {
 		boolean result = false;
 		JDBCRuntime runtime = runtime();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		String random = null;
 		checkSchema(runtime, trigger);
-		String sql = adapter.buildAddRunSQL(constraint);
+		String sql = adapter.buildCreateRunSQL(trigger);
 		if(BasicUtil.isNotEmpty(sql)) {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = constraint.getListener();
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAdd(constraint);
-			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
 				result = true;
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add trigger][table:{}][trigger:{}][result:{}][执行耗时:{}ms]", random, trigger.getTableName(), trigger.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
-
 	}
+
+
+	@Override
 	public boolean alter(Trigger trigger) throws Exception{
+		boolean result = true;
 
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, trigger);
+		List<String> sqls = adapter.buildAlterRunSQL(trigger);
+
+		random = random();
+		for(String sql:sqls) {
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+					log.info("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[update trigger][table:{}][trigger:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, trigger.getTableName(), trigger.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
 	}
-	public boolean drop(Trigger trigger) throws Exception{
-
+	@Override
+	public boolean drop(Trigger trigger) throws Exception {
+		boolean result = false;
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		checkSchema(runtime, trigger);
+		String sql = adapter.buildDropRunSQL(trigger);
+		if(BasicUtil.isNotEmpty(sql)) {
+			String random = null;
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+			boolean exe = true;
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[drop trigger][table:{}][trigger:{}][result:{}][执行耗时:{}ms]", random, trigger.getTableName(), trigger.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
 	}
 	/* *****************************************************************************************************************
 	 *
@@ -5109,12 +5159,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * private static String random()
 	 ******************************************************************************************************************/
 
-	public void checkSchema(JDBCRuntime runtime, org.anyline.entity.data.Table table){
+	public void checkSchema(JDBCRuntime runtime,  Table table){
 		if(null != table){
 			JDBCAdapter adapter = runtime.getAdapter();
 			adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
-			table.setCatalog(table.getCatalog());
-			table.setSchema(table.getSchema());
 		}
 	}
 	public void checkSchema(JDBCRuntime runtime, Column column){
@@ -5142,7 +5190,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 	public void checkSchema(JDBCRuntime runtime, Trigger trigger){
-		org.anyline.entity.data.Table table = trigger.getTable();
+		Table table = (Table)trigger.getTable();
 		if(null != table){
 			checkSchema(runtime, table);
 		}

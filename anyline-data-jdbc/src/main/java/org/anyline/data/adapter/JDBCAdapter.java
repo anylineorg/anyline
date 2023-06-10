@@ -1555,6 +1555,39 @@ public interface JDBCAdapter {
 
 
 	/* *****************************************************************************************************************
+	 * 													trigger
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	String buildCreateRunSQL(Trigger trigger) throws Exception;
+
+	/**
+	 * 修改触发器
+	 * 有可能生成多条SQL
+	 * @param trigger 触发器
+	 * @return List
+	 */
+	List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
+
+	/**
+	 * 删除触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	String buildDropRunSQL(Trigger trigger) throws Exception;
+
+	/**
+	 * 修改触发器名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	String buildRenameRunSQL(Trigger trigger) throws Exception;
+	/* *****************************************************************************************************************
 	 *
 	 * 													common
 	 *
