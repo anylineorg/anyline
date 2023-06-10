@@ -1597,6 +1597,7 @@ public interface JDBCAdapter {
 	 * @return String
 	 */
 	String buildCreateRunSQL(Trigger trigger) throws Exception;
+	void target(StringBuilder builder, Trigger trigger);
 
 	/**
 	 * 修改触发器

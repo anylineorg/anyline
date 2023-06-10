@@ -1034,11 +1034,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}catch (Exception e){
 				e.printStackTrace();
 			}
-			String define = row.getString("ACTION_STATEMENT");
-			if(null != define){
-				define = define.substring(5, define.length() - 3);
-			}
-			trigger.setDefinition(define);
+			trigger.setDefinition(row.getString("ACTION_STATEMENT"));
 
 			triggers.put(name.toUpperCase(), trigger);
 

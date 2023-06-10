@@ -3826,15 +3826,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			first = false;
 		}
 		builder.append(" ON ").append(trigger.getTableName());
-		if(trigger.isEach()){
-			builder.append(" FOR EACH ROW ");
-		}
-		builder.append("\nBEGIN\n");
-		builder.append(trigger.getDefinition());
-		builder.append("\nEND");
+		target(builder, trigger);
+
+		builder.append("\n").append(trigger.getDefinition());
+
 		return builder.toString();
 	}
-
+	public void target(StringBuilder builder, Trigger trigger){
+		if(trigger.isEach()){
+			builder.append(" FOR EACH ROW ");
+		}else{
+			builder.append(" FOR EACH STATEMENT ");
+		}
+	}
 	/**
 	 * 修改触发器
 	 * 有可能生成多条SQL
