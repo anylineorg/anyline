@@ -27,6 +27,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * 参考 OracleAdapter
+ */
 @Repository("anyline.data.jdbc.adapter.oscar.oracle")
 public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	

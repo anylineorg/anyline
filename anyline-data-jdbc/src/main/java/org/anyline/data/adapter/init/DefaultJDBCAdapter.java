@@ -3826,13 +3826,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			first = false;
 		}
 		builder.append(" ON ").append(trigger.getTableName());
-		target(builder, trigger);
+		each(builder, trigger);
 
 		builder.append("\n").append(trigger.getDefinition());
 
 		return builder.toString();
 	}
-	public void target(StringBuilder builder, Trigger trigger){
+	public void each(StringBuilder builder, Trigger trigger){
 		if(trigger.isEach()){
 			builder.append(" FOR EACH ROW ");
 		}else{

@@ -22,6 +22,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * 参考 MySQLAdapter
+ */
 @Repository("anyline.data.jdbc.adapter.mariadb")
 public class MariaAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 
@@ -957,7 +960,6 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 
 
-
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -973,7 +975,32 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	@Override
 	public List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
-		return super.buildQueryTriggerRunSQL(table, events);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
+		if(null != table){
+			String schemae = table.getSchema();
+			String name = table.getName();
+			if(BasicUtil.isNotEmpty(schemae)){
+				builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
+			}
+			if(BasicUtil.isNotEmpty(name)){
+				builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
+			}
+		}
+		if(null != events && events.size()>0){
+			builder.append(" AND(");
+			boolean first = true;
+			for(Trigger.EVENT event:events){
+				if(!first){
+					builder.append(" OR ");
+				}
+				builder.append("EVENT_MANIPULATION ='").append(event);
+			}
+			builder.append(")");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -989,9 +1016,41 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	@Override
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
-		return super.triggers(index, create, table, triggers, set);
-	}
+		if(null == triggers){
+			triggers = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TRIGGER_NAME");
+			T trigger = triggers.get(name.toUpperCase());
+			if(null == trigger){
+				trigger = (T)new Trigger();
+			}
+			trigger.setName(name);
+			Table tab = new Table(row.getString("EVENT_OBJECT_TABLE"));
+			tab.setSchema(row.getString("TRIGGER_SCHEMA"));
+			trigger.setTable(tab);
+			boolean each = false;
+			if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))){
+				each = true;
+			}
+			trigger.setEach(each);
+			try{
+				String[] events = row.getStringNvl("EVENT_MANIPULATION").split(",");
+				String time = row.getString("ACTION_TIMING");
+				trigger.setTime(org.anyline.entity.data.Trigger.TIME.valueOf(time));
+				for(String event:events) {
+					trigger.addEvent(org.anyline.entity.data.Trigger.EVENT.valueOf(event));
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			trigger.setDefinition(row.getString("ACTION_STATEMENT"));
 
+			triggers.put(name.toUpperCase(), trigger);
+
+		}
+		return triggers;
+	}
 
 	/* *****************************************************************************************************************
 	 *

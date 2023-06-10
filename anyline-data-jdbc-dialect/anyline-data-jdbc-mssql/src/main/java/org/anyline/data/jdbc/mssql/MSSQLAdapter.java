@@ -566,7 +566,32 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	@Override
 	public List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
-		return super.buildQueryTriggerRunSQL(table, events);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT object_name(parent_id) AS TABLE_NAME ,* FROM SYS.TRIGGERS WHERE 1=1");
+		if(null != table){
+			String schemae = table.getSchema();
+			String name = table.getName();
+			/*if(BasicUtil.isNotEmpty(schemae)){
+				builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
+			}*/
+			if(BasicUtil.isNotEmpty(name)){
+				builder.append(" AND object_name(parent_id) = '").append(name).append("'");
+			}
+		}/*
+		if(null != events && events.size()>0){
+			builder.append(" AND(");
+			boolean first = true;
+			for(Trigger.EVENT event:events){
+				if(!first){
+					builder.append(" OR ");
+				}
+				builder.append("EVENT_MANIPULATION ='").append(event);
+			}
+			builder.append(")");
+		}*/
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -582,14 +607,42 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	@Override
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
-		return super.triggers(index, create, table, triggers, set);
+		if(null == triggers){
+			triggers = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("NAME");
+			T trigger = triggers.get(name.toUpperCase());
+			if(null == trigger){
+				trigger = (T)new Trigger();
+			}
+			trigger.setName(name);
+			trigger.setTable(table);
+			//Table tab = new Table(row.getString("TABLE_NAME"));
+			/*tab.setSchema(row.getString("TRIGGER_SCHEMA"));
+			trigger.setTable(tab);
+			boolean each = false;
+			if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))){
+				each = true;
+			}
+			trigger.setEach(each);
+			try{
+				String[] events = row.getStringNvl("EVENT_MANIPULATION").split(",");
+				String time = row.getString("ACTION_TIMING");
+				trigger.setTime(org.anyline.entity.data.Trigger.TIME.valueOf(time));
+				for(String event:events) {
+					trigger.addEvent(org.anyline.entity.data.Trigger.EVENT.valueOf(event));
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}*/
+			//trigger.setDefinition(row.getString("ACTION_STATEMENT"));
+
+			triggers.put(name.toUpperCase(), trigger);
+
+		}
+		return triggers;
 	}
-
-
-
-
-
-
 
 	/* *****************************************************************************************************************
 	 *
@@ -1730,6 +1783,72 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.buildRenameRunSQL(constraint);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(Trigger trigger) throws Exception
+	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
+	 * String buildDropRunSQL(Trigger trigger) throws Exception;
+	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 添加触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildCreateRunSQL(Trigger trigger) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		builder.append("CREATE TRIGGER ").append(trigger.getName());
+		builder.append(" ON ").append(trigger.getTableName());
+		builder.append(" ").append(trigger.getTime().sql()).append(" ");
+		List<org.anyline.entity.data.Trigger.EVENT> events = trigger.getEvents();
+		boolean first = true;
+		for(org.anyline.entity.data.Trigger.EVENT event:events){
+			if(!first){
+				builder.append(" OR ");
+			}
+			builder.append(event);
+			first = false;
+		}
+
+		builder.append(" AS \n").append(trigger.getDefinition());
+
+		return builder.toString();
+	}
+	/**
+	 * 修改触发器
+	 * 有可能生成多条SQL
+	 * @param trigger 触发器
+	 * @return List
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(Trigger trigger) throws Exception{
+		return null;
+	}
+
+	/**
+	 * 删除触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(Trigger trigger) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		builder.append("DROP TRIGGER ").append(trigger.getName());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改触发器名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Trigger trigger) throws Exception{
+		return null;
+	}
 
 	/* *****************************************************************************************************************
 	 *

@@ -948,6 +948,10 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.constraints(create, table, constraints, set);
 	}
 
+	@Override
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
+		return super.constraints(create, table, constraints, set);
+	}
 
 
 	/* *****************************************************************************************************************
@@ -1020,7 +1024,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			tab.setSchema(row.getString("TRIGGER_SCHEMA"));
 			trigger.setTable(tab);
 			boolean each = false;
-			if("ROW".equalsIgnoreCase(row.getString("INFORMATION_SCHEMA"))){
+			if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))){
 				each = true;
 			}
 			trigger.setEach(each);
@@ -1040,10 +1044,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 		}
 		return triggers;
-	}
-	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
-		return super.constraints(create, table, constraints, set);
 	}
 
 	/* *****************************************************************************************************************

@@ -29,6 +29,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * 参考 OracleAdapter
+ */
 @Repository("anyline.data.jdbc.adapter.dm")
 public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
 	

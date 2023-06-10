@@ -688,7 +688,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 			tab.setCatalog(row.getString("TRIGGER_CATALOG("));
 			trigger.setTable(tab);
 			boolean each = false;
-			if("ROW".equalsIgnoreCase(row.getString("INFORMATION_SCHEMA"))){
+			if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))){
 				each = true;
 			}
 			trigger.setEach(each);
