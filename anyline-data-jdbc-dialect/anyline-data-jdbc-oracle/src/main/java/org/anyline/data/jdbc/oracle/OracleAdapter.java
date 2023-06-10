@@ -904,7 +904,32 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 	@Override
 	public List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
-		return super.buildQueryTriggerRunSQL(table, events);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM USER_TRIGGERS WHERE 1=1");
+		if(null != table){
+			String schemae = table.getSchema();
+			String tableName = table.getName();
+			if(BasicUtil.isNotEmpty(schemae)){
+				builder.append(" AND TABLE_OWNER = '").append(schemae).append("'");
+			}
+			if(BasicUtil.isNotEmpty(tableName)){
+				builder.append(" AND TABLE_NAME = '").append(tableName).append("'");
+			}
+		}
+		if(null != events && events.size()>0){
+			builder.append(" AND(");
+			boolean first = true;
+			for(Trigger.EVENT event:events){
+				if(!first){
+					builder.append(" OR ");
+				}
+				builder.append("TRIGGERING_EVENT ='").append(event);
+			}
+			builder.append(")");
+		}
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -920,9 +945,40 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 	@Override
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
-		return super.triggers(index, create, table, triggers, set);
-	}
+		if(null == triggers){
+			triggers = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TRIGGER_NAME");
+			T trigger = triggers.get(name.toUpperCase());
+			if(null == trigger){
+				trigger = (T)new Trigger();
+			}
+			trigger.setName(name);
+			Table tab = new Table(row.getString("TABLE_NAME"));
+			tab.setSchema(row.getString("TABLE_OWNER"));
+			trigger.setTable(tab);
+			try{
+				boolean each = false;
+				//TRIGGER_NAME AFTER INSERT ON TABLE_NAME FOR EACH ROW
+				String des = row.getStringNvl("DESCRIPTION").toUpperCase();
+				if(des.contains("ROW")){
+					each = true;
+				}
+				trigger.setEach(each);
+				String[] tmps = des.split(" ");
+				trigger.setTime(org.anyline.entity.data.Trigger.TIME.valueOf(tmps[1]));
+				trigger.addEvent(org.anyline.entity.data.Trigger.EVENT.valueOf(tmps[2]));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			trigger.setDefinition(row.getString("TRIGGER_BODY"));
 
+			triggers.put(name.toUpperCase(), trigger);
+
+		}
+		return triggers;
+	}
 
 	/* *****************************************************************************************************************
 	 *
