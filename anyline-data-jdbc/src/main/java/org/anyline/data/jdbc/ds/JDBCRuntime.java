@@ -61,7 +61,13 @@ public class JDBCRuntime {
         }
         return adapter;
     }
-
+    public String datasource(){
+        String ds = key;
+        if("common".equals(ds)){
+            ds = DataSourceHolder.curDataSource();
+        }
+        return ds;
+    }
     public void setAdapter(JDBCAdapter adapter) {
         this.adapter = adapter;
     }

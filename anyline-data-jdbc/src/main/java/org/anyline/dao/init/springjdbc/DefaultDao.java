@@ -175,7 +175,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				} else {
 					src = prepare.getText();
 				}
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().getKey() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]";
 				log.warn(tmp);
 			}
 			if (run.isValid()) {
@@ -250,7 +250,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				} else {
 					src = prepare.getText();
 				}
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().getKey() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]";
 				log.warn(tmp);
 			}
 			PageNavi navi = run.getPageNavi();
@@ -370,7 +370,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().getKey() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]";
 				log.warn(tmp);
 			}
 			PageNavi navi = run.getPageNavi();
@@ -1573,7 +1573,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		Run run = adapter.buildExecuteRun(prepare, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().getKey() + "]");
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]");
 			}
 			return -1;
 		}
@@ -5294,7 +5294,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
 				.append("][thread:")
-				.append(Thread.currentThread().getId()).append("][ds:").append(runtime().getKey()).append("]");
+				.append(Thread.currentThread().getId()).append("][ds:").append(runtime().datasource()).append("]");
 		return builder.toString();
 	}
 

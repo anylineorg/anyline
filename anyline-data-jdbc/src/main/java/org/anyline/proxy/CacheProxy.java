@@ -141,7 +141,16 @@ public class CacheProxy {
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.curDataSource()+"_COLUMNS_" + table.toUpperCase();
+        String ds = DataSourceHolder.curDataSource();
+        if(null == ds){
+            String key =  "common_COLUMNS_" + table.toUpperCase();
+            if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
+                provider.remove(cache, key);
+            }else{
+                cache_metadatas.remove(key);
+            }
+        }
+        String key = ds+"_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
             provider.remove(cache, key);
         }else{
