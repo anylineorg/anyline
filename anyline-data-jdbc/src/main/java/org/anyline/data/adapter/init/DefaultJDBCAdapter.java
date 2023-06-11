@@ -3662,14 +3662,15 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append(" SPATIAL");
 		}
 		builder.append(" INDEX ").append(name)
-				.append(" ON ").append(index.getTableName())
-				.append("(");
+				.append(" ON ");//.append(index.getTableName());
+		name(builder, index.getTable());
+		builder.append("(");
 		int qty = 0;
 		for(Column column:index.getColumns().values()){
 			if(qty>0){
 				builder.append(",");
 			}
-			builder.append(column.getName());
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			String order = column.getOrder();
 			if(BasicUtil.isNotEmpty(order)){
 				builder.append(" ").append(order);
