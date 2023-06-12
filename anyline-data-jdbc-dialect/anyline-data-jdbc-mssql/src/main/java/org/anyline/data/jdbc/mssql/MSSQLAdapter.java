@@ -169,6 +169,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 	@Override
@@ -192,7 +193,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -236,7 +237,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.tables(index, create, catalog, schema, tables, set);
 	}
 	@Override
-	public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
@@ -555,7 +556,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -606,7 +607,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -661,6 +662,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 
@@ -1786,10 +1788,10 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(Trigger trigger) throws Exception
-	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
-	 * String buildDropRunSQL(Trigger trigger) throws Exception;
-	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
+	 * String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception
+	 * List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 * String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 * String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -1797,7 +1799,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(Trigger trigger) throws Exception{
+	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("CREATE TRIGGER ").append(trigger.getName());
 		builder.append(" ON ").append(trigger.getTableName());
@@ -1823,7 +1825,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Trigger trigger) throws Exception{
+	public List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
 		return null;
 	}
 
@@ -1833,7 +1835,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Trigger trigger) throws Exception{
+	public String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DROP TRIGGER ").append(trigger.getName());
 		return builder.toString();
@@ -1846,7 +1848,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Trigger trigger) throws Exception{
+	public String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
 		return null;
 	}
 

@@ -165,6 +165,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 	@Override
@@ -244,7 +245,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -334,7 +335,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return tables;
 	}
 	@Override
-	public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
 		ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
 
@@ -964,7 +965,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -1015,7 +1016,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -1069,6 +1070,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 

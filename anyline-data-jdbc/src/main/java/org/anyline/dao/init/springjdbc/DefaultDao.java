@@ -62,7 +62,9 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-
+import org.anyline.entity.data.Procedure;
+import org.anyline.entity.data.Function;
+import org.anyline.entity.data.Trigger;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -2192,6 +2194,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 
@@ -3494,10 +3497,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 ******************************************************************************************************************/
-
-
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events){
+	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events){
 		LinkedHashMap<String,T> triggers = new LinkedHashMap<>();
 		if(null == table){
 			table = new Table();
@@ -3529,6 +3530,63 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	/* *****************************************************************************************************************
+	 * 													procedure
+	 ******************************************************************************************************************/
+	@Override
+	public <T extends org.anyline.entity.data.Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name){
+		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		List<String> sqls = adapter.buildQueryProcedureRunSQL(catalog, schema, name);
+
+		if(null != sqls){
+			int idx = 0;
+			for(String sql:sqls){
+				if(BasicUtil.isNotEmpty(sql)) {
+					DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+					try {
+						procedures = adapter.procedures(idx, true, procedures, set);
+					}catch (Exception e){
+						if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+							e.printStackTrace();
+						}
+					}
+				}
+				idx ++;
+			}
+		}
+		return procedures;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 ******************************************************************************************************************/
+	@Override
+	public <T extends org.anyline.entity.data.Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name){
+		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		List<String> sqls = adapter.buildQueryFunctionRunSQL(catalog, schema, name);
+
+		if(null != sqls){
+			int idx = 0;
+			for(String sql:sqls){
+				if(BasicUtil.isNotEmpty(sql)) {
+					DataSet set = select(runtime, (String)null, sql, null).toUpperKey();
+					try {
+						functions = adapter.functions(idx, true, functions, set);
+					}catch (Exception e){
+						if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+							e.printStackTrace();
+						}
+					}
+				}
+				idx ++;
+			}
+		}
+		return functions;
+	}
+	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
@@ -3545,6 +3603,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 
@@ -5091,15 +5150,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	/* *****************************************************************************************************************
-	 *
-	 * 													trigger
-	 *
-	 * -----------------------------------------------------------------------------------------------------------------
-	 * 	boolean create(Trigger trigger) throws Exception;
-	 *  boolean alter(Trigger trigger) throws Exception;
-	 *  boolean drop(Trigger trigger) throws Exception;
-	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
 	 * 													trigger
@@ -5193,6 +5243,192 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
+
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(Procedure procedure) throws Exception
+	 * boolean alter(Procedure procedure) throws Exception
+	 * boolean drop(Procedure procedure) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Procedure procedure) throws Exception {
+		boolean result = false;
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, procedure);
+		String sql = adapter.buildCreateRunSQL(procedure);
+		if(BasicUtil.isNotEmpty(sql)) {
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+
+			boolean exe = true;
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[add procedure][procedure:{}][result:{}][执行耗时:{}ms]", random,  procedure.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
+	}
+
+
+	@Override
+	public boolean alter(Procedure procedure) throws Exception{
+		boolean result = true;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, procedure);
+		List<String> sqls = adapter.buildAlterRunSQL(procedure);
+
+		random = random();
+		for(String sql:sqls) {
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+					log.info("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[update procedure][procedure:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, procedure.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+	@Override
+	public boolean drop(Procedure procedure) throws Exception {
+		boolean result = false;
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		checkSchema(runtime, procedure);
+		String sql = adapter.buildDropRunSQL(procedure);
+		if(BasicUtil.isNotEmpty(sql)) {
+			String random = null;
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+			boolean exe = true;
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[drop procedure][procedure:{}][result:{}][执行耗时:{}ms]", random,  procedure.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(Function function) throws Exception
+	 * boolean alter(Function function) throws Exception
+	 * boolean drop(Function function) throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Function function) throws Exception {
+		boolean result = false;
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, function);
+		String sql = adapter.buildCreateRunSQL(function);
+		if(BasicUtil.isNotEmpty(sql)) {
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+
+			boolean exe = true;
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[add function][function:{}][result:{}][执行耗时:{}ms]", random,  function.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
+	}
+
+
+	@Override
+	public boolean alter(Function function) throws Exception{
+		boolean result = true;
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		String random = null;
+		checkSchema(runtime, function);
+		List<String> sqls = adapter.buildAlterRunSQL(function);
+
+		random = random();
+		for(String sql:sqls) {
+			if (BasicUtil.isNotEmpty(sql)) {
+				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+					log.info("{}[sql:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (exe) {
+					runtime.getTemplate().update(sql);
+					result = true;
+				}
+			}
+		}
+
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[update function][function:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, function.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+	@Override
+	public boolean drop(Function function) throws Exception {
+		boolean result = false;
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		long fr = System.currentTimeMillis();
+		checkSchema(runtime, function);
+		String sql = adapter.buildDropRunSQL(function);
+		if(BasicUtil.isNotEmpty(sql)) {
+			String random = null;
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				random = random();
+				log.info("{}[sql:\n{}\n]", random, sql);
+			}
+			boolean exe = true;
+			if (exe) {
+				runtime.getTemplate().update(sql);
+				result = true;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[drop function][function:{}][result:{}][执行耗时:{}ms]", random,  function.getName(), result, System.currentTimeMillis() - fr);
+			}
+		}
+		return result;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
@@ -5239,6 +5475,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != table){
 			checkSchema(runtime, table);
 		}
+	}
+
+	public void checkSchema(JDBCRuntime runtime, Procedure procedure){
+		Table table = new Table(procedure.getCatalog(), procedure.getSchema());
+		checkSchema(runtime, table);
+		procedure.setCatalog(table.getCatalog());
+		procedure.setSchema(table.getSchema());
+	}
+
+	public void checkSchema(JDBCRuntime runtime, Function function){
+		Table table = new Table(function.getCatalog(), function.getSchema());
+		checkSchema(runtime, table);
+		function.setCatalog(table.getCatalog());
+		function.setSchema(table.getSchema());
 	}
 
 

@@ -18,11 +18,12 @@
 
 
 package org.anyline.dao;
-
+import org.anyline.entity.data.Function;
+import org.anyline.entity.data.Procedure;
+import org.anyline.entity.data.Trigger;
 import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.entity.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -158,6 +159,7 @@ public interface AnylineDao<E>{
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
@@ -298,7 +300,20 @@ public interface AnylineDao<E>{
 	 * 													trigger
 	 ******************************************************************************************************************/
 
-	<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+	<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+
+
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 ******************************************************************************************************************/
+
+	<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name);
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 ******************************************************************************************************************/
+
+	<T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name);
 
 
 
@@ -321,6 +336,7 @@ public interface AnylineDao<E>{
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
@@ -408,4 +424,28 @@ public interface AnylineDao<E>{
 	boolean create(Trigger trigger) throws Exception;
 	boolean alter(Trigger trigger) throws Exception;
 	boolean drop(Trigger trigger) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 ******************************************************************************************************************/
+	/**
+	 * 触发器
+	 * @param procedure 存储过程
+	 * @return boolean
+	 * @throws Exception 异常 Exception
+	 */
+	boolean create(Procedure procedure) throws Exception;
+	boolean alter(Procedure procedure) throws Exception;
+	boolean drop(Procedure procedure) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 ******************************************************************************************************************/
+	/**
+	 * 函数
+	 * @param function 函数
+	 * @return boolean
+	 * @throws Exception 异常 Exception
+	 */
+	boolean create(Function function) throws Exception;
+	boolean alter(Function function) throws Exception;
+	boolean drop(Function function) throws Exception;
 } 

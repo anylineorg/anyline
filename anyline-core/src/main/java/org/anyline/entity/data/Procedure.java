@@ -81,5 +81,9 @@ public interface Procedure {
 	public Procedure setNavi(PageNavi navi);
 	public PageNavi getNavi();
 
+	public void setCatalog(String schema);
+	public String getCatalog();
+	public void setSchema(String schema);
+	public String getSchema();
 
 } 

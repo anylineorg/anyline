@@ -19,7 +19,9 @@
 
 package org.anyline.data.adapter;
 
-import javafx.util.Builder;
+import org.anyline.entity.data.Trigger;
+import org.anyline.entity.data.Procedure;
+import org.anyline.entity.data.Function;
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.dao.AnylineDao;
@@ -393,6 +395,7 @@ public interface JDBCAdapter {
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 	void checkSchema(DataSource dataSource, Table table);
@@ -468,7 +471,7 @@ public interface JDBCAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -863,9 +866,25 @@ public interface JDBCAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	<T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
+	<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
 
 
+
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 ******************************************************************************************************************/
+
+	List<String> buildQueryProcedureRunSQL(String catalog, String schema, String name) ;
+
+	<T extends org.anyline.entity.data.Procedure> LinkedHashMap<String, T> procedures(int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 ******************************************************************************************************************/
+
+	List<String> buildQueryFunctionRunSQL(String catalog, String schema, String name) ;
+
+	<T extends org.anyline.entity.data.Function> LinkedHashMap<String, T> functions(int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 *
@@ -884,6 +903,7 @@ public interface JDBCAdapter {
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 
@@ -1596,7 +1616,7 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildCreateRunSQL(Trigger trigger) throws Exception;
+	String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
 	void each(StringBuilder builder, Trigger trigger);
 
 	/**
@@ -1605,14 +1625,14 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return List
 	 */
-	List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
+	List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
 
 	/**
 	 * 删除触发器
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildDropRunSQL(Trigger trigger) throws Exception;
+	String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
 
 	/**
 	 * 修改触发器名
@@ -1620,7 +1640,75 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildRenameRunSQL(Trigger trigger) throws Exception;
+	String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+
+
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 ******************************************************************************************************************/
+	/**
+	 * 添加存储过程
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	String buildCreateRunSQL(Procedure procedure) throws Exception;
+
+	/**
+	 * 修改存储过程
+	 * 有可能生成多条SQL
+	 * @param procedure 存储过程
+	 * @return List
+	 */
+	List<String> buildAlterRunSQL(Procedure procedure) throws Exception;
+
+	/**
+	 * 删除存储过程
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	String buildDropRunSQL(Procedure procedure) throws Exception;
+
+	/**
+	 * 修改存储过程名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	String buildRenameRunSQL(Procedure procedure) throws Exception;
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加函数
+	 * @param function 函数
+	 * @return String
+	 */
+	String buildCreateRunSQL(Function function) throws Exception;
+
+	/**
+	 * 修改函数
+	 * 有可能生成多条SQL
+	 * @param function 函数
+	 * @return List
+	 */
+	List<String> buildAlterRunSQL(Function function) throws Exception;
+
+	/**
+	 * 删除函数
+	 * @param function 函数
+	 * @return String
+	 */
+	String buildDropRunSQL(Function function) throws Exception;
+
+	/**
+	 * 修改函数名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param function 函数
+	 * @return String
+	 */
+	String buildRenameRunSQL(Function function) throws Exception;
 	/* *****************************************************************************************************************
 	 *
 	 * 													common

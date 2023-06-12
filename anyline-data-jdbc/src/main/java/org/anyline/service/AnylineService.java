@@ -18,7 +18,7 @@
 
 
 package org.anyline.service;
-
+import org.anyline.entity.data.Function;
 import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.entity.Procedure;
@@ -730,6 +730,7 @@ public interface AnylineService<E>{
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 	interface MetaDataService{
 
@@ -903,8 +904,8 @@ public interface AnylineService<E>{
 		PartitionTable ptable(boolean greedy, String schema, String master, String name);
 		PartitionTable ptable(boolean greedy, String master, String name);
 
-		<T extends PartitionTable>LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags, String name);
-		<T extends PartitionTable>LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags, String name);
+		<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags);
 
 		PartitionTable ptable(String catalog, String schema, String master, String name);
 		PartitionTable ptable(String schema, String master, String name);
@@ -1043,18 +1044,18 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													trigger
 		 ******************************************************************************************************************/
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy);
 
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(String name, List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers(List<Trigger.EVENT> events);
-		<T extends Trigger> LinkedHashMap<String, T> triggers();
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String name, List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(List<Trigger.EVENT> events);
+		<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers();
 
 
 		Trigger trigger(boolean greedy, String catalog, String schema, String name);
@@ -1070,14 +1071,14 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name);
-		<T extends Procedure>LinkedHashMap<String, T> procedures(boolean greedy, String schema, String name);
-		<T extends Procedure>LinkedHashMap<String, T> procedures(boolean greedy, String name);
-		<T extends Procedure>LinkedHashMap<String, T> procedures(boolean greedy);
+		<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String schema, String name);
+		<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String name);
+		<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy);
 
-		<T extends Procedure>LinkedHashMap<String, T> procedures(String catalog, String schema, String name);
-		<T extends Procedure>LinkedHashMap<String, T> procedures(String schema, String name);
-		<T extends Procedure>LinkedHashMap<String, T> procedures(String name);
-		<T extends Procedure>LinkedHashMap<String, T> procedures();
+		<T extends Procedure> LinkedHashMap<String, T> procedures(String catalog, String schema, String name);
+		<T extends Procedure> LinkedHashMap<String, T> procedures(String schema, String name);
+		<T extends Procedure> LinkedHashMap<String, T> procedures(String name);
+		<T extends Procedure> LinkedHashMap<String, T> procedures();
 
 
 		Procedure procedure(boolean greedy, String catalog, String schema, String name);
@@ -1087,6 +1088,29 @@ public interface AnylineService<E>{
 		Procedure procedure(String catalog, String schema, String name);
 		Procedure procedure(String schema, String name);
 		Procedure procedure(String name);
+
+		/* *****************************************************************************************************************
+		 * 													function
+		 ******************************************************************************************************************/
+
+		<T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name);
+		<T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String schema, String name);
+		<T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String name);
+		<T extends Function> LinkedHashMap<String, T> functions(boolean greedy);
+
+		<T extends Function> LinkedHashMap<String, T> functions(String catalog, String schema, String name);
+		<T extends Function> LinkedHashMap<String, T> functions(String schema, String name);
+		<T extends Function> LinkedHashMap<String, T> functions(String name);
+		<T extends Function> LinkedHashMap<String, T> functions();
+
+
+		Function function(boolean greedy, String catalog, String schema, String name);
+		Function function(boolean greedy, String schema, String name);
+		Function function(boolean greedy, String name);
+
+		Function function(String catalog, String schema, String name);
+		Function function(String schema, String name);
+		Function function(String name);
 
 	}
 
@@ -1109,6 +1133,7 @@ public interface AnylineService<E>{
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 	interface DDLService{
@@ -1227,6 +1252,19 @@ public interface AnylineService<E>{
 		boolean drop(Constraint constraint) throws Exception;
 
 		/* *****************************************************************************************************************
+		 * 													trigger
+		 ******************************************************************************************************************/
+		/**
+		 * 触发器
+		 * @param trigger 触发器
+		 * @return trigger
+		 * @throws Exception 异常 Exception
+		 */
+		boolean create(Trigger trigger) throws Exception;
+		boolean alter(Trigger trigger) throws Exception;
+		boolean drop(Trigger trigger) throws Exception;
+
+		/* *****************************************************************************************************************
 		 * 													procedure
 		 ******************************************************************************************************************/
 		/**
@@ -1240,16 +1278,17 @@ public interface AnylineService<E>{
 		boolean drop(Procedure procedure) throws Exception;
 
 		/* *****************************************************************************************************************
-		 * 													trigger
+		 * 													function
 		 ******************************************************************************************************************/
 		/**
-		 * 触发器
-		 * @param trigger 触发器
-		 * @return trigger
+		 * 函数
+		 * @param function 函数
+		 * @return boolean
 		 * @throws Exception 异常 Exception
 		 */
-		boolean create(Trigger trigger) throws Exception;
-		boolean alter(Trigger trigger) throws Exception;
-		boolean drop(Trigger trigger) throws Exception;
+		boolean create(Function function) throws Exception;
+		boolean alter(Function function) throws Exception;
+		boolean drop(Function function) throws Exception;
+
 	}
 }

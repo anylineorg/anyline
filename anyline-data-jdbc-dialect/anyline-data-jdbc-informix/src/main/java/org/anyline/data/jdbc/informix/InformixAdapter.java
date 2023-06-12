@@ -410,6 +410,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 
@@ -419,7 +420,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -472,7 +473,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return tables;
 	}
 	@Override
-	public <T extends Table>LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
 	}
 
@@ -907,7 +908,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -933,7 +934,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		return super.triggers(index, create, table, triggers, set);
 	}
 
@@ -956,6 +957,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
 
@@ -2028,6 +2030,152 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return super.buildRenameRunSQL(constraint);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													trigger
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception
+	 * List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 * String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 * String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 添加触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+		return buildCreateRunSQL(trigger);
+	}
+	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
+		super.each(builder, trigger);
+	}
+	/**
+	 * 修改触发器
+	 * 有可能生成多条SQL
+	 * @param trigger 触发器
+	 * @return List
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+		return super.buildAlterRunSQL(trigger);
+	}
+
+	/**
+	 * 删除触发器
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+		return super.buildDropRunSQL(trigger);
+	}
+
+	/**
+	 * 修改触发器名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param trigger 触发器
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+		return super.buildRenameRunSQL(trigger);
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(Procedure procedure) throws Exception
+	 * List<String> buildAlterRunSQL(Procedure procedure) throws Exception;
+	 * String buildDropRunSQL(Procedure procedure) throws Exception;
+	 * String buildRenameRunSQL(Procedure procedure) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 添加存储过程
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildCreateRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildCreateRunSQL(procedure);
+	}
+
+	/**
+	 * 修改存储过程
+	 * 有可能生成多条SQL
+	 * @param procedure 存储过程
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildAlterRunSQL(procedure);
+	}
+
+	/**
+	 * 删除存储过程
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildDropRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildDropRunSQL(procedure);
+	}
+
+	/**
+	 * 修改存储过程名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildRenameRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildRenameRunSQL(procedure);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(Function function) throws Exception
+	 * List<String> buildAlterRunSQL(Function function) throws Exception;
+	 * String buildDropRunSQL(Function function) throws Exception;
+	 * String buildRenameRunSQL(Function function) throws Exception;
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加函数
+	 * @param function 函数
+	 * @return String
+	 */
+	public String buildCreateRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildCreateRunSQL(function);
+	}
+
+	/**
+	 * 修改函数
+	 * 有可能生成多条SQL
+	 * @param function 函数
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildAlterRunSQL(function);
+	}
+
+	/**
+	 * 删除函数
+	 * @param function 函数
+	 * @return String
+	 */
+	public String buildDropRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildDropRunSQL(function);
+	}
+
+	/**
+	 * 修改函数名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param function 函数
+	 * @return String
+	 */
+	public String buildRenameRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildRenameRunSQL(function);
+	}
+
 
 	/* *****************************************************************************************************************
 	 *
@@ -2094,15 +2242,6 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		return null;
 	}
-
-
-
-
-	/* *****************************************************************************************************************
-	 *
-	 * 														common
-	 *
-	 *  *****************************************************************************************************************/
 
 
 }

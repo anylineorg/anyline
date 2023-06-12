@@ -47,7 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
+import org.anyline.entity.data.Function;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -2452,9 +2452,9 @@ public class DefaultService<E> implements AnylineService<E> {
          * -----------------------------------------------------------------------------------------------------------------
          * LinkedHashMap<String,Database> databases();
          ******************************************************************************************************************/
-        
-    @Override 
-    public LinkedHashMap<String, Database> databases() {
+
+        @Override
+        public LinkedHashMap<String, Database> databases() {
             return dao.databases();
         }
 
@@ -2472,85 +2472,85 @@ public class DefaultService<E> implements AnylineService<E> {
          * Table table(String name)
          ******************************************************************************************************************/
         
-    @Override 
-    public boolean exists(boolean greedy, Table table) {
+        @Override
+        public boolean exists(boolean greedy, Table table) {
             if (null != table(greedy, table.getCatalog(), table.getSchema(), table.getName())) {
                 return true;
             }
             return false;
         }
 
-        
-    @Override 
-    public boolean exists(Table table) {
-            return exists(false, table);
-        }
 
-        
-    @Override 
-    public <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String schema, String name, String types) {
+        @Override
+        public boolean exists(Table table) {
+                return exists(false, table);
+            }
+
+
+        @Override
+        public <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String schema, String name, String types) {
             return tables(greedy, null, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String name, String types) {
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String name, String types) {
             return tables(greedy, null, null, name, types);
         }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String types) {
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String types) {
             return tables(greedy, null, types);
         }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy) {
-            return tables(greedy, null);
-        }
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy) {
+                return tables(greedy, null);
+            }
 
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types) {
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types) {
             return dao.tables(greedy, catalog, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(String schema, String name, String types) {
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(String schema, String name, String types) {
             return tables(false, null, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(String name, String types) {
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(String name, String types) {
             return tables(false, null, null, name, types);
         }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(String types) {
-            return tables(false, null, types);
-        }
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables() {
-            return tables(false, null);
-        }
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(String types) {
+                return tables(false, null, types);
+            }
 
 
-        
-    @Override 
-    public <T extends Table>  LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types) {
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables() {
+                return tables(false, null);
+            }
+
+
+
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types) {
             return dao.tables(false, catalog, schema, name, types);
         }
 
-        
-    @Override 
-    public Table table(boolean greedy, String catalog, String schema, String name, boolean struct) {
+
+        @Override
+        public Table table(boolean greedy, String catalog, String schema, String name, boolean struct) {
             Table table = null;
             LinkedHashMap<String, Table> tables = tables(greedy, catalog, schema, name, null);
             if (tables.size() > 0) {
@@ -2575,71 +2575,71 @@ public class DefaultService<E> implements AnylineService<E> {
             return table;
         }
 
-        
-    @Override 
-    public Table table(boolean greedy, String catalog, String schema, String name) {
+
+        @Override
+        public Table table(boolean greedy, String catalog, String schema, String name) {
             return table(greedy, catalog, schema, name, true);
         }
-        
-    @Override 
-    public Table table(boolean greedy, String schema, String name, boolean struct) {
+
+        @Override
+        public Table table(boolean greedy, String schema, String name, boolean struct) {
             return table(greedy, null, schema, name, struct);
         }
 
-        
-    @Override 
-    public Table table(boolean greedy, String name, boolean struct) {
+
+        @Override
+        public Table table(boolean greedy, String name, boolean struct) {
             return table(greedy, null, null, name, struct);
         }
 
 
-        
-    @Override 
-    public Table table(String catalog, String schema, String name, boolean struct) {
+
+        @Override
+        public Table table(String catalog, String schema, String name, boolean struct) {
             return table(false, catalog, schema, name, struct);
         }
 
-        
-    @Override 
-    public Table table(String schema, String name, boolean struct) {
+
+        @Override
+        public Table table(String schema, String name, boolean struct) {
             return table(false, null, schema, name, struct);
         }
 
-        
-    @Override 
-    public Table table(String name, boolean struct) {
-            return table(false, null, null, name, struct);
-        }
+
+        @Override
+        public Table table(String name, boolean struct) {
+                return table(false, null, null, name, struct);
+            }
 
 
-        
-    @Override 
-    public Table table(boolean greedy, String schema, String name) {
+
+        @Override
+        public Table table(boolean greedy, String schema, String name) {
             return table(greedy, null, schema, name, true);
         }
 
-        
-    @Override 
-    public Table table(boolean greedy, String name) {
-            return table(greedy, null, null, name, false);
-        }
+
+        @Override
+        public Table table(boolean greedy, String name) {
+                return table(greedy, null, null, name, false);
+            }
 
 
-        
-    @Override 
-    public Table table(String catalog, String schema, String name) {
+
+        @Override
+        public Table table(String catalog, String schema, String name) {
             return table(false, catalog, schema, name, true);
         }
 
-        
-    @Override 
-    public Table table(String schema, String name) {
-            return table(false, null, schema, name, true);
-        }
 
-        
-    @Override 
-    public Table table(String name) {
+        @Override
+        public Table table(String schema, String name) {
+                return table(false, null, schema, name, true);
+            }
+
+
+        @Override
+        public Table table(String name) {
             return table(false, null, null, name, true);
         }
 
@@ -2658,85 +2658,85 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public boolean exists(boolean greedy, View view) {
+        @Override
+        public boolean exists(boolean greedy, View view) {
             if (null != view(greedy, view.getCatalog(), view.getSchema(), view.getName())) {
                 return true;
             }
             return false;
         }
 
-        
-    @Override 
-    public boolean exists(View view) {
-            return exists(false, view);
-        }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String schema, String name, String types) {
+        @Override
+        public boolean exists(View view) {
+                return exists(false, view);
+            }
+
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String schema, String name, String types) {
             return views(greedy, null, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, String types) {
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, String types) {
             return views(greedy, null, null, name, types);
         }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String types) {
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String types) {
             return views(greedy, null, types);
         }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(boolean greedy) {
-            return views(greedy, null);
-        }
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(boolean greedy) {
+                return views(greedy, null);
+            }
 
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String catalog, String schema, String name, String types) {
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, String catalog, String schema, String name, String types) {
             return dao.views(greedy, catalog, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(String schema, String name, String types) {
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(String schema, String name, String types) {
             return views(false, null, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(String name, String types) {
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(String name, String types) {
             return views(false, null, null, name, types);
         }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(String types) {
-            return views(false, null, types);
-        }
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views() {
-            return views(false, null);
-        }
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(String types) {
+                return views(false, null, types);
+            }
 
 
-        
-    @Override 
-    public <T extends View> LinkedHashMap<String, T> views(String catalog, String schema, String name, String types) {
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views() {
+                return views(false, null);
+            }
+
+
+
+        @Override
+        public <T extends View> LinkedHashMap<String, T> views(String catalog, String schema, String name, String types) {
             return dao.views(false, catalog, schema, name, types);
         }
 
-        
-    @Override 
-    public View view(boolean greedy, String catalog, String schema, String name) {
+
+        @Override
+        public View view(boolean greedy, String catalog, String schema, String name) {
             View view = null;
             LinkedHashMap<String, View> views = views(greedy, catalog, schema, name, null);
             if (views.size() > 0) {
@@ -2748,34 +2748,34 @@ public class DefaultService<E> implements AnylineService<E> {
             return view;
         }
 
-        
-    @Override 
-    public View view(boolean greedy, String schema, String name) {
-            return view(greedy, null, schema, name);
-        }
 
-        
-    @Override 
-    public View view(boolean greedy, String name) {
-            return view(greedy, null, null, name);
-        }
+        @Override
+        public View view(boolean greedy, String schema, String name) {
+                return view(greedy, null, schema, name);
+            }
 
 
-        
-    @Override 
-    public View view(String catalog, String schema, String name) {
-            return view(false, catalog, schema, name);
-        }
+        @Override
+        public View view(boolean greedy, String name) {
+                return view(greedy, null, null, name);
+            }
 
-        
-    @Override 
-    public View view(String schema, String name) {
-            return view(false, null, schema, name);
-        }
 
-        
-    @Override 
-    public View view(String name) {
+
+        @Override
+        public View view(String catalog, String schema, String name) {
+                return view(false, catalog, schema, name);
+            }
+
+
+        @Override
+        public View view(String schema, String name) {
+                return view(false, null, schema, name);
+            }
+
+
+        @Override
+        public View view(String name) {
             return view(false, null, null, name);
         }
         /* *****************************************************************************************************************
@@ -2792,82 +2792,82 @@ public class DefaultService<E> implements AnylineService<E> {
          * MasterTable mtable(String name)
          ******************************************************************************************************************/
 
-        
-    @Override 
-    public boolean exists(boolean greedy, MasterTable table) {
-            return false;
-        }
 
-        
-    @Override 
-    public boolean exists(MasterTable table) {
-            return false;
-        }
+        @Override
+        public boolean exists(boolean greedy, MasterTable table) {
+                return false;
+            }
 
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String catalog, String schema, String name, String types) {
+        @Override
+        public boolean exists(MasterTable table) {
+                return false;
+            }
+
+
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String catalog, String schema, String name, String types) {
             return dao.mtables(greedy, catalog, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String schema, String name, String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String schema, String name, String types) {
             return mtables(greedy, null, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types) {
             return mtables(greedy, null, null, name, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types) {
             return mtables(greedy, null, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy) {
             return mtables(greedy, "STABLE");
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(String catalog, String schema, String name, String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(String catalog, String schema, String name, String types) {
             return dao.mtables(false, catalog, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(String schema, String name, String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(String schema, String name, String types) {
             return mtables(false, null, schema, name, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types) {
             return mtables(false, null, null, name, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables(String types) {
+
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables(String types) {
             return mtables(false, null, types);
         }
 
-        
-    @Override 
-    public <T extends MasterTable> LinkedHashMap<String, T> mtables() {
-            return mtables(false, "STABLE");
-        }
 
-        
-    @Override 
-    public MasterTable mtable(boolean greedy, String catalog, String schema, String name) {
+        @Override
+        public <T extends MasterTable> LinkedHashMap<String, T> mtables() {
+                return mtables(false, "STABLE");
+            }
+
+
+        @Override
+        public MasterTable mtable(boolean greedy, String catalog, String schema, String name) {
             LinkedHashMap<String, MasterTable> tables = mtables(greedy, catalog, schema, name, "STABLE");
             if (tables.size() == 0) {
                 return null;
@@ -2880,32 +2880,32 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         
-    @Override 
-    public MasterTable mtable(boolean greedy, String schema, String name) {
+        @Override
+        public MasterTable mtable(boolean greedy, String schema, String name) {
             return mtable(greedy, null, schema, name);
         }
 
-        
-    @Override 
-    public MasterTable mtable(boolean greedy, String name) {
-            return mtable(greedy, null, null, name);
-        }
 
-        
-    @Override 
-    public MasterTable mtable(String catalog, String schema, String name) {
+        @Override
+        public MasterTable mtable(boolean greedy, String name) {
+                return mtable(greedy, null, null, name);
+            }
+
+
+        @Override
+        public MasterTable mtable(String catalog, String schema, String name) {
             return mtable(false, catalog, schema, name);
         }
 
-        
-    @Override 
-    public MasterTable mtable(String schema, String name) {
-            return mtable(false, null, schema, name);
-        }
 
-        
-    @Override 
-    public MasterTable mtable(String name) {
+        @Override
+        public MasterTable mtable(String schema, String name) {
+                return mtable(false, null, schema, name);
+            }
+
+
+        @Override
+        public MasterTable mtable(String name) {
             return mtable(false, null, null, name);
         }
 
@@ -2926,105 +2926,105 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public boolean exists(boolean greedy, PartitionTable table) {
-            return false;
-        }
-
-        
-    @Override 
-    public boolean exists(PartitionTable table) {
-            return false;
-        }
+        @Override
+        public boolean exists(boolean greedy, PartitionTable table) {
+                return false;
+            }
 
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String catalog, String schema, String master, String name) {
+        @Override
+        public boolean exists(PartitionTable table) {
+                return false;
+            }
+
+
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String catalog, String schema, String master, String name) {
             return dao.ptables(greedy, catalog, schema, master, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String schema, String master, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String schema, String master, String name) {
             return ptables(greedy, null, schema, master, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name) {
             return ptables(greedy, null, null, master, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master) {
             return ptables(greedy, null, null, master, null);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master) {
             return dao.ptables(greedy, master);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags) {
             return dao.ptables(greedy, master, tags);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
             return dao.ptables(greedy, master, tags, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String catalog, String schema, String master, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String catalog, String schema, String master, String name) {
             return dao.ptables(false, catalog, schema, master, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String schema, String master, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String schema, String master, String name) {
             return ptables(false, null, schema, master, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name) {
             return ptables(false, null, null, master, name);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master) {
             return ptables(false, null, null, master, null);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master) {
             return dao.ptables(false, master);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags) {
             return dao.ptables(false, master, tags);
         }
 
-        
-    @Override 
-    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags, String name) {
+
+        @Override
+        public <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags, String name) {
             return dao.ptables(false, master, tags, name);
         }
 
-        
-    @Override 
-    public PartitionTable ptable(boolean greedy, String catalog, String schema, String master, String name) {
+
+        @Override
+        public PartitionTable ptable(boolean greedy, String catalog, String schema, String master, String name) {
             LinkedHashMap<String, PartitionTable> tables = ptables(greedy, catalog, schema, master, name);
             if (tables.size() == 0) {
                 return null;
@@ -3036,33 +3036,33 @@ public class DefaultService<E> implements AnylineService<E> {
             return table;
         }
 
-        
-    @Override 
-    public PartitionTable ptable(boolean greedy, String schema, String master, String name) {
+
+        @Override
+        public PartitionTable ptable(boolean greedy, String schema, String master, String name) {
             return ptable(greedy, null, schema, master, name);
         }
 
-        
-    @Override 
-    public PartitionTable ptable(boolean greedy, String master, String name) {
+
+        @Override
+        public PartitionTable ptable(boolean greedy, String master, String name) {
             return ptable(greedy, null, null, master, name);
         }
 
-        
-    @Override 
-    public PartitionTable ptable(String catalog, String schema, String master, String name) {
+
+        @Override
+        public PartitionTable ptable(String catalog, String schema, String master, String name) {
             return ptable(false, catalog, schema, master, name);
         }
 
-        
-    @Override 
-    public PartitionTable ptable(String schema, String master, String name) {
+
+        @Override
+        public PartitionTable ptable(String schema, String master, String name) {
             return ptable(false, null, schema, master, name);
         }
 
-        
-    @Override 
-    public PartitionTable ptable(String master, String name) {
+
+        @Override
+        public PartitionTable ptable(String master, String name) {
             return ptable(false, null, null, master, name);
         }
 
@@ -3080,9 +3080,9 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String,Column> column(String table, String name);
          * LinkedHashMap<String,Column> column(String catalog, String schema, String table, String name);
          ******************************************************************************************************************/
-        
-    @Override 
-    public boolean exists(boolean greedy, Column column) {
+
+        @Override
+        public boolean exists(boolean greedy, Column column) {
             try {
                 Table table = table(greedy, column.getCatalog(), column.getSchema(), column.getTableName());
                 if (null != table) {
@@ -3096,9 +3096,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return false;
         }
 
-        
-    @Override 
-    public boolean exists(boolean greedy, Table table, String column) {
+
+        @Override
+        public boolean exists(boolean greedy, Table table, String column) {
             try {
                 LinkedHashMap<String, Column> columns = table.getColumns();
                 if (null == columns && columns.isEmpty()) {
@@ -3113,9 +3113,9 @@ public class DefaultService<E> implements AnylineService<E> {
             return false;
         }
 
-        
-    @Override 
-    public boolean exists(boolean greedy, String table, String column) {
+
+        @Override
+        public boolean exists(boolean greedy, String table, String column) {
             try {
                 LinkedHashMap<String, Column> columns = columns(greedy, table);
                 if (columns.containsKey(column.toUpperCase())) {
@@ -3127,8 +3127,8 @@ public class DefaultService<E> implements AnylineService<E> {
             return false;
         }
 
-    @Override 
-    public boolean exists(boolean greedy, String catalog, String schema, String table, String column) {
+        @Override
+        public boolean exists(boolean greedy, String catalog, String schema, String table, String column) {
             try {
                 LinkedHashMap<String, Column> columns = columns(greedy, catalog, schema, table);
                 if (columns.containsKey(column.toUpperCase())) {
@@ -3140,52 +3140,51 @@ public class DefaultService<E> implements AnylineService<E> {
             return false;
         }
 
-        
-    @Override 
-    public boolean exists(Column column) {
-            return exists(false, column);
-        }
 
-        
-    @Override 
-    public boolean exists(Table table, String column) {
-            return exists(false, table, column);
-        }
+        @Override
+        public boolean exists(Column column) {
+                return exists(false, column);
+            }
 
-        
-    @Override 
-    public boolean exists(String table, String column) {
-            return exists(false, table, column);
-        }
 
-    @Override 
-    public boolean exists(String catalog, String schema, String table, String column) {
+        @Override
+        public boolean exists(Table table, String column) {
+                return exists(false, table, column);
+            }
+
+
+        @Override
+        public boolean exists(String table, String column) {
+                return exists(false, table, column);
+            }
+
+        @Override
+        public boolean exists(String catalog, String schema, String table, String column) {
             return exists(false, catalog, schema, table, column);
         }
 
 
-        
-    @Override 
-    public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table) {
+
+        @Override
+        public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table) {
             return columns(greedy, null, null, table);
         }
 
-        
-    @Override 
-    public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
+
+        @Override
+        public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
             LinkedHashMap<String, T> columns = dao.columns(greedy, table);
             return columns;
-
         }
 
-        
-    @Override 
-    public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String catalog, String schema, String table) {
             return columns(greedy, new Table(catalog, schema, table));
         }
 
-    @Override 
-    public Column column(boolean greedy, Table table, String name) {
+        @Override
+        public Column column(boolean greedy, Table table, String name) {
             Column column = null;
             LinkedHashMap<String, Column> columns = table.getColumns();
             if (null == columns && columns.isEmpty()) {
@@ -3195,8 +3194,8 @@ public class DefaultService<E> implements AnylineService<E> {
             return column;
         }
 
-    @Override 
-    public Column column(boolean greedy, String table, String name) {
+        @Override
+        public Column column(boolean greedy, String table, String name) {
             Column column = null;
             LinkedHashMap<String, Column> columns = columns(greedy, table);
             column = columns.get(name.toUpperCase());
@@ -3204,8 +3203,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
         }
 
-    @Override 
-    public Column column(boolean greedy, String catalog, String schema, String table, String name) {
+        @Override
+        public Column column(boolean greedy, String catalog, String schema, String table, String name) {
             Column column = null;
             LinkedHashMap<String, Column> columns = columns(greedy, catalog, schema, table);
             column = columns.get(name.toUpperCase());
@@ -3213,37 +3212,36 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
 
-        
-    @Override 
-    public <T extends Column> LinkedHashMap<String, T> columns(String table) {
+
+        @Override
+        public <T extends Column> LinkedHashMap<String, T> columns(String table) {
             return columns(false, null, null, table);
         }
 
-        
-    @Override 
-    public <T extends Column> LinkedHashMap<String, T> columns(Table table) {
-            return columns(false, table);
-        }
 
-        
-    @Override 
-    public <T extends Column> LinkedHashMap<String, T> columns(String catalog, String schema, String table) {
+        @Override
+        public <T extends Column> LinkedHashMap<String, T> columns(Table table) {
+                return columns(false, table);
+            }
+
+
+        @Override
+        public <T extends Column> LinkedHashMap<String, T> columns(String catalog, String schema, String table) {
             return columns(false, new Table(catalog, schema, table));
         }
 
-    @Override 
-    public Column column(Table table, String name) {
+        @Override
+        public Column column(Table table, String name) {
+                return column(false, table, name);
+            }
+
+        @Override
+        public Column column(String table, String name) {
             return column(false, table, name);
         }
 
-    @Override 
-    public Column column(String table, String name) {
-            return column(false, table, name);
-
-        }
-
-    @Override 
-    public Column column(String catalog, String schema, String table, String name) {
+        @Override
+        public Column column(String catalog, String schema, String table, String name) {
             return column(false, catalog, schema, table, name);
         }
         /* *****************************************************************************************************************
@@ -3254,39 +3252,39 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String,Tag> tags(Table table)
          ******************************************************************************************************************/
 
-        
-    @Override 
-    public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table) {
             return tags(greedy, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table) {
+
+        @Override
+        public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table) {
             return tags(greedy, null, null, table);
         }
 
-        
-    @Override 
-    public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table) {
+
+        @Override
+        public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table) {
             return dao.tags(greedy, table);
         }
 
-        
-    @Override 
-    public <T extends Tag> LinkedHashMap<String, T> tags(String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Tag> LinkedHashMap<String, T> tags(String catalog, String schema, String table) {
             return tags(false, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public <T extends Tag> LinkedHashMap<String, T> tags(String table) {
-            return tags(false, null, null, table);
-        }
 
-        
-    @Override 
-    public <T extends Tag> LinkedHashMap<String, T> tags(Table table) {
+        @Override
+        public <T extends Tag> LinkedHashMap<String, T> tags(String table) {
+                return tags(false, null, null, table);
+            }
+
+
+        @Override
+        public <T extends Tag> LinkedHashMap<String, T> tags(Table table) {
             return tags(false, table);
         }
 
@@ -3297,39 +3295,39 @@ public class DefaultService<E> implements AnylineService<E> {
          * PrimaryKey primary(String table)
          * PrimaryKey primary(String catalog, String schema, String table)
          ******************************************************************************************************************/
-        
-    @Override 
-    public PrimaryKey primary(boolean greedy, Table table) {
-            return dao.primary(greedy, table);
-        }
 
-        
-    @Override 
-    public PrimaryKey primary(boolean greedy, String table) {
-            return primary(greedy, new Table(table));
-        }
+        @Override
+        public PrimaryKey primary(boolean greedy, Table table) {
+                return dao.primary(greedy, table);
+            }
 
-        
-    @Override 
-    public PrimaryKey primary(boolean greedy, String catalog, String schema, String table) {
+
+        @Override
+        public PrimaryKey primary(boolean greedy, String table) {
+                return primary(greedy, new Table(table));
+            }
+
+
+        @Override
+        public PrimaryKey primary(boolean greedy, String catalog, String schema, String table) {
             return primary(greedy, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public PrimaryKey primary(Table table) {
-            return dao.primary(false, table);
-        }
 
-        
-    @Override 
-    public PrimaryKey primary(String table) {
-            return primary(false, new Table(table));
-        }
+        @Override
+        public PrimaryKey primary(Table table) {
+                return dao.primary(false, table);
+            }
 
-        
-    @Override 
-    public PrimaryKey primary(String catalog, String schema, String table) {
+
+        @Override
+        public PrimaryKey primary(String table) {
+                return primary(false, new Table(table));
+            }
+
+
+        @Override
+        public PrimaryKey primary(String catalog, String schema, String table) {
             return primary(false, new Table(catalog, schema, table));
         }
 
@@ -3338,44 +3336,44 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table) {
+        @Override
+        public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table) {
             return dao.foreigns(greedy, table);
         }
 
-        
-    @Override 
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, String table) {
+
+        @Override
+        public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, String table) {
             return foreigns(greedy, new Table(table));
         }
 
-        
-    @Override 
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, String catalog, String schema, String table) {
+
+        @Override
+        public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, String catalog, String schema, String table) {
             return foreigns(greedy, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(Table table) {
-            return foreigns(false, table);
-        }
 
-        
-    @Override 
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(String table) {
+        @Override
+        public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(Table table) {
+                return foreigns(false, table);
+            }
+
+
+        @Override
+        public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(String table) {
             return foreigns(false, new Table(table));
         }
 
-        
-    @Override 
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(String catalog, String schema, String table) {
+
+        @Override
+        public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(String catalog, String schema, String table) {
             return foreigns(false, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public ForeignKey foreign(boolean greedy, Table table, List<String> columns) {
+
+        @Override
+        public ForeignKey foreign(boolean greedy, Table table, List<String> columns) {
             if(null == columns || columns.size() ==0){
                 return null;
             }
@@ -3392,64 +3390,64 @@ public class DefaultService<E> implements AnylineService<E> {
             return null;
         }
 
-        
-    @Override 
-    public ForeignKey foreign(boolean greedy, Table table, String ... columns) {
+
+        @Override
+        public ForeignKey foreign(boolean greedy, Table table, String ... columns) {
             return foreign(greedy, table, BeanUtil.array2list(columns));
         }
-        
-    @Override 
-    public ForeignKey foreign(boolean greedy, String table, List<String> columns) {
+
+        @Override
+        public ForeignKey foreign(boolean greedy, String table, List<String> columns) {
             return foreign(greedy, new Table(table), columns);
         }
-        
-    @Override 
-    public ForeignKey foreign(boolean greedy, String table, String... columns) {
+
+        @Override
+        public ForeignKey foreign(boolean greedy, String table, String... columns) {
             return foreign(greedy, new Table(table), BeanUtil.array2list(columns));
         }
 
-       /* 
-    @Override 
-    public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, String... columns) {
-            return foreign(greedy, new Table(catalog, schema, table), BeanUtil.array2list(columns));
-        }*/
-        
-    @Override 
-    public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, List<String> columns) {
+           /*
+        @Override
+        public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, String... columns) {
+                return foreign(greedy, new Table(catalog, schema, table), BeanUtil.array2list(columns));
+            }*/
+
+        @Override
+        public ForeignKey foreign(boolean greedy, String catalog, String schema, String table, List<String> columns) {
             return foreign(greedy, new Table(catalog, schema, table), columns);
         }
 
-        
-    @Override 
-    public ForeignKey foreign(Table table, List<String> columns) {
-            return foreign(false, table, columns);
-        }
-        
-    @Override 
-    public ForeignKey foreign(Table table, String... columns) {
+
+        @Override
+        public ForeignKey foreign(Table table, List<String> columns) {
+                return foreign(false, table, columns);
+            }
+
+        @Override
+        public ForeignKey foreign(Table table, String... columns) {
             return foreign(false, table, BeanUtil.array2list(columns));
         }
 
-        
-    @Override 
-    public ForeignKey foreign(String table, List<String> columns) {
+
+        @Override
+        public ForeignKey foreign(String table, List<String> columns) {
             return foreign(false, new Table(table), columns);
         }
 
-        
-    @Override 
-    public ForeignKey foreign(String table, String... columns) {
+
+        @Override
+        public ForeignKey foreign(String table, String... columns) {
             return foreign(false, new Table(table), BeanUtil.array2list(columns));
         }
 
-       /*
-    @Override 
-    public ForeignKey foreign(String catalog, String schema, String table, String... columns) {
-            return foreign(false, new Table(catalog, schema, table), BeanUtil.array2list(columns));
-        }*/
-        
-    @Override 
-    public ForeignKey foreign(String catalog, String schema, String table, List<String> columns) {
+           /*
+        @Override
+        public ForeignKey foreign(String catalog, String schema, String table, String... columns) {
+                return foreign(false, new Table(catalog, schema, table), BeanUtil.array2list(columns));
+            }*/
+
+        @Override
+        public ForeignKey foreign(String catalog, String schema, String table, List<String> columns) {
             return foreign(false, new Table(catalog, schema, table), columns);
         }
 
@@ -3463,27 +3461,27 @@ public class DefaultService<E> implements AnylineService<E> {
          * Index index(String table, String name);
          * Index index(String name);
          ******************************************************************************************************************/
-        
-    @Override 
-    public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, Table table) {
+
+        @Override
+        public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, Table table) {
             return dao.indexs(greedy, table);
         }
 
-        
-    @Override 
-    public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String table) {
+
+        @Override
+        public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String table) {
             return indexs(greedy, new Table(table));
         }
 
-        
-    @Override 
-    public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Index> LinkedHashMap<String, T> indexs(boolean greedy, String catalog, String schema, String table) {
             return indexs(greedy, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public Index index(boolean greedy, Table table, String name) {
+
+        @Override
+        public Index index(boolean greedy, Table table, String name) {
             Index index = null;
             LinkedHashMap<String, Index> all = dao.indexs(greedy, table, name);
             if (null != all && null != name) {
@@ -3499,50 +3497,50 @@ public class DefaultService<E> implements AnylineService<E> {
             return index;
         }
 
-        
-    @Override 
-    public Index index(boolean greedy, String table, String name) {
-            return index(greedy, new Table(table), name);
-        }
 
-        
-    @Override 
-    public Index index(boolean greedy, String name) {
-            return index(greedy, (Table) null, name);
-        }
+        @Override
+        public Index index(boolean greedy, String table, String name) {
+                return index(greedy, new Table(table), name);
+            }
 
-        
-    @Override 
-    public <T extends Index> LinkedHashMap<String, T> indexs(Table table) {
-            return indexs(false, table);
-        }
 
-        
-    @Override 
-    public <T extends Index> LinkedHashMap<String, T> indexs(String table) {
-            return indexs(false, table);
-        }
+        @Override
+        public Index index(boolean greedy, String name) {
+                return index(greedy, (Table) null, name);
+            }
 
-        
-    @Override 
-    public <T extends Index> LinkedHashMap<String, T> indexs(String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Index> LinkedHashMap<String, T> indexs(Table table) {
+                return indexs(false, table);
+            }
+
+
+        @Override
+        public <T extends Index> LinkedHashMap<String, T> indexs(String table) {
+                return indexs(false, table);
+            }
+
+
+        @Override
+        public <T extends Index> LinkedHashMap<String, T> indexs(String catalog, String schema, String table) {
             return indexs(false, catalog, schema, table);
         }
 
-        
-    @Override 
-    public Index index(Table table, String name) {
-            return index(false, table, name);
-        }
- 
-    @Override 
-    public Index index(String table, String name) {
-            return index(false, table, name);
-        }
 
-        
-    @Override 
-    public Index index(String name) {
+        @Override
+        public Index index(Table table, String name) {
+                return index(false, table, name);
+            }
+
+        @Override
+        public Index index(String table, String name) {
+                return index(false, table, name);
+            }
+
+
+        @Override
+        public Index index(String name) {
             return index(false, name);
         }
 
@@ -3553,27 +3551,27 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String,Constraint> constraints(String table)
          * LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table)
          ******************************************************************************************************************/
-        
-    @Override 
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table) {
+
+        @Override
+        public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table) {
             return dao.constraints(greedy, table);
         }
 
-        
-    @Override 
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table) {
+
+        @Override
+        public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table) {
             return constraints(greedy, new Table(table));
         }
 
-        
-    @Override 
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String catalog, String schema, String table) {
             return constraints(greedy, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public Constraint constraint(boolean greedy, Table table, String name) {
+
+        @Override
+        public Constraint constraint(boolean greedy, Table table, String name) {
             LinkedHashMap<String, Constraint> constraints = constraints(greedy, table);
             if (null != constraints && null != name) {
                 return constraints.get(name.toUpperCase());
@@ -3581,53 +3579,53 @@ public class DefaultService<E> implements AnylineService<E> {
             return null;
         }
 
-        
-    @Override 
-    public Constraint constraint(boolean greedy, String table, String name) {
+
+        @Override
+        public Constraint constraint(boolean greedy, String table, String name) {
             return constraint(new Table(table), name);
         }
 
-        
-    @Override 
-    public Constraint constraint(boolean greedy, String name) {
-            return constraint((Table) null, name);
-        }
 
-        
-    @Override 
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(Table table) {
+        @Override
+        public Constraint constraint(boolean greedy, String name) {
+                return constraint((Table) null, name);
+            }
+
+
+        @Override
+        public <T extends Constraint> LinkedHashMap<String, T> constraints(Table table) {
             return constraints(false, table);
         }
 
-        
-    @Override 
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(String table) {
+
+        @Override
+        public <T extends Constraint> LinkedHashMap<String, T> constraints(String table) {
             return constraints(false, new Table(table));
         }
 
-        
-    @Override 
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(String catalog, String schema, String table) {
+
+        @Override
+        public <T extends Constraint> LinkedHashMap<String, T> constraints(String catalog, String schema, String table) {
             return constraints(false, new Table(catalog, schema, table));
         }
 
-        
-    @Override 
-    public Constraint constraint(Table table, String name) {
-            return constraint(false, table, name);
-        }
 
-        
-    @Override 
-    public Constraint constraint(String table, String name) {
-            return constraint(false, table, name);
-        }
+        @Override
+        public Constraint constraint(Table table, String name) {
+                return constraint(false, table, name);
+            }
 
-        
-    @Override 
-    public Constraint constraint(String name) {
-            return constraint(false, name);
-        }
+
+        @Override
+        public Constraint constraint(String table, String name) {
+                return constraint(false, table, name);
+            }
+
+
+        @Override
+        public Constraint constraint(String name) {
+                return constraint(false, name);
+            }
 
 
 
@@ -3635,74 +3633,74 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													trigger
          ******************************************************************************************************************/
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return dao.triggers(greedy, table, events);
         }
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, new Table(catalog, schema, table), events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, null, schema, table, events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, null, null, table, events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, null, null, null, events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy) {
             return triggers(greedy, (List)null);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, catalog, schema, name, events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, null, schema, name, events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, null, null, name, events);
         }
 
-        
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(List<org.anyline.entity.data.Trigger.EVENT> events) {
+
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, null, null, null, events);
         }
 
-    @Override 
-    public <T extends Trigger> LinkedHashMap<String, T> triggers() {
-            return triggers(false, (List)null);
-        }
+        @Override
+        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers() {
+                return triggers(false, (List)null);
+            }
 
 
-        
-    @Override 
-    public Trigger trigger(boolean greedy, String catalog, String schema, String name) {
+
+        @Override
+        public Trigger trigger(boolean greedy, String catalog, String schema, String name) {
             LinkedHashMap<String, Trigger> triggers = triggers(greedy, catalog, schema, null);
             if(null != triggers){
                 return triggers.get(name.toUpperCase());
@@ -3710,33 +3708,33 @@ public class DefaultService<E> implements AnylineService<E> {
             return null;
         }
 
-        
-    @Override 
-    public Trigger trigger(boolean greedy, String schema, String name) {
+
+        @Override
+        public Trigger trigger(boolean greedy, String schema, String name) {
             return trigger(greedy, null, schema, name);
         }
 
-        
-    @Override 
-    public Trigger trigger(boolean greedy, String name) {
+
+        @Override
+        public Trigger trigger(boolean greedy, String name) {
             return trigger(greedy, null, null, name);
         }
 
-        
-    @Override 
-    public Trigger trigger(String catalog, String schema, String name) {
+
+        @Override
+        public Trigger trigger(String catalog, String schema, String name) {
             return trigger(false, null, schema, name);
         }
 
-        
-    @Override 
-    public Trigger trigger(String schema, String name) {
-            return trigger(false, null, schema, name);
-        }
 
-        
-    @Override 
-    public Trigger trigger(String name) {
+        @Override
+        public Trigger trigger(String schema, String name) {
+                return trigger(false, null, schema, name);
+            }
+
+
+        @Override
+        public Trigger trigger(String name) {
             return trigger(false, null, null, name);
         }
 
@@ -3744,85 +3742,167 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													procedure
          ******************************************************************************************************************/
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name) {
-            return dao.views();
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name) {
+            return dao.procedures(greedy, catalog, schema, name);
         }
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String schema, String name) {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String schema, String name) {
             return procedures(greedy, null, schema, name);
         }
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String name) {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String name) {
             return procedures(greedy, null, null, name);
         }
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy) {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy) {
             return procedures(greedy, null, null, null);
         }
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(String catalog, String schema, String name) {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(String catalog, String schema, String name) {
             return procedures(false, null, schema, name);
         }
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(String schema, String name) {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(String schema, String name) {
             return procedures(false, null, schema, name);
         }
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(String name) {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures(String name) {
             return procedures(false, null, null, name);
         }
 
-        
-    @Override 
-    public <T extends Procedure> LinkedHashMap<String, T> procedures() {
+
+        @Override
+        public <T extends Procedure> LinkedHashMap<String, T> procedures() {
             return procedures(false, null, null, null);
         }
 
 
-        
-    @Override 
-    public Procedure procedure(boolean greedy, String catalog, String schema, String name) {
-            return null;
-        }
 
-    @Override 
-    public Procedure procedure(boolean greedy, String schema, String name) {
+        @Override
+        public Procedure procedure(boolean greedy, String catalog, String schema, String name) {
+                return null;
+            }
+
+        @Override
+        public Procedure procedure(boolean greedy, String schema, String name) {
             return procedure(greedy, null, schema, name);
         }
 
-    @Override 
-    public Procedure procedure(boolean greedy, String name) {
-            return procedure(greedy, null, null, name);
-        }
+        @Override
+        public Procedure procedure(boolean greedy, String name) {
+                return procedure(greedy, null, null, name);
+            }
 
-    @Override 
-    public Procedure procedure(String catalog, String schema, String name) {
+        @Override
+        public Procedure procedure(String catalog, String schema, String name) {
             return procedure(false, null, schema, name);
         }
 
-    @Override 
-    public Procedure procedure(String schema, String name) {
-            return procedure(false, null, schema, name);
-        }
+        @Override
+        public Procedure procedure(String schema, String name) {
+                return procedure(false, null, schema, name);
+            }
 
-    @Override 
-    public Procedure procedure(String name) {
+        @Override
+        public Procedure procedure(String name) {
             return procedure(false, null, null, name);
         }
 
+        /* *****************************************************************************************************************
+         * 													function
+         ******************************************************************************************************************/
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name) {
+            return dao.functions(greedy, catalog, schema, name);
+        }
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String schema, String name) {
+            return functions(greedy, null, schema, name);
+        }
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String name) {
+            return functions(greedy, null, null, name);
+        }
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(boolean greedy) {
+            return functions(greedy, null, null, null);
+        }
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(String catalog, String schema, String name) {
+            return functions(false, null, schema, name);
+        }
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(String schema, String name) {
+            return functions(false, null, schema, name);
+        }
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions(String name) {
+            return functions(false, null, null, name);
+        }
+
+
+        @Override
+        public <T extends Function> LinkedHashMap<String, T> functions() {
+            return functions(false, null, null, null);
+        }
+
+
+
+        @Override
+        public Function function(boolean greedy, String catalog, String schema, String name) {
+            return null;
+        }
+
+        @Override
+        public Function function(boolean greedy, String schema, String name) {
+            return function(greedy, null, schema, name);
+        }
+
+        @Override
+        public Function function(boolean greedy, String name) {
+            return function(greedy, null, null, name);
+        }
+
+        @Override
+        public Function function(String catalog, String schema, String name) {
+            return function(false, null, schema, name);
+        }
+
+        @Override
+        public Function function(String schema, String name) {
+            return function(false, null, schema, name);
+        }
+
+        @Override
+        public Function function(String name) {
+            return function(false, null, null, name);
+        }
     };
     /* *****************************************************************************************************************
      *
@@ -3841,6 +3921,7 @@ public class DefaultService<E> implements AnylineService<E> {
 	 * constraint		: 约束
 	 * trigger		    : 触发器
 	 * procedure        : 存储过程
+	 * function         : 函数
 	 ******************************************************************************************************************/
 
     public DDLService ddl = new DDLService() {
@@ -4111,29 +4192,29 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean add(Column column) throws Exception{
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
-            boolean result = add(columns, column);
+        LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
+        boolean result = add(columns, column);
 
-            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-            return result;
-        }
-        
+        clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+        return result;
+    }
+
     @Override 
     public boolean alter(Column column) throws Exception{
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
-            boolean result = alter(table, column);
-            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-            return result;
-        }
+        Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
+        boolean result = alter(table, column);
+        clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+        return result;
+    }
 
         
     @Override 
     public boolean drop(Column column) throws Exception{
-            column.setService(DefaultService.this);
-            boolean result = dao.drop(column);
-            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-            return result;
-        }
+        column.setService(DefaultService.this);
+        boolean result = dao.drop(column);
+        clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+        return result;
+    }
 
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
             column.setService(DefaultService.this);
@@ -4414,28 +4495,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         /* *****************************************************************************************************************
-         * 													procedure
-         ******************************************************************************************************************/
-        /**
-         * 存储过程
-         * @param procedure 存储过程
-         * @return boolean
-         * @throws Exception 异常 Exception
-         */
-    @Override 
-    public boolean create(Procedure procedure) throws Exception{
-            return false;
-        }
-    @Override 
-    public boolean alter(Procedure procedure) throws Exception{
-            return false;
-        }
-    @Override 
-    public boolean drop(Procedure procedure) throws Exception{
-            return false;
-        }
-
-        /* *****************************************************************************************************************
          * 													trigger
          ******************************************************************************************************************/
         /**
@@ -4444,17 +4503,61 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return trigger
          * @throws Exception 异常 Exception
          */
-    @Override 
-    public boolean create(Trigger trigger) throws Exception{
+        @Override
+        public boolean create(Trigger trigger) throws Exception{
             return dao.create(trigger);
         }
-    @Override 
-    public boolean alter(Trigger trigger) throws Exception{
+        @Override
+        public boolean alter(Trigger trigger) throws Exception{
             return dao.alter(trigger);
         }
-    @Override 
-    public boolean drop(Trigger trigger) throws Exception{
+        @Override
+        public boolean drop(Trigger trigger) throws Exception{
             return dao.drop(trigger);
         }
+        /* *****************************************************************************************************************
+         * 													procedure
+         ******************************************************************************************************************/
+        /**
+         * 存储过程
+         * @param procedure 存储过程
+         * @return boolean
+         * @throws Exception 异常 Exception
+         */
+        @Override
+        public boolean create(Procedure procedure) throws Exception{
+            return dao.create(procedure);
+        }
+        @Override
+        public boolean alter(Procedure procedure) throws Exception{
+            return dao.alter(procedure);
+        }
+        @Override
+        public boolean drop(Procedure procedure) throws Exception{
+            return dao.drop(procedure);
+        }
+
+        /* *****************************************************************************************************************
+         * 													procedure
+         ******************************************************************************************************************/
+        /**
+         * 函数
+         * @param function 函数
+         * @return boolean
+         * @throws Exception 异常 Exception
+         */
+        @Override
+        public boolean create(Function function) throws Exception{
+            return dao.create(function);
+        }
+        @Override
+        public boolean alter(Function function) throws Exception{
+            return dao.alter(function);
+        }
+        @Override
+        public boolean drop(Function function) throws Exception{
+            return dao.drop(function);
+        }
+
     };
 }

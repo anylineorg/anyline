@@ -18,7 +18,7 @@
 package org.anyline.data.listener;
 
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.entity.Procedure;
+import org.anyline.entity.data.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataSet;

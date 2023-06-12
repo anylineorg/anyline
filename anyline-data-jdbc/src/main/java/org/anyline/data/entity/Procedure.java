@@ -28,13 +28,15 @@ import java.util.List;
  
  
 public class Procedure implements org.anyline.entity.data.Procedure {
-	private static final long serialVersionUID = -1421673036222025241L;
+	private String catalog;
+	private String schema;
 	private String name;
 	private List<Parameter> inputs = new ArrayList<Parameter>();
 	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数,输入输出参数
 	private List<Object> result;	// 输出参数结果
 	private boolean hasReturn = false;
 	private PageNavi navi;
+	private String definition;
 	
 	
 	public Procedure(String name){
@@ -45,12 +47,12 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 
 	@Override
 	public String getDefinition() {
-		return null;
+		return definition;
 	}
 
 	@Override
 	public void setDefinition(String definition) {
-
+		this.definition = definition;
 	}
 
 	@Override
@@ -150,5 +152,25 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 	public Procedure setNavi(PageNavi navi) {
 		this.navi = navi;
 		return this;
+	}
+
+	@Override
+	public String getCatalog() {
+		return catalog;
+	}
+
+	@Override
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
+	}
+
+	@Override
+	public String getSchema() {
+		return schema;
+	}
+
+	@Override
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 }
