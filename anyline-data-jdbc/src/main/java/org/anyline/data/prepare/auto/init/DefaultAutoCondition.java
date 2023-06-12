@@ -57,7 +57,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setRequired(config.isRequire());
 		setStrictRequired(config.isStrictRequired()); 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
-		if(config.isRequire()){ 
+		if(config.isRequire()){
 			setActive(true); 
 		} 
 	} 
@@ -77,7 +77,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setValues(values);
 		setCompare(compare); 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
-		if(BasicUtil.isNotEmpty(true,values) || required){ 
+		if(BasicUtil.isNotEmpty(true,values) || required){
 			setActive(true); 
 		} 
 	} 
@@ -100,7 +100,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
 			text = this.text; 
-		}else{ 
+		}else{
 			String txt = "";
 			if(BasicUtil.isNotEmpty(true, values) || isRequired()){
 				txt = getRunText(prefix, adapter, values, compare);
@@ -122,7 +122,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		return text; 
 	} 
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public String getRunText(String prefix, JDBCAdapter adapter, Object val, Compare compare){
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = adapter.getDelimiterFr();
@@ -210,62 +210,62 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		return builder.toString();
 	} 
 
-	@SuppressWarnings({ "rawtypes" }) 
-	public Object getValue(Object src){ 
+	@SuppressWarnings({"rawtypes" }) 
+	public Object getValue(Object src){
 		Object value = null; 
 		if(null != src){
 			if(src instanceof List){
 				if(((List) src).size()>0){
 					value = ((List)src).get(0); 
 				} 
-			}else{ 
+			}else{
 				value = src; 
 			} 
 		}
 		return value; 
 	} 
-	@SuppressWarnings({ "unchecked", "rawtypes" }) 
-	public List<Object> getValues(Object src){ 
+	@SuppressWarnings({"unchecked", "rawtypes" }) 
+	public List<Object> getValues(Object src){
 		List<Object> values = new ArrayList<Object>(); 
 		if(null != src){
-			if(src instanceof List){ 
+			if(src instanceof List){
 				values = (List)src; 
-			}else{ 
+			}else{
 				values.add(src); 
 			} 
 		}
 		return values; 
 	} 
-	public Object getValue(){ 
+	public Object getValue(){
 		return getValue(values);
 	} 
-	public List<Object> getValues(){ 
+	public List<Object> getValues(){
 		return getValues(values);
 	} 
-	public Object getOrValue(){ 
+	public Object getOrValue(){
 		return getValue(orValues);
 	} 
-	public List<Object> getOrValues(){ 
+	public List<Object> getOrValues(){
 		return getValues(orValues);
 	} 
  
-	public String getId(){ 
+	public String getId(){
 		return column; 
 	}
 
 
-	public String getColumn() { 
+	public String getColumn() {
 		return column; 
 	} 
-	public void setColumn(String column) { 
+	public void setColumn(String column) {
 		this.column = column; 
 	} 
 
-	public void setValues(Object values) { 
+	public void setValues(Object values) {
 		this.values = values;
 		setValue = true;
 	} 
-	public void setOrValues(Object values) { 
+	public void setOrValues(Object values) {
 		this.orValues = values;
 		setValue = true;
 	} 

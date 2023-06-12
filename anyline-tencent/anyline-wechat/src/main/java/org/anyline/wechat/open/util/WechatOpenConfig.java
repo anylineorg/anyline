@@ -30,11 +30,11 @@ import java.util.Hashtable;
 public class WechatOpenConfig extends WechatConfig{
 	public static String CONFIG_NAME = "anyline-wechat-open.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	}
@@ -46,7 +46,7 @@ public class WechatOpenConfig extends WechatConfig{
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatOpenConfig getInstance(String key){
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
@@ -62,8 +62,8 @@ public class WechatOpenConfig extends WechatConfig{
 		WechatOpenUtil.getInstance(instance);
 		return config;
 	} 
-	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
-		for(DataRow row:set){ 
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
 			String key = row.getString(column); 
 			parse(key, row); 
 		} 
@@ -72,11 +72,11 @@ public class WechatOpenConfig extends WechatConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, WechatOpenConfig.class, CONFIG_NAME,compatibles);
 		WechatOpenConfig.lastLoadTime = System.currentTimeMillis();
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 
 	public static WechatOpenConfig register(String key, DataRow row){

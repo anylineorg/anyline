@@ -54,7 +54,7 @@ public class WechatWapUtil {
 			key = WechatWapConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		WechatWapUtil util = instances.get(key);
-		if(null == util){ 
+		if(null == util){
 			WechatWapConfig config = WechatWapConfig.getInstance(key);
 			if(null != config) {
 				util = new WechatWapUtil(config);

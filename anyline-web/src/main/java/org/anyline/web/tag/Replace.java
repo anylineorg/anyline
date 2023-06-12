@@ -27,7 +27,7 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
 
-public class Replace extends BaseBodyTag implements Cloneable{ 
+public class Replace extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String from;
 	private String separate;
@@ -91,7 +91,7 @@ public class Replace extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		value = null;
 		from = null;
@@ -99,7 +99,7 @@ public class Replace extends BaseBodyTag implements Cloneable{
 		separate = null;
 	} 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
 

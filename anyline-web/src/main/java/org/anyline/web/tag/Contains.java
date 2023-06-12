@@ -35,7 +35,7 @@ import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
-public class Contains extends BaseBodyTag { 
+public class Contains extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private Object data;
 	private String scope;
@@ -101,7 +101,7 @@ public class Contains extends BaseBodyTag {
 			return EVAL_BODY_BUFFERED;
 		}
 	}
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public int doEndTag() throws JspException {
 		try{
 			String html = "";

@@ -35,10 +35,10 @@ public class ParseResult {
 	private String join = Condition.CONDITION_JOIN_TYPE_AND			; // 连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; // request取值方式
 	 
-	public List<ParseResult> getDefs(){ 
+	public List<ParseResult> getDefs(){
 		return defs; 
 	} 
-	public void addDef(ParseResult def){ 
+	public void addDef(ParseResult def){
 		defs.add(def); 
 	} 
 	 
@@ -48,19 +48,19 @@ public class ParseResult {
 	public void setOr(ParseResult or) {
 		this.or = or;
 	}
-	public boolean isRequired() { 
+	public boolean isRequired() {
 		return required; 
 	} 
-	public void setRequired(boolean required) { 
+	public void setRequired(boolean required) {
 		this.required = required; 
 	} 
-	public Compare getCompare() { 
+	public Compare getCompare() {
 		return compare; 
 	} 
 	public void setCompare(Compare compare) {
 		this.compare = compare; 
 	} 
-	public String getKey() { 
+	public String getKey() {
 		return key; 
 	} 
 	public void setKey(String key) {
@@ -78,40 +78,40 @@ public class ParseResult {
 		}
 		this.var = var;
 	} 
-	public String getClazz() { 
+	public String getClazz() {
 		return clazz; 
 	} 
-	public void setClazz(String clazz) { 
+	public void setClazz(String clazz) {
 		this.clazz = clazz; 
 	} 
-	public String getMethod() { 
+	public String getMethod() {
 		return method; 
 	} 
-	public void setMethod(String method) { 
+	public void setMethod(String method) {
 		this.method = method; 
 	} 
-	public int getParamFetchType() { 
+	public int getParamFetchType() {
 		return paramFetchType; 
 	} 
-	public void setParamFetchType(int paramFetchType) { 
+	public void setParamFetchType(int paramFetchType) {
 		this.paramFetchType = paramFetchType; 
 	} 
-	public boolean isKeyEncrypt() { 
+	public boolean isKeyEncrypt() {
 		return isKeyEncrypt; 
 	} 
-	public void setKeyEncrypt(boolean isKeyEncrypt) { 
+	public void setKeyEncrypt(boolean isKeyEncrypt) {
 		this.isKeyEncrypt = isKeyEncrypt; 
 	} 
-	public boolean isValueEncrypt() { 
+	public boolean isValueEncrypt() {
 		return isValueEncrypt; 
 	} 
-	public void setValueEncrypt(boolean isValueEncrypt) { 
+	public void setValueEncrypt(boolean isValueEncrypt) {
 		this.isValueEncrypt = isValueEncrypt; 
 	} 
-	public boolean isSetEncrypt() { 
+	public boolean isSetEncrypt() {
 		return setEncrypt; 
 	} 
-	public void setSetEncrypt(boolean setEncrypt) { 
+	public void setSetEncrypt(boolean setEncrypt) {
 		this.setEncrypt = setEncrypt; 
 	} 
 	public String getPrefix() {
@@ -129,16 +129,16 @@ public class ParseResult {
 		}
 		this.prefix = prefix;
 	} 
-	public String getJoin() { 
+	public String getJoin() {
 		return join; 
 	} 
-	public void setJoin(String join) { 
+	public void setJoin(String join) {
 		this.join = join; 
 	} 
-	public boolean isStrictRequired() { 
+	public boolean isStrictRequired() {
 		return strictRequired; 
 	} 
-	public void setStrictRequired(boolean strictRequired) { 
+	public void setStrictRequired(boolean strictRequired) {
 		this.strictRequired = strictRequired; 
 	}
 

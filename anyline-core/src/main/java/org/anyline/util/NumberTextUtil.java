@@ -23,24 +23,24 @@ import java.util.EnumMap;
 import java.util.HashMap; 
 import java.util.Map; 
  
-public abstract class NumberTextUtil { 
+public abstract class NumberTextUtil {
 	protected NumberTextUtil() {} 
  
 	public abstract String getText(long number); 
 	public abstract String getOrdinalText(long number); 
-	public static enum Lang { 
+	public static enum Lang {
 		English, EnglishWithCleanSpaceOnly, ChineseSimplified, ChineseTraditional, ; 
 	} 
-	public static NumberTextUtil getInstance(Lang lang) { 
+	public static NumberTextUtil getInstance(Lang lang) {
  
 		if (lang == null) 
 			throw new NullPointerException(); 
  
 		NumberTextUtil result = null; 
-		synchronized (_InstancePool) { 
+		synchronized (_InstancePool) {
 			result = _InstancePool.get(lang); 
-			if (result == null) { 
-				switch (lang) { 
+			if (result == null) {
+				switch (lang) {
 				case English: 
 					result = new NumberTextEnglish(); 
 					break; 
@@ -68,7 +68,7 @@ public abstract class NumberTextUtil {
 	private static final Map<Lang, NumberTextUtil> _InstancePool = new EnumMap<Lang, NumberTextUtil>( 
 			Lang.class); 
  
-	private static boolean checkNumber(String number) { 
+	private static boolean checkNumber(String number) {
  
 		return number != null && number.matches("[0-9]+"); 
 	} 
@@ -76,9 +76,9 @@ public abstract class NumberTextUtil {
 	/*---------------------------------------------------------------------------- 
 	 * English Implementation 
 	 ---------------------------------------------------------------------------*/ 
-	private static class NumberTextEnglish extends NumberTextUtil { 
+	private static class NumberTextEnglish extends NumberTextUtil {
  
-		static enum Connect { 
+		static enum Connect {
  
 			Minus("minus"), Hundred("hundred"), And("and"), AfterMinus(" "), AfterNumber( 
 					" "), AfterPower(" "), AfterHundred(" "), AfterAnd(" "), AfterTen( 
@@ -86,16 +86,16 @@ public abstract class NumberTextUtil {
  
 			final String display; 
  
-			Connect(String display) { 
+			Connect(String display) {
 				this.display = display; 
 			} 
  
-			private static boolean isConnect(char c) { 
+			private static boolean isConnect(char c) {
 				return c == ' ' || c == '-'; 
 			} 
 		} 
  
-		static enum Power { 
+		static enum Power {
  
 			Thousand("thousand"), // 10 ^ 3
 			Million("million"), // 10 ^ 6
@@ -122,12 +122,12 @@ public abstract class NumberTextUtil {
  
 			final String display; 
  
-			Power(String display) { 
+			Power(String display) {
 				this.display = display; 
 			} 
 		} 
  
-		static enum Digit { 
+		static enum Digit {
  
 			Zero("zero", "zeroth", "ten", ""), One("one", "first", "eleven", 
 					"ten"), Two("two", "second", "twelve", "twenty"), Three( 
@@ -141,7 +141,7 @@ public abstract class NumberTextUtil {
 			final String display, displayOrdinal, plusTen, multiTen; 
  
 			Digit(String display, String displayOrdinal, String plusTen, 
-					String multiTen) { 
+					String multiTen) {
 				this.display = display; 
 				this.displayOrdinal = displayOrdinal; 
 				this.plusTen = plusTen; 
@@ -150,32 +150,32 @@ public abstract class NumberTextUtil {
 		} 
  
 		private static final Map<String, String> _Ordinals; 
-		static { 
+		static {
 			_Ordinals = new HashMap<>(); 
 			for (Digit d : Digit.values()) 
 				_Ordinals.put(d.display, d.displayOrdinal); 
 		} 
  
 		@Override 
-		public String getText(long number) { 
+		public String getText(long number) {
 			StringBuilder builder = new StringBuilder(); 
 			buildText(builder, number); 
 			return builder.toString(); 
 		} 
  
 		@Override 
-		public String getOrdinalText(long number) { 
+		public String getOrdinalText(long number) {
 			StringBuilder builder = new StringBuilder(); 
 			buildText(builder, number); 
 			replaceLastTokenWithOrdinal(builder); 
 			return builder.toString(); 
 		} 
  
-		private void buildText(StringBuilder builder, long number) { 
+		private void buildText(StringBuilder builder, long number) {
  
 			assert builder != null; 
  
-			if (number < 0) { 
+			if (number < 0) {
 				builder.append(getConnectDisplay(Connect.Minus)).append( 
 						getConnectDisplay(Connect.AfterMinus)); 
 				number = -number; 
@@ -187,7 +187,7 @@ public abstract class NumberTextUtil {
 			while (numString.length() > (power + 1) * 3) 
 				power++; 
  
-			while (power > 0) { 
+			while (power > 0) {
 				boolean modified = extendToken(builder, numString, power * 3); 
 				if (modified) 
 					builder.append(getConnectDisplay(Connect.AfterNumber)) 
@@ -198,7 +198,7 @@ public abstract class NumberTextUtil {
 		} 
  
 		private boolean extendToken(StringBuilder builder, String number, 
-				int suffix) { 
+				int suffix) {
  
 			assert builder != null && checkNumber(number) 
 					&& suffix < number.length(); 
@@ -213,11 +213,11 @@ public abstract class NumberTextUtil {
 			else if (len > 3) 
 				builder.append(getConnectDisplay(Connect.AfterPower)); 
  
-			if (hundreds == 0) { 
+			if (hundreds == 0) {
 				if (len > 3 && (tens > 0 || inds > 0)) 
 					builder.append(getConnectDisplay(Connect.And)).append( 
 							getConnectDisplay(Connect.AfterAnd)); 
-			} else if (hundreds > 0) { 
+			} else if (hundreds > 0) {
 				builder.append(getDigitName(Digit.values()[hundreds])) 
 						.append(getConnectDisplay(Connect.AfterNumber)) 
 						.append(getConnectDisplay(Connect.Hundred)); 
@@ -227,7 +227,7 @@ public abstract class NumberTextUtil {
 							.append(getConnectDisplay(Connect.AfterAnd)); 
 			} 
  
-			if (tens > 1) { 
+			if (tens > 1) {
 				builder.append(getDigitMultiTen(Digit.values()[tens])); 
 				if (inds > 0) 
 					builder.append(getConnectDisplay(Connect.AfterTen)); 
@@ -241,7 +241,7 @@ public abstract class NumberTextUtil {
 			return true; 
 		} 
  
-		private void replaceLastTokenWithOrdinal(StringBuilder builder) { 
+		private void replaceLastTokenWithOrdinal(StringBuilder builder) {
  
 			assert builder != null && builder.length() > 0; 
  
@@ -253,33 +253,33 @@ public abstract class NumberTextUtil {
 					toOrdinal(lastToken)); 
 		} 
  
-		String getPowerDisplay(Power power) { 
+		String getPowerDisplay(Power power) {
  
 			assert power != null; 
  
 			return power.display; 
 		} 
  
-		String getConnectDisplay(Connect connect) { 
+		String getConnectDisplay(Connect connect) {
  
 			assert connect != null; 
  
 			return connect.display; 
 		} 
  
-		String getDigitName(Digit digit) { 
+		String getDigitName(Digit digit) {
  
 			assert digit != null; 
  
 			return digit.display; 
 		} 
  
-		String toOrdinal(String name) { 
+		String toOrdinal(String name) {
  
 			assert name != null && !name.isEmpty(); 
  
 			String result = _Ordinals.get(name); 
-			if (result == null) { 
+			if (result == null) {
 				if (name.charAt(name.length() - 1) == 'y') 
 					result = name.substring(0, name.length() - 1) + "ieth"; 
 				else 
@@ -288,21 +288,21 @@ public abstract class NumberTextUtil {
 			return result; 
 		} 
  
-		String getDigitPlusTen(Digit digit) { 
+		String getDigitPlusTen(Digit digit) {
  
 			assert digit != null; 
  
 			return digit.plusTen; 
 		} 
  
-		String getDigitMultiTen(Digit digit) { 
+		String getDigitMultiTen(Digit digit) {
  
 			assert digit != null; 
  
 			return digit.multiTen; 
 		} 
  
-		boolean isConnect(char c) { 
+		boolean isConnect(char c) {
 			return Connect.isConnect(c); 
 		} 
 	} 
@@ -311,10 +311,10 @@ public abstract class NumberTextUtil {
 	 * English with only Clean Space Connectors 
 	 ---------------------------------------------------------------------------*/ 
 	private static class NumberTextEnglishCleanSpaceOnly extends 
-			NumberTextEnglish { 
+			NumberTextEnglish {
  
 		@Override 
-		String getConnectDisplay(Connect connect) { 
+		String getConnectDisplay(Connect connect) {
  
 			return connect == Connect.AfterTen ? " " : super 
 					.getConnectDisplay(connect); 
@@ -324,25 +324,25 @@ public abstract class NumberTextUtil {
 	/*---------------------------------------------------------------------------- 
 	 * Chinese Implementation 
 	 ---------------------------------------------------------------------------*/ 
-	private static class NumberTextChinese extends NumberTextUtil { 
+	private static class NumberTextChinese extends NumberTextUtil {
  
-		static enum Type { 
+		static enum Type {
 			Simplified, Traditional; 
 		} 
  
-		static enum Connect { 
+		static enum Connect {
 			Di("第", "第"), Fu("负", "負"), Ling("零", "零"), Shi("十", "拾"), Bai("百", 
 					"佰"), Qian("千", "仟"), ; 
  
 			final String display, displayTraditional; 
  
-			Connect(String display, String displayTraditional) { 
+			Connect(String display, String displayTraditional) {
 				this.display = display; 
 				this.displayTraditional = displayTraditional; 
 			} 
 		} 
  
-		static enum Power { 
+		static enum Power {
  
 			Wan("万", "萬"), // 10^4
 			Yi("亿", "億"), // 10^8
@@ -359,13 +359,13 @@ public abstract class NumberTextUtil {
  
 			final String display, displayTraditional; 
  
-			Power(String display, String displayTraditional) { 
+			Power(String display, String displayTraditional) {
 				this.display = display; 
 				this.displayTraditional = displayTraditional; 
 			} 
 		} 
  
-		static enum Digit { 
+		static enum Digit {
  
 			Ling("零", "零"), // just to occupy this position
 			Yi("一", "壹"), Er("二", "贰"), San("三", "叁"), Si("四", "肆"), Wu("五", 
@@ -374,7 +374,7 @@ public abstract class NumberTextUtil {
  
 			final String display, displayTraditional; 
  
-			Digit(String display, String displayTraditional) { 
+			Digit(String display, String displayTraditional) {
 				this.display = display; 
 				this.displayTraditional = displayTraditional; 
 			} 
@@ -382,14 +382,14 @@ public abstract class NumberTextUtil {
  
 		private final Type type; 
  
-		private NumberTextChinese(Type type) { 
+		private NumberTextChinese(Type type) {
 			assert type != null; 
  
 			this.type = type; 
 		} 
  
 		@Override 
-		public String getText(long number) { 
+		public String getText(long number) {
  
 			StringBuilder builder = new StringBuilder(); 
 			buildText(builder, number); 
@@ -397,18 +397,18 @@ public abstract class NumberTextUtil {
 		} 
  
 		@Override 
-		public String getOrdinalText(long number) { 
+		public String getOrdinalText(long number) {
  
 			StringBuilder builder = new StringBuilder().append("Di"); 
 			buildText(builder, number); 
 			return builder.toString(); 
 		} 
  
-		private void buildText(StringBuilder builder, long number) { 
+		private void buildText(StringBuilder builder, long number) {
  
 			assert builder != null; 
  
-			if (number < 0) { 
+			if (number < 0) {
 				builder.append(getConnectDisplay(Connect.Fu)); 
 				number = -number; 
 			} 
@@ -418,7 +418,7 @@ public abstract class NumberTextUtil {
 			while (numString.length() > (power + 1) * 4) 
 				power++; 
  
-			while (power > 0) { 
+			while (power > 0) {
 				if (extendToken(builder, numString, power * 4)) 
 					builder.append(getPowerDisplay(Power.values()[power - 1])); 
 				power--; 
@@ -427,7 +427,7 @@ public abstract class NumberTextUtil {
 		} 
  
 		private boolean extendToken(StringBuilder builder, String number, 
-				int suffix) { 
+				int suffix) {
  
 			assert builder != null && checkNumber(number) 
 					&& number.length() > suffix; 
@@ -439,50 +439,50 @@ public abstract class NumberTextUtil {
 			int ind = (int) (number.charAt(len - 1) - '0'); 
  
 			boolean nonZero = false; // true if any of the digits is not zero
-			if (qian == 0) { 
+			if (qian == 0) {
 				if (bai > 0 || shi > 0 || ind > 0) 
 					builder.append(getConnectDisplay(Connect.Ling)); 
-			} else if (qian > 0) { 
+			} else if (qian > 0) {
 				builder.append(getDigitDisplay(Digit.values()[qian])).append( 
 						getConnectDisplay(Connect.Qian)); 
 				nonZero = true; 
 			} 
  
-			if (bai == 0) { 
+			if (bai == 0) {
 				if (qian > 0 && (shi > 0 || ind > 0)) 
 					builder.append(getConnectDisplay(Connect.Ling)); 
-			} else if (bai > 0) { 
+			} else if (bai > 0) {
 				builder.append(getDigitDisplay(Digit.values()[bai])).append( 
 						getConnectDisplay(Connect.Bai)); 
 				nonZero = true; 
 			} 
  
-			if (shi == 0) { 
+			if (shi == 0) {
 				if (bai > 0 && ind > 0) 
 					builder.append(getConnectDisplay(Connect.Ling)); 
-			} else if (shi > 0) { 
+			} else if (shi > 0) {
 				if (number.length() > 2 || shi != 1) 
 					builder.append(getDigitDisplay(Digit.values()[shi])); 
 				builder.append(getConnectDisplay(Connect.Shi)); 
 				nonZero = true; 
 			} 
  
-			if (ind == 0) { 
+			if (ind == 0) {
 				boolean addZero = len == 1; 
-				for (int i = 1; addZero && i <= suffix; i++) { 
+				for (int i = 1; addZero && i <= suffix; i++) {
 					if (number.charAt(i) != '0') 
 						addZero = false; 
 				} 
 				if (addZero) 
 					builder.append(getConnectDisplay(Connect.Ling)); 
-			} else { 
+			} else {
 				builder.append(getDigitDisplay(Digit.values()[ind])); 
 				nonZero = true; 
 			} 
 			return nonZero; 
 		} 
  
-		String getConnectDisplay(Connect connect) { 
+		String getConnectDisplay(Connect connect) {
  
 			assert connect != null; 
  
@@ -490,7 +490,7 @@ public abstract class NumberTextUtil {
 					: connect.displayTraditional; 
 		} 
  
-		String getPowerDisplay(Power power) { 
+		String getPowerDisplay(Power power) {
  
 			assert power != null; 
  
@@ -498,7 +498,7 @@ public abstract class NumberTextUtil {
 					: power.displayTraditional; 
 		} 
  
-		String getDigitDisplay(Digit digit) { 
+		String getDigitDisplay(Digit digit) {
  
 			assert digit != null; 
  

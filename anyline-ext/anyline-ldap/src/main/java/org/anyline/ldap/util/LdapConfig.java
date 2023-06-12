@@ -35,7 +35,7 @@ public class LdapConfig extends AnylineConfig{
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
 	}
-	static{ 
+	static{
 		init(); 
 		debug();
 	}
@@ -49,7 +49,7 @@ public class LdapConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load();
 	} 
@@ -58,7 +58,7 @@ public class LdapConfig extends AnylineConfig{
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static LdapConfig getInstance(String key){
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
@@ -75,11 +75,11 @@ public class LdapConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, LdapConfig.class, CONFIG_NAME);
 		LdapConfig.lastLoadTime = System.currentTimeMillis();
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 	public static LdapConfig register(String instance, DataRow row){
 		LdapConfig config = parse(LdapConfig.class, instance, row, instances, compatibles);

@@ -20,7 +20,7 @@
 package org.anyline.web.tag; 
  
  
-public class ShortUrl extends BaseBodyTag { 
+public class ShortUrl extends BaseBodyTag {
 
 //	private static final long serialVersionUID = 1L;
 //	private String id;

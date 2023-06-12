@@ -87,7 +87,7 @@ public class PageNaviConfig extends AnylineConfig  {
  
 	// 兼容上一版本  
 	// 最后一版key:倒数第二版key:倒数第三版key 
-	protected static String[] compatibles = { 
+	protected static String[] compatibles = {
 		"STYLE_BUTTON_FIRST:NAVI_TAG_FIRST" 
 		,"STYLE_BUTTON_PREV:NAVI_TAG_PREV" 
 		,"STYLE_BUTTON_NEXT:NAVI_TAG_NEXT" 
@@ -107,7 +107,7 @@ public class PageNaviConfig extends AnylineConfig  {
 		,"STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH"}; 
 	  
  
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
@@ -121,19 +121,19 @@ public class PageNaviConfig extends AnylineConfig  {
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	} 
-	public static PageNaviConfig getInstance(){ 
+	public static PageNaviConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static PageNaviConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static PageNaviConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - PageNaviConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - PageNaviConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载 
 			load(); 
 		} 
@@ -141,11 +141,11 @@ public class PageNaviConfig extends AnylineConfig  {
 		return (PageNaviConfig)instances.get(key); 
 	} 
  
-	public static PageNaviConfig parse(String key, DataRow row){ 
+	public static PageNaviConfig parse(String key, DataRow row){
 		return parse(PageNaviConfig.class, key, row, instances,compatibles); 
 	} 
-	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
-		for(DataRow row:set){ 
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
 			String key = row.getString(column); 
 			parse(key, row); 
 		} 
@@ -154,20 +154,20 @@ public class PageNaviConfig extends AnylineConfig  {
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, PageNaviConfig.class, CONFIG_NAME, compatibles);
 		PageNaviConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
  
-	protected void afterParse(String key, String value){ 
+	protected void afterParse(String key, String value){
  
-		if("VAR_PAGE_VOL_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){ 
+		if("VAR_PAGE_VOL_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){
 			CONFIG_PAGE_VAL_SET_SORT = 1; 
 		} 
-		if("STYLE_PAGE_VOL".equals(key) && BasicUtil.isNotEmpty(value)){ 
+		if("STYLE_PAGE_VOL".equals(key) && BasicUtil.isNotEmpty(value)){
 			CONFIG_PAGE_VAL_SET_SORT = 2; 
 		} 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	} 
 } 

@@ -32,7 +32,7 @@ import org.anyline.web.tag.BaseBodyTag;
  * @author zh 
  *  
  */ 
-public class HTMLA extends BaseBodyTag { 
+public class HTMLA extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
  
 	private String id; 
@@ -51,68 +51,68 @@ public class HTMLA extends BaseBodyTag {
 	private boolean encryptKey = true; 
 	private boolean encryptValue = true; 
  
-	public int doEndTag() throws JspException { 
-		try { 
+	public int doEndTag() throws JspException {
+		try {
 			StringBuffer buffer = new StringBuffer(); 
 			buffer.append("<a"); 
-			if (null != id) { 
+			if (null != id) {
 				buffer.append(" id = \"" + id + "\""); 
 			} 
-			if (null != name) { 
+			if (null != name) {
 				buffer.append(" name = \"" + name + "\""); 
 			} 
-			if (null != href) { 
+			if (null != href) {
 				String url = href; 
-				if(BasicUtil.isNotEmpty(params)){ 
-					if(url.contains("?")){ 
+				if(BasicUtil.isNotEmpty(params)){
+					if(url.contains("?")){
 						url = url + "&" + params; 
-					}else{ 
+					}else{
 						url = url + "?" + params; 
 					} 
 				} 
 				buffer.append(" href = \"" + DESUtil.encryptUrl(url, union, encryptKey, encryptValue) + "\""); 
 			} 
-			if (null != clazz) { 
+			if (null != clazz) {
 				buffer.append(" class = \"" + clazz + "\""); 
 			} 
-			if (null != style) { 
+			if (null != style) {
 				buffer.append(" style = \"" + style + "\""); 
 			} 
-			if (null != title) { 
+			if (null != title) {
 				buffer.append(" title = \"" + title + "\""); 
 			} 
-			if (null != target) { 
+			if (null != target) {
 				buffer.append(" target = \"" + target + "\""); 
 			} 
-			if (null != shape) { 
+			if (null != shape) {
 				buffer.append(" shape = \"" + shape + "\""); 
 			} 
-			if (null != onmouseover) { 
+			if (null != onmouseover) {
 				buffer.append(" onmouseover = \"" + onmouseover + "\""); 
 			} 
-			if (null != onmouseout) { 
+			if (null != onmouseout) {
 				buffer.append(" onmouseout id = \"" + onmouseout + "\""); 
 			} 
-			if (null != onclick) { 
+			if (null != onclick) {
 				buffer.append(" onclick = \"" + onclick + "\""); 
 			} 
 			buffer.append(">"); 
-			if (null != body) { 
+			if (null != body) {
 				buffer.append(body); 
 			} 
 			buffer.append("</a>"); 
 			JspWriter out = pageContext.getOut(); 
 			out.print(buffer.toString()); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 
 	} 
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		id = null; 
 		name = null; 
@@ -129,123 +129,123 @@ public class HTMLA extends BaseBodyTag {
 		params = null; 
 	} 
  
-	public String getId() { 
+	public String getId() {
 		return id; 
 	} 
  
-	public void setId(String id) { 
+	public void setId(String id) {
 		this.id = id; 
 	} 
  
-	public String getName() { 
+	public String getName() {
 		return name; 
 	} 
  
-	public void setName(String name) { 
+	public void setName(String name) {
 		this.name = name; 
 	} 
  
-	public String getHref() { 
+	public String getHref() {
 		return href; 
 	} 
  
-	public void setHref(String href) { 
+	public void setHref(String href) {
 		this.href = href; 
 	} 
  
-	public String getClazz() { 
+	public String getClazz() {
 		return clazz; 
 	} 
  
-	public void setClazz(String clazz) { 
+	public void setClazz(String clazz) {
 		this.clazz = clazz; 
 	} 
  
-	public String getStyle() { 
+	public String getStyle() {
 		return style; 
 	} 
  
-	public void setStyle(String style) { 
+	public void setStyle(String style) {
 		this.style = style; 
 	} 
  
-	public String getTitle() { 
+	public String getTitle() {
 		return title; 
 	} 
  
-	public void setTitle(String title) { 
+	public void setTitle(String title) {
 		this.title = title; 
 	} 
  
-	public String getTarget() { 
+	public String getTarget() {
 		return target; 
 	} 
  
-	public void setTarget(String target) { 
+	public void setTarget(String target) {
 		this.target = target; 
 	} 
  
-	public String getShape() { 
+	public String getShape() {
 		return shape; 
 	} 
  
-	public void setShape(String shape) { 
+	public void setShape(String shape) {
 		this.shape = shape; 
 	} 
  
-	public String getOnmouseover() { 
+	public String getOnmouseover() {
 		return onmouseover; 
 	} 
  
-	public void setOnmouseover(String onmouseover) { 
+	public void setOnmouseover(String onmouseover) {
 		this.onmouseover = onmouseover; 
 	} 
  
-	public String getOnmouseout() { 
+	public String getOnmouseout() {
 		return onmouseout; 
 	} 
  
-	public void setOnmouseout(String onmouseout) { 
+	public void setOnmouseout(String onmouseout) {
 		this.onmouseout = onmouseout; 
 	} 
  
-	public String getOnclick() { 
+	public String getOnclick() {
 		return onclick; 
 	} 
  
-	public void setOnclick(String onclick) { 
+	public void setOnclick(String onclick) {
 		this.onclick = onclick; 
 	} 
  
-	public boolean isEncryptKey() { 
+	public boolean isEncryptKey() {
 		return encryptKey; 
 	} 
  
-	public void setEncryptKey(boolean encryptKey) { 
+	public void setEncryptKey(boolean encryptKey) {
 		this.encryptKey = encryptKey; 
 	} 
  
-	public boolean isEncryptValue() { 
+	public boolean isEncryptValue() {
 		return encryptValue; 
 	} 
  
-	public void setEncryptValue(boolean encryptValue) { 
+	public void setEncryptValue(boolean encryptValue) {
 		this.encryptValue = encryptValue; 
 	} 
  
-	public boolean isUnion() { 
+	public boolean isUnion() {
 		return union; 
 	} 
  
-	public void setUnion(boolean union) { 
+	public void setUnion(boolean union) {
 		this.union = union; 
 	} 
  
-	public String getParams() { 
+	public String getParams() {
 		return params; 
 	} 
  
-	public void setParams(String params) { 
+	public void setParams(String params) {
 		this.params = params; 
 	} 
  

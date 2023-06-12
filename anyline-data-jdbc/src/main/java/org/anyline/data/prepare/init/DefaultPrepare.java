@@ -19,13 +19,13 @@
 
 package org.anyline.data.prepare.init;
 
-import org.anyline.data.entity.Join;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.entity.*;
+import org.anyline.entity.data.Join;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,16 +52,16 @@ public abstract class DefaultPrepare implements RunPrepare{
 
 	// 运行时参数值 
 	protected Vector<Object> runValues; 
-	public int getVersion(){ 
+	public int getVersion(){
 		return 0; 
 	} 
  
 	public DefaultPrepare(){
 	} 
-	protected void initRunValues(){ 
-		if(null == runValues){ 
+	protected void initRunValues(){
+		if(null == runValues){
 			runValues = new Vector<Object>(); 
-		}else{ 
+		}else{
 			runValues.clear(); 
 		} 
 	} 
@@ -73,7 +73,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @return RunPrepare
 	 */ 
 	public RunPrepare order(Order order){
-		if(null == orders){ 
+		if(null == orders){
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
@@ -81,7 +81,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	} 
 	 
 	public RunPrepare order(String order){
-		if(null == orders){ 
+		if(null == orders){
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
@@ -96,7 +96,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	}
  
 	protected String getOrderText(String delimiter){
-		if(null != orders){ 
+		if(null != orders){
 			return orders.getRunText(delimiter);
 		} 
 		return ""; 
@@ -108,11 +108,11 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 */ 
 	public RunPrepare group(String group){
 		/*避免添加空条件*/ 
-		if(BasicUtil.isEmpty(group)){ 
+		if(BasicUtil.isEmpty(group)){
 			return this; 
 		} 
 		 
-		if(null == groups){ 
+		if(null == groups){
 			groups = new DefaultGroupStore();
 		} 
 		group = group.trim().toUpperCase(); 
@@ -125,15 +125,15 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @param runValue  runValue
 	 * @return RunPrepare
 	 */ 
-	@SuppressWarnings({ "unchecked", "rawtypes" }) 
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	protected RunPrepare addRunValue(Object runValue){
-		if(null == runValues){ 
+		if(null == runValues){
 			runValues = new Vector<Object>(); 
 		} 
-		if(runValue != null && runValue instanceof Collection){ 
+		if(runValue != null && runValue instanceof Collection){
 			Collection collection = (Collection)runValue; 
 			runValues.addAll(collection); 
-		}else{ 
+		}else{
 			runValues.add(runValue); 
 		} 
 		return this; 
@@ -142,7 +142,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * 运行时参数值 
 	 * @return List
 	 */ 
-	public List<Object> getRunValues() { 
+	public List<Object> getRunValues() {
 		return runValues; 
 	} 
 	 
@@ -199,35 +199,35 @@ public abstract class DefaultPrepare implements RunPrepare{
 		return this; 
 	} 
 	 
-	public void setPageNavi(PageNavi navi){ 
+	public void setPageNavi(PageNavi navi){
 		this.navi = navi; 
 	} 
-	public PageNavi getPageNavi(){ 
+	public PageNavi getPageNavi(){
 		return navi; 
 	} 
 
 	public GroupStore getGroups(){
 		return groups;
 	} 
-	public OrderStore getOrders() { 
+	public OrderStore getOrders() {
 		return orders; 
 	} 
  
-	public void setOrders(OrderStore orders) { 
-		if(null != orders){ 
+	public void setOrders(OrderStore orders) {
+		if(null != orders){
 			List<Order> list = orders.getOrders(); 
-			for(Order order:list){ 
+			for(Order order:list){
 				this.order(order); 
 			} 
 			for(Order order:orders.getOrders()){				 
 				orders.order(order); 
 			} 
-		}else{ 
+		}else{
 			orders = this.orders; 
 		} 
 	} 
 	 
-	public ConditionChain getConditionChain(){ 
+	public ConditionChain getConditionChain(){
 		return this.chain; 
 	}
 	

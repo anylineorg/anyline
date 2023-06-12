@@ -649,7 +649,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	public static Object fetch(Object obj, String ... keys){
 		if(null == obj){
 			return null;
@@ -982,7 +982,7 @@ public class BeanUtil {
 	 * @param order 是否排序
 	 * @return String(a=1&amp;b=2&amp;b=3)
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public static String map2string(Map map, String join, String separator, boolean ignoreEmpty, boolean order){
 		StringBuilder result = new StringBuilder();
 		Set es = null;
@@ -1942,7 +1942,7 @@ public class BeanUtil {
 		return list;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
 			return null;

@@ -3,14 +3,13 @@ package org.anyline.data.jdbc.oracle;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.metadata.init.AbstractColumnType;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -111,15 +110,15 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		OrderStore orders = run.getOrderStore(); 
 		int first = 0;
 		String order = ""; 
-		if(null != orders){ 
+		if(null != orders){
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
-		if(null != navi){ 
+		if(null != navi){
 			first = navi.getFirstRow();
 		} 
 		if(null == navi){
 			builder.append(sql).append("\n").append(order); 
-		}else{ 
+		}else{
 			// 分页
 			builder.append(sql).append("\n").append(order);
 			builder.append(" OFFSET ").append(first).append(" ROWS FETCH NEXT ").append(navi.getPageRows()).append(" ROWS ONLY");
@@ -894,7 +893,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -945,7 +944,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -1361,7 +1360,6 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
 			Table table = column.getTable();
@@ -2155,7 +2153,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
-		return buildCreateRunSQL(trigger);
+		return super.buildCreateRunSQL(trigger);
 	}
 	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
 		super.each(builder, trigger);

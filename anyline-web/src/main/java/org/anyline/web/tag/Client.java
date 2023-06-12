@@ -55,7 +55,7 @@ public class Client extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		var = null;
 		out = true;
@@ -63,7 +63,7 @@ public class Client extends BaseBodyTag implements Cloneable{
 	 
 	 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
 

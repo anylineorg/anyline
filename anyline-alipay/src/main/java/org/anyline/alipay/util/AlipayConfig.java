@@ -9,7 +9,7 @@ import org.anyline.util.ConfigTable;
 import java.util.Hashtable;
  
  
-public class AlipayConfig extends AnylineConfig{ 
+public class AlipayConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
 	public static String DEFAULT_APP_PRIVATE_KEY 	= ""		;
@@ -36,7 +36,7 @@ public class AlipayConfig extends AnylineConfig{
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
 	}
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	}
@@ -62,18 +62,18 @@ public class AlipayConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件
 		load(); 
 	} 
-	public static AlipayConfig getInstance(){ 
+	public static AlipayConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static AlipayConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static AlipayConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AlipayConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AlipayConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载
 			load(); 
 		} 
@@ -85,14 +85,14 @@ public class AlipayConfig extends AnylineConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, AlipayConfig.class, CONFIG_NAME);
 		AlipayConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	public String getString(String key){ 
+	public String getString(String key){
 		return kvs.get(key); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 
 	public static AlipayConfig register(String instance, DataRow row){

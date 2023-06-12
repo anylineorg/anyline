@@ -84,12 +84,12 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public void init(){ 
+	public void init(){
 		this.delimiterFr = adapter.getDelimiterFr();
 		this.delimiterTo = adapter.getDelimiterTo();
 		 
  
-		if(null != configStore){ 
+		if(null != configStore){
 			setPageNavi(configStore.getPageNavi()); 
 			/*OrderStore orderStore = configStore.getOrders();
 			List<Order> orders = null;
@@ -145,11 +145,11 @@ public abstract class BasicRun implements Run {
 	@Override
 	public Run group(String group){
 		/*避免添加空条件*/ 
-		if(BasicUtil.isEmpty(group)){ 
+		if(BasicUtil.isEmpty(group)){
 			return this; 
 		} 
 		 
-		if(null == groupStore){ 
+		if(null == groupStore){
 			groupStore = new DefaultGroupStore();
 		} 
  
@@ -157,7 +157,7 @@ public abstract class BasicRun implements Run {
  
 		 
 		/*添加新分组条件*/ 
-		if(!groupStore.getGroups().contains(group)){ 
+		if(!groupStore.getGroups().contains(group)){
 			groupStore.group(group); 
 		} 
 		 
@@ -165,7 +165,7 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public Run order(String order){
-		if(null == orderStore){ 
+		if(null == orderStore){
 			orderStore = new DefaultOrderStore();
 		} 
 		orderStore.order(order); 
@@ -209,7 +209,7 @@ public abstract class BasicRun implements Run {
 	 * @param split  遇到集合/数组类型是否拆分处理
 	 * @return Run
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	@Override
 	public Run addValues(Compare compare, String key, Object obj, boolean split){
 		if(null == key){
@@ -297,7 +297,7 @@ public abstract class BasicRun implements Run {
 	 * @param run  run
 	 * @return Run
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public Run addValues(RunValue run){
 		if(null == values){
 			values = new ArrayList<>();
@@ -313,36 +313,36 @@ public abstract class BasicRun implements Run {
 		return this;
 	}
 	@Override
-	public PageNavi getPageNavi() { 
+	public PageNavi getPageNavi() {
 		return pageNavi; 
 	}
 	@Override
-	public void setPageNavi(PageNavi pageNavi) { 
+	public void setPageNavi(PageNavi pageNavi) {
 		this.pageNavi = pageNavi; 
 	}
 	@Override
-	public ConfigStore getConfigStore() { 
+	public ConfigStore getConfigStore() {
 		return configStore; 
 	}
 	@Override
-	public void setConfigStore(ConfigStore configStore) { 
+	public void setConfigStore(ConfigStore configStore) {
 		this.configStore = configStore; 
 	}
 
 	@Override
-	public OrderStore getOrderStore() { 
+	public OrderStore getOrderStore() {
 		return orderStore; 
 	}
 	@Override
-	public void setOrderStore(OrderStore orderStore) { 
+	public void setOrderStore(OrderStore orderStore) {
 		this.orderStore = orderStore; 
 	}
 	@Override
-	public GroupStore getGroupStore() { 
+	public GroupStore getGroupStore() {
 		return groupStore; 
 	}
 	@Override
-	public void setGroupStore(GroupStore groupStore) { 
+	public void setGroupStore(GroupStore groupStore) {
 		this.groupStore = groupStore; 
 	}
 	public String getDelimiterFr() {
@@ -366,15 +366,15 @@ public abstract class BasicRun implements Run {
 		return this; 
 	} 
 	@Override 
-	public void setOrders(String[] orders) { 
-		if(null != orders){ 
-			for(String order:orders){ 
+	public void setOrders(String[] orders) {
+		if(null != orders){
+			for(String order:orders){
 				order(order); 
 			} 
 		} 
 	} 
 	@Override 
-	public String getFinalQuery() { 
+	public String getFinalQuery() {
 		String text = adapter.parseFinalQuery(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
@@ -398,19 +398,19 @@ public abstract class BasicRun implements Run {
 		return text;
 	}
 	@Override 
-	public String getBaseQuery() { 
+	public String getBaseQuery() {
 		return builder.toString();
 	}
 	@Override
 	public Run addOrders(OrderStore orderStore){
-		if(null == orderStore){ 
+		if(null == orderStore){
 			return this; 
 		} 
 		List<Order> orders = orderStore.getOrders(); 
-		if(null == orders){ 
+		if(null == orders){
 			return this; 
 		} 
-		for(Order order:orders){ 
+		for(Order order:orders){
 			this.orderStore.order(order); 
 		} 
 		return this; 
@@ -463,7 +463,7 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public Run addCondition(Condition condition) {
-		if(null != conditionChain){ 
+		if(null != conditionChain){
 			conditionChain.addCondition(condition); 
 		} 
 		return this; 
@@ -514,7 +514,7 @@ public abstract class BasicRun implements Run {
 	}
 
 	public Run addVariable(Variable var){
-		if(null == variables){ 
+		if(null == variables){
 			variables = new ArrayList<Variable>();
 		} 
 		variables.add(var); 

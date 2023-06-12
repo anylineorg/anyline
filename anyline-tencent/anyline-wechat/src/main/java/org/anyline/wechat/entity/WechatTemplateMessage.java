@@ -27,7 +27,7 @@ public class WechatTemplateMessage {
 	} 
 	public WechatTemplateMessage addData(String key, String value, String color){
 		Map<String,String> dt = data.get(key); 
-		if(dt == null){ 
+		if(dt == null){
 			dt = new HashMap<String,String>(); 
 		} 
 		dt.put("value", value); 
@@ -39,19 +39,19 @@ public class WechatTemplateMessage {
 		return addData(key, value, "#173177"); 
 	} 
 	 
-	public String getTouser() { 
+	public String getTouser() {
 		return touser; 
 	} 
-	public String getTemplate_id() { 
+	public String getTemplate_id() {
 		return template_id; 
 	} 
-	public String getUrl() { 
+	public String getUrl() {
 		return url; 
 	} 
-	public String getTopcolor() { 
+	public String getTopcolor() {
 		return topcolor; 
 	} 
-	public Map<String, Map<String, String>> getData() { 
+	public Map<String, Map<String, String>> getData() {
 		return data; 
 	} 
 } 

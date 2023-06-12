@@ -19,11 +19,11 @@
 
 package org.anyline.data.prepare;
 
-import org.anyline.data.entity.Join;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.Join;
 
 import java.util.Collection;
 import java.util.List;

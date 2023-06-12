@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
  
  
-public class If extends BaseBodyTag implements Cloneable{ 
+public class If extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	 
 	private boolean test; 
@@ -44,18 +44,18 @@ public class If extends BaseBodyTag implements Cloneable{
 			return EVAL_BODY_BUFFERED;
 		}
 	} 
-	 public int doEndTag() throws JspException { 
+	 public int doEndTag() throws JspException {
 		try{
 			if(test){
 				JspWriter out = pageContext.getOut(); 
 				out.print(BasicUtil.nvl(value,body,"")); 
-			}else if(null != elseValue){ 
+			}else if(null != elseValue){
 				JspWriter out = pageContext.getOut(); 
 				out.print(elseValue); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		}
 		return EVAL_PAGE ; 
@@ -63,7 +63,7 @@ public class If extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		value = null;
 		body = null;
@@ -73,7 +73,7 @@ public class If extends BaseBodyTag implements Cloneable{
 		truncate = false;
 	} 
 	 
-	public void setTest(boolean test) { 
+	public void setTest(boolean test) {
 		this.test = test; 
 	}
 	public void setElse(Object elseValue) {
@@ -90,7 +90,7 @@ public class If extends BaseBodyTag implements Cloneable{
 		this.skip = skip;
 	}
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
 

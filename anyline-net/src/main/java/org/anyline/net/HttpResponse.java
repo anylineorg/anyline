@@ -47,23 +47,23 @@ public class HttpResponse {
  
 	private Map<String,String> seed; 
 	 
-	public String getContentType() { 
+	public String getContentType() {
 		return contentType; 
 	} 
-	public void setContentType(String contentType) { 
+	public void setContentType(String contentType) {
 		this.contentType = contentType; 
-		try{ 
+		try{
 			fileType = contentType.split(";")[0]; 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			fileType = "text/html"; 
 			log.error("setContentType$parse content type({})",contentType); 
 		} 
-		try{ 
+		try{
 			String tmps[] = contentType.split("="); 
-			if(tmps.length>1){ 
+			if(tmps.length>1){
 				encode = tmps[1].trim(); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			encode =null; 
 		} 
 		 
@@ -73,39 +73,39 @@ public class HttpResponse {
 	 * @param contentType  contentType
 	 * @return String
 	 */ 
-	public static String parseHttpFileExtend(String contentType){ 
+	public static String parseHttpFileExtend(String contentType){
 		String fileType = null; 
-		try{ 
+		try{
 			fileType = contentType.split(";")[0]; 
 			fileType = fileType.toLowerCase(); 
 			fileType = FileUtil.httpFileExtend.get(FileUtil.httpFileType.indexOf(fileType)); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			fileType = ""; 
 		} 
 		return fileType; 
 	} 
-	public String getText() { 
+	public String getText() {
 		return text; 
 	}
-	public void setText(String text) { 
+	public void setText(String text) {
 		this.text = text; 
 	} 
-	public String getFileType() { 
+	public String getFileType() {
 		return fileType; 
 	} 
-	public void setFileType(String fileType) { 
+	public void setFileType(String fileType) {
 		this.fileType = fileType; 
 	} 
-	public String getEncode() { 
+	public String getEncode() {
 		return encode; 
 	} 
-	public void setEncode(String encode) { 
+	public void setEncode(String encode) {
 		this.encode = encode; 
 	} 
-	public String getUrl() { 
+	public String getUrl() {
 		return url; 
 	} 
-	public void setUrl(String url) { 
+	public void setUrl(String url) {
 		this.url = url; 
 	}
 
@@ -142,35 +142,35 @@ public class HttpResponse {
 
 	public static List<String> encodeList = new ArrayList<>();
 	 
-	public long getLastModified() { 
+	public long getLastModified() {
 		return lastModified; 
 	} 
-	public void setLastModified(long lastModified) { 
+	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified; 
 	} 
-	public String getBackFileCd() { 
+	public String getBackFileCd() {
 		return backFileCd; 
 	} 
-	public void setBackFileCd(String backFileCd) { 
+	public void setBackFileCd(String backFileCd) {
 		this.backFileCd = backFileCd; 
 	} 
  
-	public Map<String,String> getSeed() { 
+	public Map<String,String> getSeed() {
 		return seed; 
 	} 
-	public void setSeed(Map<String,String> seed) { 
+	public void setSeed(Map<String,String> seed) {
 		this.seed = seed; 
 	} 
-	public String getParser() { 
+	public String getParser() {
 		return parser; 
 	} 
-	public void setParser(String parser) { 
+	public void setParser(String parser) {
 		this.parser = parser; 
 	} 
-	public String getHost() { 
+	public String getHost() {
 		return host; 
 	} 
-	public void setHost(String host) { 
+	public void setHost(String host) {
 		this.host = host; 
 	}
 	public int getStatus() {

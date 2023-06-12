@@ -56,12 +56,12 @@ public class TextRun extends BasicRun implements Run {
 		parseText(); 
 		return this; 
 	} 
-	public void init(){ 
+	public void init(){
 		super.init(); 
 		// 复制 RunPrepare 查询条件 
 		if(null != conditionChain){
 			List<Condition> conditions = conditionChain.getConditions(); 
-			if(null != conditions){ 
+			if(null != conditions){
 				for(Condition condition:conditions){
 					if(null == condition){
 						continue;
@@ -129,26 +129,26 @@ public class TextRun extends BasicRun implements Run {
 				}
 			}
 			OrderStore orderStore = configStore.getOrders(); 
-			if(null != orderStore){ 
+			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders(); 
-				if(null != orders){ 
-					for(Order order:orders){ 
+				if(null != orders){
+					for(Order order:orders){
 						addOrder(order); 
 					} 
 				} 
 			} 
 			PageNavi navi = configStore.getPageNavi(); 
-			if(navi != null){ 
+			if(navi != null){
 				this.pageNavi = navi; 
 			} 
 		}
 	} 
-	private void parseText(){ 
+	private void parseText(){
 		String text = prepare.getText();
 		if(null == text){
 			return;
 		} 
-		try{ 
+		try{
 			int varType = -1; 
 			Compare compare = Compare.EQUAL;
 
@@ -163,9 +163,9 @@ public class TextRun extends BasicRun implements Run {
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
-			if(BasicUtil.isNotEmpty(true,keys)){ 
+			if(BasicUtil.isNotEmpty(true,keys)){
 				// AND CD = :CD 
-				for(int i=0; i<keys.size();i++){ 
+				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i);
 
 					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
@@ -176,18 +176,18 @@ public class TextRun extends BasicRun implements Run {
 					String fullKey = keyItem.get(2).trim();	// :CD ::CD {CD} ${CD}
 					String typeChar = keyItem.get(3);		// null || "'" || ")" 
 					String key = fullKey.replace(":", ""); 
-					if(fullKey.startsWith("::")){ 
+					if(fullKey.startsWith("::")){
 						// AND CD = ::CD 
 						varType = Variable.VAR_TYPE_REPLACE;
-					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){ 
+					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){
 						// AND CD = ':CD' 
 						varType = Variable.VAR_TYPE_KEY_REPLACE;
-					}else{ 
+					}else{
 						// AND CD = :CD 
 						varType = Variable.VAR_TYPE_KEY;
 						// AND CD = :CD 
 						varType = Variable.VAR_TYPE_KEY;
-						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
+						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
 							// AND CD IN(:CD) 
 							compare = Compare.IN;
 						} 
@@ -200,11 +200,11 @@ public class TextRun extends BasicRun implements Run {
 					var.setRequired(true);
 					addVariable(var);
 				}// end for 
-			}else{ 
+			}else{
 				// AND CD = ? 
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)){ 
-					for(int i=0; i<idxKeys.size(); i++){ 
+				if(BasicUtil.isNotEmpty(true,idxKeys)){
+					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setRequired(true);
@@ -212,7 +212,7 @@ public class TextRun extends BasicRun implements Run {
 					} 
 				} 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
 		} 
 	}
@@ -222,7 +222,7 @@ public class TextRun extends BasicRun implements Run {
 		}
 	}
 	public void appendGroup(){
-		if(null != groupStore){ 
+		if(null != groupStore){
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		} 
 	}
@@ -230,16 +230,16 @@ public class TextRun extends BasicRun implements Run {
 	 * 拼接查询条件
 	 */
 	public void appendCondition(){
-		if(null == conditionChain){ 
+		if(null == conditionChain){
 			return; 
 		} 
 		List<Condition> cons = conditionChain.getConditions(); 
-		if(null == cons || cons.size()==0){ 
+		if(null == cons || cons.size()==0){
 			return; 
 		} 
 		String txt = builder.toString();
 		boolean where = endWithWhere(txt); 
-		if(!where){ 
+		if(!where){
 			builder.append(" WHERE 1=1"); 
 		}
 		builder.append(conditionChain.getRunText(null, adapter));
@@ -248,7 +248,7 @@ public class TextRun extends BasicRun implements Run {
 	 
 	public void setConfigs(ConfigStore configs) {
 		this.configStore = configs; 
-		if(null != configs){ 
+		if(null != configs){
 			this.pageNavi = configs.getPageNavi(); 
 			 
 		} 
@@ -257,22 +257,22 @@ public class TextRun extends BasicRun implements Run {
 	@Override 
 	public Run setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, Compare compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
-		if(null != variables && BasicUtil.isEmpty(variable)){ 
+		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
 				if(null == v){
 					continue;
 				} 
-				if(v.getKey().equalsIgnoreCase(condition)){ 
+				if(v.getKey().equalsIgnoreCase(condition)){
 					v.setValue(value); 
 				} 
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){ 
+		if(null == condition){
 			return this; 
 		} 
 		Condition con = getCondition(condition); 
-		if(null == con){ 
+		if(null == con){
 			return this; 
 		} 
 		variable = BasicUtil.nvl(variable, condition).toString(); 
@@ -294,12 +294,12 @@ public class TextRun extends BasicRun implements Run {
 	 * @param obj  obj
 	 * @return TextRun
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public TextRun addValues(String key, Object obj){
-		if(null == obj){ 
+		if(null == obj){
 			return this; 
 		} 
-		if(null == values){ 
+		if(null == values){
 			values = new ArrayList<>();
 		}
 		if(null != obj && obj instanceof RunValue){
@@ -310,21 +310,21 @@ public class TextRun extends BasicRun implements Run {
 			for(Object item:list){
 				addValues(key,item);
 			}
-		}else{ 
+		}else{
 			addValues(new RunValue(key, obj));
 		} 
 		return this; 
 	} 
 
 	public Run addOrders(OrderStore orderStore){
-		if(null == orderStore){ 
+		if(null == orderStore){
 			return this; 
 		} 
 		List<Order> orders = orderStore.getOrders(); 
-		if(null == orders){ 
+		if(null == orders){
 			return this; 
 		} 
-		for(Order order:orders){ 
+		for(Order order:orders){
 			this.orderStore.order(order); 
 		} 
 		return this; 
@@ -352,22 +352,22 @@ public class TextRun extends BasicRun implements Run {
 	 * @return Run
 	 */
 	public Run addCondition(String condition, String variable, Object value) {
-		if(null != variables && BasicUtil.isEmpty(variable)){ 
+		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
 				if(null == v){
 					continue;
 				} 
-				if(v.getKey().equalsIgnoreCase(condition)){ 
+				if(v.getKey().equalsIgnoreCase(condition)){
 					v.setValue(value); 
 				} 
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){ 
+		if(null == condition){
 			return this; 
 		} 
 		Condition con = getCondition(condition); 
-		if(null == con){ 
+		if(null == con){
 			return this; 
 		} 
 		variable = BasicUtil.nvl(variable, condition).toString(); 
@@ -387,7 +387,7 @@ public class TextRun extends BasicRun implements Run {
 	 */ 
 	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
 		Condition condition = new DefaultAutoCondition(required,strictRequired,prefix, var, value, compare);
-		if(null == conditionChain){ 
+		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		} 
 		conditionChain.addCondition(condition); 

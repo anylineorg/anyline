@@ -25,14 +25,14 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 import java.util.Locale;
  
-public class TemplateResourceViewResolver extends UrlBasedViewResolver { 
+public class TemplateResourceViewResolver extends UrlBasedViewResolver {
  
 	private Boolean alwaysInclude; 
 	private Boolean exposeContextBeansAsAttributes; 
 	private String[] exposedContextBeanNames; 
  
 	@SuppressWarnings("rawtypes")
-	public TemplateResourceViewResolver() { 
+	public TemplateResourceViewResolver() {
 		Class viewClass = requiredViewClass(); 
 		if (viewClass.equals(InternalResourceView.class)) 
 			viewClass = TemplateView.class; 
@@ -40,34 +40,34 @@ public class TemplateResourceViewResolver extends UrlBasedViewResolver {
 		setViewClass(viewClass); 
 	} 
  
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected Class requiredViewClass() { 
+	@SuppressWarnings({"unchecked", "rawtypes" })
+	protected Class requiredViewClass() {
 		return InternalResourceView.class; 
 	} 
  
-	public void setAlwaysInclude(boolean alwaysInclude) { 
+	public void setAlwaysInclude(boolean alwaysInclude) {
 		this.alwaysInclude = Boolean.valueOf(alwaysInclude); 
 	} 
  
-	public void setExposeContextBeansAsAttributes(boolean exposeContextBeansAsAttributes) { 
+	public void setExposeContextBeansAsAttributes(boolean exposeContextBeansAsAttributes) {
 		this.exposeContextBeansAsAttributes = Boolean.valueOf(exposeContextBeansAsAttributes); 
 	} 
  
-	public void setExposedContextBeanNames(String ... exposedContextBeanNames) { 
+	public void setExposedContextBeanNames(String ... exposedContextBeanNames) {
 		this.exposedContextBeanNames = exposedContextBeanNames; 
 	} 
  
-	protected View loadView(String viewName, Locale locale) throws Exception { 
+	protected View loadView(String viewName, Locale locale) throws Exception {
 		AbstractUrlBasedView view = buildView(viewName); 
 		return ((View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName)); 
 	} 
-	protected AbstractUrlBasedView buildView(String viewName) throws Exception { 
+	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
 		TemplateView view = (TemplateView) BeanUtils.instantiateClass(getViewClass()); 
 		if (!viewName.contains(getPrefix())  
-				&& !viewName.startsWith("/")) { 
+				&& !viewName.startsWith("/")) {
 			viewName = getPrefix() + viewName; 
 		} 
-		if (!viewName.endsWith(getSuffix())) { 
+		if (!viewName.endsWith(getSuffix())) {
 			viewName = viewName + getSuffix(); 
 		} 
 		view.setUrl(viewName); 

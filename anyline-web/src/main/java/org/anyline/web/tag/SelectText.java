@@ -28,42 +28,42 @@ import javax.servlet.jsp.JspWriter;
 import java.util.*;
  
  
-public class SelectText extends BaseBodyTag{ 
+public class SelectText extends BaseBodyTag{
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
 	private String valueKey = ConfigTable.DEFAULT_PRIMARY_KEY;
 	private String textKey = "NM"; 
  
-	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	public int doEndTag() throws JspException { 
+	 @SuppressWarnings({"rawtypes", "unchecked" })
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String html = "";
 		 textKey = textKey.replace("{","${");
 		 valueKey = valueKey.replace("{","${");
 //		valueKey = DataRow.keyCase(valueKey);
 //		textKey = DataRow.keyCase(textKey); 
-		try{ 
-			if(null == data){ 
+		try{
+			if(null == data){
 				return EVAL_PAGE; 
 			} 
-			if(data instanceof String){ 
-				if(data.toString().endsWith("}")){ 
+			if(data instanceof String){
+				if(data.toString().endsWith("}")){
 					data = data.toString().replace("{", "").replace("}", "");
-				}else{ 
-					if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){ 
+				}else{
+					if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){
 						data = request.getSession().getServletContext().getAttribute(data.toString()); 
-					}else if("session".equals(scope)){ 
+					}else if("session".equals(scope)){
 						data = request.getSession().getAttribute(data.toString()); 
-					}else{ 
+					}else{
 						data = request.getAttribute(data.toString()); 
 					} 
 				} 
 			} 
-			if(data instanceof String){ 
+			if(data instanceof String){
 				String items[] = data.toString().split(","); 
 				List list = new ArrayList(); 
-				for(String item:items){ 
+				for(String item:items){
 					Map map = new HashMap(); 
 					String tmp[] = item.split(":"); 
 					map.put(valueKey, tmp[0]); 
@@ -73,10 +73,10 @@ public class SelectText extends BaseBodyTag{
 				data = list; 
 			} 
 			Collection<Map> items = (Collection<Map>)data; 
-			if(null != value){ 
+			if(null != value){
 				for(Map item:items){
 					Object tmp = item.get(valueKey); 
-					if(null != tmp && value.toString().equals(tmp.toString())){ 
+					if(null != tmp && value.toString().equals(tmp.toString())){
 						String text = "";
 						if(textKey.contains("{")){
 							text = BeanUtil.parseFinalValue(item, textKey);
@@ -92,41 +92,41 @@ public class SelectText extends BaseBodyTag{
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(html); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
 	} 
  
  
-	public Object getData() { 
+	public Object getData() {
 		return data; 
 	} 
  
  
-	public void setData(Object data) { 
+	public void setData(Object data) {
 		this.data = data; 
 	} 
  
  
-	public String getValueKey() { 
+	public String getValueKey() {
 		return valueKey; 
 	} 
  
  
-	public void setValueKey(String valueKey) { 
+	public void setValueKey(String valueKey) {
 		this.valueKey = valueKey; 
 	} 
  
  
-	public String getTextKey() { 
+	public String getTextKey() {
 		return textKey; 
 	} 
  
  
-	public void setTextKey(String textKey) { 
+	public void setTextKey(String textKey) {
 		this.textKey = textKey; 
 	} 
  
@@ -142,11 +142,11 @@ public class SelectText extends BaseBodyTag{
 	} 
  
  
-	public String getScope() { 
+	public String getScope() {
 		return scope; 
 	} 
  
-	public void setScope(String scope) { 
+	public void setScope(String scope) {
 		this.scope = scope; 
 	} 
 }

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URLEncoder;
 import java.util.Hashtable;
 
-public class AlipayUtil { 
+public class AlipayUtil {
 	private static final Logger log = LoggerFactory.getLogger(AlipayUtil.class);
 
 	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>();
@@ -50,12 +50,12 @@ public class AlipayUtil {
 		return instances;
 	}
 
-	public static AlipayUtil getInstance() { 
+	public static AlipayUtil getInstance() {
 		return getInstance(AlipayConfig.DEFAULT_INSTANCE_KEY);
 	} 
  
-	public static AlipayUtil getInstance(String key) { 
-		if (BasicUtil.isEmpty(key)) { 
+	public static AlipayUtil getInstance(String key) {
+		if (BasicUtil.isEmpty(key)) {
 			key = AlipayConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		AlipayUtil util = instances.get(key); 
@@ -80,7 +80,7 @@ public class AlipayUtil {
 	 * @param order  系统订单号 
 	 * @return String
 	 */ 
-	public String createAppOrder(String subject, String body, String price, String order) { 
+	public String createAppOrder(String subject, String body, String price, String order) {
 		String result = ""; 
 		AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest(); 
 		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel(); 
@@ -91,10 +91,10 @@ public class AlipayUtil {
 		model.setTotalAmount(price); 
 		request.setBizModel(model); 
 		request.setNotifyUrl(config.getString("NOTIFY_URL")); 
-		try { 
+		try {
 			AlipayTradeAppPayResponse response = client.sdkExecute(request); 
 			result = response.getBody(); 
-		} catch (AlipayApiException e) { 
+		} catch (AlipayApiException e) {
 			e.printStackTrace(); 
 		} 
  
@@ -110,7 +110,7 @@ public class AlipayUtil {
 	 * @param order  系统订单号
 	 * @return String
 	 */ 
-	public String createWebOrder(String subject, String body, String price, String order) { 
+	public String createWebOrder(String subject, String body, String price, String order) {
 		String result = ""; 
 		return result; 
 	} 
@@ -123,9 +123,9 @@ public class AlipayUtil {
 	    alipayRequest.setReturnUrl(callback);
 	    alipayRequest.setNotifyUrl(config.NOTIFY_URL); 
 	    alipayRequest.setBizContent(BeanUtil.object2json(order));//填充业务参数 
-	    try { 
+	    try {
 	        result = client.pageExecute(alipayRequest).getBody(); // 调用SDK生成表单 
-	    } catch (AlipayApiException e) { 
+	    } catch (AlipayApiException e) {
 	        e.printStackTrace(); 
 	    } 
 		return result; 
@@ -143,18 +143,18 @@ public class AlipayUtil {
 	 * @param query 查询参数
 	 * @return AlipayTradeQueryResult
 	 */ 
-	public AlipayTradeQueryResult tradeQuery(AlipayTradeQuery query){ 
+	public AlipayTradeQueryResult tradeQuery(AlipayTradeQuery query){
 		AlipayTradeQueryResult result = null;  
 		AlipayTradeQueryRequest request = new AlipayTradeQueryRequest(); 
 		String json = BeanUtil.object2json(query); 
 		request.setBizContent(json); 
-		try { 
+		try {
 			AlipayTradeQueryResponse res = client.execute(request); 
 			result = new AlipayTradeQueryResult(res); 
-		} catch (AlipayApiException e) { 
+		} catch (AlipayApiException e) {
 			result = new AlipayTradeQueryResult(); 
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			log.warn("[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result)); 
 		} 
 		return result; 
@@ -164,18 +164,18 @@ public class AlipayUtil {
 	 * @param transfer  转帐参数
 	 * @return AlipayTransferResult
 	 */ 
-	public AlipayTransferResult transfer(AlipayTransfer transfer) { 
+	public AlipayTransferResult transfer(AlipayTransfer transfer) {
 		AlipayTransferResult result = null;  
 		AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest(); 
 		String json = BeanUtil.object2json(transfer); 
 		request.setBizContent(json); 
-		try { 
+		try {
 			AlipayFundTransToaccountTransferResponse res = client.execute(request); 
 			result = new AlipayTransferResult(res); 
-		} catch (AlipayApiException e) { 
+		} catch (AlipayApiException e) {
 			result = new AlipayTransferResult(); 
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			log.warn("[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result)); 
 		} 
 		return result; 
@@ -185,18 +185,18 @@ public class AlipayUtil {
 	 * @param query  查询参数
 	 * @return AlipayTransferQueryResult
 	 */ 
-	public AlipayTransferQueryResult transferQuery(AlipayTransferQuery query) { 
+	public AlipayTransferQueryResult transferQuery(AlipayTransferQuery query) {
 		AlipayTransferQueryResult result = null; 
 		AlipayFundTransOrderQueryRequest request = new AlipayFundTransOrderQueryRequest(); 
 		String json = BeanUtil.object2json(query); 
 		request.setBizContent(json); 
-		try { 
+		try {
 			AlipayFundTransOrderQueryResponse res = client.execute(request); 
 			result = new AlipayTransferQueryResult(res); 
-		} catch (AlipayApiException e) { 
+		} catch (AlipayApiException e) {
 			result = new AlipayTransferQueryResult(); 
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			log.warn("[单笔转账到支付宝账户查询][data:{}][result:{}]", json,BeanUtil.object2json(result)); 
 		} 
 		return result; 

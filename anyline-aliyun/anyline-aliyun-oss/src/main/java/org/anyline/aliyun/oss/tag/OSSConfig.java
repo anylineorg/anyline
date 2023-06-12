@@ -26,7 +26,7 @@ import org.anyline.web.tag.BaseBodyTag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.util.Map;
-public class OSSConfig extends BaseBodyTag { 
+public class OSSConfig extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private boolean debug = false;
 	private int expire = 0; 
@@ -35,7 +35,7 @@ public class OSSConfig extends BaseBodyTag {
 	private String key = AnylineConfig.DEFAULT_INSTANCE_KEY;
 	private String var = "al.config.oss.aliyun";
 	 
-	public int doEndTag() throws JspException { 
+	public int doEndTag() throws JspException {
 		try{
 			OSSUtil util = OSSUtil.getInstance(key);
 			if(BasicUtil.isEmpty(dir)){
@@ -67,7 +67,7 @@ public class OSSConfig extends BaseBodyTag {
 			out.println(script);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 

@@ -293,7 +293,7 @@ public class Perl5Substitution extends StringSubstitution {
       // Positional params
       if (c == '$') {
 	saveDigits = __isInterpolationCharacter(nextc);
-      } else if (c == '\\') { // Escape codes
+      } else if (c == '\\') {// Escape codes
 	if (nextc == 'l') {
 	  if (!caseMode){
 	    __addElement(_OPCODE_LOWERCASE_CHAR);

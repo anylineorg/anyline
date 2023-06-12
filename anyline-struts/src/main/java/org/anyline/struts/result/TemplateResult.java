@@ -36,21 +36,21 @@ public class TemplateResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 0xe4a6cfd5319c8fc5L; 
 	private String contentPage = null; 
  
-	public TemplateResult() { 
+	public TemplateResult() {
 		super(); 
 	} 
  
-	public TemplateResult(String location) { 
+	public TemplateResult(String location) {
 		super(location); 
 	} 
  
-	public void doExecute(String finalLocation, ActionInvocation invocation) throws Exception { 
+	public void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
 		this.contentPage = finalLocation;						// 内容页path 
 		Result result = invocation.getResult(); 
 		if (!contentPage.startsWith("/")) {						// 相对目录 
 			String dir = (String) invocation.getStack().findValue("dir"); 
-			if (null != dir) { 
-				if (!dir.endsWith("/")) { 
+			if (null != dir) {
+				if (!dir.endsWith("/")) {
 					dir = dir + "/"; 
 				} 
 				contentPage = dir + contentPage; 
@@ -60,44 +60,44 @@ public class TemplateResult extends StrutsResultSupport {
 		HttpServletRequest request = ServletActionContext.getRequest(); 
 		String template = (String)request.getAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH);
 		// action中设置模板 
-		if(null != template){ 
-			if(template.startsWith("/")){ 
+		if(null != template){
+			if(template.startsWith("/")){
 				// 从根目录开始 
-			}else{ 
+			}else{
 				// 根据内容页相对目录 
 				int idx = contentPage.indexOf("/page/"); 
-				if(idx > 0){ 
+				if(idx > 0){
 					template = contentPage.substring(0,idx)+"/template/layout/" + template; 
 				} 
 			} 
 		} 
 		// 根据内容页构建模板path 
-		if(null == template){ 
+		if(null == template){
 			int idx = contentPage.indexOf("/page/"); 
-			if(idx > 0){ 
+			if(idx > 0){
 				template = contentPage.substring(0,idx)+"/template/layout/default.jsp"; 
 			} 
 		} 
 		// 根据配置文件读取固定模板path 
-		if(null == template){ 
+		if(null == template){
 			template = ConfigTable.getString("TEMPLET_FILE_PATH_WEB"); 
-			if (WebUtil.isWap(request)) { 
+			if (WebUtil.isWap(request)) {
 				template = ConfigTable.getString("TEMPLET_FILE_PATH_WAP"); 
 			} 
-			if (null == template) { 
+			if (null == template) {
 				template = ConfigTable.getString("TEMPLET_FILE_PATH"); 
 			} 
 		} 
 	 
 		PageContext pageContext = ServletActionContext.getPageContext(); 
-		if (pageContext != null) { 
+		if (pageContext != null) {
 			pageContext.include(template); 
-		} else { 
+		} else {
 			HttpServletResponse response = ServletActionContext.getResponse(); 
 			RequestDispatcher dispatcher = request.getRequestDispatcher(template); 
 			request.setAttribute("content_page", contentPage); 
 			request.setAttribute("anyline_content_page", contentPage); 
-			if (dispatcher == null) { 
+			if (dispatcher == null) {
 				response.sendError(404, 
 						(new StringBuilder()).append("result '") 
 								.append(template).append("' not found") 
@@ -106,12 +106,12 @@ public class TemplateResult extends StrutsResultSupport {
 			} 
 			if (!response.isCommitted() 
 					&& request 
-							.getAttribute("javax.servlet.include.servlet_path") == null) { 
+							.getAttribute("javax.servlet.include.servlet_path") == null) {
 				request.setAttribute("struts.view_uri", template); 
 				request.setAttribute("struts.request_uri", 
 						request.getRequestURI()); 
 				dispatcher.forward(request, response); 
-			} else { 
+			} else {
 				dispatcher.include(request, response); 
 			} 
 		} 

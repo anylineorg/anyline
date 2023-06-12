@@ -71,7 +71,7 @@ class TokenNode extends LeafNode {
     _token = token;
   }
 
-  boolean _matches(char token) { return (_token == token); }
+  boolean _matches(char token) {return (_token == token); }
 
   SyntaxNode _clone(int pos[]) {
     return new TokenNode(_token, pos[0]++);

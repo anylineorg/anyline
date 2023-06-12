@@ -3,11 +3,9 @@ package org.anyline.data.jdbc.mariadb;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
-import org.anyline.entity.data.DatabaseType;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.data.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -965,7 +963,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -1016,7 +1014,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -1270,7 +1268,6 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public List<String> buildCreateRunSQL(View view) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		view.setCreater(this);
 		builder.append("CREATE OR REPLACE VIEW ");
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
@@ -1501,7 +1498,6 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
 			Table table = column.getTable();

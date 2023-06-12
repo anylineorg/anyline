@@ -24,7 +24,7 @@ import java.io.Serializable;
  
  
  
-public interface PageNavi extends Serializable{ 
+public interface PageNavi extends Serializable{
 	/** 
 	 * 分页计算方式 
 	 * @param type	0-按页数 1-按开始结束记录数 

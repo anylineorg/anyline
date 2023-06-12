@@ -88,7 +88,7 @@ public class NacosConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load();
 	} 
@@ -97,7 +97,7 @@ public class NacosConfig extends AnylineConfig{
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static NacosConfig getInstance(String key){
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
@@ -111,7 +111,7 @@ public class NacosConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, NacosConfig.class, "anyline-nacos.xml");
 		NacosConfig.lastLoadTime = System.currentTimeMillis();
 	}
@@ -157,6 +157,6 @@ public class NacosConfig extends AnylineConfig{
 	public static NacosConfig register(String address, int port, String pack, String clazz) {
 		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, pack, clazz);
 	}
-	private static void debug(){ 
+	private static void debug(){
 	} 
 }

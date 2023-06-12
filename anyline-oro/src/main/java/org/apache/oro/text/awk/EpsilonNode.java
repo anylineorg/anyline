@@ -67,9 +67,9 @@ import java.util.*;
 final class EpsilonNode extends SyntaxNode {
   BitSet _positionSet = new BitSet(1);
 
-  boolean _nullable()     { return true; }
-  BitSet _firstPosition() { return _positionSet; }
-  BitSet _lastPosition()  { return _positionSet; }
+  boolean _nullable()     {return true; }
+  BitSet _firstPosition() {return _positionSet; }
+  BitSet _lastPosition()  {return _positionSet; }
   void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
   }
 

@@ -35,19 +35,19 @@ import org.slf4j.LoggerFactory;
  * @author zh
  *
  */ 
-public class TimeDelay extends BaseBodyTag implements Cloneable{ 
+public class TimeDelay extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private Object nvl = false;	// 如果value为空("",null) 是否显示当时间,默认false
  
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			String result = ""; 
-			if(null == value){ 
+			if(null == value){
 				value = body; 
 			} 
-			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){ 
+			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){
 				value = new Date(); 
-			}else if(value instanceof String){ 
+			}else if(value instanceof String){
 				value = DateUtil.parse((String)value); 
 			}
 			Date date = (Date)value;
@@ -71,9 +71,9 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(result); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
@@ -81,14 +81,14 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		this.value = null;
 		this.body = null;
 	}
 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
 }

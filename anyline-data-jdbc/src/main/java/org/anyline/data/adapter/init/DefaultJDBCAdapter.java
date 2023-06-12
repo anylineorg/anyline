@@ -27,7 +27,6 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
@@ -37,12 +36,9 @@ import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
-import org.anyline.entity.data.Function;
-import org.anyline.entity.data.Procedure;
-import org.anyline.entity.data.Trigger;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.*;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.metadata.ColumnType;
@@ -402,7 +398,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
 				if(EntityAdapterProxy.hasAdapter()){
-					keys.addAll(org.anyline.entity.data.Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT)));
+					keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT)));
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
@@ -505,7 +501,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			row.put(row.getPrimaryKey(), value);
 		}else{
 			if(EntityAdapterProxy.hasAdapter()){
-				org.anyline.entity.data.Column key = EntityAdapterProxy.primaryKey(obj.getClass());
+				Column key = EntityAdapterProxy.primaryKey(obj.getClass());
 				Field field = EntityAdapterProxy.field(obj.getClass(), key);
 				BeanUtil.setFieldValue(obj, field, value);
 			}
@@ -915,7 +911,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				entity = ((Collection)obj).iterator().next();
 			}
 			if(EntityAdapterProxy.hasAdapter()){
-				org.anyline.entity.data.Table table = EntityAdapterProxy.table(entity.getClass());
+				Table table = EntityAdapterProxy.table(entity.getClass());
 				if(null != table){
 					dest = table.getName();
 				}
@@ -2154,7 +2150,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -2183,9 +2179,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)", 37));
 		}
 		if(null == triggers){
 			readers = new LinkedHashMap<>();
@@ -2260,8 +2256,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public List<String> buildCreateRunSQL(Table table) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		table.setCreater(this);
-		builder.append("CREATE ").append(table.getKeyword()).append(" ");
+ 		builder.append("CREATE ").append(table.getKeyword()).append(" ");
 		checkTableExists(builder, false);
 		name(builder, table);
 		LinkedHashMap columMap = table.getColumns();
@@ -2379,7 +2374,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildDropRunSQL(Table table) throws Exception{
-		table.setCreater(this);
 
 		StringBuilder builder = new StringBuilder();
 		String catalog = table.getCatalog();
@@ -2488,7 +2482,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public List<String> buildCreateRunSQL(View view) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		view.setCreater(this);
 		builder.append("CREATE VIEW ");
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
@@ -2507,7 +2500,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public List<String> buildAlterRunSQL(View view) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		view.setCreater(this);
 		builder.append("ALTER VIEW ");
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
@@ -2543,7 +2535,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildDropRunSQL(View view) throws Exception{
-		view.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DROP ").append(view.getKeyword()).append(" ");
 		checkViewExists(builder, true);
@@ -2735,7 +2726,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
 			Table table = column.getTable();
@@ -2780,8 +2770,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 		Column update = column.getUpdate();
 		if(null != update){
-			column.setCreater(this);
-			update.setCreater(this);
 
 			// 修改列名
 			String name = column.getName();
@@ -2859,8 +2847,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			Tag tag = (Tag)column;
 			return buildDropRunSQL(tag);
 		}
-
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
 			Table table = column.getTable();
@@ -2895,7 +2881,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Column column) throws Exception{
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
@@ -3315,7 +3300,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildAddRunSQL(Tag tag) throws Exception{
-		tag.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = tag.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
@@ -3342,8 +3326,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 
 		Tag update = tag.getUpdate();
 		if(null != update){
-			tag.setCreater(this);
-			update.setCreater(this);
 
 			// 修改标签名
 			String name = tag.getName();
@@ -3413,7 +3395,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildDropRunSQL(Tag tag) throws Exception{
-		tag.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = tag.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
@@ -3433,7 +3414,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Tag tag) throws Exception{
-		tag.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = tag.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
@@ -4208,7 +4188,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return Object
 	 */
 	@Override
-	public Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder){
+	public Object write(Column metadata, Object value, boolean placeholder){
 		if(null == value){
 			return value;
 		}
@@ -4259,7 +4239,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return Object
 	 */
 	@Override
-	public Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz){
+	public Object read(Column metadata, Object value, Class clazz){
 		//Object result = ConvertAdapter.convert(value, clazz);
 		Object result = value;
 		if(null == value){

@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Random;
  
-public class VerifyCodeUtil { 
+public class VerifyCodeUtil {
  
 	// ,字体只显示大写,去掉了1,0,i,o,2,Z,L,C,G几个容易混淆的字符
 	public static final String VERIFY_CODES = "3456789ABDEFHJKMNPQRSTUVWXY"; 
@@ -40,7 +40,7 @@ public class VerifyCodeUtil {
 	 * @param len 验证码长度 
 	 * @return String
 	 */ 
-	public static String getRandomCode(int len) { 
+	public static String getRandomCode(int len) {
 		return getRandomCode(len, VERIFY_CODES); 
 	} 
  
@@ -51,14 +51,14 @@ public class VerifyCodeUtil {
 	 * @param sources  验证码字符源 
 	 * @return String
 	 */ 
-	public static String getRandomCode(int verifySize, String sources) { 
-		if (sources == null || sources.length() == 0) { 
+	public static String getRandomCode(int verifySize, String sources) {
+		if (sources == null || sources.length() == 0) {
 			sources = VERIFY_CODES; 
 		} 
 		int codesLen = sources.length(); 
 		Random rand = new Random(System.currentTimeMillis()); 
 		StringBuilder verifyCode = new StringBuilder(verifySize); 
-		for (int i = 0; i < verifySize; i++) { 
+		for (int i = 0; i < verifySize; i++) {
 			verifyCode.append(sources.charAt(rand.nextInt(codesLen - 1))); 
 		} 
 		return verifyCode.toString(); 
@@ -74,7 +74,7 @@ public class VerifyCodeUtil {
 	 * @return String
 	 * @throws IOException IOException
 	 */ 
-	public static String outputVerifyImage(int w, int h, File outputFile, int verifySize) throws IOException { 
+	public static String outputVerifyImage(int w, int h, File outputFile, int verifySize) throws IOException {
 		String verifyCode = getRandomCode(verifySize); 
 		outputImage(w, h, outputFile, verifyCode); 
 		return verifyCode; 
@@ -143,20 +143,20 @@ public class VerifyCodeUtil {
 	 * @param code  code
 	 * @throws IOException IOException
 	 */ 
-	public static void outputImage(int w, int h, File outputFile, String code) throws IOException { 
-		if (outputFile == null) { 
+	public static void outputImage(int w, int h, File outputFile, String code) throws IOException {
+		if (outputFile == null) {
 			return; 
 		} 
 		File dir = outputFile.getParentFile(); 
 		if (null != dir && !dir.exists()) {
 			dir.mkdirs(); 
 		} 
-		try { 
+		try {
 			outputFile.createNewFile(); 
 			FileOutputStream fos = new FileOutputStream(outputFile); 
 			outputImage(w, h, fos, code); 
 			fos.close(); 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			throw e; 
 		}finally{
 			
@@ -165,7 +165,7 @@ public class VerifyCodeUtil {
 	public static BufferedImage createImage(String code, int w, int h){
 		return createImage(code, w, h, true);
 	} 
-	public static BufferedImage createImage(String code, int w, int h, boolean trouble){ 
+	public static BufferedImage createImage(String code, int w, int h, boolean trouble){
 		int verifySize = code.length(); 
 		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
 		Random rand = new Random(); 
@@ -173,9 +173,9 @@ public class VerifyCodeUtil {
 		g2.setFont(new Font("宋体", Font.PLAIN, 12)); 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); 
 		Color[] colors = new Color[5]; 
-		Color[] colorSpaces = new Color[] { Color.WHITE, Color.CYAN, Color.GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.YELLOW }; 
+		Color[] colorSpaces = new Color[] {Color.WHITE, Color.CYAN, Color.GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.YELLOW };
 		float[] fractions = new float[colors.length]; 
-		for (int i = 0; i < colors.length; i++) { 
+		for (int i = 0; i < colors.length; i++) {
 			colors[i] = colorSpaces[rand.nextInt(colorSpaces.length)]; 
 			fractions[i] = rand.nextFloat(); 
 		} 
@@ -207,7 +207,7 @@ public class VerifyCodeUtil {
 		}
 
 		
-		if(trouble){ 
+		if(trouble){
 			// 绘制干扰线
 			Random random = new Random(); 
 			g2.setColor(getRandColor(160, 200));// 设置线条的颜色 
@@ -223,7 +223,7 @@ public class VerifyCodeUtil {
 			// 添加噪点
 			float yawpRate = 0.1f;// 噪声率 
 			int area = (int) (yawpRate * w * h); 
-			for (int i = 0; i < area; i++) { 
+			for (int i = 0; i < area; i++) {
 				int x = random.nextInt(w); 
 				int y = random.nextInt(h); 
 				int rgb = getRandomIntColor(); 
@@ -240,7 +240,7 @@ public class VerifyCodeUtil {
 		ImageIO.write(createImage(code, w, h, trouble), "jpg", os);
 	} 
  
-	private static Color getRandColor(int fc, int bc) { 
+	private static Color getRandColor(int fc, int bc) {
 		if (fc > 255) 
 			fc = 255; 
 		if (bc > 255) 
@@ -251,30 +251,30 @@ public class VerifyCodeUtil {
 		return new Color(r, g, b); 
 	} 
  
-	private static int getRandomIntColor() { 
+	private static int getRandomIntColor() {
 		int[] rgb = getRandomRgb(); 
 		int color = 0; 
-		for (int c : rgb) { 
+		for (int c : rgb) {
 			color = color << 8; 
 			color = color | c; 
 		} 
 		return color; 
 	} 
  
-	private static int[] getRandomRgb() { 
+	private static int[] getRandomRgb() {
 		int[] rgb = new int[3]; 
-		for (int i = 0; i < 3; i++) { 
+		for (int i = 0; i < 3; i++) {
 			rgb[i] = random.nextInt(255); 
 		} 
 		return rgb; 
 	} 
  
-	private static void shear(Graphics g, int w1, int h1, Color color) { 
+	private static void shear(Graphics g, int w1, int h1, Color color) {
 		shearX(g, w1, h1, color); 
 		shearY(g, w1, h1, color); 
 	} 
  
-	private static void shearX(Graphics g, int w1, int h1, Color color) { 
+	private static void shearX(Graphics g, int w1, int h1, Color color) {
  
 		int period = random.nextInt(2); 
  
@@ -282,10 +282,10 @@ public class VerifyCodeUtil {
 		int frames = 1; 
 		int phase = random.nextInt(2); 
  
-		for (int i = 0; i < h1; i++) { 
+		for (int i = 0; i < h1; i++) {
 			double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames); 
 			g.copyArea(0, i, w1, 1, (int) d, 0); 
-			if (borderGap) { 
+			if (borderGap) {
 				g.setColor(color); 
 				g.drawLine((int) d, i, 0, i); 
 				g.drawLine((int) d + w1, i, w1, i); 
@@ -294,17 +294,17 @@ public class VerifyCodeUtil {
  
 	} 
  
-	private static void shearY(Graphics g, int w1, int h1, Color color) { 
+	private static void shearY(Graphics g, int w1, int h1, Color color) {
  
 		int period = random.nextInt(40) + 10; // 50;
  
 		boolean borderGap = true; 
 		int frames = 20; 
 		int phase = 7; 
-		for (int i = 0; i < w1; i++) { 
+		for (int i = 0; i < w1; i++) {
 			double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames); 
 			g.copyArea(i, 0, 1, h1, 0, (int) d); 
-			if (borderGap) { 
+			if (borderGap) {
 				g.setColor(color); 
 				g.drawLine(i, (int) d, i, 0); 
 				g.drawLine(i, (int) d + h1, i, h1); 

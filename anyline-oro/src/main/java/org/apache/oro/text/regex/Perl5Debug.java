@@ -78,7 +78,7 @@ public final class Perl5Debug {
   /**
    * A dummy constructor to prevent instantiation of Perl5Debug.
    */
-  private Perl5Debug() { }
+  private Perl5Debug() {}
 
 
   /**

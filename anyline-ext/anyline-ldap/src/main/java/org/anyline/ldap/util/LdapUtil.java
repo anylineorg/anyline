@@ -44,7 +44,7 @@ public class LdapUtil {
 			key =LdapConfig.DEFAULT_INSTANCE_KEY;
 		}
 		LdapUtil util = instances.get(key);
-		if(null == util){ 
+		if(null == util){
 			util = new LdapUtil();
 			LdapConfig config = LdapConfig.getInstance(key);
 			util.config = config;

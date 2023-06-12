@@ -318,7 +318,7 @@ public class ConfigParser {
 		}
 		return null;
 	}
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public static List<Object> getValues(Map<String,Object> values, ParseResult parser){
 		List<Object> list = new ArrayList<Object>();
 		if(null == parser){
@@ -934,7 +934,7 @@ public class ConfigParser {
 //	 *
 //	 * @param values values
 //	 */
-//	@SuppressWarnings({ "rawtypes", "unused" })
+//	@SuppressWarnings({"rawtypes", "unused" })
 //	private static void decryptParam(Map<String,Object> values) {
 //		Map<String, List<String>> fullMap = new HashMap<String, List<String>>();
 //		Map<String, List<String>> partMap = new HashMap<String, List<String>>();

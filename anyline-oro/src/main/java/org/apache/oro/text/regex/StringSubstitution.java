@@ -112,14 +112,14 @@ public class StringSubstitution implements Substitution {
    * <p>
    * @return The string substitution represented by this object.
    */
-  public String getSubstitution() { return _substitution; }
+  public String getSubstitution() {return _substitution; }
 
   /**
    * Returns the same value as {@link #getSubstitution()}.
    * <p>
    * @return The string substitution represented by this object.
    */
-  public String toString() { return getSubstitution(); }
+  public String toString() {return getSubstitution(); }
 
   /**
    * Appends the substitution to a buffer containing the original input

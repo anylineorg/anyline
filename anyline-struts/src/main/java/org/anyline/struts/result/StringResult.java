@@ -35,22 +35,22 @@ public class StringResult extends StrutsResultSupport {
 	private Object data = null; 
  
  
-    protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception { 
+    protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
         HttpServletResponse response = (HttpServletResponse) invocation.getInvocationContext().get(HTTP_RESPONSE); 
     	response.setContentType("text/plain; charset=UTF-8"); 
     	response.setCharacterEncoding("UTF-8"); 
         PrintWriter writer = response.getWriter(); 
-        try { 
+        try {
         	// 提取Action的传入值
         	data = invocation.getStack().findValue("data"); 
-        	if(null == data){ 
+        	if(null == data){
         		data = ""; 
         	} 
         	writer.print(data.toString()); 
         }catch(Exception e){
         	e.printStackTrace(); 
-        }finally { 
-            if (writer != null) { 
+        }finally {
+            if (writer != null) {
                 writer.flush(); 
                 writer.close(); 
             } 

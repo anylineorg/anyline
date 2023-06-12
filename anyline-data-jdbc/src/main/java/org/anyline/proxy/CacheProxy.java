@@ -2,10 +2,10 @@ package org.anyline.proxy;
 
 import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
-import org.anyline.data.entity.Tag;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.data.Column;
+import org.anyline.entity.data.Tag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;

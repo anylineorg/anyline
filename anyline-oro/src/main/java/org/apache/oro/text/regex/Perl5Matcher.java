@@ -1370,7 +1370,7 @@ public final class Perl5Matcher implements PatternMatcher {
    *        of a single line with respect to the <b>^</b> and <b>$</b> 
    *        metacharacters.
    */
-  public void setMultiline(boolean multiline) { __multiline = multiline; }
+  public void setMultiline(boolean multiline) {__multiline = multiline; }
 
 
   /**
@@ -1378,7 +1378,7 @@ public final class Perl5Matcher implements PatternMatcher {
    *         lines with respect to the <b>^</b> and <b>$</b> metacharacters,
    *         false otherwise.
    */
-  public boolean isMultiline() { return __multiline; }
+  public boolean isMultiline() {return __multiline; }
 
   char[] _toLower(char[] input) {
     int current;
@@ -1886,7 +1886,7 @@ public final class Perl5Matcher implements PatternMatcher {
    *         methods.  If no match was found by the last call, returns
    *         null. 
    */
-  public MatchResult getMatch() { 
+  public MatchResult getMatch() {
     if(!__lastSuccess)
       return null;
 

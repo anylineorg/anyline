@@ -1,7 +1,7 @@
 package org.anyline.net; 
  
  
-public interface DownloadProgress { 
+public interface DownloadProgress {
 	/** 
 	 * 加载历史进度 
 	 * @param url  url

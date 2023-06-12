@@ -18,72 +18,158 @@
 
 
 package org.anyline.entity.data;
-/** 
- * V3.0 
- */ 
+
 import org.anyline.entity.PageNavi;
 
+import java.util.ArrayList;
 import java.util.List;
+ 
+ 
+ 
+public class Procedure {
+	private String catalog;
+	private String schema;
+	private String name;
+	private List<Parameter> inputs = new ArrayList<Parameter>();
+	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数,输入输出参数
+	private List<Object> result;	// 输出参数结果
+	private boolean hasReturn = false;
+	private PageNavi navi;
+	private String definition;
+	
+	
+	public Procedure(String name){
+		this();
+		this.name = name;
+	}
+	public Procedure(){}
 
+	
+	public String getDefinition() {
+		return definition;
+	}
 
-public interface Procedure {
+	
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
 
-	/*******************************************************************
-	 *
-	 *                              定义 
-	 *
-	 * *******************************************************************/
-	public String getDefinition();
-	public void setDefinition(String definition);
-	public void addInput(Parameter... params);
-	public void addOutput(Parameter... params);
+	
+	public void addInput(Parameter... params) {
 
+	}
 
-	/*******************************************************************
-     *
-     *                              执行/查询
-     *
-     * *******************************************************************/
-	/** 
-	 * 添加输入参数 
-	 * @param value	值  value	值
-	 * @param type	类型  type	类型
+	
+	public void addOutput(Parameter... params) {
+
+	}
+
+	/**
+	 * 添加输入参数
+	 * @param value	值 value	值
+	 * @param type	类型 type	类型
 	 * @return Procedure
-	 */ 
-	public Procedure addInput(Object value, Integer type);
-	public Procedure addInput(String value);
+	 */
+	public Procedure addInput(Object value, Integer type){
+		Parameter param = new Parameter();
+		param.setType(type);
+		param.setValue(value);
+		inputs.add(param);
+		return this;
+	}
+	public Procedure addInput(String value){
+		return addInput(value, java.sql.Types.VARCHAR);
+	}
 
-	public List<Parameter> getInputs();
-	public List<Parameter> getOutputs() ;
 	/**
 	 * 注册输出参数
-	 * @param type	类型  type	类型
+	 * @param type	类型 type	类型
 	 * @return Procedure
 	 */
-	public Procedure regOutput(Integer type);
-	public Procedure regOutput();
+	public Procedure regOutput(Integer type){
+		return regOutput(null, type);
+	}
+	public Procedure regOutput(){
+		return regOutput(java.sql.Types.VARCHAR);
+	}
 
-	/**
-	 * 针对输入输出参数
-	 * @param value 输入值
-	 * @param type 输出类型
-	 * @return Procedure
-	 */
-	public Procedure regOutput(Object value,Integer type);
-	public Procedure regOutput(String value);
-	public String getName() ; 
-	public void setName(String name) ;
-	public void setResult(List<Object> result);
-	public List<Object> getResult();
-	public void regReturn();
-	public boolean hasReturn();
+	
+	public Procedure regOutput(Object value, Integer type) {
+		Parameter param = new Parameter();
+		param.setValue(value);
+		param.setType(type);
+		outputs.add(param);
+		return this;
+	}
 
-	public Procedure setNavi(PageNavi navi);
-	public PageNavi getNavi();
+	
+	public Procedure regOutput(String value) {
+		Parameter param = new Parameter();
+		param.setValue(value);
+		outputs.add(param);
+		return this;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<Object> getResult() {
+		return result;
+	}
+	public void setResult(List<Object> result) {
+		this.result = result;
+	}
+	public List<Object> getOutput(){
+		return result;
+	}
 
-	public void setCatalog(String schema);
-	public String getCatalog();
-	public void setSchema(String schema);
-	public String getSchema();
+	
+	public List<Parameter> getInputs() {
+		return inputs;
+	}
 
-} 
+	
+	public List<Parameter> getOutputs() {
+		return outputs;
+	}
+
+	public void regReturn(){
+		hasReturn = true;
+	}
+	public boolean hasReturn(){
+		return hasReturn;
+	}
+
+	
+	public PageNavi getNavi() {
+		return navi;
+	}
+
+	
+	public Procedure setNavi(PageNavi navi) {
+		this.navi = navi;
+		return this;
+	}
+
+	
+	public String getCatalog() {
+		return catalog;
+	}
+
+	
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
+	}
+
+	
+	public String getSchema() {
+		return schema;
+	}
+
+	
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+}

@@ -37,7 +37,7 @@ public abstract class DefaultConditionChain extends DefaultCondition implements 
 	protected List<Condition> conditions = new ArrayList<Condition>();
 	protected int joinSize; 
 	 
-	public void init(){ 
+	public void init(){
 		for(Condition condition:conditions){
 			if(null == condition){
 				continue;
@@ -50,7 +50,7 @@ public abstract class DefaultConditionChain extends DefaultCondition implements 
 	 * @param condition  condition
 	 * @return ConditionChain
 	 */ 
-	public ConditionChain addCondition(Condition condition){ 
+	public ConditionChain addCondition(Condition condition){
 		conditions.add(condition); 
 		return this; 
 	}
@@ -68,7 +68,7 @@ public abstract class DefaultConditionChain extends DefaultCondition implements 
 	}
 	@SuppressWarnings("unchecked") 
 	protected void addRunValue(String key, Object value){
-		if(null == value){ 
+		if(null == value){
 			return; 
 		}
 		if(null == key){
@@ -97,10 +97,10 @@ public abstract class DefaultConditionChain extends DefaultCondition implements 
 		}
 		return Condition.CONDITION_JOIN_TYPE_AND; 
 	} 
-	public int getJoinSize(){ 
+	public int getJoinSize(){
 		return joinSize; 
 	} 
-	public List<Condition> getConditions() { 
+	public List<Condition> getConditions() {
 		return conditions; 
 	} 
 

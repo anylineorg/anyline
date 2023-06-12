@@ -109,7 +109,7 @@ public abstract class GenericCache implements Cache, java.io.Serializable {
 
   public abstract void addElement(Object key, Object value);
 
-  public synchronized Object getElement(Object key) { 
+  public synchronized Object getElement(Object key) {
     Object obj;
 
     obj = _table.get(key);
@@ -132,14 +132,14 @@ public abstract class GenericCache implements Cache, java.io.Serializable {
    * @return  The current size of the cache (i.e., the number of elements
    *          currently cached).
    */
-  public final int size() { return _numEntries; }
+  public final int size() {return _numEntries; }
 
   /**
    * Returns the maximum number of elements that can be cached at one time.
    * <p>
    * @return The maximum number of elements that can be cached at one time.
    */
-  public final int capacity() { return _cache.length; }
+  public final int capacity() {return _cache.length; }
 
-  public final boolean isFull() { return (_numEntries >= _cache.length); }
+  public final boolean isFull() {return (_numEntries >= _cache.length); }
 }

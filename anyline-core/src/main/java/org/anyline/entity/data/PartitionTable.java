@@ -1,6 +1,5 @@
-package org.anyline.data.entity;
+package org.anyline.entity.data;
 
-import org.anyline.data.listener.init.DefaultDDListener;
 
 public class PartitionTable extends Table{
     protected String masterName;
@@ -8,7 +7,6 @@ public class PartitionTable extends Table{
     protected MasterTable master;
 
     public PartitionTable(){
-        this.listener = new DefaultDDListener();
     }
     public PartitionTable(String name){
         this(null, name);
@@ -70,7 +68,6 @@ public class PartitionTable extends Table{
         table.tags = tags;
         table.indexs = indexs;
         table.constraints = constraints;
-        table.listener = listener;
         table.autoDropColumn = autoDropColumn;
         table.update = update;
         return table;

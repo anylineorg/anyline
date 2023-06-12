@@ -36,14 +36,14 @@ import java.util.Map;
  * 微信 wx.config
  *
  */ 
-public class Config extends BaseBodyTag { 
+public class Config extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
 	private DataRow config = null;
 	private String server = ""; 
-	public int doEndTag() throws JspException { 
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
 			WechatMPUtil util = WechatMPUtil.getInstance(key);
@@ -118,7 +118,7 @@ public class Config extends BaseBodyTag {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 

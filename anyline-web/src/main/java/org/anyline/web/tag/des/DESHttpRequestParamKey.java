@@ -29,33 +29,33 @@ import org.anyline.web.tag.BaseBodyTag;
  * @author zh 
  * 
  */ 
-public class DESHttpRequestParamKey extends BaseBodyTag{ 
+public class DESHttpRequestParamKey extends BaseBodyTag{
 	private static final long serialVersionUID = 1L; 
 	private String value;		// 被加密数据 
  
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			JspWriter out = pageContext.getOut(); 
 			out.print(DESUtil.encryptParamKey(BasicUtil.nvl(value,body,"").toString())); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		}    
 		return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		body = null; 
 		value = null; 
 	} 
  
-	public String getValue() { 
+	public String getValue() {
 		return value; 
 	} 
  
-	public void setValue(String value) { 
+	public void setValue(String value) {
 		this.value = value; 
 	} 
  

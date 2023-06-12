@@ -19,20 +19,16 @@
 
 package org.anyline.data.adapter;
 
-import org.anyline.entity.data.Trigger;
-import org.anyline.entity.data.Procedure;
-import org.anyline.entity.data.Function;
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.dao.AnylineDao;
-import org.anyline.data.entity.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.*;
 import org.anyline.entity.metadata.ColumnType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -866,7 +862,7 @@ public interface JDBCAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
+	<T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
 
 
 
@@ -1782,7 +1778,7 @@ public interface JDBCAdapter {
 	 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
 	 * @return Object
 	 */
-	Object read(org.anyline.entity.data.Column metadata, Object value, Class clazz);
+	Object read(Column metadata, Object value, Class clazz);
 
 	/**
 	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
@@ -1791,7 +1787,7 @@ public interface JDBCAdapter {
 	 * @param value value
 	 * @return Object
 	 */
-	Object write(org.anyline.entity.data.Column metadata, Object value, boolean placeholder);
+	Object write(Column metadata, Object value, boolean placeholder);
  	/**
 	 * 拼接字符串
 	 * @param args args

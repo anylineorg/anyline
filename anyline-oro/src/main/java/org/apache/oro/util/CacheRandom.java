@@ -79,7 +79,7 @@ public final class CacheRandom extends GenericCache {
    * <p>
    * @param capacity  The capacity of the cache.
    */
-  public CacheRandom(int capacity) { 
+  public CacheRandom(int capacity) {
     super(capacity);
     __random = new Random(System.currentTimeMillis());
   }

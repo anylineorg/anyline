@@ -68,7 +68,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		return str;
 	} 
 	public DefaultConfigChain(String config){
-		if(null == config){ 
+		if(null == config){
 			return; 
 		} 
 		String[] configs = config.split("\\|"); 
@@ -86,7 +86,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 			
 			DefaultConfig conf = new DefaultConfig(item);
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-			if(!conf.isEmpty()){ 
+			if(!conf.isEmpty()){
 				this.configs.add(conf);
 			}
 		} 
@@ -168,7 +168,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	}
 	
 	 
-	public void addConfig(Config config){ 
+	public void addConfig(Config config){
 		configs.add(config); 
 	} 
 
@@ -179,14 +179,14 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		}
 		return values;
 	} 
-	public List<Config> getConfigs(){ 
+	public List<Config> getConfigs(){
 		return configs; 
 	} 
-	public ConditionChain createAutoConditionChain(){ 
+	public ConditionChain createAutoConditionChain(){
 		ConditionChain chain = new DefaultAutoConditionChain();
-		for(Config config:configs){ 
+		for(Config config:configs){
 			Condition condition = config.createAutoCondition(chain); 
-			if(null != condition){ 
+			if(null != condition){
 				chain.addCondition(condition); 
 			} 
 		} 

@@ -80,7 +80,7 @@ public final class CacheFIFO extends GenericCache {
    * <p>
    * @param capacity  The capacity of the cache.
    */
-  public CacheFIFO(int capacity) { 
+  public CacheFIFO(int capacity) {
     super(capacity);
   }
 

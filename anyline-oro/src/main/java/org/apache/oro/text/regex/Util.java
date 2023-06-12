@@ -110,7 +110,7 @@ public final class Util {
    * The default destructor for the Util class.  It is made private
    * to prevent the instantiation of the class.
    */
-  private Util() { }
+  private Util() {}
 
 
   /**
@@ -131,10 +131,10 @@ public final class Util {
    * <ul><p>
    * <code>split(list, "/([,-])/", "8-12,15,18", Util.SPLIT_ALL)</code></ul>
    * <p> produces the list containing:
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following list would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -193,10 +193,10 @@ public final class Util {
    * subgroups in the pattern.  In other words:
    * <ul><p><code>split(list, "/([,-])/", "8-12,15,18")</code></ul>
    * <p> produces the list containing: 
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following list would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -237,10 +237,10 @@ public final class Util {
    * subgroups in the pattern.  In other words:
    * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
    * <p> produces the Vector containing:
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following Vector would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -289,10 +289,10 @@ public final class Util {
    * subgroups in the pattern.  In other words:
    * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
    * <p> produces the Vector containing: 
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following Vector would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>

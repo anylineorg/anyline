@@ -55,23 +55,23 @@ public class DESUtil {
 	 * 频繁加密解密时,使用单例模式,减少new耗时 
 	 * @return DESUtil
 	 */ 
-	public static DESUtil getInstance(){ 
+	public static DESUtil getInstance(){
 		DESUtil instance = instances.get(DEFAULT_SECRET_KEY); 
-		try{ 
+		try{
 			instance = new DESUtil();
 			instances.put(DEFAULT_SECRET_KEY, instance); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			 log.warn("[des insance][result:fail][msg:{}]",e.toString());
 		} 
 		return instance; 
 	} 
-	public static DESUtil getInstance(String key){ 
-		if(null == key || key.trim().equals("")){ 
+	public static DESUtil getInstance(String key){
+		if(null == key || key.trim().equals("")){
 			key = DEFAULT_SECRET_KEY; 
 		} 
 		DESUtil instance = instances.get(key); 
-		if(null == instance){ 
-			try{ 
+		if(null == instance){
+			try{
 				instance = new DESUtil(key);
 				instances.put(key, instance); 
 			}catch(Exception e){
@@ -170,11 +170,11 @@ public class DESUtil {
 	 * @throws BadPaddingException BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
-	public static void encrypt(Collection<?> list, String ... keys) throws BadPaddingException, IllegalBlockSizeException{ 
-		if(null == keys || null == list){ 
+	public static void encrypt(Collection<?> list, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
+		if(null == keys || null == list){
 			return; 
 		} 
-		for(Object obj:list){ 
+		for(Object obj:list){
 			encrypt(obj, keys); 
 		} 
 	} 
@@ -185,21 +185,21 @@ public class DESUtil {
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException{ 
-		if(null == keys || null == obj){ 
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
+		if(null == keys || null == obj){
 			return; 
 		} 
-		for(String key: keys){ 
-			if(obj instanceof Map){ 
+		for(String key: keys){
+			if(obj instanceof Map){
 				Map map = (Map)obj; 
 				Object value = map.get(key); 
-				if(null != value){ 
+				if(null != value){
 					map.put(key, DESUtil.getInstance().encrypt(value.toString())); 
 				} 
-			}else{ 
+			}else{
 				Object value = BeanUtil.getFieldValue(obj, key);
-				if(null != value){ 
+				if(null != value){
 					value = DESUtil.getInstance().encrypt(value.toString()); 
 					BeanUtil.setFieldValue(obj, key, value); 
 				} 
@@ -697,20 +697,20 @@ public class DESUtil {
 	 * @param keys  keys
 	 * @return Map
 	 */ 
-	private static Map<String, Object> encryptKey(Map<String, Object> map, boolean mix, String... keys) { 
-		if (null == map) { 
+	private static Map<String, Object> encryptKey(Map<String, Object> map, boolean mix, String... keys) {
+		if (null == map) {
 			return map; 
 		} 
 		List<String> ks = BeanUtil.getMapKeys(map); 
-		for (String k : ks) { 
+		for (String k : ks) {
 			Object v = map.get(k); 
-			if (null == v || v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) { 
-				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){ 
+			if (null == v || v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
+				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){
 					String key = encryptByType(k, DESUtil.ENCRYPT_TYPE_KEY, mix); 
 					map.remove(k); 
 					map.put(key, v); 
 				} 
-			} else{ 
+			} else{
 				v = encryptKey(v, mix, keys); 
 			} 
 			// map.put(k, v);
@@ -726,17 +726,17 @@ public class DESUtil {
 	 * @param keys  keys
 	 * @return Collection
 	 */ 
-	private static Collection<Object> encryptKey(Collection<Object> list, boolean mix, String... keys) { 
-		if (null == list) { 
+	private static Collection<Object> encryptKey(Collection<Object> list, boolean mix, String... keys) {
+		if (null == list) {
 			return list; 
 		} 
-		for (Object obj : list) { 
+		for (Object obj : list) {
 			obj = encryptKey(obj, mix, keys); 
 		} 
 		return list; 
 	} 
  
-	public static Collection<Object> encryptKey(Collection<Object> list, String... keys) { 
+	public static Collection<Object> encryptKey(Collection<Object> list, String... keys) {
 		return encryptKey(list, false, keys); 
 	} 
 	/** 
@@ -747,20 +747,20 @@ public class DESUtil {
 	 * @return Object
 	 */ 
 	@SuppressWarnings("unchecked")
-	public static Object encryptKey(Object obj, boolean mix, String... keys) { 
-		if (null == obj) { 
+	public static Object encryptKey(Object obj, boolean mix, String... keys) {
+		if (null == obj) {
 			return obj; 
 		} 
-		if (obj instanceof Map) { 
+		if (obj instanceof Map) {
 			obj = encryptKey((Map<String, Object>) obj, mix, keys); 
-		} else if (obj instanceof Collection) { 
+		} else if (obj instanceof Collection) {
 			obj = encryptKey((Collection<Object>) obj, mix, keys); 
-		} else { 
+		} else {
 			// Object无法加密
 		} 
 		return obj; 
 	} 
-	public static Object encryptKey(Object obj, String... keys) { 
+	public static Object encryptKey(Object obj, String... keys) {
 		return encryptKey(obj, false, keys); 
 	}
 } 

@@ -27,7 +27,7 @@ public class QQMPConfig extends AnylineConfig{
 		return instances;
 	}
 
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
@@ -41,20 +41,20 @@ public class QQMPConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件
 		load(); 
 	} 
  
-	public static QQMPConfig getInstance(){ 
+	public static QQMPConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static QQMPConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static QQMPConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载
 			load(); 
 		} 
@@ -65,11 +65,11 @@ public class QQMPConfig extends AnylineConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, QQMPConfig.class, CONFIG_NAME);
 		QQMPConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 	public static QQMPConfig register(String instance, DataRow row){
 		QQMPConfig config = parse(QQMPConfig.class, instance, row, instances, compatibles);

@@ -28,7 +28,7 @@ import org.anyline.data.prepare.Variable;
  * @author zh 
  * 
  */ 
-public interface XMLCondition extends Condition{ 
+public interface XMLCondition extends Condition{
 	 
 	public void init(); 
 	/** 

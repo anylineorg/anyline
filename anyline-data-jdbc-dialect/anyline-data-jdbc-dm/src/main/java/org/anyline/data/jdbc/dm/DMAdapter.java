@@ -4,19 +4,17 @@ package org.anyline.data.jdbc.dm;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -894,7 +892,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -920,7 +918,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		return super.triggers(index, create, table, triggers, set);
 	}
 
@@ -1244,7 +1242,6 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
 			Table table = column.getTable();
@@ -2038,7 +2035,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
-		return buildCreateRunSQL(trigger);
+		return super.buildCreateRunSQL(trigger);
 	}
 	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
 		super.each(builder, trigger);

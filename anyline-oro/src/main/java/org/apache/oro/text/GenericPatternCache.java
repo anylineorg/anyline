@@ -225,12 +225,12 @@ public abstract class GenericPatternCache implements PatternCache {
    * @return  The current size of the cache (i.e., the number of elements
    *          currently cached).
    */
-  public final int size()     { return _cache.size(); }
+  public final int size()     {return _cache.size(); }
 
   /**
    * Returns the maximum number of patterns that can be cached at one time.
    * <p>
    * @return The maximum number of patterns that can be cached at one time.
    */
-  public final int capacity() { return _cache.capacity(); }
+  public final int capacity() {return _cache.capacity(); }
 }

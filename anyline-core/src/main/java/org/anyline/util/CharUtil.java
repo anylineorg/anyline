@@ -19,9 +19,9 @@ package org.anyline.util;
  
 import java.util.Locale; 
  
-public class CharUtil { 
+public class CharUtil {
  
-	private static int[] pyvalue = new int[] { -20319, -20317, -20304, -20295, 
+	private static int[] pyvalue = new int[] {-20319, -20317, -20304, -20295,
 			-20292, -20283, -20265, -20257, -20242, -20230, -20051, -20036, 
 			-20032, -20026, -20002, -19990, -19986, -19982, -19976, -19805, 
 			-19784, -19775, -19774, -19763, -19756, -19751, -19746, -19741, 
@@ -71,7 +71,7 @@ public class CharUtil {
 			-10815, -10800, -10790, -10780, -10764, -10587, -10544, -10533, 
 			-10519, -10331, -10329, -10328, -10322, -10315, -10309, -10307, 
 			-10296, -10281, -10274, -10270, -10262, -10260, -10256, -10254 }; 
-	private static String[] pystr = new String[] { "a", "ai", "an", "ang", "ao", 
+	private static String[] pystr = new String[] {"a", "ai", "an", "ang", "ao",
 			"ba", "bai", "ban", "bang", "bao", "bei", "ben", "beng", "bi", 
 			"bian", "biao", "bie", "bin", "bing", "bo", "bu", "ca", "cai", 
 			"can", "cang", "cao", "ce", "ceng", "cha", "chai", "chan", "chang", 
@@ -125,23 +125,23 @@ public class CharUtil {
 	 *            汉字字符串 
 	 * @return int
 	 */ 
-	private static int getChsAscii(String chs) { 
+	private static int getChsAscii(String chs) {
  
 		int asc = 0; 
-		try { 
+		try {
 			byte[] bytes = chs.getBytes("gb2312"); 
-			if (bytes == null || bytes.length > 2 || bytes.length <= 0) { 
+			if (bytes == null || bytes.length > 2 || bytes.length <= 0) {
 				throw new Exception("illegal resource string");
 			} 
-			if (bytes.length == 1) { 
+			if (bytes.length == 1) {
 				asc = bytes[0]; 
 			} 
-			if (bytes.length == 2) { 
+			if (bytes.length == 2) {
 				int hightByte = 256 + bytes[0]; 
 				int lowByte = 256 + bytes[1]; 
 				asc = (256 * hightByte + lowByte) - 256 * 256; 
 			} 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 		} 
 		return asc; 
 	} 
@@ -152,15 +152,15 @@ public class CharUtil {
 	 * @param str  str
 	 * @return String
 	 */ 
-	public static  String convert(String str) { 
+	public static  String convert(String str) {
  
 		String result = null; 
 		int ascii = getChsAscii(str); 
-		if (ascii > 0 && ascii < 160) { 
+		if (ascii > 0 && ascii < 160) {
 			result = String.valueOf((char) ascii); 
-		} else { 
-			for (int i = (pyvalue.length - 1); i >= 0; i--) { 
-				if (pyvalue[i] <= ascii) { 
+		} else {
+			for (int i = (pyvalue.length - 1); i >= 0; i--) {
+				if (pyvalue[i] <= ascii) {
 					result = pystr[i]; 
 					break; 
 				} 
@@ -175,7 +175,7 @@ public class CharUtil {
 	 * @param chs  chs
 	 * @return String
 	 */ 
-	public static String pinyin(String chs) { 
+	public static String pinyin(String chs) {
 		return pinyin(chs, false); 
 	} 
  
@@ -187,16 +187,16 @@ public class CharUtil {
 	 * @param first 是否只取首字母 
 	 * @return String
 	 */ 
-	public static  String pinyin(String chs, boolean first) { 
+	public static  String pinyin(String chs, boolean first) {
 		chs = chs.toLowerCase(Locale.getDefault()); 
 		String key, value; 
 		StringBuilder buffer = new StringBuilder(); 
-		for (int i = 0; i < chs.length(); i++) { 
+		for (int i = 0; i < chs.length(); i++) {
 			key = chs.substring(i, i + 1); 
 			value = convert(key); 
-			if(first){ 
+			if(first){
 				buffer.append(value.charAt(0)); 
-			}else{ 
+			}else{
 				buffer.append(value); 
 			} 
 		} 
@@ -225,19 +225,19 @@ public class CharUtil {
 		}
 		char[] c = input.toCharArray();
 		for (int i = 0; i < c.length; i++) {
-			if (c[i] == 42) { //×
+			if (c[i] == 42) {//×
 				c[i] = (char) 215;
 				continue;
 			}
-			if (c[i] == 45) { //—
+			if (c[i] == 45) {//—
 				c[i] = (char) 8212;
 				continue;
 			}
-			if (c[i] == 39) { //‘
+			if (c[i] == 39) {//‘
 				c[i] = (char) 8216;
 				continue;
 			}
-			if (c[i] == 34) { //“
+			if (c[i] == 34) {//“
 				c[i] = (char) 8220;
 				continue;
 			}
@@ -245,15 +245,15 @@ public class CharUtil {
 				c[i] = (char) 12288;
 				continue;
 			}
-			if (c[i] == 46) { //。
+			if (c[i] == 46) {//。
 				c[i] = (char) 12290;
 				continue;
 			}
-			if (c[i] == 91) { //【
+			if (c[i] == 91) {//【
 				c[i] = (char) 12304;
 				continue;
 			}
-			if (c[i] == 93) { //】
+			if (c[i] == 93) {//】
 				c[i] = (char) 12305;
 				continue;
 			}
@@ -275,19 +275,19 @@ public class CharUtil {
 		}
 		char[] c = input.toCharArray();
 		for (int i = 0; i < c.length; i++) {
-			if (c[i] == 215) { //×
+			if (c[i] == 215) {//×
 				c[i] = (char) 42;
 				continue;
 			}
-			if (c[i] == 8212) { //—
+			if (c[i] == 8212) {//—
 				c[i] = (char) 45;
 				continue;
 			}
-			if (c[i] == 8216) { //‘
+			if (c[i] == 8216) {//‘
 				c[i] = (char) 39;
 				continue;
 			}
-			if (c[i] == 8220) { //“
+			if (c[i] == 8220) {//“
 				c[i] = (char) 34;
 				continue;
 			}
@@ -295,23 +295,23 @@ public class CharUtil {
 				c[i] = (char) 32;
 				continue;
 			}
-			if (c[i] == 12290) { //。
+			if (c[i] == 12290) {//。
 				c[i] = (char) 46;
 				continue;
 			}
-			if (c[i] == 12304) { //【
+			if (c[i] == 12304) {//【
 				c[i] = (char) 91;
 				continue;
 			}
-			if (c[i] == 12305) { //】
+			if (c[i] == 12305) {//】
 				c[i] = (char) 93;
 				continue;
 			}
-			if (c[i] == 12308) { //〔-12308不是〔-65288
+			if (c[i] == 12308) {//〔-12308不是〔-65288
 				c[i] = (char) 40;
 				continue;
 			}
-			if (c[i] == 12309) { //〕-12309
+			if (c[i] == 12309) {//〕-12309
 				c[i] = (char) 41;
 				continue;
 			}

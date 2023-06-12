@@ -1,4 +1,4 @@
-package org.anyline.data.entity;
+package org.anyline.entity.data;
 
 import java.util.LinkedHashMap;
 

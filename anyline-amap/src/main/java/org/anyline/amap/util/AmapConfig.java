@@ -8,7 +8,7 @@ import org.anyline.util.ConfigTable;
 import java.io.File;
 import java.util.Hashtable;
  
-public class AmapConfig extends AnylineConfig{ 
+public class AmapConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public static String DEFAULT_YUNTU_HOST		= "http://yuntuapi.amap.com";
 	public static String DEFAULT_HOST			= "https://restapi.amap.com";
@@ -26,7 +26,7 @@ public class AmapConfig extends AnylineConfig{
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
 	}
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	}
@@ -42,23 +42,23 @@ public class AmapConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	} 
-	public static void setConfigDir(File dir){ 
+	public static void setConfigDir(File dir){
 		configDir = dir; 
 		init(); 
 	} 
-	public static AmapConfig getInstance(){ 
+	public static AmapConfig getInstance(){
 		return getInstance(DEFAULT_KEY); 
 	} 
-	public static AmapConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static AmapConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_KEY; 
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AmapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AmapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载 
 			load(); 
 		} 
@@ -67,11 +67,11 @@ public class AmapConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, AmapConfig.class, CONFIG_NAME);
 		AmapConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 
 	public static AmapConfig register(String instance, DataRow row) {

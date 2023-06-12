@@ -7,7 +7,7 @@ import org.anyline.util.ConfigTable;
 import java.io.File;
 import java.util.Hashtable;
  
-public class OSSConfig extends AnylineConfig{ 
+public class OSSConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir;
 
@@ -31,7 +31,7 @@ public class OSSConfig extends AnylineConfig{
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
 	}
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	}
@@ -47,23 +47,23 @@ public class OSSConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件
 		load(); 
 	} 
-	public static void setConfigDir(File dir){ 
+	public static void setConfigDir(File dir){
 		configDir = dir; 
 		init(); 
 	} 
-	public static OSSConfig getInstance(){ 
+	public static OSSConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static OSSConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static OSSConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - OSSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - OSSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载
 			load(); 
 		}
@@ -75,11 +75,11 @@ public class OSSConfig extends AnylineConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, OSSConfig.class, CONFIG_NAME);
 		OSSConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 
 

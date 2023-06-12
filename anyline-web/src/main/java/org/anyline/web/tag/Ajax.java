@@ -38,7 +38,7 @@ public class Ajax extends BodyTagSupport{
 	private String callback			;	// 回调函数
 	private boolean async = true		;
 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
 		try{
 			StringBuilder builder = new StringBuilder();
 			builder.append("<script>\n");
@@ -62,18 +62,18 @@ public class Ajax extends BodyTagSupport{
 			builder.append("</script>");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_BODY_INCLUDE; 
     }    
-	public int doEndTag() throws JspException {    
+	public int doEndTag() throws JspException {   
 	        return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		param 			= null	;	// 参数收集函数
 		callback 		= null	;	// 回调函数

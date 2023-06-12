@@ -21,7 +21,7 @@ package org.anyline.data.prepare;
  
 import java.util.List; 
  
-public interface ConditionChain extends Condition { 
+public interface ConditionChain extends Condition {
 	/** 
 	 * 附加条件 
 	 *  

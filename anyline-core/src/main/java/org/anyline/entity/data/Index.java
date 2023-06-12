@@ -1,6 +1,6 @@
-package org.anyline.data.entity;
+package org.anyline.entity.data;
 
-public class Index extends Constraint{
+public class Index extends Constraint {
     private boolean primary     ; // 是否是主键
     private boolean cluster     ; // 是否聚簇索引
     private boolean fulltext    ;

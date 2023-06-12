@@ -51,7 +51,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
                     break;
                 }
             }else{
-                table = new org.anyline.data.entity.Table(name);
+                table = new Table(name);
                 class2table.put(key.toUpperCase(), table);
                 return table;
             }
@@ -59,13 +59,13 @@ public class DefaultEntityAdapter implements EntityAdapter {
         // 3.类名转成表名
         if("Camel_".equalsIgnoreCase(ConfigTable.ENTITY_CLASS_TABLE_MAP)){
             name = BeanUtil.camel_(clazz.getSimpleName());
-            table = new org.anyline.data.entity.Table(name);
+            table = new Table(name);
             class2table.put(key.toUpperCase(), table);
             return table;
         }
         // 4.类名
         name = clazz.getSimpleName();
-        table = new org.anyline.data.entity.Table(name);
+        table = new Table(name);
         class2table.put(key.toUpperCase(), table);
         return table;
     }
@@ -159,7 +159,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
 
         //创建Column
         if(BasicUtil.isNotEmpty(name)){
-            column = new org.anyline.data.entity.Column(name);
+            column = new Column(name);
             field2column.put(key.toUpperCase(), column);
             column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);
             return column;
@@ -204,7 +204,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
         for(Column column:list.values()){
             return column;
         }
-        return new org.anyline.data.entity.Column(DataRow.DEFAULT_PRIMARY_KEY);
+        return new Column(DataRow.DEFAULT_PRIMARY_KEY);
     }
 
     /**
@@ -245,7 +245,7 @@ public class DefaultEntityAdapter implements EntityAdapter {
                 }
             }
             if (list.size() == 0) {
-                list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(), new org.anyline.data.entity.Column(DataRow.DEFAULT_PRIMARY_KEY));
+                list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(), new Column(DataRow.DEFAULT_PRIMARY_KEY));
             }
             primarys.put(clazz.getName().toUpperCase(), list);
 

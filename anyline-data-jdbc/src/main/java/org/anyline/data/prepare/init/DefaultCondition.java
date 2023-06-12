@@ -54,9 +54,9 @@ public abstract class DefaultCondition implements Condition {
 	protected String test												;	// 判断条件
 	protected List<Variable> variables									;	// 变量
 	protected boolean setValue = false									;   // 是否赋值过
-	public Object clone() throws CloneNotSupportedException{ 
+	public Object clone() throws CloneNotSupportedException{
 		DefaultCondition clone = (DefaultCondition)super.clone();
-		if(null != runValues){ 
+		if(null != runValues){
 			List<RunValue> cRunValues = new ArrayList<>();
 			for(RunValue obj:runValues){
 				RunValue tmp = obj;
@@ -64,62 +64,62 @@ public abstract class DefaultCondition implements Condition {
 			} 
 			clone.runValues = cRunValues; 
 		} 
-		if(null != container){ 
+		if(null != container){
 			clone.container = (ConditionChain)container.clone(); 
 		} 
 		return clone; 
 	} 
 	 
-	public void init(){ 
+	public void init(){
 	} 
-	public void initRunValue(){ 
-		if(null == runValues){ 
+	public void initRunValue(){
+		if(null == runValues){
 			runValues = new ArrayList<>();
-		}else{ 
+		}else{
 			runValues.clear(); 
 		}
 		setValue = false;
 	}
 	@Override 
-	public void setActive(boolean active){ 
+	public void setActive(boolean active){
 		this.active = active; 
 	} 
-	public boolean isActive(){ 
+	public boolean isActive(){
 		return active; 
 	} 
 	public List<RunValue> getRunValues(){
 		return runValues; 
 	} 
 	 
-	public Condition setJoin(String join){ 
+	public Condition setJoin(String join){
 		this.join = join; 
 		return this; 
 	} 
  
-	public String getJoin(){ 
+	public String getJoin(){
 		return join; 
 	} 
-	public ConditionChain getContainer() { 
+	public ConditionChain getContainer() {
 		return container; 
 	} 
-	public Condition setContainer(ConditionChain container) { 
+	public Condition setContainer(ConditionChain container) {
 		this.container = container; 
 		return this; 
 	} 
-	public boolean hasContainer(){ 
+	public boolean hasContainer(){
 		return (null != container); 
 	} 
-	public boolean isContainer(){ 
+	public boolean isContainer(){
 		return (this instanceof ConditionChain); 
 	} 
-	public String getId(){ 
+	public String getId(){
 		return id; 
 	} 
-	public int getVariableType() { 
+	public int getVariableType() {
 		return variableType;
 	} 
  
-	public void setVariableType(int variableType) { 
+	public void setVariableType(int variableType) {
 		this.variableType = variableType; 
 	} 
 

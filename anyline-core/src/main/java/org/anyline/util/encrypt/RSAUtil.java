@@ -12,7 +12,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-public class RSAUtil { 
+public class RSAUtil {
 	public static final String CHARSET = "UTF-8"; 
 	public static final String RSA_ALGORITHM = "RSA"; 
     public static final String SIGNATURE_ALGORITHM = "MD5withRSA";
@@ -130,7 +130,7 @@ public class RSAUtil {
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.DECRYPT_MODE, privateKey); 
 			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), privateKey.getModulus().bitLength()), CHARSET); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			throw new Exception("[私钥解密异常][解密数据:" + data + "]", e);
 		} 
 	}
@@ -158,7 +158,7 @@ public class RSAUtil {
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.ENCRYPT_MODE, privateKey); 
 			return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), privateKey.getModulus().bitLength())); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			throw new Exception("[私钥加密异常][加密数据:" + data + "]", e);
 		} 
 	} 
@@ -183,7 +183,7 @@ public class RSAUtil {
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.DECRYPT_MODE, publicKey); 
 			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			throw new Exception("[公钥解密异常][解密数据:" + data + "]", e);
 		} 
 	} 
@@ -263,14 +263,14 @@ public class RSAUtil {
 	public static RSAPrivateKey createPrivateKey(File file) throws Exception {
 		RSAPrivateKey privateKey = null; 
 		InputStream inputStream = null; 
-		try { 
+		try {
 			inputStream = new FileInputStream(file); 
 			privateKey = createPrivateKey(inputStream);
 		}finally {
-			if (inputStream != null) { 
-				try { 
+			if (inputStream != null) {
+				try {
 					inputStream.close(); 
-				} catch (Exception e) { 
+				} catch (Exception e) {
 					e.printStackTrace(); 
 				} 
 			} 
@@ -286,14 +286,14 @@ public class RSAUtil {
 	public static RSAPublicKey createPublicKey(File file) throws Exception {
 		RSAPublicKey publicKey = null; 
 		InputStream inputStream = null; 
-		try { 
+		try {
 			inputStream = new FileInputStream(file); 
 			publicKey = createPublicKey(inputStream);
 		} finally {
-			if (inputStream != null) { 
-				try { 
+			if (inputStream != null) {
+				try {
 					inputStream.close(); 
-				} catch (Exception e) { 
+				} catch (Exception e) {
 					e.printStackTrace(); 
 				} 
 			} 
@@ -310,10 +310,10 @@ public class RSAUtil {
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			StringBuilder sb = new StringBuilder(); 
 			String readLine = null; 
-			while ((readLine = br.readLine()) != null) { 
-				if (readLine.charAt(0) == '-') { 
+			while ((readLine = br.readLine()) != null) {
+				if (readLine.charAt(0) == '-') {
 					continue; 
-				} else { 
+				} else {
 					sb.append(readLine); 
 					sb.append('\r'); 
 				} 
@@ -330,10 +330,10 @@ public class RSAUtil {
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			StringBuilder sb = new StringBuilder(); 
 			String readLine = null; 
-			while ((readLine = br.readLine()) != null) { 
-				if (readLine.charAt(0) == '-') { 
+			while ((readLine = br.readLine()) != null) {
+				if (readLine.charAt(0) == '-') {
 					continue; 
-				} else { 
+				} else {
 					sb.append(readLine); 
 					sb.append('\r'); 
 				} 

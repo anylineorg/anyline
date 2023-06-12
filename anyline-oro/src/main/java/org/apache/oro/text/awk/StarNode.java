@@ -71,11 +71,11 @@ class StarNode extends SyntaxNode {
     _left = child;
   }
 
-  boolean _nullable()     { return true; }
+  boolean _nullable()     {return true; }
 
-  BitSet _firstPosition() { return _left._firstPosition(); }
+  BitSet _firstPosition() {return _left._firstPosition(); }
 
-  BitSet _lastPosition()  { return _left._lastPosition(); }
+  BitSet _lastPosition()  {return _left._lastPosition(); }
 
   void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
     BitSet last, first;

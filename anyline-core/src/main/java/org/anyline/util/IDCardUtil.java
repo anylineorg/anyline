@@ -9,18 +9,18 @@ import java.util.HashMap;
 import java.util.Map; 
 import java.util.regex.Pattern; 
  
-public class IDCardUtil { 
+public class IDCardUtil {
  
 	private static Map<String,String> CODE_NM =  new HashMap<String,String>(); 
-	private static String CITY_CODE[] = { "11", "12", "13", "14", "15", "21", "22", 
+	private static String CITY_CODE[] = {"11", "12", "13", "14", "15", "21", "22",
 			"23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", 
 			"44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", 
 			"64", "65", "71", "81", "82", "91" }; 
 	// 每位加权因子
-	private static int power[] = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 }; 
+	private static int power[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
 	// 第18位校检码
-	private static String verifyCode[] = { "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" }; 
-	static{ 
+	private static String verifyCode[] = {"1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
+	static{
 		CODE_NM.put( "11", "北京" ); 
 		CODE_NM.put( "12", "天津" ); 
 		CODE_NM.put( "13", "河北" ); 
@@ -63,8 +63,8 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return boolean
 	 */ 
-	public static boolean validate(String idcard) { 
-		if (idcard.length() == 15) { 
+	public static boolean validate(String idcard) {
+		if (idcard.length() == 15) {
 			idcard = convertIdcarBy15bit(idcard); 
 		} 
 		return isValidate18Idcard(idcard); 
@@ -104,9 +104,9 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return boolean
 	 */ 
-	private static boolean isValidate18Idcard(String idcard) { 
+	private static boolean isValidate18Idcard(String idcard) {
 		// 非18位为假
-		if (idcard.length() != 18) { 
+		if (idcard.length() != 18) {
 			return false; 
 		} 
 		// 获取前17位
@@ -116,13 +116,13 @@ public class IDCardUtil {
 		char c[] = null; 
 		String checkCode = ""; 
 		// 是否都为数字
-		if (isDigital(idcard17)) { 
+		if (isDigital(idcard17)) {
 			c = idcard17.toCharArray(); 
-		} else { 
+		} else {
 			return false; 
 		} 
  
-		if (null != c) { 
+		if (null != c) {
 			int bit[] = new int[idcard17.length()]; 
  
 			bit = converCharToInt(c); 
@@ -133,11 +133,11 @@ public class IDCardUtil {
  
 			// 将和值与11取模得到余数进行校验码判断
 			checkCode = getCheckCodeBySum(sum17); 
-			if (null == checkCode) { 
+			if (null == checkCode) {
 				return false; 
 			} 
 			// 将身份证的第18位与算出来的校码进行匹配,不相等就为假
-			if (!idcard18Code.equalsIgnoreCase(checkCode)) { 
+			if (!idcard18Code.equalsIgnoreCase(checkCode)) {
 				return false; 
 			} 
 		} 
@@ -150,14 +150,14 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return boolean
 	 */ 
-	public static boolean validate15(String idcard) { 
+	public static boolean validate15(String idcard) {
 		// 非15位为假
-		if (idcard.length() != 15) { 
+		if (idcard.length() != 15) {
 			return false; 
 		} 
  
 		// 是否全都为数字
-		if (isDigital(idcard)) { 
+		if (isDigital(idcard)) {
 			String provinceid = idcard.substring(0, 2); 
 			String birthday = idcard.substring(6, 12); 
 			int year = Integer.parseInt(idcard.substring(6, 8)); 
@@ -166,23 +166,23 @@ public class IDCardUtil {
  
 			// 判断是否为合法的省份
 			boolean flag = false; 
-			for (String id : CITY_CODE) { 
-				if (id.equals(provinceid)) { 
+			for (String id : CITY_CODE) {
+				if (id.equals(provinceid)) {
 					flag = true; 
 					break; 
 				} 
 			} 
-			if (!flag) { 
+			if (!flag) {
 				return false; 
 			} 
 			// 该身份证生出日期在当前日期之后时为假
 			Date birthdate = null; 
-			try { 
+			try {
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
-			} catch (ParseException e) { 
+			} catch (ParseException e) {
 				e.printStackTrace(); 
 			} 
-			if (birthdate == null || new Date().before(birthdate)) { 
+			if (birthdate == null || new Date().before(birthdate)) {
 				return false; 
 			} 
  
@@ -193,19 +193,19 @@ public class IDCardUtil {
 					.substring(2)); 
  
 			// 判断该年份的两位表示法,小于50的和大于当前年份的,为假
-			if ((year < 50 && year > year2bit)) { 
+			if ((year < 50 && year > year2bit)) {
 				return false; 
 			} 
  
 			// 判断是否为合法的月份
-			if (month < 1 || month > 12) { 
+			if (month < 1 || month > 12) {
 				return false; 
 			} 
  
 			// 判断是否为合法的日期
 			boolean mflag = false; 
 			curDay.setTime(birthdate); // 将该身份证的出生日期赋于对象curDay 
-			switch (month) { 
+			switch (month) {
 			case 1: 
 			case 3: 
 			case 5: 
@@ -216,9 +216,9 @@ public class IDCardUtil {
 				mflag = (day >= 1 && day <= 31); 
 				break; 
 			case 2: // 公历的2月非闰年有28天,闰年的2月是29天. 
-				if (curDay.isLeapYear(curDay.get(Calendar.YEAR))) { 
+				if (curDay.isLeapYear(curDay.get(Calendar.YEAR))) {
 					mflag = (day >= 1 && day <= 29); 
-				} else { 
+				} else {
 					mflag = (day >= 1 && day <= 28); 
 				} 
 				break; 
@@ -229,10 +229,10 @@ public class IDCardUtil {
 				mflag = (day >= 1 && day <= 30); 
 				break; 
 			} 
-			if (!mflag) { 
+			if (!mflag) {
 				return false; 
 			} 
-		} else { 
+		} else {
 			return false; 
 		} 
 		return true; 
@@ -244,20 +244,20 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return String
 	 */ 
-	public static String convertIdcarBy15bit(String idcard) { 
+	public static String convertIdcarBy15bit(String idcard) {
 		String idcard17 = null; 
 		// 非15位身份证
-		if (idcard.length() != 15) { 
+		if (idcard.length() != 15) {
 			return null; 
 		} 
  
-		if (isDigital(idcard)) { 
+		if (isDigital(idcard)) {
 			// 获取出生年月日
 			String birthday = idcard.substring(6, 12); 
 			Date birthdate = null; 
-			try { 
+			try {
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
-			} catch (ParseException e) { 
+			} catch (ParseException e) {
 				e.printStackTrace(); 
 			} 
 			Calendar cday = Calendar.getInstance(); 
@@ -269,7 +269,7 @@ public class IDCardUtil {
 			char c[] = idcard17.toCharArray(); 
 			String checkCode = ""; 
  
-			if (null != c) { 
+			if (null != c) {
 				int bit[] = new int[idcard17.length()]; 
  
 				// 将字符数组转为整型数组
@@ -280,14 +280,14 @@ public class IDCardUtil {
 				// 获取和值与11取模得到余数进行校验码
 				checkCode = getCheckCodeBySum(sum17); 
 				// 获取不到校验位
-				if (null == checkCode) { 
+				if (null == checkCode) {
 					return null; 
 				} 
  
 				// 将前17位与第18位校验码拼接
 				idcard17 += checkCode; 
 			} 
-		} else { // 身份证包含数字 
+		} else {// 身份证包含数字
 			return null; 
 		} 
 		return idcard17; 
@@ -299,7 +299,7 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return boolean
 	 */ 
-	public static boolean isIdcard(String idcard) { 
+	public static boolean isIdcard(String idcard) {
 		return idcard == null || "".equals(idcard) ? false : Pattern.matches( 
 				"(^\\d{15}$)|(\\d{17}(?:\\d|x|X)$)", idcard); 
 	} 
@@ -310,7 +310,7 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return boolean
 	 */ 
-	public static boolean is15Idcard(String idcard) { 
+	public static boolean is15Idcard(String idcard) {
 		return idcard == null || "".equals(idcard) ? false : Pattern.matches( 
 				"^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$", 
 				idcard); 
@@ -322,7 +322,7 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return boolean
 	 */ 
-	public static boolean is18Idcard(String idcard) { 
+	public static boolean is18Idcard(String idcard) {
 		return Pattern 
 				.matches( 
 						"^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([\\d|x|X]{1})$", 
@@ -335,7 +335,7 @@ public class IDCardUtil {
 	 * @param str  str
 	 * @return boolean
 	 */ 
-	private static boolean isDigital(String str) { 
+	private static boolean isDigital(String str) {
 		return str == null || "".equals(str) ? false : str.matches("^[0-9]*$"); 
 	} 
  
@@ -345,17 +345,17 @@ public class IDCardUtil {
 	 * @param bit  bit
 	 * @return int
 	 */ 
-	private static int getPowerSum(int[] bit) { 
+	private static int getPowerSum(int[] bit) {
  
 		int sum = 0; 
  
-		if (power.length != bit.length) { 
+		if (power.length != bit.length) {
 			return sum; 
 		} 
  
-		for (int i = 0; i < bit.length; i++) { 
-			for (int j = 0; j < power.length; j++) { 
-				if (i == j) { 
+		for (int i = 0; i < bit.length; i++) {
+			for (int j = 0; j < power.length; j++) {
+				if (i == j) {
 					sum = sum + bit[i] * power[j]; 
 				} 
 			} 
@@ -369,9 +369,9 @@ public class IDCardUtil {
 	 * @param sum17  sum17
 	 * @return 校验位 
 	 */ 
-	private static String getCheckCodeBySum(int sum17) { 
+	private static String getCheckCodeBySum(int sum17) {
 		String checkCode = null; 
-		switch (sum17 % 11) { 
+		switch (sum17 % 11) {
 		case 10: 
 			checkCode = "2"; 
 			break; 
@@ -416,20 +416,20 @@ public class IDCardUtil {
 	 * @return int
 	 * @throws NumberFormatException 
 	 */ 
-	private static int[] converCharToInt(char[] c) throws NumberFormatException { 
+	private static int[] converCharToInt(char[] c) throws NumberFormatException {
 		int[] a = new int[c.length]; 
 		int k = 0; 
-		for (char temp : c) { 
+		for (char temp : c) {
 			a[k++] = Integer.parseInt(String.valueOf(temp)); 
 		} 
 		return a; 
 	} 
-	public static String getBirthday(String idcard){ 
-		if(!validate(idcard)){ 
+	public static String getBirthday(String idcard){
+		if(!validate(idcard)){
 			return ""; 
 		} 
 		String result = ""; 
-		if (idcard.length() == 15) {   
+		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
 		result = idcard.substring(6, 14);
@@ -441,57 +441,57 @@ public class IDCardUtil {
 		return result; 
 	} 
 	 
-	public static String getProvinceCode(String idcard){ 
-		if(!validate(idcard)){ 
+	public static String getProvinceCode(String idcard){
+		if(!validate(idcard)){
 			return ""; 
 		} 
 		String result = ""; 
-		if (idcard.length() == 15) {   
+		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
 		result = idcard.substring(0, 2); 
 		return result; 
 	} 
-	public static String getProvince(String idcard){ 
+	public static String getProvince(String idcard){
 		String result = getProvinceCode(idcard); 
-		if(BasicUtil.isEmpty(result)){ 
+		if(BasicUtil.isEmpty(result)){
 			return ""; 
 		} 
 		result = CODE_NM.get(result); 
-		if(BasicUtil.isEmpty(result)){ 
+		if(BasicUtil.isEmpty(result)){
 			result = ""; 
 		} 
 		return result; 
 	} 
-	public static String getSexCode(String idcard){ 
-		if(!validate(idcard)){ 
+	public static String getSexCode(String idcard){
+		if(!validate(idcard)){
 			return ""; 
 		} 
 		String result = ""; 
-		if (idcard.length() == 15) {   
+		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
 		String id17 = idcard.substring(16, 17);   
-        if (Integer.parseInt(id17) % 2 != 0) {   
+        if (Integer.parseInt(id17) % 2 != 0) {
             result = "1";   
-        } else {   
+        } else {
             result = "0";   
         } 
 		return result; 
 	} 
-	public static String getSex(String idcard){ 
+	public static String getSex(String idcard){
 		String result = getSexCode(idcard); 
-		if(BasicUtil.isEmpty(result)){ 
+		if(BasicUtil.isEmpty(result)){
 			return ""; 
 		} 
-		if("1".equals(result)){ 
+		if("1".equals(result)){
 			result = "男"; 
-		}else{ 
+		}else{
 			result = "女"; 
 		} 
 		return result; 
 	} 
-	public static int getAge(String idcard){ 
+	public static int getAge(String idcard){
 		int age = -1; 
 		String birthday = getBirthday(idcard); 
 		if(BasicUtil.isNotEmpty(birthday)){

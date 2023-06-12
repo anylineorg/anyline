@@ -32,22 +32,22 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
  
-public class MD5Util { 
+public class MD5Util {
 	private static final Logger log = LoggerFactory.getLogger(MD5Util.class);  
 
-	public static String sign(String src){ 
+	public static String sign(String src){
 		return sign(src, "UTF-8"); 
 	} 
 	 
-	public static String sign(String src, String encode){ 
+	public static String sign(String src, String encode){
 		//if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			//log.warn("[MD5 SIGN][src:{}]", src);
 		//}
 		if(null == src) return ""; 
 		String result = null;
 		 
-        if (!"".equals(src)){      
-            try{ 
+        if (!"".equals(src)){     
+            try{
 
         		MessageDigest md = MessageDigest.getInstance("MD5");
         		if (BasicUtil.isEmpty(encode))
@@ -55,7 +55,7 @@ public class MD5Util {
         		else
         			result = NumberUtil.byte2hex(md.digest(src.getBytes(encode)));
         		 
-            } catch(Exception ex){      
+            } catch(Exception ex){     
                 ex.printStackTrace();   
             }      
         } 
@@ -69,16 +69,16 @@ public class MD5Util {
 	 * @param src  src
 	 * @return String
 	 */ 
-	public static String crypto(String src){ 
+	public static String crypto(String src){
 		return sign(src, "UTF-8"); 
     }  
-	public static String crypto(String src, String encode){ 
+	public static String crypto(String src, String encode){
 		return sign(src, encode); 
     }  
-	public static String crypto2(String str){ 
+	public static String crypto2(String str){
 		return crypto2(str,"UTF-8");
 	} 
-	public static String crypto2(String str, String encode){ 
+	public static String crypto2(String str, String encode){
 		return crypto(crypto(str, encode), encode); 
 	} 
 
@@ -88,21 +88,21 @@ public class MD5Util {
     * @return MD5
     */ 
     public static String crypto(File file) {
-	    if (null == file || !file.isFile() || !file.exists()){ 
+	    if (null == file || !file.isFile() || !file.exists()){
 	    	return null; 
 	    } 
 	    MessageDigest digest = null; 
 	    FileInputStream in=null; 
 	    byte buffer[] = new byte[1024]; 
 	    int len; 
-	    try { 
+	    try {
 		    digest = MessageDigest.getInstance("MD5"); 
 		    in = new FileInputStream(file); 
-		    while ((len = in.read(buffer, 0, 1024)) != -1) { 
+		    while ((len = in.read(buffer, 0, 1024)) != -1) {
 		    	digest.update(buffer, 0, len); 
 		    } 
 		    in.close(); 
-	    } catch (Exception e) { 
+	    } catch (Exception e) {
 	    	e.printStackTrace(); 
 	    	return null; 
 	    } 
@@ -117,19 +117,19 @@ public class MD5Util {
     * @return Map
     */ 
     public static Map<String, String> crypto(File file, boolean recursion) {
-	    if(null == file || !file.isDirectory() || !file.exists()){ 
+	    if(null == file || !file.isDirectory() || !file.exists()){
 	    	return null; 
 	    } 
 	    Map<String, String> map=new HashMap<>(); 
 	    String md5; 
 	    File files[]=file.listFiles(); 
-	    for(int i=0;i<files.length;i++){ 
+	    for(int i=0;i<files.length;i++){
 	    	File f=files[i]; 
-	    	if(f.isDirectory()&&recursion){ 
+	    	if(f.isDirectory()&&recursion){
 	    		map.putAll(crypto(f, recursion));
-	    	} else { 
+	    	} else {
 	    		md5=crypto(f);
-	    		if(md5!=null){ 
+	    		if(md5!=null){
 	    			map.put(f.getPath(), md5); 
 	    		} 
 	    	} 

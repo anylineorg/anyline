@@ -69,7 +69,7 @@ final class PlusNode extends StarNode {
     super(child);
   }
 
-  boolean _nullable() { return false; }
+  boolean _nullable() {return false; }
 
   SyntaxNode _clone(int pos[]) {
     return new PlusNode(_left._clone(pos));

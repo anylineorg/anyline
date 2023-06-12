@@ -50,7 +50,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 	public String getRunText(String prefix, JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		int size = conditions.size(); 
-		if(size == 0){ 
+		if(size == 0){
 			return ""; 
 		}
 		StringBuilder subBuilder = new StringBuilder();
@@ -129,10 +129,10 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 		return this;
 	}
 
-	private int getContainerJoinSize(){ 
-		if(hasContainer()){ 
+	private int getContainerJoinSize(){
+		if(hasContainer()){
 			return getContainer().getJoinSize(); 
-		}else{ 
+		}else{
 			return 0; 
 		} 
 	}

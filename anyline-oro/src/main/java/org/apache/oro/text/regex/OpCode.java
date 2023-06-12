@@ -69,7 +69,7 @@ package org.apache.oro.text.regex;
  */
 final class OpCode {
 
-  private OpCode() { }
+  private OpCode() {}
 
   // Names, values, and descriptions of operators correspond to those of
   // Perl regex bytecodes and for compatibility purposes are drawn from
@@ -187,8 +187,8 @@ final class OpCode {
     return false;
   }
 
-  static final int _getNextOperator(int offset) { return (offset + 2); }
-  static final int _getPrevOperator(int offset) { return (offset - 2); }
+  static final int _getNextOperator(int offset) {return (offset + 2); }
+  static final int _getPrevOperator(int offset) {return (offset - 2); }
 
   static final int _getNext(char[] program, int offset) {
     int offs;

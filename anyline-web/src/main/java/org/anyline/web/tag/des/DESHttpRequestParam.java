@@ -30,33 +30,33 @@ import org.anyline.web.tag.BaseBodyTag;
  * @author zh 
  * 
  */ 
-public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{ 
+public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String value;		// 被加密数据
  
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			value = BasicUtil.nvl(value,body,"").toString().trim(); 
-			if(null != value && !"".equals(value)){ 
+			if(null != value && !"".equals(value)){
 				String result = ""; 
 				String url = ""; 
 				String split = ""; 
-				if(value.contains("?")){ 
+				if(value.contains("?")){
 					url = value.substring(0, value.indexOf("?")); 
 					value = value.substring(value.indexOf("?")+1); 
 					split = "?"; 
 				} 
-				if(value.startsWith("&")){ 
+				if(value.startsWith("&")){
 					split = "&"; 
 				} 
 				String[] params = value.split("&"); 
 				int size = params.length; 
-				for(int i=0; i<size; i++){ 
+				for(int i=0; i<size; i++){
 					String param = params[i]; 
 					String[] keys = param.split("="); 
-					if(keys.length == 2){ 
+					if(keys.length == 2){
 						result += DESUtil.encryptParamKey(keys[0]) + "=" + DESUtil.encryptParamValue(keys[1]); 
-						if(i<size-1){ 
+						if(i<size-1){
 							result += "&"; 
 						} 
 					} 
@@ -65,29 +65,29 @@ public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{
 				JspWriter out = pageContext.getOut(); 
 				out.print(result); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		body = null; 
 		value = null; 
 	} 
-	public String getValue() { 
+	public String getValue() {
 		return value; 
 	} 
  
-	public void setValue(String value) { 
+	public void setValue(String value) {
 		this.value = value; 
 	} 
  
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
 } 

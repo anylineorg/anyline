@@ -41,7 +41,7 @@ public class Join extends BaseBodyTag{
 	private Integer qty;
 	private String split = ",";
 	 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
     }
 	public int doEndTag() throws JspException {
@@ -106,7 +106,7 @@ public class Join extends BaseBodyTag{
 		 return EVAL_PAGE;
 	} 
 	@Override 
-    public void release(){ 
+    public void release(){
 		super.release();
 		data = null;
 		property = null;

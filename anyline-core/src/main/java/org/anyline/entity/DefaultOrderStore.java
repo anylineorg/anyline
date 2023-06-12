@@ -33,7 +33,7 @@ public class DefaultOrderStore implements OrderStore{
 	}
 	@Override
 	public void order(Order order, boolean override) {
-		if(null == order){ 
+		if(null == order){
 			return; 
 		} 
 		Order tmp = getOrder(order.getColumn()); 
@@ -41,7 +41,7 @@ public class DefaultOrderStore implements OrderStore{
 			if(override) {
 				tmp.setType(order.getType());
 			}
-		}else{ 
+		}else{
 			orders.add(order); 
 		} 
 	}
@@ -72,16 +72,16 @@ public class DefaultOrderStore implements OrderStore{
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 */ 
 	public void order(String str, boolean override) {
-		if (BasicUtil.isEmpty(str)) { 
+		if (BasicUtil.isEmpty(str)) {
 			return; 
 		}
 		str = str.trim();
 		String up = str.toUpperCase().replaceAll("\\s+", " ").trim(); 
-		if (up.startsWith("ORDER BY")) { 
+		if (up.startsWith("ORDER BY")) {
 			str = str.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
 		} 
 		String[] tmps = str.split(","); // 多列排序 
-		for (String tmp : tmps) { 
+		for (String tmp : tmps) {
 			order(new DefaultOrder(tmp), override);
 		} 
 	}
@@ -89,13 +89,13 @@ public class DefaultOrderStore implements OrderStore{
 	public void order(String str) {
 		order(str, true);
 	}
-	public Order getOrder(String order){ 
-		if(null == order){ 
+	public Order getOrder(String order){
+		if(null == order){
 			return null; 
 		} 
-		if(null != orders){ 
-			for(Order o:orders){ 
-				if(null != o && order.equalsIgnoreCase(o.getColumn())){ 
+		if(null != orders){
+			for(Order o:orders){
+				if(null != o && order.equalsIgnoreCase(o.getColumn())){
 					return o; 
 				} 
 			} 
@@ -104,15 +104,15 @@ public class DefaultOrderStore implements OrderStore{
 	} 
 	public String getRunText(String delimiter){
 		StringBuilder builder = new StringBuilder(); 
-		if(null != orders && orders.size() > 0){ 
+		if(null != orders && orders.size() > 0){
 			builder.append(" ORDER BY "); 
-			for(int i=0; i<orders.size(); i++){ 
+			for(int i=0; i<orders.size(); i++){
 				Order order = orders.get(i);
 				if(null == order){
 					continue;
 				}
 				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
-				if(i<orders.size()-1){ 
+				if(i<orders.size()-1){
 					builder.append(","); 
 				} 
 			} 
@@ -120,10 +120,10 @@ public class DefaultOrderStore implements OrderStore{
 		return builder.toString(); 
 	} 
  
-	public void clear(){ 
+	public void clear(){
 		orders.clear(); 
 	} 
-	public List<Order> getOrders(){ 
+	public List<Order> getOrders(){
 		return this.orders; 
 	} 
 } 

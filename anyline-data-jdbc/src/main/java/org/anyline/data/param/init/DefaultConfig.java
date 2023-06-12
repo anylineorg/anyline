@@ -60,7 +60,7 @@ public class DefaultConfig implements Config {
 	public DefaultConfig(){
 		this.parser = new ParseResult();
 	} 
-	public String toString(){ 
+	public String toString(){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("join", this.getJoin());
 		map.put("prefix", this.getPrefix());
@@ -89,30 +89,30 @@ public class DefaultConfig implements Config {
 	public DefaultConfig(String config){
 		parser = ConfigParser.parse(config, true); 
 	}
-	public void setValue(Map<String,Object> values){ 
+	public void setValue(Map<String,Object> values){
 		try{
 			this.values = ConfigParser.getValues(values, parser);
 			empty = BasicUtil.isEmpty(true, this.values); 
 			setOrValue(values);
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
 		} 
 	} 
-	public void setOrValue(Map<String,Object> values){ 
+	public void setOrValue(Map<String,Object> values){
 		try{
 			this.orValues = ConfigParser.getValues(values, parser.getOr());
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
 		} 
 	}
 
-	public List<Object> getValues() { 
+	public List<Object> getValues() {
 		return values; 
 	} 
-	public List<Object> getOrValues() { 
+	public List<Object> getOrValues() {
 		return orValues; 
 	} 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public void addValue(Object value){
 		if(null == values){
 			values = new ArrayList<Object>();
@@ -148,7 +148,7 @@ public class DefaultConfig implements Config {
 	 * @param chain 容器 
 	 * @return Condition
 	 */ 
-	public Condition createAutoCondition(ConditionChain chain){ 
+	public Condition createAutoCondition(ConditionChain chain){
 		Condition condition = null; 
 		if(isRequire() || !isEmpty()){
 			if(this instanceof ConfigChain){
@@ -178,21 +178,21 @@ public class DefaultConfig implements Config {
 		parser.setPrefix(prefix);
 	} 
  
-	public String getVariable() { 
+	public String getVariable() {
 		return parser.getVar();
 	} 
  
-	public void setVariable(String variable) { 
+	public void setVariable(String variable) {
 		parser.setVar(variable);
 	} 
  
  
  
-	public String getKey() { 
+	public String getKey() {
 		return parser.getKey(); 
 	} 
  
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		parser.setKey(key); 
 	} 
  
@@ -204,19 +204,19 @@ public class DefaultConfig implements Config {
 		parser.setCompare(compare); 
 	} 
  
-	public boolean isEmpty() { 
+	public boolean isEmpty() {
 		return empty; 
 	} 
  
-	public void setEmpty(boolean empty) { 
+	public void setEmpty(boolean empty) {
 		this.empty = empty; 
 	} 
  
-	public boolean isRequire() { 
+	public boolean isRequire() {
 		return parser.isRequired(); 
 	} 
 	 
-	public void setRequire(boolean require) { 
+	public void setRequire(boolean require) {
 		parser.setRequired(require); 
 	} 
 	public boolean isStrictRequired() {
@@ -225,7 +225,7 @@ public class DefaultConfig implements Config {
 	public void setStrictRequired(boolean strictRequired) {
 		parser.setStrictRequired(strictRequired);
 	} 
-	public String getJoin() { 
+	public String getJoin() {
 		return parser.getJoin(); 
 	} 
  
@@ -233,11 +233,11 @@ public class DefaultConfig implements Config {
 		parser.setJoin(join);
 	} 
  
-	public boolean isKeyEncrypt() { 
+	public boolean isKeyEncrypt() {
 		return parser.isKeyEncrypt(); 
 	} 
  
-	public boolean isValueEncrypt() { 
+	public boolean isValueEncrypt() {
 		return parser.isValueEncrypt(); 
 	}
 	@Override

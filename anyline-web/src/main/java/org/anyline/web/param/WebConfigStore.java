@@ -35,7 +35,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
  */ 
 public class WebConfigStore extends DefaultConfigStore implements ConfigStore {
 	public ConfigStore setValue(HttpServletRequest request){
-		if(null == chain){ 
+		if(null == chain){
 			return this; 
 		} 
 		List<Config> configs = chain.getConfigs(); 

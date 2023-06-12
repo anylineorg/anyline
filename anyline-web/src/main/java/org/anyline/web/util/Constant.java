@@ -19,7 +19,7 @@
 
 package org.anyline.web.util;
  
-public class Constant { 
+public class Constant {
 	public static final String SERVLET_ATTR_TOKEN_CONFIG			= "SERVLET_ATTR_TOKEN_CONFIG"			;//TOKEN配置 
 	public static final String SERVLET_ATTR_MESSAGE					= "SERVLET_ATTR_MESSAGE"				;//开发级消息 
 	public static final String SERVLET_ATTR_REQUIRED_TOKEN_URI		= "SERVLET_ATTR_REQUIRED_TOKEN_URI";	// 必须验证token的URI 

@@ -28,7 +28,7 @@ import javax.servlet.jsp.JspWriter;
 import java.math.BigDecimal;
  
  
-public class NumberFormat extends BaseBodyTag implements Cloneable{ 
+public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String format;
 	private Object min;
@@ -41,13 +41,13 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 
  
  
-	public int doEndTag() throws JspException { 
+	public int doEndTag() throws JspException {
 		try{
 			if(BasicUtil.isNotEmpty(var)){
 				pageContext.getRequest().removeAttribute(var);
 			}
 			String result = null;
-			if(null == value){ 
+			if(null == value){
 				value = body;
 			}
 			if(BasicUtil.isEmpty(value)){
@@ -105,9 +105,9 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 					}
 				}
 			}
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
@@ -115,7 +115,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		value = null;
 		format = null;
@@ -129,7 +129,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 		hide = null;
 	} 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
 

@@ -19,8 +19,8 @@
 
 package org.anyline.util; 
           
-public class EscapeUtil{         
-    private final static String[] hex = {         
+public class EscapeUtil{        
+    private final static String[] hex = {        
         "00","01","02","03","04","05","06","07","08","09","0A","0B","0C","0D","0E","0F",         
         "10","11","12","13","14","15","16","17","18","19","1A","1B","1C","1D","1E","1F",         
         "20","21","22","23","24","25","26","27","28","29","2A","2B","2C","2D","2E","2F",         
@@ -38,7 +38,7 @@ public class EscapeUtil{
         "E0","E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF",         
         "F0","F1","F2","F3","F4","F5","F6","F7","F8","F9","FA","FB","FC","FD","FE","FF"        
     };         
-    private final static byte[] val = {         
+    private final static byte[] val = {        
         0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,         
         0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,         
         0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,         
@@ -56,38 +56,38 @@ public class EscapeUtil{
         0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,         
         0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F,0x3F        
     };         
-    public static String escape(Object obj){ 
+    public static String escape(Object obj){
     	if(null == obj) return ""; 
     	return escape(obj.toString()); 
     } 
-    public static String escape(String s) { 
+    public static String escape(String s) {
         StringBuffer sbuf = new StringBuffer(); 
     	if("".equals(s) || null==s){
     		return "";        
     	} 
         int len = s.length();         
-        for (int i = 0; i < len; i++) {         
+        for (int i = 0; i < len; i++) {        
             int ch = s.charAt(i);         
-            if (ch == ' ') {                        // space : map to '+'          
+            if (ch == ' ') {                       // space : map to '+'          
                 sbuf.append(' ');         
-            } else if(ch == '/'){ 
+            } else if(ch == '/'){
             	sbuf.append('/'); 
-            }else if ('A' <= ch && ch <= 'Z') {    // 'A'..'Z' : as it was         
+            }else if ('A' <= ch && ch <= 'Z') {   // 'A'..'Z' : as it was         
                 sbuf.append((char)ch);         
-            } else if ('a' <= ch && ch <= 'z') {    // 'a'..'z' : as it was         
+            } else if ('a' <= ch && ch <= 'z') {   // 'a'..'z' : as it was         
                 sbuf.append((char)ch);         
-            } else if ('0' <= ch && ch <= '9') {    // '0'..'9' : as it was         
+            } else if ('0' <= ch && ch <= '9') {   // '0'..'9' : as it was         
                 sbuf.append((char)ch);         
             } else if (ch == '-' || ch == '_'       // unreserved : as it was         
                 || ch == '.' || ch == '!'         
                 || ch == '~' || ch == '*' || ch == '@'         
                 || ch == '\'' || ch == '('         
-                || ch == ')') {         
+                || ch == ')') {        
                 sbuf.append((char)ch);         
-            } else if (ch <= 0x007F) {              // other ASCII : map to %XX         
+            } else if (ch <= 0x007F) {             // other ASCII : map to %XX         
                 sbuf.append('%');         
                 sbuf.append(hex[ch]);         
-            } else {                                // unicode : map to %uXXXX         
+            } else {                               // unicode : map to %uXXXX         
                 sbuf.append('%');         
                 sbuf.append('u');         
                 sbuf.append(hex[(ch >>> 8)]);         
@@ -102,36 +102,36 @@ public class EscapeUtil{
     public static String unescape2(String s){
         return unescape(unescape(s));
     }
-    public static String unescape(String s) { 
+    public static String unescape(String s) {
     	if("".equals(s) || null==s){
     		return s; 
     	} 
         StringBuffer sbuf = new StringBuffer();         
         int i = 0;         
         int len = s.length();         
-        while (i < len) {         
+        while (i < len) {        
             int ch = s.charAt(i);         
-            if (ch == '+') {                        // + : map to ' '          
+            if (ch == '+') {                       // + : map to ' '          
                 sbuf.append(' ');         
-            } else if ('A' <= ch && ch <= 'Z') {    // 'A'..'Z' : as it was         
+            } else if ('A' <= ch && ch <= 'Z') {   // 'A'..'Z' : as it was         
                 sbuf.append((char)ch);         
-            } else if ('a' <= ch && ch <= 'z') {    // 'a'..'z' : as it was         
+            } else if ('a' <= ch && ch <= 'z') {   // 'a'..'z' : as it was         
                 sbuf.append((char)ch);         
-            } else if ('0' <= ch && ch <= '9') {    // '0'..'9' : as it was         
+            } else if ('0' <= ch && ch <= '9') {   // '0'..'9' : as it was         
                 sbuf.append((char)ch);         
             } else if (ch == '-' || ch == '_'       // unreserved : as it was         
                 || ch == '.' || ch == '!'         
                 || ch == '~' || ch == '*' || ch == '@'        
                 || ch == '\'' || ch == '('         
-                || ch == ')') {         
+                || ch == ')') {        
                 sbuf.append((char)ch);         
-            } else if (ch == '%') {         
+            } else if (ch == '%') {        
                 int cint = 0;         
-                if ('u' != s.charAt(i+1)) {         // %XX : map to ascii(XX)         
+                if ('u' != s.charAt(i+1)) {        // %XX : map to ascii(XX)         
                     cint = (cint << 4) | val[s.charAt(i+1)];         
                     cint = (cint << 4) | val[s.charAt(i+2)];         
                     i+=2;         
-                } else {                            // %uXXXX : map to unicode(XXXX)         
+                } else {                           // %uXXXX : map to unicode(XXXX)         
                     cint = (cint << 4) | val[s.charAt(i+2)];         
                     cint = (cint << 4) | val[s.charAt(i+3)];         
                     cint = (cint << 4) | val[s.charAt(i+4)];         
@@ -144,7 +144,7 @@ public class EscapeUtil{
         }         
         return sbuf.toString();         
     }         
-    public static String doubleUnescape(String s){ 
+    public static String doubleUnescape(String s){
     	return unescape(unescape(s)); 
     } 
 }   

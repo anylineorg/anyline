@@ -39,7 +39,7 @@ import java.util.*;
  *
  * text 支持多列 {ID}-{NM}
  */ 
-public class Checkbox extends BaseBodyTag { 
+public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
@@ -57,8 +57,8 @@ public class Checkbox extends BaseBodyTag {
 	private String labelClazz = "al-chk-item-label";
 	private String label = "";//label标签体,如果未定义label则生成默认label标签体{textKey}
  
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public int doEndTag() throws JspException { 
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 		StringBuffer html = new StringBuffer();
 //		valueKey = DataRow.keyCase(valueKey);
@@ -74,24 +74,24 @@ public class Checkbox extends BaseBodyTag {
 				rely = valueKey;
 			}
 			 
-			if (null != data) { 
-				if (data instanceof String) { 
-					if (data.toString().endsWith("}")) { 
+			if (null != data) {
+				if (data instanceof String) {
+					if (data.toString().endsWith("}")) {
 						data = data.toString().replace("{", "").replace("}", "");
-					} else { 
+					} else {
 						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
-						} else if ("session".equals(scope)) { 
+						} else if ("session".equals(scope)) {
 							data = request.getSession().getAttribute(data.toString()); 
-						} else { 
+						} else {
 							data = request.getAttribute(data.toString()); 
 						} 
 					} 
 				} 
-				if (data instanceof String) { 
+				if (data instanceof String) {
 					String items[] = data.toString().split(","); 
 					List list = new ArrayList(); 
-					for (String item : items) { 
+					for (String item : items) {
 						Map map = new HashMap(); 
 						String ks[] = BeanUtil.parseKeyValue(item); 
 						map.put(valueKey, ks[0]);
@@ -108,19 +108,19 @@ public class Checkbox extends BaseBodyTag {
 					if(!(this.value instanceof String || this.value instanceof Collection)){
 						this.value = this.value.toString();
 					} 
-					if (this.value instanceof String) { 
-						if (this.value.toString().endsWith("}")) { 
+					if (this.value instanceof String) {
+						if (this.value.toString().endsWith("}")) {
 							this.value = this.value.toString().replace("{", "").replace("}", "");
 						} 
 					}
 					if (this.value instanceof String) {
 						this.value = BeanUtil.array2list(this.value.toString().split(","));
-					}else if(this.value instanceof Collection){ 
+					}else if(this.value instanceof Collection){
 						List list = new ArrayList(); 
 						Collection cols = (Collection)this.value; 
-						for(Object item:cols){ 
+						for(Object item:cols){
 							Object val = item; 
-							if(item instanceof Map){ 
+							if(item instanceof Map){
 								val = ((Map)item).get(rely); 
 							} 
 							list.add(val); 
@@ -175,7 +175,7 @@ public class Checkbox extends BaseBodyTag {
 				
 				 
 				if (null != items) 
-					for (Map item : items) { 
+					for (Map item : items) {
 						Object val = item.get(valueKey);
 						if(this.encrypt){
 							val = DESUtil.encryptValue(val+"");
@@ -193,20 +193,20 @@ public class Checkbox extends BaseBodyTag {
 								chk = chk.toString().trim();
 							}
 						} 
-						if(checkedValue.equals(chk) || "true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) { 
+						if(checkedValue.equals(chk) || "true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) {
 							html.append(" checked=\"checked\""); 
 						}
 						attribute(html);
 						crateExtraData(html,item);
 						html.append("/>");
-						if(BasicUtil.isEmpty(label)){ 
+						if(BasicUtil.isEmpty(label)){
 							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
 							String labelBody = ""; 
 							if (textKey.contains("{")) {
 								labelBody = BeanUtil.parseRuntimeValue(item,textKey);
-							} else { 
+							} else {
 								Object v = item.get(textKey); 
-								if (null != v) { 
+								if (null != v) {
 									labelBody = v.toString(); 
 								} 
 							} 
@@ -229,7 +229,7 @@ public class Checkbox extends BaseBodyTag {
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
 			} 
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 
@@ -255,33 +255,33 @@ public class Checkbox extends BaseBodyTag {
 		}
 		return false;
 	} 
-	public Object getData() { 
+	public Object getData() {
 		return data; 
 	} 
  
-	public String getProperty() { 
+	public String getProperty() {
 		return property; 
 	} 
-	public void setCheckKey(String property) { 
+	public void setCheckKey(String property) {
 		this.property = property; 
 	} 
-	public void setData(Object data) { 
+	public void setData(Object data) {
 		this.data = data; 
 	} 
  
-	public String getValueKey() { 
+	public String getValueKey() {
 		return valueKey; 
 	} 
  
-	public void setValueKey(String valueKey) { 
+	public void setValueKey(String valueKey) {
 		this.valueKey = valueKey; 
 	} 
  
-	public String getTextKey() { 
+	public String getTextKey() {
 		return textKey; 
 	} 
  
-	public void setTextKey(String textKey) { 
+	public void setTextKey(String textKey) {
 		this.textKey = textKey; 
 	} 
  
@@ -322,11 +322,11 @@ public class Checkbox extends BaseBodyTag {
 	public void setHeadValue(String headValue) {
 		this.headValue = headValue;
 	}
-	public String getScope() { 
+	public String getScope() {
 		return scope; 
 	} 
  
-	public void setScope(String scope) { 
+	public void setScope(String scope) {
 		this.scope = scope; 
 	}
 	public boolean isChecked() {

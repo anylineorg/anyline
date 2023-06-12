@@ -36,7 +36,7 @@ public class DefaultXMLConditionChain extends DefaultConditionChain implements C
 	public String getRunText(String prefix, JDBCAdapter adapter){
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
-		if(null != conditions){ 
+		if(null != conditions){
 			for(Condition condition: conditions){
 				if(null == condition){
 					continue;
@@ -74,13 +74,13 @@ public class DefaultXMLConditionChain extends DefaultConditionChain implements C
 		return this;
 	}
 
-	public void setValue(String name, Object value){ 
-		if(null != conditions){ 
+	public void setValue(String name, Object value){
+		if(null != conditions){
 			for(Condition con:conditions){
 				if(null == con){
 					continue;
 				} 
-				if(con.getId().equalsIgnoreCase(name)){ 
+				if(con.getId().equalsIgnoreCase(name)){
 					con.setValue(name, value); 
 					break; 
 				} 
@@ -91,14 +91,14 @@ public class DefaultXMLConditionChain extends DefaultConditionChain implements C
 	 * 拼接查询条件 
 	 * @param builder  builder
 	 */ 
-//	protected void appendCondition(StringBuilder builder){ 
-//		if(null == chain){ 
+//	protected void appendCondition(StringBuilder builder){
+//		if(null == chain){
 //			return; 
 //		} 
-//		for(Condition condition: chain.getConditions()){ 
-//			if(condition.getVariableType() == 2){ 
+//		for(Condition condition: chain.getConditions()){
+//			if(condition.getVariableType() == 2){
 //				builder.append(condition.getRunText()); 
-//			}else if(condition.isActive()){ 
+//			}else if(condition.isActive()){
 //				builder.append(BR_TAB); 
 //				builder.append(condition.getRunText()); 
 //				addRunValue(condition.getRunValues()); 

@@ -90,7 +90,7 @@ public class PersistenceAdapter {
             org.anyline.entity.data.Table table = EntityAdapterProxy.table(join.itemClass);
             if(null != table){
                 join.dependencyTable = table.getName();
-                org.anyline.entity.data.Column col = EntityAdapterProxy.primaryKey(join.itemClass);
+                Column col = EntityAdapterProxy.primaryKey(join.itemClass);
                 if(null != col){
                     join.dependencyPk = col.getName();
                 }

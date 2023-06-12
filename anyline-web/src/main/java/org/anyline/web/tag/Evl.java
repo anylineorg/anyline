@@ -34,7 +34,7 @@ import java.util.Arrays;
 /**
  * 第一个 !=null 并 != "" 的值
  */ 
-public class Evl extends BaseBodyTag implements Cloneable{ 
+public class Evl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private String scope;
 	 
@@ -51,11 +51,11 @@ public class Evl extends BaseBodyTag implements Cloneable{
 				 }
 			 }
 		 }
-		 if(null != paramList && paramList.size()>0){ 
+		 if(null != paramList && paramList.size()>0){
 			try{
 				String result = "";
-				for(Object param:paramList){ 
-					if(null != param && !param.toString().equals("null") && !param.toString().trim().equals("")){ 
+				for(Object param:paramList){
+					if(null != param && !param.toString().equals("null") && !param.toString().trim().equals("")){
 
 						result = param.toString();
 						break; 
@@ -82,9 +82,9 @@ public class Evl extends BaseBodyTag implements Cloneable{
 						pageContext.getRequest().getServletContext().setAttribute(var, result);
 					}
 				}
-			}catch(Exception e){ 
+			}catch(Exception e){
 				e.printStackTrace(); 
-			}finally{ 
+			}finally{
 				release(); 
 			}
 		 } 
@@ -93,14 +93,14 @@ public class Evl extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		paramList = null;
 		value = null;
 		scope = null;
 	} 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
  	public String getScope() {

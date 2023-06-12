@@ -84,13 +84,13 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override 
 	public Config parseConfig(String config){
-		if(null == config){ 
+		if(null == config){
 			return null; 
 		} 
 		DefaultConfig conf = null;
-		if(config.indexOf("|") != -1){ 
+		if(config.indexOf("|") != -1){
 			conf = new DefaultConfigChain(config);
-		}else{ 
+		}else{
 			conf = new DefaultConfig(config);
 		} 
 		return conf; 
@@ -508,7 +508,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * 把httpRequest中的参数存放到navi 
 	 */ 
 	protected void setNaviParam(){
-		if(null == chain || null == navi){ 
+		if(null == chain || null == navi){
 			return; 
 		} 
 		 
@@ -520,24 +520,24 @@ public class DefaultConfigStore implements ConfigStore {
 			String key = config.getKey(); 
 			List<Object> values = new ArrayList<Object>(); 
 			List<Object> srcValues = config.getValues(); 
-			if(config.isKeyEncrypt()){ 
+			if(config.isKeyEncrypt()){
 				key = DESUtil.encryptParamKey(key); 
 			} 
-			if(config.isValueEncrypt() && null != srcValues){ 
-				for(Object value:srcValues){ 
-					if(null != value){ 
+			if(config.isValueEncrypt() && null != srcValues){
+				for(Object value:srcValues){
+					if(null != value){
 						value = DESUtil.encryptParamValue(value.toString()); 
 						values.add(value); 
 					} 
 				} 
-			}else{ 
+			}else{
 				values = srcValues; 
 			} 
 			navi.addParam(key, values); 
 		} 
 	}
 	@Override 
-	public ConfigChain getConfigChain(){ 
+	public ConfigChain getConfigChain(){
 		return chain; 
 	} 
 	/** 
@@ -548,11 +548,11 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override 
 	public ConfigStore order(Order order, boolean override){
-		if(null == orders){ 
+		if(null == orders){
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order, override);
-		if(null != navi){ 
+		if(null != navi){
 			navi.order(order.getColumn(), order.getType().getCode(), override);
 		}
 		return this; 
@@ -591,11 +591,11 @@ public class DefaultConfigStore implements ConfigStore {
 		return order(order, true);
 	} 
 	@Override 
-	public OrderStore getOrders() { 
+	public OrderStore getOrders() {
 		return orders; 
 	} 
 	@Override 
-	public ConfigStore setOrders(OrderStore orders) { 
+	public ConfigStore setOrders(OrderStore orders) {
 		this.orders = orders;
 		return this; 
 	} 
@@ -606,7 +606,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override 
 	public ConfigStore group(Group group){
-		if(null == groups){ 
+		if(null == groups){
 			groups = new DefaultGroupStore();
 		} 
 		groups.group(group); 
@@ -617,15 +617,15 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore group(String column){
 		return group(new DefaultGroup(column));
 	} 
-	public GroupStore getGroups() { 
+	public GroupStore getGroups() {
 		return groups; 
 	} 
-	public ConfigStore setGroups(GroupStore groups) { 
+	public ConfigStore setGroups(GroupStore groups) {
 		this.groups = groups;
 		return this; 
 	} 
 	@Override 
-	public PageNavi getPageNavi() { 
+	public PageNavi getPageNavi() {
 		return navi; 
 	}
 
@@ -726,7 +726,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override 
 	public ConfigStore setValue(Map<String, Object> values) {
-		if(null == chain || null == values){ 
+		if(null == chain || null == values){
 			return this; 
 		} 
 		List<Config> configs = chain.getConfigs(); 

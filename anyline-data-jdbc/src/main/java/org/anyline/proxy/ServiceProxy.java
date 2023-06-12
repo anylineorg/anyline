@@ -1,15 +1,14 @@
 package org.anyline.proxy;
 
-import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.entity.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.*;
 import org.anyline.service.AnylineService;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
@@ -18,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component("anyline.service.proxy")
 public class ServiceProxy {
@@ -788,7 +790,7 @@ public class ServiceProxy {
     public static DataSet querysProcedure(String procedure, String ... inputs){
         return service.querysProcedure(procedure, inputs);
     }
-    public static DataSet querys(Procedure procedure, int first, int last,  String ... inputs){
+    public static DataSet querys(Procedure procedure, int first, int last, String ... inputs){
         return service.querys(procedure, first, last, inputs);
     }
     public static DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs){

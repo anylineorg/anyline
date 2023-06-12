@@ -1174,7 +1174,7 @@ public class FileUtil {
 		                byte[] array = byteBuffer.array();
 		                for (int j = 0; j < array.length; j++) {
 		                    byte b = array[j];
-		                    if (b == 10 || b == 13) { // 判断\n\r
+		                    if (b == 10 || b == 13) {// 判断\n\r
 		                        endPosition += j;
 		                        break readW;
 		                    }

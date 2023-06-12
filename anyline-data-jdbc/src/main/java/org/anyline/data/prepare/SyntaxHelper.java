@@ -38,12 +38,12 @@ public class SyntaxHelper {
 			}
 		}
 		Compare compare = Compare.EQUAL;
-		if(null == afterChar){ 
+		if(null == afterChar){
 			afterChar = ""; 
 		} 
 		Variable var = new DefaultVariable();
 		 
-		if(fullKey.startsWith("$") || fullKey.startsWith("::")){ 
+		if(fullKey.startsWith("$") || fullKey.startsWith("::")){
 			// AND CD = ${CD}  
 			// AND CD = ::CD 
 			varType = Variable.VAR_TYPE_REPLACE;
@@ -60,18 +60,18 @@ public class SyntaxHelper {
 			// AND CD = '${CD}'
 			// AND CD = ':CD' 
 			varType = Variable.VAR_TYPE_KEY_REPLACE;
-		}else if(prefix.endsWith("%") || afterChar.startsWith("%")){ 
+		}else if(prefix.endsWith("%") || afterChar.startsWith("%")){
 			// AND CD LIKE '%{CD}%' 
 			// AND CD LIKE '%:CD%' 
 			varType = Variable.VAR_TYPE_KEY;
-			if(prefix.endsWith("%") && afterChar.startsWith("%")){ 
+			if(prefix.endsWith("%") && afterChar.startsWith("%")){
 				compare = Compare.LIKE;
-			}else if(prefix.endsWith("%")){ 
+			}else if(prefix.endsWith("%")){
 				compare = Compare.LIKE_PREFIX;
-			}else if(afterChar.startsWith("%")){ 
+			}else if(afterChar.startsWith("%")){
 				compare = Compare.LIKE_SUFFIX;
 			} 
-		}else{ 
+		}else{
 			varType = Variable.VAR_TYPE_KEY;
 		}
 		if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
@@ -85,19 +85,19 @@ public class SyntaxHelper {
 		return var; 
 	} 
 	public static Compare parseCompare(int code){
-		for (Compare type : Compare.values()) { 
-			if(type.getCode() == code){ 
+		for (Compare type : Compare.values()) {
+			if(type.getCode() == code){
 				return type; 
 			} 
         } 
 		return null; 
 	} 
 	public static Compare parseCompare(String code){
-		if(BasicUtil.isEmpty(code)){ 
+		if(BasicUtil.isEmpty(code)){
 			return null; 
 		} 
-		for (Compare type : Compare.values()) { 
-			if(code.equals(type.getCode()+"")){ 
+		for (Compare type : Compare.values()) {
+			if(code.equals(type.getCode()+"")){
 				return type; 
 			} 
         } 

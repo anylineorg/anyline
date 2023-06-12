@@ -2,12 +2,10 @@ package org.anyline.data.jdbc.mysql;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.*;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,18 +69,18 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public String parseFinalQuery(Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
-		if(!"*".equals(cols)){ 
+		if(!"*".equals(cols)){
 			String reg = "(?i)^select[\\s\\S]+from"; 
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
 		} 
 		OrderStore orders = run.getOrderStore(); 
-		if(null != orders){ 
+		if(null != orders){
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
 		PageNavi navi = run.getPageNavi(); 
-		if(null != navi){ 
+		if(null != navi){
 			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
-			if(limit < 0){ 
+			if(limit < 0){
 				limit = 0; 
 			} 
 			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
@@ -959,7 +957,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -1010,7 +1008,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -1264,7 +1262,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public List<String> buildCreateRunSQL(View view) throws Exception{
 		List<String> list = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		view.setCreater(this);
 		builder.append("CREATE OR REPLACE VIEW ");
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
@@ -1495,7 +1492,6 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
 			Table table = column.getTable();
@@ -2091,7 +2087,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
-		return buildCreateRunSQL(trigger);
+		return super.buildCreateRunSQL(trigger);
 	}
 	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
 		super.each(builder, trigger);

@@ -32,7 +32,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.web.util.WebUtil;
  
  
-public class CheckClient extends BaseBodyTag implements Cloneable{ 
+public class CheckClient extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String type = "";
 	private Object elseValue;
@@ -74,7 +74,7 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		value = null;
 		body = null; 
@@ -88,7 +88,7 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 	 
 	 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
 

@@ -19,9 +19,9 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.entity.Join;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.entity.data.Join;
 
 import java.util.List;
  
@@ -46,12 +46,12 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 	} 
  
 	@Override 
-	public String getDistinct() { 
+	public String getDistinct() {
 		return this.distinct; 
 	} 
  
 	@Override 
-	public List<String> getColumns() { 
+	public List<String> getColumns() {
 		return this.columns; 
 	}
 

@@ -30,17 +30,17 @@ import java.util.Map;
 import java.util.Map.Entry;
  
  
-public class FileTypeUtil { 
+public class FileTypeUtil {
 	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>(); 
  
-	protected FileTypeUtil() { 
+	protected FileTypeUtil() {
 	} 
  
-	static { 
+	static {
 		getAllFileType(); // 初始化文件类型信息 
 	} 
  
-	private static void getAllFileType() { 
+	private static void getAllFileType() {
 		FILE_TYPE_MAP.put("jpg", "FFD8FF"); // JPEG (jpg) 
 		FILE_TYPE_MAP.put("png", "89504E47"); // PNG (png) 
 		FILE_TYPE_MAP.put("gif", "47494638"); // GIF (gif) 
@@ -83,20 +83,20 @@ public class FileTypeUtil {
 	 * @param file  file
 	 * @return fileType 
 	 */ 
-	public final static String getImageFileType(File file) { 
-		if (isImage(file)) { 
-			try { 
+	public final static String getImageFileType(File file) {
+		if (isImage(file)) {
+			try {
 				ImageInputStream iis = ImageIO.createImageInputStream(file); 
 				Iterator<ImageReader> iter = ImageIO.getImageReaders(iis); 
-				if (!iter.hasNext()) { 
+				if (!iter.hasNext()) {
 					return null; 
 				} 
 				ImageReader reader = iter.next(); 
 				iis.close(); 
 				return reader.getFormatName(); 
-			} catch (IOException e) { 
+			} catch (IOException e) {
 				return null; 
-			} catch (Exception e) { 
+			} catch (Exception e) {
 				return null; 
 			} 
 		} 
@@ -108,17 +108,17 @@ public class FileTypeUtil {
 	 * @param file  file
 	 * @return fileType 
 	 */ 
-	public final static String getFileByFile(File file) { 
+	public final static String getFileByFile(File file) {
 		String filetype = null; 
 		byte[] b = new byte[50]; 
-		try { 
+		try {
 			InputStream is = new FileInputStream(file); 
 			is.read(b); 
 			filetype = getFileTypeByStream(b); 
 			is.close(); 
-		} catch (FileNotFoundException e) { 
+		} catch (FileNotFoundException e) {
 			e.printStackTrace(); 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
 		} 
 		return filetype; 
@@ -129,13 +129,13 @@ public class FileTypeUtil {
 	 * @param b  b
 	 * @return fileType 
 	 */ 
-	public final static String getFileTypeByStream(byte[] b) { 
+	public final static String getFileTypeByStream(byte[] b) {
 		String filetypeHex = String.valueOf(getFileHexString(b)); 
 		Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator(); 
-		while (entryiterator.hasNext()) { 
+		while (entryiterator.hasNext()) {
 			Entry<String, String> entry = entryiterator.next(); 
 			String fileTypeHexValue = entry.getValue(); 
-			if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) { 
+			if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {
 				return entry.getKey(); 
 			} 
 		} 
@@ -147,20 +147,20 @@ public class FileTypeUtil {
 	 * @param file  file
 	 * @return true 是 | false 否 
 	 */ 
-	public static final boolean isImage(File file) { 
+	public static final boolean isImage(File file) {
 		boolean flag = false; 
-		try { 
+		try {
 			BufferedImage bufreader = ImageIO.read(file); 
 			int width = bufreader.getWidth(); 
 			int height = bufreader.getHeight(); 
-			if (width == 0 || height == 0) { 
+			if (width == 0 || height == 0) {
 				flag = false; 
-			} else { 
+			} else {
 				flag = true; 
 			} 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			flag = false; 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			flag = false; 
 		} 
 		return flag; 
@@ -171,15 +171,15 @@ public class FileTypeUtil {
 	 * @param b  b
 	 * @return fileTypeHex 
 	 */ 
-	public final static String getFileHexString(byte[] b) { 
+	public final static String getFileHexString(byte[] b) {
 		StringBuilder stringBuilder = new StringBuilder(); 
-		if (b == null || b.length <= 0) { 
+		if (b == null || b.length <= 0) {
 			return null; 
 		} 
-		for (int i = 0; i < b.length; i++) { 
+		for (int i = 0; i < b.length; i++) {
 			int v = b[i] & 0xFF; 
 			String hv = Integer.toHexString(v); 
-			if (hv.length() < 2) { 
+			if (hv.length() < 2) {
 				stringBuilder.append(0); 
 			} 
 			stringBuilder.append(hv); 

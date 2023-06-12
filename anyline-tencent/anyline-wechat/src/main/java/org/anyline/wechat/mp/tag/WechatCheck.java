@@ -33,7 +33,7 @@ import javax.servlet.jsp.JspWriter;
  */ 
 public class WechatCheck extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
-	public int doEndTag() throws JspException { 
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
 			if(WebUtil.isWechat(request)){
@@ -42,7 +42,7 @@ public class WechatCheck extends BaseBodyTag {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 

@@ -1,13 +1,13 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.entity.Column;
-import org.anyline.data.entity.Table;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.Column;
+import org.anyline.entity.data.Table;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;

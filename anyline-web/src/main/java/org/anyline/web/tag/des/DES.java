@@ -29,43 +29,43 @@ import org.anyline.web.tag.BaseBodyTag;
  * @author zh 
  * 
  */ 
-public class DES extends BaseBodyTag{ 
+public class DES extends BaseBodyTag{
 	private static final long serialVersionUID = 1L; 
 	private String key;			// 密钥 
 	private String value;		// 被加密数据 
  
-	public int doEndTag() throws JspException {    
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			value = BasicUtil.nvl(value,body,"").toString().trim(); 
 			value = DESUtil.getInstance(key).encrypt(value); 
 			JspWriter out = pageContext.getOut(); 
 			out.print(value); 
 		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		key = null; 
 		value = null; 
 	} 
-	public String getKey() { 
+	public String getKey() {
 		return key; 
 	} 
  
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		this.key = key; 
 	} 
  
-	public String getValue() { 
+	public String getValue() {
 		return value; 
 	} 
  
-	public void setValue(String value) { 
+	public void setValue(String value) {
 		this.value = value; 
 	} 
  

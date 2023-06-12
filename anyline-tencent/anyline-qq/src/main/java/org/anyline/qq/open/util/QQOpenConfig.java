@@ -45,24 +45,24 @@ public class QQOpenConfig extends QQConfig{
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
 	}
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件
 		load(); 
 	} 
  
-	public static QQOpenConfig getInstance(){ 
+	public static QQOpenConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static QQOpenConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static QQOpenConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载
 			load(); 
 		} 
@@ -71,11 +71,11 @@ public class QQOpenConfig extends QQConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, QQOpenConfig.class, CONFIG_NAME);
 		QQOpenConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 	public static QQOpenConfig register(String instance, DataRow row){
 		QQOpenConfig config = parse(QQOpenConfig.class, instance, row, instances, compatibles);

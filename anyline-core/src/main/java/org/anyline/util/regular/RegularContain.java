@@ -32,7 +32,7 @@ import java.util.List;
  * 包含匹配模式 
  * 
  */ 
-public class RegularContain implements Regular{ 
+public class RegularContain implements Regular{
 	private static final Logger log = LoggerFactory.getLogger(RegularContain.class); 
 	private static PatternCompiler patternCompiler = new Perl5Compiler(); 
 	/** 
@@ -41,13 +41,13 @@ public class RegularContain implements Regular{
 	 * @param regx  regx
 	 * @return boolean
 	 */ 
-	public boolean match(String src, String regx){ 
+	public boolean match(String src, String regx){
 		boolean result = false; 
-		try{ 
+		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
 			PatternMatcher matcher = new Perl5Matcher(); 
 			result = matcher.contains(src, pattern); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			result = false;
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
@@ -61,22 +61,22 @@ public class RegularContain implements Regular{
 	 * @param regx	表达式  regx	表达式
 	 * @return List
 	 */ 
-	public List<List<String>> fetchs(String src, String regx){ 
+	public List<List<String>> fetchs(String src, String regx){
 		List<List<String>> list = new ArrayList<List<String>>(); 
-		try{ 
+		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.contains(input, pattern)){ 
+			while(matcher.contains(input, pattern)){
 				MatchResult matchResult = matcher.getMatch(); 
 				int groups = matchResult.groups(); 
 				List<String> item = new ArrayList<>();
-				for(int i=0; i<groups; i++){ 
+				for(int i=0; i<groups; i++){
 					item.add(matchResult.group(i)); 
 				} 
 				list.add(item); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				e.printStackTrace();
@@ -91,15 +91,15 @@ public class RegularContain implements Regular{
 	 * @param idx		指定提取位置  idx		指定提取位置
 	 * @return List
 	 */ 
-	public List<String> fetch(String src, String regx, int idx) throws Exception{ 
+	public List<String> fetch(String src, String regx, int idx) throws Exception{
 		List<String> list = new ArrayList<>();
 		 
-		try{ 
+		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			 
-			while(matcher.contains(input, pattern)){ 
+			while(matcher.contains(input, pattern)){
 				MatchResult matchResult = matcher.getMatch(); 
 				list.add(matchResult.group(idx)); 
 			} 
@@ -112,7 +112,7 @@ public class RegularContain implements Regular{
 		} 
 		return list; 
 	} 
-	public List<String> fetch(String src, String regx) throws Exception{ 
+	public List<String> fetch(String src, String regx) throws Exception{
 		return fetch(src, regx, 0);
 	}
 	/** 
@@ -121,10 +121,10 @@ public class RegularContain implements Regular{
 	 * @param regx  regx
 	 * @return List
 	 */ 
-	public List<String> pick(List<String> src, String regx){ 
+	public List<String> pick(List<String> src, String regx){
 		List<String> list = new ArrayList<>();
-		for(String item : src){ 
-			if(match(item, regx)){ 
+		for(String item : src){
+			if(match(item, regx)){
 				list.add(item);
 			} 
 		} 
@@ -136,10 +136,10 @@ public class RegularContain implements Regular{
 	 * @param regx  regx
 	 * @return List
 	 */ 
-	public List<String> wipe(List<String> src, String regx){ 
+	public List<String> wipe(List<String> src, String regx){
 		List<String> list = new ArrayList<>();
-		for(String item : src){ 
-			if(!match(item, regx)){ 
+		for(String item : src){
+			if(!match(item, regx)){
 				list.add(item);
 			} 
 		} 

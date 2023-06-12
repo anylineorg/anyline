@@ -7,7 +7,7 @@ import org.anyline.util.FileUtil;
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory; 
  
-public class DefaultProgress implements DownloadProgress{ 
+public class DefaultProgress implements DownloadProgress{
 	private Logger log = LoggerFactory.getLogger(DefaultProgress.class); 
 	private String url			; // URL
 	private File local			; // 本地文件
@@ -23,35 +23,35 @@ public class DefaultProgress implements DownloadProgress{
 	private String message		; // 进度提示
 	private double rate			; // 完成百分比rate%
 	private int action = 1		; // 1开始 0中断
-	public DefaultProgress(){ 
+	public DefaultProgress(){
 		this.start = System.currentTimeMillis(); 
 	} 
-	public DefaultProgress(String url, File local){ 
+	public DefaultProgress(String url, File local){
 		this.url = url; 
 		this.local = local; 
 		this.start = System.currentTimeMillis(); 
 		this.start = System.currentTimeMillis(); 
 	} 
-	public void init(String url, String thread, long total, long past){ 
+	public void init(String url, String thread, long total, long past){
 		this.length = total; 
 		this.past = past; 
 	} 
 	@Override 
-	public void step(String url, String thread, long finish) { 
+	public void step(String url, String thread, long finish) {
 		this.finish += finish; 
 		rate = (this.finish+this.past)*100.00/(this.length+this.past); 
  
-    	if(this.finish > this.length){ 
+    	if(this.finish > this.length){
     		this.finish = this.length; 
     		rate = 100; 
     	} 
-    	if(rate ==100 && finish < length){ 
+    	if(rate ==100 && finish < length){
     		rate = 99.99; 
     	} 
 		expend = System.currentTimeMillis() - start;//已耗时 
-		if(expend>0){ 
+		if(expend>0){
 			expect = (long)(this.length / (this.finish*1.0/expend) - expend);	// 剩余时间=预计总耗时-已耗时
-			if(rate == 100){ 
+			if(rate == 100){
 				expect = 0; 
 			} 
 			log(); 
@@ -61,12 +61,12 @@ public class DefaultProgress implements DownloadProgress{
 	 * 设置已完成 
 	 */ 
 	@Override 
-	public void finish(String url, String thread) { 
+	public void finish(String url, String thread) {
 		this.rate= 100.00; 
 	} 
 	 
-	private void log(){ 
-		if(rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){ 
+	private void log(){
+		if(rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){
 			long time = System.currentTimeMillis() - start; 
 			message = "[进度:"+FileUtil.progress(length, finish)+"]" 
     				+ "[耗时:"+DateUtil.conversion(time)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(finish*1000/time)+"/s)]"; 
@@ -76,21 +76,21 @@ public class DefaultProgress implements DownloadProgress{
 		} 
 	} 
 	@Override 
-	public void error(String url, String thread, int code, String message) { 
+	public void error(String url, String thread, int code, String message) {
 		 
 	} 
 	@Override 
-	public void setErrorListener(DownloadListener listener) { 
+	public void setErrorListener(DownloadListener listener) {
 		 
 	} 
 	@Override 
-	public void setFinishListener(DownloadListener listener) { 
+	public void setFinishListener(DownloadListener listener) {
 		 
 	} 
-	public int getAction() { 
+	public int getAction() {
 		return action; 
 	} 
-	public void stop(){ 
+	public void stop(){
 		this.action = 0; 
 	} 
 	 

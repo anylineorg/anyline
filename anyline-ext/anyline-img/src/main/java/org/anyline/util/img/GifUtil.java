@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GifUtil { 
+public class GifUtil {
 	private static Logger log = LoggerFactory.getLogger(GifUtil.class); 
     /** 
      * 拆分gif 
@@ -32,7 +32,7 @@ public class GifUtil {
     	List<File> files = new ArrayList<>();
     	FileImageInputStream in = null; 
     	FileImageOutputStream out = null; 
-    	try { 
+    	try {
     		if(null != dir && !dir.exists()){
     			dir.mkdirs(); 
     		} 
@@ -43,13 +43,13 @@ public class GifUtil {
     		int size = gifReader.getNumImages(true); 
     		ImageWriterSpi writerSpi = new GIFImageWriterSpi(); 
     		GIFImageWriter writer = (GIFImageWriter) writerSpi.createWriterInstance(); 
-    		for (int i = 0; i < size; i++) { 
+    		for (int i = 0; i < size; i++) {
     			File target = new File(dir, file.getName().replace(".gif", "_"+i+".jpg")); 
     			out = new FileImageOutputStream(target); 
     			writer.setOutput(out); 
     			writer.write(gifReader.read(i)); 
     		} 
-    	}catch(Exception e){ 
+    	}catch(Exception e){
     		e.printStackTrace(); 
     	} 
     	return files; 
@@ -62,14 +62,14 @@ public class GifUtil {
      */ 
     public synchronized static void create(int delay, String tar, String ... srcs) {
     	List<File> list = new ArrayList<>();
-    	for(String src:srcs){ 
+    	for(String src:srcs){
     		list.add(new File(src)); 
     	}
 		create(delay, new File(tar), list);
     } 
     public synchronized static void create(int delay, String tar, List<String> srcs) {
     	List<File> list = new ArrayList<>();
-    	for(String src:srcs){ 
+    	for(String src:srcs){
     		list.add(new File(src)); 
     	}
 		create(delay, new File(tar), list);
@@ -85,7 +85,7 @@ public class GifUtil {
 	 * @param srcs  源图片列表
      */ 
     public synchronized static void create(int delay, File tar, List<File> srcs) {
-        try { 
+        try {
         	long fr = 0; 
         	File dir = tar.getParentFile(); 
         	if(null != dir && !dir.exists()){
@@ -96,7 +96,7 @@ public class GifUtil {
             e.start(tar.getAbsolutePath()); 
             int size = srcs.size(); 
             BufferedImage src[] = new BufferedImage[size];   
-            for (int i = 0; i < size; i++) { 
+            for (int i = 0; i < size; i++) {
             	File item = srcs.get(i); 
             	fr = System.currentTimeMillis(); 
                 e.setDelay(delay); // 设置播放的延迟时间   
@@ -107,7 +107,7 @@ public class GifUtil {
                 } 
             }   
             e.finish();   
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();   
         }   
     }
@@ -131,19 +131,19 @@ public class GifUtil {
             e.start(tar.getAbsolutePath()); 
             int size = srcs.size(); 
             BufferedImage src[] = new BufferedImage[size];   
-            for (int i = 0; i < size; i++) { 
+            for (int i = 0; i < size; i++) {
             	File item = srcs.get(i); 
             	fr = System.currentTimeMillis(); 
             	int delay = NumberUtil.random(min, max);
                 e.setDelay(delay); // 设置播放的延迟时间   
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件   
                 e.addFrame(src[i]);  // 添加到帧中   
-                if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
+                if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
                 	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsoluteFile(),item.getAbsoluteFile(),System.currentTimeMillis()-fr); 
                 } 
             }   
             e.finish();   
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();   
         }   
     }

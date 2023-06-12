@@ -25,21 +25,21 @@ import org.anyline.util.BasicUtil;
 import javax.servlet.jsp.JspException;
  
  
-public class Split extends BaseBodyTag{ 
+public class Split extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
 	private String regex;
 	private String scope = "page"; 
 	private String text = null;
 	 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException {
 		 if(null != var){
 			 pageContext.removeAttribute(var);
 		 }
-		if(BasicUtil.isEmpty(text)){ 
+		if(BasicUtil.isEmpty(text)){
 			text = body;
 		}
 		 String[] result = null;
@@ -64,7 +64,7 @@ public class Split extends BaseBodyTag{
         return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){ 
+    public void release(){
 		super.release(); 
 		regex = null;
 		var = null;

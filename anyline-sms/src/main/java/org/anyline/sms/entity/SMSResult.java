@@ -1,6 +1,6 @@
 package org.anyline.sms.entity;
  
-public class SMSResult { 
+public class SMSResult {
 	private boolean result;
 	// 1 等待回执
 	// 2 发送失败
@@ -30,19 +30,19 @@ public class SMSResult {
 	public boolean isResult() {
 		return result; 
 	} 
-	public void setResult(boolean result) { 
+	public void setResult(boolean result) {
 		this.result = result; 
 	} 
-	public String getMsg() { 
+	public String getMsg() {
 		return msg; 
 	} 
-	public void setMsg(String msg) { 
+	public void setMsg(String msg) {
 		this.msg = msg; 
 	} 
-	public String getCode() { 
+	public String getCode() {
 		return code; 
 	} 
-	public void setCode(String code) { 
+	public void setCode(String code) {
 		this.code = code; 
 	}
 

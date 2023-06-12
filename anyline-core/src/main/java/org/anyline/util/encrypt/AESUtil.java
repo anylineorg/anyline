@@ -34,7 +34,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 
 
-public class AESUtil { 
+public class AESUtil {
 	private static Logger log = LoggerFactory.getLogger(AESUtil.class); 
 	private static final String KEY = "AES";
 	public static enum CIPHER{
@@ -57,7 +57,7 @@ public class AESUtil {
 			cipherInstance.init(Cipher.ENCRYPT_MODE, getSecretKey(password));// 初始化为加密模式的密码器
 			byte[] result = cipherInstance.doFinal(byteContent);// 加密
 			return Base64.encodeBase64String(result);// 通过Base64转码返回 
-		} catch (Exception ex) { 
+		} catch (Exception ex) {
 			log.error(ex.getMessage()); 
 		} 
 		return null; 
@@ -76,7 +76,7 @@ public class AESUtil {
 	 * @return String
 	 */ 
 	public static String decrypt(CIPHER cipher, String password, String vector, String content) {
-		try { 
+		try {
 			// 实例化
 			Cipher cipherInstance = Cipher.getInstance(cipher.getCode());
 			// 使用密钥初始化,设置为解密模式
@@ -112,7 +112,7 @@ public class AESUtil {
 	 *  
 	 * @return SecretKeySpec
 	 */ 
-	private static SecretKeySpec getSecretKey(final String password) { 
+	private static SecretKeySpec getSecretKey(final String password) {
 		// 返回生成指定算法密钥生成器的 KeyGenerator 对象
 		KeyGenerator kg = null;
 		try {

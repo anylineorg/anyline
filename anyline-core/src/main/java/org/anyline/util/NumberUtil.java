@@ -836,11 +836,11 @@ public class NumberUtil {
 	 */
 	public static int byte2int(byte[] bytes, int start, int length, boolean big) {
 		int value = 0;
-		if (big) { // Big Endian
+		if (big) {// Big Endian
 			for (int i = start; i < start + length; i++) {
 				value = (value << 8) | (bytes[i] & 0xFF);
 			}
-		} else { // Little Endian
+		} else {// Little Endian
 			for (int i = start + length - 1; i >= start; i--) {
 				value = (value << 8) | (bytes[i] & 0xFF);
 			}

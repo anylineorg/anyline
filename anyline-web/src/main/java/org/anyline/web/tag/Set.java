@@ -31,7 +31,7 @@ import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
-public class Set extends BaseBodyTag { 
+public class Set extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
@@ -40,27 +40,27 @@ public class Set extends BaseBodyTag {
 	private Integer begin = null;
 	private Integer end = null;
 	private Integer qty = null;
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public int doEndTag() throws JspException { 
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
-		try { 
-			if (null != data) { 
-				if (data instanceof String) { 
-					if (data.toString().endsWith("}")) { 
+		try {
+			if (null != data) {
+				if (data instanceof String) {
+					if (data.toString().endsWith("}")) {
 						data = data.toString().replace("{", "").replace("}", "");
-					} else { 
-						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+					} else {
+						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
-						} else if ("session".equals(scope)) { 
+						} else if ("session".equals(scope)) {
 							data = request.getSession().getAttribute(data.toString()); 
-						}  else if ("request".equals(scope)) { 
+						}  else if ("request".equals(scope)) {
 							data = request.getAttribute(data.toString()); 
-						}else if ("page".equals(scope)){ 
+						}else if ("page".equals(scope)){
 							data = pageContext.getAttribute(data.toString()); 
 						} 
 					} 
 				} 
-				if(data instanceof Collection){ 
+				if(data instanceof Collection){
 					Collection items = (Collection) data; 
 					if(BasicUtil.isNotEmpty(selector)){
 						items = BeanUtil.select(items,selector.split(","));
@@ -68,8 +68,8 @@ public class Set extends BaseBodyTag {
 					if(index != null){
 						int i = 0; 
 						data = null; 
-						for(Object item:items){ 
-							if(index ==i){ 
+						for(Object item:items){
+							if(index ==i){
 								data = item; 
 								break; 
 							} 
@@ -85,36 +85,36 @@ public class Set extends BaseBodyTag {
 					} 
 				} 
 				 
-				if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+				if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 					request.getSession().getServletContext().setAttribute(var,data); 
-				} else if ("session".equals(scope)) { 
+				} else if ("session".equals(scope)) {
 					request.getSession().setAttribute(var,data); 
-				}  else if ("request".equals(scope)) { 
+				}  else if ("request".equals(scope)) {
 					request.setAttribute(var,data); 
-				}  else if ("parent".equals(scope)) { 
+				}  else if ("parent".equals(scope)) {
 					Tag parent = this.getParent(); 
-					if(null != parent){ 
+					if(null != parent){
 						BeanUtil.setFieldValue(parent, var, data); 
 					} 
-				}else { 
+				}else {
 					pageContext.setAttribute(var,data); 
 				} 
 			} 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 
 	} 
  
  
-	public Object getData() { 
+	public Object getData() {
 		return data; 
 	} 
  
  
-	public void setData(Object data) { 
+	public void setData(Object data) {
 		this.data = data; 
 	} 
  
@@ -122,7 +122,7 @@ public class Set extends BaseBodyTag {
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		scope = null; 
 		data = null; 

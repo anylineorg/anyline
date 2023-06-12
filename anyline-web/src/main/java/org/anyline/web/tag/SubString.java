@@ -26,35 +26,35 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
  
  
-public class SubString extends BaseBodyTag{ 
+public class SubString extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
 	private Integer begin = null;
 	private Integer qty = null;
 	private Integer end = null; // 负数表示取最后end个
 	 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
     } 
-	 public int doEndTag() throws JspException { 
+	 public int doEndTag() throws JspException {
 		// 输出 
 		JspWriter out = pageContext.getOut(); 
 		String text = body; 
 		if(null != text){
 			int range[] = BasicUtil.range(begin, end, qty, text.length());
 			text = text.substring(range[0],range[1]);
-			try{ 
+			try{
 				out.print(text); 
-			}catch(Exception e){ 
+			}catch(Exception e){
 	 
-			}finally{ 
+			}finally{
 				release(); 
 			} 
 		} 
         return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){ 
+    public void release(){
 		super.release(); 
     	begin = null;
     	end = null;

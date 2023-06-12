@@ -78,9 +78,9 @@ abstract class LeafNode extends SyntaxNode {
   }
 
   abstract boolean _matches(char token);
-  final boolean _nullable()     { return false; }
-  final BitSet _firstPosition() { return _positionSet; }
-  final BitSet _lastPosition()  { return _positionSet; }
+  final boolean _nullable()     {return false; }
+  final BitSet _firstPosition() {return _positionSet; }
+  final BitSet _lastPosition()  {return _positionSet; }
   final void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
     nodes[_position] = this;
   }

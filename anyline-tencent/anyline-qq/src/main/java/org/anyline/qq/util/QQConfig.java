@@ -2,8 +2,8 @@ package org.anyline.qq.util;
  
 import org.anyline.util.AnylineConfig; 
  
-public class QQConfig extends AnylineConfig{ 
-	public static enum TRADE_TYPE{ 
+public class QQConfig extends AnylineConfig{
+	public static enum TRADE_TYPE{
 		JSAPI			{public String getCode(){return "JSAPI";} 		public String getName(){return "公从号";}}, 
 		APP				{public String getCode(){return "APP";} 		public String getName(){return "APP";}}, 
 		NATIVE			{public String getCode(){return "NATIVE";} 		public String getName(){return "原生扫码";}}, 

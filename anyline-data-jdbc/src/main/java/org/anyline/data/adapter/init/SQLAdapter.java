@@ -22,8 +22,6 @@ package org.anyline.data.adapter.init;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.entity.Column;
-import org.anyline.data.entity.Join;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -37,6 +35,8 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.data.Column;
+import org.anyline.entity.data.Join;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
@@ -618,7 +618,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             keys = columns;
         }else{
             if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(org.anyline.entity.data.Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE))) ;
+                keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE))) ;
             }
         }
         if(EntityAdapterProxy.hasAdapter()){

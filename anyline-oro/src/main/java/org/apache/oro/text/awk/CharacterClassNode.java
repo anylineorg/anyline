@@ -72,14 +72,14 @@ class CharacterClassNode extends LeafNode {
     _characterSet = new BitSet(LeafNode._NUM_TOKENS + 1);
   }
 
-  void _addToken(int token) { _characterSet.set(token); }
+  void _addToken(int token) {_characterSet.set(token); }
 
   void _addTokenRange(int min, int max) {
     while(min <= max)
       _characterSet.set(min++);
   }
 
-  boolean _matches(char token) { return _characterSet.get(token); }
+  boolean _matches(char token) {return _characterSet.get(token); }
 
   SyntaxNode _clone(int pos[]) {
     CharacterClassNode node;

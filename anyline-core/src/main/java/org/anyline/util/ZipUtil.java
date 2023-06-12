@@ -37,7 +37,7 @@ import java.util.zip.ZipOutputStream;
 /** 
  * Java utils 实现的Zip工具 不支持RAR格式
  */ 
-public class ZipUtil { 
+public class ZipUtil {
 	static final Logger log = LoggerFactory.getLogger(ZipUtil.class); 
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte 
 
@@ -324,39 +324,39 @@ public class ZipUtil {
 	 * @param dir   压缩后文件路径,解压到当前目录时,解压完成后的目录名 
 	 */ 
 	private static boolean zip(File item, String rename, ZipOutputStream zipout, String dir) {
-		try { 
+		try {
 			String path = item.getName();
 			if(BasicUtil.isNotEmpty(rename)){
 				path = rename;
 			}
-			if (BasicUtil.isNotEmpty(dir)) { 
+			if (BasicUtil.isNotEmpty(dir)) {
 				path = dir + File.separator + item.getName();
 			} 
 			dir = new String(dir.getBytes("8859_1"), "GB2312"); 
 			if (item.isDirectory()) {
 				File[] fileList = item.listFiles();
-				for (File file : fileList) { 
+				for (File file : fileList) {
 					zip(file, file.getName(),zipout, path);
 				} 
-			} else { 
+			} else {
 				long fr = System.currentTimeMillis(); 
 				byte buffer[] = new byte[BUFF_SIZE]; 
 				BufferedInputStream in = new BufferedInputStream( 
 						new FileInputStream(item), BUFF_SIZE);
 				zipout.putNextEntry(new ZipEntry(path)); 
 				int realLength; 
-				while ((realLength = in.read(buffer)) != -1) { 
+				while ((realLength = in.read(buffer)) != -1) {
 					zipout.write(buffer, 0, realLength); 
 				} 
 				in.close(); 
 				zipout.flush(); 
 				zipout.closeEntry(); 
-				if (ConfigTable.IS_DEBUG) { 
+				if (ConfigTable.IS_DEBUG) {
 					log.warn("[压缩文件][添加文件][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()- fr), item.getAbsolutePath());
 				} 
 			} 
 			return true; 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 			return false; 
 		} 
@@ -369,7 +369,7 @@ public class ZipUtil {
 	 * @param dir 解压缩的目标目录 
 	 * @return List
 	 */ 
-	public static List<File> unZip(File zip, String dir) { 
+	public static List<File> unZip(File zip, String dir) {
 		return unZip(zip, new File(dir)); 
 	} 
  
@@ -380,14 +380,14 @@ public class ZipUtil {
 	 * @param dir 解压缩的目标目录 
 	 * @return List
 	 */ 
-	public static List<File> unZip(File zip, File dir) { 
+	public static List<File> unZip(File zip, File dir) {
 		List<File> files = new ArrayList<File>(); 
 		long fr = System.currentTimeMillis(); 
-		if (ConfigTable.IS_DEBUG) { 
+		if (ConfigTable.IS_DEBUG) {
 			log.warn("[解压文件][file:{}][dir:{}]", zip.getAbsolutePath(), dir.getAbsolutePath()); 
 		} 
 		int size = 0; 
-		try { 
+		try {
 			if (null != dir && !dir.exists()) {
 				dir.mkdirs(); 
 			} 
@@ -395,13 +395,13 @@ public class ZipUtil {
 			int total = zf.size(); 
 			for (Enumeration<?> entries = zf.entries(); entries.hasMoreElements();) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement()); 
-				if (entry.isDirectory()) { 
+				if (entry.isDirectory()) {
 					continue; 
 				} 
 				size++; 
 				InputStream in = zf.getInputStream(entry); 
 				File desFile = new File(dir, entry.getName()); 
-				if (!desFile.exists()) { 
+				if (!desFile.exists()) {
 					File fileParentDir = desFile.getParentFile();
 					if (null != fileParentDir &&  !fileParentDir.exists()) {
 						fileParentDir.mkdirs();
@@ -412,20 +412,20 @@ public class ZipUtil {
 				OutputStream out = new FileOutputStream(desFile); 
 				byte buffer[] = new byte[BUFF_SIZE]; 
 				int realLength; 
-				while ((realLength = in.read(buffer)) > 0) { 
+				while ((realLength = in.read(buffer)) > 0) {
 					out.write(buffer, 0, realLength); 
 				} 
 				in.close(); 
 				out.close(); 
-				if (ConfigTable.IS_DEBUG) { 
+				if (ConfigTable.IS_DEBUG) {
 					log.warn("[解压完成][进度:{}/{}][耗时:{}][file:{}]", size,total,DateUtil.conversion(System.currentTimeMillis()- fr),desFile.getAbsolutePath()); 
 				} 
 			} 
 			zf.close(); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 		} 
-		if (ConfigTable.IS_DEBUG) { 
+		if (ConfigTable.IS_DEBUG) {
 			log.warn("[解压完成][共耗时:{}][dir:{}][size:{}]",DateUtil.conversion(System.currentTimeMillis() - fr), dir.getAbsolutePath(), size); 
 		} 
 		return files; 
@@ -437,8 +437,8 @@ public class ZipUtil {
 	 * @param zip  zip
 	 * @return List
 	 */ 
-	public static List<File> unZip(File zip) { 
-		if (null == zip) { 
+	public static List<File> unZip(File zip) {
+		if (null == zip) {
 			return new ArrayList<File>(); 
 		} 
 		return unZip(zip, zip.getParentFile()); 
@@ -456,12 +456,12 @@ public class ZipUtil {
 		try {
 			zipFile = new ZipFile(zip);
 			Enumeration<?> entries = zipFile.entries();
-			while (entries.hasMoreElements()) { 
+			while (entries.hasMoreElements()) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement()); 
 				entryNames.add(new String(getEntryName(entry) 
 						.getBytes("GB2312"), "8859_1")); 
 			} 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 		} finally {
 			if(null != zipFile) {
@@ -481,7 +481,7 @@ public class ZipUtil {
 	 * @param entry 压缩文件对象 
 	 * @return 压缩文件对象的注释 
 	 */ 
-	public static String getEntryComment(ZipEntry entry) { 
+	public static String getEntryComment(ZipEntry entry) {
 		String result = ""; 
 		try {
 
@@ -490,7 +490,7 @@ public class ZipUtil {
                 result = new String(result.getBytes("GB2312"), "8859_1");
             }
 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 		} 
 		return result; 
@@ -502,14 +502,14 @@ public class ZipUtil {
 	 * @param entry 压缩文件对象 
 	 * @return 压缩文件对象的名称 
 	 */ 
-	public static String getEntryName(ZipEntry entry) { 
+	public static String getEntryName(ZipEntry entry) {
 		String result = ""; 
 		try {
 			result = entry.getName();
 			if(null != result) {
 				result = new String(result.getBytes("GB2312"), "8859_1");
 			}
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 		} 
 		return result; 

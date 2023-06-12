@@ -48,7 +48,7 @@ public class TableRun extends BasicRun implements Run {
 			table = prepare.getTable();
 		}
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
-		if(table.contains(".")){ 
+		if(table.contains(".")){
 			this.schema = table.substring(0,table.indexOf("."));
 			this.table = table.substring(table.indexOf(".") + 1); 
 		} else{
@@ -60,24 +60,24 @@ public class TableRun extends BasicRun implements Run {
 	public void init(){
 		super.init(); 
 		parseDataSource(); 
-		if(null != configStore){ 
+		if(null != configStore){
 			ConditionChain chain = configStore.getConfigChain().createAutoConditionChain(); 
-			if(null != chain){ 
-				for(Condition condition:chain.getConditions()){ 
+			if(null != chain){
+				for(Condition condition:chain.getConditions()){
 					addCondition(condition); 
 				} 
 			} 
 			OrderStore orderStore = configStore.getOrders(); 
-			if(null != orderStore){ 
+			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders(); 
-				if(null != orders){ 
-					for(Order order:orders){ 
+				if(null != orders){
+					for(Order order:orders){
 						this.orderStore.order(order); 
 					} 
 				} 
 			} 
 			PageNavi navi = configStore.getPageNavi(); 
-			if(navi != null){ 
+			if(navi != null){
 				this.pageNavi = navi; 
 			} 
 		}
@@ -104,7 +104,7 @@ public class TableRun extends BasicRun implements Run {
 	 * 拼接查询条件
 	 */ 
 	public void appendCondition(){
-		if(null == conditionChain){ 
+		if(null == conditionChain){
 			return; 
 		}
 		String alias = null;
@@ -118,7 +118,7 @@ public class TableRun extends BasicRun implements Run {
 
 	public void setConfigs(ConfigStore configs) {
 		this.configStore = configs; 
-		if(null != configs){ 
+		if(null != configs){
 			this.pageNavi = configs.getPageNavi();
 		} 
 	}

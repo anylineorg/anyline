@@ -95,11 +95,11 @@ final class CharStringPointer {
     return _getValue(_offset + offset);
   }
 
-  int _getLength() { return _array.length; }
+  int _getLength() {return _array.length; }
 
-  int _getOffset() { return _offset; }
+  int _getOffset() {return _offset; }
 
-  void _setOffset(int offset) { _offset = offset; }
+  void _setOffset(int offset) {_offset = offset; }
 
   boolean _isAtEnd() {
     return (_offset >= _array.length);
@@ -115,7 +115,7 @@ final class CharStringPointer {
     return _array[_offset];
   }
 
-  char _increment() { return _increment(1); }
+  char _increment() {return _increment(1); }
 
   char _decrement(int inc) {
     _offset-=inc; 
@@ -125,7 +125,7 @@ final class CharStringPointer {
     return _array[_offset];
   }
 
-  char _decrement() { return _decrement(1); }
+  char _decrement() {return _decrement(1); }
 
   char _postIncrement() {
     char ret;

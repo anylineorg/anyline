@@ -1,4 +1,4 @@
-package org.anyline.data.entity;
+package org.anyline.entity.data;
 
 public class Database {
     protected String name                         ; // 数据库名

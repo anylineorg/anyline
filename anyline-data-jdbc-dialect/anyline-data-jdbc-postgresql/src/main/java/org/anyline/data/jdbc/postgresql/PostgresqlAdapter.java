@@ -3,12 +3,13 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
-import org.anyline.entity.*;
-import org.anyline.entity.data.DatabaseType;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -64,18 +65,18 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	public String parseFinalQuery(Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
-		if(!"*".equals(cols)){ 
+		if(!"*".equals(cols)){
 			String reg = "(?i)^select[\\s\\S]+from"; 
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
 		} 
 		OrderStore orders = run.getOrderStore(); 
-		if(null != orders){ 
+		if(null != orders){
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
 		PageNavi navi = run.getPageNavi(); 
-		if(null != navi){ 
+		if(null != navi){
 			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
-			if(limit < 0){ 
+			if(limit < 0){
 				limit = 0; 
 			} 
 			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow(); 
@@ -622,7 +623,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -673,7 +674,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -1761,7 +1762,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
-		return buildCreateRunSQL(trigger);
+		return super.buildCreateRunSQL(trigger);
 	}
 	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
 		super.each(builder, trigger);

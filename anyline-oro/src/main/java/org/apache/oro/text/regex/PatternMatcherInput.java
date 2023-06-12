@@ -343,7 +343,7 @@ public final class PatternMatcherInput {
    * @return The char[] buffer to be used as input by PatternMatcher
    *         implementations.
    */
-  public char[] getBuffer() { return _originalBuffer;  }
+  public char[] getBuffer() {return _originalBuffer;  }
 
   /**
    * Returns whether or not the end of the input has been reached.
@@ -351,7 +351,7 @@ public final class PatternMatcherInput {
    * @return True if the current offset is greater than or equal to the
    *         end offset.
    */
-  public boolean endOfInput(){ return (_currentOffset >= _endOffset); }
+  public boolean endOfInput(){return (_currentOffset >= _endOffset); }
 
 
   /**
@@ -359,7 +359,7 @@ public final class PatternMatcherInput {
    *         of the region to be considered as input by PatternMatcher
    *         methods.
    */
-  public int getBeginOffset()   { return _beginOffset; }
+  public int getBeginOffset()   {return _beginOffset; }
 
   /**
    * @return The offset of the input that should be considered the end
@@ -367,14 +367,14 @@ public final class PatternMatcherInput {
    *         methods.  This offset is actually 1 plus the last offset
    *         that is part of the input region.
    */
-  public int getEndOffset()     { return _endOffset;  }
+  public int getEndOffset()     {return _endOffset;  }
 
   /**
    * @return The offset of the input that should be considered the current
    *         offset where PatternMatcher methods should start looking for
    *         matches.
    */
-  public int getCurrentOffset() { return _currentOffset; }
+  public int getCurrentOffset() {return _currentOffset; }
 
   /**
    * Sets the offset of the input that should be considered the start
@@ -384,7 +384,7 @@ public final class PatternMatcherInput {
    * <p>
    * @param offset  The offset to use as the beginning of the input.
    */
-  public void setBeginOffset(int offset)   { _beginOffset = offset; }
+  public void setBeginOffset(int offset)   {_beginOffset = offset; }
 
   /**
    * Sets the offset of the input that should be considered the end
@@ -394,7 +394,7 @@ public final class PatternMatcherInput {
    * <p>
    * @param offset  The offset to use as the end of the input.
    */
-  public void setEndOffset(int offset)     { _endOffset = offset; }
+  public void setEndOffset(int offset)     {_endOffset = offset; }
 
   /**
    * Sets the offset of the input that should be considered the current
@@ -491,12 +491,12 @@ public final class PatternMatcherInput {
    * <p>
    * @return The begin offset of a contains() match.
    */
-  public int getMatchBeginOffset()    { return _matchBeginOffset; }
+  public int getMatchBeginOffset()    {return _matchBeginOffset; }
 
   /**
    * Returns the offset marking the end of the match found by contains().
    * <p>
    * @return The end offset of a contains() match.
    */
-  public int getMatchEndOffset()      { return _matchEndOffset; }
+  public int getMatchEndOffset()      {return _matchEndOffset; }
 }

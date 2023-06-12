@@ -38,29 +38,29 @@ public class WechatMPUtil extends WechatUtil {
 	}
 
 
-	public static WechatMPUtil getInstance(){ 
+	public static WechatMPUtil getInstance(){
 		return getInstance(WechatMPConfig.DEFAULT_INSTANCE_KEY);
 	} 
-	public WechatMPUtil(WechatMPConfig config){ 
+	public WechatMPUtil(WechatMPConfig config){
 		this.config = config; 
 	} 
-	public WechatMPUtil(String key, DataRow config){ 
+	public WechatMPUtil(String key, DataRow config){
 		WechatMPConfig conf = WechatMPConfig.parse(key, config); 
 		this.config = conf; 
 		instances.put(key, this); 
 	} 
-	public static WechatMPUtil reg(String key, DataRow config){ 
+	public static WechatMPUtil reg(String key, DataRow config){
 		WechatMPConfig conf = WechatMPConfig.register(key, config);
 		WechatMPUtil util = new WechatMPUtil(conf); 
 		instances.put(key, util); 
 		return util; 
 	} 
-	public static WechatMPUtil getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static WechatMPUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = WechatMPConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		WechatMPUtil util = instances.get(key); 
-		if(null == util){ 
+		if(null == util){
 			WechatMPConfig config = WechatMPConfig.getInstance(key);
 			if(null != config) {
 				util = new WechatMPUtil(config);
@@ -70,34 +70,34 @@ public class WechatMPUtil extends WechatUtil {
 		return util; 
 	} 
 	 
-	public WechatMPConfig getConfig() { 
+	public WechatMPConfig getConfig() {
 		return config;
 	} 
 
 	 
-	public String getAccessToken(){ 
+	public String getAccessToken(){
 		return WechatUtil.getAccessToken(config);
 	}
 
-	public String getJsapiTicket(){ 
+	public String getJsapiTicket(){
 		String result = ""; 
 		DataRow row = jsapiTickets.getRow("APP_ID", config.APP_ID); 
-		if(null == row){ 
+		if(null == row){
 			String accessToken = getAccessToken(); 
 			row = newJsapiTicket(accessToken); 
-		}else if(row.isExpire()){ 
+		}else if(row.isExpire()){
 			jsapiTickets.remove(row); 
 			String accessToken = getAccessToken(); 
 			row = newJsapiTicket(accessToken); 
 		} 
-		if(null != row){ 
+		if(null != row){
 			result = row.getString("TICKET"); 
 		} 
 		return result; 
 	} 
 	public DataRow newJsapiTicket(String accessToken){
 		DataRow row = new DataRow();
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.warn("[CREATE NEW JSAPI TICKET][token:{}]",accessToken); 
 		}
 		if(BasicUtil.isNotEmpty(accessToken)){
@@ -132,14 +132,14 @@ public class WechatMPUtil extends WechatUtil {
 	 * @param params  params
 	 * @return String
 	 */ 
-	public String jsapiSign(Map<String,Object> params){ 
+	public String jsapiSign(Map<String,Object> params){
 		String sign = ""; 
 		sign = BeanUtil.map2string(params);
 		sign = SHA1Util.sign(sign);
 		return sign; 
 	} 
 	 
-	public Map<String,Object> jsapiSign(String url){ 
+	public Map<String,Object> jsapiSign(String url){
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("noncestr", BasicUtil.getRandomLowerString(32)); 
 		params.put("jsapi_ticket", getJsapiTicket()); 
@@ -179,7 +179,7 @@ public class WechatMPUtil extends WechatUtil {
 	 */ 
 	public boolean isSubscribe(String openid){
 		WechatUserInfo info = getUserInfo(openid);
-		if(null == info){ 
+		if(null == info){
 			return false; 
 		}
 		if("1".equals(info.getSubscribe())){

@@ -18,7 +18,7 @@
 package org.anyline.net; 
  
 public  
-class HttpProxy{ 
+class HttpProxy{
 	private String host; 
 	private int port; 
 	private String user; 
@@ -30,35 +30,35 @@ class HttpProxy{
 	public HttpProxy(String host, int port, String user, String password){
 	}
  
-	public String getHost() { 
+	public String getHost() {
 		return host; 
 	} 
  
-	public void setHost(String host) { 
+	public void setHost(String host) {
 		this.host = host; 
 	} 
  
-	public int getPort() { 
+	public int getPort() {
 		return port; 
 	} 
  
-	public void setPort(int port) { 
+	public void setPort(int port) {
 		this.port = port; 
 	} 
  
-	public String getUser() { 
+	public String getUser() {
 		return user; 
 	} 
  
-	public void setUser(String user) { 
+	public void setUser(String user) {
 		this.user = user; 
 	} 
  
-	public String getPassword() { 
+	public String getPassword() {
 		return password; 
 	} 
  
-	public void setPassword(String password) { 
+	public void setPassword(String password) {
 		this.password = password; 
 	} 
 	 

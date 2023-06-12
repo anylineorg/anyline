@@ -87,7 +87,7 @@ public final class CacheFIFO2 extends GenericCache {
    * <p>
    * @param capacity  The capacity of the cache.
    */
-  public CacheFIFO2(int capacity) { 
+  public CacheFIFO2(int capacity) {
     super(capacity);
 
     __tryAgain = new boolean[_cache.length];
@@ -105,7 +105,7 @@ public final class CacheFIFO2 extends GenericCache {
   }
 
 
-  public synchronized Object getElement(Object key) { 
+  public synchronized Object getElement(Object key) {
     Object obj;
 
     obj = _table.get(key);

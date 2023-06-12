@@ -36,20 +36,20 @@ public class JPushConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	} 
  
-	public static JPushConfig getInstance(){ 
+	public static JPushConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static JPushConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static JPushConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - JPushConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - JPushConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载 
 			load(); 
 		} 
@@ -58,11 +58,11 @@ public class JPushConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, JPushConfig.class, CONFIG_NAME);
 		JPushConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 	public static JPushConfig register(String instance, String key, String secret){
 		DataRow row = new DataRow();

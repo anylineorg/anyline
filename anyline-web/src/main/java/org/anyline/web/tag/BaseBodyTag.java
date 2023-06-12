@@ -163,27 +163,27 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			}
 		}
 	} 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
     } 
-	public int doAfterBody() throws JspException { 
-		if(null != bodyContent){ 
+	public int doAfterBody() throws JspException {
+		if(null != bodyContent){
 			body = bodyContent.getString().trim(); 
 		} 
 		return super.doAfterBody(); 
 	} 
-	 public int doEndTag() throws JspException { 
+	 public int doEndTag() throws JspException {
         return EVAL_PAGE;    
 	} 
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
-		if(null != paramList){ 
+		if(null != paramList){
 			paramList.clear(); 
 		} 
-		if(null != paramMap){ 
+		if(null != paramMap){
 			paramMap.clear(); 
 		} 
 		body = null;
@@ -209,39 +209,39 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		var = null;
 	} 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
  
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void addParam(String key, Object value) { 
-//		if(null == value || "".equals(value.toString().trim())){ 
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public void addParam(String key, Object value) {
+//		if(null == value || "".equals(value.toString().trim())){
 //			return ; 
 //		} 
-		if(null == key){ 
-			if(null == paramList){ 
+		if(null == key){
+			if(null == paramList){
 				paramList = new ArrayList<Object>(); 
 			} 
-			if(value instanceof Collection){ 
+			if(value instanceof Collection){
 				paramList.addAll((Collection)value); 
-			}else{ 
+			}else{
 				paramList.add(value); 
 			} 
-		}else{ 
-			if(null == paramMap){ 
+		}else{
+			if(null == paramMap){
 				paramMap = new HashMap<String,Object>(); 
 			} 
 			paramMap.put(key.trim(), value); 
 		} 
 	} 
-	public BodyContent getBodyContent() { 
+	public BodyContent getBodyContent() {
 		return super.getBodyContent(); 
 	} 
  
-	public void setBodyContent(BodyContent b) { 
+	public void setBodyContent(BodyContent b) {
 		super.setBodyContent(b); 
 	} 
-	public String getBody() { 
+	public String getBody() {
 		return body; 
 	} 
 	public void setBody(String body) {
@@ -254,20 +254,20 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 //		}
 		this.body = body; 
 	} 
-	public String getId() { 
+	public String getId() {
 		return id; 
 	} 
-	public void setId(String id) { 
+	public void setId(String id) {
 		this.id = id; 
 	} 
-	public String getName() { 
+	public String getName() {
 		return name; 
 	} 
-	public void setName(String name) { 
+	public void setName(String name) {
 		this.name = name; 
 	} 
  
-	public Object getValue() { 
+	public Object getValue() {
 		return value; 
 	} 
 	public void setValue(Object value) {
@@ -280,40 +280,40 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 //		}
 		this.value = value;
 	}
-	public String getClazz() { 
+	public String getClazz() {
 		return clazz; 
 	} 
-	public void setClazz(String clazz) { 
+	public void setClazz(String clazz) {
 		this.clazz = clazz; 
 	} 
-	public String getStyle() { 
+	public String getStyle() {
 		return style; 
 	} 
-	public void setStyle(String style) { 
+	public void setStyle(String style) {
 		this.style = style; 
 	} 
-	public String getOnclick() { 
+	public String getOnclick() {
 		return onclick; 
 	} 
-	public void setOnclick(String onclick) { 
+	public void setOnclick(String onclick) {
 		this.onclick = onclick; 
 	} 
-	public String getOnchange() { 
+	public String getOnchange() {
 		return onchange; 
 	} 
-	public void setOnchange(String onchange) { 
+	public void setOnchange(String onchange) {
 		this.onchange = onchange; 
 	} 
-	public String getOnblur() { 
+	public String getOnblur() {
 		return onblur; 
 	} 
-	public void setOnblur(String onblur) { 
+	public void setOnblur(String onblur) {
 		this.onblur = onblur; 
 	} 
-	public String getOnfocus() { 
+	public String getOnfocus() {
 		return onfocus; 
 	} 
-	public void setOnfocus(String onfocus) { 
+	public void setOnfocus(String onfocus) {
 		this.onfocus = onfocus; 
 	}
 	public boolean isEncrypt() {

@@ -242,34 +242,34 @@ public class HttpUtil {
 	}
 
 
-	public static DownloadTask download(String url, String dst){ 
+	public static DownloadTask download(String url, String dst){
 		File file = new File(dst); 
 		return download(url, file, null, null, false);
 	} 
-	public static DownloadTask download(String url, File dst){ 
+	public static DownloadTask download(String url, File dst){
 		return download(url, dst, null, null, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params){ 
+	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params){
 		File file = new File(dest);
 		return download(url, file, headers, params, false);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params){ 
+	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params){
 		return download(url, dst, headers, params, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){ 
+	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){
 		File file = new File(dest);
 		return download(url, file, headers, params, override);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
+	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){ 
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){
 		return download(progress, url, new File(dest), null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){ 
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){
 		return download(progress, url, dst, null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){ 
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){
 		return download(progress, url, new File(dest), headers, params, override);
 	}
 
@@ -365,9 +365,9 @@ public class HttpUtil {
 			fullPath = parsePath(host) + url;
 		} else {// 当前站点的相对路径
 			host = parseDir(host);
-			if (host.endsWith("/")) { // src是一个目录
+			if (host.endsWith("/")) {// src是一个目录
 				fullPath = host + url;
-			} else { // src有可能是一个文件 : 需要判断是文件还是目录 文件比例多一些
+			} else {// src有可能是一个文件 : 需要判断是文件还是目录 文件比例多一些
 				fullPath = host + "/" + url;
 			}
 		}

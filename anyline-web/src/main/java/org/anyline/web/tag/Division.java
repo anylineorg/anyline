@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author zh 
  * 
  */ 
-public class Division extends BodyTagSupport{ 
+public class Division extends BodyTagSupport{
 	private static final long serialVersionUID = 1L; 
 	private String divisor;		// 除数 
 	private String dividend;	// 被除数 
@@ -42,8 +42,8 @@ public class Division extends BodyTagSupport{
 	private Integer scale = 10;
 	private int round = 0;
 
-	 public int doStartTag() throws JspException { 
-		try{ 
+	 public int doStartTag() throws JspException {
+		try{
 			JspWriter out = pageContext.getOut(); 
 			BigDecimal _divisor = BasicUtil.parseDecimal(divisor, 0); 
 			BigDecimal _dividend = BasicUtil.parseDecimal(dividend, 0);
@@ -60,25 +60,25 @@ public class Division extends BodyTagSupport{
 			}
 			if(_divisor.compareTo(BigDecimal.ZERO) != 0){
 				BigDecimal result = _dividend.divide(_divisor,scale, round);
-				if(null != format){ 
+				if(null != format){
 					defaultValue = NumberUtil.format(result, format); 
-				}else{ 
+				}else{
 					defaultValue = result +""; 
 				} 
 			} 
 			out.print(defaultValue); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_BODY_INCLUDE; 
     }    
-	public int doEndTag() throws JspException {    
+	public int doEndTag() throws JspException {   
 	 	return EVAL_PAGE;
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		defaultValue = ""; 
 		divisor = null; 
@@ -108,31 +108,31 @@ public class Division extends BodyTagSupport{
 		return divisor; 
 	} 
  
-	public void setDivisor(String divisor) { 
+	public void setDivisor(String divisor) {
 		this.divisor = divisor; 
 	} 
  
-	public String getDividend() { 
+	public String getDividend() {
 		return dividend; 
 	} 
  
-	public void setDividend(String dividend) { 
+	public void setDividend(String dividend) {
 		this.dividend = dividend; 
 	} 
  
-	public String getDefault() { 
+	public String getDefault() {
 		return defaultValue; 
 	} 
  
-	public void setDefault(String defaultValue) { 
+	public void setDefault(String defaultValue) {
 		this.defaultValue = defaultValue; 
 	} 
  
-	public String getFormat() { 
+	public String getFormat() {
 		return format; 
 	} 
  
-	public void setFormat(String format) { 
+	public void setFormat(String format) {
 		this.format = format; 
 	} 
 } 

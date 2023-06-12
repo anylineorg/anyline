@@ -102,7 +102,7 @@ public final class Perl5Compiler implements PatternCompiler {
   "0123456789abcdef0123456789ABCDEFx";
   private CharStringPointer __input;
   private boolean __sawBackreference;
-  private char[] __modifierFlags = { 0 };
+  private char[] __modifierFlags = {0 };
 
   // IMPORTANT: __numParentheses starts out equal to 1 during compilation.
   // It is always one greater than the number of parentheses encountered
@@ -548,7 +548,7 @@ public final class Perl5Compiler implements PatternCompiler {
   private int __parseAtom(int[] retFlags) throws MalformedPatternException {
     boolean doDefault;
     char value;
-    int offset, flags[] = { 0 };
+    int offset, flags[] = {0 };
     
     
     retFlags[0] = __WORSTCASE;
@@ -966,7 +966,7 @@ public final class Perl5Compiler implements PatternCompiler {
   private int __parseCharacterClass() throws MalformedPatternException {
     boolean range = false, skipTest;
     char clss, deflt, lastclss = Character.MAX_VALUE;
-    int offset, bits, numLength[] = { 0 };
+    int offset, bits, numLength[] = {0 };
 
     offset = __emitNode(OpCode._ANYOF);
 
@@ -1118,8 +1118,8 @@ public final class Perl5Compiler implements PatternCompiler {
     boolean range = false, skipTest;
     char clss, lastclss = Character.MAX_VALUE;
 
-    int offset, numLength[] = { 0 };
-    boolean negFlag[] = { false };
+    int offset, numLength[] = {0 };
+    boolean negFlag[] = {false };
     boolean opcodeFlag; /* clss isn't character when this flag true. */
 
     if(__input._getValue() == '^') {
@@ -1324,7 +1324,7 @@ public final class Perl5Compiler implements PatternCompiler {
 
     buf = new StringBuffer();
     
-    try { 
+    try {
       while ( (value = __input._getValue(pos++)) != ':' && pos < len) {
 	buf.append(value);	
       }
@@ -1349,7 +1349,7 @@ public final class Perl5Compiler implements PatternCompiler {
 
   private int __parseBranch(int[] retFlags) throws MalformedPatternException {
     boolean nestCheck = false, handleRepetition = false;
-    int offset, next, min, max, flags[] = { 0 };
+    int offset, next, min, max, flags[] = {0 };
     char operator, value;
 
     min = 0;
@@ -1532,9 +1532,9 @@ public final class Perl5Compiler implements PatternCompiler {
   private int __parseExpression(boolean isParenthesized, int[] hintFlags)
     throws MalformedPatternException {
     char value, paren;
-    char[] modifierFlags, posFlags = { 0 }, negFlags = { 0 };
+    char[] modifierFlags, posFlags = {0 }, negFlags = {0 };
     int nodeOffset = OpCode._NULL_OFFSET, parenthesisNum = 0, br, ender;
-    int[] flags = { 0 };;
+    int[] flags = {0 };;
     String modifiers = "iogmsx-";
 
     modifierFlags = posFlags;
@@ -1654,7 +1654,7 @@ public final class Perl5Compiler implements PatternCompiler {
 
     if(paren != 0 && (__input._isAtEnd() || __getNextChar() != ')')) {
       throw new MalformedPatternException("Unmatched parentheses.");
-    } else if(paren == 0 && !__input._isAtEnd()) { 
+    } else if(paren == 0 && !__input._isAtEnd()) {
       if(__input._getValue() == ')')
 	throw new MalformedPatternException("Unmatched parentheses.");
       else
@@ -1696,7 +1696,7 @@ public final class Perl5Compiler implements PatternCompiler {
    */
   public Pattern compile(char[] pattern, int options)
        throws MalformedPatternException {
-    int[] flags = { 0 };
+    int[] flags = {0 };
     int caseInsensitive, scan;
     Perl5Pattern regexp;
     String mustString, startString;

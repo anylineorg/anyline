@@ -81,7 +81,7 @@ public final class CacheLRU extends GenericCache {
    * <p>
    * @param capacity  The capacity of the cache.
    */
-  public CacheLRU(int capacity) { 
+  public CacheLRU(int capacity) {
     super(capacity);
 
     int i;
@@ -131,7 +131,7 @@ public final class CacheLRU extends GenericCache {
   }
 
 
-  public synchronized Object getElement(Object key) { 
+  public synchronized Object getElement(Object key) {
     Object obj;
 
     obj = _table.get(key);

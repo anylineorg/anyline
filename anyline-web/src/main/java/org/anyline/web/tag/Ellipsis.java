@@ -24,7 +24,7 @@ import org.anyline.util.BasicUtil;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
  
-public class Ellipsis extends BaseBodyTag { 
+public class Ellipsis extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() "; 
 	private int length;					// 结果长度
@@ -32,26 +32,26 @@ public class Ellipsis extends BaseBodyTag {
 	private boolean label = true;		// 是否显示label
 	private boolean toggle = false; 
  
-	public int doEndTag() { 
+	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
-		if("".equals(src)){ 
+		if("".equals(src)){
 			return EVAL_BODY_INCLUDE; 
 		} 
  
 		JspWriter writer = null; 
 		String result = ""; 
-		try { 
+		try {
 			writer = pageContext.getOut(); 
 			int size = length * 2; 
 			String chrs[] = src.split(""); 
 			int cnt = 0; 
-			for(String chr:chrs){ 
-				if(cnt >= size){ 
+			for(String chr:chrs){
+				if(cnt >= size){
 					break; 
 				} 
-				if(SINGLE_CHAR.contains(chr.toLowerCase())){ 
+				if(SINGLE_CHAR.contains(chr.toLowerCase())){
 					cnt += 1; 
-				}else{ 
+				}else{
 					cnt += 2; 
 				} 
 				result += chr; 
@@ -63,7 +63,7 @@ public class Ellipsis extends BaseBodyTag {
 					String all = "<span style='display:none;' id='tga_" + random + "'>" + src + "</span>";
 					String sub = "<span id='tgs_" + random + "'>"+result+"<span style='display:inline;' onclick=\"$('#tgs_"+random+"').hide();$('#tga_"+random+"').show();\">" + replace + "</span></span>";
 					result = all + sub;
-				}else{ 
+				}else{
 					result += replace;
 					if(label){
 						result = "<label title=\""+src+"\">" + result + "</label>";
@@ -77,16 +77,16 @@ public class Ellipsis extends BaseBodyTag {
 				}
 			} 
 			writer.print(result); 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
 	} 
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		value = null; 
 		length = 0; 
@@ -95,19 +95,19 @@ public class Ellipsis extends BaseBodyTag {
 		toggle = false; 
 	} 
  
-	public int getLength() { 
+	public int getLength() {
 		return length; 
 	} 
  
-	public void setLength(int length) { 
+	public void setLength(int length) {
 		this.length = length; 
 	} 
  
-	public String getReplace() { 
+	public String getReplace() {
 		return replace; 
 	} 
  
-	public void setReplace(String replace) { 
+	public void setReplace(String replace) {
 		this.replace = replace; 
 	}
 

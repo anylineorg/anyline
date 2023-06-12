@@ -30,7 +30,7 @@ import javax.servlet.jsp.JspWriter;
  * 
  */ 
  
-public class Strip extends BaseBodyTag implements Cloneable{ 
+public class Strip extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
  
 	private int length = -1; 
@@ -39,12 +39,12 @@ public class Strip extends BaseBodyTag implements Cloneable{
 	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() ";
 
 
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			String result = ""; 
-			if(null != value){ 
+			if(null != value){
 				result = value.toString(); 
-			}else if(null != body){ 
+			}else if(null != body){
 				result = body; 
 			} 
 			result = RegularUtil.removeTag(result);
@@ -54,32 +54,32 @@ public class Strip extends BaseBodyTag implements Cloneable{
 			if(null != result){
 				result = result.replace("\r","").replace("\n","");
 			}
-			if(length != -1){ 
+			if(length != -1){
 				int size = length * 2; 
 				String chrs[] = result.split(""); 
 				int cnt = 0; 
 				String tmp = result; 
 				result = ""; 
-				for(String chr:chrs){ 
-					if(cnt >= size){ 
+				for(String chr:chrs){
+					if(cnt >= size){
 						break; 
 					} 
-					if(SINGLE_CHAR.contains(chr.toLowerCase())){ 
+					if(SINGLE_CHAR.contains(chr.toLowerCase())){
 						cnt += 1; 
-					}else{ 
+					}else{
 						cnt += 2; 
 					} 
 					result += chr; 
 				} 
-				if(result.length() < tmp.length()){ 
+				if(result.length() < tmp.length()){
 					result += ellipsis; 
 				} 
 			}
 			JspWriter out = pageContext.getOut(); 
 			out.print(result); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
@@ -87,7 +87,7 @@ public class Strip extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		length = -1;
 		value = null;
@@ -95,27 +95,27 @@ public class Strip extends BaseBodyTag implements Cloneable{
 		ellipsis="..."; 
 	} 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
   
  
-	public int getLength() { 
+	public int getLength() {
 		return length; 
 	} 
  
  
-	public void setLength(int length) { 
+	public void setLength(int length) {
 		this.length = length; 
 	} 
  
  
-	public String getEllipsis() { 
+	public String getEllipsis() {
 		return ellipsis; 
 	} 
  
  
-	public void setEllipsis(String ellipsis) { 
+	public void setEllipsis(String ellipsis) {
 		this.ellipsis = ellipsis; 
 	}
 

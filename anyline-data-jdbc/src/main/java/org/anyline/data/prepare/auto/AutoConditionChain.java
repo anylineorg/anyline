@@ -20,5 +20,5 @@
 package org.anyline.data.prepare.auto;
  
  
-public interface AutoConditionChain extends AutoCondition{ 
+public interface AutoConditionChain extends AutoCondition{
 } 

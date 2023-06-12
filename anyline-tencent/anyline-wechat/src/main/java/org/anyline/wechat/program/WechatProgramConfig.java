@@ -31,7 +31,7 @@ public class WechatProgramConfig extends WechatConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public static String CONFIG_NAME = "anyline-wechat-programe.xml";
 	 
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
@@ -45,7 +45,7 @@ public class WechatProgramConfig extends WechatConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	}
@@ -57,7 +57,7 @@ public class WechatProgramConfig extends WechatConfig{
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatProgramConfig getInstance(String key){
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
@@ -76,8 +76,8 @@ public class WechatProgramConfig extends WechatConfig{
 		WechatProgramUtil.getInstance(instance);
 		return config;
 	} 
-	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
-		for(DataRow row:set){ 
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
 			String key = row.getString(column); 
 			parse(key, row); 
 		} 
@@ -88,11 +88,11 @@ public class WechatProgramConfig extends WechatConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, WechatProgramConfig.class, CONFIG_NAME,compatibles);
 		WechatProgramConfig.lastLoadTime = System.currentTimeMillis();
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 
 	public static WechatProgramConfig register(String key, DataRow row){

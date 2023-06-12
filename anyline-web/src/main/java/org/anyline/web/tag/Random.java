@@ -24,14 +24,14 @@ import org.anyline.util.BasicUtil;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
  
-public class Random extends BaseBodyTag { 
+public class Random extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String length = "10";
 	private String begin;
 	private String end;
 	private String type;
 	 
-	public int doEndTag() { 
+	public int doEndTag() {
 
 		String result = ""; 
 		try {
@@ -42,7 +42,7 @@ public class Random extends BaseBodyTag {
 			int _end = BasicUtil.parseInt(end, 0);
 			if(_begin != _end){
 				result = BasicUtil.getRandomNumber(_begin, _end)+"";
-			}else{ 
+			}else{
 				int size = BasicUtil.parseInt(length, 0);
 				if(size>0){
 					if("char".equalsIgnoreCase(type) || "string".equalsIgnoreCase(type)){
@@ -60,16 +60,16 @@ public class Random extends BaseBodyTag {
 					out.print(result);
 				}
 			}
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
 	} 
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		length = "10";
 		begin = null;

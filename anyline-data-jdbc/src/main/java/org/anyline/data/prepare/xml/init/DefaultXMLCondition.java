@@ -45,9 +45,9 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 	private String text;
 	 
 	 
-	public Object clone() throws CloneNotSupportedException{ 
+	public Object clone() throws CloneNotSupportedException{
 		DefaultXMLCondition clone = (DefaultXMLCondition)super.clone();
-		if(null != variables){ 
+		if(null != variables){
 			List<Variable> cVariables = new ArrayList<Variable>();
 			for(Variable var:variables){
 				if(null == var){
@@ -69,15 +69,15 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 		this.id = id; 
 		this.text = text; 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
-		if(!isStatic){ 
+		if(!isStatic){
 			parseText(); 
 		}else{
 			setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
 		} 
 	} 
-	public void init(){ 
+	public void init(){
 		setActive(false); 
-		if(null == variables){ 
+		if(null == variables){
 			variables = new ArrayList<Variable>();
 		} 
 		for(Variable variable:variables){
@@ -91,16 +91,16 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 	 */ 
 	public void setValue(String variable, Object values){
 		runValuesMap.put(variable, values); 
-		if(null == variable || null == variables){ 
+		if(null == variable || null == variables){
 			return; 
 		} 
 		for(Variable v:variables){
 			if(null == v){
 				continue;
 			} 
-			if(variable.equalsIgnoreCase(v.getKey())){ 
+			if(variable.equalsIgnoreCase(v.getKey())){
 				v.setValue(values); 
-				if(BasicUtil.isNotEmpty(true,values) || v.isRequired() || v.isStrictRequired()){ 
+				if(BasicUtil.isNotEmpty(true,values) || v.isRequired() || v.isStrictRequired()){
 					setActive(true); 
 				} 
 			} 
@@ -110,7 +110,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 	/** 
 	 * 解析变量
 	 */ 
-	private void parseText(){ 
+	private void parseText(){
 		try{
 			List<List<String>> keys = null;
 			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
@@ -120,11 +120,11 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			} 
-			if(BasicUtil.isNotEmpty(true,keys)){ 
+			if(BasicUtil.isNotEmpty(true,keys)){
 				setVariableType(VARIABLE_FLAG_TYPE_KEY); 
 				int varType = Variable.VAR_TYPE_INDEX;
 				Compare compare = Compare.EQUAL;
-				for(int i=0; i<keys.size(); i++){ 
+				for(int i=0; i<keys.size(); i++){
 					List<String> keyItem = keys.get(i); 
 					String prefix = keyItem.get(1).trim();		// 前缀 空或#或$
 					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
@@ -138,7 +138,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 						//符合占位  但需要替换 如在''内
 						// AND CD = ':CD' 
 						varType = Variable.VAR_TYPE_KEY_REPLACE;
-					}else{ 
+					}else{
 						// AND CD = :CD 
 						varType = Variable.VAR_TYPE_KEY;
 					}
@@ -152,13 +152,13 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 					var.setCompare(compare); 
 					addVariable(var); 
 				} 
-			}else{ 
+			}else{
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)){ 
+				if(BasicUtil.isNotEmpty(true,idxKeys)){
 					// 按下标区分变量 
 					this.setVariableType(VARIABLE_FLAG_TYPE_INDEX); 
 					int varType = Variable.VAR_TYPE_INDEX;
-					for(int i=0; i<idxKeys.size(); i++){ 
+					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(varType); 
 						var.setKey(id); 
@@ -166,27 +166,27 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 					} 
 				} 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
 		} 
 	} 
  
 	private void addVariable(Variable variable){
-		if(null == variables){ 
+		if(null == variables){
 			variables = new ArrayList<Variable>();
 		} 
 		variables.add(variable); 
 	} 
  
-	public String getId() { 
+	public String getId() {
 		return id; 
 	} 
  
-	public void setId(String id) { 
+	public void setId(String id) {
 		this.id = id; 
 	} 
  
-	public String getText() { 
+	public String getText() {
 		return text; 
 	}
 
@@ -229,7 +229,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				// CD = ':CD' CD = '::CD'
 				List<Object> values = var.getValues(); 
 				String value = null; 
-				if(BasicUtil.isNotEmpty(true,values)){ 
+				if(BasicUtil.isNotEmpty(true,values)){
 					value = (String)values.get(0); 
 				} 
 				if(null != value){
@@ -261,7 +261,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				}else{
 					result = result.replace(var.getFullKey(), "?");
 					String value = null; 
-					if(BasicUtil.isNotEmpty(true,varValues)){ 
+					if(BasicUtil.isNotEmpty(true,varValues)){
 						value = varValues.get(0).toString(); 
 					} 
 					runValues.add(new RunValue(var.getKey(), value));
@@ -277,7 +277,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 			if(var.getType() == Variable.VAR_TYPE_INDEX){
 				List<Object> values = var.getValues(); 
 				String value = null; 
-				if(BasicUtil.isNotEmpty(true,values)){ 
+				if(BasicUtil.isNotEmpty(true,values)){
 					value = (String)values.get(0); 
 				} 
 				runValues.add(new RunValue(null, value));

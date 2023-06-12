@@ -24,17 +24,16 @@ import org.anyline.cache.CacheProvider;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.CacheUtil;
 import org.anyline.data.cache.PageLazyStore;
-import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.entity.Procedure;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
+import org.anyline.entity.data.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -47,7 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import org.anyline.entity.data.Function;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -3635,65 +3634,65 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return dao.triggers(greedy, table, events);
         }
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, new Table(catalog, schema, table), events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, null, schema, table, events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, null, null, table, events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(greedy, null, null, null, events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy) {
             return triggers(greedy, (List)null);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, catalog, schema, name, events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, null, schema, name, events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, null, null, name, events);
         }
 
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(List<org.anyline.entity.data.Trigger.EVENT> events) {
             return triggers(false, null, null, null, events);
         }
 
         @Override
-        public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers() {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers() {
                 return triggers(false, (List)null);
             }
 
@@ -3959,7 +3958,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean create(Table table) throws Exception{
-            table.setService(DefaultService.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -3974,8 +3972,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 update = table;
                 table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
                 table.setUpdate(update);
-            }
-            table.setService(DefaultService.this);
+            } 
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -3984,7 +3981,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(Table table) throws Exception{
-            table.setService(DefaultService.this);
             boolean result = dao.drop(table);
 
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
@@ -4025,7 +4021,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean create(View view) throws Exception{
-            view.setService(DefaultService.this);
             boolean result =  dao.create(view);
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
             return result;
@@ -4033,7 +4028,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean alter(View view) throws Exception{
-            view.setService(DefaultService.this);
             boolean result = dao.alter(view);
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
             return result;
@@ -4042,7 +4036,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(View view) throws Exception{
-            view.setService(DefaultService.this);
             boolean result = dao.drop(view);
 
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
@@ -4076,7 +4069,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean create(MasterTable table) throws Exception {
-            table.setService(DefaultService.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -4085,7 +4077,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean alter(MasterTable table) throws Exception {
-            table.setService(DefaultService.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -4094,7 +4085,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(MasterTable table) throws Exception {
-            table.setService(DefaultService.this);
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -4127,7 +4117,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean create(PartitionTable table) throws Exception {
-            table.setService(DefaultService.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -4136,7 +4125,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean alter(PartitionTable table) throws Exception {
-            table.setService(DefaultService.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -4145,7 +4133,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(PartitionTable table) throws Exception {
-            table.setService(DefaultService.this);
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
@@ -4210,14 +4197,12 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(Column column) throws Exception{
-        column.setService(DefaultService.this);
         boolean result = dao.drop(column);
         clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
         return result;
     }
 
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
-            column.setService(DefaultService.this);
             boolean result =  dao.add(column);
             if(result) {
                 columns.put(column.getName(), column);
@@ -4245,7 +4230,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            original.setService(DefaultService.this);
             String name = original.getName();
             try {
                 result = dao.alter(table, original);
@@ -4326,13 +4310,13 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(Tag tag) throws Exception{
-            tag.setService(DefaultService.this);
+
             boolean result = dao.drop(tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
         }
         private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception{
-            tag.setService(DefaultService.this);
+
             boolean result =  dao.add(tag);
             if(result) {
                 tags.put(tag.getName(), tag);
@@ -4360,7 +4344,6 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            original.setService(DefaultService.this);
             result = dao.alter(table, original);
             if(result) {
                 tags.remove(original.getName());
@@ -4384,7 +4367,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean add(PrimaryKey primary) throws Exception{
-            primary.setService(DefaultService.this);
             return dao.add(primary);
         }
 
@@ -4396,7 +4378,6 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override 
     public boolean drop(PrimaryKey primary) throws Exception{
-            primary.setService(DefaultService.this);
             return dao.drop(primary);
         }
         /* *****************************************************************************************************************
@@ -4414,7 +4395,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override 
     public boolean drop(ForeignKey foreign) throws Exception{
             if(BasicUtil.isEmpty(foreign.getName())){
-                List<String> names = org.anyline.entity.data.Column.names(foreign.getColumns());
+                List<String> names = Column.names(foreign.getColumns());
                 foreign = metadata.foreign(foreign.getTable(), names);
             }
             return dao.drop(foreign);
@@ -4452,7 +4433,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean add(Index index) throws Exception{
-            index.setService(DefaultService.this);
             return dao.add(index);
         }
 
@@ -4464,7 +4444,6 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override 
     public boolean drop(Index index) throws Exception{
-            index.setService(DefaultService.this);
             return dao.drop(index);
         }
         /* *****************************************************************************************************************
@@ -4477,7 +4456,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean add(Constraint constraint) throws Exception {
-            constraint.setService(DefaultService.this);
             return dao.add(constraint);
         }
 
@@ -4490,7 +4468,6 @@ public class DefaultService<E> implements AnylineService<E> {
         
     @Override 
     public boolean drop(Constraint constraint) throws Exception {
-            constraint.setService(DefaultService.this);
             return dao.drop(constraint);
         }
 

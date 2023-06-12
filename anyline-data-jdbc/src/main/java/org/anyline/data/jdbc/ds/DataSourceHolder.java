@@ -55,7 +55,7 @@ public class DataSourceHolder {
 	private static Map<String, DatabaseType> types = new HashMap<>();
 
 	private static Map<TransactionStatus, String> transactionStatus = new Hashtable<>();
-    static{ 
+    static{
     	THREAD_AUTO_RECOVER.set(false); 
     }
 
@@ -107,7 +107,7 @@ public class DataSourceHolder {
 		if(null == dataSource || !dataSources.contains(dataSource)){
 			throw new RuntimeException("数据源未注册:"+dataSource);
 		}
-    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){ 
+    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
     		log.info("[切换数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get(), dataSource, auto);
     	} 
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
@@ -127,7 +127,7 @@ public class DataSourceHolder {
     	THREAD_CUR_SOURCE.set(to);
 		log.info("[还原数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), fr, to);
     } 
-    public static void setDefaultDataSource(){ 
+    public static void setDefaultDataSource(){
     	clearDataSource();
 		if(dataSources.contains("dataSource")){
 			setDataSource("dataSource");
@@ -139,11 +139,11 @@ public class DataSourceHolder {
 			log.info("[切换数据源][thread:{}][数据源:{}>默认数据源]",Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get());
 		}
 	}
-    public static void clearDataSource() { 
+    public static void clearDataSource() {
     	THREAD_CUR_SOURCE.remove(); 
     } 
     public static boolean isAutoRecover(){
-    	if(null == THREAD_AUTO_RECOVER || null == THREAD_AUTO_RECOVER.get()){ 
+    	if(null == THREAD_AUTO_RECOVER || null == THREAD_AUTO_RECOVER.get()){
     		return false; 
     	} 
     	return THREAD_AUTO_RECOVER.get(); 
@@ -156,10 +156,10 @@ public class DataSourceHolder {
 	 * @return String
 	 */ 
 	public static String parseDataSource(String src){
-		if(null != src && src.startsWith("<")){ 
+		if(null != src && src.startsWith("<")){
 			int fr = src.indexOf("<"); 
 			int to = src.indexOf(">"); 
-			if(fr != -1){ 
+			if(fr != -1){
 				String ds = src.substring(fr+1,to); 
 				src = src.substring(to+1); 
 				setDataSource(ds, true); 
@@ -197,8 +197,8 @@ public class DataSourceHolder {
 	 * 注册新的数据源,只是把spring context中现有的数据源名称添加到数据源名称列表
 	 * @param ds 数据源名称
 	 */
-	public static void reg(String ds){ 
-		if(!dataSources.contains(ds)){ 
+	public static void reg(String ds){
+		if(!dataSources.contains(ds)){
 			dataSources.add(ds); 
 		} 
 	}
@@ -306,7 +306,7 @@ public class DataSourceHolder {
 	 * @param ds 数据源名称
 	 * @return boolean
 	 */
-	public static boolean contains(String ds){ 
+	public static boolean contains(String ds){
 		return dataSources.contains(ds); 
 	}
 

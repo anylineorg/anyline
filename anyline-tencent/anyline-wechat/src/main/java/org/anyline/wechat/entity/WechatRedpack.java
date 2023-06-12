@@ -22,101 +22,101 @@ public class WechatRedpack {
 	protected String scene_id		; // 场景id			否			PRODUCT_8							String(32)	发放红包使用场景,红包金额大于200或者小于1元时必传 PRODUCT_1:商品促销 PRODUCT_2:抽奖 PRODUCT_3:虚拟物品兑奖 PRODUCT_4:企业内部福利PRODUCT_5:渠道分润 PRODUCT_6:保险回馈 PRODUCT_7:彩票派奖 PRODUCT_8:税务刮奖 
 	protected String risk_info		; // 活动信息			否			posttime%3d123123412%26clientversion%3d234134%26mobile%3d122344545%26deviceid%3dIOS	String(128)	posttime:用户操作的时间戳 mobile:业务系统账号的手机号,国家代码-手机号.不需要+号 deviceid :mac 地址或者设备唯一标识  clientversion :用户操作的客户端版本 把值为非空的信息用key=value进行拼接,再进行urlencode urlencode(posttime=xx& mobile =xx&deviceid=xx)  
 	protected String consume_mch_id	; // 资金授权商户号		否			1222000096							String(32)	资金授权商户号 服务商替特约商户发放时使用 
-	public String getNonce_str() { 
+	public String getNonce_str() {
 		return nonce_str; 
 	} 
-	public void setNonce_str(String nonce_str) { 
+	public void setNonce_str(String nonce_str) {
 		this.nonce_str = nonce_str; 
 	} 
-	public String getSign() { 
+	public String getSign() {
 		return sign; 
 	} 
-	public void setSign(String sign) { 
+	public void setSign(String sign) {
 		this.sign = sign; 
 	} 
-	public String getMch_billno() { 
+	public String getMch_billno() {
 		return mch_billno; 
 	} 
-	public void setMch_billno(String mch_billno) { 
+	public void setMch_billno(String mch_billno) {
 		this.mch_billno = mch_billno; 
 	} 
-	public String getMch_id() { 
+	public String getMch_id() {
 		return mch_id; 
 	} 
-	public void setMch_id(String mch_id) { 
+	public void setMch_id(String mch_id) {
 		this.mch_id = mch_id; 
 	} 
-	public String getWxappid() { 
+	public String getWxappid() {
 		return wxappid; 
 	} 
-	public void setWxappid(String wxappid) { 
+	public void setWxappid(String wxappid) {
 		this.wxappid = wxappid; 
 	} 
-	public String getSend_name() { 
+	public String getSend_name() {
 		return send_name; 
 	} 
-	public void setSend_name(String send_name) { 
+	public void setSend_name(String send_name) {
 		this.send_name = send_name; 
 	} 
-	public String getRe_openid() { 
+	public String getRe_openid() {
 		return re_openid; 
 	} 
-	public void setRe_openid(String re_openid) { 
+	public void setRe_openid(String re_openid) {
 		this.re_openid = re_openid; 
 	} 
-	public String getWishing() { 
+	public String getWishing() {
 		return wishing; 
 	} 
 	 
-	public int getTotal_amount() { 
+	public int getTotal_amount() {
 		return total_amount; 
 	} 
-	public void setTotal_amount(int total_amount) { 
+	public void setTotal_amount(int total_amount) {
 		this.total_amount = total_amount; 
 	} 
-	public int getTotal_num() { 
+	public int getTotal_num() {
 		return total_num; 
 	} 
-	public void setTotal_num(int total_num) { 
+	public void setTotal_num(int total_num) {
 		this.total_num = total_num; 
 	} 
-	public void setWishing(String wishing) { 
+	public void setWishing(String wishing) {
 		this.wishing = wishing; 
 	} 
-	public String getClient_ip() { 
+	public String getClient_ip() {
 		return client_ip; 
 	} 
-	public void setClient_ip(String client_ip) { 
+	public void setClient_ip(String client_ip) {
 		this.client_ip = client_ip; 
 	} 
-	public String getAct_name() { 
+	public String getAct_name() {
 		return act_name; 
 	} 
-	public void setAct_name(String act_name) { 
+	public void setAct_name(String act_name) {
 		this.act_name = act_name; 
 	} 
-	public String getRemark() { 
+	public String getRemark() {
 		return remark; 
 	} 
-	public void setRemark(String remark) { 
+	public void setRemark(String remark) {
 		this.remark = remark; 
 	} 
-	public String getScene_id() { 
+	public String getScene_id() {
 		return scene_id; 
 	} 
-	public void setScene_id(String scene_id) { 
+	public void setScene_id(String scene_id) {
 		this.scene_id = scene_id; 
 	} 
-	public String getRisk_info() { 
+	public String getRisk_info() {
 		return risk_info; 
 	} 
-	public void setRisk_info(String risk_info) { 
+	public void setRisk_info(String risk_info) {
 		this.risk_info = risk_info; 
 	} 
-	public String getConsume_mch_id() { 
+	public String getConsume_mch_id() {
 		return consume_mch_id; 
 	} 
-	public void setConsume_mch_id(String consume_mch_id) { 
+	public void setConsume_mch_id(String consume_mch_id) {
 		this.consume_mch_id = consume_mch_id; 
 	} 
  

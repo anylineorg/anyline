@@ -250,7 +250,7 @@ public final class MatchActionProcessor {
    */
   public void setFieldSeparator(String separator, int options)
        throws MalformedPatternException
-  { 
+  {
     if(separator == null) {
       __fieldSeparator = null;
       return;

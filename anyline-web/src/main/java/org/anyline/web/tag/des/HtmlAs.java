@@ -29,32 +29,32 @@ import org.anyline.web.tag.BaseBodyTag;
  * @author zh 
  * 
  */ 
-public class HtmlAs extends BaseBodyTag implements Cloneable{ 
+public class HtmlAs extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
  
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			String value = body; 
-			if(null != value && !"".equals(value.trim())){ 
+			if(null != value && !"".equals(value.trim())){
 				value = value.trim(); 
 				JspWriter out = pageContext.getOut(); 
 				out.print(DESUtil.encryptHtmlTagA(value)); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		body = null; 
 	} 
  
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
 } 

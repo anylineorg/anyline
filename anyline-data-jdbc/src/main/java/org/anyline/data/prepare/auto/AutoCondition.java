@@ -30,7 +30,7 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public interface AutoCondition extends Condition{ 
+public interface AutoCondition extends Condition{
 	public Object getValue(); 
 	public List<Object> getValues(); 
 	public String getId();

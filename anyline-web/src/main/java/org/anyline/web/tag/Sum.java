@@ -30,7 +30,7 @@ import javax.servlet.jsp.JspWriter;
 import java.math.BigDecimal;
 import java.util.Collection;
  
-public class Sum extends BaseBodyTag { 
+public class Sum extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data;
@@ -40,23 +40,23 @@ public class Sum extends BaseBodyTag {
 	private String nvl;
  
 	@SuppressWarnings("rawtypes")
-	public int doEndTag() throws JspException { 
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 		String html = "";
 		if(null != var){
 			pageContext.removeAttribute(var);
 		}
-		try { 
-			if (null != data) { 
-				if (data instanceof String) { 
-					if (data.toString().endsWith("}")) { 
+		try {
+			if (null != data) {
+				if (data instanceof String) {
+					if (data.toString().endsWith("}")) {
 						data = data.toString().replace("{", "").replace("}", "");
-					} else { 
-						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+					} else {
+						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
-						} else if ("session".equals(scope)) { 
+						} else if ("session".equals(scope)) {
 							data = request.getSession().getAttribute(data.toString()); 
-						} else { 
+						} else {
 							data = request.getAttribute(data.toString()); 
 						} 
 					} 
@@ -69,7 +69,7 @@ public class Sum extends BaseBodyTag {
 					items = BeanUtil.select(items,selector.split(","));
 				}
 				BigDecimal result = new BigDecimal(0); 
-				if (null != items){ 
+				if (null != items){
 					for (Object item : items) {
 						if(null == item){
 							continue;
@@ -102,7 +102,7 @@ public class Sum extends BaseBodyTag {
 			}
 		} catch (Exception e) {
 			e.printStackTrace(); 
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 
@@ -159,11 +159,11 @@ public class Sum extends BaseBodyTag {
 		var = null;
 	} 
  
-	public String getScope() { 
+	public String getScope() {
 		return scope; 
 	} 
  
-	public void setScope(String scope) { 
+	public void setScope(String scope) {
 		this.scope = scope; 
 	}
 

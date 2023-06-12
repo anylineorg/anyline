@@ -25,28 +25,28 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class SimpleHttpUtil { 
-	public static String post(String url, String param) { 
+public class SimpleHttpUtil {
+	public static String post(String url, String param) {
 		return request(url, "POST", param); 
 	} 
  
-	public static String get(String url, String param) { 
+	public static String get(String url, String param) {
 		return request(url, "GET", param); 
 	} 
  
-	public static String request(String url, String method, String param) { 
+	public static String request(String url, String method, String param) {
 		HttpURLConnection conn = null; 
 		InputStream is = null; 
 		InputStreamReader isr = null; 
 		BufferedReader br = null; 
-		try { 
+		try {
 			conn = (HttpURLConnection) new URL(url).openConnection(); 
 			conn.setDoOutput(true); 
 			conn.setDoInput(true); 
 			conn.setUseCaches(false); 
 			conn.setRequestMethod(method); 
             conn.setRequestProperty("content-type", "application/x-www-form-urlencoded"); 
-			if (null != param) { 
+			if (null != param) {
 				OutputStream os = conn.getOutputStream(); 
 				os.write(param.getBytes(StandardCharsets.UTF_8));
 
@@ -58,21 +58,21 @@ public class SimpleHttpUtil {
 			br = new BufferedReader(isr); 
 			String str = null; 
 			StringBuilder buffer = new StringBuilder();
-			while ((str = br.readLine()) != null) { 
+			while ((str = br.readLine()) != null) {
 				buffer.append(str); 
 			} 
 			return buffer.toString(); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
-		} finally { 
-			try { 
+		} finally {
+			try {
 				// 释放资源
 				if(null != br) br.close();
 				if(null != isr) isr.close();
 				if(null != is) is.close();
 				if(null != conn) conn.disconnect();
 				is = null;
-			} catch (Exception e) { 
+			} catch (Exception e) {
 				e.printStackTrace(); 
 			} 
 		} 

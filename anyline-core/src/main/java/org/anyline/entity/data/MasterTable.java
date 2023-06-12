@@ -1,7 +1,6 @@
-package org.anyline.data.entity;
+package org.anyline.entity.data;
 
 
-import org.anyline.data.listener.init.DefaultDDListener;
 import org.anyline.entity.DataRow;
 
 import java.util.LinkedHashMap;
@@ -13,7 +12,6 @@ public class MasterTable extends Table {
     private Partition partition                     ; // 分区方式
 
     public MasterTable(){
-        this.listener = new DefaultDDListener();
     }
     public MasterTable(String name){
         this(null, name);
@@ -62,7 +60,7 @@ public class MasterTable extends Table {
      * @param tags tags
      * @return table table
      */
-    public Table getPartition(Tag ... tags){
+    public Table getPartition(Tag... tags){
         Table table = null;
         return table;
     }
@@ -90,7 +88,6 @@ public class MasterTable extends Table {
         table.tags = tags;
         table.indexs = indexs;
         table.constraints = constraints;
-        table.listener = listener;
         table.autoDropColumn = autoDropColumn;
         table.update = update;
         return table;

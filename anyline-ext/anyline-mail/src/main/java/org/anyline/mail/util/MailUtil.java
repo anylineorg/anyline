@@ -13,14 +13,14 @@ import javax.mail.internet.MimeMessage;
 import java.util.Hashtable;
 import java.util.Properties;
  
-public class MailUtil { 
+public class MailUtil {
 	private static final Logger log = LoggerFactory.getLogger(MailUtil.class); 
 	private MailConfig config = null; 
 	private Properties props = new Properties(); 
 	private static Hashtable<String, MailUtil> instances = new Hashtable<String, MailUtil>();
 
 
-	public MailConfig getConfig(){ 
+	public MailConfig getConfig(){
 		return config; 
 	}
 
@@ -34,16 +34,16 @@ public class MailUtil {
 		return instances;
 	}
 
-	public static MailUtil getInstance() { 
+	public static MailUtil getInstance() {
 		return getInstance(MailConfig.DEFAULT_INSTANCE_KEY);
 	} 
 
-	public static MailUtil getInstance(String key) { 
-		if (BasicUtil.isEmpty(key)) { 
+	public static MailUtil getInstance(String key) {
+		if (BasicUtil.isEmpty(key)) {
 			key = MailConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		MailUtil util = instances.get(key); 
-		if (null == util) { 
+		if (null == util) {
 			util = new MailUtil(); 
 			MailConfig config = MailConfig.getInstance(key);
 			if(null != config) {
@@ -76,9 +76,9 @@ public class MailUtil {
 	 * @param content	邮件内容  content	邮件内容
 	 * @return boolean
 	 */ 
-	public boolean send(String fr, String to, String title, String content) { 
+	public boolean send(String fr, String to, String title, String content) {
 		log.warn("[send email][fr:{}][to:{}][title:{}][content:{}]", fr,to,title,content);
-		try { 
+		try {
 			Session mailSession = Session.getDefaultInstance(props); 
 			Message msg = new MimeMessage(mailSession); 
 			msg.setFrom(new InternetAddress(config.ACCOUNT,fr)); 
@@ -92,14 +92,14 @@ public class MailUtil {
 					config.PASSWORD);
 			transport.sendMessage(msg, msg.getAllRecipients()); 
 			transport.close(); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 			return false; 
 		} 
  
 		return true; 
 	} 
-	public boolean send(String to, String title, String content) { 
+	public boolean send(String to, String title, String content) {
 		return send(config.USERNAME, to, title, content);
 	} 
 }

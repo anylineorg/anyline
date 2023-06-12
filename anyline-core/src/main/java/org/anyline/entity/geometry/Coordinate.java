@@ -74,7 +74,7 @@ public class Coordinate {
 		this.setType(type);
 		return this;
 	}
-	public boolean isEmpty(){ 
+	public boolean isEmpty(){
 		if(null == point || null == point.x() || null == point.y()){
 			return true; 
 		} 

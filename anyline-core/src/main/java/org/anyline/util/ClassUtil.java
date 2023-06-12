@@ -493,7 +493,7 @@ public class ClassUtil {
 	 * @param annotation  annotation
 	 * @return List
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public static List<Field> getFieldsByAnnotation(Class clazz, Class annotation){
 		List<Field> list = new ArrayList<Field>();
 		try{
@@ -549,7 +549,7 @@ public class ClassUtil {
 	 * @param annotations  annotation 支持模糊匹配,不区分大小写 如 Table*
 	 * @return List
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations){
 		List<Field> list = new ArrayList<Field>();
 		try{
@@ -578,7 +578,7 @@ public class ClassUtil {
 	 * @return List
 	 */
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	public static List<Class> getClasses(String pack, Class ... bases){
 		List<Class> list = new ArrayList<Class>();
 		File dir = new File(ClassUtil.class.getResource("/").getFile(),pack.replace(".", File.separator));

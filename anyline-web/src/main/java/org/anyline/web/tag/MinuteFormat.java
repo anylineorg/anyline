@@ -33,12 +33,12 @@ import org.slf4j.LoggerFactory;
  * @author zh
  *
  */ 
-public class MinuteFormat extends BaseBodyTag implements Cloneable{ 
+public class MinuteFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			String result = ""; 
-			if(null == value){ 
+			if(null == value){
 				value = body; 
 			}
 			if(BasicUtil.isNotEmpty(value)){
@@ -47,9 +47,9 @@ public class MinuteFormat extends BaseBodyTag implements Cloneable{
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(result); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
@@ -57,7 +57,7 @@ public class MinuteFormat extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		this.value = null;
 		this.body = null;
@@ -65,7 +65,7 @@ public class MinuteFormat extends BaseBodyTag implements Cloneable{
 
 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
 }

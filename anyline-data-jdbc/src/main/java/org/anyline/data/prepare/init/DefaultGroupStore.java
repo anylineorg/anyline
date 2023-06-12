@@ -34,15 +34,15 @@ public class DefaultGroupStore implements GroupStore {
 	public DefaultGroupStore() {
 		groups = new ArrayList<Group>(); 
 	} 
-	public List<Group> getGroups(){ 
+	public List<Group> getGroups(){
 		return groups; 
 	} 
-	public void group(Group group) { 
-		if(null == group){ 
+	public void group(Group group) {
+		if(null == group){
 			return; 
 		} 
 		Group tmp = getGroup(group.getColumn()); 
-		if(null == tmp){ 
+		if(null == tmp){
 			groups.add(group); 
 		} 
 	} 
@@ -53,26 +53,26 @@ public class DefaultGroupStore implements GroupStore {
 	 * group("CD ,NM "); 
 	 * @param str  str
 	 */ 
-	public void group(String str) { 
-		if (BasicUtil.isEmpty(str)) { 
+	public void group(String str) {
+		if (BasicUtil.isEmpty(str)) {
 			return; 
 		} 
-		if (str.toUpperCase().contains("GROUP BY")) { 
+		if (str.toUpperCase().contains("GROUP BY")) {
 			str = str.toUpperCase().replace("GROUP BY", "").trim(); 
 		} 
 		String[] tmps = str.split(","); // 多列排序 
-		for (String tmp : tmps) { 
+		for (String tmp : tmps) {
 			group(new DefaultGroup(tmp));
 		} 
 	} 
  
-	public Group getGroup(String group){ 
-		if(null == group){ 
+	public Group getGroup(String group){
+		if(null == group){
 			return null; 
 		} 
-		if(null != groups){ 
-			for(Group o:groups){ 
-				if(null != o && group.equalsIgnoreCase(o.getColumn())){ 
+		if(null != groups){
+			for(Group o:groups){
+				if(null != o && group.equalsIgnoreCase(o.getColumn())){
 					return o; 
 				} 
 			} 
@@ -80,21 +80,21 @@ public class DefaultGroupStore implements GroupStore {
 		return null; 
 	} 
  
-	public void clear(){ 
+	public void clear(){
 		groups.clear(); 
 	} 
 	@Override 
 	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
-		if(null != groups && groups.size() > 0){ 
+		if(null != groups && groups.size() > 0){
 			builder.append(" GROUP BY "); 
-			for(int i=0; i<groups.size(); i++){ 
+			for(int i=0; i<groups.size(); i++){
 				Group group = groups.get(i);
 				if(null == group){
 					continue;
 				}
 				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
-				if(i<groups.size()-1){ 
+				if(i<groups.size()-1){
 					builder.append(","); 
 				} 
 			} 

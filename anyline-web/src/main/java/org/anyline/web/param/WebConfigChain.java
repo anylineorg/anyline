@@ -104,11 +104,11 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 	 * 赋值 
 	 * @param request  request
 	 */ 
-	public void setValue(HttpServletRequest request){ 
-		for(Config config:configs){ 
+	public void setValue(HttpServletRequest request){
+		for(Config config:configs){
 			config.setValue(request); 
 		} 
-//		if(items.size()>0){ 
+//		if(items.size()>0){
 //			setCompare(items.get(0).getCompareType()); 
 //		} 
 	}

@@ -28,7 +28,7 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 		this.text = text; 
 		chain = new DefaultAutoConditionChain();
 	} 
-	public String getText(){ 
+	public String getText(){
 		return this.text; 
 	} 
 	 

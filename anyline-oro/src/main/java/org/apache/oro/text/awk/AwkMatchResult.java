@@ -122,7 +122,7 @@ final class AwkMatchResult implements MatchResult {
   /**
    * @return The length of the match.
    */
-  public int length(){ return __length; }
+  public int length(){return __length; }
 
 
   /**
@@ -132,7 +132,7 @@ final class AwkMatchResult implements MatchResult {
    *         itself.  Because Awk doesn't save parenthesized groups, this
    *         always returns 1.
    */
-  public int groups(){ return 1; }
+  public int groups(){return 1; }
 
 
   /**
@@ -143,7 +143,7 @@ final class AwkMatchResult implements MatchResult {
    *         a group matching the null string, which will return a String
    *         of length 0.
    */
-  public String group(int group){ return (group == 0 ? __match : null); }
+  public String group(int group){return (group == 0 ? __match : null); }
 
 
   /**
@@ -152,7 +152,7 @@ final class AwkMatchResult implements MatchResult {
    *         pattern subgroup.  If a group was never matched or does
    *         not exist, returns -1.
    */
-  public int begin(int group){ return (group == 0 ? 0 : -1); }
+  public int begin(int group){return (group == 0 ? 0 : -1); }
 
   /**
    * @param group The pattern subgroup.
@@ -161,7 +161,7 @@ final class AwkMatchResult implements MatchResult {
    *         or does not exist, returns -1.  A group matching the null
    *         string will return its start offset.
    */
-  public int end(int group){ return (group == 0 ? __length : -1); }
+  public int end(int group){return (group == 0 ? __length : -1); }
 
 
   /**
@@ -197,7 +197,7 @@ final class AwkMatchResult implements MatchResult {
    *
    * @return A string containing the entire match.
    */
-  public String toString() { return group(0); }
+  public String toString() {return group(0); }
 
 }
 

@@ -102,7 +102,7 @@ public final class Perl5Pattern implements Pattern, Serializable, Cloneable {
    * A dummy constructor with default visibility to override the default
    * constructor that would be created otherwise by the compiler.
    */
-  Perl5Pattern(){ }
+  Perl5Pattern(){}
 
   /*
   private void readObject(ObjectInputStream stream)
@@ -120,7 +120,7 @@ public final class Perl5Pattern implements Pattern, Serializable, Cloneable {
    * @return The original string representation of the regular expression
    *         pattern.
    */
-  public String getPattern() { return _expression; }
+  public String getPattern() {return _expression; }
 
 
   /**
@@ -129,7 +129,7 @@ public final class Perl5Pattern implements Pattern, Serializable, Cloneable {
    * <p>
    * @return The compilation options used to compile the pattern.
    */
-  public int getOptions()    { return _options; }
+  public int getOptions()    {return _options; }
 
   /*
   // For testing

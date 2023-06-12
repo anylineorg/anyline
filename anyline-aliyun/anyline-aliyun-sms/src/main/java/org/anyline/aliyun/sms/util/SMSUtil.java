@@ -21,7 +21,7 @@ import java.util.*;
  * @author zh 
  *  
  */ 
-public class SMSUtil { 
+public class SMSUtil {
 	private static final Logger log = LoggerFactory.getLogger(SMSUtil.class); 
 	private SMSConfig config = null;
 	private Client client;
@@ -45,11 +45,11 @@ public class SMSUtil {
 	public static Hashtable<String, SMSUtil> getInstances(){
 		return instances;
 	}
-	public static SMSUtil getInstance(){ 
+	public static SMSUtil getInstance(){
 		return getInstance(SMSConfig.DEFAULT_INSTANCE_KEY);
 	} 
-	public static SMSUtil getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static SMSUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = SMSConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		SMSUtil util = instances.get(key); 
@@ -89,8 +89,8 @@ public class SMSUtil {
 		if(null != listener && !listener.before(config.INSTANCE_KEY, sign, template, extend, out, mobile, params)){
 			return result;
 		}
-		try { 
-			if(BasicUtil.isEmpty(sign)){ 
+		try {
+			if(BasicUtil.isEmpty(sign)){
 				sign = config.SIGN; 
 			}
 			SendSmsRequest request = new SendSmsRequest()
@@ -155,10 +155,10 @@ public class SMSUtil {
          */
 	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
 		String mobile = ""; 
-		for(String item:mobiles){ 
-			if("".equals(mobile)){ 
+		for(String item:mobiles){
+			if("".equals(mobile)){
 				mobile = item; 
-			}else{ 
+			}else{
 				mobile += "," + item; 
 			} 
 		} 
@@ -273,7 +273,7 @@ public class SMSUtil {
 	}
 
 
-	public SMSConfig getConfig() { 
+	public SMSConfig getConfig() {
 		return config; 
 	}
 

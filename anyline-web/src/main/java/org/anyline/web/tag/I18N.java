@@ -39,7 +39,7 @@ import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
  
  
-public class I18N extends BaseBodyTag{ 
+public class I18N extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
 	private Object data; 
@@ -49,13 +49,13 @@ public class I18N extends BaseBodyTag{
 	private String textKey = "NM"; 
 	private HttpServletRequest request;  
 	 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
 		request = (HttpServletRequest)pageContext.getRequest(); 
 		checkLang(); 
         return EVAL_BODY_BUFFERED; 
     } 
-	 @SuppressWarnings({ "rawtypes", "unchecked" })
-	public int doEndTag() throws JspException { 
+	 @SuppressWarnings({"rawtypes", "unchecked" })
+	public int doEndTag() throws JspException {
 		 String html = "";
 		 textKey = textKey.replace("{","${");
 		 valueKey = valueKey.replace("{","${");
@@ -103,22 +103,22 @@ public class I18N extends BaseBodyTag{
 					}
 				}
 			} 
-		 }else{ 
+		 }else{
 			 html = I18NUtil.get(lang, key); 
 		 } 
 		// 输出
 		JspWriter out = pageContext.getOut(); 
-		try{ 
+		try{
 			out.print(html); 
-		}catch(Exception e){ 
+		}catch(Exception e){
  
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){ 
+    public void release(){
 		super.release();
 		data = null;
 		textKey = null;
@@ -131,49 +131,49 @@ public class I18N extends BaseBodyTag{
 	/** 
 	 * 确认语言环境 
 	 */ 
-	private void checkLang(){ 
-		if(BasicUtil.isEmpty(lang)){ 
+	private void checkLang(){
+		if(BasicUtil.isEmpty(lang)){
 			lang = (String)request.getSession().getAttribute(ConfigTable.getString("I18N_MESSAGE_SESSION_KEY")); 
 		} 
-		if(BasicUtil.isEmpty(lang)){ 
+		if(BasicUtil.isEmpty(lang)){
 			// 配置文件默认
 			lang = ConfigTable.getString("I18N_MESSAGE_DEFAULT_LANG"); 
 		} 
-		if(BasicUtil.isEmpty(lang)){ 
+		if(BasicUtil.isEmpty(lang)){
 			// struts
 			lang = (String)request.getSession().getAttribute("WW_TRANS_I18N_LOCALE"); 
 		} 
-		if(BasicUtil.isEmpty(lang)){ 
+		if(BasicUtil.isEmpty(lang)){
 			// Local
 			lang = Locale.getDefault().getCountry().toLowerCase(); 
 		} 
-		if(BasicUtil.isEmpty(lang)){ 
+		if(BasicUtil.isEmpty(lang)){
 			lang = I18NUtil.defaultLang; 
 		} 
 	} 
  
-	public String getLang() { 
+	public String getLang() {
 		return lang; 
 	} 
-	public void setLang(String lang) { 
+	public void setLang(String lang) {
 		this.lang = lang; 
 	} 
-	public String getKey() { 
+	public String getKey() {
 		return key; 
 	} 
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		this.key = key; 
 	} 
-	public HttpServletRequest getRequest() { 
+	public HttpServletRequest getRequest() {
 		return request; 
 	} 
-	public void setRequest(HttpServletRequest request) { 
+	public void setRequest(HttpServletRequest request) {
 		this.request = request; 
 	} 
-	public Object getData() { 
+	public Object getData() {
 		return data; 
 	} 
-	public void setData(Object data) { 
+	public void setData(Object data) {
 		this.data = data; 
 	}
 	public String getValueKey() {

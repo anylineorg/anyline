@@ -47,23 +47,23 @@ public class WechatUtil {
 	 * @param params  params
 	 * @return String
 	 */ 
-	public static String sign(String secret, Map<String, Object> params) { 
+	public static String sign(String secret, Map<String, Object> params) {
 		String sign = ""; 
 		sign = BeanUtil.map2string(params);
 		sign += "&key=" + secret; 
 		sign = MD5Util.crypto(sign).toUpperCase(); 
 		return sign; 
 	} 
-	public static boolean validateSign(String secret, Map<String,Object> map){ 
+	public static boolean validateSign(String secret, Map<String,Object> map){
 		String sign = (String)map.get("sign"); 
-		if(BasicUtil.isEmpty(sign)){ 
+		if(BasicUtil.isEmpty(sign)){
 			return false; 
 		} 
 		map.remove("sign"); 
 		String chkSign = sign(secret, map); 
 		return chkSign.equals(sign); 
 	} 
-	public static boolean validateSign(String secret, String xml){ 
+	public static boolean validateSign(String secret, String xml){
 		return validateSign(secret,BeanUtil.xml2map(xml)); 
 	} 
 	/** 
@@ -74,7 +74,7 @@ public class WechatUtil {
 	 * @param keyStorePassword  keyStorePassword
 	 * @return String
 	 */ 
-	public static String getPublicKey(String mch, String apiSecret, File keyStoreFile, String keyStorePassword) { 
+	public static String getPublicKey(String mch, String apiSecret, File keyStoreFile, String keyStorePassword) {
 		Map<String, Object> parameters = new HashMap<>(); 
 		parameters.put("mch_id", mch); 
 		parameters.put("nonce_str", BasicUtil.getRandomLowerString(20)); 

@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.Locale;
  
  
-public class DateFormat extends BaseBodyTag implements Cloneable{ 
+public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String format;
 	private String lang;
@@ -40,27 +40,27 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	private Object def;		// 默认值 value,body,nvl都未指定时取def
 
  
-	public String getFormat() { 
+	public String getFormat() {
 		return format; 
 	} 
  
  
-	public void setFormat(String format) { 
+	public void setFormat(String format) {
 		this.format = format; 
 	} 
  
  
-	public int doEndTag() throws JspException { 
+	public int doEndTag() throws JspException {
 		try{
 			if(BasicUtil.isNotEmpty(var)){
 				pageContext.getRequest().removeAttribute(var);
 			}
 			Date date = null;
 			String result = ""; 
-			if(null == format){ 
+			if(null == format){
 				format = "yyyy-MM-dd"; 
 			} 
-			if(null == value){ 
+			if(null == value){
 				value = body; 
 			}
 			Locale local = Locale.CHINA;
@@ -105,16 +105,16 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 					out.print(result);
 				}
 			}
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
 	} 
 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		this.value = null;
 		this.body = null;
@@ -169,7 +169,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
 }

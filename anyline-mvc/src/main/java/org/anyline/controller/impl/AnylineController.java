@@ -49,7 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class AnylineController extends AbstractBasicController { 
+public class AnylineController extends AbstractBasicController {
 
 	protected HttpServletRequest _request;
 	protected HttpServletResponse _response;
@@ -66,34 +66,34 @@ public class AnylineController extends AbstractBasicController {
 		return _request;
 	} 
 	@Autowired 
-	protected void setRequest(HttpServletRequest request){ 
+	protected void setRequest(HttpServletRequest request){
 		this._request = request;
-		try{ 
+		try{
 			this._request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
-		}catch(Exception e){ 
+		}catch(Exception e){
 			 
 		} 
 	} 
-	protected HttpServletResponse getResponse() { 
+	protected HttpServletResponse getResponse() {
 		if(null == _response){
 			_response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		} 
 		return _response;
 	} 
 	@Autowired 
-	public void setResponse(HttpServletResponse response){ 
+	public void setResponse(HttpServletResponse response){
 		this._response = response;
-		try{ 
+		try{
 			this._response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
-		}catch(Exception e){ 
+		}catch(Exception e){
 			 
 		} 
 	} 
-	protected HttpSession getSession() { 
+	protected HttpSession getSession() {
 		return getRequest().getSession(); 
 	} 
  
-	protected ServletContext getServlet() { 
+	protected ServletContext getServlet() {
 		return getSession().getServletContext(); 
 	}
 
@@ -528,64 +528,64 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 
-	protected boolean checkRequired(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
+	protected boolean checkRequired(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return checkRequired(getRequest(), keyEncrypt, valueEncrypt, params); 
 	} 
  
-	protected boolean checkRequired(String... params) { 
+	protected boolean checkRequired(String... params) {
 		return checkRequired(getRequest(), false, false, params); 
 	} 
  
-	protected boolean isAjaxRequest() { 
+	protected boolean isAjaxRequest() {
 		return isAjaxRequest(getRequest()); 
 	} 
  
  
-	protected void setRequestMessage(String key, Object value, String type) { 
+	protected void setRequestMessage(String key, Object value, String type) {
 		setRequestMessage(getRequest(), key, value, type); 
 	} 
  
-	protected void setRequestMessage(String key, Object value) { 
+	protected void setRequestMessage(String key, Object value) {
 		setRequestMessage(getRequest(), key, value, null); 
 	} 
  
-	protected void setRequestMessage(Object value) { 
+	protected void setRequestMessage(Object value) {
 		setRequestMessage(getRequest(), BasicUtil.getRandomLowerString(10), value, null); 
 	} 
  
-	protected void setMessage(String key, Object value, String type) { 
+	protected void setMessage(String key, Object value, String type) {
 		setRequestMessage(getRequest(), key, value, type); 
 	} 
  
-	protected void setMessage(String key, Object value) { 
+	protected void setMessage(String key, Object value) {
 		setMessage(getRequest(), key, value, null); 
 	} 
  
-	protected void setMessage(Object value) { 
+	protected void setMessage(Object value) {
 		setMessage(getRequest(), BasicUtil.getRandomLowerString(10), value); 
 	} 
  
-	protected void setSessionMessage(String key, Object value, String type) { 
+	protected void setSessionMessage(String key, Object value, String type) {
 		setSessionMessage(getRequest().getSession(), key, value, type); 
 	} 
  
-	protected void setSessionMessage(String key, Object value) { 
+	protected void setSessionMessage(String key, Object value) {
 		setSessionMessage(getRequest().getSession(), key, value, null); 
 	} 
  
-	protected void setSessionMessage(Object value) { 
+	protected void setSessionMessage(Object value) {
 		setSessionMessage(getRequest().getSession(), BasicUtil.getRandomLowerString(10), value, null); 
 	} 
  
-	protected boolean hasReffer() { 
+	protected boolean hasReffer() {
 		return hasReffer(getRequest()); 
 	} 
  
-	protected boolean isSpider() { 
+	protected boolean isSpider() {
 		return !hasReffer(getRequest()); 
 	} 
  
-	protected boolean isWap() { 
+	protected boolean isWap() {
 		return WebUtil.isWap(getRequest()); 
 	} 
  
@@ -606,8 +606,8 @@ public class AnylineController extends AbstractBasicController {
 	public String result(Object code, boolean result, Object data, String message) {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		message = BasicUtil.nvl(message, "");
-		if (null != messages) { 
-			for (int i = 0; i < messages.size(); i++) { 
+		if (null != messages) {
+			for (int i = 0; i < messages.size(); i++) {
 				DataRow msg = messages.getRow(i);
 				String tmp = msg.getStringNvl(Constant.MESSAGE_VALUE,"");
 				if(BasicUtil.isNotEmpty(tmp)) {
@@ -629,8 +629,8 @@ public class AnylineController extends AbstractBasicController {
 	 * @param encrypt	是否加密  encrypt	是否加密
 	 * @return String
 	 */ 
-	protected String fail(String msg, boolean encrypt) { 
-		if(encrypt){ 
+	protected String fail(String msg, boolean encrypt) {
+		if(encrypt){
 			msg = DESUtil.encryptParamValue(msg);
 		}
 		Object code = ConfigTable.get("HTTP_FAIL_CODE", new Integer(-1));
@@ -663,7 +663,7 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	protected String success(Object data, boolean encrypt) {
 		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
-		if(encrypt && null != data){ 
+		if(encrypt && null != data){
 			return result(code,true,DESUtil.encryptParamValue(data.toString()),null);
 		} 
 		return result(code,true, data, null);
@@ -690,22 +690,22 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
 		 
-		if(null == request){ 
+		if(null == request){
 			request = getRequest(); 
 		} 
-		if(null == response){ 
+		if(null == response){
 			response = getResponse(); 
 		} 
-		if(null == data){ 
+		if(null == data){
 			data = (DataSet)request.getAttribute("_anyline_navi_data"); 
-		}else{ 
+		}else{
 			request.setAttribute("_anyline_navi_data", data); 
 		} 
 		PageNavi navi = null; 
-		if(null != data){ 
+		if(null != data){
 			navi = data.getNavi(); 
 		} 
-		if(page != null && !page.startsWith("/")){ 
+		if(page != null && !page.startsWith("/")){
 			page = "/WEB-INF/"+page; 
 		}
 
@@ -754,10 +754,10 @@ public class AnylineController extends AbstractBasicController {
 	public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
 		return navi(adapt,request, response, data, page ,null);
 	}
-	public String navi(HttpServletResponse response, String page){ 
+	public String navi(HttpServletResponse response, String page){
 		return navi(null, response, null, page, null); 
 	} 
-	public String navi(HttpServletResponse response, DataSet data, String page){ 
+	public String navi(HttpServletResponse response, DataSet data, String page){
 		return navi(getRequest(), response, data, page, null); 
 	} 
 	/** 
@@ -767,25 +767,25 @@ public class AnylineController extends AbstractBasicController {
 	 * @throws IllegalStateException IllegalStateException
 	 * @throws IOException  IOException
 	 */ 
-	public List<File> upload(File dir) throws IllegalStateException, IOException { 
+	public List<File> upload(File dir) throws IllegalStateException, IOException {
 		List<File> result = new ArrayList<File>(); 
 		HttpServletRequest request = getRequest(); 
 		// 创建一个通用的多部分解析器
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext()); 
 		// 判断 request 是否有文件上传,即多部分请求
-		if (multipartResolver.isMultipart(request)) { 
+		if (multipartResolver.isMultipart(request)) {
 			// 转换成多部分request
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
 			// 取得request中的所有文件名
 			Iterator<String> iter = multiRequest.getFileNames(); 
-			while (iter.hasNext()) { 
+			while (iter.hasNext()) {
 				// 取得上传文件
 				MultipartFile file = multiRequest.getFile(iter.next()); 
-				if (file != null) { 
+				if (file != null) {
 					// 取得当前上传文件的文件名称
 					String fileName = file.getOriginalFilename(); 
 					// 如果名称不为"",说明该文件存在,否则说明该文件不存在
-					if (BasicUtil.isNotEmpty(fileName)) { 
+					if (BasicUtil.isNotEmpty(fileName)) {
 						// 重命名上传后的文件名
 						String sufName = FileUtil.getSuffixFileName(fileName); 
 						// 定义上传路径

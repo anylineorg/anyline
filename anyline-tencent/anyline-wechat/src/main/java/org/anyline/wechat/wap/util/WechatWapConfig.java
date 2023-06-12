@@ -31,7 +31,7 @@ public class WechatWapConfig extends WechatConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public static String CONFIG_NAME = "anyline-wechat-wap.xml";
  
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
@@ -45,7 +45,7 @@ public class WechatWapConfig extends WechatConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	} 
@@ -54,7 +54,7 @@ public class WechatWapConfig extends WechatConfig{
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatWapConfig getInstance(String key){
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WechatWapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
@@ -67,8 +67,8 @@ public class WechatWapConfig extends WechatConfig{
 	public static WechatWapConfig parse(String key, DataRow row){
 		return parse(WechatWapConfig.class, key, row, instances, compatibles);
 	} 
-	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
-		for(DataRow row:set){ 
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
 			String key = row.getString(column); 
 			parse(key, row); 
 		} 
@@ -77,11 +77,11 @@ public class WechatWapConfig extends WechatConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, WechatWapConfig.class, CONFIG_NAME,compatibles);
 		WechatWapConfig.lastLoadTime = System.currentTimeMillis();
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 	public static WechatWapConfig register(String key, DataRow row){
 		return parse(WechatWapConfig.class, key, row, instances,compatibles);

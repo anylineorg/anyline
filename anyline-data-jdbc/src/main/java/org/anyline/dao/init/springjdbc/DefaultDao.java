@@ -23,7 +23,6 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
-import org.anyline.data.entity.*;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.jdbc.ds.RuntimeHolder;
@@ -43,7 +42,7 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
-import org.anyline.entity.data.Parameter;
+import org.anyline.entity.data.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
@@ -62,9 +61,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-import org.anyline.entity.data.Procedure;
-import org.anyline.entity.data.Function;
-import org.anyline.entity.data.Trigger;
+
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -75,7 +72,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
 
 
-	protected static DMListener listener;
+	@Autowired(required = false)
+	protected static DMListener dmListener;
+	@Autowired(required = false)
+	protected static DDListener ddListener;
 
 	protected static boolean isBatchInsertRun = false;
 
@@ -106,12 +106,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return false;
 	}
 	public DMListener getListener() {
-		return listener;
+		return dmListener;
 	}
 
 	@Autowired(required=false)
 	public void setListener(DMListener listener) {
-		DefaultDao.listener = listener;
+		DefaultDao.dmListener = listener;
 	}
 
 	public JDBCRuntime getRuntime() {
@@ -153,8 +153,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try {
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			if (null != dmListener) {
+				exe = dmListener.beforeBuildQuery(prepare, configs, conditions);
 			}
 			if(!exe){
 				return new ArrayList<>();
@@ -181,16 +181,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				log.warn(tmp);
 			}
 			if (run.isValid()) {
-				if (null != listener) {
-					listener.beforeQuery(run, -1);
+				if (null != dmListener) {
+					dmListener.beforeQuery(run, -1);
 				}
 				Long fr = System.currentTimeMillis();
 				maps = maps(runtime, run.getFinalQuery(), run.getValues());
 				if (null != adapter) {
 					maps = adapter.process(maps);
 				}
-				if (null != listener) {
-					listener.afterQuery(run, maps, System.currentTimeMillis() - fr);
+				if (null != dmListener) {
+					dmListener.afterQuery(run, maps, System.currentTimeMillis() - fr);
 				}
 				/*if(null != queryInterceptor){
 					queryInterceptor.after(run, maps, System.currentTimeMillis() - fr);
@@ -227,8 +227,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSet set = null;
 		try {
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			if (null != dmListener) {
+				exe = dmListener.beforeBuildQuery(prepare, configs, conditions);
 			}
 			if(!exe){
 				return new DataSet();
@@ -259,8 +259,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			int total = 0;
 			if (run.isValid()) {
 				if (null != navi) {
-					if (null != listener) {
-						listener.beforeTotal(run);
+					if (null != dmListener) {
+						dmListener.beforeTotal(run);
 					}
 					Long fr = System.currentTimeMillis();
 					if (navi.getLastRow() == 0) {
@@ -275,8 +275,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							total = navi.getTotalRow();
 						}
 					}
-					if (null != listener) {
-						listener.afterTotal(run, total, System.currentTimeMillis() - fr);
+					if (null != dmListener) {
+						dmListener.afterTotal(run, total, System.currentTimeMillis() - fr);
 					}
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
@@ -286,12 +286,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				Long fr = System.currentTimeMillis();
 				if(null == navi || total > 0){
-					if(null != listener){
-						listener.beforeQuery(run, total);
+					if(null != dmListener){
+						dmListener.beforeQuery(run, total);
 					}
 					set = select(runtime, prepare.getTable(), run.getFinalQuery(), run.getValues());
-					if(null != listener){
-						listener.afterQuery(run, set, System.currentTimeMillis() - fr);
+					if(null != dmListener){
+						dmListener.afterQuery(run, set, System.currentTimeMillis() - fr);
 					}
 				}else{
 					set = new DataSet();
@@ -342,8 +342,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try {
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			if (null != dmListener) {
+				exe = dmListener.beforeBuildQuery(prepare, configs, conditions);
 			}
 			if(!exe){
 				return new EntitySet();
@@ -379,8 +379,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			int total = 0;
 			if (run.isValid()) {
 				if (null != navi) {
-					if (null != listener) {
-						listener.beforeTotal(run);
+					if (null != dmListener) {
+						dmListener.beforeTotal(run);
 					}
 					Long fr = System.currentTimeMillis();
 					if (navi.getLastRow() == 0) {
@@ -395,8 +395,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							total = navi.getTotalRow();
 						}
 					}
-					if (null != listener) {
-						listener.afterTotal(run, total, System.currentTimeMillis() - fr);
+					if (null != dmListener) {
+						dmListener.afterTotal(run, total, System.currentTimeMillis() - fr);
 					}
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
@@ -407,13 +407,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				Long fr = System.currentTimeMillis();
 				if((null == navi || total > 0)) {
-					if (null != listener) {
-						listener.beforeQuery(run, total);
+					if (null != dmListener) {
+						dmListener.beforeQuery(run, total);
 					}
 					fr = System.currentTimeMillis();
 					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
-					if (null != listener) {
-						listener.afterQuery(run, list, System.currentTimeMillis() - fr);
+					if (null != dmListener) {
+						dmListener.afterQuery(run, list, System.currentTimeMillis() - fr);
 
 					}
 				}else{
@@ -472,8 +472,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		int count = -1;
 		try{
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			if (null != dmListener) {
+				exe = dmListener.beforeBuildQuery(prepare, configs, conditions);
 			}
 			if(!exe){
 				return -1;
@@ -488,14 +488,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}*/
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
 			Long fr = System.currentTimeMillis();
-			if (null != listener) {
-				listener.beforeCount(run);
+			if (null != dmListener) {
+				dmListener.beforeCount(run);
 			}
 			fr = System.currentTimeMillis();
 			count = getTotal(run.getTotalQuery(), run.getValues());
 
-			if(null != listener){
-				listener.afterCount(run, count, System.currentTimeMillis() - fr);
+			if(null != dmListener){
+				dmListener.afterCount(run, count, System.currentTimeMillis() - fr);
 			}/*
 			if(null != queryInterceptor){
 				queryInterceptor.after(run, count, System.currentTimeMillis() - fr);
@@ -520,8 +520,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try {
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeBuildQuery(prepare, configs, conditions);
+			if (null != dmListener) {
+				exe = dmListener.beforeBuildQuery(prepare, configs, conditions);
 			}
 			if(!exe){
 				return false;
@@ -541,8 +541,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			/*执行SQL*/
 			try {
-				if(null != listener){
-					listener.beforeExists(run);
+				if(null != dmListener){
+					dmListener.beforeExists(run);
 				}
 				Map<String, Object> map = null;
 				if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)){
@@ -560,8 +560,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 				}
 				Long millis = System.currentTimeMillis() - fr;
-				if(null != listener){
-					listener.afterExists(run, result, millis);
+				if(null != dmListener){
+					dmListener.afterExists(run, result, millis);
 				}
 				boolean slow = false;
 				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -569,8 +569,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
-						if(null != listener){
-							listener.slow("exists", run, txt, values, null, millis);
+						if(null != dmListener){
+							dmListener.slow("exists", run, txt, values, null, millis);
 						}
 					}
 				}
@@ -627,8 +627,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected int update(boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeBuildUpdate(dest, data, configs, false, columns);
+		if(null != dmListener){
+			exe = dmListener.beforeBuildUpdate(dest, data, configs, false, columns);
 		}
 		if(!exe){
 			return -1;
@@ -667,16 +667,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		/*执行SQL*/
 		try{
 			boolean listenerResult = true;
-			if(null != listener){
-				listenerResult = listener.beforeUpdate(run, dest, data, columns);
+			if(null != dmListener){
+				listenerResult = dmListener.beforeUpdate(run, dest, data, columns);
 			}
 			if(listenerResult) {
 				result = runtime.getTemplate().update(sql, values.toArray());
 				checkMany2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 				checkOne2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 				Long millis = System.currentTimeMillis() - fr;
-				if (null != listener) {
-					listener.afterUpdate(run, result, dest, data, columns, millis);
+				if (null != dmListener) {
+					dmListener.afterUpdate(run, result, dest, data, columns, millis);
 				}
 				boolean slow = false;
 				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -684,8 +684,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
-						if(null != listener){
-							listener.slow("update", run, sql, values, null, millis);
+						if(null != dmListener){
+							dmListener.slow("update", run, sql, values, null, millis);
 						}
 					}
 				}
@@ -872,8 +872,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected int insert(boolean recover,String dest, Object data, boolean checkPrimary, List<String> columns) {
 		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeBuildInsert(dest, data, checkPrimary, columns);
+		if(null != dmListener){
+			exe = dmListener.beforeBuildInsert(dest, data, checkPrimary, columns);
 		}
 		if(!exe){
 			return -1;
@@ -885,7 +885,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			DataSet set = (DataSet)data;
 			Map<String,Object> tags = set.getTags();
 			if(null != tags && tags.size()>0){
-				LinkedHashMap<String,PartitionTable> ptables = ptables(false, new MasterTable(dest), tags);
+				LinkedHashMap<String, PartitionTable> ptables = ptables(false, new MasterTable(dest), tags);
 				if(ptables.size() != 1){
 					String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(ptables.keySet());
 					if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
@@ -914,8 +914,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		try{
 			boolean listenerResult = true;
-			if(null != listener){
-				listenerResult = listener.beforeInsert(run, dest, data, checkPrimary, columns);
+			if(null != dmListener){
+				listenerResult = dmListener.beforeInsert(run, dest, data, checkPrimary, columns);
 			}
 			if(listenerResult) {
 				cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
@@ -923,8 +923,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				checkMany2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 				checkOne2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 				Long millis = System.currentTimeMillis() - fr;
-				if (null != listener) {
-					listener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
+				if (null != dmListener) {
+					dmListener.afterInsert(run, cnt, dest, data, checkPrimary, columns, millis);
 				}
 
 				boolean slow = false;
@@ -933,8 +933,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
-						if(null != listener){
-							listener.slow("insert", run, sql, values, null, millis);
+						if(null != dmListener){
+							dmListener.slow("insert", run, sql, values, null, millis);
 						}
 					}
 				}
@@ -990,7 +990,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}else{
 			Class clazz = obj.getClass();
-			org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+			Column pc = EntityAdapterProxy.primaryKey(clazz);
 			String pk = null;
 			if(null != pc){
 				pk = pc.getName();
@@ -1017,7 +1017,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					} else {
 						//通过子表完整查询 List<Department> departments
-						org.anyline.entity.data.Column joinpc = EntityAdapterProxy.primaryKey(clazz);
+						Column joinpc = EntityAdapterProxy.primaryKey(clazz);
 						String joinpk = null;
 						if(null != joinpc){
 							joinpk = joinpc.getName();
@@ -1075,7 +1075,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}else{
 			Class clazz = obj.getClass();
-			org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+			Column pc = EntityAdapterProxy.primaryKey(clazz);
 			String pk = null;
 			if(null != pc){
 				pk = pc.getName();
@@ -1203,8 +1203,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(mid-fr > SLOW_SQL_MILLIS){
 					slow = true;
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid-fr, sql, paramLogFormat(values));
-					if(null != listener){
-						listener.slow("select",null, sql, values, null, mid);
+					if(null != dmListener){
+						dmListener.slow("select",null, sql, values, null, mid);
 					}
 				}
 			}
@@ -1243,7 +1243,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param rs jdbc返回结果
 	 * @return DataRow
 	 */
-	protected static DataRow row(boolean system, JDBCRuntime runtime, LinkedHashMap<String, org.anyline.entity.data.Column> metadatas, ResultSet rs) {
+	protected static DataRow row(boolean system, JDBCRuntime runtime, LinkedHashMap<String, Column> metadatas, ResultSet rs) {
 		DataRow row = new DataRow();
 		try {
 			JDBCAdapter adapter = runtime.getAdapter();
@@ -1255,7 +1255,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
 						continue;
 					}
-					org.anyline.entity.data.Column column = metadatas.get(name) ;
+					Column column = metadatas.get(name) ;
 					column = adapter.column((Column) column, rsmd, i);
 					metadatas.put(name.toUpperCase(), column);
 				}
@@ -1265,7 +1265,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
 					continue;
 				}
-				org.anyline.entity.data.Column column = metadatas.get(name.toUpperCase());
+				Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
 				Object value = adapter.read(column, rs.getObject(name), null);
 				row.put(false, name, value);
@@ -1321,7 +1321,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			final long[] mid = {System.currentTimeMillis()};
 			final boolean[] process = {false};
-			final LinkedHashMap<String, org.anyline.entity.data.Column> metadatas = new LinkedHashMap<>();
+			final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
 			metadatas.putAll(columns);
 			set.setMetadatas(metadatas);
 			if(null != values && values.size()>0){
@@ -1358,8 +1358,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				slow = true;
 				if(mid[0] - fr > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, paramLogFormat(values));
-					if(null != listener){
-						listener.slow("select", null, sql, values, null, mid[0] - fr);
+					if(null != dmListener){
+						dmListener.slow("select", null, sql, values, null, mid[0] - fr);
 					}
 				}
 			}
@@ -1426,7 +1426,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		dependency --;
 		Class clazz = set.get(0).getClass();
-		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
 		if(null != pc){
 			pk = pc.getName();
@@ -1508,7 +1508,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		dependency --;
 		Class clazz = set.get(0).getClass();
-		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
 		if(null != pc){
 			pk = pc.getName();
@@ -1590,8 +1590,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 
 			boolean listenerResult = true;
-			if(null != listener){
-				listenerResult = listener.beforeExecute(run);
+			if(null != dmListener){
+				listenerResult = dmListener.beforeExecute(run);
 			}
 			if(listenerResult) {
 				if (null != values && values.size() > 0) {
@@ -1606,13 +1606,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(millis > SLOW_SQL_MILLIS){
 						slow = true;
 						log.warn("{}[SLOW SQL][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
-						if(null != listener){
-							listener.slow("execute", run, txt, values, null, millis);
+						if(null != dmListener){
+							dmListener.slow("execute", run, txt, values, null, millis);
 						}
 					}
 				}
-				if (null != listener) {
-					listener.afterExecute(run, result, millis);
+				if (null != dmListener) {
+					dmListener.afterExecute(run, result, millis);
 				}
 				if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
@@ -1681,8 +1681,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try{
 			JDBCRuntime runtime = runtime();
 			boolean listenerResult = true;
-			if(null != listener){
-				listenerResult = listener.beforeExecute(procedure);
+			if(null != dmListener){
+				listenerResult = dmListener.beforeExecute(procedure);
 			}
 			if(listenerResult) {
 				list = (List<Object>) runtime.getTemplate().execute(sql, new CallableStatementCallback<Object>() {
@@ -1735,13 +1735,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(SLOW_SQL_MILLIS > 0){
 					if(millis > SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
-						if(null != listener){
-							listener.slow("procedure",null, sql, inputs, list, millis);
+						if(null != dmListener){
+							dmListener.slow("procedure",null, sql, inputs, list, millis);
 						}
 					}
 				}
-				if (null != listener) {
-					listener.afterExecute(procedure, result, millis);
+				if (null != dmListener) {
+					dmListener.afterExecute(procedure, result, millis);
 				}
 				if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[执行耗时:{}ms]\n[output param:{}]", random, millis, list);
@@ -1799,8 +1799,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					return new DataSet();
 				}
 			}*/
-			if(null != listener){
-				listener.beforeQuery(procedure);
+			if(null != dmListener){
+				dmListener.beforeQuery(procedure);
 			}
 			set = (DataSet) runtime.getTemplate().execute(new CallableStatementCreator(){
 				public CallableStatement createCallableStatement(Connection conn) throws SQLException {
@@ -1869,7 +1869,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							if(index > last){
 								break;
 							}
-							if(first ==0 && last==0){ // 只取一行
+							if(first ==0 && last==0){// 只取一行
 								break;
 							}
 						}
@@ -1897,13 +1897,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							, procedure.getName()
 							, paramLogFormat(inputs)
 							, paramLogFormat(outputs));
-					if(null != listener){
-						listener.slow("procedure", null, procedure.getName(), inputs, outputs, millis);
+					if(null != dmListener){
+						dmListener.slow("procedure", null, procedure.getName(), inputs, outputs, millis);
 					}
 				}
 			}
-			if(null != listener){
-				listener.afterQuery(procedure, set, millis);
+			if(null != dmListener){
+				dmListener.afterQuery(procedure, set, millis);
 			}
 /*			if(null != queryInterceptor){
 				queryInterceptor.after(procedure, set, millis);
@@ -1963,8 +1963,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeBuildDelete(table, key, list);
+		if(null != dmListener){
+			exe = dmListener.beforeBuildDelete(table, key, list);
 		}
 		if(!exe){
 			return -1;
@@ -1994,8 +1994,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}else{
 				boolean exe = true;
-				if(null != listener){
-					exe = listener.beforeBuildDelete(dest, obj, columns);
+				if(null != dmListener){
+					exe = dmListener.beforeBuildDelete(dest, obj, columns);
 				}
 				if(!exe){
 					return -1;
@@ -2023,7 +2023,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		dependency --;
 		Class clazz = entity.getClass();
-		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
 		if(null != pc){
 			pk = pc.getName();
@@ -2053,7 +2053,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		dependency --;
 		Class clazz = entity.getClass();
-		org.anyline.entity.data.Column pc = EntityAdapterProxy.primaryKey(clazz);
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
 		if(null != pc){
 			pk = pc.getName();
@@ -2079,8 +2079,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int delete(String table, ConfigStore configs, String... conditions) {
 		table = DataSourceHolder.parseDataSource(table, null);
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeBuildDelete(table, configs, conditions);
+		if(null != dmListener){
+			exe = dmListener.beforeBuildDelete(table, configs, conditions);
 		}
 		if(!exe){
 			return -1;
@@ -2111,8 +2111,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		try{
 			boolean listenerResult = true;
-			if(null != listener){
-				listenerResult = listener.beforeDelete(run);
+			if(null != dmListener){
+				listenerResult = dmListener.beforeDelete(run);
 			}
 			if(listenerResult) {
 				if(null == values) {
@@ -2127,13 +2127,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					if(millis > SLOW_SQL_MILLIS){
 						log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
-						if(null != listener){
-							listener.slow("delete", run, sql, values, null, millis);
+						if(null != dmListener){
+							dmListener.slow("delete", run, sql, values, null, millis);
 						}
 					}
 				}
-				if(null != listener){
-					listener.afterDelete(run, result, millis);
+				if(null != dmListener){
+					dmListener.afterDelete(run, result, millis);
 				}
 				if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
@@ -3498,7 +3498,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													trigger
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events){
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events){
 		LinkedHashMap<String,T> triggers = new LinkedHashMap<>();
 		if(null == table){
 			table = new Table();
@@ -3624,10 +3624,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		List<String> sqls = adapter.buildCreateRunSQL(table);
-		DDListener listener = table.getListener();
-		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeCreate(table);
+ 		boolean exe = true;
+		if(null != ddListener){
+			exe = ddListener.beforeCreate(table);
 		}
 		if(exe) {
 			for(String sql:sqls) {
@@ -3646,8 +3645,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if(null != listener){
-			listener.afterCreate(table, result);
+		if(null != ddListener){
+			ddListener.afterCreate(table, result);
 		}
 		return result;
 	}
@@ -3684,11 +3683,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					random = random();
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
-
-				DDListener listener = table.getListener();
+ 
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeRename(table);
+				if (null != ddListener) {
+					exe = ddListener.beforeRename(table);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -3698,8 +3696,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[rename table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 				}
-				if (null != listener) {
-					listener.afterRename(table, result);
+				if (null != ddListener) {
+					ddListener.afterRename(table, result);
 				}
 			}
 			table.setName(uname);
@@ -3715,7 +3713,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (!column.equals(ucolumn)) {
 					column.setTable(update);
 					column.setUpdate(ucolumn);
-					column.setService(table.getService());
 					/*
 					alter(column);
 					result = true;*/
@@ -3774,10 +3771,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						random = random();
 						log.info("{}[sql:\n{}\n]", random, sql);
 					}
-					DDListener listener = table.getListener();
+
 					boolean exe = true;
-					if (null != listener) {
-						exe = listener.beforeDrop(table);
+					if (null != ddListener) {
+						exe = ddListener.beforeDrop(table);
 					}
 					if (exe) {
 						result = false;
@@ -3789,8 +3786,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						log.info("{}[alter table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 					}
 
-					if (null != listener) {
-						listener.afterAlter(table, cols.values(), result);
+					if (null != ddListener) {
+						ddListener.afterAlter(table, cols.values(), result);
 					}
 				}
 			}
@@ -3836,10 +3833,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = table.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(table);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(table);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -3850,8 +3846,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(table, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(table, result);
 			}
 		}
 		return result;
@@ -3873,10 +3869,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), view);
 		List<String> sqls = adapter.buildCreateRunSQL(view);
-		DDListener listener = view.getListener();
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeCreate(view);
+		if(null != ddListener){
+			exe = ddListener.beforeCreate(view);
 		}
 		if(exe) {
 			for(String sql:sqls) {
@@ -3895,8 +3890,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if(null != listener){
-			listener.afterCreate(view, result);
+		if(null != ddListener){
+			ddListener.afterCreate(view, result);
 		}
 		return result;
 	}
@@ -3922,10 +3917,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 
-				DDListener listener = view.getListener();
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeRename(view);
+				if (null != ddListener) {
+					exe = ddListener.beforeRename(view);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -3935,8 +3929,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[rename view][view:{}][result:{}][执行耗时:{}ms]", random, view.getName(), result, System.currentTimeMillis() - fr);
 				}
-				if (null != listener) {
-					listener.afterRename(view, result);
+				if (null != ddListener) {
+					ddListener.afterRename(view, result);
 				}
 			}
 			CacheProxy.clearViewMaps(DataSourceHolder.curDataSource()+"");
@@ -3960,10 +3954,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = view.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(view);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(view);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -3974,8 +3967,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop view][view:{}][result:{}][执行耗时:{}ms]", random, view.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(view, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(view, result);
 			}
 		}
 		return result;
@@ -4000,10 +3993,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildCreateRunSQL(table);
 		String random = null;
 
-		DDListener listener = table.getListener();
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeDrop(table);
+		if(null != ddListener){
+			exe = ddListener.beforeDrop(table);
 		}
 		if(exe) {
 			for(String sql:sqls) {
@@ -4020,8 +4012,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			result = true;
 		}
-		if(null != listener){
-			listener.afterDrop(table, result);
+		if(null != ddListener){
+			ddListener.afterDrop(table, result);
 		}
 		return result;
 	}
@@ -4050,10 +4042,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 
-				DDListener listener = table.getListener();
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeRename(table);
+				if (null != ddListener) {
+					exe = ddListener.beforeRename(table);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -4063,8 +4054,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[rename master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 				}
-				if (null != listener) {
-					listener.afterRename(table, result);
+				if (null != ddListener) {
+					ddListener.afterRename(table, result);
 				}
 			}
 		}
@@ -4075,7 +4066,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				// 修改列
 				column.setTable(update);
 				column.setUpdate(ucolumn);
-				column.setService(table.getService());
 				alter(column);
 				result = true;
 			}else{
@@ -4106,7 +4096,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				// 修改列
 				tag.setTable(update);
 				tag.setUpdate(utag);
-				tag.setService(table.getService());
 				alter(tag);
 				result = true;
 			}else{
@@ -4144,10 +4133,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = table.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(table);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(table);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4157,8 +4145,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(table, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(table, result);
 			}
 		}
 		return result;
@@ -4183,10 +4171,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		List<String> sqls = adapter.buildCreateRunSQL(table);
 
-		DDListener listener = table.getListener();
 		boolean exe = true;
-		if (null != listener) {
-			exe = listener.beforeDrop(table);
+		if (null != ddListener) {
+			exe = ddListener.beforeDrop(table);
 		}
 		if (exe) {
 			for(String sql:sqls) {
@@ -4205,8 +4192,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			result = true;
 		}
 
-		if(null != listener){
-			listener.afterDrop(table, result);
+		if(null != ddListener){
+			ddListener.afterDrop(table, result);
 		}
 		return result;
 	}
@@ -4233,10 +4220,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 
-				DDListener listener = table.getListener();
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeRename(table);
+				if (null != ddListener) {
+					exe = ddListener.beforeRename(table);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -4246,8 +4232,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[rename partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 				}
-				if (null != listener) {
-					listener.afterRename(table, result);
+				if (null != ddListener) {
+					ddListener.afterRename(table, result);
 				}
 			}
 		}
@@ -4258,7 +4244,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				// 修改列
 				column.setTable(update);
 				column.setUpdate(ucolumn);
-				column.setService(table.getService());
 				alter(column);
 				result = true;
 			}else{
@@ -4300,10 +4285,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = table.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(table);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(table);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4313,8 +4297,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(table, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(table, result);
 			}
 		}
 		return result;
@@ -4341,11 +4325,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = null;
 
 		List<String> sqls = adapter.buildAddRunSQL(column);
-		DDListener listener = column.getListener();
 
 		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeAdd(column);
+		if(null != ddListener){
+			exe = ddListener.beforeAdd(column);
 		}
 		for(String sql:sqls) {
 			if(BasicUtil.isEmpty(sql)){
@@ -4404,10 +4387,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = column.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(column);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(column);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4416,8 +4398,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(column, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(column, result);
 			}
 		}
 		return result;
@@ -4441,7 +4423,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildAlterRunSQL(column, false);
 
 		random = random();
-		DDListener listener = column.getListener();
 		try{
 			for(String sql:sqls) {
 				if (BasicUtil.isNotEmpty(sql)) {
@@ -4449,8 +4430,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						log.info("{}[sql:\n{}\n]", random, sql);
 					}
 					boolean exe = true;
-					if (null != listener) {
-						exe = listener.beforeAlter(column);
+					if (null != ddListener) {
+						exe = ddListener.beforeAlter(column);
 					}
 					if (exe) {
 						runtime.getTemplate().update(sql);
@@ -4464,10 +4445,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				e.printStackTrace();
 			}
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.toString());
-			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
+			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
 				boolean exe = false;
 				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-					exe = listener.afterAlterColumnException(table, column, e);
+					exe = ddListener.afterAlterColumnException(table, column, e);
 				}
 				log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, exe);
 				if (exe) {
@@ -4513,11 +4494,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = tag.getListener();
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAdd(tag);
+			if (null != ddListener) {
+				exe = ddListener.beforeAdd(tag);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4567,10 +4547,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = tag.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(tag);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(tag);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4579,8 +4558,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(tag, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(tag, result);
 			}
 		}
 		return result;
@@ -4604,7 +4583,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildAlterRunSQL(tag);
 
 		random = random();
-		DDListener listener = tag.getListener();
 		try{
 			for(String sql:sqls) {
 				if (BasicUtil.isNotEmpty(sql)) {
@@ -4612,8 +4590,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						log.info("{}[sql:\n{}\n]", random, sql);
 					}
 					boolean exe = true;
-					if (null != listener) {
-						exe = listener.beforeAlter(tag);
+					if (null != ddListener) {
+						exe = ddListener.beforeAlter(tag);
 					}
 					if (exe) {
 						runtime.getTemplate().update(sql);
@@ -4627,10 +4605,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改tag执行异常", 33), e.toString());
-			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
+			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
 				boolean exe = false;
 				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-					exe = listener.afterAlterColumnException(table, tag, e);
+					exe = ddListener.afterAlterColumnException(table, tag, e);
 				}
 				log.warn("{}[修改tag执行异常][尝试修正数据][修正结果:{}]", random, exe);
 				if (exe) {
@@ -4672,11 +4650,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = primary.getListener();
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAdd(primary);
+			if (null != ddListener) {
+				exe = ddListener.beforeAdd(primary);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4719,15 +4696,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildAlterRunSQL(primary);
 
 		random = random();
-		DDListener listener = primary.getListener();
 		for(String sql:sqls) {
 			if (BasicUtil.isNotEmpty(sql)) {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(primary);
+				if (null != ddListener) {
+					exe = ddListener.beforeAlter(primary);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -4757,10 +4733,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = primary.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(primary);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(primary);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4769,8 +4744,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(primary, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(primary, result);
 			}
 		}
 		return result;
@@ -4798,11 +4773,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = foreign.getListener();
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAdd(foreign);
+			if (null != ddListener) {
+				exe = ddListener.beforeAdd(foreign);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4845,15 +4819,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildAlterRunSQL(foreign);
 
 		random = random();
-		DDListener listener = foreign.getListener();
 		for(String sql:sqls) {
 			if (BasicUtil.isNotEmpty(sql)) {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(foreign);
+				if (null != ddListener) {
+					exe = ddListener.beforeAlter(foreign);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -4883,10 +4856,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = foreign.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(foreign);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(foreign);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4895,8 +4867,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop foreign][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(), foreign.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(foreign, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(foreign, result);
 			}
 		}
 		return result;
@@ -4924,11 +4896,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = index.getListener();
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAdd(index);
+			if (null != ddListener) {
+				exe = ddListener.beforeAdd(index);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -4971,15 +4942,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildAlterRunSQL(index);
 
 		random = random();
-		DDListener listener = index.getListener();
 		for(String sql:sqls) {
 			if (BasicUtil.isNotEmpty(sql)) {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(index);
+				if (null != ddListener) {
+					exe = ddListener.beforeAlter(index);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -5009,10 +4979,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = index.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(index);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(index);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -5021,8 +4990,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(index, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(index, result);
 			}
 		}
 		return result;
@@ -5048,11 +5017,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = constraint.getListener();
 
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeAdd(constraint);
+			if (null != ddListener) {
+				exe = ddListener.beforeAdd(constraint);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -5095,15 +5063,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<String> sqls = adapter.buildAlterRunSQL(constraint);
 
 		random = random();
-		DDListener listener = constraint.getListener();
 		for(String sql:sqls) {
 			if (BasicUtil.isNotEmpty(sql)) {
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(constraint);
+				if (null != ddListener) {
+					exe = ddListener.beforeAlter(constraint);
 				}
 				if (exe) {
 					runtime.getTemplate().update(sql);
@@ -5132,10 +5099,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				random = random();
 				log.info("{}[sql:\n{}\n]", random, sql);
 			}
-			DDListener listener = constraint.getListener();
 			boolean exe = true;
-			if (null != listener) {
-				exe = listener.beforeDrop(constraint);
+			if (null != ddListener) {
+				exe = ddListener.beforeDrop(constraint);
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
@@ -5144,8 +5110,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[drop constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
 			}
-			if (null != listener) {
-				listener.afterDrop(constraint, result);
+			if (null != ddListener) {
+				ddListener.afterDrop(constraint, result);
 			}
 		}
 		return result;

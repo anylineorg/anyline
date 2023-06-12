@@ -1,4 +1,4 @@
 package org.anyline.entity.data;
 
-public interface Label extends Table{
+public class Label extends Table   {
 }

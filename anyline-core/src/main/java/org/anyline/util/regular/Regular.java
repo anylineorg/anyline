@@ -21,7 +21,7 @@ package org.anyline.util.regular;
 
 import java.util.List;
  
-public interface Regular { 
+public interface Regular {
 	public static enum FILTER_TYPE{WIPE,PICK};//过滤方式 WIPE:删除匹配项|PICK:保留匹配项
 	public static enum MATCH_MODE{MATCH,PREFIX,CONTAIN};//匹配方式 MATCH:完全匹配 PREFIX:前缀匹配 CONTAIN:包含匹配
 	public static enum PATTERN{

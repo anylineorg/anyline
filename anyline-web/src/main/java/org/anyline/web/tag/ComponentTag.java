@@ -30,7 +30,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-public abstract class ComponentTag extends BaseBodyTag{ 
+public abstract class ComponentTag extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
 	 
 	protected HttpServletRequest request;  
@@ -46,36 +46,36 @@ public abstract class ComponentTag extends BaseBodyTag{
 	protected boolean encryptKey;	// id name是否加密
 	protected boolean encryptValue; // value 是否加密  主要针对有默认值 的hidden 
 	 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
 		request = (HttpServletRequest)pageContext.getRequest(); 
 		session = pageContext.getSession(); 
 		servlet = pageContext.getServletContext(); 
         return super.doStartTag(); 
     } 
-	 public int doEndTag() throws JspException { 
-		try{ 
+	 public int doEndTag() throws JspException {
+		try{
 			createTag(null); 
 			// 输出
 			JspWriter out = pageContext.getOut(); 
-			try{ 
+			try{
 				out.print(builder); 
 			}catch(Exception e){
 				e.printStackTrace(); 
-			}finally{ 
-				try{ 
+			}finally{
+				try{
 					// out.clear();
 					// out.close();
 				}catch(Exception ex){} 
 				release(); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return super.doEndTag();    
 	 } 
-		public String createTag(Object data){ 
+		public String createTag(Object data){
 			builder = new StringBuilder(); 
 			createHead(data); 
 			createBody(data); 
@@ -96,7 +96,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		 * 创建标签尾 
 		 */ 
 		protected abstract void createEnd(); 
-		public void release() { 
+		public void release() {
 		 accesskey					= null; // 设置或获取对象的快捷键.										 
 		 atomicselection			= null; // 指定元素及其内容是否可以一不可见单位统一选择.										 
 		 autocomplete				= null; // 设置或获取对象的自动完成状态. 
@@ -187,12 +187,12 @@ public abstract class ComponentTag extends BaseBodyTag{
 	/** 
 	 * 添加标签属性 
 	 */ 
-	protected void createAttribute(){ 
+	protected void createAttribute(){
 		String runId = id; 
-		if(BasicUtil.isNotEmpty(parentId)){ 
+		if(BasicUtil.isNotEmpty(parentId)){
 			runId = parentId + "_" + id + "_" + index; 
 		} 
-		if(encryptKey){ 
+		if(encryptKey){
 			runId = DESUtil.encryptParamKey(runId); 
 		} 
 		if(null != id						){builder.append(" id=\""						).append(runId					).append("\"");}//获取标识对象的字符串. 
@@ -212,7 +212,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != language					){builder.append(" language=\""					).append(language				).append("\"");}//设置或获取当前脚本编写用的语言. 
 		if(null != maxlength				){builder.append(" maxlength=\""				).append(maxlength				).append("\"");}//设置或获取用户可在文本控件中输入的最多字符数. 
 		String runName = name; 
-		if(encryptKey){ 
+		if(encryptKey){
 			runName = DESUtil.encryptParamKey(runName); 
 		} 
 		if(null != name						){builder.append(" name=\""						).append(runName				).append("\"");}//设置或获取对象的名称. 
@@ -373,586 +373,586 @@ public abstract class ComponentTag extends BaseBodyTag{
 	protected String onselectstart				; // 对象将要被���中时触发. 
 	protected String ontimeerror				; // 当特定时间错误发生时无条件触发,通常由将属性设置为无效值导致. 
  
-	public HttpServletRequest getRequest() { 
+	public HttpServletRequest getRequest() {
 		return request; 
 	} 
-	public void setRequest(HttpServletRequest request) { 
+	public void setRequest(HttpServletRequest request) {
 		this.request = request; 
 	} 
-	public HttpSession getSession() { 
+	public HttpSession getSession() {
 		return session; 
 	} 
-	public void setSession(HttpSession session) { 
+	public void setSession(HttpSession session) {
 		this.session = session; 
 	} 
-	public ServletContext getServlet() { 
+	public ServletContext getServlet() {
 		return servlet; 
 	} 
-	public void setServlet(ServletContext servlet) { 
+	public void setServlet(ServletContext servlet) {
 		this.servlet = servlet; 
 	} 
-	public String getTitle() { 
+	public String getTitle() {
 		return title; 
 	} 
-	public void setTitle(String title) { 
+	public void setTitle(String title) {
 		this.title = title; 
 	} 
-	public String getProperty() { 
+	public String getProperty() {
 		return property; 
 	} 
-	public void setProperty(String property) { 
+	public void setProperty(String property) {
 		this.property = property; 
 	} 
  
-	public StringBuilder getBuilder() { 
+	public StringBuilder getBuilder() {
 		return builder; 
 	} 
-	public void setBuilder(StringBuilder builder) { 
+	public void setBuilder(StringBuilder builder) {
 		this.builder = builder; 
 	} 
-	public String getAccesskey() { 
+	public String getAccesskey() {
 		return accesskey; 
 	} 
-	public void setAccesskey(String accesskey) { 
+	public void setAccesskey(String accesskey) {
 		this.accesskey = accesskey; 
 	} 
-	public String getAtomicselection() { 
+	public String getAtomicselection() {
 		return atomicselection; 
 	} 
-	public void setAtomicselection(String atomicselection) { 
+	public void setAtomicselection(String atomicselection) {
 		this.atomicselection = atomicselection; 
 	} 
-	public String getAutocomplete() { 
+	public String getAutocomplete() {
 		return autocomplete; 
 	} 
-	public void setAutocomplete(String autocomplete) { 
+	public void setAutocomplete(String autocomplete) {
 		this.autocomplete = autocomplete; 
 	} 
-	public String getBegin() { 
+	public String getBegin() {
 		return begin; 
 	} 
-	public void setBegin(String begin) { 
+	public void setBegin(String begin) {
 		this.begin = begin; 
 	} 
-	public String getClazz() { 
+	public String getClazz() {
 		return clazz; 
 	} 
-	public void setClass(String clazz) { 
+	public void setClass(String clazz) {
 		this.clazz = clazz; 
 	} 
-	public void setClazz(String clazz) { 
+	public void setClazz(String clazz) {
 		this.clazz = clazz; 
 	} 
-	public String getContenteditable() { 
+	public String getContenteditable() {
 		return contenteditable; 
 	} 
-	public void setContenteditable(String contenteditable) { 
+	public void setContenteditable(String contenteditable) {
 		this.contenteditable = contenteditable; 
 	} 
-	public String getDatafld() { 
+	public String getDatafld() {
 		return datafld; 
 	} 
-	public void setDatafld(String datafld) { 
+	public void setDatafld(String datafld) {
 		this.datafld = datafld; 
 	} 
-	public String getDatasrc() { 
+	public String getDatasrc() {
 		return datasrc; 
 	} 
-	public void setDatasrc(String datasrc) { 
+	public void setDatasrc(String datasrc) {
 		this.datasrc = datasrc; 
 	} 
-	public String getDir() { 
+	public String getDir() {
 		return dir; 
 	} 
-	public void setDir(String dir) { 
+	public void setDir(String dir) {
 		this.dir = dir; 
 	} 
-	public String getDisabled() { 
+	public String getDisabled() {
 		return disabled; 
 	} 
-	public void setDisabled(String disabled) { 
+	public void setDisabled(String disabled) {
 		this.disabled = disabled; 
 	} 
-	public String getEnd() { 
+	public String getEnd() {
 		return end; 
 	} 
-	public void setEnd(String end) { 
+	public void setEnd(String end) {
 		this.end = end; 
 	} 
-	public String getHidefocus() { 
+	public String getHidefocus() {
 		return hidefocus; 
 	} 
-	public void setHidefocus(String hidefocus) { 
+	public void setHidefocus(String hidefocus) {
 		this.hidefocus = hidefocus; 
 	} 
-	public String getId() { 
+	public String getId() {
 		return id; 
 	} 
-	public void setId(String id) { 
+	public void setId(String id) {
 		this.id = id; 
 	} 
-	public String getLang() { 
+	public String getLang() {
 		return lang; 
 	} 
-	public void setLang(String lang) { 
+	public void setLang(String lang) {
 		this.lang = lang; 
 	} 
-	public String getLanguage() { 
+	public String getLanguage() {
 		return language; 
 	} 
-	public void setLanguage(String language) { 
+	public void setLanguage(String language) {
 		this.language = language; 
 	} 
-	public String getMaxlength() { 
+	public String getMaxlength() {
 		return maxlength; 
 	} 
-	public void setMaxlength(String maxlength) { 
+	public void setMaxlength(String maxlength) {
 		this.maxlength = maxlength; 
 	} 
-	public String getName() { 
+	public String getName() {
 		return name; 
 	} 
-	public void setName(String name) { 
+	public void setName(String name) {
 		this.name = name; 
 	} 
-	public String getReadonly() { 
+	public String getReadonly() {
 		return readonly; 
 	} 
-	public void setReadonly(String readonly) { 
+	public void setReadonly(String readonly) {
 		this.readonly = readonly; 
 	} 
-	public String getSize() { 
+	public String getSize() {
 		return size; 
 	} 
-	public void setSize(String size) { 
+	public void setSize(String size) {
 		this.size = size; 
 	} 
-	public String getStyle() { 
+	public String getStyle() {
 		return style; 
 	} 
-	public void setStyle(String style) { 
+	public void setStyle(String style) {
 		this.style = style; 
 	} 
-	public String getSyncmaster() { 
+	public String getSyncmaster() {
 		return syncmaster; 
 	} 
-	public void setSyncmaster(String syncmaster) { 
+	public void setSyncmaster(String syncmaster) {
 		this.syncmaster = syncmaster; 
 	} 
-	public String getSystembitrate() { 
+	public String getSystembitrate() {
 		return systembitrate; 
 	} 
-	public void setSystembitrate(String systembitrate) { 
+	public void setSystembitrate(String systembitrate) {
 		this.systembitrate = systembitrate; 
 	} 
-	public String getSystemcaption() { 
+	public String getSystemcaption() {
 		return systemcaption; 
 	} 
-	public void setSystemcaption(String systemcaption) { 
+	public void setSystemcaption(String systemcaption) {
 		this.systemcaption = systemcaption; 
 	} 
-	public String getSystemlanguage() { 
+	public String getSystemlanguage() {
 		return systemlanguage; 
 	} 
-	public void setSystemlanguage(String systemlanguage) { 
+	public void setSystemlanguage(String systemlanguage) {
 		this.systemlanguage = systemlanguage; 
 	} 
-	public String getSystemoverduborsubtitle() { 
+	public String getSystemoverduborsubtitle() {
 		return systemoverduborsubtitle; 
 	} 
-	public void setSystemoverduborsubtitle(String systemoverduborsubtitle) { 
+	public void setSystemoverduborsubtitle(String systemoverduborsubtitle) {
 		this.systemoverduborsubtitle = systemoverduborsubtitle; 
 	} 
-	public String getTabindex() { 
+	public String getTabindex() {
 		return tabindex; 
 	} 
-	public void setTabindex(String tabindex) { 
+	public void setTabindex(String tabindex) {
 		this.tabindex = tabindex; 
 	} 
-	public String getTimecontainer() { 
+	public String getTimecontainer() {
 		return timecontainer; 
 	} 
-	public void setTimecontainer(String timecontainer) { 
+	public void setTimecontainer(String timecontainer) {
 		this.timecontainer = timecontainer; 
 	} 
-	public String getType() { 
+	public String getType() {
 		return type; 
 	} 
 	public void setType(String type) {
 		this.type = type; 
 	} 
-	public String getUnselectable() { 
+	public String getUnselectable() {
 		return unselectable; 
 	} 
-	public void setUnselectable(String unselectable) { 
+	public void setUnselectable(String unselectable) {
 		this.unselectable = unselectable; 
 	} 
-	public Object getValue() { 
+	public Object getValue() {
 		return value; 
 	} 
-	public void setValue(Object value) { 
+	public void setValue(Object value) {
 		this.value = value; 
 	} 
-	public String getVcard_name() { 
+	public String getVcard_name() {
 		return vcard_name; 
 	} 
-	public void setVcard_name(String vcard_name) { 
+	public void setVcard_name(String vcard_name) {
 		this.vcard_name = vcard_name; 
 	} 
-	public String getWidth() { 
+	public String getWidth() {
 		return width; 
 	} 
-	public void setWidth(String width) { 
+	public void setWidth(String width) {
 		this.width = width; 
 	} 
-	public String getOnactivate() { 
+	public String getOnactivate() {
 		return onactivate; 
 	} 
-	public void setOnactivate(String onactivate) { 
+	public void setOnactivate(String onactivate) {
 		this.onactivate = onactivate; 
 	} 
-	public String getOnafterupdate() { 
+	public String getOnafterupdate() {
 		return onafterupdate; 
 	} 
-	public void setOnafterupdate(String onafterupdate) { 
+	public void setOnafterupdate(String onafterupdate) {
 		this.onafterupdate = onafterupdate; 
 	} 
-	public String getOnbeforeactivate() { 
+	public String getOnbeforeactivate() {
 		return onbeforeactivate; 
 	} 
-	public void setOnbeforeactivate(String onbeforeactivate) { 
+	public void setOnbeforeactivate(String onbeforeactivate) {
 		this.onbeforeactivate = onbeforeactivate; 
 	} 
-	public String getOnbeforecut() { 
+	public String getOnbeforecut() {
 		return onbeforecut; 
 	} 
-	public void setOnbeforecut(String onbeforecut) { 
+	public void setOnbeforecut(String onbeforecut) {
 		this.onbeforecut = onbeforecut; 
 	} 
-	public String getOnbeforedeactivate() { 
+	public String getOnbeforedeactivate() {
 		return onbeforedeactivate; 
 	} 
-	public void setOnbeforedeactivate(String onbeforedeactivate) { 
+	public void setOnbeforedeactivate(String onbeforedeactivate) {
 		this.onbeforedeactivate = onbeforedeactivate; 
 	} 
-	public String getOnbeforeeditfocus() { 
+	public String getOnbeforeeditfocus() {
 		return onbeforeeditfocus; 
 	} 
-	public void setOnbeforeeditfocus(String onbeforeeditfocus) { 
+	public void setOnbeforeeditfocus(String onbeforeeditfocus) {
 		this.onbeforeeditfocus = onbeforeeditfocus; 
 	} 
-	public String getOnbeforepaste() { 
+	public String getOnbeforepaste() {
 		return onbeforepaste; 
 	} 
-	public void setOnbeforepaste(String onbeforepaste) { 
+	public void setOnbeforepaste(String onbeforepaste) {
 		this.onbeforepaste = onbeforepaste; 
 	} 
-	public String getOnbeforeupdate() { 
+	public String getOnbeforeupdate() {
 		return onbeforeupdate; 
 	} 
-	public void setOnbeforeupdate(String onbeforeupdate) { 
+	public void setOnbeforeupdate(String onbeforeupdate) {
 		this.onbeforeupdate = onbeforeupdate; 
 	} 
-	public String getOnblur() { 
+	public String getOnblur() {
 		return onblur; 
 	} 
-	public void setOnblur(String onblur) { 
+	public void setOnblur(String onblur) {
 		this.onblur = onblur; 
 	} 
-	public String getOnchange() { 
+	public String getOnchange() {
 		return onchange; 
 	} 
-	public void setOnchange(String onchange) { 
+	public void setOnchange(String onchange) {
 		this.onchange = onchange; 
 	} 
-	public String getOnclick() { 
+	public String getOnclick() {
 		return onclick; 
 	} 
-	public void setOnclick(String onclick) { 
+	public void setOnclick(String onclick) {
 		this.onclick = onclick; 
 	} 
-	public String getOncontextmenu() { 
+	public String getOncontextmenu() {
 		return oncontextmenu; 
 	} 
-	public void setOncontextmenu(String oncontextmenu) { 
+	public void setOncontextmenu(String oncontextmenu) {
 		this.oncontextmenu = oncontextmenu; 
 	} 
-	public String getOncontrolselect() { 
+	public String getOncontrolselect() {
 		return oncontrolselect; 
 	} 
-	public void setOncontrolselect(String oncontrolselect) { 
+	public void setOncontrolselect(String oncontrolselect) {
 		this.oncontrolselect = oncontrolselect; 
 	} 
-	public String getOncut() { 
+	public String getOncut() {
 		return oncut; 
 	} 
-	public void setOncut(String oncut) { 
+	public void setOncut(String oncut) {
 		this.oncut = oncut; 
 	} 
-	public String getOndblclick() { 
+	public String getOndblclick() {
 		return ondblclick; 
 	} 
-	public void setOndblclick(String ondblclick) { 
+	public void setOndblclick(String ondblclick) {
 		this.ondblclick = ondblclick; 
 	} 
-	public String getOndeactivate() { 
+	public String getOndeactivate() {
 		return ondeactivate; 
 	} 
-	public void setOndeactivate(String ondeactivate) { 
+	public void setOndeactivate(String ondeactivate) {
 		this.ondeactivate = ondeactivate; 
 	} 
-	public String getOndrag() { 
+	public String getOndrag() {
 		return ondrag; 
 	} 
-	public void setOndrag(String ondrag) { 
+	public void setOndrag(String ondrag) {
 		this.ondrag = ondrag; 
 	} 
-	public String getOndragend() { 
+	public String getOndragend() {
 		return ondragend; 
 	} 
-	public void setOndragend(String ondragend) { 
+	public void setOndragend(String ondragend) {
 		this.ondragend = ondragend; 
 	} 
-	public String getOndragenter() { 
+	public String getOndragenter() {
 		return ondragenter; 
 	} 
-	public void setOndragenter(String ondragenter) { 
+	public void setOndragenter(String ondragenter) {
 		this.ondragenter = ondragenter; 
 	} 
-	public String getOndragleave() { 
+	public String getOndragleave() {
 		return ondragleave; 
 	} 
-	public void setOndragleave(String ondragleave) { 
+	public void setOndragleave(String ondragleave) {
 		this.ondragleave = ondragleave; 
 	} 
-	public String getOndragover() { 
+	public String getOndragover() {
 		return ondragover; 
 	} 
-	public void setOndragover(String ondragover) { 
+	public void setOndragover(String ondragover) {
 		this.ondragover = ondragover; 
 	} 
-	public String getOndragstart() { 
+	public String getOndragstart() {
 		return ondragstart; 
 	} 
-	public void setOndragstart(String ondragstart) { 
+	public void setOndragstart(String ondragstart) {
 		this.ondragstart = ondragstart; 
 	} 
-	public String getOndrop() { 
+	public String getOndrop() {
 		return ondrop; 
 	} 
-	public void setOndrop(String ondrop) { 
+	public void setOndrop(String ondrop) {
 		this.ondrop = ondrop; 
 	} 
-	public String getOnerrorupdate() { 
+	public String getOnerrorupdate() {
 		return onerrorupdate; 
 	} 
-	public void setOnerrorupdate(String onerrorupdate) { 
+	public void setOnerrorupdate(String onerrorupdate) {
 		this.onerrorupdate = onerrorupdate; 
 	} 
-	public String getOnfilterchange() { 
+	public String getOnfilterchange() {
 		return onfilterchange; 
 	} 
-	public void setOnfilterchange(String onfilterchange) { 
+	public void setOnfilterchange(String onfilterchange) {
 		this.onfilterchange = onfilterchange; 
 	} 
-	public String getOnfocus() { 
+	public String getOnfocus() {
 		return onfocus; 
 	} 
-	public void setOnfocus(String onfocus) { 
+	public void setOnfocus(String onfocus) {
 		this.onfocus = onfocus; 
 	} 
-	public String getOnfocusin() { 
+	public String getOnfocusin() {
 		return onfocusin; 
 	} 
-	public void setOnfocusin(String onfocusin) { 
+	public void setOnfocusin(String onfocusin) {
 		this.onfocusin = onfocusin; 
 	} 
-	public String getOnfocusout() { 
+	public String getOnfocusout() {
 		return onfocusout; 
 	} 
-	public void setOnfocusout(String onfocusout) { 
+	public void setOnfocusout(String onfocusout) {
 		this.onfocusout = onfocusout; 
 	} 
-	public String getOnhelp() { 
+	public String getOnhelp() {
 		return onhelp; 
 	} 
-	public void setOnhelp(String onhelp) { 
+	public void setOnhelp(String onhelp) {
 		this.onhelp = onhelp; 
 	} 
-	public String getOnkeydown() { 
+	public String getOnkeydown() {
 		return onkeydown; 
 	} 
-	public void setOnkeydown(String onkeydown) { 
+	public void setOnkeydown(String onkeydown) {
 		this.onkeydown = onkeydown; 
 	} 
-	public String getOnkeypress() { 
+	public String getOnkeypress() {
 		return onkeypress; 
 	} 
-	public void setOnkeypress(String onkeypress) { 
+	public void setOnkeypress(String onkeypress) {
 		this.onkeypress = onkeypress; 
 	} 
-	public String getOnkeyup() { 
+	public String getOnkeyup() {
 		return onkeyup; 
 	} 
-	public void setOnkeyup(String onkeyup) { 
+	public void setOnkeyup(String onkeyup) {
 		this.onkeyup = onkeyup; 
 	} 
-	public String getOnlosecapture() { 
+	public String getOnlosecapture() {
 		return onlosecapture; 
 	} 
-	public void setOnlosecapture(String onlosecapture) { 
+	public void setOnlosecapture(String onlosecapture) {
 		this.onlosecapture = onlosecapture; 
 	} 
-	public String getOnmousedown() { 
+	public String getOnmousedown() {
 		return onmousedown; 
 	} 
-	public void setOnmousedown(String onmousedown) { 
+	public void setOnmousedown(String onmousedown) {
 		this.onmousedown = onmousedown; 
 	} 
-	public String getOnmouseenter() { 
+	public String getOnmouseenter() {
 		return onmouseenter; 
 	} 
-	public void setOnmouseenter(String onmouseenter) { 
+	public void setOnmouseenter(String onmouseenter) {
 		this.onmouseenter = onmouseenter; 
 	} 
-	public String getOnmouseleave() { 
+	public String getOnmouseleave() {
 		return onmouseleave; 
 	} 
-	public void setOnmouseleave(String onmouseleave) { 
+	public void setOnmouseleave(String onmouseleave) {
 		this.onmouseleave = onmouseleave; 
 	} 
-	public String getOnmousemove() { 
+	public String getOnmousemove() {
 		return onmousemove; 
 	} 
-	public void setOnmousemove(String onmousemove) { 
+	public void setOnmousemove(String onmousemove) {
 		this.onmousemove = onmousemove; 
 	} 
-	public String getOnmouseout() { 
+	public String getOnmouseout() {
 		return onmouseout; 
 	} 
-	public void setOnmouseout(String onmouseout) { 
+	public void setOnmouseout(String onmouseout) {
 		this.onmouseout = onmouseout; 
 	} 
-	public String getOnmouseover() { 
+	public String getOnmouseover() {
 		return onmouseover; 
 	} 
-	public void setOnmouseover(String onmouseover) { 
+	public void setOnmouseover(String onmouseover) {
 		this.onmouseover = onmouseover; 
 	} 
-	public String getOnmouseup() { 
+	public String getOnmouseup() {
 		return onmouseup; 
 	} 
-	public void setOnmouseup(String onmouseup) { 
+	public void setOnmouseup(String onmouseup) {
 		this.onmouseup = onmouseup; 
 	} 
-	public String getOnmousewheel() { 
+	public String getOnmousewheel() {
 		return onmousewheel; 
 	} 
-	public void setOnmousewheel(String onmousewheel) { 
+	public void setOnmousewheel(String onmousewheel) {
 		this.onmousewheel = onmousewheel; 
 	} 
-	public String getOnmove() { 
+	public String getOnmove() {
 		return onmove; 
 	} 
-	public void setOnmove(String onmove) { 
+	public void setOnmove(String onmove) {
 		this.onmove = onmove; 
 	} 
-	public String getOnmoveend() { 
+	public String getOnmoveend() {
 		return onmoveend; 
 	} 
-	public void setOnmoveend(String onmoveend) { 
+	public void setOnmoveend(String onmoveend) {
 		this.onmoveend = onmoveend; 
 	} 
-	public String getOnmovestart() { 
+	public String getOnmovestart() {
 		return onmovestart; 
 	} 
-	public void setOnmovestart(String onmovestart) { 
+	public void setOnmovestart(String onmovestart) {
 		this.onmovestart = onmovestart; 
 	} 
-	public String getOnpaste() { 
+	public String getOnpaste() {
 		return onpaste; 
 	} 
-	public void setOnpaste(String onpaste) { 
+	public void setOnpaste(String onpaste) {
 		this.onpaste = onpaste; 
 	} 
-	public String getOnpropertychange() { 
+	public String getOnpropertychange() {
 		return onpropertychange; 
 	} 
-	public void setOnpropertychange(String onpropertychange) { 
+	public void setOnpropertychange(String onpropertychange) {
 		this.onpropertychange = onpropertychange; 
 	} 
-	public String getOnreadyTRAIN_STAGEchange() { 
+	public String getOnreadyTRAIN_STAGEchange() {
 		return onreadyTRAIN_STAGEchange; 
 	} 
-	public void setOnreadyTRAIN_STAGEchange(String onreadyTRAIN_STAGEchange) { 
+	public void setOnreadyTRAIN_STAGEchange(String onreadyTRAIN_STAGEchange) {
 		this.onreadyTRAIN_STAGEchange = onreadyTRAIN_STAGEchange; 
 	} 
-	public String getOnresize() { 
+	public String getOnresize() {
 		return onresize; 
 	} 
-	public void setOnresize(String onresize) { 
+	public void setOnresize(String onresize) {
 		this.onresize = onresize; 
 	} 
-	public String getOnresizeend() { 
+	public String getOnresizeend() {
 		return onresizeend; 
 	} 
-	public void setOnresizeend(String onresizeend) { 
+	public void setOnresizeend(String onresizeend) {
 		this.onresizeend = onresizeend; 
 	} 
-	public String getOnresizestart() { 
+	public String getOnresizestart() {
 		return onresizestart; 
 	} 
-	public void setOnresizestart(String onresizestart) { 
+	public void setOnresizestart(String onresizestart) {
 		this.onresizestart = onresizestart; 
 	} 
-	public String getOnselect() { 
+	public String getOnselect() {
 		return onselect; 
 	} 
-	public void setOnselect(String onselect) { 
+	public void setOnselect(String onselect) {
 		this.onselect = onselect; 
 	} 
-	public String getOnselectstart() { 
+	public String getOnselectstart() {
 		return onselectstart; 
 	} 
-	public void setOnselectstart(String onselectstart) { 
+	public void setOnselectstart(String onselectstart) {
 		this.onselectstart = onselectstart; 
 	} 
-	public String getOntimeerror() { 
+	public String getOntimeerror() {
 		return ontimeerror; 
 	} 
-	public void setOntimeerror(String ontimeerror) { 
+	public void setOntimeerror(String ontimeerror) {
 		this.ontimeerror = ontimeerror; 
 	} 
  
-	public int getIndex() { 
+	public int getIndex() {
 		return index; 
 	} 
  
-	public void setIndex(int index) { 
+	public void setIndex(int index) {
 		this.index = index; 
 	} 
  
-	public String getParentId() { 
+	public String getParentId() {
 		return parentId; 
 	} 
  
-	public void setParentId(String parentId) { 
+	public void setParentId(String parentId) {
 		this.parentId = parentId; 
 	} 
  
-	public boolean isEncryptKey() { 
+	public boolean isEncryptKey() {
 		return encryptKey; 
 	} 
  
-	public void setEncryptKey(boolean isEncryptKey) { 
+	public void setEncryptKey(boolean isEncryptKey) {
 		this.encryptKey = isEncryptKey; 
 	} 
  
-	public String getChecked() { 
+	public String getChecked() {
 		return checked; 
 	} 
  
-	public void setChecked(String checked) { 
+	public void setChecked(String checked) {
 		this.checked = checked; 
 	}
 	public boolean isEncryptValue() {

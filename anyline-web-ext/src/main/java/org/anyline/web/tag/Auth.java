@@ -155,13 +155,13 @@ public class Auth extends BaseBodyTag {
             out.print(html);
         } catch (Exception e) {
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		type = null;
 		appid = null;

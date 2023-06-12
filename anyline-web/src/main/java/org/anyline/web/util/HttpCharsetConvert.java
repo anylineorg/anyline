@@ -35,7 +35,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;   
 import org.springframework.util.FileCopyUtils;   
    
-public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {   
+public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {
    
     public static final Charset DEFAULT_CHARSET = Charset.forName(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));   
    
@@ -43,7 +43,7 @@ public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {
    
     private boolean writeAcceptCharset = true;   
    
-    public HttpCharsetConvert() {   
+    public HttpCharsetConvert() {
         super(new MediaType("text", "plain", DEFAULT_CHARSET), MediaType.ALL);   
         this.availableCharsets = new ArrayList<Charset>(Charset.availableCharsets().values());   
     }   
@@ -53,37 +53,37 @@ public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {
      * <p>Default is {@code true}.  
      * @param writeAcceptCharset writeAcceptCharset
      */   
-    public void setWriteAcceptCharset(boolean writeAcceptCharset) {   
+    public void setWriteAcceptCharset(boolean writeAcceptCharset) {
         this.writeAcceptCharset = writeAcceptCharset;   
     }   
    
     @Override   
-    public boolean supports(Class<?> clazz) {   
+    public boolean supports(Class<?> clazz) {
         return String.class.equals(clazz);   
     }   
    
     @SuppressWarnings("rawtypes")
 	@Override   
-    protected String readInternal(Class clazz, HttpInputMessage inputMessage) throws IOException {   
+    protected String readInternal(Class clazz, HttpInputMessage inputMessage) throws IOException {
         Charset charset = getContentTypeCharset(inputMessage.getHeaders().getContentType());   
         return FileCopyUtils.copyToString(new InputStreamReader(inputMessage.getBody(), charset));   
     }   
    
     @Override   
-    protected Long getContentLength(String s, MediaType contentType) {   
+    protected Long getContentLength(String s, MediaType contentType) {
         Charset charset = getContentTypeCharset(contentType);   
-        try {   
+        try {
             return (long) s.getBytes(charset.name()).length;   
         }   
-        catch (UnsupportedEncodingException ex) {   
+        catch (UnsupportedEncodingException ex) {
             // should not occur
             throw new InternalError(ex.getMessage());   
         }   
     }   
    
     @Override   
-    protected void writeInternal(String s, HttpOutputMessage outputMessage) throws IOException {   
-        if (writeAcceptCharset) {   
+    protected void writeInternal(String s, HttpOutputMessage outputMessage) throws IOException {
+        if (writeAcceptCharset) {
             outputMessage.getHeaders().setAcceptCharset(getAcceptedCharsets());   
         }   
         Charset charset = getContentTypeCharset(outputMessage.getHeaders().getContentType());   
@@ -97,16 +97,16 @@ public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {
      *  
      * @return the list of accepted charsets  
      */   
-    protected List<Charset> getAcceptedCharsets() {   
+    protected List<Charset> getAcceptedCharsets() {
         return this.availableCharsets;   
     }   
    
     @SuppressWarnings("deprecation")
-	private Charset getContentTypeCharset(MediaType contentType) {   
+	private Charset getContentTypeCharset(MediaType contentType) {
         if (contentType != null && contentType.getCharset() != null) {
             return contentType.getCharset();
         }   
-        else {   
+        else {
             return DEFAULT_CHARSET;   
         }   
     }   

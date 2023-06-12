@@ -30,13 +30,13 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-public class Config extends BaseBodyTag implements Cloneable{ 
+public class Config extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	
 	private String key;
 	private String value;
 	private String defaultValue; 
-	 public int doEndTag() throws JspException { 
+	 public int doEndTag() throws JspException {
 		try{
 			value = ConfigTable.getString(key);
 			if(BasicUtil.isEmpty(value)){
@@ -46,9 +46,9 @@ public class Config extends BaseBodyTag implements Cloneable{
 				JspWriter out = pageContext.getOut();
 				out.print(value);
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
@@ -56,14 +56,14 @@ public class Config extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		key = null;
 		value = null;
 		defaultValue = null; 
 	} 
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	}
 

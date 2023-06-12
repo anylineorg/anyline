@@ -37,7 +37,7 @@ public class I18NUtil {
 	public static final String defaultLang = "cn"; 
 	private static Map<String,Map<String,String>> messages; 
 	 
-	static{ 
+	static{
 		init(); 
 	} 
 	private static void init(){
@@ -48,26 +48,26 @@ public class I18NUtil {
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),dir), "xml");
 		messages = new Hashtable<String,Map<String,String>>(); 
 		SAXReader reader = new SAXReader(); 
-		for(File file:files){ 
-			try { 
+		for(File file:files){
+			try {
 				Document document = reader.read(file); 
 				Element root = document.getRootElement(); 
-				for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){ 
+				for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
 					Element propertyElement = itrProperty.next(); 
 					String key = propertyElement.attributeValue("key"); 
-					for(Iterator<Element> itrItem=propertyElement.elementIterator("item"); itrItem.hasNext();){ 
+					for(Iterator<Element> itrItem=propertyElement.elementIterator("item"); itrItem.hasNext();){
 						Element itemElement = itrItem.next(); 
 						String lang = itemElement.attributeValue("lang"); 
 						String value = itemElement.getTextTrim(); 
 						Map<String,String> map = messages.get(lang); 
-						if(null == map){ 
+						if(null == map){
 							map = new Hashtable<String,String>(); 
 							messages.put(lang, map); 
 						} 
 						map.put(key, value); 
 					} 
 				} 
-			} catch (DocumentException e) { 
+			} catch (DocumentException e) {
 				e.printStackTrace(); 
 			}catch(Exception e){
 				e.printStackTrace();
@@ -80,7 +80,7 @@ public class I18NUtil {
 	 * @param key   key
 	 * @return String
 	 */ 
-	public static String get(String lang, String key){ 
+	public static String get(String lang, String key){
 		Map<String,String> map = messages.get(lang); 
 		String value = null;
 		if(null != map){

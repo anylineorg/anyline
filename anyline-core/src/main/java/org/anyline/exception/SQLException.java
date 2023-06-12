@@ -23,7 +23,7 @@ public class SQLException extends RuntimeException{
 	protected Exception src;
 	protected String sql;
 	protected List<Object> values;
-	public SQLException(){ 
+	public SQLException(){
 		super(); 
 	}
 	public SQLException(String title){

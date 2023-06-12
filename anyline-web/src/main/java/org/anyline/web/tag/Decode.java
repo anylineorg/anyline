@@ -28,27 +28,27 @@ import java.io.IOException;
 public class Decode extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
  
-	public int doEndTag() { 
+	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
-		if("".equals(src)){ 
+		if("".equals(src)){
 			return EVAL_BODY_INCLUDE; 
 		} 
  
 		JspWriter writer = null; 
 		String result = CodeUtil.urlDecode(src);
-		try { 
+		try {
 			writer = pageContext.getOut(); 
 			writer.print(result); 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
 	} 
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		value = null;
 		body = null; 

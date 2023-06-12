@@ -178,6 +178,6 @@ public final class AwkStreamInput {
     return (!_endOfStreamReached);
   }
 
-  public boolean endOfStream() { return _endOfStreamReached; }
+  public boolean endOfStream() {return _endOfStreamReached; }
 
 }

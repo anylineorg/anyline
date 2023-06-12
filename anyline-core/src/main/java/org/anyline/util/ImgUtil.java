@@ -56,31 +56,31 @@ import org.slf4j.LoggerFactory;
  * 图片处理工具类:<br> 
  * 功能:缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等 
  */
-public class ImgUtil { 
+public class ImgUtil {
 	private static final Logger log = LoggerFactory.getLogger(ImgUtil.class); 
  
-	public static enum IMAGE_TYPE{ 
-		GIF{ 
+	public static enum IMAGE_TYPE{
+		GIF{
 			public String getName(){return "图形交换格式";} 
 			public String getCode(){return "gif";} 
 		} 
-		,JPG{ 
+		,JPG{
 			public String getName(){return "联合照片专家组";} 
 			public String getCode(){return "jpg";} 
 		} 
-		,JPEG{ 
+		,JPEG{
 			public String getName(){return "联合照片专家组";} 
 			public String getCode(){return "jpeg";} 
 		} 
-		,BMP{ 
+		,BMP{
 			public String getName(){return "位图,Windows操作系统中的标准图像文件格式";} 
 			public String getCode(){return "bmp";} 
 		} 
-		,PNG{ 
+		,PNG{
 			public String getName(){return "可移植网络图形";} 
 			public String getCode(){return "png";} 
 		} 
-		,PSD{ 
+		,PSD{
 			public String getName(){return "Photoshop的专用格式Photoshop";} 
 			public String getCode(){return "psd";} 
 		} 
@@ -97,8 +97,8 @@ public class ImgUtil {
      * @param tar 缩放后的图像地址 
      * @param scale 缩放比例 
      */ 
-    public static void scale(File src, File tar, float scale) { 
-        try { 
+    public static void scale(File src, File tar, float scale) {
+        try {
             BufferedImage img = ImageIO.read(src); // 读入文件 
             int width = img.getWidth(); // 得到源图宽 
             int height = img.getHeight(); // 得到源图长 
@@ -114,7 +114,7 @@ public class ImgUtil {
             	dir.mkdirs(); 
             } 
             ImageIO.write(tag, "JPEG", tar);// 输出到文件流 
-        } catch (IOException e) { 
+        } catch (IOException e) {
             e.printStackTrace(); 
         } 
     } 
@@ -127,16 +127,16 @@ public class ImgUtil {
      * @param width 缩放后的宽度 
      * @param fill 比例不对时是否需要补白:true为补白; false为不补白; 
      */ 
-    public static void scale(File src, File tar, String format, int width, int height, boolean fill) { 
+    public static void scale(File src, File tar, String format, int width, int height, boolean fill) {
     	long fr = System.currentTimeMillis(); 
-        try { 
+        try {
             double ratio = 0.0; // 缩放比例 
             BufferedImage bi = ImageIO.read(src); 
             Image itemp = bi.getScaledInstance(width, height, BufferedImage.SCALE_SMOOTH); 
             // 计算比例 
-            if (bi.getHeight() > bi.getWidth()) { 
+            if (bi.getHeight() > bi.getWidth()) {
                 ratio = (new Integer(height)).doubleValue() / bi.getHeight(); 
-            } else { 
+            } else {
                 ratio = (new Integer(width)).doubleValue() / bi.getWidth(); 
             } 
             AffineTransformOp op = new AffineTransformOp(AffineTransform .getScaleInstance(ratio, ratio), null); 
@@ -146,9 +146,9 @@ public class ImgUtil {
                 Graphics2D g = image.createGraphics(); 
                 g.setColor(Color.white); 
                 g.fillRect(0, 0, width, height); 
-                if (width == itemp.getWidth(null)){ 
+                if (width == itemp.getWidth(null)){
                     g.drawImage(itemp, 0, (height - itemp.getHeight(null)) / 2, itemp.getWidth(null), itemp.getHeight(null), Color.white, null); 
-                }else{ 
+                }else{
                     g.drawImage(itemp, (width - itemp.getWidth(null)) / 2, 0, itemp.getWidth(null), itemp.getHeight(null), Color.white, null); 
                 } 
                 g.dispose(); 
@@ -160,16 +160,16 @@ public class ImgUtil {
             } 
            // ImageIO.write((BufferedImage) itemp, "JPEG", tar); 
             ImageIO.write((BufferedImage)itemp, format, tar); 
-        } catch (IOException e) { 
+        } catch (IOException e) {
             e.printStackTrace(); 
         } 
         log.warn("[压缩图片][耗时:{}][source:{}][target:{}]",(System.currentTimeMillis()-fr), src, tar); 
     } 
  
-    public static void scale(File src, File tar, String format, int width, int height) { 
+    public static void scale(File src, File tar, String format, int width, int height) {
     	scale(src, tar, format, width, height, false); 
     } 
-	public static void scale(File src, File tar, int width, int height, boolean fill) { 
+	public static void scale(File src, File tar, int width, int height, boolean fill) {
 		scale(src, tar, "jpeg", width, height, fill); 
 	} 
     /** 
@@ -182,12 +182,12 @@ public class ImgUtil {
      * @param h 目标切片高度 
      */ 
  
-	public static void cut(File src, File tar,int x, int y,  int w, int h) { 
+	public static void cut(File src, File tar,int x, int y,  int w, int h) {
 		ImageReader reader = null; 
 		ImageInputStream iis = null; 
-	    try { 
+	    try {
 	    	String format = "JPEG"; 
-	    	if(src.getName().toLowerCase().endsWith("png")){ 
+	    	if(src.getName().toLowerCase().endsWith("png")){
 	    		format = "PNG"; 
 	    	} 
 	        Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(format);/*JPEG,PNG,BMP*/   
@@ -199,17 +199,17 @@ public class ImgUtil {
 	        param.setSourceRegion(rectangle);   
 	        BufferedImage bi = reader.read(0,param); 
 	        format = "JPEG"; 
-	    	if(tar.getName().toLowerCase().endsWith("png")){ 
+	    	if(tar.getName().toLowerCase().endsWith("png")){
 	    		format = "PNG"; 
 	    	} 
 	        ImageIO.write(bi, format, tar); 
-	    } catch (Exception e) { 
+	    } catch (Exception e) {
 	        e.printStackTrace(); 
-	    }finally{ 
-	    	try { 
+	    }finally{
+	    	try {
 				iis.close(); 
 				reader.dispose(); 
-			} catch (IOException e) { 
+			} catch (IOException e) {
 				e.printStackTrace(); 
 			} 
 	    } 
@@ -222,34 +222,34 @@ public class ImgUtil {
      * @param rows 目标切片行数.默认2,必须是范围 [1, 20] 之内 
      * @param cols 目标切片列数.默认2,必须是范围 [1, 20] 之内 
      */ 
-    public static void cut(File src, File dir, int rows, int cols) { 
-        try { 
+    public static void cut(File src, File dir, int rows, int cols) {
+        try {
             if(rows<=0||rows>20) rows = 2; // 切片行数 
             if(cols<=0||cols>20) cols = 2; // 切片列数 
             // 读取源图像 
             BufferedImage bi = ImageIO.read(src); 
             int srcWidth = bi.getHeight(); // 源图宽度 
             int srcHeight = bi.getWidth(); // 源图高度 
-            if (srcWidth > 0 && srcHeight > 0) { 
+            if (srcWidth > 0 && srcHeight > 0) {
                 Image img; 
                 ImageFilter cropFilter; 
                 Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT); 
                 int destWidth = srcWidth; // 每张切片的宽度 
                 int destHeight = srcHeight; // 每张切片的高度 
                 // 计算切片的宽度和高度 
-                if (srcWidth % cols == 0) { 
+                if (srcWidth % cols == 0) {
                     destWidth = srcWidth / cols; 
-                } else { 
+                } else {
                     destWidth = (int) Math.floor(srcWidth / cols) + 1; 
                 } 
-                if (srcHeight % rows == 0) { 
+                if (srcHeight % rows == 0) {
                     destHeight = srcHeight / rows; 
-                } else { 
+                } else {
                     destHeight = (int) Math.floor(srcWidth / rows) + 1; 
                 } 
                 // 循环建立切片 
-                for (int i = 0; i < rows; i++) { 
-                    for (int j = 0; j < cols; j++) { 
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
                         // 四个参数分别为图像起点坐标和宽高 
                         // 即: CropImageFilter(int x,int y,int width,int height) 
                         cropFilter = new CropImageFilter(j * destWidth, i * destHeight, destWidth, destHeight); 
@@ -267,18 +267,18 @@ public class ImgUtil {
                     } 
                 } 
             } 
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace(); 
         } 
     } 
-    public static float getSizeScale(File file){ 
+    public static float getSizeScale(File file){
     	float scale = 0; 
-		try { 
+		try {
 			 BufferedImage bi = ImageIO.read(file); 
 			 float w = bi.getHeight(); // 源图宽度 
 			 float h = bi.getWidth(); // 源图高度 
 			 scale = w/h; 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
 		} 
          return scale; 
@@ -290,35 +290,35 @@ public class ImgUtil {
      * @param width 目标切片宽度.默认200 
      * @param height 目标切片高度.默认150 
      */ 
-    public final static void cut3(File src, File dir, int width, int height) { 
-        try { 
+    public final static void cut3(File src, File dir, int width, int height) {
+        try {
             if(width<=0) width = 200; // 切片宽度 
             if(height<=0) height = 150; // 切片高度 
             // 读取源图像 
             BufferedImage bi = ImageIO.read(src); 
             int srcWidth = bi.getHeight(); // 源图宽度 
             int srcHeight = bi.getWidth(); // 源图高度 
-            if (srcWidth > width && srcHeight > height) { 
+            if (srcWidth > width && srcHeight > height) {
                 Image img; 
                 ImageFilter cropFilter; 
                 Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT); 
                 int cols = 0; // 切片横向数量 
                 int rows = 0; // 切片纵向数量 
                 // 计算切片的横向和纵向数量 
-                if (srcWidth % width == 0) { 
+                if (srcWidth % width == 0) {
                     cols = srcWidth / width; 
-                } else { 
+                } else {
                     cols = (int) Math.floor(srcWidth / width) + 1; 
                 } 
-                if (srcHeight % height == 0) { 
+                if (srcHeight % height == 0) {
                     rows = srcHeight / height; 
-                } else { 
+                } else {
                     rows = (int) Math.floor(srcHeight / height) + 1; 
                 } 
                 // 循环建立切片 
                 // 改进的想法:是否可用多线程加快切割速度 
-                for (int i = 0; i < rows; i++) { 
-                    for (int j = 0; j < cols; j++) { 
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
                         // 四个参数分别为图像起点坐标和宽高 
                         // 即: CropImageFilter(int x,int y,int width,int height) 
                         cropFilter = new CropImageFilter(j * width, i * height, 
@@ -340,7 +340,7 @@ public class ImgUtil {
                     } 
                 } 
             } 
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace(); 
         } 
     } 
@@ -351,13 +351,13 @@ public class ImgUtil {
      * @param format 包含格式非正式名称的 String:如JPG、JPEG、GIF等 
      * @param dest 目标图像地址 
      */ 
-    public final static void convert(File src, String format, String dest) { 
-        try { 
+    public final static void convert(File src, String format, String dest) {
+        try {
             src.canRead(); 
             src.canWrite(); 
             BufferedImage img = ImageIO.read(src); 
             ImageIO.write(img, format, new File(dest)); 
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace(); 
         } 
     } 
@@ -367,14 +367,14 @@ public class ImgUtil {
      * @param src 源图像地址 
      * @param tar 目标图像地址 
      */ 
-    public final static void gray(File src, File tar) { 
-        try { 
+    public final static void gray(File src, File tar) {
+        try {
             BufferedImage img = ImageIO.read(src); 
             ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY); 
             ColorConvertOp op = new ColorConvertOp(cs, null); 
             img = op.filter(img, null); 
             ImageIO.write(img, "JPEG", tar); 
-        } catch (IOException e) { 
+        } catch (IOException e) {
             e.printStackTrace(); 
         } 
     } 
@@ -383,36 +383,36 @@ public class ImgUtil {
      * @param img  img
      * @return String
      */ 
-    public static String base64Img(File img) { 
+    public static String base64Img(File img) {
     	InputStream in = null; 
     	byte[] data = null; 
-        try { 
+        try {
             in = new FileInputStream(img); 
             data = new byte[in.available()]; 
             in.read(data); 
-        } catch (IOException e) { 
+        } catch (IOException e) {
             e.printStackTrace(); 
-        }finally{ 
-        	try{ 
+        }finally{
+        	try{
         		in.close(); 
-        	}catch(Exception e){ 
+        	}catch(Exception e){
         		e.printStackTrace(); 
         	} 
         }
 
         return new String(Base64.getEncoder().encode(data));
     } 
-    public static String base64(File img) { 
+    public static String base64(File img) {
     	return base64Img(img);
     } 
-    public static String base64Img(URL url) { 
+    public static String base64Img(URL url) {
     	byte[] data = null; 
  
 		HttpURLConnection conn = null; 
         InputStream is = null; 
         BufferedInputStream bis = null; 
         ByteArrayOutputStream baos = null; 
-    	try{ 
+    	try{
     		conn = (HttpURLConnection) url.openConnection(); 
 	        is = conn.getInputStream(); 
 	        bis = new BufferedInputStream(is); 
@@ -421,31 +421,31 @@ public class ImgUtil {
 	        final int EOF = -1; 
 	        int c; 
 	        byte[] buf = new byte[BUFFER_SIZE]; 
-	        while (true) { 
+	        while (true) {
 	            c = bis.read(buf); 
-	            if (c == EOF){ 
+	            if (c == EOF){
 	                break; 
 	            } 
 	            baos.write(buf, 0, c); 
 	        } 
 	        data = baos.toByteArray(); 
 	        baos.flush(); 
-    	}catch(Exception e){ 
+    	}catch(Exception e){
     		e.printStackTrace(); 
-    	}finally{ 
-    		try{ 
+    	}finally{
+    		try{
 		        conn.disconnect(); 
 		        is.close(); 
 		        bis.close(); 
 		        baos.close(); 
-    		}catch(Exception e){ 
+    		}catch(Exception e){
     			e.printStackTrace(); 
     		} 
     	}
 
         return Base64.getEncoder().encodeToString(data);
     } 
-    public static String base64(URL url) { 
+    public static String base64(URL url) {
     	return base64Img(url); 
     } 
     /** 
@@ -454,7 +454,7 @@ public class ImgUtil {
      * @param str  str
      * @return boolean
      */ 
-    public static boolean base64Img(File file, String str) { 
+    public static boolean base64Img(File file, String str) {
     	if (null == str || null == file) return false; 
     	File dir = file.getParentFile(); 
     	if(null != dir && !dir.exists()){
@@ -467,8 +467,8 @@ public class ImgUtil {
     		// 解密 
     		byte[] b = decoder.decode(str);
     		// 处理数据 
-    		for (int i = 0; i < b.length; ++i) { 
-    			if (b[i] < 0) { 
+    		for (int i = 0; i < b.length; ++i) {
+    			if (b[i] < 0) {
     				b[i] += 256; 
     			} 
     		} 
@@ -477,20 +477,20 @@ public class ImgUtil {
     		out.flush(); 
     		out.close(); 
     		return true; 
-    	} catch (Exception e) { 
+    	} catch (Exception e) {
     		e.printStackTrace(); 
     		return false; 
-    	} finally{ 
-    		if(null != out){ 
-    			try { 
+    	} finally{
+    		if(null != out){
+    			try {
 					out.close(); 
-				} catch (IOException e) { 
+				} catch (IOException e) {
 					e.printStackTrace(); 
 				} 
     		} 
     	} 
     } 
-    public static boolean base64(File file, String str) { 
+    public static boolean base64(File file, String str) {
     	return base64Img(file, str); 
     }  
     /** 
@@ -498,30 +498,30 @@ public class ImgUtil {
      * @param img  img
      * @return int
      */ 
-	public static int[] size(File img){ 
+	public static int[] size(File img){
     	int width = -1; 
     	int height = -1; 
     	BufferedImage bi = null; 
-		try { 
+		try {
 			bi = ImageIO.read(img); 
 	        width = bi.getWidth(); // 得到源图宽 
 	        height = bi.getHeight(); // 得到源图长 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
-		}finally{ 
-			try{ 
+		}finally{
+			try{
 				bi.flush(); 
-			}catch(Exception e){ 
+			}catch(Exception e){
 				 e.printStackTrace();
 			} 
 		} 
         int[] result = {width,height}; 
     	return result; 
     } 
-	public static int width(File img){ 
+	public static int width(File img){
 		return size(img)[0]; 
 	} 
-	public static int height(File img){ 
+	public static int height(File img){
 		return size(img)[1]; 
 	} 
 }

@@ -38,18 +38,18 @@ public class HSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	public String parseFinalQuery(Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
-		if(!"*".equals(cols)){ 
+		if(!"*".equals(cols)){
 			String reg = "(?i)^select[\\s\\S]+from"; 
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 
 		} 
 		OrderStore orders = run.getOrderStore(); 
-		if(null != orders){ 
+		if(null != orders){
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
 		PageNavi navi = run.getPageNavi(); 
-		if(null != navi){ 
+		if(null != navi){
 			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
-			if(limit < 0){ 
+			if(limit < 0){
 				limit = 0; 
 			} 
 			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow(); 

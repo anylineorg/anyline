@@ -30,15 +30,15 @@ public class DefaultGroup implements Group{
 	public DefaultGroup(String column){
 		setColumn(column); 
 	} 
-	public String getColumn() { 
+	public String getColumn() {
 		return column; 
 	} 
-	public void setColumn(String column) { 
-		if(null != column){ 
+	public void setColumn(String column) {
+		if(null != column){
 			this.column = column.trim(); 
 		} 
 	} 
-	public Object clone() throws CloneNotSupportedException{ 
+	public Object clone() throws CloneNotSupportedException{
 		DefaultGroup clone = (DefaultGroup)super.clone();
 		return clone; 
 	} 

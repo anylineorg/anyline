@@ -30,7 +30,7 @@ import javax.servlet.jsp.JspWriter;
 import java.util.*;
  
  
-public class Radio extends BaseBodyTag{ 
+public class Radio extends BaseBodyTag{
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
@@ -43,8 +43,8 @@ public class Radio extends BaseBodyTag{
 	private String labelClazz = "al-radio-item-label";
 	private String label = "";//label标签体,如果未定义label则生成默认label标签体{textKey} 
  
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public int doEndTag() throws JspException { 
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		StringBuffer html = new StringBuffer();
 //		valueKey = DataRow.keyCase(valueKey);
@@ -56,24 +56,24 @@ public class Radio extends BaseBodyTag{
 			if(BasicUtil.isEmpty(name)){
 				name = BasicUtil.getRandomLowerString(10);
 			} 
-			if(null != data){ 
-				if(data instanceof String){ 
-					if(data.toString().endsWith("}")){ 
+			if(null != data){
+				if(data instanceof String){
+					if(data.toString().endsWith("}")){
 						data = data.toString().replace("{", "").replace("}", "");
-					}else{ 
-						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){ 
+					}else{
+						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
-						}else if("session".equals(scope)){ 
+						}else if("session".equals(scope)){
 							data = request.getSession().getAttribute(data.toString()); 
-						}else{ 
+						}else{
 							data = request.getAttribute(data.toString()); 
 						} 
 					} 
 				} 
-				if(data instanceof String){ 
+				if(data instanceof String){
 					String items[] = data.toString().split(","); 
 					List list = new ArrayList(); 
-					for(String item:items){ 
+					for(String item:items){
 						Map map = new HashMap(); 
 						String ks[] = BeanUtil.parseKeyValue(item); 
 						map.put(valueKey, ks[0]); 
@@ -137,7 +137,7 @@ public class Radio extends BaseBodyTag{
 					String id = name +"_"+ value;
 					html.append(itemBorderStartTag);
 					html.append("<input type=\"radio\" value=\"").append(value).append("\" id=\"").append(id).append("\"");
-					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){ 
+					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html.append(" checked=\"checked\""); 
 					}
 					attribute(html);
@@ -170,16 +170,16 @@ public class Radio extends BaseBodyTag{
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(html); 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
 	} 
  
  
-	public Object getData() { 
+	public Object getData() {
 		return data; 
 	} 
  
@@ -194,27 +194,27 @@ public class Radio extends BaseBodyTag{
 	}
 
 
-	public void setData(Object data) { 
+	public void setData(Object data) {
 		this.data = data; 
 	} 
  
  
-	public String getValueKey() { 
+	public String getValueKey() {
 		return valueKey; 
 	} 
  
  
-	public void setValueKey(String valueKey) { 
+	public void setValueKey(String valueKey) {
 		this.valueKey = valueKey; 
 	} 
  
  
-	public String getTextKey() { 
+	public String getTextKey() {
 		return textKey; 
 	} 
  
  
-	public void setTextKey(String textKey) { 
+	public void setTextKey(String textKey) {
 		this.textKey = textKey; 
 	} 
  
@@ -236,7 +236,7 @@ public class Radio extends BaseBodyTag{
 		label = ""; 
 	} 
  
-	public String getScope() { 
+	public String getScope() {
 		return scope; 
 	} 
  
@@ -260,7 +260,7 @@ public class Radio extends BaseBodyTag{
 	}
 
 
-	public void setScope(String scope) { 
+	public void setScope(String scope) {
 		this.scope = scope; 
 	}
 

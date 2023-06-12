@@ -1,9 +1,8 @@
 package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.data.adapter.init.DefaultJDBCAdapter;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.entity.Join;
+import org.anyline.data.adapter.init.DefaultJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
@@ -15,6 +14,7 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.entity.*;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.Join;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;

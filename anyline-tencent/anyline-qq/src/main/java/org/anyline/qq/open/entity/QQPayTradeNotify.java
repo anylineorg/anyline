@@ -3,7 +3,7 @@ package org.anyline.qq.open.entity;
  * notify 结果 
  * 
  */ 
-public class QQPayTradeNotify { 
+public class QQPayTradeNotify {
 	private String appid			; // 应用ID	String(32)	否	腾讯开放平台审核通过的应用APPID或腾讯公众平台审核通过的公众号APPID	1007033799
 	private String mch_id			; // 商户号	String(32)	是	QQ钱包分配的商户号	1900000109
 	private String nonce_str		; // 随机字符串	String(32)	是	随机字符串,不长于32位	3e5a036cb4bc3a677a38ad9d69eb3feb
@@ -21,106 +21,106 @@ public class QQPayTradeNotify {
 	private String attach			; // 附加数据	String(128)	否	附加数据,在查询API和支付通知中原样返回,该字段主要用于商户携带订单的自定义数据	说明
 	private String time_end			; // 支付完成时间	String(14)	是	订单支付时间,格式为yyyyMMddHHmmss,如2009年12月25日9点10分10秒表示为20091225091010	20141030133525
 	private String openid			; // 用户标识	String(128)	否	用户在商户appid下的唯一标识	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o
-	public String getAppid() { 
+	public String getAppid() {
 		return appid; 
 	} 
-	public void setAppid(String appid) { 
+	public void setAppid(String appid) {
 		this.appid = appid; 
 	} 
-	public String getMch_id() { 
+	public String getMch_id() {
 		return mch_id; 
 	} 
-	public void setMch_id(String mch_id) { 
+	public void setMch_id(String mch_id) {
 		this.mch_id = mch_id; 
 	} 
-	public String getNonce_str() { 
+	public String getNonce_str() {
 		return nonce_str; 
 	} 
-	public void setNonce_str(String nonce_str) { 
+	public void setNonce_str(String nonce_str) {
 		this.nonce_str = nonce_str; 
 	} 
-	public String getSign() { 
+	public String getSign() {
 		return sign; 
 	} 
-	public void setSign(String sign) { 
+	public void setSign(String sign) {
 		this.sign = sign; 
 	} 
-	public String getDevice_info() { 
+	public String getDevice_info() {
 		return device_info; 
 	} 
-	public void setDevice_info(String device_info) { 
+	public void setDevice_info(String device_info) {
 		this.device_info = device_info; 
 	} 
-	public String getTrade_type() { 
+	public String getTrade_type() {
 		return trade_type; 
 	} 
-	public void setTrade_type(String trade_type) { 
+	public void setTrade_type(String trade_type) {
 		this.trade_type = trade_type; 
 	} 
-	public String getTrade_state() { 
+	public String getTrade_state() {
 		return trade_state; 
 	} 
-	public void setTrade_state(String trade_state) { 
+	public void setTrade_state(String trade_state) {
 		this.trade_state = trade_state; 
 	} 
-	public String getBank_type() { 
+	public String getBank_type() {
 		return bank_type; 
 	} 
-	public void setBank_type(String bank_type) { 
+	public void setBank_type(String bank_type) {
 		this.bank_type = bank_type; 
 	} 
-	public String getFee_type() { 
+	public String getFee_type() {
 		return fee_type; 
 	} 
-	public void setFee_type(String fee_type) { 
+	public void setFee_type(String fee_type) {
 		this.fee_type = fee_type; 
 	} 
-	public String getTotal_fee() { 
+	public String getTotal_fee() {
 		return total_fee; 
 	} 
-	public void setTotal_fee(String total_fee) { 
+	public void setTotal_fee(String total_fee) {
 		this.total_fee = total_fee; 
 	} 
-	public String getCash_fee() { 
+	public String getCash_fee() {
 		return cash_fee; 
 	} 
-	public void setCash_fee(String cash_fee) { 
+	public void setCash_fee(String cash_fee) {
 		this.cash_fee = cash_fee; 
 	} 
-	public String getCoupon_fee() { 
+	public String getCoupon_fee() {
 		return coupon_fee; 
 	} 
-	public void setCoupon_fee(String coupon_fee) { 
+	public void setCoupon_fee(String coupon_fee) {
 		this.coupon_fee = coupon_fee; 
 	} 
-	public String getTransaction_id() { 
+	public String getTransaction_id() {
 		return transaction_id; 
 	} 
-	public void setTransaction_id(String transaction_id) { 
+	public void setTransaction_id(String transaction_id) {
 		this.transaction_id = transaction_id; 
 	} 
-	public String getOut_trade_no() { 
+	public String getOut_trade_no() {
 		return out_trade_no; 
 	} 
-	public void setOut_trade_no(String out_trade_no) { 
+	public void setOut_trade_no(String out_trade_no) {
 		this.out_trade_no = out_trade_no; 
 	} 
-	public String getAttach() { 
+	public String getAttach() {
 		return attach; 
 	} 
-	public void setAttach(String attach) { 
+	public void setAttach(String attach) {
 		this.attach = attach; 
 	} 
-	public String getTime_end() { 
+	public String getTime_end() {
 		return time_end; 
 	} 
-	public void setTime_end(String time_end) { 
+	public void setTime_end(String time_end) {
 		this.time_end = time_end; 
 	} 
-	public String getOpenid() { 
+	public String getOpenid() {
 		return openid; 
 	} 
-	public void setOpenid(String openid) { 
+	public void setOpenid(String openid) {
 		this.openid = openid; 
 	} 
 	 

@@ -3648,7 +3648,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         for (DataRow row : rows) {
             String[] kv = reverseKey(keys);
-            if (set.contains(row, kv)) { // 符合交集
+            if (set.contains(row, kv)) {// 符合交集
                 if(!result.contains(row, kv)){//result中没有
                     result.add((DataRow) row.clone());
                 }else {
@@ -4081,7 +4081,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             String str = (String)value;
             int idx = str.indexOf("${");
             if(idx != -1) {
-                if(str.startsWith("$") && str.endsWith("}")){  // ${ID}
+                if(str.startsWith("$") && str.endsWith("}")){ // ${ID}
                     regex = 1; // 一个表达式
                     if (str.indexOf("${", idx + 2) > 0) {
                         if(idx != -1){

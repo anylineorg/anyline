@@ -77,7 +77,7 @@ public class TableBuilder {
         Object data = list[r];
         if(null != refs){
             for (String ref:refs) {
-                if(field.equals(ref)){ // 如果误加了 参考自己 忽略
+                if(field.equals(ref)){// 如果误加了 参考自己 忽略
                     continue;
                 }
                 int refIndex = fields.indexOf(ref);

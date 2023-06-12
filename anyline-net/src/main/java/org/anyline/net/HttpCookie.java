@@ -17,7 +17,7 @@
  */
 package org.anyline.net; 
  
-public class HttpCookie { 
+public class HttpCookie {
 	private String key; 
 	private String value; 
 	private String expires; 
@@ -26,59 +26,59 @@ public class HttpCookie {
 	public HttpCookie(){
 		
 	} 
-	public HttpCookie(String param){ 
+	public HttpCookie(String param){
 		// endDate=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/; domain=.anyline.org
-		if(null == param){ 
+		if(null == param){
 			return; 
 		} 
 		String params[] = param.split(";"); 
-		for(String p:params){ 
+		for(String p:params){
 			String[] kv = p.split("="); 
-			if(kv.length < 2){ 
+			if(kv.length < 2){
 				continue; 
 			} 
 			String k = kv[0].trim(); 
 			String v = kv[1].trim(); 
-			if("expires".equalsIgnoreCase(k)){ 
+			if("expires".equalsIgnoreCase(k)){
 				this.setKey(v); 
-			}else if("path".equalsIgnoreCase(k)){ 
+			}else if("path".equalsIgnoreCase(k)){
 				this.setPath(v); 
-			}else if("domain".equalsIgnoreCase(k)){ 
+			}else if("domain".equalsIgnoreCase(k)){
 				this.setDomain(v); 
-			}else{ 
+			}else{
 				this.setKey(k); 
 				this.setValue(v); 
 			} 
 		} 
 	} 
-	public String getKey() { 
+	public String getKey() {
 		return key; 
 	} 
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		this.key = key; 
 	} 
-	public String getValue() { 
+	public String getValue() {
 		return value; 
 	} 
-	public void setValue(String value) { 
+	public void setValue(String value) {
 		this.value = value; 
 	} 
-	public String getExpires() { 
+	public String getExpires() {
 		return expires; 
 	} 
-	public void setExpires(String expires) { 
+	public void setExpires(String expires) {
 		this.expires = expires; 
 	} 
-	public String getPath() { 
+	public String getPath() {
 		return path; 
 	} 
-	public void setPath(String path) { 
+	public void setPath(String path) {
 		this.path = path; 
 	} 
-	public String getDomain() { 
+	public String getDomain() {
 		return domain; 
 	} 
-	public void setDomain(String domain) { 
+	public void setDomain(String domain) {
 		this.domain = domain; 
 	} 
 	 

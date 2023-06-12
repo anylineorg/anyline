@@ -36,19 +36,19 @@ import org.slf4j.LoggerFactory;
  * @author zh 
  * 
  */ 
-public class Param extends BaseBodyTag implements Cloneable{ 
+public class Param extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String property; // 如果设置的property则调用父标签的setProperty(value)方法 
 	private String key; // 未设置property的前提下 如果指定了key则添加到父标签的paramMap中 未指定则添加到父标签的paramList中 
 	 
-	 public int doEndTag() throws JspException { 
-		try{ 
+	 public int doEndTag() throws JspException {
+		try{
 			Tag parent = this.getParent(); 
 			if(null != parent){
 				value = BasicUtil.nvl(value,body);
-				if(BasicUtil.isEmpty(property)){ 
+				if(BasicUtil.isEmpty(property)){
 					Method method = parent.getClass().getMethod("addParam",String.class, Object.class); 
-					if(null != method){ 
+					if(null != method){
 						method.invoke(parent, key, value);
 						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 							log.warn("[set parent param map][key:"+key+"][value:"+value+"]");
@@ -61,9 +61,9 @@ public class Param extends BaseBodyTag implements Cloneable{
 					}
 				} 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
@@ -71,7 +71,7 @@ public class Param extends BaseBodyTag implements Cloneable{
  
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		value = null;
 		body = null; 
@@ -79,10 +79,10 @@ public class Param extends BaseBodyTag implements Cloneable{
 		property = null; 
 	} 
  
-	public String getKey() { 
+	public String getKey() {
 		return key; 
 	} 
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		this.key = key; 
 	}
 

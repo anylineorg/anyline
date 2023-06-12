@@ -18,7 +18,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
  
-public class JPushUtil { 
+public class JPushUtil {
  
 	private JPushConfig config = null; 
 	private static Hashtable<String,JPushUtil> instances = new Hashtable<String,JPushUtil>(); 
@@ -33,15 +33,15 @@ public class JPushUtil {
 	public static Hashtable<String, JPushUtil> getInstances(){
 		return instances;
 	}
-	public static JPushUtil getInstance(){ 
+	public static JPushUtil getInstance(){
 		return getInstance(AnylineConfig.DEFAULT_INSTANCE_KEY);
 	} 
-	public static JPushUtil getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static JPushUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = JPushConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		JPushUtil util = instances.get(key); 
-		if(null == util){ 
+		if(null == util){
 			util = new JPushUtil(); 
 			JPushConfig config = JPushConfig.getInstance(key);
 			if(null != config) {
@@ -58,7 +58,7 @@ public class JPushUtil {
 		return util; 
 	} 
 	 
-	public JPushConfig getConfig() { 
+	public JPushConfig getConfig() {
 		return config; 
 	} 
 	/** 
@@ -70,21 +70,21 @@ public class JPushUtil {
 	 * @param tags 接收人 
 	 * @return boolean
 	 */ 
-	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){ 
-		if(null == extras){ 
+	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		boolean result = true; 
 		int size = tags.length; 
 		int cnt = (size-1) / 1000+1; 
-		for(int c=0; c<cnt; c++){ 
+		for(int c=0; c<cnt; c++){
 			int fr = c * 1000; 
 			int to = (c+1)*1000-1; 
-			if(to > size-1){ 
+			if(to > size-1){
 				to = size-1; 
 			} 
 			String[] args = new String[to-fr+1]; 
-			for(int i=0; i<= to-fr; i++){ 
+			for(int i=0; i<= to-fr; i++){
 				args[i] = tags[fr+i]; 
 			} 
 			result = sendByTag(type, title, msg, extras, args) && result; 
@@ -92,21 +92,21 @@ public class JPushUtil {
 		return result; 
 	} 
 	 
-	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){ 
-		if(null == extras){ 
+	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		boolean result = true; 
 		int size = tags.size(); 
 		int cnt = (size-1) / 1000+1; 
-		for(int c=0; c<cnt; c++){ 
+		for(int c=0; c<cnt; c++){
 			int fr = c * 1000; 
 			int to = (c+1)*1000-1; 
-			if(to > size-1){ 
+			if(to > size-1){
 				to = size-1; 
 			} 
 			String[] args = new String[to-fr+1]; 
-			for(int i=0; i<= to-fr; i++){ 
+			for(int i=0; i<= to-fr; i++){
 				args[i] = tags.get(fr+i); 
 			} 
 			result = sendByTag(type, title, msg, extras, args) && result; 
@@ -122,18 +122,18 @@ public class JPushUtil {
 	 * @param alias 接收人 
 	 * @return boolean
 	 */ 
-	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){ 
+	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
 		boolean result = true; 
 		int size = alias.length; 
 		int cnt = (size-1) / 1000+1; 
-		for(int c=0; c<cnt; c++){ 
+		for(int c=0; c<cnt; c++){
 			int fr = c * 1000; 
 			int to = (c+1)*1000-1; 
-			if(to > size-1){ 
+			if(to > size-1){
 				to = size-1; 
 			} 
 			String[] args = new String[to-fr+1]; 
-			for(int i=0; i<= to-fr; i++){ 
+			for(int i=0; i<= to-fr; i++){
 				args[i] = alias[fr+i]; 
 			} 
 			result = sendByAlias(type, title, msg, extras, args) && result; 
@@ -141,27 +141,27 @@ public class JPushUtil {
 		return result; 
 	} 
  
-	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){ 
+	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){
 		boolean result = true; 
 		int size = alias.size(); 
 		int cnt = (size-1) / 1000+1; 
-		for(int c=0; c<cnt; c++){ 
+		for(int c=0; c<cnt; c++){
 			int fr = c * 1000; 
 			int to = (c+1)*1000-1; 
-			if(to > size-1){ 
+			if(to > size-1){
 				to = size-1; 
 			} 
 			String[] args = new String[to-fr+1]; 
-			for(int i=0; i<= to-fr; i++){ 
+			for(int i=0; i<= to-fr; i++){
 				args[i] = alias.get(fr+i); 
 			} 
 			result = sendByAlias(type, title, msg, extras, args) && result; 
 		} 
 		return result; 
 	} 
-	private boolean sendByAlias(String type, String title, String msg, Map<String,String> extras, String[] alias){ 
+	private boolean sendByAlias(String type, String title, String msg, Map<String,String> extras, String[] alias){
 		boolean result = false; 
-		try { 
+		try {
 			PushPayload pl = buildPushObject_Alias(type, title, msg, extras, alias); 
 			PushResult pr = client.sendPush(pl); 
 			result = pr.isResultOK(); 
@@ -170,16 +170,16 @@ public class JPushUtil {
 //			pl = buildPushObject_Alias_IOS(type, title, extras, alias); 
 //			pr = client.sendPush(pl); 
 //			result = pr.isResultOK() && result; 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 			result = false; 
 		} 
 		return result; 
 	} 
  
-	private boolean sendByTag(String type, String title, String msg, Map<String,String> extras, String[] tags){ 
+	private boolean sendByTag(String type, String title, String msg, Map<String,String> extras, String[] tags){
 		boolean result = false; 
-		try { 
+		try {
 			extras.put("MESSAGE", msg); 
 			extras.put("TITLE", title); 
 //			 
@@ -190,15 +190,15 @@ public class JPushUtil {
 //			pl = buildPushObjec_Tag_IOS(type, title, extras, tags);
 //			pr = client.sendPush(pl); 
 //			result = pr.isResultOK() && result; 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 			result = false; 
 		} 
 		return result; 
 	} 
-	@SuppressWarnings({ "unused", "static-access" })
-	private PushPayload buildPushObjectByTag(String type, String title, String msg, Map<String, String> extras,String[] tags) { 
-		if(null == extras){ 
+	@SuppressWarnings({"unused", "static-access" })
+	private PushPayload buildPushObjectByTag(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		return PushPayload.newBuilder() 
@@ -217,8 +217,8 @@ public class JPushUtil {
 	} 
  
 	@SuppressWarnings("static-access")
-	private PushPayload buildPushObject_Alias(String type, String title, String msg, Map<String, String> extras,String[] alias) { 
-		if(null == extras){ 
+	private PushPayload buildPushObject_Alias(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		return PushPayload.newBuilder() 
@@ -236,8 +236,8 @@ public class JPushUtil {
 								.build(); 
 	} 
 	 
-	private PushPayload buildPushObjec_Tag_Android(String type, String title, String msg, Map<String, String> extras,String[] tags) { 
-		if(null == extras){ 
+	private PushPayload buildPushObjec_Tag_Android(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		return PushPayload.newBuilder() 
@@ -255,8 +255,8 @@ public class JPushUtil {
 								.build(); 
 	} 
 	@SuppressWarnings("unused")
-	private PushPayload buildPushObject_Alias_Android(String type, String title, String msg, Map<String, String> extras,String[] alias) { 
-		if(null == extras){ 
+	private PushPayload buildPushObject_Alias_Android(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		return PushPayload.newBuilder() 
@@ -274,8 +274,8 @@ public class JPushUtil {
 								.build(); 
 	} 
 	@SuppressWarnings("unused")
-	private PushPayload buildPushObjec_Tag_IOS(String type, String title,Map<String, String> extras,String[] tags) { 
-		if(null == extras){ 
+	private PushPayload buildPushObjec_Tag_IOS(String type, String title,Map<String, String> extras,String[] tags) {
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		return PushPayload.newBuilder() 
@@ -293,8 +293,8 @@ public class JPushUtil {
 								.build(); 
 	} 
 	@SuppressWarnings("unused")
-	private PushPayload buildPushObject_Alias_IOS(String type, String title,Map<String, String> extras,String[] alias) { 
-		if(null == extras){ 
+	private PushPayload buildPushObject_Alias_IOS(String type, String title,Map<String, String> extras,String[] alias) {
+		if(null == extras){
 			extras = new HashMap<String,String>(); 
 		} 
 		return PushPayload.newBuilder() 

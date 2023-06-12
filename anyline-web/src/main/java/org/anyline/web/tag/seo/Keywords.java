@@ -41,31 +41,31 @@ import org.slf4j.LoggerFactory;
  * @author zh 
  * 
  */ 
-public class Keywords extends BaseBodyTag{ 
+public class Keywords extends BaseBodyTag{
 	private static final long serialVersionUID = 1L; 
 	// <seo:keyword key="java" count="3"/>
 	// <al:param key ="" count="3"/>
  
 	 
-	public int doAfterBody() throws JspException { 
+	public int doAfterBody() throws JspException {
 		return super.doAfterBody(); 
 	} 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
     } 
-	 public int doEndTag() throws JspException { 
+	 public int doEndTag() throws JspException {
 		JspWriter out = null; 
-		try{ 
+		try{
 			HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 			boolean insert = false;	// 是否插入关键词
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS",insert); 
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS_"+request.getServerName(),insert); 
 			 
-			if(insert && WebUtil.isSpider(request)){ 
+			if(insert && WebUtil.isSpider(request)){
 				List<String> keys = new ArrayList<>();
-				if(null != paramList){ 
-					for(Object item:paramList){ 
-						if(null != item){ 
+				if(null != paramList){
+					for(Object item:paramList){
+						if(null != item){
 							keys.add(item.toString().trim()); 
 						} 
 					} 
@@ -76,22 +76,22 @@ public class Keywords extends BaseBodyTag{
 			out.print(body); 
 		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		body = null; 
 	} 
  
-	public BodyContent getBodyContent() { 
+	public BodyContent getBodyContent() {
 		return super.getBodyContent(); 
 	} 
  
-	public void setBodyContent(BodyContent b) { 
+	public void setBodyContent(BodyContent b) {
 		super.setBodyContent(b); 
 	} 
  

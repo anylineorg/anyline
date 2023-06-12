@@ -185,7 +185,7 @@ public final class AwkPattern implements Pattern, Serializable {
     }
   }
 
-  int[] _getStateArray(int state) { return ((int[])_Dtrans.elementAt(state)); }
+  int[] _getStateArray(int state) {return ((int[])_Dtrans.elementAt(state)); }
 
 
   /**
@@ -194,7 +194,7 @@ public final class AwkPattern implements Pattern, Serializable {
    * @return The original string representation of the regular expression
    *         pattern.
    */
-  public String getPattern() { return _expression; }
+  public String getPattern() {return _expression; }
 
 
   /**
@@ -203,6 +203,6 @@ public final class AwkPattern implements Pattern, Serializable {
    * <p>
    * @return The compilation options used to compile the pattern.
    */
-  public int getOptions()    { return _options; }
+  public int getOptions()    {return _options; }
 }
 

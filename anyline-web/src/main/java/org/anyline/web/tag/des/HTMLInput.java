@@ -31,7 +31,7 @@ import org.anyline.web.tag.ComponentTag;
 public class HTMLInput extends ComponentTag{
 	private static final long serialVersionUID = 1L; 
  
-	public void createHead(Object obj){ 
+	public void createHead(Object obj){
 		setEncryptKey(true);
 		if("hidden".equalsIgnoreCase(type)){
 			setEncryptValue(true);
@@ -41,13 +41,13 @@ public class HTMLInput extends ComponentTag{
 		createValue(value); 
 		builder.append(">"); 
 	} 
-	public void createBody(Object obj){ 
+	public void createBody(Object obj){
 		 
 	} 
-	public void createEnd(){ 
+	public void createEnd(){
 		builder.append("</input>"); 
-		if("checkbox".equalsIgnoreCase(type) || "radio".equals(type)){ 
-			if(BasicUtil.isNotEmpty(body)){ 
+		if("checkbox".equalsIgnoreCase(type) || "radio".equals(type)){
+			if(BasicUtil.isNotEmpty(body)){
 				builder.append("<label for=\""); 
 				builder.append(DESUtil.encryptParamKey(id)); 
 				builder.append("\">"); 
@@ -56,18 +56,18 @@ public class HTMLInput extends ComponentTag{
 			} 
 		} 
 	} 
-	private void createValue(Object data){ 
-		if(null != data && null != property){ 
-			try{ 
+	private void createValue(Object data){
+		if(null != data && null != property){
+			try{
 				Object v = BeanUtil.getFieldValue(data, property); 
-				if(null != v){ 
+				if(null != v){
 					value = v.toString(); 
 				} 
-			}catch(Exception e){ 
+			}catch(Exception e){
 				e.printStackTrace(); 
 			} 
 		} 
-		if(encryptValue && null != value){ 
+		if(encryptValue && null != value){
 			value = DESUtil.encryptParamValue(value.toString()); 
 		} 
 		value = BasicUtil.nvl(value,"").toString(); 

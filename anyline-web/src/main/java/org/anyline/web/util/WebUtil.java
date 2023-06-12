@@ -583,7 +583,7 @@ public class WebUtil {
 				return false;
 			}
 			String agentcheck = agent.trim().toLowerCase();
-			String[] keywords = { "mobile", "android", "symbianos", "iphone",
+			String[] keywords = {"mobile", "android", "symbianos", "iphone",
 					"wp\\d*", "windows phone", "mqqbrowser", "nokia", "samsung",
 					"midp-2", "untrusted/1.0", "windows ce", "blackberry", "ucweb",
 					"brew", "j2me", "yulong", "coolpad", "tianyu", "ty-",

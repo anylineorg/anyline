@@ -70,7 +70,7 @@ final class QuestionNode extends OrNode {
     super(child, _epsilon);
   }
 
-  boolean _nullable() { return true; }
+  boolean _nullable() {return true; }
 
   SyntaxNode _clone(int pos[]) {
     return new QuestionNode(_left._clone(pos));

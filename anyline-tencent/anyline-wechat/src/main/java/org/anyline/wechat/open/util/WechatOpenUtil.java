@@ -68,11 +68,11 @@ public class WechatOpenUtil {
 		return getInstance(WechatOpenConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatOpenUtil getInstance(String key){
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = WechatOpenConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		WechatOpenUtil util = instances.get(key);
-		if(null == util){ 
+		if(null == util){
 			WechatOpenConfig config = WechatOpenConfig.getInstance(key);
 			if(null != config) {
 				util = new WechatOpenUtil(config);

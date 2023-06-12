@@ -30,7 +30,7 @@ import javax.servlet.jsp.JspWriter;
 import java.util.List;
  
  
-public class Text extends BaseBodyTag{ 
+public class Text extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
 	private Object data;
@@ -40,7 +40,7 @@ public class Text extends BaseBodyTag{
 	private String nvl = null;
 	private String evl = null;
 	 
-	public int doStartTag() throws JspException { 
+	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException {
@@ -109,15 +109,15 @@ public class Text extends BaseBodyTag{
 					out.print(result);
 				}
 			}
-		}catch(Exception e){ 
+		}catch(Exception e){
 		 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;    
 	} 
 	@Override 
-    public void release(){ 
+    public void release(){
 		super.release();
 		data = null;
 		property = null;

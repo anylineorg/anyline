@@ -35,25 +35,25 @@ public class ImageResult extends StrutsResultSupport {
 	private static final Logger log = LoggerFactory.getLogger(ImageResult.class); 
 	private Object data = null; 
  
-	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception { 
+	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
 		HttpServletResponse response = (HttpServletResponse) invocation.getInvocationContext().get(HTTP_RESPONSE); 
-		try { 
+		try {
  
 			File file = null; 
 			String title = null; 
 			data = invocation.getStack().findValue("data"); 
-			if (data instanceof File) { 
+			if (data instanceof File) {
 				file = (File) data; 
 				title = file.getName(); 
-			} else if (data instanceof DataRow) { 
+			} else if (data instanceof DataRow) {
 				DataRow row = (DataRow) data; 
 				file = new File(row.getString("PATH")); 
 				title = row.getString("NM"); 
 			} 
-			if (null != file && file.exists()) { 
+			if (null != file && file.exists()) {
 				WebUtil.download(response, file, title); 
 			} 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace(); 
 		} 
 	} 

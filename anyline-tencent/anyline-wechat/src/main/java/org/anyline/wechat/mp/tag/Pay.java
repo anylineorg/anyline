@@ -34,7 +34,7 @@ import java.util.Map;
  * 微信 wx.config
  *
  */ 
-public class Pay extends BaseBodyTag { 
+public class Pay extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private boolean debug = false;
 	private String prepay= "";
@@ -93,7 +93,7 @@ public class Pay extends BaseBodyTag {
 			out.println(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			release(); 
 		} 
 		return EVAL_PAGE; 

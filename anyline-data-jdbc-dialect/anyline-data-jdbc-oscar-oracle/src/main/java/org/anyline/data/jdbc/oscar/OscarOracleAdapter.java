@@ -3,14 +3,13 @@ package org.anyline.data.jdbc.oscar;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
-import org.anyline.data.entity.*;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.data.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
@@ -102,16 +101,16 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		int first = 0; 
 		int last = 0; 
 		String order = ""; 
-		if(null != orders){ 
+		if(null != orders){
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
-		if(null != navi){ 
+		if(null != navi){
 			first = navi.getFirstRow(); 
 			last = navi.getLastRow(); 
 		} 
 		if(null == navi){
 			builder.append(sql).append("\n").append(order); 
-		}else{ 
+		}else{
 			// 分页 
 				builder.append("SELECT "+cols+" FROM( \n");
 				builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
@@ -888,7 +887,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -914,7 +913,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 */
 
 	@Override
-	public <T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		return super.triggers(index, create, table, triggers, set);
 	}
 
@@ -1297,7 +1296,6 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	@Override
 	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		List<String> sqls = new ArrayList<>();
-		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
@@ -2087,7 +2085,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
-		return buildCreateRunSQL(trigger);
+		return super.buildCreateRunSQL(trigger);
 	}
 	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
 		super.each(builder, trigger);

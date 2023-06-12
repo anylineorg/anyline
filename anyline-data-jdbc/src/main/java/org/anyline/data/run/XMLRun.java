@@ -56,34 +56,34 @@ public class XMLRun extends BasicRun implements Run {
 		return this; 
 	}
 
-	public void init(){ 
+	public void init(){
 		super.init(); 
-		if(null != configStore){ 
+		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
 				setConditionValue(conf.isRequire(),  
 						conf.isStrictRequired(), conf.getPrefix(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			} 
 			 
 			OrderStore orderStore = configStore.getOrders(); 
-			if(null != orderStore){ 
+			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders(); 
-				if(null != orders){ 
-					for(Order order:orders){ 
+				if(null != orders){
+					for(Order order:orders){
 						this.orderStore.order(order); 
 					} 
 				} 
 			} 
 			PageNavi navi = configStore.getPageNavi(); 
-			if(navi != null){ 
+			if(navi != null){
 				this.pageNavi = navi; 
 			} 
 		} 
 		// condition赋值 
-		if(null != conditions){ 
-			for(String condition:conditions){ 
+		if(null != conditions){
+			for(String condition:conditions){
 				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
-				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE){ 
+				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE){
 					 value = BeanUtil.object2list(value);
 				} 
 				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
@@ -92,26 +92,26 @@ public class XMLRun extends BasicRun implements Run {
 		// 检查必须条件required strictRequired 
 		for(Condition con:conditionChain.getConditions()){
 			if(!con.isActive()){//没有根据value激活 
-				if(con.isRequired()){ 
+				if(con.isRequired()){
 					con.setActive(true); 
 					List<Variable> vars = con.getVariables();
-					if(null != vars){ 
+					if(null != vars){
 						for(Variable var:vars){
 							var.setValue(false,null); 
 						} 
 					} 
 				} 
-				if(con.isStrictRequired()){ 
+				if(con.isStrictRequired()){
 					log.warn("[valid:false][不具备执行条件][con:{}]",con.getId());
 					this.valid = false; 
 				} 
 			} 
 		} 
 		GroupStore groupStore = prepare.getGroups();
-		if(null != groupStore){ 
+		if(null != groupStore){
 			List<Group> groups = groupStore.getGroups();
-			if(null != groups){ 
-				for(Group group:groups){ 
+			if(null != groups){
+				for(Group group:groups){
 					this.groupStore.group(group); 
 				} 
 			} 
@@ -121,14 +121,14 @@ public class XMLRun extends BasicRun implements Run {
 		checkValid();
 	}
 
-	private void checkValid(){ 
-		if(!valid){ 
+	private void checkValid(){
+		if(!valid){
 			return; 
 		} 
-		if(null != variables){ 
+		if(null != variables){
 			for(Variable var:variables){
-				if(var.isRequired() || var.isStrictRequired()){ 
-					if(BasicUtil.isEmpty(true,var.getValues())){ 
+				if(var.isRequired() || var.isStrictRequired()){
+					if(BasicUtil.isEmpty(true,var.getValues())){
 						log.warn("[valid:false][不具备执行条件][var:{}]",var.getKey());
 						this.valid = false; 
 						return; 
@@ -136,16 +136,16 @@ public class XMLRun extends BasicRun implements Run {
 				} 
 			} 
 		} 
-		if(null != conditionChain && !conditionChain.isValid()){ 
+		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false; 
 			return; 
 		} 
 	} 
-	protected void parseText(){ 
+	protected void parseText(){
 		String result = prepare.getText();
-		if(null != variables){ 
+		if(null != variables){
 			for(Variable var:variables){
-				if(null == var){ 
+				if(null == var){
 					continue; 
 				} 
 				if(var.getType() == Variable.VAR_TYPE_REPLACE){
@@ -153,22 +153,22 @@ public class XMLRun extends BasicRun implements Run {
 					// CD = ${CD} 
 					List<Object> varValues = var.getValues(); 
 					String value = null; 
-					if(BasicUtil.isNotEmpty(true,varValues)){ 
+					if(BasicUtil.isNotEmpty(true,varValues)){
 						value = (String)varValues.get(0); 
-						if(null != value){ 
+						if(null != value){
 							value = value.replace("'", "").replace("%", ""); 
 						} 
 					} 
 					String replaceKey = var.getFullKey();
-					if(null != value){ 
+					if(null != value){
 						result = result.replace(replaceKey, value); 
-					}else{ 
+					}else{
 						result = result.replace(replaceKey, "NULL"); 
 					} 
 				} 
 			} 
 			for(Variable var:variables){
-				if(null == var){ 
+				if(null == var){
 					continue; 
 				}
 				// 符合占位需要替换如在''内
@@ -178,9 +178,9 @@ public class XMLRun extends BasicRun implements Run {
 					// CD = '{CD}' 
 					List<Object> varValues = var.getValues(); 
 					String value = null; 
-					if(BasicUtil.isNotEmpty(true,varValues)){ 
+					if(BasicUtil.isNotEmpty(true,varValues)){
 						value = (String)varValues.get(0); 
-						if(null != value){ 
+						if(null != value){
 							value = value.replace("'", "").replace("%", ""); 
 						} 
 					}
@@ -198,7 +198,7 @@ public class XMLRun extends BasicRun implements Run {
 			}
 			boolean IS_AUTO_SPLIT_ARRAY = ThreadConfig.check(DataSourceHolder.curDataSource()).IS_AUTO_SPLIT_ARRAY();
 			for(Variable var:variables){
-				if(null == var){ 
+				if(null == var){
 					continue; 
 				} 
 				if(var.getType() == Variable.VAR_TYPE_KEY){
@@ -207,20 +207,20 @@ public class XMLRun extends BasicRun implements Run {
 					// CD like '%:CD%' 
 					// CD like '%${CD}%'
 					List<Object> varValues = var.getValues(); 
-					if(BasicUtil.isNotEmpty(true, varValues)){ 
+					if(BasicUtil.isNotEmpty(true, varValues)){
  
 						String replaceKey = var.getFullKey();
-						if(var.getCompare() == Compare.LIKE){ 
+						if(var.getCompare() == Compare.LIKE){
 							// CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
 							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
 							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
-						}else if(var.getCompare() == Compare.LIKE_SUFFIX){ 
+						}else if(var.getCompare() == Compare.LIKE_SUFFIX){
 							result = result.replace("'%"+replaceKey+"'", adapter.concat("'%'","?"));
 							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
-						}else if(var.getCompare() == Compare.LIKE_PREFIX){ 
+						}else if(var.getCompare() == Compare.LIKE_PREFIX){
 							result = result.replace("'"+replaceKey+"%'", adapter.concat("?","'%'"));
 							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
-						}else if(var.getCompare() == Compare.IN){ 
+						}else if(var.getCompare() == Compare.IN){
 							// 多个值IN 
 							String replaceDst = "";  
 							for(Object tmp:varValues){
@@ -229,7 +229,7 @@ public class XMLRun extends BasicRun implements Run {
 							addValues(Compare.IN, var.getKey(), varValues, IS_AUTO_SPLIT_ARRAY);
 							replaceDst = replaceDst.trim().replace(" ", ","); 
 							result = result.replace(replaceKey, replaceDst); 
-						}else{ 
+						}else{
 							// 单个值 
 							result = result.replace(replaceKey, "?"); 
 							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
@@ -239,14 +239,14 @@ public class XMLRun extends BasicRun implements Run {
 			} 
 			// 添加其他变量值 
 			for(Variable var:variables){
-				if(null == var){ 
+				if(null == var){
 					continue; 
 				} 
 				// CD = ? 
 				if(var.getType() == Variable.VAR_TYPE_INDEX){
 					List<Object> varValues = var.getValues(); 
 					String value = null; 
-					if(BasicUtil.isNotEmpty(true, varValues)){ 
+					if(BasicUtil.isNotEmpty(true, varValues)){
 						value = (String)varValues.get(0); 
 					} 
 					addValues(Compare.EQUAL, var.getKey(), value, IS_AUTO_SPLIT_ARRAY);
@@ -261,39 +261,39 @@ public class XMLRun extends BasicRun implements Run {
 		// appendOrderStore();
 	} 
  
-	private void copyParam(){ 
+	private void copyParam(){
 		// 复制XML RunPrepare 变量 
 		List<Variable> xmlVars = prepare.getSQLVariables();
-		if(null != xmlVars){ 
-			if(null == this.variables){ 
+		if(null != xmlVars){
+			if(null == this.variables){
 				variables = new ArrayList<Variable>();
 			} 
 			for(Variable var:xmlVars){
-				if(null == var){ 
+				if(null == var){
 					continue; 
 				} 
-				try{ 
+				try{
 					variables.add((Variable)var.clone());
-				}catch(Exception e){ 
+				}catch(Exception e){
 					e.printStackTrace(); 
 				} 
 			} 
 		} 
 		// 复制XML RunPrepare 查询条件 
 		ConditionChain xmlConditionChain = prepare.getConditionChain();
-		if(null != xmlConditionChain){ 
-			if(null == this.conditionChain){ 
+		if(null != xmlConditionChain){
+			if(null == this.conditionChain){
 				this.conditionChain = new DefaultXMLConditionChain();
 			} 
 			List<Condition> conditions = xmlConditionChain.getConditions(); 
-			if(null != conditions){ 
-				for(Condition condition:conditions){ 
-					if(null == condition){ 
+			if(null != conditions){
+				for(Condition condition:conditions){
+					if(null == condition){
 						continue; 
 					} 
-					try{ 
+					try{
 						this.conditionChain.addCondition((Condition)condition.clone()); 
-					}catch(Exception e){ 
+					}catch(Exception e){
 						e.printStackTrace(); 
 					} 
 				} 
@@ -301,27 +301,27 @@ public class XMLRun extends BasicRun implements Run {
 		} 
 		// 复制XML RunPrepare ORDER 
 		OrderStore xmlOrderStore = prepare.getOrders();
-		if(null != xmlOrderStore){ 
+		if(null != xmlOrderStore){
 			List<Order> xmlOrders = xmlOrderStore.getOrders(); 
-			if(null != xmlOrders){ 
-				for(Order order:xmlOrders){ 
+			if(null != xmlOrders){
+				for(Order order:xmlOrders){
 					this.orderStore.order(order); 
 				} 
 			} 
 		} 
 		// 复制 XML RunPrepare GROUP 
 		GroupStore xmlGroupStore = prepare.getGroups();
-		if(null != xmlGroupStore){ 
+		if(null != xmlGroupStore){
 			List<Group> xmlGroups = xmlGroupStore.getGroups(); 
-			if(null != xmlGroups){ 
-				for(Group group:xmlGroups){ 
+			if(null != xmlGroups){
+				for(Group group:xmlGroups){
 					this.groupStore.group(group); 
 				} 
 			} 
 		} 
 				 
 	} 
-	private void appendGroup(){ 
+	private void appendGroup(){
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		} 
@@ -330,12 +330,12 @@ public class XMLRun extends BasicRun implements Run {
 	 * 检测test表达式 
 	 */ 
 	@SuppressWarnings("rawtypes")
-	private void checkTest(){ 
-		if(null != conditionChain){ 
-			for(Condition con:conditionChain.getConditions()){ 
+	private void checkTest(){
+		if(null != conditionChain){
+			for(Condition con:conditionChain.getConditions()){
 				String test = con.getTest(); 
  
-				if(null != test){ 
+				if(null != test){
 					Map<String,Object> map = con.getRunValuesMap(); 
 					Map<String,Object> runtimeValues = new HashMap<String,Object>();
 					// 如果是数组只取第0个值 ognl不支持数组
@@ -350,23 +350,23 @@ public class XMLRun extends BasicRun implements Run {
 					    	}
 					    }
 					}
-					try { 
+					try {
 						OgnlContext context = new OgnlContext(null, null, new DefaultOgnlMemberAccess(true));
 						Boolean result = (Boolean) Ognl.getValue(test,context, runtimeValues); 
-						if(!result){ 
+						if(!result){
 							con.setActive(false); 
-						}else{ 
-							if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){ 
+						}else{
+							if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){
 								con.setActive(true); 
 								conditionChain.setActive(true); 
 							} 
 						} 
-					} catch (OgnlException e) { 
+					} catch (OgnlException e) {
 						e.printStackTrace(); 
 					} 
-				}else{ 
+				}else{
 					// 无test条件 
-					if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){ 
+					if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){
 						con.setActive(true); 
 						conditionChain.setActive(true); 
 					} 
@@ -377,8 +377,8 @@ public class XMLRun extends BasicRun implements Run {
 	/** 
 	 * 拼接查询条件
 	 */ 
-	private void appendCondition(){ 
-		if(null == conditionChain || !conditionChain.isActive()){ 
+	private void appendCondition(){
+		if(null == conditionChain || !conditionChain.isActive()){
 			return; 
 		} 
 		if(!endWithWhere(builder.toString())){
@@ -386,17 +386,17 @@ public class XMLRun extends BasicRun implements Run {
 		}
 		builder.append(conditionChain.getRunText(null, adapter));
 		addValues(conditionChain.getRunValues()); 
-//		if(null != staticConditions){ 
-//			for(String con:staticConditions){ 
+//		if(null != staticConditions){
+//			for(String con:staticConditions){
 //				query.append("\nAND ").append(con); 
 //			} 
 //		} 
 	} 
-	private void appendStaticCondition(){ 
+	private void appendStaticCondition(){
 		if(!endWithWhere(builder.toString())){
 			builder.append(" WHERE 1=1");
 		} 
-		if(null != staticConditions){ 
+		if(null != staticConditions){
 			for(String con:staticConditions){
 				builder.append("\nAND ").append(con);
 			} 
@@ -405,19 +405,19 @@ public class XMLRun extends BasicRun implements Run {
 	 
 	public void setConfigs(ConfigStore configs) {
 		this.configStore = configs; 
-		if(null != configs){ 
+		if(null != configs){
 			this.pageNavi = configs.getPageNavi(); 
 			 
 		} 
 	} 
  
 	public Variable getVariable(String key){
-		if(null != variables){ 
+		if(null != variables){
 			for(Variable v:variables){
-				if(null == v){ 
+				if(null == v){
 					continue; 
 				} 
-				if(v.getKey().equalsIgnoreCase(key)){ 
+				if(v.getKey().equalsIgnoreCase(key)){
 					return v; 
 				} 
 			} 
@@ -426,12 +426,12 @@ public class XMLRun extends BasicRun implements Run {
 	} 
 	private List<Variable> getVariables(String key){
 		List<Variable> vars = new ArrayList<Variable>();
-		if(null != variables){ 
+		if(null != variables){
 			for(Variable v:variables){
-				if(null == v){ 
+				if(null == v){
 					continue; 
 				} 
-				if(v.getKey().equalsIgnoreCase(key)){ 
+				if(v.getKey().equalsIgnoreCase(key)){
 					vars.add(v); 
 				} 
 			} 
@@ -455,7 +455,7 @@ public class XMLRun extends BasicRun implements Run {
 		// 只提供var 不提供condition
 		if(null != variables &&  
 				(BasicUtil.isEmpty(prefix) || prefix.equals(variable))
-		){ 
+		){
 			List<Variable> vars = getVariables(variable);
 			for(Variable var:vars){
 				var.setValue(value); 
@@ -474,9 +474,9 @@ public class XMLRun extends BasicRun implements Run {
 
 		Variable var = getVariable(variable);
 		if(null == con && null == var){//没有对应的condition也没有对应的text中的变量 
-			if(this.isStrict()){ 
+			if(this.isStrict()){
 				return this; 
-			}else{ 
+			}else{
 				// 生成新条件 
 //				String column = variable;
 //				// String condition, String variable
@@ -485,15 +485,15 @@ public class XMLRun extends BasicRun implements Run {
 //				}
 				Condition newCon = new DefaultAutoCondition(required, strictRequired,prefix, variable, value, compare);
 				conditionChain.addCondition(newCon); 
-				if(newCon.isActive()){ 
+				if(newCon.isActive()){
 					conditionChain.setActive(true); 
 				} 
 			} 
 			return this; 
 		} 
-		if(null != con){ 
+		if(null != con){
 			con.setValue(variable, value); 
-			if(con.isActive()){ 
+			if(con.isActive()){
 				this.conditionChain.setActive(true); 
 			} 
 		} 
@@ -507,32 +507,32 @@ public class XMLRun extends BasicRun implements Run {
 		 
 	public Run addCondition(String ... conditions) {
 		/*添加查询条件*/ 
-		if(null != conditions){ 
-			for(String condition:conditions){ 
-				if(null == condition){ 
+		if(null != conditions){
+			for(String condition:conditions){
+				if(null == condition){
 					continue; 
 				}
 				condition = condition.trim(); 
 				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim(); 
-				if(up.startsWith("ORDER BY")){ 
+				if(up.startsWith("ORDER BY")){
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
 					String orders[] = orderStr.split(","); 
-					for(String item:orders){ 
+					for(String item:orders){
 						// sql.order(item); 
-						if(null != configStore){ 
+						if(null != configStore){
 							configStore.order(item); 
 						} 
-						if(null != this.orderStore){ 
+						if(null != this.orderStore){
 							this.orderStore.order(item); 
 						} 
 					} 
 					continue; 
-				}else if(up.startsWith("GROUP BY")){ 
+				}else if(up.startsWith("GROUP BY")){
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim(); 
 					String groups[] = groupStr.split(","); 
-					for(String item:groups){ 
+					for(String item:groups){
 						// sql.group(item); 
-						if(null != configStore){ 
+						if(null != configStore){
 							configStore.group(item); 
 						} 
 					} 
@@ -544,16 +544,16 @@ public class XMLRun extends BasicRun implements Run {
 		return this; 
 	} 
  
-	public void addSatticCondition(String condition){ 
-		if(null == staticConditions){ 
+	public void addSatticCondition(String condition){
+		if(null == staticConditions){
 			staticConditions = new ArrayList<>();
 		} 
-		if(!isStrict()){ 
+		if(!isStrict()){
 			staticConditions.add(condition); 
 		} 
 	} 
 	public Run addCondition(String condition) {
-		if(BasicUtil.isEmpty(condition)){ 
+		if(BasicUtil.isEmpty(condition)){
 			return this; 
 		} 
  
@@ -562,17 +562,17 @@ public class XMLRun extends BasicRun implements Run {
 			addSatticCondition(condition.substring(2, condition.length()-1));
 			return this; 
 		} 
-		if(condition.contains(":")){ 
+		if(condition.contains(":")){
 			// :符号是否表示时间 
 			boolean isTime = false; 
 			int idx = condition.indexOf(":"); 
 			// ''之内 
-			if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){ 
+			if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){
 				isTime = true; 
 			} 
 			if(!isTime){			 
 				// 需要解析的SQL 
-				if(null == conditions){ 
+				if(null == conditions){
 					conditions = new ArrayList<>();
 				} 
 				conditions.add(condition); 
@@ -585,14 +585,14 @@ public class XMLRun extends BasicRun implements Run {
  
 
 	public Run addOrders(OrderStore orderStore){
-		if(null == orderStore){ 
+		if(null == orderStore){
 			return this; 
 		} 
 		List<Order> orders = orderStore.getOrders(); 
-		if(null == orders){ 
+		if(null == orders){
 			return this; 
 		} 
-		for(Order order:orders){ 
+		for(Order order:orders){
 			this.orderStore.order(order); 
 		} 
 		return this; 
@@ -620,9 +620,9 @@ public class XMLRun extends BasicRun implements Run {
 	 * @return Run
 	 */
 	public Run addCondition(String prefix, String variable, Object value) {
-		if(null != variables && BasicUtil.isEmpty(variable)){ 
+		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
-				if(null == v){ 
+				if(null == v){
 					continue; 
 				} 
 				if(v.getKey().equalsIgnoreCase(prefix)){
@@ -635,7 +635,7 @@ public class XMLRun extends BasicRun implements Run {
 			return this; 
 		} 
 		Condition con = getCondition(prefix);
-		if(null == con){ 
+		if(null == con){
 			return this; 
 		} 
 		variable = BasicUtil.nvl(variable, prefix).toString();
@@ -643,7 +643,7 @@ public class XMLRun extends BasicRun implements Run {
 		return this; 
 	} 
  
-	public void setConfigStore(ConfigStore configStore) { 
+	public void setConfigStore(ConfigStore configStore) {
 		this.configStore = configStore; 
 	} 
 	public Run addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare){

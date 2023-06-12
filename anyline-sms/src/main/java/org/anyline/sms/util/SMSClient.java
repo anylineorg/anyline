@@ -19,21 +19,21 @@ import java.util.Map;
  * @author zh 
  *  
  */ 
-public class SMSClient { 
+public class SMSClient {
 	private static final Logger log = LoggerFactory.getLogger(SMSClient.class);
     private SMSConfig config = null; 
 	private static Hashtable<String,SMSClient> instances = new Hashtable<String,SMSClient>(); 
 
  
-	public static SMSClient getInstance(){ 
+	public static SMSClient getInstance(){
 		return getInstance(SMSConfig.DEFAULT_INSTANCE_KEY);
 	} 
-	public static SMSClient getInstance(String key){ 
+	public static SMSClient getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = SMSConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		SMSClient client = instances.get(key); 
-		if(null == client){ 
+		if(null == client){
 			client = new SMSClient(); 
 			SMSConfig config = SMSConfig.getInstance(key); 
 			client.config = config; 
@@ -54,7 +54,7 @@ public class SMSClient {
 	 */
 	public SMSResult send(String platform, String tenant, String sign, String template, String mobile, Map<String, String> params) {
 		SMSResult result = null; 
-		try{ 
+		try{
 			Map<String,Object> map = new HashMap<String,Object>(); 
 			map.put("a", config.APP_KEY);
 			map.put("k", config.APP_SECRET);
@@ -70,7 +70,7 @@ public class SMSClient {
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 				log.warn("[SMS SEND][mobile:{}][result:{}]",mobile,txt); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			result = new SMSResult(); 
 			result.setMsg(e.toString()); 
 			e.printStackTrace(); 
@@ -89,22 +89,22 @@ public class SMSClient {
 	 * @param params 参数
 	 * @return SMSResult
 	 */
-	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) { 
+	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
 		String mobile = ""; 
-		for(String item:mobiles){ 
-			if("".equals(mobile)){ 
+		for(String item:mobiles){
+			if("".equals(mobile)){
 				mobile = item; 
-			}else{ 
+			}else{
 				mobile += "," + item; 
 			} 
 		} 
 		return send(sign, template, mobile, params); 
 	} 
  
-	public SMSResult send(String template, String mobile, Map<String, String> params) { 
+	public SMSResult send(String template, String mobile, Map<String, String> params) {
 		return send(config.SIGN, template, mobile, params);
 	} 
-	public SMSResult send(String template, List<String> mobile, Map<String, String> params) { 
+	public SMSResult send(String template, List<String> mobile, Map<String, String> params) {
 		return send(config.SIGN, template, mobile, params);
 	} 
  

@@ -8,7 +8,7 @@ import org.anyline.util.ConfigTable;
 import java.io.File;
 import java.util.Hashtable;
 
-public class MinioConfig extends AnylineConfig{ 
+public class MinioConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir;
 
@@ -39,7 +39,7 @@ public class MinioConfig extends AnylineConfig{
 		return instances;
 	}
 
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
@@ -53,23 +53,23 @@ public class MinioConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件
 		load(); 
 	} 
-	public static void setConfigDir(File dir){ 
+	public static void setConfigDir(File dir){
 		configDir = dir; 
 		init(); 
 	} 
-	public static MinioConfig getInstance(){ 
+	public static MinioConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static MinioConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static MinioConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - MinioConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - MinioConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载
 			load(); 
 		} 
@@ -80,11 +80,11 @@ public class MinioConfig extends AnylineConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, MinioConfig.class, CONFIG_NAME);
 		MinioConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
-	private static void debug(){ 
+	private static void debug(){
 	}
 
 	public static MinioConfig register(String instance, DataRow row){

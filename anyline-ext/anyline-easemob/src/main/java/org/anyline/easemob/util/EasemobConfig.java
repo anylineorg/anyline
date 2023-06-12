@@ -28,7 +28,7 @@ public class EasemobConfig extends AnylineConfig{
 	public static Hashtable<String,AnylineConfig>getInstances(){
 		return instances;
 	}
-	static{ 
+	static{
 		init(); 
 		debug(); 
 	} 
@@ -42,19 +42,19 @@ public class EasemobConfig extends AnylineConfig{
 	/**
 	 * 初始化默认配置文件
 	 */
-	public static void init() { 
+	public static void init() {
 		// 加载配置文件 
 		load(); 
 	} 
-	public static EasemobConfig getInstance(){ 
+	public static EasemobConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
-	public static EasemobConfig getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+	public static EasemobConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
 			key = DEFAULT_INSTANCE_KEY;
 		} 
  
-		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - EasemobConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - EasemobConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			// 重新加载 
 			load(); 
 		} 
@@ -63,12 +63,12 @@ public class EasemobConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void load() { 
+	private synchronized static void load() {
 		load(instances, EasemobConfig.class, CONFIG_NAME);
 		EasemobConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	 
-	private static void debug(){ 
+	private static void debug(){
 	}
 	public static EasemobConfig register(String instance, DataRow row){
 		EasemobConfig config = parse(EasemobConfig.class, instance, row, instances, compatibles);

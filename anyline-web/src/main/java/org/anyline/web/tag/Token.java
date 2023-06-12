@@ -26,28 +26,28 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.anyline.web.util.TokenUtil;
  
-public class Token extends BodyTagSupport{ 
+public class Token extends BodyTagSupport{
 	private static final long serialVersionUID = 1L; 
-	public int doAfterBody() throws JspException { 
+	public int doAfterBody() throws JspException {
 		return super.doAfterBody(); 
 	} 
  
-	 public int doStartTag() throws JspException { 
+	 public int doStartTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String token = TokenUtil.createToken(request); 
-		if(null != token){ 
+		if(null != token){
 			JspWriter out = pageContext.getOut(); 
-			try{ 
+			try{
 				out.print(token); 
-			}catch(Exception e){ 
+			}catch(Exception e){
 				 
-			}finally{ 
+			}finally{
 				 
 			} 
 		} 
         return EVAL_BODY_INCLUDE; 
     }    
-	public int doEndTag() throws JspException {    
+	public int doEndTag() throws JspException {
 		 return EVAL_PAGE;    
 	} 
 }

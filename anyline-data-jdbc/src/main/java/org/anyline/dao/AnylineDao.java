@@ -18,10 +18,7 @@
 
 
 package org.anyline.dao;
-import org.anyline.entity.data.Function;
-import org.anyline.entity.data.Procedure;
-import org.anyline.entity.data.Trigger;
-import org.anyline.data.entity.*;
+
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -29,6 +26,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.*;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -300,7 +298,7 @@ public interface AnylineDao<E>{
 	 * 													trigger
 	 ******************************************************************************************************************/
 
-	<T extends org.anyline.entity.data.Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+	<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
 
 
 	/* *****************************************************************************************************************

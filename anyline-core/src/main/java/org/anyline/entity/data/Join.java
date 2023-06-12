@@ -1,4 +1,4 @@
-package org.anyline.data.entity;
+package org.anyline.entity.data;
 
 public class Join {
     public static enum TYPE{

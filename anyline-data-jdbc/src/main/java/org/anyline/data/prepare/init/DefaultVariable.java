@@ -60,11 +60,11 @@ public class DefaultVariable implements Variable {
 	private boolean strictRequired;
 	private boolean setValue;		//是否赋值过
 	 
-	public Object clone() throws CloneNotSupportedException{ 
+	public Object clone() throws CloneNotSupportedException{
 		DefaultVariable clone = (DefaultVariable) super.clone();
-		if(null != values){ 
+		if(null != values){
 			List<Object> cValues = new ArrayList<Object>(); 
-			for(Object value:values){ 
+			for(Object value:values){
 				Object tmp = value; 
 				cValues.add(tmp); 
 			} 
@@ -74,20 +74,20 @@ public class DefaultVariable implements Variable {
 		return clone; 
 	} 
 	 
-	public void init(){ 
-		if(null != values){ 
+	public void init(){
+		if(null != values){
 			values.clear(); 
 		}
 		setValue = false;
 	} 
-	public Compare getCompare() { 
+	public Compare getCompare() {
 		return compare; 
 	} 
-	public void setCompare(Compare compare) { 
+	public void setCompare(Compare compare) {
 		this.compare = compare; 
 	} 
-	public void addValue(Object value){ 
-		if(null == values){ 
+	public void addValue(Object value){
+		if(null == values){
 			values = new ArrayList<Object>(); 
 		} 
 		values.add(value);
@@ -96,17 +96,17 @@ public class DefaultVariable implements Variable {
 	public String getKey() {
 		return key; 
 	} 
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		this.key = key; 
 	} 
 	 
-	public List<Object> getValues() { 
+	public List<Object> getValues() {
 		return values; 
 	} 
 	public void setValue(Object value) {
 		setValue(true, value);
 	}
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	public void setValue(boolean chkNull, Object value) {
 		if(null == value && chkNull){
 			return;
@@ -123,10 +123,10 @@ public class DefaultVariable implements Variable {
 		}
 		setValue = true;
 	} 
-	public int getType() { 
+	public int getType() {
 		return type; 
 	} 
-	public void setType(int type) { 
+	public void setType(int type) {
 		this.type = type; 
 	}
 

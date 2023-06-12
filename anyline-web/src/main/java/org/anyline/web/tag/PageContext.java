@@ -31,36 +31,36 @@ import org.slf4j.LoggerFactory;
  * @author zh 
  * pageContext.setAttribute(key,value); 
  */ 
-public class PageContext extends BaseBodyTag implements Cloneable{ 
+public class PageContext extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
  
 	private String key; 
 	 
 	 
-	public int doEndTag() throws JspException { 
-		try{ 
-			if(null != key){ 
+	public int doEndTag() throws JspException {
+		try{
+			if(null != key){
 				pageContext.setAttribute(key, BasicUtil.nvl(value,body));
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
         return EVAL_PAGE;    
 	} 
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release();
 		value = null;
 		body = null; 
 		key = null; 
 	} 
-	public String getKey() { 
+	public String getKey() {
 		return key; 
 	} 
-	public void setKey(String key) { 
+	public void setKey(String key) {
 		this.key = key; 
 	} 
 }

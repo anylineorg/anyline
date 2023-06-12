@@ -30,19 +30,19 @@ import org.anyline.web.tag.BaseBodyTag;
  * @author zh 
  * 
  */ 
-public class DESUrl extends BaseBodyTag implements Cloneable{ 
+public class DESUrl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String value;		// 被加密数据 
  
-	public int doEndTag() throws JspException { 
-		try{ 
+	public int doEndTag() throws JspException {
+		try{
 			value = BasicUtil.nvl(value,body,"").toString().trim(); 
-			if(null != value && !"".equals(value)){ 
+			if(null != value && !"".equals(value)){
 				String result = ""; 
 				String url = value; 
 				String split = ""; 
 				String param = ""; 
-				if(value.contains("?")){ 
+				if(value.contains("?")){
 					url = value.substring(0, value.indexOf("?")); 
 					param = value.substring(value.indexOf("?")+1); 
 					split = "?"; 
@@ -51,29 +51,29 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 				JspWriter out = pageContext.getOut(); 
 				out.print(result); 
 			} 
-		}catch(Exception e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;    
 	} 
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		value = null;
 		body = null; 
 	} 
-	public String getValue() { 
+	public String getValue() {
 		return value; 
 	} 
  
-	public void setValue(String value) { 
+	public void setValue(String value) {
 		this.value = value; 
 	} 
  
 	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
+	protected Object clone() throws CloneNotSupportedException {
 		return super.clone(); 
 	} 
 } 

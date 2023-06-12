@@ -19,17 +19,17 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.entity.Join;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.AutoPrepare;
-import org.anyline.data.prepare.init.DefaultPrepare;
-import org.anyline.entity.Order;
-import org.anyline.entity.Compare;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.auto.AutoPrepare;
+import org.anyline.data.prepare.init.DefaultPrepare;
+import org.anyline.entity.Compare;
+import org.anyline.entity.Order;
+import org.anyline.entity.data.Join;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -158,7 +158,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 				tmp = src.substring(0, src.indexOf("}")+1);
 				src = src.substring(src.indexOf("}")+1);
 			}else{
-				tmp = src.substring(0, fr);  // 先把 ${ 之前的部分拆出: CD,
+				tmp = src.substring(0, fr);  // 先把 ${之前的部分拆出: CD,
 				src = src.substring(fr);     // 剩余部分: ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 			}
 			cols.add(tmp);

@@ -750,7 +750,7 @@ public final class AwkMatcher implements PatternMatcher {
    *         methods.  If no match was found by the last call, returns
    *         null.
    */
-  public MatchResult getMatch() { return __lastMatchResult; }
+  public MatchResult getMatch() {return __lastMatchResult; }
 
 }
 

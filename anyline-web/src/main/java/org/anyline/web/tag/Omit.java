@@ -25,7 +25,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
  
-public class Omit extends BaseBodyTag { 
+public class Omit extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private Integer right;
 	private Integer left;
@@ -34,9 +34,9 @@ public class Omit extends BaseBodyTag {
 	private Integer min;//最小长度(不小于 right+left+1)
 	private String value;
 	 
-	public int doEndTag() { 
+	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
-		if("".equals(src)){ 
+		if("".equals(src)){
 			return EVAL_BODY_INCLUDE; 
 		} 
  
@@ -88,16 +88,16 @@ public class Omit extends BaseBodyTag {
 			
 			result = l+BasicUtil.fillRChar("", ellipsis, fill)+r; 
 			writer.print(result); 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
-		}finally{ 
+		}finally{
 			release(); 
 		} 
 		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
 	} 
  
 	@Override 
-	public void release() { 
+	public void release() {
 		super.release(); 
 		value = null;
 		body = null;

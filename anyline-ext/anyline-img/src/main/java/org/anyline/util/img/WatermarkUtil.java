@@ -46,7 +46,7 @@ public class WatermarkUtil {
 	private float y = 0;								// 坐标Y
 	// xy按百分比
 	 
-	public WatermarkUtil(){ 
+	public WatermarkUtil(){
 		this.x = 0; 
 		this.y = 0; 
 	}
@@ -79,7 +79,7 @@ public class WatermarkUtil {
         InputStream is = null; 
         OutputStream os = null;
         BufferedImage buffImg = null;
-        try { 
+        try {
             Image srcImg = ImageIO.read(src); 
             buffImg = new BufferedImage(srcImg.getWidth(null),srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
             int width = buffImg.getWidth();
@@ -90,7 +90,7 @@ public class WatermarkUtil {
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR); 
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null); 
-            if (degree != 0) { 
+            if (degree != 0) {
                 // 设置水印旋转
                 g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2); 
             } 
@@ -109,7 +109,7 @@ public class WatermarkUtil {
             	format = "png";
             } 
             ImageIO.write(buffImg, format, os); 
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace(); 
         } finally {
             try {
@@ -124,23 +124,23 @@ public class WatermarkUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             } 
-            try { 
+            try {
                 if (null != os) 
                     os.close(); 
-            } catch (Exception e) { 
+            } catch (Exception e) {
                 e.printStackTrace(); 
             } 
         }
         log.warn("[添加水印][耗时:{}][text:{}][src:{}][target:{}]", DateUtil.conversion(System.currentTimeMillis()-fr),text, src.getAbsoluteFile(), target.getAbsoluteFile());
         return true; 
     } 
-    public void markText(String text, String src, String target){ 
+    public void markText(String text, String src, String target){
     	markText(text, new File(src), new File(target)); 
     } 
-    public void markText(String text, File src){ 
+    public void markText(String text, File src){
     	markText(text, src, src); 
     } 
-    public void markText(String text, String src){ 
+    public void markText(String text, String src){
     	markText(text, src, src); 
     }
     /** 
@@ -151,7 +151,7 @@ public class WatermarkUtil {
      * @param src 源图片路径 
      * @param target 目标图片路径 
      */ 
-    public void markIcon(File icon, int iconWidth, int iconHeight, File src, File target) { 
+    public void markIcon(File icon, int iconWidth, int iconHeight, File src, File target) {
         OutputStream os = null;
         BufferedImage buffImg = null;
         long fr = System.currentTimeMillis();
@@ -174,7 +174,7 @@ public class WatermarkUtil {
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR); 
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null); 
-            if (degree !=0) { 
+            if (degree !=0) {
                 // 设置水印旋转
                 g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2); 
             } 
@@ -202,7 +202,7 @@ public class WatermarkUtil {
             if(target.getName().toLowerCase().endsWith("png")){
             	format = "png";
             }
-            if ("jpg".equals(format)) { // 重画一下,要么会变色
+            if ("jpg".equals(format)) {// 重画一下,要么会变色
                 BufferedImage tag;
                 tag = new BufferedImage(buffImg.getWidth(), buffImg.getHeight(), BufferedImage.TYPE_INT_BGR);
                 Graphics gg = tag.getGraphics();
@@ -211,17 +211,17 @@ public class WatermarkUtil {
                 buffImg = tag;
             }
             ImageIO.write(buffImg, format, os);
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace(); 
         } finally {
         	try{
         		buffImg.flush();
         	}catch(Exception e){
         	} 
-            try { 
+            try {
                 if (null != os) 
                     os.close(); 
-            } catch (Exception e) { 
+            } catch (Exception e) {
                 e.printStackTrace(); 
             }
         }
@@ -270,49 +270,49 @@ public class WatermarkUtil {
     	this.x = x;
     	this.y = y;
     }
-    public void markIcon(String icon, String src, String target){ 
+    public void markIcon(String icon, String src, String target){
     	markIcon(new File(icon), new File(src), new File(target)); 
     } 
-    public void markIcon(File icon, File src){ 
+    public void markIcon(File icon, File src){
     	markIcon(icon, src, src); 
     } 
-    public void markIcon(String icon, String src){ 
+    public void markIcon(String icon, String src){
     	markIcon(icon, src, src); 
     } 
-	public Integer getDegree() { 
+	public Integer getDegree() {
 		return degree; 
 	} 
-	public void setDegree(Integer degree) { 
+	public void setDegree(Integer degree) {
 		this.degree = degree; 
 	} 
-	public Color getColor() { 
+	public Color getColor() {
 		return color; 
 	} 
-	public void setColor(Color color) { 
+	public void setColor(Color color) {
 		this.color = color; 
 	} 
-	public String getFontName() { 
+	public String getFontName() {
 		return fontName; 
 	} 
-	public void setFontName(String fontName) { 
+	public void setFontName(String fontName) {
 		this.fontName = fontName; 
 	} 
-	public int getFontStyle() { 
+	public int getFontStyle() {
 		return fontStyle; 
 	} 
-	public void setFontStyle(int fontStyle) { 
+	public void setFontStyle(int fontStyle) {
 		this.fontStyle = fontStyle; 
 	} 
-	public int getFontSize() { 
+	public int getFontSize() {
 		return fontSize; 
 	} 
-	public void setFontSize(int fontSize) { 
+	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize; 
 	} 
-	public float getAlpha() { 
+	public float getAlpha() {
 		return alpha; 
 	} 
-	public void setAlpha(float alpha) { 
+	public void setAlpha(float alpha) {
 		this.alpha = alpha; 
 	}
 } 

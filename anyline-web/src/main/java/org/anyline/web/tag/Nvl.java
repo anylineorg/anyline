@@ -37,7 +37,7 @@ import java.util.Arrays;
  * &lt;al:param&gt;2&lt;/al:param&gt;
  * &lt;/al:nvl&gt;
  */ 
-public class Nvl extends BaseBodyTag implements Cloneable{ 
+public class Nvl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 
 	private String scope;

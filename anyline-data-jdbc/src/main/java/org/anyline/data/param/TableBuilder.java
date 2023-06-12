@@ -1,8 +1,8 @@
 package org.anyline.data.param;
 
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.entity.Join;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
+import org.anyline.entity.data.Join;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;

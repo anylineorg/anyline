@@ -61,11 +61,11 @@ public class DefaultOrder implements Order{
 		setColumn(column);
 		setType(type);
 	} 
-	public String getColumn() { 
+	public String getColumn() {
 		return column; 
 	} 
-	public void setColumn(String column) { 
-		if(null != column){ 
+	public void setColumn(String column) {
+		if(null != column){
 			this.column = column.trim(); 
 		} 
 	} 
@@ -75,7 +75,7 @@ public class DefaultOrder implements Order{
 	public void setType(TYPE type) {
 		this.type = type; 
 	} 
-	public Object clone() throws CloneNotSupportedException{ 
+	public Object clone() throws CloneNotSupportedException{
 		DefaultOrder clone = (DefaultOrder)super.clone();
 		return clone; 
 	}
