@@ -30,6 +30,7 @@ public class Procedure {
 	private String catalog;
 	private String schema;
 	private String name;
+	private List<Parameter> parameters = new ArrayList<Parameter>();
 	private List<Parameter> inputs = new ArrayList<Parameter>();
 	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数,输入输出参数
 	private List<Object> result;	// 输出参数结果

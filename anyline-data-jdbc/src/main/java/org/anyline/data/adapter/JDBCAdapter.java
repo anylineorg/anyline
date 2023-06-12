@@ -1612,7 +1612,7 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	String buildCreateRunSQL(Trigger trigger) throws Exception;
 	void each(StringBuilder builder, Trigger trigger);
 
 	/**
@@ -1621,14 +1621,14 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return List
 	 */
-	List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
 
 	/**
 	 * 删除触发器
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	String buildDropRunSQL(Trigger trigger) throws Exception;
 
 	/**
 	 * 修改触发器名
@@ -1636,7 +1636,7 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	String buildRenameRunSQL(Trigger trigger) throws Exception;
 
 
 	/* *****************************************************************************************************************

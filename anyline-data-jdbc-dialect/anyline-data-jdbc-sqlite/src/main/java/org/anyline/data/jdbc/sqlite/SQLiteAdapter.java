@@ -1351,10 +1351,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception
-	 * List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
-	 * String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
-	 * String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 * String buildCreateRunSQL(Trigger trigger) throws Exception
+	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
+	 * String buildDropRunSQL(Trigger trigger) throws Exception;
+	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -1362,10 +1362,10 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public String buildCreateRunSQL(Trigger trigger) throws Exception{
 		return super.buildCreateRunSQL(trigger);
 	}
-	public void each(StringBuilder builder, org.anyline.entity.data.Trigger trigger){
+	public void each(StringBuilder builder, Trigger trigger){
 		super.each(builder, trigger);
 	}
 	/**
@@ -1375,7 +1375,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public List<String> buildAlterRunSQL(Trigger trigger) throws Exception{
 		return super.buildAlterRunSQL(trigger);
 	}
 
@@ -1385,7 +1385,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public String buildDropRunSQL(Trigger trigger) throws Exception{
 		return super.buildDropRunSQL(trigger);
 	}
 
@@ -1396,7 +1396,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public String buildRenameRunSQL(Trigger trigger) throws Exception{
 		return super.buildRenameRunSQL(trigger);
 	}
 
