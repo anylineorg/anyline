@@ -43,7 +43,7 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
-import org.anyline.entity.data.ProcedureParam;
+import org.anyline.entity.data.Parameter;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
@@ -1648,8 +1648,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected boolean execute(boolean recover, Procedure procedure){
 		boolean result = false;
 		List<Object> list = new ArrayList<Object>();
-		final List<ProcedureParam> inputs = procedure.getInputs();
-		final List<ProcedureParam> outputs = procedure.getOutputs();
+		final List<Parameter> inputs = procedure.getInputs();
+		final List<Parameter> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
 		String random = "";
 		String sql = " {";
@@ -1694,7 +1694,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							cs.registerOutParameter(1, Types.VARCHAR);
 						}
 						for (int i = 1; i <= sizeIn; i++) {
-							ProcedureParam param = inputs.get(i - 1);
+							Parameter param = inputs.get(i - 1);
 							Object value = param.getValue();
 							if (null == value || "NULL".equalsIgnoreCase(value.toString())) {
 								value = null;
@@ -1702,7 +1702,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							cs.setObject(i + returnIndex, value, param.getType());
 						}
 						for (int i = 1; i <= sizeOut; i++) {
-							ProcedureParam param = outputs.get(i - 1);
+							Parameter param = outputs.get(i - 1);
 							if (null == param.getValue()) {
 								cs.registerOutParameter(i + sizeIn + returnIndex, param.getType());
 							} else {
@@ -1779,8 +1779,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return querys(true, procedure, navi);
 	}
 	protected DataSet querys(boolean recover, Procedure procedure, PageNavi navi){
-		final List<ProcedureParam> inputs = procedure.getInputs();
-		final List<ProcedureParam> outputs = procedure.getOutputs();
+		final List<Parameter> inputs = procedure.getInputs();
+		final List<Parameter> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
@@ -1816,7 +1816,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 					CallableStatement cs = conn.prepareCall(sql);
 					for(int i=1; i<=sizeIn; i++){
-						ProcedureParam param = inputs.get(i-1);
+						Parameter param = inputs.get(i-1);
 						Object value = param.getValue();
 						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
 							value = null;
@@ -1824,7 +1824,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						cs.setObject(i, value, param.getType());
 					}
 					for(int i=1; i<=sizeOut; i++){
-						ProcedureParam param = outputs.get(i-1);
+						Parameter param = outputs.get(i-1);
 						if(null == param.getValue()){
 							cs.registerOutParameter(i+sizeIn, param.getType());
 						}else{

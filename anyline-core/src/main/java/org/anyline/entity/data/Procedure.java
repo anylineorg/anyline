@@ -35,8 +35,8 @@ public interface Procedure {
 	 * *******************************************************************/
 	public String getDefinition();
 	public void setDefinition(String definition);
-	public void addInput(ProcedureParam ... params);
-	public void addOutput(ProcedureParam ... params);
+	public void addInput(Parameter... params);
+	public void addOutput(Parameter... params);
 
 
 	/*******************************************************************
@@ -53,8 +53,8 @@ public interface Procedure {
 	public Procedure addInput(Object value, Integer type);
 	public Procedure addInput(String value);
 
-	public List<ProcedureParam> getInputs();
-	public List<ProcedureParam> getOutputs() ;
+	public List<Parameter> getInputs();
+	public List<Parameter> getOutputs() ;
 	/**
 	 * 注册输出参数
 	 * @param type	类型  type	类型

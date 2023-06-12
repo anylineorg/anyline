@@ -20,7 +20,7 @@
 package org.anyline.data.entity;
 
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.ProcedureParam;
+import org.anyline.entity.data.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +30,8 @@ import java.util.List;
 public class Procedure implements org.anyline.entity.data.Procedure {
 	private static final long serialVersionUID = -1421673036222025241L;
 	private String name;
-	private List<ProcedureParam> inputs = new ArrayList<ProcedureParam>();
-	private List<ProcedureParam> outputs = new ArrayList<ProcedureParam>();//输出参数,输入输出参数
+	private List<Parameter> inputs = new ArrayList<Parameter>();
+	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数,输入输出参数
 	private List<Object> result;	// 输出参数结果
 	private boolean hasReturn = false;
 	private PageNavi navi;
@@ -54,12 +54,12 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 	}
 
 	@Override
-	public void addInput(ProcedureParam... params) {
+	public void addInput(Parameter... params) {
 
 	}
 
 	@Override
-	public void addOutput(ProcedureParam... params) {
+	public void addOutput(Parameter... params) {
 
 	}
 
@@ -70,7 +70,7 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 	 * @return Procedure
 	 */
 	public Procedure addInput(Object value, Integer type){
-		ProcedureParam param = new ProcedureParam();
+		Parameter param = new Parameter();
 		param.setType(type);
 		param.setValue(value);
 		inputs.add(param);
@@ -94,7 +94,7 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 
 	@Override
 	public Procedure regOutput(Object value, Integer type) {
-		ProcedureParam param = new ProcedureParam();
+		Parameter param = new Parameter();
 		param.setValue(value);
 		param.setType(type);
 		outputs.add(param);
@@ -103,7 +103,7 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 
 	@Override
 	public Procedure regOutput(String value) {
-		ProcedureParam param = new ProcedureParam();
+		Parameter param = new Parameter();
 		param.setValue(value);
 		outputs.add(param);
 		return this;
@@ -125,12 +125,12 @@ public class Procedure implements org.anyline.entity.data.Procedure {
 	}
 
 	@Override
-	public List<ProcedureParam> getInputs() {
+	public List<Parameter> getInputs() {
 		return inputs;
 	}
 
 	@Override
-	public List<ProcedureParam> getOutputs() {
+	public List<Parameter> getOutputs() {
 		return outputs;
 	}
 

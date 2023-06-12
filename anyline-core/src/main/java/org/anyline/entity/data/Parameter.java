@@ -2,7 +2,7 @@ package org.anyline.entity.data;
 
 import org.anyline.entity.metadata.ColumnType;
 
-public class ProcedureParam {
+public class Parameter {
     private Object value;
     private ColumnType columnType;
     private Integer type = java.sql.Types.VARCHAR;
