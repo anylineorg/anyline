@@ -30,6 +30,7 @@ public class Procedure {
 	private String catalog;
 	private String schema;
 	private String name;
+	private String returnType;
 	private List<Parameter> parameters = new ArrayList<Parameter>();
 	private List<Parameter> inputs = new ArrayList<Parameter>();
 	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数,输入输出参数
@@ -83,17 +84,28 @@ public class Procedure {
 	}
 
 	/**
-	 * 注册输出参数
+	 * 注册输出参数(调用过程)
 	 * @param type	类型 type	类型
 	 * @return Procedure
 	 */
 	public Procedure regOutput(Integer type){
 		return regOutput(null, type);
 	}
+
+	/**
+	 * 注册输出参数(调用过程)
+	 * @return Procedure
+	 */
 	public Procedure regOutput(){
 		return regOutput(java.sql.Types.VARCHAR);
 	}
 
+	/**
+	 * 注册输出参数(调用过程)
+	 * @param value	值
+	 * @param type	类型 type	类型
+	 * @return Procedure
+	 */
 	
 	public Procedure regOutput(Object value, Integer type) {
 		Parameter param = new Parameter();
@@ -103,7 +115,12 @@ public class Procedure {
 		return this;
 	}
 
-	
+
+	/**
+	 * 注册输出参数(调用过程)
+	 * @param value	值
+	 * @return Procedure
+	 */
 	public Procedure regOutput(String value) {
 		Parameter param = new Parameter();
 		param.setValue(value);
@@ -153,8 +170,6 @@ public class Procedure {
 		this.navi = navi;
 		return this;
 	}
-
-	
 	public String getCatalog() {
 		return catalog;
 	}
@@ -169,7 +184,14 @@ public class Procedure {
 		return schema;
 	}
 
-	
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
+	}
+
 	public void setSchema(String schema) {
 		this.schema = schema;
 	}
