@@ -7,7 +7,10 @@
 [【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
 [【三种方式切换数据源】](http://doc.anyline.org/aa/64_3449)
 [【多数据源事务控制】](http://doc.anyline.org/ss/23_1189)
-
+低代码平台、数据中台等场景需要生成SQL(只生成不执行)参考
+[【JDBCAdapter】](http://doc.anyline.org/ss/01_1193)
+或
+[【AnylineDao】](https://gitee.com/anyline/anyline/blob/master/anyline-data-jdbc/src/main/java/org/anyline/dao/init/springjdbc/DefaultDao.java)
 ***快速开始请参考示例源码(各种各样最简单的hello world):***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
