@@ -1307,6 +1307,7 @@ public interface JDBCAdapter {
 	StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
 
 
+
 	boolean isIgnorePrecision(Column column);
 	boolean isIgnoreScale(Column column);
 	Boolean checkIgnorePrecision(String datatype);
@@ -1649,6 +1650,12 @@ public interface JDBCAdapter {
 	 */
 	String buildCreateRunSQL(Procedure procedure) throws Exception;
 
+	/**
+	 * 生在输入输出参数
+	 * @param builder builder
+	 * @param parameter parameter
+	 */
+	void parameter(StringBuilder builder, Parameter parameter);
 	/**
 	 * 修改存储过程
 	 * 有可能生成多条SQL
