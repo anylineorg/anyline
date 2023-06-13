@@ -1517,6 +1517,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	public StringBuilder defaultValue(StringBuilder builder, Column column){
 		return super.defaultValue(builder, column);
 	}
+
 	/**
 	 * 递增列
 	 * @param builder builder
@@ -1525,10 +1526,11 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		return super.increment(builder, column);
+		if(column.isAutoIncrement() == 1){
+			builder.append(" IDENTITY(").append(column.getIncrementSeed()).append(",").append(column.getIncrementStep()).append(")");
+		}
+		return builder;
 	}
-
-
 
 
 	/**
