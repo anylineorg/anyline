@@ -3055,17 +3055,94 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	@Override
-	public Boolean checkIgnorePrecision(String datatype) {
+	public Boolean checkIgnorePrecision(String type) {
+		type = type.toUpperCase();
+		if (type.contains("INT")) {
+			return false;
+		}
+		if (type.contains("DATE")) {
+			return true;
+		}
+		if (type.contains("TIME")) {
+			return true;
+		}
+		if (type.contains("YEAR")) {
+			return true;
+		}
+		if (type.contains("TEXT")) {
+			return true;
+		}
+		if (type.contains("BLOB")) {
+			return true;
+		}
+		if (type.contains("JSON")) {
+			return true;
+		}
+		if (type.contains("POINT")) {
+			return true;
+		}
+		if (type.contains("LINE")) {
+			return true;
+		}
+		if (type.contains("POLYGON")) {
+			return true;
+		}
+		if (type.contains("GEOMETRY")) {
+			return true;
+		}
 		return null;
 	}
 
+	/**
+	 *
+	 * @param type 数据类型 如varchar int
+	 * @return Boolean 检测不妯来时返回null
+	 */
 	@Override
-	public Boolean checkIgnoreScale(String datatype) {
+	public Boolean checkIgnoreScale(String type) {
+		type = type.toUpperCase();
+		if (type.contains("INT")) {
+			return true;
+		}
+		if (type.contains("DATE")) {
+			return true;
+		}
+		if (type.contains("TIME")) {
+			return true;
+		}
+		if (type.contains("YEAR")) {
+			return true;
+		}
+		if (type.contains("TEXT")) {
+			return true;
+		}
+		if (type.contains("BLOB")) {
+			return true;
+		}
+		if (type.contains("JSON")) {
+			return true;
+		}
+		if (type.contains("POINT")) {
+			return true;
+		}
+		if (type.contains("LINE")) {
+			return true;
+		}
+		if (type.contains("POLYGON")) {
+			return true;
+		}
+		if (type.contains("GEOMETRY")) {
+			return true;
+		}
 		return null;
 	}
 
 	@Override
 	public boolean isIgnorePrecision(Column column) {
+		ColumnType type = column.getColumnType();
+		if(null != type){
+			return type.ignorePrecision();
+		}
 		String typeName = column.getTypeName();
 		if(null != typeName){
 			String chk = typeName.toUpperCase();
@@ -3073,45 +3150,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(null != chkResult){
 				return chkResult;
 			}
-			if (chk.contains("INT")) {
-				return true;
-			}
-			if (chk.contains("DATE")) {
-				return true;
-			}
-			if (chk.contains("TIME")) {
-				return true;
-			}
-			if (chk.contains("YEAR")) {
-				return true;
-			}
-			if (chk.contains("TEXT")) {
-				return true;
-			}
-			if (chk.contains("BLOB")) {
-				return true;
-			}
-			if (chk.contains("JSON")) {
-				return true;
-			}
-			if (chk.contains("POINT")) {
-				return true;
-			}
-			if (chk.contains("LINE")) {
-				return true;
-			}
-			if (chk.contains("POLYGON")) {
-				return true;
-			}
-			if (chk.contains("GEOMETRY")) {
-				return true;
-			}
 		}
 		return false;
 	}
 
 	@Override
 	public boolean isIgnoreScale(Column column) {
+		ColumnType type = column.getColumnType();
+		if(null != type){
+			return type.ignoreScale();
+		}
 		String name = column.getTypeName();
 		if(null != name){
 			String chk = name.toUpperCase();
@@ -3811,10 +3859,10 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception
-	 * List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
-	 * String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
-	 * String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception;
+	 * String buildCreateRunSQL(Trigger trigger) throws Exception
+	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
+	 * String buildDropRunSQL(Trigger trigger) throws Exception;
+	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -3822,11 +3870,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public String buildCreateRunSQL(Trigger trigger) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("CREATE TRIGGER ").append(trigger.getName());
 		builder.append(" ").append(trigger.getTime().sql()).append(" ");
-		List<org.anyline.entity.data.Trigger.EVENT> events = trigger.getEvents();
+		List<Trigger.EVENT> events = trigger.getEvents();
 		boolean first = true;
 		for(org.anyline.entity.data.Trigger.EVENT event:events){
 			if(!first){
@@ -3856,7 +3904,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public List<String> buildAlterRunSQL(Trigger trigger) throws Exception{
 		return null;
 	}
 
@@ -3866,7 +3914,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public String buildDropRunSQL(Trigger trigger) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("DROP TRIGGER ").append(trigger.getName());
 		return builder.toString();
@@ -3879,7 +3927,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(org.anyline.entity.data.Trigger trigger) throws Exception{
+	public String buildRenameRunSQL(Trigger trigger) throws Exception{
 		return null;
 	}
 
@@ -3898,9 +3946,82 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildCreateRunSQL(Procedure procedure) throws Exception{
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("CREATE PROCEDURE ");
+		String catalog = procedure.getCatalog();
+		String schema = procedure.getSchema();
+		if(BasicUtil.isNotEmpty(catalog)){
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, procedure.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append("(\n");
+		List<Parameter> ins = procedure.getInputs();
+		List<Parameter> outs = procedure.getOutputs();
+		boolean first = true;
+		for(Parameter parameter:ins){
+			if(parameter.isOutput()){
+				continue;
+			}
+			if(!first){
+				builder.append(",");
+			}
+			parameter(builder, parameter);
+		}
+		for(Parameter parameter:outs){
+			if(!first){
+				builder.append(",");
+			}
+			parameter(builder, parameter);
+		}
+		builder.append("\n)");
+		String returnType = procedure.getReturnType();
+		if(BasicUtil.isNotEmpty(returnType)){
+			builder.append(" RETURNS ").append(returnType);
+		}
+		builder.append("\n");
+		builder.append(procedure.getDefinition());
+		return builder.toString();
 	}
 
+	/**
+	 * 生在输入输出参数
+	 * @param builder builder
+	 * @param parameter parameter
+	 */
+	public void parameter(StringBuilder builder, Parameter parameter){
+		boolean in = parameter.isInput();
+		boolean out = parameter.isOutput();
+		if(in){
+			builder.append("IN");
+		}
+		if(out){
+			builder.append("OUT");
+		}
+		builder.append(" ").append(parameter.getName());
+		ColumnType type = parameter.getColumnType();
+		boolean isIgnorePrecision= type.ignorePrecision();
+		boolean isIgnoreScale = type.ignoreScale();
+		builder.append(type);
+		if(!isIgnorePrecision) {
+			Integer precision =  parameter.getPrecision();
+			Integer scale = parameter.getScale();
+			if (null != precision) {
+				if (precision > 0) {
+					builder.append("(").append(precision);
+					if (null != scale && scale > 0 && !isIgnoreScale) {
+						builder.append(",").append(scale);
+					}
+					builder.append(")");
+				} else if (precision == -1) {
+					builder.append("(max)");
+				}
+			}
+		}
+
+	}
 	/**
 	 * 修改存储过程
 	 * 有可能生成多条SQL
@@ -3917,7 +4038,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Procedure procedure) throws Exception{
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("DROP PROCEDURE ");
+		String catalog = procedure.getCatalog();
+		String schema = procedure.getSchema();
+		if(BasicUtil.isNotEmpty(catalog)){
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, procedure.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 
 	/**
