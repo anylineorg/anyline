@@ -104,7 +104,7 @@ public class RuntimeHolder {
         return getRuntime(DataSourceHolder.curDataSource());
     }
     public static void destroyRuntime(String key){
-        destroyRuntime(key);
+        destroy(key);
     }
     public static void destroy(String key){
         try {
