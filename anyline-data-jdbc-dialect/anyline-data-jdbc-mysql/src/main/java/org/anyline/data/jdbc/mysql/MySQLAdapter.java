@@ -2261,6 +2261,4 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		return null;
 	}
-
-
-} 
+}
