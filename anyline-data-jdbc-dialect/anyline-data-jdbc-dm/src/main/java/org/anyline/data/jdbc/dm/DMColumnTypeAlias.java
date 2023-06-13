@@ -9,8 +9,8 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     BFILE                   (StandardColumnType.BFILE                 ), //       ,oracle,
     BINARY_DOUBLE           (StandardColumnType.BINARY_DOUBLE         ), //       ,oracle,
     BINARY_FLOAT            (StandardColumnType.FLOAT_ORACLE          ), //       ,oracle,
-    BIGINT                  (StandardColumnType.NUMBER                ), //mysql         ,mssql,
-    BIGSERIAL               (StandardColumnType.NUMBER                ), //     ,pg,
+    BIGINT                  (StandardColumnType.BIGINT                ), //mysql         ,mssql,
+    BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
     BINARY                  (StandardColumnType.BLOB                  ), //mysql         ,mssql,
     BIT                     (StandardColumnType.NUMBER                ), //mysql,pg,     ,mssql,
     BLOB                    (StandardColumnType.BLOB                  ), //mysql  ,oracle,   ,sqlite
@@ -38,11 +38,11 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     IMAGE                   (StandardColumnType.BLOB                  ), //              ,mssql
     INET                    (StandardColumnType.ILLEGAL               ), //     ,pg
     INTERVAL                (StandardColumnType.ILLEGAL               ), //     ,pg
-    INT                     (StandardColumnType.NUMBER                ), //mysql         ,mssql,
-    INT2                    (StandardColumnType.NUMBER                ), //     ,pg
-    INT4                    (StandardColumnType.NUMBER                ), //     ,pg
-    INT8                    (StandardColumnType.NUMBER                ), //     ,pg
-    INTEGER                 (StandardColumnType.NUMBER                ), //mysql                 ,sqlite
+    INT                     (StandardColumnType.INT                   ), //mysql         ,mssql,
+    INT2                    (StandardColumnType.INT                   ), //     ,pg
+    INT4                    (StandardColumnType.INT                   ), //     ,pg
+    INT8                    (StandardColumnType.BIGINT                ), //     ,pg
+    INTEGER                 (StandardColumnType.INT                   ), //mysql                 ,sqlite
     JSON                    (StandardColumnType.CLOB                  ), //mysql,pg
     JSONB                   (StandardColumnType.BLOB                  ), //     ,pg
     LINE                    (StandardColumnType.ILLEGAL               ), //mysql,pg
@@ -71,10 +71,10 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     REAL                    (StandardColumnType.FLOAT_ORACLE          ), //mysql         ,mssql,sqlite
     RAW                     (StandardColumnType.RAW                   ), //       ,oracle
     ROWID                   (StandardColumnType.ROWID                 ), //       ,oracle
-    SERIAL                  (StandardColumnType.NUMBER                ), //     ,pg,
-    SERIAL2                 (StandardColumnType.NUMBER                ), //     ,pg,
-    SERIAL4                 (StandardColumnType.NUMBER                ), //     ,pg,
-    SERIAL8                 (StandardColumnType.NUMBER                ), //     ,pg,
+    SERIAL                  (StandardColumnType.INT                   ), //     ,pg,
+    SERIAL2                 (StandardColumnType.INT                   ), //     ,pg,
+    SERIAL4                 (StandardColumnType.INT                   ), //     ,pg,
+    SERIAL8                 (StandardColumnType.BIGINT                ), //     ,pg,
     SET                     (StandardColumnType.ILLEGAL               ), //mysql,
     SMALLDATETIME           (StandardColumnType.TIMESTAMP             ), //              ,mssql
     SMALLMONEY              (StandardColumnType.NUMBER                ), //              ,mssql
