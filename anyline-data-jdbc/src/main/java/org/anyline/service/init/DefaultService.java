@@ -3934,8 +3934,8 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public boolean save(Table table) throws Exception{
+        @Override
+        public boolean save(Table table) throws Exception{
             boolean result = false;
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
@@ -3956,15 +3956,15 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
         
-    @Override 
-    public boolean create(Table table) throws Exception{
+        @Override
+        public boolean create(Table table) throws Exception{
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
         
-    @Override 
-    public boolean alter(Table table) throws Exception{
+        @Override
+        public boolean alter(Table table) throws Exception{
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
             Table update = table.getUpdate();
@@ -3978,12 +3978,18 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
 
-        
-    @Override 
-    public boolean drop(Table table) throws Exception{
+
+        @Override
+        public boolean drop(Table table) throws Exception{
             boolean result = dao.drop(table);
 
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        @Override
+        public boolean rename(Table origin, String name) throws Exception{
+            boolean result = false;
             return result;
         }
 
@@ -3997,8 +4003,8 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public boolean save(View view) throws Exception{
+        @Override
+        public boolean save(View view) throws Exception{
             boolean result = false;
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
             CacheProxy.clearViewMaps(DataSourceHolder.curDataSource()+"");
@@ -4019,26 +4025,30 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
         
-    @Override 
-    public boolean create(View view) throws Exception{
+        @Override
+        public boolean create(View view) throws Exception{
             boolean result =  dao.create(view);
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
             return result;
         }
         
-    @Override 
-    public boolean alter(View view) throws Exception{
+        @Override
+        public boolean alter(View view) throws Exception{
             boolean result = dao.alter(view);
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
             return result;
         }
 
         
-    @Override 
-    public boolean drop(View view) throws Exception{
+        @Override
+        public boolean drop(View view) throws Exception{
             boolean result = dao.drop(view);
-
             clearColumnCache(view.getCatalog(), view.getSchema(), view.getName());
+            return result;
+        }
+        @Override
+        public boolean rename(View origin, String name) throws Exception{
+            boolean result = false;
             return result;
         }
         /* *****************************************************************************************************************
@@ -4052,8 +4062,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         
-    @Override 
-    public boolean save(MasterTable table) throws Exception {
+        @Override
+        public boolean save(MasterTable table) throws Exception {
             boolean result = false;
             MasterTable otable = metadata.mtable(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
@@ -4067,26 +4077,31 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
         
-    @Override 
-    public boolean create(MasterTable table) throws Exception {
+        @Override
+        public boolean create(MasterTable table) throws Exception {
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
 
         
-    @Override 
-    public boolean alter(MasterTable table) throws Exception {
+        @Override
+        public boolean alter(MasterTable table) throws Exception {
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
 
         
-    @Override 
-    public boolean drop(MasterTable table) throws Exception {
+        @Override
+        public boolean drop(MasterTable table) throws Exception {
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+        @Override
+        public boolean rename(MasterTable origin, String name) throws Exception{
+            boolean result = false;
             return result;
         }
 
@@ -4098,9 +4113,9 @@ public class DefaultService<E> implements AnylineService<E> {
 		 * boolean alter(PartitionTable table) throws Exception
          * boolean drop(PartitionTable table) throws Exception
          ******************************************************************************************************************/
-        
-    @Override 
-    public boolean save(PartitionTable table) throws Exception {
+
+        @Override
+        public boolean save(PartitionTable table) throws Exception {
             boolean result = false;
             PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
@@ -4115,28 +4130,34 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         
-    @Override 
-    public boolean create(PartitionTable table) throws Exception {
+        @Override
+        public boolean create(PartitionTable table) throws Exception {
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
 
         
-    @Override 
-    public boolean alter(PartitionTable table) throws Exception {
+        @Override
+        public boolean alter(PartitionTable table) throws Exception {
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
 
         
-    @Override 
-    public boolean drop(PartitionTable table) throws Exception {
+        @Override
+        public boolean drop(PartitionTable table) throws Exception {
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
+        @Override
+        public boolean rename(PartitionTable origin, String name) throws Exception{
+            boolean result = false;
+            return result;
+        }
+
 
         /* *****************************************************************************************************************
          * 													column
@@ -4159,9 +4180,9 @@ public class DefaultService<E> implements AnylineService<E> {
          */
 
         
-    @Override 
-    public boolean save(Column column) throws Exception{
-            boolean result = false;
+        @Override
+        public boolean save(Column column) throws Exception{
+                boolean result = false;
             Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
             if(null == table){
                 throw new AnylineException("表不存在:"+column.getTableName());
@@ -4176,31 +4197,31 @@ public class DefaultService<E> implements AnylineService<E> {
             clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
             return result;
         }
-        
-    @Override 
-    public boolean add(Column column) throws Exception{
-        LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
-        boolean result = add(columns, column);
 
-        clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-        return result;
-    }
+        @Override
+        public boolean add(Column column) throws Exception{
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
+            boolean result = add(columns, column);
 
-    @Override 
-    public boolean alter(Column column) throws Exception{
-        Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
-        boolean result = alter(table, column);
-        clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-        return result;
-    }
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
+        }
 
-        
-    @Override 
-    public boolean drop(Column column) throws Exception{
-        boolean result = dao.drop(column);
-        clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-        return result;
-    }
+        @Override
+        public boolean alter(Column column) throws Exception{
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
+            boolean result = alter(table, column);
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
+        }
+
+
+        @Override
+        public boolean drop(Column column) throws Exception{
+            boolean result = dao.drop(column);
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
+        }
 
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
             boolean result =  dao.add(column);
@@ -4248,6 +4269,11 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
 
+        @Override
+        public boolean rename(Column origin, String name) throws Exception{
+            boolean result = false;
+            return result;
+        }
 
         /* *****************************************************************************************************************
          * 													tag
@@ -4269,9 +4295,9 @@ public class DefaultService<E> implements AnylineService<E> {
          * @throws Exception 异常 SQL异常
          */
 
-        
-    @Override 
-    public boolean save(Tag tag) throws Exception{
+
+        @Override
+        public boolean save(Tag tag) throws Exception{
             boolean result = false;
             Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             if(null == table){
@@ -4290,8 +4316,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         
-    @Override 
-    public boolean add(Tag tag) throws Exception{
+        @Override
+        public boolean add(Tag tag) throws Exception{
             LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             boolean result = add(tags, tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
@@ -4299,8 +4325,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         
-    @Override 
-    public boolean alter(Tag tag) throws Exception{
+        @Override
+        public boolean alter(Tag tag) throws Exception{
             Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             boolean result = alter(table, tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
@@ -4308,8 +4334,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         
-    @Override 
-    public boolean drop(Tag tag) throws Exception{
+        @Override
+        public boolean drop(Tag tag) throws Exception{
 
             boolean result = dao.drop(tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
@@ -4356,6 +4382,11 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
 
+        @Override
+        public boolean rename(Tag origin, String name) throws Exception{
+            boolean result = false;
+            return result;
+        }
         /* *****************************************************************************************************************
          * 													primary
          * -----------------------------------------------------------------------------------------------------------------
@@ -4365,35 +4396,40 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public boolean add(PrimaryKey primary) throws Exception{
+        @Override
+        public boolean add(PrimaryKey primary) throws Exception{
             return dao.add(primary);
         }
 
         
-    @Override 
-    public boolean alter(PrimaryKey primary) throws Exception {
+        @Override
+        public boolean alter(PrimaryKey primary) throws Exception {
             return false;
         }
 
-    @Override 
-    public boolean drop(PrimaryKey primary) throws Exception{
+        @Override
+        public boolean drop(PrimaryKey primary) throws Exception{
             return dao.drop(primary);
+        }
+        @Override
+        public boolean rename(PrimaryKey origin, String name) throws Exception{
+            boolean result = false;
+            return result;
         }
         /* *****************************************************************************************************************
          * 													foreign
          ******************************************************************************************************************/
 
-    @Override 
-    public boolean add(ForeignKey foreign) throws Exception{
+        @Override
+        public boolean add(ForeignKey foreign) throws Exception{
             return dao.add(foreign);
         }
-    @Override 
-    public boolean alter(ForeignKey foreign) throws Exception{
-            return dao.alter(foreign);
+        @Override
+        public boolean alter(ForeignKey foreign) throws Exception{
+                return dao.alter(foreign);
         }
-    @Override 
-    public boolean drop(ForeignKey foreign) throws Exception{
+        @Override
+        public boolean drop(ForeignKey foreign) throws Exception{
             if(BasicUtil.isEmpty(foreign.getName())){
                 List<String> names = Column.names(foreign.getColumns());
                 foreign = metadata.foreign(foreign.getTable(), names);
@@ -4401,26 +4437,10 @@ public class DefaultService<E> implements AnylineService<E> {
             return dao.drop(foreign);
         }
 
-        /**
-         * 复合外键时调用
-         * @param table 表
-         * @param columns 如果有多列 按复合外键处理,如果需要删除外个外键应该调用多次drop
-         * @return boolean
-         * @throws Exception Exception
-         */
-    @Override 
-    public boolean drop(Table table, String ... columns) throws Exception{
-            ForeignKey foreign = new ForeignKey();
-            foreign.setTable(table);
-            for(String column:columns) {
-                foreign.addColumn(column, null);
-            }
-            return drop(foreign);
-        }
-    @Override 
-    public boolean add(String table, String column, String refTable, String refColumn) throws Exception{
-            ForeignKey foreign = new ForeignKey(table, column, refTable, refColumn);
-            return add(foreign);
+        @Override
+        public boolean rename(ForeignKey origin, String name) throws Exception{
+            boolean result = false;
+            return result;
         }
         /* *****************************************************************************************************************
          * 													index
@@ -4431,20 +4451,25 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
 
         
-    @Override 
-    public boolean add(Index index) throws Exception{
-            return dao.add(index);
+            @Override
+            public boolean add(Index index) throws Exception{
+                return dao.add(index);
         }
 
         
-    @Override 
-    public boolean alter(Index index) throws Exception {
+        @Override
+        public boolean alter(Index index) throws Exception {
             return false;
         }
 
-    @Override 
-    public boolean drop(Index index) throws Exception{
+        @Override
+        public boolean drop(Index index) throws Exception{
             return dao.drop(index);
+        }
+        @Override
+        public boolean rename(Index origin, String name) throws Exception{
+            boolean result = false;
+            return result;
         }
         /* *****************************************************************************************************************
          * 													constraint
@@ -4454,21 +4479,26 @@ public class DefaultService<E> implements AnylineService<E> {
          * boolean drop(Constraint constraint) throws Exception
          ******************************************************************************************************************/
         
-    @Override 
-    public boolean add(Constraint constraint) throws Exception {
+        @Override
+        public boolean add(Constraint constraint) throws Exception {
             return dao.add(constraint);
         }
 
         
-    @Override 
-    public boolean alter(Constraint constraint) throws Exception {
+        @Override
+        public boolean alter(Constraint constraint) throws Exception {
             return false;
         }
 
         
-    @Override 
-    public boolean drop(Constraint constraint) throws Exception {
+        @Override
+        public boolean drop(Constraint constraint) throws Exception {
             return dao.drop(constraint);
+        }
+        @Override
+        public boolean rename(Constraint origin, String name) throws Exception{
+            boolean result = false;
+            return result;
         }
 
         /* *****************************************************************************************************************
@@ -4492,6 +4522,11 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean drop(Trigger trigger) throws Exception{
             return dao.drop(trigger);
         }
+        @Override
+        public boolean rename(Trigger origin, String name) throws Exception{
+            boolean result = false;
+            return result;
+        }
         /* *****************************************************************************************************************
          * 													procedure
          ******************************************************************************************************************/
@@ -4513,9 +4548,14 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean drop(Procedure procedure) throws Exception{
             return dao.drop(procedure);
         }
+        @Override
+        public boolean rename(Procedure origin, String name) throws Exception{
+            boolean result = false;
+            return result;
+        }
 
         /* *****************************************************************************************************************
-         * 													procedure
+         * 													function
          ******************************************************************************************************************/
         /**
          * 函数
@@ -4534,6 +4574,11 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean drop(Function function) throws Exception{
             return dao.drop(function);
+        }
+        @Override
+        public boolean rename(Function origin, String name) throws Exception{
+            boolean result = false;
+            return result;
         }
 
     };

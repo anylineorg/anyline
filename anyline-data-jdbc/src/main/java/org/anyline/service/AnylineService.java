@@ -1146,6 +1146,7 @@ public interface AnylineService<E>{
 		boolean create(Table table) throws Exception;
 		boolean alter(Table table) throws Exception;
 		boolean drop(Table table) throws Exception;
+		boolean rename(Table origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													view
@@ -1155,6 +1156,7 @@ public interface AnylineService<E>{
 		boolean create(View view) throws Exception;
 		boolean alter(View view) throws Exception;
 		boolean drop(View view) throws Exception;
+		boolean rename(View origin, String name) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1165,6 +1167,7 @@ public interface AnylineService<E>{
 		boolean create(MasterTable table) throws Exception;
 		boolean alter(MasterTable table) throws Exception;
 		boolean drop(MasterTable table) throws Exception;
+		boolean rename(MasterTable origin, String name) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1175,6 +1178,8 @@ public interface AnylineService<E>{
 		boolean create(PartitionTable table) throws Exception;
 		boolean alter(PartitionTable table) throws Exception;
 		boolean drop(PartitionTable table) throws Exception;
+		boolean rename(PartitionTable origin, String name) throws Exception;
+
 
 
 		/* *****************************************************************************************************************
@@ -1191,6 +1196,7 @@ public interface AnylineService<E>{
 		boolean add(Column column) throws Exception;
 		boolean alter(Column column) throws Exception;
 		boolean drop(Column column) throws Exception;
+		boolean rename(Column origin, String name) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1201,6 +1207,7 @@ public interface AnylineService<E>{
 		boolean add(Tag tag) throws Exception;
 		boolean alter(Tag tag) throws Exception;
 		boolean drop(Tag tag) throws Exception;
+		boolean rename(Tag origin, String name) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1210,6 +1217,7 @@ public interface AnylineService<E>{
 		boolean add(PrimaryKey primary) throws Exception;
 		boolean alter(PrimaryKey primary) throws Exception;
 		boolean drop(PrimaryKey primary) throws Exception;
+		boolean rename(PrimaryKey origin, String name) throws Exception;
 		/* *****************************************************************************************************************
 		 * 													foreign
 		 ******************************************************************************************************************/
@@ -1217,16 +1225,8 @@ public interface AnylineService<E>{
 		boolean add(ForeignKey foreign) throws Exception;
 		boolean alter(ForeignKey foreign) throws Exception;
 		boolean drop(ForeignKey foreign) throws Exception;
+		boolean rename(ForeignKey origin, String name) throws Exception;
 
-		/**
-		 * 复合外键时调用
-		 * @param table 表
-		 * @param columns 如果有多列 按复合外键处理,如果需要删除外个外键应该调用多次drop
-		 * @return boolean
-		 * @throws Exception Exception
-		 */
-		boolean drop(Table table, String ... columns) throws Exception;
-		boolean add(String table, String column, String refTable, String refColumn) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													index
@@ -1235,6 +1235,7 @@ public interface AnylineService<E>{
 		boolean add(Index index) throws Exception;
 		boolean alter(Index index) throws Exception;
 		boolean drop(Index index) throws Exception;
+		boolean rename(Index origin, String name) throws Exception;
 
 
 		/* *****************************************************************************************************************
@@ -1249,6 +1250,7 @@ public interface AnylineService<E>{
 		boolean add(Constraint constraint) throws Exception;
 		boolean alter(Constraint constraint) throws Exception;
 		boolean drop(Constraint constraint) throws Exception;
+		boolean rename(Constraint origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													trigger
@@ -1262,6 +1264,7 @@ public interface AnylineService<E>{
 		boolean create(Trigger trigger) throws Exception;
 		boolean alter(Trigger trigger) throws Exception;
 		boolean drop(Trigger trigger) throws Exception;
+		boolean rename(Trigger origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													procedure
@@ -1275,6 +1278,7 @@ public interface AnylineService<E>{
 		boolean create(Procedure procedure) throws Exception;
 		boolean alter(Procedure procedure) throws Exception;
 		boolean drop(Procedure procedure) throws Exception;
+		boolean rename(Procedure origin, String name) throws Exception;
 
 		/* *****************************************************************************************************************
 		 * 													function
@@ -1288,6 +1292,7 @@ public interface AnylineService<E>{
 		boolean create(Function function) throws Exception;
 		boolean alter(Function function) throws Exception;
 		boolean drop(Function function) throws Exception;
+		boolean rename(Function origin, String name) throws Exception;
 
 	}
 }

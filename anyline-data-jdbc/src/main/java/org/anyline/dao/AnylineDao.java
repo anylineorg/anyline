@@ -435,7 +435,7 @@ public interface AnylineDao<E>{
 	boolean alter(Procedure procedure) throws Exception;
 	boolean drop(Procedure procedure) throws Exception;
 	/* *****************************************************************************************************************
-	 * 													trigger
+	 * 													function
 	 ******************************************************************************************************************/
 	/**
 	 * 函数
