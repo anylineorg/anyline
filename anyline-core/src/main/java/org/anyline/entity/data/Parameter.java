@@ -3,8 +3,11 @@ package org.anyline.entity.data;
 import org.anyline.entity.metadata.ColumnType;
 
 public class Parameter {
-    private boolean in;
-    private boolean out;
+    private boolean input;
+    private boolean output;
+    private String name;
+    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    protected Integer scale                       ; // 小数部分的长度
 
     private Object value;
     private ColumnType columnType;
@@ -29,20 +32,52 @@ public class Parameter {
         this.type = type;
     }
 
-    public boolean isIn() {
-        return in;
+    public boolean isInput() {
+        return input;
     }
 
-    public void setIn(boolean in) {
-        this.in = in;
+    public void setInput(boolean input) {
+        this.input = input;
     }
 
-    public boolean isOut() {
-        return out;
+    public boolean isOutput() {
+        return output;
     }
 
-    public void setOut(boolean out) {
-        this.out = out;
+    public void setOutput(boolean output) {
+        this.output = output;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ColumnType getColumnType() {
+        return columnType;
+    }
+
+    public void setColumnType(ColumnType columnType) {
+        this.columnType = columnType;
+    }
+
+    public Integer getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(Integer precision) {
+        this.precision = precision;
+    }
+
+    public Integer getScale() {
+        return scale;
+    }
+
+    public void setScale(Integer scale) {
+        this.scale = scale;
     }
 
     public String toString(){
