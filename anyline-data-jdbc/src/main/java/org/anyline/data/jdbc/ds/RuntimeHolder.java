@@ -104,6 +104,9 @@ public class RuntimeHolder {
         return getRuntime(DataSourceHolder.curDataSource());
     }
     public static void destroyRuntime(String key){
+        destroyRuntime(key);
+    }
+    public static void destroy(String key){
         try {
             runtimes.remove(key);
             //注销 service dao template
