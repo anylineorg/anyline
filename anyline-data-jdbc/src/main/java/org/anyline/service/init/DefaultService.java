@@ -3900,7 +3900,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 if(null == update){
                     update = table;
                 }
-                otable.setUpdate(update);
+                otable.setUpdate(update, false);
                 result = alter(otable);
             }else{
                 result =  create(table);
@@ -3922,7 +3922,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if(null == update){
                 update = table;
                 table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
-                table.setUpdate(update);
+                table.setUpdate(update, false);
             } 
             boolean result = dao.alter(table);
             CacheProxy.clear();
@@ -3965,7 +3965,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 if(null == update){
                     update = view;
                 }
-                oview.setUpdate(update);
+                oview.setUpdate(update, false);
                 result = alter(oview);
             }else{
                 result =  create(view);
@@ -4019,7 +4019,7 @@ public class DefaultService<E> implements AnylineService<E> {
             CacheProxy.clear();
             MasterTable otable = metadata.mtable(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
-                otable.setUpdate(table);
+                otable.setUpdate(table, false);
                 result = alter(otable);
             }else{
                 result =  create(table);
@@ -4073,7 +4073,7 @@ public class DefaultService<E> implements AnylineService<E> {
             CacheProxy.clear();
             PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
-                otable.setUpdate(table);
+                otable.setUpdate(table,false);
                 result = alter(otable);
             }else{
                 result =  create(table);
@@ -4205,12 +4205,8 @@ public class DefaultService<E> implements AnylineService<E> {
             Column update = column.getUpdate();
             if(null == update){
                 update = column.clone();
-                String newName = column.getNewName();
-                if(BasicUtil.isNotEmpty(newName)){
-                    update.setName(newName);
-                }
             }
-            original.setUpdate(update);
+            original.setUpdate(update, false);
             String name = original.getName();
             try {
                 result = dao.alter(table, original);
@@ -4221,7 +4217,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 columns.remove(original.getName());
 
                 BeanUtil.copyFieldValueWithoutNull(original, update);
-                original.setUpdate(update);
+                original.setUpdate(update, false);
                 BeanUtil.copyFieldValue(column, original);
                 columns.put(original.getName(), original);
             }
@@ -4329,11 +4325,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
             Tag update = tag.getUpdate();
             if(null == update){
-                update = (Tag) tag.clone();
-                String newName = tag.getNewName();
-                if(BasicUtil.isNotEmpty(newName)){
-                    update.setName(newName);
-                }
+                update = tag.clone();
             }
             original.setUpdate(update);
             result = dao.alter(table, original);
