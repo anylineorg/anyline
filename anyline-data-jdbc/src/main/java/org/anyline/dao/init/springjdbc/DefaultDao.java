@@ -3814,7 +3814,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				add(cur_primary);
 			}
 		}
-		CacheProxy.clearTableMaps(DataSourceHolder.curDataSource()+"");
+		CacheProxy.clear();
 		return result;
 	}
 
@@ -3839,7 +3839,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
-				CacheProxy.clearTableMaps(DataSourceHolder.curDataSource() + "");
+				CacheProxy.clear();
 				result = true;
 			}
 
@@ -3933,7 +3933,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					ddListener.afterRename(view, result);
 				}
 			}
-			CacheProxy.clearViewMaps(DataSourceHolder.curDataSource()+"");
+			CacheProxy.clear();
 		}
 
 		return result;
@@ -3960,7 +3960,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if (exe) {
 				runtime.getTemplate().update(sql);
-				CacheProxy.clearViewMaps(DataSourceHolder.curDataSource() + "");
+				CacheProxy.clear();
 				result = true;
 			}
 

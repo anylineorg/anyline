@@ -689,15 +689,6 @@ public interface AnylineService<E>{
 	List<String> tags(String catalog, String schema, String table);
 
 
-	void clearColumnCache(boolean greedy, String catalog, String schema, String table);
-	void clearColumnCache(boolean greedy, String table);
-	void clearColumnCache(boolean greedy);
-	void clearColumnCache(String catalog, String schema, String table);
-	void clearTagCache(boolean greedy, String catalog, String schema, String table);
-	void clearColumnCache(String table);
-	void clearColumnCache();
-	void clearTagCache(String catalog, String schema, String table);
-
 
 
 

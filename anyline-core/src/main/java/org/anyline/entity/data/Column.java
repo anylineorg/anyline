@@ -117,7 +117,7 @@ public class Column {
 
 
     public Column update(){
-        update = (Column) this.clone();
+        update = this.clone();
         return update;
     }
 
