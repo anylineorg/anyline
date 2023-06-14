@@ -386,7 +386,7 @@ public class Table  {
     }
 
     public Column getColumn(String name){
-        if(null == columns){
+        if(null == columns || null == name){
             return null;
         }
         return columns.get(name.toUpperCase());
