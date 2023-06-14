@@ -28,36 +28,35 @@ public class CacheProxy {
     }
 
 
-    private static Map<String,DataRow> cache_metadata = new HashMap<>();
-    private static Map<String,DataRow> cache_metadatas = new HashMap<>();
+    private static Map<String,DataRow> cache_columns = new HashMap<>();
     private static Map<String,DataRow> cache_table_maps = new HashMap<>();
     private static Map<String,DataRow> cache_view_maps = new HashMap<>();
+    public static String datasource(String datasource){
+        if(null == datasource || "common".equalsIgnoreCase(datasource)){
+            datasource = DataSourceHolder.curDataSource();
+        }
+        return datasource.toUpperCase();
+    }
 
     public static String tableName(String datasource, String name){
-        DataRow row = cache_table_maps.get(datasource);
+        DataRow row = cache_table_maps.get(datasource(datasource));
         if(null != row){
             return row.getString(name);
         }
         return name;
     }
     public static String viewName(String datasource, String name){
-        DataRow row = cache_view_maps.get(datasource);
+        DataRow row = cache_view_maps.get(datasource(datasource));
         if(null != row){
             return row.getString(name);
         }
         return name;
     }
-    public static void clearTableMaps(String datasource){
-        cache_table_maps.remove(datasource);
-    }
-    public static void clearViewMaps(String datasource){
-        cache_view_maps.remove(datasource);
-    }
     public static void setTableMaps(String datasource, DataRow maps){
-        cache_table_maps.put(datasource, maps);
+        cache_table_maps.put(datasource(datasource), maps);
     }
     public static void setViewMaps(String datasource, DataRow maps){
-        cache_view_maps.put(datasource, maps);
+        cache_view_maps.put(datasource(datasource), maps);
     }
 
     /**
@@ -66,11 +65,10 @@ public class CacheProxy {
      * @return DataRow
      */
     public static DataRow getTableMaps(String datasource){
-        datasource = datasource.toUpperCase();
-        DataRow row = cache_table_maps.get(datasource);
+        DataRow row = cache_table_maps.get(datasource(datasource));
         if(null == row){
             row = new DataRow();
-            cache_table_maps.put(datasource, row);
+            cache_table_maps.put(datasource(datasource), row);
         }
         return row;
     }
@@ -80,11 +78,10 @@ public class CacheProxy {
      * @return DataRow
      */
     public static DataRow getViewMaps(String datasource){
-        datasource = datasource.toUpperCase();
-        DataRow row = cache_view_maps.get(datasource);
+        DataRow row = cache_view_maps.get(datasource(datasource));
         if(null == row){
             row = new DataRow();
-            cache_view_maps.put(datasource, row);
+            cache_view_maps.put(datasource(datasource), row);
         }
         return row;
     }
@@ -100,7 +97,7 @@ public class CacheProxy {
         }
         LinkedHashMap<String, T> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource+"_COLUMNS_" + table.toUpperCase();
+        String key = datasource(datasource)+"_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
@@ -108,7 +105,7 @@ public class CacheProxy {
             }
         }else{
             // 通过静态变量缓存
-            DataRow static_cache = cache_metadatas.get(key);
+            DataRow static_cache = cache_columns.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                 columns = (LinkedHashMap<String, T>) static_cache.get("keys");
             }
@@ -126,59 +123,14 @@ public class CacheProxy {
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource + "_COLUMNS_" + table.toUpperCase();
+        String key = datasource(datasource) + "_COLUMNS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, columns);
         }else{
             DataRow static_cache = new DataRow();
             static_cache.put("keys", columns);
-            cache_metadatas.put(key, static_cache);
+            cache_columns.put(key, static_cache);
         }
-    }
-
-    public static void clearColumnCache(boolean greedy, String catalog, String schema, String table){
-        if(null == table){
-            return;
-        }
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String ds = DataSourceHolder.curDataSource();
-        if(null == ds){
-            String key =  "common_COLUMNS_" + table.toUpperCase();
-            if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
-                provider.remove(cache, key);
-            }else{
-                cache_metadatas.remove(key);
-            }
-        }
-        String key = ds+"_COLUMNS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
-            provider.remove(cache, key);
-        }else{
-            cache_metadatas.remove(key);
-        }
-    }
-    public static void clearColumnCache(boolean greedy, String table){
-        clearColumnCache(greedy, null, null, table);
-    }
-    public static void clearColumnCache(boolean greedy){
-        if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
-            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            if(BasicUtil.isNotEmpty(cache)) {
-                provider.clear(cache);
-            }
-        }else{
-            cache_metadatas.clear();
-        }
-    }
-
-    public static void clearColumnCache(String catalog, String schema, String table){
-        clearColumnCache(false, catalog, schema, table);
-    }
-    public static void clearColumnCache(String table){
-        clearColumnCache(false, table);
-    }
-    public static void clearColumnCache(){
-        clearColumnCache(false);
     }
 
 
@@ -194,7 +146,7 @@ public class CacheProxy {
         }
         LinkedHashMap<String, T> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource+"_TAGS_" + table.toUpperCase();
+        String key = datasource(datasource)+"_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
@@ -202,7 +154,7 @@ public class CacheProxy {
             }
         }else{
             // 通过静态变量缓存
-            DataRow static_cache = cache_metadatas.get(key);
+            DataRow static_cache = cache_columns.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                 tags = (LinkedHashMap<String, T>) static_cache.get("keys");
             }
@@ -220,50 +172,25 @@ public class CacheProxy {
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource + "_TAGS_" + table.toUpperCase();
+        String key = datasource(datasource) + "_TAGS_" + table.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, tags);
         }else{
             DataRow static_cache = new DataRow();
             static_cache.put("keys", tags);
-            cache_metadatas.put(key, static_cache);
+            cache_columns.put(key, static_cache);
         }
     }
 
-    public static void clearTagCache(boolean greedy, String catalog, String schema, String table){
-        if(null == table){
-            return;
-        }
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.curDataSource()+"_TAGS_" + table.toUpperCase();
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
-            provider.remove(cache, key);
-        }else{
-            cache_metadatas.remove(key);
-        }
-    }
-    public static void clearTagCache(boolean greedy, String table){
-        clearTagCache(greedy, null, null, table);
-    }
-    public static void clearTagCache(boolean greedy){
+    public static void clear(){
         if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
-            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+            String cache = ConfigTable.TABLE_METADATA_CACHE_KEY;
             if(BasicUtil.isNotEmpty(cache)) {
                 provider.clear(cache);
             }
         }else{
-            cache_metadatas.clear();
+            cache_columns.clear();
         }
-    }
-
-    public static void clearTagCache(String catalog, String schema, String table){
-        clearTagCache(false, catalog, schema, table);
-    }
-    public static void clearTagCache(String table){
-        clearTagCache(false, table);
-    }
-    public static void clearTagCache(){
-        clearTagCache(false);
     }
 
 
