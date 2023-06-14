@@ -44,9 +44,10 @@ public class Table  {
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
     protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
-    protected Table update;
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
+    protected Table update;
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上
 
     public Table(){
         this(null);
@@ -107,6 +108,10 @@ public class Table  {
     }
 
     public Table update(){
+        return update(true);
+    }
+    public Table update(boolean setmap){
+        this.setmap = setmap;
         update = clone();
         update.setUpdate(null);
         return update;
@@ -116,8 +121,13 @@ public class Table  {
         return ttl;
     }
 
-    public void setTtl(Long ttl) {
+    public Table setTtl(Long ttl) {
+        if(setmap && null != update){
+            update.setTtl(ttl);
+            return this;
+        }
         this.ttl = ttl;
+        return this;
     }
 
     public Table getUpdate() {
@@ -131,11 +141,16 @@ public class Table  {
 
 
     public Table addColumn(Column column){
+        if(setmap && null != update){
+            update.addColumn(column);
+            return this;
+        }
         column.setTable(this);
-        if(null == columns){
+        if (null == columns) {
             columns = new LinkedHashMap<>();
         }
         columns.put(column.getName().toUpperCase(), column);
+
         return this;
     }
     public Column addColumn(String name, String type){
@@ -151,30 +166,44 @@ public class Table  {
         return column;
     }
     public Table setPrimaryKey(String ... keys){
-        if(null != columns){
-            for(String key:keys){
+        if(setmap && null != update){
+            update.setPrimaryKey(keys);
+            return this;
+        }
+        if (null != columns) {
+            for (String key : keys) {
                 Column column = columns.get(key.toUpperCase());
-                if(null != column){
+                if (null != column) {
                     column.setPrimaryKey(true);
-                }else{
-                    throw new AnylineException("未匹配到"+key+",请诜添加到columns");
+                } else {
+                    throw new AnylineException("未匹配到" + key + ",请诜添加到columns");
                 }
             }
-        }else{
+        } else {
             throw new AnylineException("请先设置columns");
         }
+
         return this;
     }
 
     public Table setPrimaryKey(PrimaryKey primaryKey){
+        if(setmap && null != update){
+            update.setPrimaryKey(primaryKey);
+            return this;
+        }
         this.primaryKey = primaryKey;
-        if(null != primaryKey){
+        if (null != primaryKey) {
             primaryKey.setTable(this);
         }
+
         return this;
     }
 
     public Table addTag(Tag tag){
+        if(setmap && null != update){
+            update.addTag(tag);
+            return this;
+        }
         tag.setTable(this);
         if(null == tags){
             tags = new LinkedHashMap<>();
@@ -245,6 +274,10 @@ public class Table  {
     }
 
     public Table setType(String type) {
+        if(setmap && null != update){
+            update.setType(type);
+            return this;
+        }
         this.type = type;
         return this;
     }
@@ -254,6 +287,10 @@ public class Table  {
     }
 
     public Table setComment(String comment) {
+        if(setmap && null != update){
+            update.setComment(comment);
+            return this;
+        }
         this.comment = comment;
         return this;
     }
@@ -263,6 +300,10 @@ public class Table  {
     }
 
     public Table setTypeCat(String typeCat) {
+        if(setmap && null != update){
+            update.setTypeCat(typeCat);
+            return this;
+        }
         this.typeCat = typeCat;
         return this;
     }
@@ -272,6 +313,10 @@ public class Table  {
     }
 
     public Table setTypeSchema(String typeSchema) {
+        if(setmap && null != update){
+            update.setTypeSchema(typeSchema);
+            return this;
+        }
         this.typeSchema = typeSchema;
         return this;
     }
@@ -281,6 +326,10 @@ public class Table  {
     }
 
     public Table setTypeName(String typeName) {
+        if(setmap && null != update){
+            update.setTypeName(typeName);
+            return this;
+        }
         this.typeName = typeName;
         return this;
     }
@@ -290,6 +339,10 @@ public class Table  {
     }
 
     public Table setSelfReferencingColumn(String selfReferencingColumn) {
+        if(setmap && null != update){
+            update.setSelfReferencingColumn(selfReferencingColumn);
+            return this;
+        }
         this.selfReferencingColumn = selfReferencingColumn;
         return this;
     }
@@ -299,6 +352,10 @@ public class Table  {
     }
 
     public Table setRefGeneration(String refGeneration) {
+        if(setmap && null != update){
+            update.setRefGeneration(refGeneration);
+            return this;
+        }
         this.refGeneration = refGeneration;
         return this;
     }
@@ -310,8 +367,12 @@ public class Table  {
         return (LinkedHashMap<String, T>) columns;
     }
 
-    public Table setColumns(LinkedHashMap<String, Column> columns) {
-        this.columns = columns;
+    public <T extends Column> Table setColumns(LinkedHashMap<String, T> columns) {
+        if(setmap && null != update){
+            update.setColumns(columns);
+            return this;
+        }
+        this.columns = (LinkedHashMap<String, Column>)columns;
         if(null != columns) {
             for (Column column : columns.values()) {
                 column.setTable(this);
@@ -328,6 +389,10 @@ public class Table  {
     }
 
     public Table setTags(LinkedHashMap<String, Tag> tags) {
+        if(setmap && null != update){
+            update.setTags(tags);
+            return this;
+        }
         this.tags = tags;
         if(null != tags) {
             for (Column tag : tags.values()) {
@@ -369,6 +434,11 @@ public class Table  {
     }
 
     public <T extends Index> Table setIndexs(LinkedHashMap<String, T> indexs) {
+        if(setmap && null != update){
+            update.setIndexs(indexs);
+            return this;
+        }
+
         this.indexs = (LinkedHashMap<String, Index>) indexs;
         return this;
     }
@@ -381,6 +451,10 @@ public class Table  {
     }
 
     public Table setConstraints(LinkedHashMap<String, Constraint> constraints) {
+        if(setmap && null != update){
+            update.setConstraints(constraints);
+            return this;
+        }
         this.constraints = constraints;
         return this;
     }
@@ -400,6 +474,10 @@ public class Table  {
     }
 
     public Table setEngine(String engine) {
+        if(setmap && null != update){
+            update.setEngine(engine);
+            return this;
+        }
         this.engine = engine;
         return this;
     }
@@ -409,6 +487,10 @@ public class Table  {
     }
 
     public Table setCharset(String charset) {
+        if(setmap && null != update){
+            update.setCharset(charset);
+            return this;
+        }
         this.charset = charset;
         return this;
     }
@@ -418,6 +500,10 @@ public class Table  {
     }
 
     public Table setCollate(String collate) {
+        if(setmap && null != update){
+            update.setCollate(collate);
+            return this;
+        }
         this.collate = collate;
         return this;
     }
@@ -426,16 +512,26 @@ public class Table  {
         return srid;
     }
 
-    public void setSrid(int srid) {
+    public Table setSrid(int srid) {
+        if(setmap && null != update){
+            update.setSrid(srid);
+            return this;
+        }
         this.srid = srid;
+        return this;
     }
 
     public Date getCheckSchemaTime() {
         return checkSchemaTime;
     }
 
-    public void setCheckSchemaTime(Date checkSchemaTime) {
+    public Table setCheckSchemaTime(Date checkSchemaTime) {
+        if(setmap && null != update){
+            update.setCheckSchemaTime(checkSchemaTime);
+            return this;
+        }
         this.checkSchemaTime = checkSchemaTime;
+        return this;
     }
 
     public String getKeyword() {
