@@ -75,7 +75,7 @@ public interface JDBCAdapter {
 	void setDao(AnylineDao dao);
 
 	/**
-	 * 界定符
+	 * 界定符(分隔符)
 	 * @return String
 	 */
 	String getDelimiterFr();
@@ -350,7 +350,7 @@ public interface JDBCAdapter {
 	 * 创建删除SQL
 	 * @param dest 表
 	 * @param obj entity
-	 * @param columns 删除条件的我
+	 * @param columns 删除条件的列，根据columns取obj值并合成删除条件
 	 * @return Run
 	 */
 	Run buildDeleteRun(String dest, Object obj, String ... columns);
