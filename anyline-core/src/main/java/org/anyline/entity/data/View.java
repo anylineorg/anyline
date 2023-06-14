@@ -61,12 +61,17 @@ public class View extends Table  {
         view.definition = definition;
         return view;
     }
+
+
     public View update(){
+        return update(true);
+    }
+    public View update(boolean setmap){
+        this.setmap = setmap;
         update = clone();
-        update.setUpdate(null);
+        update.update = null;
         return update;
     }
-
     public String getKeyword() {
         return keyword;
     }

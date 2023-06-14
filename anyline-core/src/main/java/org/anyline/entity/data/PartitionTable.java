@@ -72,9 +72,15 @@ public class PartitionTable extends Table{
         table.update = update;
         return table;
     }
+
+
     public PartitionTable update(){
+        return update(true);
+    }
+    public PartitionTable update(boolean setmap){
+        this.setmap = setmap;
         update = clone();
-        update.setUpdate(null);
+        update.update = null;
         return update;
     }
     public String toString(){

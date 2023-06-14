@@ -92,11 +92,17 @@ public class MasterTable extends Table {
         table.update = update;
         return table;
     }
+
     public MasterTable update(){
+        return update(true);
+    }
+    public MasterTable update(boolean setmap){
+        this.setmap = setmap;
         update = clone();
-        update.setUpdate(null);
+        update.update = null;
         return update;
     }
+
     public String toString(){
         return this.keyword+":"+name;
     }
