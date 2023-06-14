@@ -17,6 +17,15 @@ public class Column {
         return names;
     }
 
+    public static  <T extends Column>  void sort(Map<String,T> columns){
+        List<T> list = new ArrayList<>();
+        list.addAll(columns.values());
+        sort(list);
+        columns.clear();
+        for(T column:list){
+            columns.put(column.getName().toUpperCase(), column);
+        }
+    }
     public static  <T extends Column>  void sort(List<T> columns){
         Collections.sort(columns, new Comparator<T>() {
             @Override
