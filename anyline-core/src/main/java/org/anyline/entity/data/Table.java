@@ -113,7 +113,7 @@ public class Table  {
     public Table update(boolean setmap){
         this.setmap = setmap;
         update = clone();
-        update.setUpdate(null);
+        update.update = null;
         return update;
     }
 
@@ -134,8 +134,10 @@ public class Table  {
         return update;
     }
 
-    public Table setUpdate(Table update) {
+    public Table setUpdate(Table update, boolean setmap) {
         this.update = update;
+        this.setmap = setmap;
+        update.update = null;
         return this;
     }
 

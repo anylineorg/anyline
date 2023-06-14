@@ -63,7 +63,7 @@ public class Column {
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
-    protected String dateScale                    ; //  日期类型 精度
+    protected String dateScale                    ; // 日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
     protected int caseSensitive              = -1 ; // 是否区分大小写
     protected int isCurrency                 = -1 ; // 是否是货币
@@ -88,9 +88,12 @@ public class Column {
     protected int isOnUpdate                 = -1 ; // 是否在更新行时 更新这一列数据
     protected Object value                        ;
 
-    protected Column update                       ;
-    protected boolean drop = false              ;
+
+    protected boolean drop = false                ;
     protected String action = null                ; //ddl命令 add drop alter
+
+    protected Column update                       ;
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
 
 
 
@@ -117,7 +120,13 @@ public class Column {
 
 
     public Column update(){
-        update = this.clone();
+        return update(true);
+    }
+
+    public Column update(boolean setmap){
+        this.setmap = setmap;
+        update = clone();
+        update.update = null;
         return update;
     }
 
@@ -125,9 +134,11 @@ public class Column {
         return update;
     }
 
-    public Column setUpdate(Column update) {
+    public Column setUpdate(Column update, boolean setmap) {
         BeanUtil.copyFieldValueNvl(update, this);
         this.update = update;
+        this.setmap = setmap;
+        update.update = null;
         return this;
     }
 
@@ -135,8 +146,13 @@ public class Column {
         return dateScale;
     }
 
-    public void setDateScale(String dateScale) {
+    public Column setDateScale(String dateScale) {
+        if(setmap && null != update){
+            update.setDateScale(dateScale);
+            return this;
+        }
         this.dateScale = dateScale;
+        return this;
     }
 
     public String getCatalog() {
@@ -156,6 +172,10 @@ public class Column {
     }
 
     public Column setClassName(String className) {
+        if(setmap && null != update){
+            update.setClassName(className);
+            return this;
+        }
         this.className = className;
         return this;
     }
@@ -165,6 +185,10 @@ public class Column {
     }
 
     public Column setDisplaySize(Integer displaySize) {
+        if(setmap && null != update){
+            update.setDisplaySize(displaySize);
+            return this;
+        }
         this.displaySize = displaySize;
         return this;
     }
@@ -174,6 +198,10 @@ public class Column {
     }
 
     public Column setComment(String comment) {
+        if(setmap && null != update){
+            update.setComment(comment);
+            return this;
+        }
         if(null != comment){
             comment = comment.trim().replace("'","");
         }
@@ -203,6 +231,10 @@ public class Column {
      * @return Column
      */
     public Column setType(Integer type) {
+        if(setmap && null != update){
+            update.setType(type);
+            return this;
+        }
         if(this.type != type) {
             this.className = null;
         }
@@ -215,6 +247,10 @@ public class Column {
      * @return Column
      */
     public Column setType(String type) {
+        if(setmap && null != update){
+            update.setType(type);
+            return this;
+        }
         return setTypeName(type);
     }
 
@@ -238,8 +274,13 @@ public class Column {
         return jdbcType;
     }
 
-    public void setJdbcType(String jdbcType) {
+    public Column setJdbcType(String jdbcType) {
+        if(setmap && null != update){
+            update.setJdbcType(jdbcType);
+            return this;
+        }
         this.jdbcType = jdbcType;
+        return this;
     }
 
     /**
@@ -248,6 +289,10 @@ public class Column {
      * @return Column
      */
     public Column setTypeName(String typeName) {
+        if(setmap && null != update){
+            update.setTypeName(typeName);
+            return this;
+        }
         this.precision = 0;
         this.scale = 0;
         if(null != typeName){
@@ -283,10 +328,18 @@ public class Column {
     }
 
     public Column setPrecision(Integer precision) {
+        if(setmap && null != update){
+            update.setPrecision(precision);
+            return this;
+        }
         this.precision = precision;
         return this;
     }
     public Column setPrecision(Integer precision, Integer scale) {
+        if(setmap && null != update){
+            update.setPrecision(precision, scale);
+            return this;
+        }
         this.precision = precision;
         this.scale = scale;
         return this;
@@ -321,8 +374,13 @@ public class Column {
         return value;
     }
 
-    public void setValue(Object value) {
+    public Column setValue(Object value) {
+        if(setmap && null != update){
+            update.setValue(value);
+            return this;
+        }
         this.value = value;
+        return this;
     }
 
     public int isCaseSensitive() {
@@ -330,10 +388,18 @@ public class Column {
     }
 
     public Column setCaseSensitive(int caseSensitive) {
+        if(setmap && null != update){
+            update.setCaseSensitive(caseSensitive);
+            return this;
+        }
         this.caseSensitive = caseSensitive;
         return this;
     }
     public Column setCaseSensitive(Boolean caseSensitive) {
+        if(setmap && null != update){
+            update.setCaseSensitive(caseSensitive);
+            return this;
+        }
         if(null != caseSensitive) {
             if(caseSensitive) {
                 this.caseSensitive = 1;
@@ -349,10 +415,18 @@ public class Column {
     }
 
     public Column setCurrency(int currency) {
+        if(setmap && null != update){
+            update.setCurrency(currency);
+            return this;
+        }
         this.isCurrency = currency;
         return this;
     }
     public Column setCurrency(Boolean currency) {
+        if(setmap && null != update){
+            update.setCurrency(currency);
+            return this;
+        }
         if(null != currency){
             if(currency){
                 this.isCurrency = 1;
@@ -368,10 +442,18 @@ public class Column {
     }
 
     public Column setSigned(int signed) {
+        if(setmap && null != update){
+            update.setSigned(signed);
+            return this;
+        }
         this.isSigned = signed;
         return this;
     }
     public Column setSigned(Boolean signed) {
+        if(setmap && null != update){
+            update.setSigned(signed);
+            return this;
+        }
         if(null != signed){
             if(signed){
                 this.isSigned = 1;
@@ -387,6 +469,10 @@ public class Column {
     }
 
     public Column setScale(Integer scale) {
+        if(setmap && null != update){
+            update.setScale(scale);
+            return this;
+        }
         this.scale = scale;
         return this;
     }
@@ -396,10 +482,18 @@ public class Column {
     }
 
     public Column setNullable(int nullable) {
+        if(setmap && null != update){
+            update.setNullable(nullable);
+            return this;
+        }
         this.nullable = nullable;
         return this;
     }
     public Column setNullable(Boolean nullable) {
+        if(setmap && null != update){
+            update.setNullable(nullable);
+            return this;
+        }
         if(null != nullable){
             if(nullable){
                 this.nullable = 1;
@@ -415,6 +509,10 @@ public class Column {
     }
 
     public Column setAutoIncrement(int autoIncrement) {
+        if(setmap && null != update){
+            update.setAutoIncrement(autoIncrement);
+            return this;
+        }
         this.isAutoIncrement = autoIncrement;
         if(autoIncrement == 1){
             setNullable(false);
@@ -423,6 +521,10 @@ public class Column {
     }
 
     public Column setAutoIncrement(Boolean autoIncrement) {
+        if(setmap && null != update){
+            update.setAutoIncrement(autoIncrement);
+            return this;
+        }
         if(null != autoIncrement) {
             if(autoIncrement){
                 this.isAutoIncrement = 1;
@@ -441,6 +543,10 @@ public class Column {
      * @return  Column
      */
     public Column setAutoIncrement(int seed, int step) {
+        if(setmap && null != update){
+            update.setAutoIncrement(seed, step);
+            return this;
+        }
         setAutoIncrement(1);
         this.incrementSeed= seed;
         this.incrementStep = step;
@@ -452,10 +558,18 @@ public class Column {
     }
 
     public Column setPrimaryKey(int primaryKey) {
+        if(setmap && null != update){
+            update.setPrecision(primaryKey);
+            return this;
+        }
         this.isPrimaryKey = primaryKey;
         return this;
     }
     public Column setPrimaryKey(Boolean primaryKey) {
+        if(setmap && null != update){
+            update.setPrimaryKey(primaryKey);
+            return this;
+        }
         if(null != primaryKey){
             if(primaryKey){
                 this.isPrimaryKey = 1 ;
@@ -472,10 +586,18 @@ public class Column {
     }
 
     public Column setGenerated(int generated) {
+        if(setmap && null != update){
+            update.setGenerated(generated);
+            return this;
+        }
         this.isGenerated = generated;
         return this;
     }
     public Column setGenerated(Boolean generated) {
+        if(setmap && null != update){
+            update.setGenerated(generated);
+            return this;
+        }
         if(null != generated){
             if(generated){
                 this.isGenerated = 1;
@@ -491,6 +613,10 @@ public class Column {
     }
 
     public Column setDefaultValue(Object defaultValue) {
+        if(setmap && null != update){
+            update.setDefaultValue(defaultValue);
+            return this;
+        }
         this.defaultValue = defaultValue;
         return this;
     }
@@ -504,11 +630,19 @@ public class Column {
     }
 
     public Column setOrder(String order) {
+        if(setmap && null != update){
+            update.setOrder(order);
+            return this;
+        }
         this.order = order;
         return this;
     }
 
     public Column setPosition(Integer position) {
+        if(setmap && null != update){
+            update.setPosition(position);
+            return this;
+        }
         this.position = position;
         return this;
     }
@@ -522,6 +656,10 @@ public class Column {
     }
 
     public Column setIncrementSeed(Integer incrementSeed) {
+        if(setmap && null != update){
+            update.setIncrementSeed(incrementSeed);
+            return this;
+        }
         this.incrementSeed = incrementSeed;
         return this;
     }
@@ -531,6 +669,10 @@ public class Column {
     }
 
     public Column setIncrementStep(Integer incrementStep) {
+        if(setmap && null != update){
+            update.setIncrementStep(incrementStep);
+            return this;
+        }
         this.incrementStep = incrementStep;
         return this;
     }
@@ -540,10 +682,18 @@ public class Column {
     }
 
     public Column setOnUpdate(int onUpdate) {
+        if(setmap && null != update){
+            update.setOnUpdate(onUpdate);
+            return this;
+        }
         this.isOnUpdate = onUpdate;
         return this;
     }
     public Column setOnUpdate(Boolean onUpdate) {
+        if(setmap && null != update){
+            update.setOnUpdate(onUpdate);
+            return this;
+        }
         if(null != onUpdate){
             if(onUpdate){
                 this.isOnUpdate = 1;
@@ -556,6 +706,10 @@ public class Column {
   
 
     public Column setAfter(String after) {
+        if(setmap && null != update){
+            update.setAfter(after);
+            return this;
+        }
         this.after = after;
         return this;
     }
@@ -565,6 +719,10 @@ public class Column {
     }
 
     public Column setOriginalName(String originalName) {
+        if(setmap && null != update){
+            update.setOriginalName(originalName);
+            return this;
+        }
         this.originalName = originalName;
         return this;
     }
@@ -578,6 +736,10 @@ public class Column {
     }
 
     public Column setCharset(String charset) {
+        if(setmap && null != update){
+            update.setCharset(charset);
+            return this;
+        }
         this.charset = charset;
         return this;
     }
@@ -587,25 +749,30 @@ public class Column {
     }
 
     public Column setCollate(String collate) {
+        if(setmap && null != update){
+            update.setCollate(collate);
+            return this;
+        }
         this.collate = collate;
         return this;
     }
-
-    public String getNewName() {
-        if(null != update){
-            return update.getName();
-        }
-        return null;
+    public Column setNewName(String newName){
+        return setNewName(newName, true);
     }
 
-    public Column setNewName(String newName) {
+    public Column setNewName(String newName, boolean setmap) {
         if(null == update){
             update();
         }
         update.setName(newName);
+        this.setmap = setmap;
         return update;
     }
     public Column setBefore(String before) {
+        if(setmap && null != update){
+            update.setBefore(before);
+            return this;
+        }
         this.before = before;
         return this;
     } 
@@ -706,8 +873,13 @@ public class Column {
     }
 
     
-    public void setColumnType(ColumnType columnType) {
+    public Column setColumnType(ColumnType columnType) {
+        if(setmap && null != update){
+            update.setColumnType(columnType);
+            return this;
+        }
         this.columnType = columnType;
+        return this;
     }
 
     
@@ -716,8 +888,13 @@ public class Column {
     }
 
     
-    public void setJavaType(JavaType javaType) {
+    public Column setJavaType(JavaType javaType) {
+        if(setmap && null != update){
+            update.setJavaType(javaType);
+            return this;
+        }
         this.javaType = javaType;
+        return this;
     }
 
     public String getAction() {
@@ -732,8 +909,13 @@ public class Column {
         return srid;
     }
 
-    public void setSrid(int srid) {
+    public Column setSrid(int srid) {
+        if(setmap && null != update){
+            update.setSrid(srid);
+            return this;
+        }
         this.srid = srid;
+        return this;
     }
 
     public String getReference() {
@@ -741,6 +923,10 @@ public class Column {
     }
 
     public Column setReference(String reference) {
+        if(setmap && null != update){
+            update.setReference(reference);
+            return this;
+        }
         this.reference = reference;
         return this;
     }
