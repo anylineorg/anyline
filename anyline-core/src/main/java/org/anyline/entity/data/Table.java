@@ -266,11 +266,21 @@ public class Table  {
         }
         return result;
     }
-    public Table setName(String name) {
+    public Table setName(String name){
         this.name = name;
         return this;
     }
+    public Table setNewName(String newName){
+        return setNewName(newName, true);
+    }
 
+    public Table setNewName(String newName, boolean setmap) {
+        if(null == update){
+            update(setmap);
+        }
+        update.setName(newName);
+        return update;
+    }
     public String getType() {
         return type;
     }
