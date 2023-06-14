@@ -47,7 +47,7 @@ public class Table  {
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
     protected Table update;
-    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog,schema,name)
 
     public Table(){
         this(null);
