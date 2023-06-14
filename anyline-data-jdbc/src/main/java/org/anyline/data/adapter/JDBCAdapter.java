@@ -423,7 +423,7 @@ public interface JDBCAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * 查询表
+	 * 查询表,不是查表中的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
