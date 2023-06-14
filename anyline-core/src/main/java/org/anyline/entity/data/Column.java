@@ -762,10 +762,9 @@ public class Column {
 
     public Column setNewName(String newName, boolean setmap) {
         if(null == update){
-            update();
+            update(setmap);
         }
         update.setName(newName);
-        this.setmap = setmap;
         return update;
     }
     public Column setBefore(String before) {
