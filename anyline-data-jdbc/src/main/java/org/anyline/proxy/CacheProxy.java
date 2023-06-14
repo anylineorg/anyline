@@ -35,6 +35,9 @@ public class CacheProxy {
         if(null == datasource || "common".equalsIgnoreCase(datasource)){
             datasource = DataSourceHolder.curDataSource();
         }
+        if(null == datasource){
+            datasource = "default";
+        }
         return datasource.toUpperCase();
     }
 

@@ -2307,7 +2307,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"_"+types);
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource());
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -2512,7 +2512,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				tps = new String[]{"VIEW"};
 			}
 
-			DataRow view_map = CacheProxy.getViewMaps(DataSourceHolder.curDataSource()+"");
+			DataRow view_map = CacheProxy.getViewMaps(DataSourceHolder.curDataSource());
 			if(null != pattern){
 				if(view_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -2677,7 +2677,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource()+"_"+types);
+			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource());
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
