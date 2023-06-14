@@ -3712,7 +3712,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				// 修改列
 				if (!column.equals(ucolumn)) {
 					column.setTable(update);
-					column.setUpdate(ucolumn);
+					column.setUpdate(ucolumn, false);
 					/*
 					alter(column);
 					result = true;*/
@@ -4065,7 +4065,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != column){
 				// 修改列
 				column.setTable(update);
-				column.setUpdate(ucolumn);
+				column.setUpdate(ucolumn, false);
 				alter(column);
 				result = true;
 			}else{
@@ -4243,7 +4243,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != column){
 				// 修改列
 				column.setTable(update);
-				column.setUpdate(ucolumn);
+				column.setUpdate(ucolumn, false);
 				alter(column);
 				result = true;
 			}else{
