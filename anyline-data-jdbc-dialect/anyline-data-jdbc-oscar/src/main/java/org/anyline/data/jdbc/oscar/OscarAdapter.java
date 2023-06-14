@@ -1354,7 +1354,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append(" RENAME COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TO ");
-		SQLUtil.delimiter(builder, column.getNewName(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
 

@@ -1396,7 +1396,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable());
-		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getNewName());
+		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getUpdate().getName());
 		return builder.toString();
 	}
 
