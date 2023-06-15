@@ -783,6 +783,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Table table)  throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
@@ -790,7 +791,8 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		//去掉catalog schema前缀
 		Table update = new Table(table.getUpdate().getName());
 		name(builder, update);
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1142,11 +1144,13 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Column column) throws Exception {
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
 		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getUpdate().getName());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**

@@ -2239,7 +2239,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildCreateCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns);
-     * String buildRenameRunSQL(Table table);
+     * List<String> buildRenameRunSQL(Table table);
 	 * String buildChangeCommentRunSQL(Table table);
 	 * String buildDropRunSQL(Table table);
 	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
@@ -2350,9 +2350,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Table table) throws Exception{
+	public List<String> buildRenameRunSQL(Table table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(Table table)", 37));
 		}
 		return null;
 	}
@@ -2465,7 +2465,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * List<String> buildCreateRunSQL(View view);
 	 * String buildCreateCommentRunSQL(View view);
 	 * List<String> buildAlterRunSQL(View view);
-	 * String buildRenameRunSQL(View view);
+	 * List<String> buildRenameRunSQL(View view);
 	 * String buildChangeCommentRunSQL(View view);
 	 * String buildDropRunSQL(View view);
 	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
@@ -2511,9 +2511,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(View view) throws Exception{
+	public List<String> buildRenameRunSQL(View view) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(View view)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(View view)", 37));
 		}
 		return null;
 	}
@@ -2573,7 +2573,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildCreateCommentRunSQL(MasterTable table);
 	 * List<String> buildAlterRunSQL(MasterTable table);
 	 * String buildDropRunSQL(MasterTable table);
-	 * String buildRenameRunSQL(MasterTable table);
+	 * List<String> buildRenameRunSQL(MasterTable table);
 	 * String buildChangeCommentRunSQL(MasterTable table);
 	 ******************************************************************************************************************/
 	/**
@@ -2607,9 +2607,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 	@Override
-	public String buildRenameRunSQL(MasterTable table) throws Exception{
+	public List<String> buildRenameRunSQL(MasterTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(MasterTable table)", 37));
 		}
 		return null;
 	}
@@ -2629,7 +2629,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildCreateCommentRunSQL(MasterTable table) throws Exception
 	 * List<String> buildAlterRunSQL(PartitionTable table);
 	 * String buildDropRunSQL(PartitionTable table);
-	 * String buildRenameRunSQL(PartitionTable table);
+	 * List<String> buildRenameRunSQL(PartitionTable table);
 	 * String buildChangeCommentRunSQL(PartitionTable table);
 	 ******************************************************************************************************************/
 	/**
@@ -2664,9 +2664,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 	@Override
-	public String buildRenameRunSQL(PartitionTable table) throws Exception{
+	public List<String> buildRenameRunSQL(PartitionTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(PartitionTable table)", 37));
 		}
 		return null;
 	}
@@ -2688,7 +2688,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * List<String> buildAlterRunSQL(Column column)
 	 * String buildDropRunSQL(Column column, boolean slice)
 	 * String buildDropRunSQL(Column column)
-	 * String buildRenameRunSQL(Column column)
+	 * List<String> buildRenameRunSQL(Column column)
 	 * List<String> buildChangeTypeRunSQL(Column column)
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
@@ -2772,10 +2772,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			String name = column.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
-				String sql = buildRenameRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
-				}
+				sqls.addAll(buildRenameRunSQL(column));
 			}
 			column.setName(uname);
 			// 修改数据类型
@@ -2877,7 +2874,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Column column) throws Exception{
+	public List<String> buildRenameRunSQL(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
@@ -2886,7 +2884,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" ");
 		SQLUtil.delimiter(builder, column.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 
@@ -3332,7 +3331,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildAddRunSQL(Tag tag)
 	 * List<String> buildAlterRunSQL(Tag tag)
 	 * String buildDropRunSQL(Tag tag)
-	 * String buildRenameRunSQL(Tag tag)
+	 * List<String> buildRenameRunSQL(Tag tag)
 	 * String buildChangeDefaultRunSQL(Tag tag)
 	 * String buildChangeNullableRunSQL(Tag tag)
 	 * String buildChangeCommentRunSQL(Tag tag)
@@ -3379,10 +3378,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			String name = tag.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
-				String sql = buildRenameRunSQL(tag);
-				if(null != sql){
-					sqls.add(sql);
-				}
+				sqls.addAll(buildRenameRunSQL(tag));
 			}
 			tag.setName(uname);
 			// 修改数据类型
@@ -3461,7 +3457,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Tag tag) throws Exception{
+	public List<String> buildRenameRunSQL(Tag tag) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
@@ -3470,7 +3467,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" ");
 		SQLUtil.delimiter(builder, tag.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -3554,7 +3552,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildAddRunSQL(PrimaryKey primary) throws Exception
 	 * List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
 	 * String buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * String buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -3601,7 +3599,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(PrimaryKey primary) throws Exception{
+	public List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(PrimaryKey primary)", 37));
 		}
@@ -3683,9 +3681,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildRenameRunSQL(ForeignKey foreign) throws Exception{
+	public List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(ForeignKey foreign) ", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(ForeignKey foreign) ", 37));
 		}
 		return null;
 	}
@@ -3695,7 +3693,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildAddRunSQL(Index index) throws Exception
 	 * List<String> buildAlterRunSQL(Index index) throws Exception
 	 * String buildDropRunSQL(Index index) throws Exception
-	 * String buildRenameRunSQL(Index index) throws Exception
+	 * List<String> buildRenameRunSQL(Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -3784,7 +3782,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Index index) throws Exception{
+	public List<String> buildRenameRunSQL(Index index) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildAddRunSQL(Index index)", 37));
 		}
@@ -3804,7 +3802,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildAddRunSQL(Constraint constraint) throws Exception
 	 * List<String> buildAlterRunSQL(Constraint constraint) throws Exception
 	 * String buildDropRunSQL(Constraint constraint) throws Exception
-	 * String buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<String> buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -3850,9 +3848,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Constraint constraint) throws Exception{
+	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildRenameRunSQL(Constraint constraint)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(Constraint constraint)", 37));
 		}
 		return null;
 	}
@@ -3863,7 +3861,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildCreateRunSQL(Trigger trigger) throws Exception
 	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
 	 * String buildDropRunSQL(Trigger trigger) throws Exception;
-	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
+	 * List<String> buildRenameRunSQL(Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -3877,7 +3875,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		builder.append(" ").append(trigger.getTime().sql()).append(" ");
 		List<Trigger.EVENT> events = trigger.getEvents();
 		boolean first = true;
-		for(org.anyline.entity.data.Trigger.EVENT event:events){
+		for(Trigger.EVENT event:events){
 			if(!first){
 				builder.append(" OR ");
 			}
@@ -3929,7 +3927,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Trigger trigger) throws Exception{
+	public List<String> buildRenameRunSQL(Trigger trigger) throws Exception{
 		return null;
 	}
 
@@ -3940,7 +3938,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildCreateRunSQL(Procedure procedure) throws Exception
 	 * List<String> buildAlterRunSQL(Procedure procedure) throws Exception;
 	 * String buildDropRunSQL(Procedure procedure) throws Exception;
-	 * String buildRenameRunSQL(Procedure procedure) throws Exception;
+	 * List<String> buildRenameRunSQL(Procedure procedure) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
@@ -4060,7 +4058,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Procedure procedure) throws Exception{
+	public List<String> buildRenameRunSQL(Procedure procedure) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		String catalog = procedure.getCatalog();
 		String schema = procedure.getSchema();
@@ -4074,8 +4073,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		SQLUtil.delimiter(builder, procedure.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" RENAME TO ");
 		SQLUtil.delimiter(builder, procedure.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		// RENAME TO new_procedure;\n");
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/* *****************************************************************************************************************
@@ -4084,7 +4083,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildCreateRunSQL(Function function) throws Exception
 	 * List<String> buildAlterRunSQL(Function function) throws Exception;
 	 * String buildDropRunSQL(Function function) throws Exception;
-	 * String buildRenameRunSQL(Function function) throws Exception;
+	 * List<String> buildRenameRunSQL(Function function) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -4121,7 +4120,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Function function) throws Exception{
+	public List<String> buildRenameRunSQL(Function function) throws Exception{
 		return null;
 	}
 	/* *****************************************************************************************************************

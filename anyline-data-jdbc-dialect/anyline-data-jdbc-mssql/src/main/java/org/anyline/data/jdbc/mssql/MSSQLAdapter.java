@@ -882,7 +882,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(View view) throws Exception{
-		return super.buildRenameRunSQL(view);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(view.getName()).append("', '").append(view.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	@Override
@@ -950,7 +954,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 	@Override
 	public List<String> buildRenameRunSQL(MasterTable table) throws Exception{
-		return super.buildRenameRunSQL(table);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(table.getName()).append("', '").append(table.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	@Override
 	public String buildChangeCommentRunSQL(MasterTable table) throws Exception{
@@ -986,7 +994,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 	@Override
 	public List<String> buildRenameRunSQL(PartitionTable table) throws Exception{
-		return super.buildRenameRunSQL(table);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(table.getName()).append("', '").append(table.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	@Override
 	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception{
@@ -1400,7 +1412,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Tag tag)  throws Exception{
-		return super.buildRenameRunSQL(tag);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(tag.getName()).append("', '").append(tag.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1528,7 +1544,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildRenameRunSQL(primary);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(primary.getName()).append("', '").append(primary.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/* *****************************************************************************************************************
@@ -1568,7 +1588,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	public List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception{
-		return super.buildRenameRunSQL(foreign);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(foreign.getName()).append("', '").append(foreign.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 
@@ -1728,7 +1752,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Index index) throws Exception{
-		return super.buildRenameRunSQL(index);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(index.getName()).append("', '").append(index.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	/**
 	 * 索引备注
@@ -1783,7 +1811,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
-		return super.buildRenameRunSQL(constraint);
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(constraint.getName()).append("', '").append(constraint.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/* *****************************************************************************************************************
@@ -1851,7 +1883,11 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Trigger trigger) throws Exception{
-		return null;
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(trigger.getName()).append("', '").append(trigger.getUpdate().getName()).append("'");
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 

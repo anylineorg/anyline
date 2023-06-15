@@ -1492,6 +1492,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return String
 	 */
 	public List<String> buildRenameRunSQL(Procedure procedure) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		String catalog = procedure.getCatalog();
 		String schema = procedure.getSchema();
@@ -1505,7 +1506,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		SQLUtil.delimiter(builder, procedure.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TO ");
 		SQLUtil.delimiter(builder, procedure.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/* *****************************************************************************************************************
@@ -1552,6 +1554,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return String
 	 */
 	public List<String> buildRenameRunSQL(Function function) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		String catalog = function.getCatalog();
 		String schema = function.getSchema();
@@ -1565,7 +1568,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		SQLUtil.delimiter(builder, function.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TO ");
 		SQLUtil.delimiter(builder, function.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/* *****************************************************************************************************************
