@@ -669,13 +669,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             prepare.setAlias(alias);
         }
         builder.append("MATCH (").append(alias);
-        String table = run.getTable(true);
+        String table = run.getTable();
         if(BasicUtil.isNotEmpty(table)) {
             builder.append(":");
             if (null != run.getSchema()) {
                 SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
             }
-            SQLUtil.delimiter(builder, run.getTable(true), delimiterFr, delimiterTo);
+            SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
         }
         builder.append(") ");
         /*
@@ -945,7 +945,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
         }
 
-        SQLUtil.delimiter(builder, run.getTable(true), delimiterFr, delimiterTo);
+        SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
         builder.append(JDBCAdapter.BR);
         if(BasicUtil.isNotEmpty(prepare.getAlias())){
             builder.append("  ").append(prepare.getAlias());
