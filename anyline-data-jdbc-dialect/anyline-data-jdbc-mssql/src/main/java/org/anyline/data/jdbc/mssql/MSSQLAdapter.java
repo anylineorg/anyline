@@ -1850,6 +1850,109 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return null;
 	}
 
+
+	/* *****************************************************************************************************************
+	 * 													procedure
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(Procedure procedure) throws Exception
+	 * List<String> buildAlterRunSQL(Procedure procedure) throws Exception;
+	 * String buildDropRunSQL(Procedure procedure) throws Exception;
+	 * String buildRenameRunSQL(Procedure procedure) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 添加存储过程
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildCreateRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildCreateRunSQL(procedure);
+	}
+
+	/**
+	 * 修改存储过程
+	 * 有可能生成多条SQL
+	 * @param procedure 存储过程
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildAlterRunSQL(procedure);
+	}
+
+	/**
+	 * 删除存储过程
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildDropRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+		return super.buildDropRunSQL(procedure);
+	}
+
+	/**
+	 * 修改存储过程名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+
+	/**
+	 * 修改存储过程名
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Procedure procedure) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sp_rename '").append(procedure.getName()).append("', '").append(procedure.getUpdate().getName()).append("'");
+		return builder.toString();
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * String buildCreateRunSQL(Function function) throws Exception
+	 * List<String> buildAlterRunSQL(Function function) throws Exception;
+	 * String buildDropRunSQL(Function function) throws Exception;
+	 * String buildRenameRunSQL(Function function) throws Exception;
+	 ******************************************************************************************************************/
+
+	/**
+	 * 添加函数
+	 * @param function 函数
+	 * @return String
+	 */
+	public String buildCreateRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildCreateRunSQL(function);
+	}
+
+	/**
+	 * 修改函数
+	 * 有可能生成多条SQL
+	 * @param function 函数
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildAlterRunSQL(function);
+	}
+
+	/**
+	 * 删除函数
+	 * @param function 函数
+	 * @return String
+	 */
+	public String buildDropRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildDropRunSQL(function);
+	}
+
+	/**
+	 * 修改函数名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param function 函数
+	 * @return String
+	 */
+	public String buildRenameRunSQL(org.anyline.entity.data.Function function) throws Exception{
+		return super.buildRenameRunSQL(function);
+	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
