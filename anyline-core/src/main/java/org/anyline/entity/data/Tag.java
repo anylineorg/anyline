@@ -20,18 +20,39 @@ public class Tag extends Column{
     }
 
 
-    public Tag update(){
-        update = (Tag) this.clone();
-        return update;
-    }
-
     public Tag getUpdate() {
         return update;
     }
 
-    public Tag setUpdate(Tag update) {
-        BeanUtil.copyFieldValueNvl(update, this);
+    public Tag setNewName(String newName){
+        return setNewName(newName, true, true);
+    }
+
+    public Tag setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
+        return update;
+    }
+
+    public Tag update(){
+        return update(true, true);
+    }
+
+    public Tag update(boolean setmap, boolean getmap){
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update = clone();
+        update.update = null;
+        return update;
+    }
+
+    public Tag setUpdate(Tag update, boolean setmap, boolean getmap) {
         this.update = update;
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update.update = null;
         return this;
     }
 
@@ -53,31 +74,7 @@ public class Tag extends Column{
     }
     public Tag clone(){
         Tag copy = new Tag();
-        copy.setName(name);
-        copy.setOriginalName(originalName);
-        copy.setCatalog(catalog);
-        copy.setClassName(className);
-        copy.setSchema(schema);
-        copy.setTableName(tableName);
-        copy.setDisplaySize(displaySize);
-        copy.setComment(comment);
-        copy.setType(type);
-        copy.setTypeName(typeName);
-        copy.setPrecision(precision);
-        copy.setScale(scale);
-        copy.setNullable(nullable);
-        copy.setCaseSensitive(caseSensitive);
-        copy.setCurrency(isCurrency);
-        copy.setSigned(isSigned);
-        copy.setPrimaryKey(isPrimaryKey);
-        copy.setGenerated(isGenerated);
-        copy.setDefaultValue(defaultValue);
-        copy.setPosition(position);
-        copy.setOrder(order);
-        copy.setBefore(before);
-        copy.setAfter(after);
-        copy.setCharset(charset);
-        copy.setCollate(collate);
+        BeanUtil.copyFieldValue(update, this);
         return copy;
     }
     public String getKeyword() {
