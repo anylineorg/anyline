@@ -2,6 +2,7 @@ package org.anyline.entity.data;
 
 
 import org.anyline.entity.DataRow;
+import org.anyline.util.BeanUtil;
 
 import java.util.LinkedHashMap;
 
@@ -26,12 +27,57 @@ public class MasterTable extends Table {
         this.name = name;
     }
 
+
+    public MasterTable getUpdate() {
+        return update;
+    }
+
+    public MasterTable setNewName(String newName){
+        return setNewName(newName, true, true);
+    }
+
+    public MasterTable setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
+        return update;
+    }
+
+    public MasterTable update(){
+        return update(true, true);
+    }
+
+    public MasterTable update(boolean setmap, boolean getmap){
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update = clone();
+        update.update = null;
+        return update;
+    }
+
+    public MasterTable setUpdate(MasterTable update, boolean setmap, boolean getmap) {
+        this.update = update;
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update.update = null;
+        return this;
+    }
+
     public Partition getPartition() {
+        if(getmap && null != update){
+            return update.partition;
+        }
         return partition;
     }
 
-    public void setPartition(Partition partition) {
+    public MasterTable setPartition(Partition partition) {
+        if(setmap && null != update){
+            update.setPartition(partition);
+            return this;
+        }
         this.partition = partition;
+        return this;
     }
 
     public String getKeyword() {
@@ -39,11 +85,19 @@ public class MasterTable extends Table {
     }
 
     public LinkedHashMap<String, Table> getPartitions() {
+        if(getmap && null != update){
+            return update.partitions;
+        }
         return partitions;
     }
 
-    public void setPartitions(LinkedHashMap<String, Table> partitions) {
+    public MasterTable setPartitions(LinkedHashMap<String, Table> partitions) {
+        if(setmap && null != update){
+            update.setPartitions(partitions);
+            return this;
+        }
         this.partitions = partitions;
+        return this;
     }
 
     /**
@@ -52,6 +106,9 @@ public class MasterTable extends Table {
      * @return table table
      */
     public Table getPartition(DataRow value){
+        if(getmap && null != update){
+            return update.getPartition(value);
+        }
         Table table = null;
         return table;
     }
@@ -61,46 +118,28 @@ public class MasterTable extends Table {
      * @return table table
      */
     public Table getPartition(Tag... tags){
+        if(getmap && null != update){
+            return update.getPartition(tags);
+        }
         Table table = null;
         return table;
     }
 
     public MasterTable clone(){
-        MasterTable table = new MasterTable();
-        table.partition = partition;
-        table.catalog = catalog;
-        table.schema = schema;
-        table.name = name;
-        table.comment = comment;
-        table.type = type;
-        table.typeCat = typeCat;
-        table.typeSchema = typeSchema;
-        table.typeName = typeName;
-        table.selfReferencingColumn = selfReferencingColumn;
-        table.refGeneration = refGeneration;
-        table.engine = engine;
-        table.charset = charset;
-        table.collate = collate;
-        table.ttl = ttl;
-        table.checkSchemaTime = checkSchemaTime;
-        table.primaryKey = primaryKey;
-        table.columns = columns;
-        table.tags = tags;
-        table.indexs = indexs;
-        table.constraints = constraints;
-        table.autoDropColumn = autoDropColumn;
-        table.update = update;
-        return table;
-    }
+        MasterTable copy = new MasterTable();
+        BeanUtil.copyFieldValueNvl(copy, this);
 
-    public MasterTable update(){
-        return update(true);
-    }
-    public MasterTable update(boolean setmap){
-        this.setmap = setmap;
-        update = clone();
-        update.update = null;
-        return update;
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        for(Column column:this.columns.values()){
+            Column col = column.clone();
+            cols.put(col.getName().toUpperCase(), col);
+        }
+        copy.columns = cols;
+
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;;
+        return copy;
     }
 
     public String toString(){
