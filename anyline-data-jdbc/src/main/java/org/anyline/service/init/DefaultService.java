@@ -4404,7 +4404,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean drop(ForeignKey foreign) throws Exception{
             if(BasicUtil.isEmpty(foreign.getName())){
                 List<String> names = Column.names(foreign.getColumns());
-                foreign = metadata.foreign(foreign.getTable(), names);
+                foreign = metadata.foreign(foreign.getTable(true), names);
             }
             boolean result = dao.drop(foreign);
             CacheProxy.clear();
