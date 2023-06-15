@@ -953,7 +953,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildCreateCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
-	 * String buildRenameRunSQL(Table table)
+	 * List<String> buildRenameRunSQL(Table table)
 	 * String buildChangeCommentRunSQL(Table table)
 	 * String buildDropRunSQL(Table table)
 	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
@@ -1006,7 +1006,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Table table) throws Exception {
+	public List<String> buildRenameRunSQL(Table table) throws Exception {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
@@ -1130,7 +1130,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildCreateCommentRunSQL(MasterTable table)
 	 * List<String> buildAlterRunSQL(MasterTable table)
 	 * String buildDropRunSQL(MasterTable table)
-	 * String buildRenameRunSQL(MasterTable table)
+	 * List<String> buildRenameRunSQL(MasterTable table)
 	 * String buildChangeCommentRunSQL(MasterTable table)
 	 ******************************************************************************************************************/
 	/**
@@ -1151,7 +1151,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public String buildRenameRunSQL(MasterTable table) throws Exception{
+	public List<String> buildRenameRunSQL(MasterTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
@@ -1166,7 +1166,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildCreateRunSQL(PartitionTable table)
 	 * List<String> buildAlterRunSQL(PartitionTable table)
 	 * String buildDropRunSQL(PartitionTable table)
-	 * String buildRenameRunSQL(PartitionTable table)
+	 * List<String> buildRenameRunSQL(PartitionTable table)
 	 * String buildChangeCommentRunSQL(PartitionTable table)
 	 ******************************************************************************************************************/
 	/**
@@ -1187,7 +1187,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public String buildRenameRunSQL(PartitionTable table) throws Exception{
+	public List<String> buildRenameRunSQL(PartitionTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
@@ -1205,7 +1205,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * List<String> buildAlterRunSQL(Column column)
 	 * String buildDropRunSQL(Column column, boolean slice)
 	 * String buildDropRunSQL(Column column)
-	 * String buildRenameRunSQL(Column column)
+	 * List<String> buildRenameRunSQL(Column column)
 	 * List<String> buildChangeTypeRunSQL(Column column)
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
@@ -1296,7 +1296,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Column column)  throws Exception{
+	public List<String> buildRenameRunSQL(Column column)  throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
@@ -1584,7 +1584,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildAddRunSQL(Tag tag)
 	 * List<String> buildAlterRunSQL(Tag tag)
 	 * String buildDropRunSQL(Tag tag)
-	 * String buildRenameRunSQL(Tag tag)
+	 * List<String> buildRenameRunSQL(Tag tag)
 	 * String buildChangeDefaultRunSQL(Tag tag)
 	 * String buildChangeNullableRunSQL(Tag tag)
 	 * String buildChangeCommentRunSQL(Tag tag)
@@ -1635,7 +1635,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Tag tag)  throws Exception{
+	public List<String> buildRenameRunSQL(Tag tag)  throws Exception{
 		return super.buildRenameRunSQL(tag);
 	}
 
@@ -1703,7 +1703,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildAddRunSQL(PrimaryKey primary) throws Exception
 	 * List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
 	 * String buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * String buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -1762,7 +1762,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(PrimaryKey primary) throws Exception{
+	public List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildRenameRunSQL(primary);
 	}
 
@@ -1802,7 +1802,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildRenameRunSQL(ForeignKey foreign) throws Exception{
+	public List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildRenameRunSQL(foreign);
 	}
 
@@ -1924,7 +1924,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildAddRunSQL(Index index) throws Exception
 	 * List<String> buildAlterRunSQL(Index index) throws Exception
 	 * String buildDropRunSQL(Index index) throws Exception
-	 * String buildRenameRunSQL(Index index) throws Exception
+	 * List<String> buildRenameRunSQL(Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -1962,7 +1962,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Index index) throws Exception{
+	public List<String> buildRenameRunSQL(Index index) throws Exception{
 		return super.buildRenameRunSQL(index);
 	}
 	/**
@@ -1979,7 +1979,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildAddRunSQL(Constraint constraint) throws Exception
 	 * List<String> buildAlterRunSQL(Constraint constraint) throws Exception
 	 * String buildDropRunSQL(Constraint constraint) throws Exception
-	 * String buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<String> buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -2017,7 +2017,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Constraint constraint) throws Exception{
+	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
 		return super.buildRenameRunSQL(constraint);
 	}
 
@@ -2028,7 +2028,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildCreateRunSQL(Trigger trigger) throws Exception
 	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
 	 * String buildDropRunSQL(Trigger trigger) throws Exception;
-	 * String buildRenameRunSQL(Trigger trigger) throws Exception;
+	 * List<String> buildRenameRunSQL(Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -2070,7 +2070,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Trigger trigger) throws Exception{
+	public List<String> buildRenameRunSQL(Trigger trigger) throws Exception{
 		return super.buildRenameRunSQL(trigger);
 	}
 
@@ -2081,14 +2081,14 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildCreateRunSQL(Procedure procedure) throws Exception
 	 * List<String> buildAlterRunSQL(Procedure procedure) throws Exception;
 	 * String buildDropRunSQL(Procedure procedure) throws Exception;
-	 * String buildRenameRunSQL(Procedure procedure) throws Exception;
+	 * List<String> buildRenameRunSQL(Procedure procedure) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildCreateRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public String buildCreateRunSQL(Procedure procedure) throws Exception{
 		return super.buildCreateRunSQL(procedure);
 	}
 
@@ -2098,7 +2098,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public List<String> buildAlterRunSQL(Procedure procedure) throws Exception{
 		return super.buildAlterRunSQL(procedure);
 	}
 
@@ -2107,7 +2107,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildDropRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public String buildDropRunSQL(Procedure procedure) throws Exception{
 		return super.buildDropRunSQL(procedure);
 	}
 
@@ -2117,7 +2117,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildRenameRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public List<String> buildRenameRunSQL(Procedure procedure) throws Exception{
 		return super.buildRenameRunSQL(procedure);
 	}
 
@@ -2127,7 +2127,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * String buildCreateRunSQL(Function function) throws Exception
 	 * List<String> buildAlterRunSQL(Function function) throws Exception;
 	 * String buildDropRunSQL(Function function) throws Exception;
-	 * String buildRenameRunSQL(Function function) throws Exception;
+	 * List<String> buildRenameRunSQL(Function function) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -2135,7 +2135,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildCreateRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public String buildCreateRunSQL(Function function) throws Exception{
 		return super.buildCreateRunSQL(function);
 	}
 
@@ -2145,7 +2145,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param function 函数
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public List<String> buildAlterRunSQL(Function function) throws Exception{
 		return super.buildAlterRunSQL(function);
 	}
 
@@ -2154,7 +2154,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildDropRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public String buildDropRunSQL(Function function) throws Exception{
 		return super.buildDropRunSQL(function);
 	}
 
@@ -2164,7 +2164,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildRenameRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public List<String> buildRenameRunSQL(Function function) throws Exception{
 		return super.buildRenameRunSQL(function);
 	}
 

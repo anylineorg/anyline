@@ -946,7 +946,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildRenameRunSQL(Table table) throws Exception;
+	List<String> buildRenameRunSQL(Table table) throws Exception;
 
 	/**
 	 * 修改备注
@@ -1040,7 +1040,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildRenameRunSQL(View view) throws Exception;
+	List<String> buildRenameRunSQL(View view) throws Exception;
 
 	/**
 	 * 修改备注
@@ -1109,7 +1109,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildRenameRunSQL(MasterTable table) throws Exception;
+	List<String> buildRenameRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表备注
@@ -1161,7 +1161,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildRenameRunSQL(PartitionTable table) throws Exception;
+	List<String> buildRenameRunSQL(PartitionTable table) throws Exception;
 
 	/**
 	 * 修改分区表备注
@@ -1239,7 +1239,7 @@ public interface JDBCAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	String buildRenameRunSQL(Column column) throws Exception;
+	List<String> buildRenameRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改数据类型
@@ -1417,7 +1417,7 @@ public interface JDBCAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	String buildRenameRunSQL(Tag tag) throws Exception;
+	List<String> buildRenameRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改默认值
@@ -1493,7 +1493,7 @@ public interface JDBCAdapter {
 	 * @param primary 主键
 	 * @return String
 	 */
-	String buildRenameRunSQL(PrimaryKey primary) throws Exception;
+	List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception;
 
 
 
@@ -1528,7 +1528,7 @@ public interface JDBCAdapter {
 	 * @param foreign 外键
 	 * @return String
 	 */
-	String buildRenameRunSQL(ForeignKey foreign) throws Exception;
+	List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
@@ -1561,7 +1561,7 @@ public interface JDBCAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
-	String buildRenameRunSQL(Index index) throws Exception;
+	List<String> buildRenameRunSQL(Index index) throws Exception;
 
 	/**
 	 * 索引备注
@@ -1601,7 +1601,7 @@ public interface JDBCAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
-	String buildRenameRunSQL(Constraint constraint) throws Exception;
+	List<String> buildRenameRunSQL(Constraint constraint) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1637,7 +1637,7 @@ public interface JDBCAdapter {
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	String buildRenameRunSQL(Trigger trigger) throws Exception;
+	List<String> buildRenameRunSQL(Trigger trigger) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1677,7 +1677,7 @@ public interface JDBCAdapter {
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	String buildRenameRunSQL(Procedure procedure) throws Exception;
+	List<String> buildRenameRunSQL(Procedure procedure) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													function
@@ -1711,7 +1711,7 @@ public interface JDBCAdapter {
 	 * @param function 函数
 	 * @return String
 	 */
-	String buildRenameRunSQL(Function function) throws Exception;
+	List<String> buildRenameRunSQL(Function function) throws Exception;
 	/* *****************************************************************************************************************
 	 *
 	 * 													common

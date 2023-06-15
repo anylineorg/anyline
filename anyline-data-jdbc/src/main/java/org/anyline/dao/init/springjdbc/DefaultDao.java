@@ -3809,8 +3809,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename table", sql);
+		boolean result = execute(runtime, "rename table", adapter.buildRenameRunSQL(origin));
 		if (null != ddListener) {
 			ddListener.afterRename(origin, result);
 		}
@@ -3905,8 +3904,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename view", sql);
+		boolean result = execute(runtime, "rename view", adapter.buildRenameRunSQL(origin));
 		if (null != ddListener) {
 			ddListener.afterRename(origin, result);
 		}
@@ -4072,8 +4070,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename MasterTable", sql);
+		boolean result = execute(runtime, "rename MasterTable", adapter.buildRenameRunSQL(origin));
 		if (null != ddListener) {
 			ddListener.afterRename(origin, result);
 		}
@@ -4211,8 +4208,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename PartitionTable", sql);
+		boolean result = execute(runtime, "rename PartitionTable", adapter.buildRenameRunSQL(origin));
 		if (null != ddListener) {
 			ddListener.afterRename(origin, result);
 		}
@@ -4365,8 +4361,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename column", sql);
+		boolean result = execute(runtime, "rename column", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -4512,8 +4507,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename tag", sql);
+		boolean result = execute(runtime, "rename tag", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -4619,8 +4613,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename primary", sql);
+		boolean result = execute(runtime, "rename primary", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -4728,8 +4721,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename foreign", sql);
+		boolean result = execute(runtime, "rename foreign", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -4835,8 +4827,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename index", sql);
+		boolean result = execute(runtime, "rename index", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -4943,8 +4934,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename constraint", sql);
+		boolean result = execute(runtime, "rename constraint", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -5036,8 +5026,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename trigger", sql);
+		boolean result = execute(runtime, "rename trigger", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -5129,8 +5118,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename procedure", sql);
+		boolean result = execute(runtime, "rename procedure", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -5222,8 +5210,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		String sql = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, "rename function", sql);
+		boolean result = execute(runtime, "rename function", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
 			ddListener.afterRename(origin, result);
 		}
@@ -5255,6 +5242,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			result = execute(runtime, random + "-" + idx++, title, sql) && result;
 		}
 		return result;
+	}
+	public boolean execute(JDBCRuntime runtime, String title, List<String> sqls){
+		return execute(runtime, random(), title, sqls);
 	}
 	/* *****************************************************************************************************************
 	 *

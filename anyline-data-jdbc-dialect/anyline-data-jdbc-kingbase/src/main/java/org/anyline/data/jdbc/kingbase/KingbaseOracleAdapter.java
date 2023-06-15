@@ -915,7 +915,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildCreateCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
-	 * String buildRenameRunSQL(Table table)
+	 * List<String> buildRenameRunSQL(Table table)
 	 * String buildChangeCommentRunSQL(Table table)
 	 * String buildDropRunSQL(Table table)
 	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
@@ -968,7 +968,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Table table) throws Exception {
+	public List<String> buildRenameRunSQL(Table table) throws Exception {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
@@ -1075,7 +1075,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * List<String> buildCreateRunSQL(View view);
 	 * String buildCreateCommentRunSQL(View view);
 	 * List<String> buildAlterRunSQL(View view);
-	 * String buildRenameRunSQL(View view);
+	 * List<String> buildRenameRunSQL(View view);
 	 * String buildChangeCommentRunSQL(View view);
 	 * String buildDropRunSQL(View view);
 	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
@@ -1108,7 +1108,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(View view) throws Exception{
+	public List<String> buildRenameRunSQL(View view) throws Exception{
 		return super.buildRenameRunSQL(view);
 	}
 
@@ -1155,7 +1155,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildCreateCommentRunSQL(MasterTable table)
 	 * List<String> buildAlterRunSQL(MasterTable table)
 	 * String buildDropRunSQL(MasterTable table)
-	 * String buildRenameRunSQL(MasterTable table)
+	 * List<String> buildRenameRunSQL(MasterTable table)
 	 * String buildChangeCommentRunSQL(MasterTable table)
 	 ******************************************************************************************************************/
 	/**
@@ -1176,7 +1176,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public String buildRenameRunSQL(MasterTable table) throws Exception{
+	public List<String> buildRenameRunSQL(MasterTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
@@ -1191,7 +1191,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildCreateRunSQL(PartitionTable table)
 	 * List<String> buildAlterRunSQL(PartitionTable table)
 	 * String buildDropRunSQL(PartitionTable table)
-	 * String buildRenameRunSQL(PartitionTable table)
+	 * List<String> buildRenameRunSQL(PartitionTable table)
 	 * String buildChangeCommentRunSQL(PartitionTable table)
 	 ******************************************************************************************************************/
 	/**
@@ -1212,7 +1212,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public String buildRenameRunSQL(PartitionTable table) throws Exception{
+	public List<String> buildRenameRunSQL(PartitionTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
@@ -1230,7 +1230,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * List<String> buildAlterRunSQL(Column column)
 	 * String buildDropRunSQL(Column column, boolean slice)
 	 * String buildDropRunSQL(Column column)
-	 * String buildRenameRunSQL(Column column)
+	 * List<String> buildRenameRunSQL(Column column)
 	 * List<String> buildChangeTypeRunSQL(Column column)
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
@@ -1322,7 +1322,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Column column)  throws Exception{
+	public List<String> buildRenameRunSQL(Column column)  throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
@@ -1608,7 +1608,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildAddRunSQL(Tag tag)
 	 * List<String> buildAlterRunSQL(Tag tag)
 	 * String buildDropRunSQL(Tag tag)
-	 * String buildRenameRunSQL(Tag tag)
+	 * List<String> buildRenameRunSQL(Tag tag)
 	 * String buildChangeDefaultRunSQL(Tag tag)
 	 * String buildChangeNullableRunSQL(Tag tag)
 	 * String buildChangeCommentRunSQL(Tag tag)
@@ -1659,7 +1659,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Tag tag)  throws Exception{
+	public List<String> buildRenameRunSQL(Tag tag)  throws Exception{
 		return super.buildRenameRunSQL(tag);
 	}
 
@@ -1727,7 +1727,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildAddRunSQL(PrimaryKey primary) throws Exception
 	 * List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
 	 * String buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * String buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -1786,7 +1786,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(PrimaryKey primary) throws Exception{
+	public List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildRenameRunSQL(primary);
 	}
 
@@ -1826,7 +1826,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildRenameRunSQL(ForeignKey foreign) throws Exception{
+	public List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildRenameRunSQL(foreign);
 	}
 
@@ -1918,7 +1918,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildAddRunSQL(Index index) throws Exception
 	 * List<String> buildAlterRunSQL(Index index) throws Exception
 	 * String buildDropRunSQL(Index index) throws Exception
-	 * String buildRenameRunSQL(Index index) throws Exception
+	 * List<String> buildRenameRunSQL(Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -1956,7 +1956,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Index index) throws Exception{
+	public List<String> buildRenameRunSQL(Index index) throws Exception{
 		return super.buildRenameRunSQL(index);
 	}
 	/**
@@ -1973,7 +1973,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * String buildAddRunSQL(Constraint constraint) throws Exception
 	 * List<String> buildAlterRunSQL(Constraint constraint) throws Exception
 	 * String buildDropRunSQL(Constraint constraint) throws Exception
-	 * String buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<String> buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -2011,7 +2011,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Constraint constraint) throws Exception{
+	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
 		return super.buildRenameRunSQL(constraint);
 	}
 
