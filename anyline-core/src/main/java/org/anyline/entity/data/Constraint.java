@@ -1,19 +1,24 @@
 package org.anyline.entity.data;
 
+import org.anyline.util.BeanUtil;
+
 import java.util.LinkedHashMap;
 
 public class Constraint {
 
-    private String catalog      ;
-    private String schema       ;
-    private String tableName    ;
-    private Table table         ;
-    private String name         ;
-    private boolean unique      ; // 是否唯一
-    private String type         ; //
+    protected String catalog      ;
+    protected String schema       ;
+    protected String tableName    ;
+    protected Table table         ;
+    protected String name         ;
+    protected boolean unique      ; // 是否唯一
+    protected String type         ; //
     protected String comment    ; // 备注
-    private LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-    private Index update;
+    protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+
+    protected Constraint update;
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
     public Constraint(){
     }
 
@@ -74,6 +79,9 @@ public class Constraint {
     }
 
     public boolean isUnique() {
+        if(getmap && null != update){
+            return update.unique;
+        }
         return unique;
     }
 
@@ -83,6 +91,9 @@ public class Constraint {
     }
 
     public String getType() {
+        if(getmap && null != update){
+            return update.type;
+        }
         return type;
     }
 
@@ -92,9 +103,15 @@ public class Constraint {
     }
 
     public LinkedHashMap<String, Column> getColumns() {
+        if(getmap && null != update){
+            return update.columns;
+        }
         return columns;
     }
     public Column getColumn(String name) {
+        if(getmap && null != update){
+            return update.getColumn(name);
+        }
         if(null != columns && null != name){
             return columns.get(name.toUpperCase());
         }
@@ -125,20 +142,66 @@ public class Constraint {
     }
 
 
-    public Index getUpdate() {
+    public Constraint setNewName(String newName){
+        return setNewName(newName, true, true);
+    }
+
+    public Constraint setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
+        return update;
+    }
+    public Constraint getUpdate() {
         return update;
     }
 
-    public Constraint setUpdate(Index update) {
+    public Constraint update(){
+        return update(true, true);
+    }
+
+    public Constraint update(boolean setmap, boolean getmap){
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update = clone();
+        update.update = null;
+        return update;
+    }
+
+    public Constraint setUpdate(Constraint update, boolean setmap, boolean getmap) {
         this.update = update;
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update.update = null;
         return this;
     }
 
     public String getComment() {
+        if(getmap && null != update){
+            return update.comment;
+        }
         return comment;
     }
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Constraint clone(){
+        Constraint copy = new Constraint();
+        BeanUtil.copyFieldValue(copy, this);
+
+
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        for(Column column:this.columns.values()){
+            Column col = column.clone();
+            cols.put(col.getName().toUpperCase(), col);
+        }
+        copy.columns = cols;
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;
+        return copy;
     }
 }
