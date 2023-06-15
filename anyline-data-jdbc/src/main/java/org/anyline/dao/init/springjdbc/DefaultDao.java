@@ -3666,14 +3666,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), table);
 		adapter.checkSchema(runtime.getTemplate().getDataSource(), update);
-		//修改表备注
-		String comment = update.getComment()+"";
-		if(!comment.equals(table.getComment())){
-			String sql = adapter.buildChangeCommentRunSQL(update);
-			if(null != sql) {
-				runtime.getTemplate().update(sql);
-			}
-		}
+
 		if(!name.equalsIgnoreCase(uname)){
 			// 修改表名
 			String sql = adapter.buildRenameRunSQL(table);
@@ -3683,7 +3676,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					random = random();
 					log.info("{}[sql:\n{}\n]", random, sql);
 				}
- 
+
 				boolean exe = true;
 				if (null != ddListener) {
 					exe = ddListener.beforeRename(table);
@@ -3703,16 +3696,30 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			table.setName(uname);
 		}
 
+		//修改表备注
+		String comment = update.getComment()+"";
+		if(!comment.equals(table.getComment())){
+			String sql = adapter.buildChangeCommentRunSQL(update);
+			if(null != sql) {
+				runtime.getTemplate().update(sql);
+			}
+		}
+
 		Map<String, Column> cols = new LinkedHashMap<>();
 
 		// 更新列
 		for (Column ucolumn : ucolumns.values()) {
+			//先根据原列名 找到数据库中定义的列
 			Column column = columns.get(ucolumn.getName().toUpperCase());
+			//再检测update(如果name不一样需要rename)
+			if(null != ucolumn.getUpdate()){
+				ucolumn = ucolumn.getUpdate();
+			}
 			if (null != column) {
 				// 修改列
 				if (!column.equals(ucolumn)) {
 					column.setTable(update);
-					column.setUpdate(ucolumn, false);
+					column.setUpdate(ucolumn, false, false);
 					/*
 					alter(column);
 					result = true;*/
@@ -4065,7 +4072,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != column){
 				// 修改列
 				column.setTable(update);
-				column.setUpdate(ucolumn, false);
+				column.setUpdate(ucolumn, false, false);
 				alter(column);
 				result = true;
 			}else{
@@ -4095,7 +4102,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != tag){
 				// 修改列
 				tag.setTable(update);
-				tag.setUpdate(utag);
+				tag.setUpdate(utag, false, false);
 				alter(tag);
 				result = true;
 			}else{
@@ -4243,7 +4250,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != column){
 				// 修改列
 				column.setTable(update);
-				column.setUpdate(ucolumn, false);
+				column.setUpdate(ucolumn, false, false);
 				alter(column);
 				result = true;
 			}else{
