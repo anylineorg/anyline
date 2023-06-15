@@ -187,6 +187,7 @@ public class Table  {
             }
         }
         primaryKey = new PrimaryKey();
+        primaryKey.setTable(this);
         if (null != columns) {
             for (String key : keys) {
                 Column column = columns.get(key.toUpperCase());
