@@ -20,6 +20,7 @@
 package org.anyline.entity.data;
 
 import org.anyline.entity.PageNavi;
+import org.anyline.util.BeanUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,31 +39,41 @@ public class Procedure {
 	private boolean hasReturn = false;
 	private PageNavi navi;
 	private String definition;
-	
-	
+
+	protected Procedure update;
+	protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog,schema,name)
+	protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了catalog,schema,name)
+
+
 	public Procedure(String name){
 		this();
 		this.name = name;
 	}
 	public Procedure(){}
 
-	
+
 	public String getDefinition() {
+		if(getmap && null != update){
+			return update.definition;
+		}
 		return definition;
 	}
 
-	
-	public void setDefinition(String definition) {
+
+	public Procedure setDefinition(String definition) {
 		this.definition = definition;
+		return this;
 	}
 
-	
-	public void addInput(Parameter... params) {
+
+	public Procedure addInput(Parameter... params) {
+		return this;
 
 	}
 
-	
-	public void addOutput(Parameter... params) {
+
+	public Procedure addOutput(Parameter... params) {
+		return this;
 
 	}
 
@@ -106,7 +117,7 @@ public class Procedure {
 	 * @param type	类型 type	类型
 	 * @return Procedure
 	 */
-	
+
 	public Procedure regOutput(Object value, Integer type) {
 		Parameter param = new Parameter();
 		param.setValue(value);
@@ -130,42 +141,63 @@ public class Procedure {
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
+	public Procedure setName(String name) {
 		this.name = name;
+		return this;
 	}
 	public List<Object> getResult() {
+		if(getmap && null != update){
+			return update.result;
+		}
 		return result;
 	}
-	public void setResult(List<Object> result) {
+	public Procedure setResult(List<Object> result) {
 		this.result = result;
+		return this;
 	}
 	public List<Object> getOutput(){
+		if(getmap && null != update){
+			return update.result;
+		}
 		return result;
 	}
 
-	
+
 	public List<Parameter> getInputs() {
+		if(getmap && null != update){
+			return update.inputs;
+		}
 		return inputs;
 	}
 
-	
+
 	public List<Parameter> getOutputs() {
+		if(getmap && null != update){
+			return update.outputs;
+		}
 		return outputs;
 	}
 
-	public void regReturn(){
+	public Procedure regReturn(){
+		if(getmap && null != update){
+			return update.regReturn();
+		}
 		hasReturn = true;
+		return this;
 	}
 	public boolean hasReturn(){
+		if(getmap && null != update){
+			return update.hasReturn;
+		}
 		return hasReturn;
 	}
 
-	
+
 	public PageNavi getNavi() {
 		return navi;
 	}
 
-	
+
 	public Procedure setNavi(PageNavi navi) {
 		this.navi = navi;
 		return this;
@@ -174,25 +206,98 @@ public class Procedure {
 		return catalog;
 	}
 
-	
-	public void setCatalog(String catalog) {
+
+	public Procedure setCatalog(String catalog) {
 		this.catalog = catalog;
+		return this;
 	}
 
-	
+
 	public String getSchema() {
 		return schema;
 	}
 
 	public String getReturnType() {
+		if(getmap && null != update){
+			return update.returnType;
+		}
 		return returnType;
 	}
 
-	public void setReturnType(String returnType) {
+	public Procedure setReturnType(String returnType) {
+		if(setmap && null != update){
+			update.returnType = returnType;
+		}
 		this.returnType = returnType;
+		return this;
 	}
 
-	public void setSchema(String schema) {
+	public Procedure setSchema(String schema) {
 		this.schema = schema;
+		return this;
+	}
+
+	public Procedure update(){
+		return update(true, true);
+	}
+	public Procedure update(boolean setmap, boolean getmap){
+		this.setmap = setmap;
+		this.getmap = getmap;
+		update = clone();
+		update.update = null;
+		return update;
+	}
+
+
+	public Procedure getUpdate() {
+		return update;
+	}
+
+	public Procedure setUpdate(Procedure update, boolean setmap, boolean getmap) {
+		this.update = update;
+		this.setmap = setmap;
+		this.getmap = getmap;
+		update.update = null;
+		return this;
+	}
+
+	public Procedure setNewName(String newName){
+		return setNewName(newName, true, true);
+	}
+
+	public Procedure setNewName(String newName, boolean setmap, boolean getmap) {
+		if(null == update){
+			update(setmap, getmap);
+		}
+		update.setName(newName);
+		return update;
+	}
+
+	public Procedure clone(){
+		Procedure copy = new Procedure();
+		BeanUtil.copyFieldValueNvl(copy, this);
+
+		List<Parameter> parameters = new ArrayList<>();
+		for(Parameter parameter:this.parameters){
+			parameters.add(parameter.clone());
+		}
+		copy.parameters = parameters;
+
+		List<Parameter> inputs = new ArrayList<>();
+		for(Parameter parameter:this.inputs){
+			inputs.add(parameter.clone());
+		}
+		copy.inputs = inputs;
+
+		List<Parameter> outputs = new ArrayList<>();
+		for(Parameter parameter:this.outputs){
+			outputs.add(parameter.clone());
+		}
+		copy.outputs = outputs;
+
+		copy.update = null;
+		copy.setmap = false;
+		copy.getmap = false;
+		return copy;
 	}
 }
