@@ -1462,7 +1462,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildCreateRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public String buildCreateRunSQL(Procedure procedure) throws Exception{
 		return super.buildCreateRunSQL(procedure);
 	}
 
@@ -1472,7 +1472,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public List<String> buildAlterRunSQL(Procedure procedure) throws Exception{
 		return super.buildAlterRunSQL(procedure);
 	}
 
@@ -1481,7 +1481,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildDropRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
+	public String buildDropRunSQL(Procedure procedure) throws Exception{
 		return super.buildDropRunSQL(procedure);
 	}
 
@@ -1491,8 +1491,21 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildRenameRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
-		return super.buildRenameRunSQL(procedure);
+	public String buildRenameRunSQL(Procedure procedure) throws Exception{
+		StringBuilder builder = new StringBuilder();
+		String catalog = procedure.getCatalog();
+		String schema = procedure.getSchema();
+		builder.append("RENAME PROCEDURE ");
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, procedure.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" TO ");
+		SQLUtil.delimiter(builder, procedure.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 
 	/* *****************************************************************************************************************
@@ -1509,7 +1522,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildCreateRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public String buildCreateRunSQL(Function function) throws Exception{
 		return super.buildCreateRunSQL(function);
 	}
 
@@ -1519,7 +1532,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param function 函数
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public List<String> buildAlterRunSQL(Function function) throws Exception{
 		return super.buildAlterRunSQL(function);
 	}
 
@@ -1528,7 +1541,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildDropRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public String buildDropRunSQL(Function function) throws Exception{
 		return super.buildDropRunSQL(function);
 	}
 
@@ -1538,7 +1551,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildRenameRunSQL(org.anyline.entity.data.Function function) throws Exception{
+	public String buildRenameRunSQL(Function function) throws Exception{
 		return super.buildRenameRunSQL(function);
 	}
 
