@@ -1,21 +1,27 @@
 package org.anyline.entity.data;
 
-import org.anyline.util.ClassUtil;
+import org.anyline.util.BeanUtil;
+
+import java.util.LinkedHashMap;
 
 public class View extends Table  {
-    static {
-        ClassUtil.regImplement(org.anyline.entity.data.View.class, View.class);
-    }
     protected String keyword = "VIEW"            ;
     protected View update;
     protected String definition;
 
     public String getDefinition() {
+        if(getmap && null != update){
+            return update.definition;
+        }
         return definition;
     }
 
-    public void setDefinition(String definition) {
+    public View setDefinition(String definition) {
+        if(setmap && null != update){
+            update.definition = definition;
+        }
         this.definition = definition;
+        return this;
     }
 
 
@@ -34,48 +40,63 @@ public class View extends Table  {
         this.name = name;
     }
 
-    public View clone(){
-        View view = new View();
-        view.catalog = catalog;
-        view.schema = schema;
-        view.name = name;
-        view.comment = comment;
-        view.type = type;
-        view.typeCat = typeCat;
-        view.typeSchema = typeSchema;
-        view.typeName = typeName;
-        view.selfReferencingColumn = selfReferencingColumn;
-        view.refGeneration = refGeneration;
-        view.engine = engine;
-        view.charset = charset;
-        view.collate = collate;
-        view.ttl = ttl;
-        view.checkSchemaTime = checkSchemaTime;
-        view.primaryKey = primaryKey;
-        view.columns = columns;
-        view.tags = tags;
-        view.indexs = indexs;
-        view.constraints = constraints;
-        view.autoDropColumn = autoDropColumn;
-        view.update = update;
-        view.definition = definition;
-        return view;
-    }
-
 
     public View update(){
-        return update(true);
+        return update(true, true);
     }
-    public View update(boolean setmap){
+    public View update(boolean setmap, boolean getmap){
         this.setmap = setmap;
+        this.getmap = getmap;
         update = clone();
         update.update = null;
+        return update;
+    }
+
+
+    public View getUpdate() {
+        return update;
+    }
+
+    public View setUpdate(View update, boolean setmap, boolean getmap) {
+        this.update = update;
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update.update = null;
+        return this;
+    }
+
+    public View setNewName(String newName){
+        return setNewName(newName, true, true);
+    }
+
+    public View setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
         return update;
     }
     public String getKeyword() {
         return keyword;
     }
 
+    public View clone(){
+        View copy = new View();
+        BeanUtil.copyFieldValueNvl(copy, this);
+
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        for(Column column:this.columns.values()){
+            Column col = column.clone();
+            cols.put(col.getName().toUpperCase(), col);
+        }
+        copy.columns = cols;
+
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;;
+
+        return copy;
+    }
     public String toString(){
         return this.keyword+":"+name;
     }
