@@ -61,7 +61,7 @@ public class Column {
     protected ColumnType columnType               ;
     protected JavaType javaType                   ;
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
-    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
     protected String dateScale                    ; // 日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
@@ -69,8 +69,8 @@ public class Column {
     protected int isCurrency                 = -1 ; // 是否是货币
     protected int isSigned                   = -1 ; // 是否可以带正负号
     protected int isAutoIncrement            = -1 ; // 是否自增
-    protected Integer incrementSeed          = 1  ; // 自增起始值
-    protected Integer incrementStep          = 1  ; // 自增增量
+    protected Integer incrementSeed          =  1 ; // 自增起始值
+    protected Integer incrementStep          =  1 ; // 自增增量
     protected int isPrimaryKey               = -1 ; // 是否主键
     protected int isGenerated                = -1 ; // 是否generated
     protected Object defaultValue                 ; // 默认值
@@ -351,10 +351,7 @@ public class Column {
         if(getmap && null != update){
             return update.getPrecision();
         }
-        if(null != precision) {
-            return precision;
-        }
-        return -1;
+        return precision;
     }
 
     public Column setPrecision(Integer precision) {
@@ -514,10 +511,7 @@ public class Column {
         if(getmap && null != update){
             return update.getScale();
         }
-        if(null != scale) {
-            return scale;
-        }
-        return -1;
+        return scale;
     }
 
     public Column setScale(Integer scale) {
