@@ -1,10 +1,14 @@
 package org.anyline.entity.data;
 
 
+import org.anyline.util.BeanUtil;
+
+import java.util.LinkedHashMap;
+
 public class PartitionTable extends Table{
     protected String masterName;
-    protected PartitionTable update;
     protected MasterTable master;
+    protected PartitionTable update;
 
     public PartitionTable(){
     }
@@ -45,32 +49,20 @@ public class PartitionTable extends Table{
     }
 
     public PartitionTable clone(){
-        PartitionTable table = new PartitionTable();
-        table.master = master;
-        table.masterName = masterName;
-        table.catalog = catalog;
-        table.schema = schema;
-        table.name = name;
-        table.comment = comment;
-        table.type = type;
-        table.typeCat = typeCat;
-        table.typeSchema = typeSchema;
-        table.typeName = typeName;
-        table.selfReferencingColumn = selfReferencingColumn;
-        table.refGeneration = refGeneration;
-        table.engine = engine;
-        table.charset = charset;
-        table.collate = collate;
-        table.ttl = ttl;
-        table.checkSchemaTime = checkSchemaTime;
-        table.primaryKey = primaryKey;
-        table.columns = columns;
-        table.tags = tags;
-        table.indexs = indexs;
-        table.constraints = constraints;
-        table.autoDropColumn = autoDropColumn;
-        table.update = update;
-        return table;
+        PartitionTable copy = new PartitionTable();
+        BeanUtil.copyFieldValueNvl(copy, this);
+
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        for(Column column:this.columns.values()){
+            Column col = column.clone();
+            cols.put(col.getName().toUpperCase(), col);
+        }
+        copy.columns = cols;
+
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;;
+        return copy;
     }
 
 
