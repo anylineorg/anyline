@@ -1,6 +1,7 @@
 package org.anyline.entity.data;
 
 import org.anyline.entity.metadata.ColumnType;
+import org.anyline.util.BeanUtil;
 
 public class Parameter {
     private boolean input;
@@ -82,6 +83,12 @@ public class Parameter {
 
     public String toString(){
         return "{value:"+value+",type:"+type+"}";
+    }
+
+    public Parameter clone(){
+        Parameter copy = new Parameter();
+        BeanUtil.copyFieldValueNvl(copy, this);
+        return copy;
     }
 
 }
