@@ -180,11 +180,19 @@ public class Table  {
             update.setPrimaryKey(keys);
             return this;
         }
+        if(null != primaryKey){
+            //取消原主键中的列标记
+            for(Column column:primaryKey.getColumns().values()){
+                column.setPrimaryKey(false);
+            }
+        }
+        primaryKey = new PrimaryKey();
         if (null != columns) {
             for (String key : keys) {
                 Column column = columns.get(key.toUpperCase());
                 if (null != column) {
                     column.setPrimaryKey(true);
+                    primaryKey.addColumn(column);
                 } else {
                     throw new AnylineException("未匹配到" + key + ",请诜添加到columns");
                 }
@@ -200,6 +208,13 @@ public class Table  {
         if(setmap && null != update){
             update.setPrimaryKey(primaryKey);
             return this;
+        }
+
+        if(null != primaryKey){
+            //取消原主键中的列标记
+            for(Column column:this.primaryKey.getColumns().values()){
+                column.setPrimaryKey(false);
+            }
         }
         this.primaryKey = primaryKey;
         if (null != primaryKey) {

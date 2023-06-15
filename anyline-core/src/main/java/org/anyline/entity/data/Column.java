@@ -317,8 +317,6 @@ public class Column {
             update.setTypeName(typeName);
             return this;
         }
-        this.precision = 0;
-        this.scale = 0;
         if(null != typeName){
             typeName = typeName.trim().replace("'","");
             if(typeName.toUpperCase().contains("IDENTITY")){
@@ -329,6 +327,8 @@ public class Column {
                 typeName = typeName.split(" ")[0];
             }
             if(typeName.contains("(")){
+                this.precision = 0;
+                this.scale = 0;
                 String len = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
                 if(len.contains(",")){
                     String[] lens = len.split("\\,");
@@ -349,9 +349,12 @@ public class Column {
 
     public Integer getPrecision() {
         if(getmap && null != update){
-            return update.precision;
+            return update.getPrecision();
         }
-        return precision;
+        if(null != precision) {
+            return precision;
+        }
+        return -1;
     }
 
     public Column setPrecision(Integer precision) {
@@ -509,9 +512,12 @@ public class Column {
 
     public Integer getScale() {
         if(getmap && null != update){
-            return update.scale;
+            return update.getScale();
         }
-        return scale;
+        if(null != scale) {
+            return scale;
+        }
+        return -1;
     }
 
     public Column setScale(Integer scale) {
@@ -614,7 +620,7 @@ public class Column {
 
     public Column setPrimaryKey(int primaryKey) {
         if(setmap && null != update){
-            update.setPrecision(primaryKey);
+            update.setPrimaryKey(primaryKey);
             return this;
         }
         this.isPrimaryKey = primaryKey;
