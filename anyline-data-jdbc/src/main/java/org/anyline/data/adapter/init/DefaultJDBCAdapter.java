@@ -4061,7 +4061,21 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildRenameRunSQL(Procedure procedure) throws Exception{
-		return null;
+		StringBuilder builder = new StringBuilder();
+		String catalog = procedure.getCatalog();
+		String schema = procedure.getSchema();
+		builder.append("ALTER PROCEDURE ");
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, procedure.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" RENAME TO ");
+		SQLUtil.delimiter(builder, procedure.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		// RENAME TO new_procedure;\n");
+		return builder.toString();
 	}
 
 	/* *****************************************************************************************************************
