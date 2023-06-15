@@ -878,7 +878,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				idx = (T)new Index();
 				indexs.put(name.toUpperCase(), idx);
 			}
-			idx.setTableName(tableName);
+			idx.setTable(tableName);
 			idx.setName(name);
 			if(null == table){
 				table = new Table(tableName);
@@ -1508,7 +1508,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(null != update){
 			builder.append(" CHANGE ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			if(!BasicUtil.equalsIgnoreCase(column.getName(), update.getTableName())) {
+			if(!BasicUtil.equalsIgnoreCase(column.getName(), update.getTableName(true))) {
 				SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			}
 			define(builder, update);
@@ -1871,7 +1871,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, primary.getTable());
+			name(builder, primary.getTable(true));
 			builder.append(" ADD PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
@@ -1906,7 +1906,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable());
+		name(builder, primary.getTable(true));
 		builder.append(" DROP PRIMARY KEY");
 		return builder.toString();
 	}
@@ -2001,7 +2001,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public String buildDropRunSQL(Index index) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		builder.append("ALTER TABLE ").append(index.getTableName());
+		builder.append("ALTER TABLE ").append(index.getTableName(true));
 		if(index.isPrimary()){
 			builder.append(" DROP PRIMARY KEY");
 		}else {

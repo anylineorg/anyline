@@ -3038,7 +3038,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean exists(boolean greedy, Column column) {
             try {
-                Table table = table(greedy, column.getCatalog(), column.getSchema(), column.getTableName());
+                Table table = table(greedy, column.getCatalog(), column.getSchema(), column.getTableName(true));
                 if (null != table) {
                     if (table.getColumns().containsKey(column.getName().toUpperCase())) {
                         return true;
@@ -4139,9 +4139,9 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(Column column) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName(true));
             if(null == table){
-                throw new AnylineException("表不存在:"+column.getTableName());
+                throw new AnylineException("表不存在:"+column.getTableName(true));
             }
             LinkedHashMap<String, Column> columns = table.getColumns();
             Column original = columns.get(column.getName().toUpperCase());
@@ -4157,7 +4157,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Column column) throws Exception{
             CacheProxy.clear();
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName(true));
             boolean result = add(columns, column);
             CacheProxy.clear();
             return result;
@@ -4166,7 +4166,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(Column column) throws Exception{
             CacheProxy.clear();
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName(true));
             boolean result = alter(table, column);
             CacheProxy.clear();
             return result;
@@ -4258,9 +4258,9 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(Tag tag) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
             if(null == table){
-                throw new AnylineException("表不存在:"+tag.getTableName());
+                throw new AnylineException("表不存在:"+tag.getTableName(true));
             }
             LinkedHashMap<String, Tag> tags = table.getTags();
             Tag original = tags.get(tag.getName().toUpperCase());
@@ -4278,7 +4278,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Tag tag) throws Exception{
             CacheProxy.clear();
-            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
             boolean result = add(tags, tag);
             CacheProxy.clear();
             return result;
@@ -4288,7 +4288,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(Tag tag) throws Exception{
             CacheProxy.clear();
-            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
             boolean result = alter(table, tag);
             CacheProxy.clear();
             return result;

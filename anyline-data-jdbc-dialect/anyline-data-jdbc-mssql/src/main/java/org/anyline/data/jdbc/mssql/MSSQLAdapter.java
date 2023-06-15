@@ -1092,7 +1092,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public String buildRenameRunSQL(Column column) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		builder.append("EXEC SP_RENAME '").append(column.getTableName()).append(".").append(column.getName()).append("' , '").append(column.getUpdate().getName()).append("','COLUMN' ");
+		builder.append("EXEC SP_RENAME '").append(column.getTableName(true)).append(".").append(column.getName()).append("' , '").append(column.getUpdate().getName()).append("','COLUMN' ");
 		return builder.toString();
 	}
 
@@ -1176,7 +1176,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append(",@level0type=N'SCHEMA'");
 		builder.append(",@level0name=N'").append(schema).append("'");
 		builder.append(",@level1type=N'TABLE'");
-		builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+		builder.append(",@level1name=N'").append(column.getTableName(true)).append("'");
 		builder.append(",@level2type=N'COLUMN'");
 		builder.append(",@level2name=N'").append(column.getName()).append("'");
 
@@ -1218,7 +1218,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append(",@level0type=N'SCHEMA'");
 		builder.append(",@level0name=N'").append(schema).append("'");
 		builder.append(",@level1type=N'TABLE'");
-		builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+		builder.append(",@level1name=N'").append(column.getTableName(true)).append("'");
 		builder.append(",@level2type=N'COLUMN'");
 		builder.append(",@level2name=N'").append(column.getName()).append("'");
 		return builder.toString();
@@ -1476,7 +1476,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, primary.getTable());
+			name(builder, primary.getTable(true));
 			builder.append(" ADD PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
@@ -1511,7 +1511,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable());
+		name(builder, primary.getTable(true));
 		builder.append(" DROP CONSTRAINT ");
 		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
@@ -1799,7 +1799,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public String buildCreateRunSQL(Trigger trigger) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("CREATE TRIGGER ").append(trigger.getName());
-		builder.append(" ON ").append(trigger.getTableName());
+		builder.append(" ON ");
+		name(builder, trigger.getTable(true));
 		builder.append(" ").append(trigger.getTime().sql()).append(" ");
 		List<org.anyline.entity.data.Trigger.EVENT> events = trigger.getEvents();
 		boolean first = true;

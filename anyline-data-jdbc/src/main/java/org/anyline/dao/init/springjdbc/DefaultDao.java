@@ -4352,7 +4352,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
+			log.info("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(true), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -4365,12 +4365,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Column column) throws Exception{
 		Table table = column.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + column.getTableName());
+					throw new AnylineException("表不存在:" + column.getTableName(true));
 				}else{
-					log.error("表不存在:" + column.getTableName());
+					log.error("表不存在:" + column.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
@@ -4403,7 +4403,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(true), column.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != ddListener) {
 				ddListener.afterDrop(column, result);
@@ -4470,7 +4470,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, column.getTableName(true), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -4512,7 +4512,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(true), tag.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -4524,14 +4524,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public boolean alter(Tag tag) throws Exception{
-		Table table = tag.getTable();
+		Table table = tag.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + tag.getTableName());
+					throw new AnylineException("表不存在:" + tag.getTableName(true));
 				}else {
-					log.error("表不存在:" + tag.getTableName());
+					log.error("表不存在:" + tag.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
@@ -4563,7 +4563,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(true), tag.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != ddListener) {
 				ddListener.afterDrop(tag, result);
@@ -4630,7 +4630,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update tag][table:{}][tag:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, tag.getTableName(), tag.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, tag.getTableName(true), tag.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -4668,7 +4668,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(true), primary.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -4676,14 +4676,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean alter(PrimaryKey primary) throws Exception {
-		Table table = primary.getTable();
+		Table table = primary.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + primary.getTableName());
+					throw new AnylineException("表不存在:" + primary.getTableName(true));
 				}else{
-					log.error("表不存在:" + primary.getTableName());
+					log.error("表不存在:" + primary.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
@@ -4721,7 +4721,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update primary][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, primary.getTableName(), primary.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, primary.getTableName(true), primary.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -4749,7 +4749,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(), primary.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop primary][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(true), primary.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != ddListener) {
 				ddListener.afterDrop(primary, result);
@@ -4791,7 +4791,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add foreign][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(), foreign.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add foreign][table:{}][primary:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(true), foreign.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -4799,14 +4799,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean alter(ForeignKey foreign) throws Exception {
-		Table table = foreign.getTable();
+		Table table = foreign.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, foreign.getCatalog(), foreign.getSchema(), foreign.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, foreign.getCatalog(), foreign.getSchema(), foreign.getTableName(true), "TABLE");
 			if(tables.size() == 0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + foreign.getTableName());
+					throw new AnylineException("表不存在:" + foreign.getTableName(true));
 				}else{
-					log.error("表不存在:" + foreign.getTableName());
+					log.error("表不存在:" + foreign.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
@@ -4844,7 +4844,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update foreign][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, foreign.getTableName(), foreign.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, foreign.getTableName(true), foreign.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -4872,7 +4872,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop foreign][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(), foreign.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop foreign][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(true), foreign.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != ddListener) {
 				ddListener.afterDrop(foreign, result);
@@ -4914,7 +4914,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(true), index.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -4922,14 +4922,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean alter(Index index) throws Exception {
-		Table table = index.getTable();
+		Table table = index.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, index.getCatalog(), index.getSchema(), index.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, index.getCatalog(), index.getSchema(), index.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + index.getTableName());
+					throw new AnylineException("表不存在:" + index.getTableName(true));
 				}else{
-					log.error("表不存在:" + index.getTableName());
+					log.error("表不存在:" + index.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
@@ -4967,7 +4967,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update index][table:{}][index:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, index.getTableName(), index.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, index.getTableName(true), index.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -4995,7 +4995,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(), index.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop index][table:{}][index:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(true), index.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != ddListener) {
 				ddListener.afterDrop(index, result);
@@ -5035,7 +5035,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(true), constraint.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -5043,14 +5043,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean alter(Constraint constraint) throws Exception {
-		Table table = constraint.getTable();
+		Table table = constraint.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + constraint.getTableName());
+					throw new AnylineException("表不存在:" + constraint.getTableName(true));
 				}else{
-					log.error("表不存在:" + constraint.getTableName());
+					log.error("表不存在:" + constraint.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
@@ -5088,7 +5088,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update constraint][table:{}][constraint:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, constraint.getTableName(), constraint.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, constraint.getTableName(true), constraint.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -5115,7 +5115,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(), constraint.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop constraint][table:{}][constraint:{}][result:{}][执行耗时:{}ms]", random, constraint.getTableName(true), constraint.getName(), result, System.currentTimeMillis() - fr);
 			}
 			if (null != ddListener) {
 				ddListener.afterDrop(constraint, result);
@@ -5153,7 +5153,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add trigger][table:{}][trigger:{}][result:{}][执行耗时:{}ms]", random, trigger.getTableName(), trigger.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[add trigger][table:{}][trigger:{}][result:{}][执行耗时:{}ms]", random, trigger.getTableName(true), trigger.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -5187,7 +5187,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update trigger][table:{}][trigger:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, trigger.getTableName(), trigger.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+					, random, trigger.getTableName(true), trigger.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -5211,7 +5211,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = true;
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[drop trigger][table:{}][trigger:{}][result:{}][执行耗时:{}ms]", random, trigger.getTableName(), trigger.getName(), result, System.currentTimeMillis() - fr);
+				log.info("{}[drop trigger][table:{}][trigger:{}][result:{}][执行耗时:{}ms]", random, trigger.getTableName(true), trigger.getName(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
@@ -5428,7 +5428,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 	public void checkSchema(JDBCRuntime runtime, Index index){
-		Table table = index.getTable();
+		Table table = index.getTable(true);
 		if(null != table){
 			checkSchema(runtime, table);
 			index.setCatalog(table.getCatalog());
@@ -5436,7 +5436,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 	public void checkSchema(JDBCRuntime runtime, Constraint constraint){
-		Table table = constraint.getTable();
+		Table table = constraint.getTable(true);
 		if(null != table){
 			checkSchema(runtime, table);
 			constraint.setCatalog(table.getCatalog());
@@ -5444,7 +5444,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 	public void checkSchema(JDBCRuntime runtime, Trigger trigger){
-		Table table = (Table)trigger.getTable();
+		Table table = (Table)trigger.getTable(true);
 		if(null != table){
 			checkSchema(runtime, table);
 		}

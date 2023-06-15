@@ -52,7 +52,6 @@ public class Column {
     protected String catalog                      ; // 数据库 catalog与schema 不同有数据库实现方式不一样
     protected String schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
-    protected String tableName                    ; // 表名
     protected Table table                         ; // 表
     protected Integer displaySize                 ; // display size
     protected String comment                      ; // 备注
@@ -272,10 +271,6 @@ public class Column {
         return setTypeName(type);
     }
 
-    public Table getTable() {
-        return table;
-    }
-
     /**
      * 相关表
      * @param update 是否检测upate
@@ -294,8 +289,17 @@ public class Column {
         this.table = table;
     }
 
-    public void setTable(String table) {
-       setTableName(table);
+    public String getTableName(boolean update) {
+        Table table = getTable(update);
+        if(null != table){
+            return table.getName();
+        }
+        return null;
+    }
+
+    public Column setTable(String table) {
+        this.table = new Table(table);
+        return this;
     }
 
     public String getTypeName() {
@@ -395,23 +399,6 @@ public class Column {
         if(null != table){
             table.setSchema(schema);
         }
-        return this;
-    }
-
-    public String getTableName() {
-        if(null != table){
-            Table update = table.getUpdate();
-            if(null != update){
-                return update.getName();
-            }
-            return table.getName();
-        }
-        return tableName;
-    }
-
-    public Column setTableName(String tableName) {
-        this.tableName = tableName;
-        this.table = new Table(tableName);
         return this;
     }
 

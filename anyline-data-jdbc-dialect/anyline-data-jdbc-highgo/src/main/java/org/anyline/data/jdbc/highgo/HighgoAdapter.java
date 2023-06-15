@@ -1525,7 +1525,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, primary.getTable());
+			name(builder, primary.getTable(true));
 			builder.append(" ADD PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
@@ -1560,7 +1560,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable());
+		name(builder, primary.getTable(true));
 		builder.append(" DROP CONSTRAINT ");
 		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();

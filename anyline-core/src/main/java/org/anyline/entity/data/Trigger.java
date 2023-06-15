@@ -34,24 +34,41 @@ public class Trigger  {
     protected Trigger update;
     protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
     protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
-    
-    public Table getTable() {
+
+
+    /**
+     * 相关表
+     * @param update 是否检测upate
+     * @return table
+     */
+    public Table getTable(boolean update) {
+        if(update){
+            if(null != table && null != table.getUpdate()){
+                return table.getUpdate();
+            }
+        }
         return table;
     }
 
-    public String getTableName() {
-        return table.getName();
+    public void setTable(Table table) {
+        this.table = table;
     }
 
-    
-    public Trigger setTable(Table table) {
-        this.table = table;
-        return this;
+    public String getTableName(boolean update) {
+        Table table = getTable(update);
+        if(null != table){
+            return table.getName();
+        }
+        return null;
     }
+
     public Trigger setTable(String table) {
-        this.table = new Table(table);
+         this.table = new Table(table);
         return this;
     }
+
+
+
 
     public String getName() {
         return name;

@@ -1434,7 +1434,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setCatalog(BasicUtil.evl(row.getString("TABLE_CATALOG"), table.getCatalog(), column.getCatalog()));
 			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA"), table.getSchema(), column.getSchema()));
 			column.setTable(table);
-			column.setTableName(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName()));
+			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName(true)));
 			column.setName(name);
 			if(null == column.getPrecision()) {
 				column.setPosition(row.getInt("ORDINAL_POSITION", 0));
@@ -1534,7 +1534,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setCatalog(columnCatalog);
 			column.setSchema(columnSchema);
 			column.setComment(remark);
-			column.setTableName(BasicUtil.evl(string(keys,"TABLE_NAME", set, table.getName()), column.getTableName()));
+			column.setTable(BasicUtil.evl(string(keys,"TABLE_NAME", set, table.getName()), column.getTableName(true)));
 			column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
 			column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));
 			String jdbcType = string(keys, "TYPE_NAME", set, column.getTypeName());
@@ -1711,7 +1711,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				log.debug("[获取MetaData失败][驱动未实现:isSigned]");
 			}
 			try {
-				column.setTableName(rsm.getTableName(index));
+				column.setTable(rsm.getTableName(index));
 			} catch (Exception e) {
 				log.debug("[获取MetaData失败][驱动未实现:getTableName]");
 			}
@@ -1796,7 +1796,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			log.debug("[获取MetaData失败][驱动未实现:isSigned]");
 		}
 		try{
-			column.setTableName(rsm.getTableName(index));
+			column.setTable(rsm.getTableName(index));
 		}catch (Exception e){
 			log.debug("[获取MetaData失败][驱动未实现:getTableName]");
 		}
@@ -2048,7 +2048,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
 				index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), table.getCatalog()));
 				index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), table.getSchema()));
-				index.setTableName(string(keys, "TABLE_NAME", set));
+				index.setTable(string(keys, "TABLE_NAME", set));
 				indexs.put(name.toUpperCase(), index);
 				columns = new LinkedHashMap<>();
 				index.setColumns(columns);
@@ -3349,7 +3349,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildAddRunSQL(Tag tag) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		Table table = tag.getTable();
+		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
 		// Tag update = tag.getUpdate();
@@ -3444,7 +3444,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildDropRunSQL(Tag tag) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		Table table = tag.getTable();
+		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
 		builder.append(" DROP ").append(tag.getKeyword()).append(" ");
@@ -3463,7 +3463,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildRenameRunSQL(Tag tag) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		Table table = tag.getTable();
+		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
 		builder.append(" RENAME ").append(tag.getKeyword()).append(" ");
@@ -3623,7 +3623,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		Map<String,Column> columns = foreign.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, foreign.getTable());
+			name(builder, foreign.getTable(true));
 			builder.append(" ADD");
 			if(BasicUtil.isNotEmpty(foreign.getName())){
 				builder.append(" CONSTRAINT ").append(foreign.getName());
@@ -3672,7 +3672,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE");
-		name(builder, foreign.getTable());
+		name(builder, foreign.getTable(true));
 		builder.append(" DROP FOREIGN KEY ").append(foreign.getName());
 		return builder.toString();
 	}
@@ -3719,13 +3719,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append(" SPATIAL");
 		}
 		builder.append(" INDEX ").append(name)
-				.append(" ON ");//.append(index.getTableName());
-		Table table = index.getTable();
-		Table utable = table.getUpdate();
-		if(null != utable){
-			table = utable;
-		}
-		name(builder, utable);
+				.append(" ON ");//.append(index.getTableName(true));
+		Table table = index.getTable(true);
+		name(builder, table);
 		builder.append("(");
 		int qty = 0;
 		for(Column column:index.getColumns().values()){
@@ -3770,11 +3766,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	public String buildDropRunSQL(Index index) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		if(index.isPrimary()){
-			builder.append("ALTER TABLE ").append(index.getTableName())
+			builder.append("ALTER TABLE ").append(index.getTableName(true))
 					.append(" DROP CONSTRAINT ").append(index.getName());
 		}else {
 			builder.append("DROP INDEX ").append(index.getName());
-			String table = index.getTableName();
+			String table = index.getTableName(true);
 			if (BasicUtil.isNotEmpty(table)) {
 				builder.append(" ON ").append(table);
 			}
@@ -3888,7 +3884,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			builder.append(event);
 			first = false;
 		}
-		builder.append(" ON ").append(trigger.getTableName());
+		builder.append(" ON ");
+		name(builder, trigger.getTable(true));
 		each(builder, trigger);
 
 		builder.append("\n").append(trigger.getDefinition());

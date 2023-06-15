@@ -651,7 +651,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				column = new Column();
 			}
 			column.setTable(table);
-			column.setTableName(BasicUtil.evl(row.getString("TABNAME"), table.getName(), column.getTableName()));
+			column.setTable(BasicUtil.evl(row.getString("TABNAME"), table.getName(), column.getTableName(true)));
 			column.setName(name);
 			Integer coltype = row.getInt("COLTYPE", null);
 			if(null != coltype){
@@ -1824,7 +1824,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, primary.getTable());
+			name(builder, primary.getTable(true));
 			builder.append(" ADD CONSTRAINT PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
@@ -1861,7 +1861,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable());
+		name(builder, primary.getTable(true));
 		builder.append(" DROP CONSTRAINT ");
 		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();

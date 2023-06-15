@@ -8,7 +8,6 @@ public class Constraint {
 
     protected String catalog      ;
     protected String schema       ;
-    protected String tableName    ;
     protected Table table         ;
     protected String name         ;
     protected boolean unique      ; // 是否唯一
@@ -40,16 +39,19 @@ public class Constraint {
         return this;
     }
 
-    public String getTableName() {
-        if(null != table){
-            return table.getName();
-        }
-        return table.getName();
+    public String getTableName(boolean update) {
+       Table table = getTable(update);
+       if(null != table) {
+           return table.getName();
+       }
+       return null;
     }
 
-    public Table getTable() {
-        if(null == table && null != tableName){
-            return new Table(tableName);
+    public Table getTable(boolean update) {
+        if(update){
+            if(null != table && null != table.getUpdate()){
+                return table.getUpdate();
+            }
         }
         return table;
     }
@@ -63,11 +65,6 @@ public class Constraint {
         return this;
     }
 
-    public Constraint setTableName(String tableName) {
-        this.tableName = tableName;
-        this.table = new Table(tableName);
-        return this;
-    }
 
     public String getName() {
         return name;

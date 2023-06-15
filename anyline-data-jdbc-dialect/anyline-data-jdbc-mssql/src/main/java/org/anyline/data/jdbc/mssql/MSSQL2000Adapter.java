@@ -273,7 +273,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         builder.append("'USER',");
         builder.append("'").append(schema).append("',");
         builder.append("'TABLE',");
-        builder.append("'").append(column.getTableName()).append("',");
+        builder.append("'").append(column.getTableName(true)).append("',");
         builder.append("'COLUMN',");
         builder.append("'").append(column.getName()).append("'");
 
@@ -317,7 +317,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         builder.append("'USER',");
         builder.append("'").append(schema).append("',");
         builder.append("'TABLE',");
-        builder.append("'").append(column.getTableName()).append("',");
+        builder.append("'").append(column.getTableName(true)).append("',");
         builder.append("'COLUMN',");
         builder.append("'").append(column.getName()).append("'");
 

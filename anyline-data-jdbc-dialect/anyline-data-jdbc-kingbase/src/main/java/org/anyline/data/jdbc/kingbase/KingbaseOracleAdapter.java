@@ -1740,8 +1740,8 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, primary.getTable());
-			builder.append(" ADD CONSTRAINT ").append(primary.getTableName()).append("_PK").append(" PRIMARY KEY(");
+			name(builder, primary.getTable(true));
+			builder.append(" ADD CONSTRAINT ").append(primary.getTableName(true)).append("_PK").append(" PRIMARY KEY(");
 			boolean first = true;
 			for(Column column:columns.values()){
 				if(!first){
@@ -1775,7 +1775,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable());
+		name(builder, primary.getTable(true));
 		builder.append(" DROP PRIMARY KEY");
 		return builder.toString();
 	}
