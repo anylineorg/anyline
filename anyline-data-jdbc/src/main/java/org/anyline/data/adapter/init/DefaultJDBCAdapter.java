@@ -3587,10 +3587,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildDropRunSQL(PrimaryKey primary)", 37));
-		}
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, primary.getTable(true));
+		builder.append(" DROP CONSTRAINT ");
+		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 	/**
 	 * 修改主键名
@@ -3763,14 +3765,16 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildDropRunSQL(Index index) throws Exception{
 		StringBuilder builder = new StringBuilder();
+		Table table = index.getTable(true);
 		if(index.isPrimary()){
-			builder.append("ALTER TABLE ").append(index.getTableName(true))
-					.append(" DROP CONSTRAINT ").append(index.getName());
+			builder.append("ALTER TABLE ");
+			name(builder, table);
+			builder.append(" DROP CONSTRAINT ").append(index.getName());
 		}else {
 			builder.append("DROP INDEX ").append(index.getName());
-			String table = index.getTableName(true);
 			if (BasicUtil.isNotEmpty(table)) {
-				builder.append(" ON ").append(table);
+				builder.append(" ON ");
+				name(builder, table);
 			}
 		}
 		return builder.toString();
@@ -3836,10 +3840,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String buildDropRunSQL(Constraint constraint) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String buildDropRunSQL(Constraint constraint)", 37));
-		}
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		Table table = constraint.getTable(true);
+		name(builder, table);
+		builder.append(" DROP CONSTRAINT ").append(constraint.getName());
+		 return builder.toString();
 	}
 	/**
 	 * 修改约束名
@@ -3849,10 +3855,23 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildRenameRunSQL(Constraint constraint)", 37));
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		Table table = constraint.getTable(true);
+		String catalog = constraint.getCatalog();
+		String schema = table.getSchema();
+		builder.append("ALTER CONSTRAINT ");
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
-		return null;
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, constraint.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" RENAME TO ");
+		SQLUtil.delimiter(builder, constraint.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/* *****************************************************************************************************************
@@ -3916,7 +3935,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildDropRunSQL(Trigger trigger) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		builder.append("DROP TRIGGER ").append(trigger.getName());
+		builder.append("DROP TRIGGER ");
+		Table table = trigger.getTable(true);
+		if(null != table) {
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
+			if (BasicUtil.isNotEmpty(catalog)) {
+				SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+			}
+			if (BasicUtil.isNotEmpty(schema)) {
+				SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+			}
+		}
+		SQLUtil.delimiter(builder, trigger.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
 
@@ -3928,7 +3959,23 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Trigger trigger) throws Exception{
-		return null;
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		Table table = trigger.getTable(true);
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		builder.append("ALTER TRIGGER ");
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, trigger.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" RENAME TO ");
+		SQLUtil.delimiter(builder, trigger.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 
@@ -4111,7 +4158,18 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Function function) throws Exception{
-		return null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("DROP FUNCTION ");
+		String catalog = function.getCatalog();
+		String schema = function.getSchema();
+		if(BasicUtil.isNotEmpty(catalog)){
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, function.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 
 	/**
@@ -4121,7 +4179,22 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	public List<String> buildRenameRunSQL(Function function) throws Exception{
-		return null;
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		String catalog = function.getCatalog();
+		String schema = function.getSchema();
+		builder.append("ALTER FUNCTION ");
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, function.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" RENAME TO ");
+		SQLUtil.delimiter(builder, function.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	/* *****************************************************************************************************************
 	 *

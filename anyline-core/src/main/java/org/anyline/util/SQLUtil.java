@@ -16,30 +16,22 @@
  *           
  */ 
  
-package org.anyline.util; 
- 
+package org.anyline.util;
+
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.List;
 
 public class SQLUtil {
 	static final Logger log = LoggerFactory.getLogger(SQLUtil.class);
 
 
 	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiter){
+		if(BasicUtil.isEmpty(src)){
+			return builder;
+		}
 		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
 			builder.append(src);
 			return builder;
@@ -63,6 +55,9 @@ public class SQLUtil {
 		return delimiter(builder, src, delimiterFr, delimiterTo);
 	}
 	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo){
+		if(BasicUtil.isEmpty(src)){
+			return builder;
+		}
 		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
 			builder.append(src);
 			return builder;
@@ -96,6 +91,9 @@ public class SQLUtil {
 		return builder ;
 	}
 	public static String delimiter(String src, String delimiterFr, String delimiterTo){
+		if(BasicUtil.isEmpty(src)){
+			return "";
+		}
 		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
 			return src;
 		}
