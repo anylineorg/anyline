@@ -210,7 +210,7 @@ public class Table  {
             return this;
         }
 
-        if(null != primaryKey){
+        if(null != this.primaryKey){
             //取消原主键中的列标记
             for(Column column:this.primaryKey.getColumns().values()){
                 column.setPrimaryKey(false);
