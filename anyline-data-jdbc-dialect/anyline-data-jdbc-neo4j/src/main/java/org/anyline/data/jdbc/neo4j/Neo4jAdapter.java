@@ -267,14 +267,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         for(int i=0; i<size; i++){
             String key = keys.get(i);
             Object value = null;
-            if(null != row){
-                value = row.get(key);
+            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
-                if(EntityAdapterProxy.hasAdapter()){
-                    value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-                }else{
-                    value = BeanUtil.getFieldValue(obj, key);
-                }
+                value = BeanUtil.getFieldValue(obj, key);
             }
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(":");
             if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
@@ -1050,15 +1046,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
                 SQLUtil.delimiter(builder, "d."+key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
                 Object value = null;
-                if(obj instanceof DataRow){
-                    value = ((DataRow)obj).get(key);
+                if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+                    value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                 }else{
-                    if(EntityAdapterProxy.hasAdapter()){
-                        value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-                    }else{
-                        value = BeanUtil.getFieldValue(obj, key);
-                    }
+                    value = BeanUtil.getFieldValue(obj, key);
                 }
+
                 run.addValues(Compare.EQUAL, key,value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
             }
         }else{

@@ -292,14 +292,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         for(int i=0; i<size; i++){
             String key = keys.get(i);
             Object value = null;
-            if(null != row){
-                value = row.get(key);
+            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
-                if(EntityAdapterProxy.hasAdapter()){
-                    value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-                }else{
-                    value = BeanUtil.getFieldValue(obj, key);
-                }
+                value = BeanUtil.getFieldValue(obj, key);
             }
 
             String str = null;
@@ -417,6 +413,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             Object value = null;
             if(obj instanceof DataRow){
                 value = BeanUtil.getFieldValue(obj, key);
+            }else if(obj instanceof Map){
+                value = ((Map)obj).get(key);
             }else{
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }

@@ -28,25 +28,7 @@ public class DefaultDDListener implements DDListener {
     protected JDBCAdapter adapter;
 
 
-    @Override
-    public boolean beforeCreate(Table table) {
-        return true;
-    }
 
-    @Override
-    public void afterCreate(Table table, boolean result) {
-
-    }
-
-    @Override
-    public boolean beforeCreate(View view) {
-        return true;
-    }
-
-    @Override
-    public void afterCreate(View view, boolean result) {
-
-    }
 
     @Override
     public boolean beforeAdd(Column column) {
@@ -165,37 +147,52 @@ public class DefaultDDListener implements DDListener {
     }
 
     @Override
+    public boolean beforeAlter(Table table, Collection<Column> columns){
+        return true;
+    }
+    @Override
+    public void afterAlter(Table table, Collection<Column> columns, boolean result){}
+
+    @Override
     public boolean beforeDrop(Column column) {
         return true;
     }
 
     @Override
     public void afterDrop(Column column, boolean result) {
+    }
+
+    @Override
+    public boolean beforeRename(Column column) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Column column, boolean result) {
 
     }
 
+    /**
+     * 创建 table 之前执行
+     * @param table table
+     * @return boolean
+     */
+    @Override
+    public boolean beforeCreate(Table table) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(Table table, boolean result) {
+
+    }
     @Override
     public boolean beforeAlter(Table table) {
         return true;
     }
 
     @Override
-    public boolean beforeAlter(Table table, Collection<Column> columns){
-        return true;
-    }
-    @Override
     public void afterAlter(Table table, boolean result) {
-
-    }
-    public void afterAlter(Table table, Collection<Column> columns, boolean result){}
-
-    @Override
-    public boolean beforeAlter(View view) {
-        return true;
-    }
-
-    @Override
-    public void afterAlter(View view, boolean result) {
 
     }
 
@@ -210,6 +207,40 @@ public class DefaultDDListener implements DDListener {
     }
 
     @Override
+    public boolean beforeRename(Table table) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Table table, boolean result) {
+
+    }
+    /**
+     * 创建 view 之前执行
+     * @param view view
+     * @return boolean
+     */
+
+    @Override
+    public boolean beforeCreate(View view) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(View view, boolean result) {
+
+    }
+    @Override
+    public boolean beforeAlter(View view) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(View view, boolean result) {
+
+    }
+
+    @Override
     public boolean beforeDrop(View view) {
         return true;
     }
@@ -220,27 +251,195 @@ public class DefaultDDListener implements DDListener {
     }
 
     @Override
-    public boolean beforeRename(Table table) {
+    public boolean beforeRename(View view) {
         return true;
     }
 
     @Override
-    public void afterRename(Table table, boolean result) {
+    public void afterRename(View view, boolean result) {
 
     }
 
-    public AnylineService getService() {
-        return service;
+
+    /**
+     * 创建 MasterTable 之前执行
+     * @param table table
+     * @return boolean
+     */
+
+    @Override
+    public boolean beforeCreate(MasterTable table) {
+        return true;
     }
 
-    public JDBCAdapter getAdapter() {
-        return adapter;
+    @Override
+    public void afterCreate(MasterTable table, boolean result) {
+
+    }
+    @Override
+    public boolean beforeAlter(MasterTable table) {
+        return true;
     }
 
-    public void setAdapter(JDBCAdapter adapter) {
-        this.adapter = adapter;
+    @Override
+    public void afterAlter(MasterTable table, boolean result) {
+
     }
 
+    @Override
+    public boolean beforeDrop(MasterTable table) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(MasterTable table, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeRename(MasterTable table) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(MasterTable table, boolean result) {
+
+    }
+    /**
+     * 创建 PartitionTable 之前执行
+     * @param table table
+     * @return boolean
+     */
+
+    @Override
+    public boolean beforeCreate(PartitionTable table) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(PartitionTable table, boolean result) {
+
+    }
+    @Override
+    public boolean beforeAlter(PartitionTable table) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(PartitionTable table, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(PartitionTable table) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(PartitionTable table, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeRename(PartitionTable table) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(PartitionTable table, boolean result) {
+
+    }
+    /**
+     * 创建 index 之前执行
+     * @param primary primary
+     * @return boolean
+     */
+    @Override
+    public boolean beforeAdd(PrimaryKey primary) {
+        return true;
+    }
+
+    @Override
+    public void afterAdd(PrimaryKey primary, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(PrimaryKey primary) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(PrimaryKey primary, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(PrimaryKey primary) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(PrimaryKey primary, boolean result) {
+
+    }
+    @Override
+    public boolean beforeRename(PrimaryKey primary) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(PrimaryKey primary, boolean result) {
+
+    }
+    /**
+     * 创建 foreign 之前执行
+     * @param foreign foreign
+     * @return boolean
+     */
+    @Override
+    public boolean beforeAdd(ForeignKey foreign) {
+        return true;
+    }
+
+    @Override
+    public void afterAdd(ForeignKey foreign, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(ForeignKey foreign) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(ForeignKey foreign, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(ForeignKey foreign) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(ForeignKey foreign, boolean result) {
+
+    }
+    @Override
+    public boolean beforeRename(ForeignKey foreign) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(ForeignKey foreign, boolean result) {
+
+    }
+    /**
+     * 创建 index 之前执行
+     * @param index index
+     * @return boolean
+     */
     @Override
     public boolean beforeAdd(Index index) {
         return true;
@@ -270,6 +469,21 @@ public class DefaultDDListener implements DDListener {
     public void afterDrop(Index index, boolean result) {
 
     }
+    @Override
+    public boolean beforeRename(Index index) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Index index, boolean result) {
+
+    }
+
+    /**
+     * 创建 constraint 之前执行
+     * @param constraint constraint
+     * @return boolean
+     */
 
     @Override
     public boolean beforeAdd(Constraint constraint) {
@@ -300,11 +514,165 @@ public class DefaultDDListener implements DDListener {
     public void afterDrop(Constraint constraint, boolean result) {
 
     }
+    @Override
+    public boolean beforeRename(Constraint constraint) {
+        return true;
+    }
 
+    @Override
+    public void afterRename(Constraint constraint, boolean result) {
+
+    }
+
+    /**
+     * 创建 procedure 之前执行
+     * @param procedure procedure
+     * @return boolean
+     */
+
+    @Override
+    public boolean beforeCreate(Procedure procedure) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(Procedure procedure, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(Procedure procedure) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(Procedure procedure, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(Procedure procedure) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(Procedure procedure, boolean result) {
+
+    }
+    @Override
+    public boolean beforeRename(Procedure procedure) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Procedure procedure, boolean result) {
+
+    }
+
+    /**
+     * 创建 function 之前执行
+     * @param function function
+     * @return boolean
+     */
+
+    @Override
+    public boolean beforeCreate(Function function) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(Function function, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(Function function) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(Function function, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(Function function) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(Function function, boolean result) {
+
+    }
+    @Override
+    public boolean beforeRename(Function function) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Function function, boolean result) {
+
+    }
+    /**
+     * 创建 trigger 之前执行
+     * @param trigger trigger
+     * @return boolean
+     */
+
+    @Override
+    public boolean beforeCreate(Trigger trigger) {
+        return true;
+    }
+
+    @Override
+    public void afterCreate(Trigger trigger, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeAlter(Trigger trigger) {
+        return true;
+    }
+
+    @Override
+    public void afterAlter(Trigger trigger, boolean result) {
+
+    }
+
+    @Override
+    public boolean beforeDrop(Trigger trigger) {
+        return true;
+    }
+
+    @Override
+    public void afterDrop(Trigger trigger, boolean result) {
+
+    }
+    @Override
+    public boolean beforeRename(Trigger trigger) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Trigger trigger, boolean result) {
+
+    }
     public void setService(AnylineService service){
         this.service = service;
     }
     public AnylineService setService(){
         return service;
+    }
+
+    public AnylineService getService() {
+        return service;
+    }
+
+    public JDBCAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(JDBCAdapter adapter) {
+        this.adapter = adapter;
     }
 }

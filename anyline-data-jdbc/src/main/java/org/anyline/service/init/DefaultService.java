@@ -4414,6 +4414,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean rename(ForeignKey origin, String name) throws Exception{
             boolean result = false;
+            dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }

@@ -431,15 +431,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					continue;
 				}
 				Object value = null;
-				if(null != row) {
-					value = row.get(key);
+				if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+					value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
 				}else{
-					if(EntityAdapterProxy.hasAdapter()){
-						value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
-					}else{
-						value = BeanUtil.getFieldValue(obj, key);
-					}
+					value = BeanUtil.getFieldValue(obj, key);
 				}
+
 				if(null == value){
 					if(factKeys.contains(key)){
 						keys.remove(key);

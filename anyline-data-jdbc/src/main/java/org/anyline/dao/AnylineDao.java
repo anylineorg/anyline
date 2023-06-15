@@ -343,25 +343,28 @@ public interface AnylineDao<E>{
 	boolean create(Table table) throws Exception;
 	boolean alter(Table table) throws Exception;
 	boolean drop(Table table) throws Exception;
+	boolean rename(Table origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
 	boolean create(View view) throws Exception;
 	boolean alter(View view) throws Exception;
 	boolean drop(View view) throws Exception;
+	boolean rename(View origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
 	boolean create(MasterTable table) throws Exception;
 	boolean alter(MasterTable table) throws Exception;
 	boolean drop(MasterTable table) throws Exception;
+	boolean rename(MasterTable origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
 	boolean create(PartitionTable table) throws Exception;
 	boolean alter(PartitionTable table) throws Exception;
 	boolean drop(PartitionTable table) throws Exception;
-
+	boolean rename(PartitionTable origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
@@ -369,6 +372,7 @@ public interface AnylineDao<E>{
 	boolean alter(Table table, Column column) throws Exception;
 	boolean alter(Column column) throws Exception;
 	boolean drop(Column column) throws Exception;
+	boolean rename(Column origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													tag
@@ -377,6 +381,7 @@ public interface AnylineDao<E>{
 	boolean alter(Table table, Tag tag) throws Exception;
 	boolean alter(Tag tag) throws Exception;
 	boolean drop(Tag tag) throws Exception;
+	boolean rename(Tag origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													primary
@@ -385,7 +390,7 @@ public interface AnylineDao<E>{
 	boolean alter(PrimaryKey primary) throws Exception;
 	boolean alter(Table table, PrimaryKey primary) throws Exception;
 	boolean drop(PrimaryKey primary) throws Exception;
-
+	boolean rename(PrimaryKey origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 ******************************************************************************************************************/
@@ -393,6 +398,7 @@ public interface AnylineDao<E>{
 	boolean alter(ForeignKey foreign) throws Exception;
 	boolean alter(Table table, ForeignKey foreign) throws Exception;
 	boolean drop(ForeignKey foreign) throws Exception;
+	boolean rename(ForeignKey origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
@@ -400,6 +406,7 @@ public interface AnylineDao<E>{
 	boolean alter(Index index) throws Exception;
 	boolean alter(Table table, Index index) throws Exception;
 	boolean drop(Index index) throws Exception;
+	boolean rename(Index origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													constraint
@@ -408,6 +415,7 @@ public interface AnylineDao<E>{
 	boolean alter(Constraint constraint) throws Exception;
 	boolean alter(Table table, Constraint constraint) throws Exception;
 	boolean drop(Constraint constraint) throws Exception;
+	boolean rename(Constraint origin, String name) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -422,6 +430,7 @@ public interface AnylineDao<E>{
 	boolean create(Trigger trigger) throws Exception;
 	boolean alter(Trigger trigger) throws Exception;
 	boolean drop(Trigger trigger) throws Exception;
+	boolean rename(Trigger origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 ******************************************************************************************************************/
@@ -434,6 +443,7 @@ public interface AnylineDao<E>{
 	boolean create(Procedure procedure) throws Exception;
 	boolean alter(Procedure procedure) throws Exception;
 	boolean drop(Procedure procedure) throws Exception;
+	boolean rename(Procedure origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -446,4 +456,5 @@ public interface AnylineDao<E>{
 	boolean create(Function function) throws Exception;
 	boolean alter(Function function) throws Exception;
 	boolean drop(Function function) throws Exception;
+	boolean rename(Function origin, String name) throws Exception;
 } 
