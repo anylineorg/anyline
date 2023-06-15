@@ -1503,9 +1503,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(null != update){
 			builder.append(" CHANGE ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			if(!BasicUtil.equalsIgnoreCase(column.getName(), update.getName())) {
-				SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			}
+			SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			define(builder, update);
 		}
 		sqls.add(builder.toString());

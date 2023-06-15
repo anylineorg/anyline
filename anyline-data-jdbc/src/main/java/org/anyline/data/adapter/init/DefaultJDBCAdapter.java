@@ -3231,6 +3231,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}else {
 				def = write(column, def, false);
+				if(null == def){
+					def = column.getDefaultValue();
+				}
 				//format(builder, def);
 				builder.append(def);
 			}
