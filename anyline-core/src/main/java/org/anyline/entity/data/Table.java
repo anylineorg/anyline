@@ -2,6 +2,7 @@ package org.anyline.entity.data;
 
 import org.anyline.exception.AnylineException;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class Table  {
 
     protected Table update;
     protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog,schema,name)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了catalog,schema,name)
 
     public Table(){
         this(null);
@@ -81,66 +83,57 @@ public class Table  {
         return pks.get(0);
     }
     public Table clone(){
-        Table table = new Table();
-        table.catalog = catalog;
-        table.schema = schema;
-        table.name = name;
-        table.comment = comment;
-        table.type = type;
-        table.typeCat = typeCat;
-        table.typeSchema = typeSchema;
-        table.typeName = typeName;
-        table.selfReferencingColumn = selfReferencingColumn;
-        table.refGeneration = refGeneration;
-        table.engine = engine;
-        table.charset = charset;
-        table.collate = collate;
-        table.ttl = ttl;
-        table.checkSchemaTime = checkSchemaTime;
-        table.primaryKey = primaryKey;
-        table.columns = columns;
-        table.tags = tags;
-        table.indexs = indexs;
-        table.constraints = constraints;
-        table.autoDropColumn = autoDropColumn;
-        table.update = update;
-        return table;
+        Table copy = new Table();
+        BeanUtil.copyFieldValueNvl(copy, this);
+
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        for(Column column:this.columns.values()){
+            Column col = column.clone();
+            cols.put(col.getName().toUpperCase(), col);
+        }
+        copy.columns = cols;
+
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;
+        return copy;
     }
 
     public Table update(){
-        return update(true);
+        return update(true, true);
     }
-    public Table update(boolean setmap){
+    public Table update(boolean setmap, boolean getmap){
         this.setmap = setmap;
+        this.getmap = getmap;
         update = clone();
         update.update = null;
         return update;
     }
 
-    public Long getTtl() {
-        return ttl;
-    }
-
-    public Table setTtl(Long ttl) {
-        if(setmap && null != update){
-            update.setTtl(ttl);
-            return this;
-        }
-        this.ttl = ttl;
-        return this;
-    }
 
     public Table getUpdate() {
         return update;
     }
 
-    public Table setUpdate(Table update, boolean setmap) {
+    public Table setUpdate(Table update, boolean setmap, boolean getmap) {
         this.update = update;
         this.setmap = setmap;
+        this.getmap = getmap;
         update.update = null;
         return this;
     }
 
+    public Table setNewName(String newName){
+        return setNewName(newName, true, true);
+    }
+
+    public Table setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
+        return update;
+    }
 
     public Table addColumn(Column column){
         if(setmap && null != update){
@@ -153,6 +146,21 @@ public class Table  {
         }
         columns.put(column.getName().toUpperCase(), column);
 
+        return this;
+    }
+    public Long getTtl() {
+        if(getmap && null != update){
+            return update.ttl;
+        }
+        return ttl;
+    }
+
+    public Table setTtl(Long ttl) {
+        if(setmap && null != update){
+            update.setTtl(ttl);
+            return this;
+        }
+        this.ttl = ttl;
         return this;
     }
     public Column addColumn(String name, String type){
@@ -270,18 +278,10 @@ public class Table  {
         this.name = name;
         return this;
     }
-    public Table setNewName(String newName){
-        return setNewName(newName, true);
-    }
-
-    public Table setNewName(String newName, boolean setmap) {
-        if(null == update){
-            update(setmap);
-        }
-        update.setName(newName);
-        return update;
-    }
     public String getType() {
+        if(getmap && null != update){
+            return update.type;
+        }
         return type;
     }
 
@@ -295,6 +295,9 @@ public class Table  {
     }
 
     public String getComment() {
+        if(getmap && null != update){
+            return update.comment;
+        }
         return comment;
     }
 
@@ -308,6 +311,9 @@ public class Table  {
     }
 
     public String getTypeCat() {
+        if(getmap && null != update){
+            return update.typeCat;
+        }
         return typeCat;
     }
 
@@ -321,6 +327,9 @@ public class Table  {
     }
 
     public String getTypeSchema() {
+        if(getmap && null != update){
+            return update.typeSchema;
+        }
         return typeSchema;
     }
 
@@ -334,6 +343,9 @@ public class Table  {
     }
 
     public String getTypeName() {
+        if(getmap && null != update){
+            return update.typeName;
+        }
         return typeName;
     }
 
@@ -347,6 +359,9 @@ public class Table  {
     }
 
     public String getSelfReferencingColumn() {
+        if(getmap && null != update){
+            return update.selfReferencingColumn;
+        }
         return selfReferencingColumn;
     }
 
@@ -360,6 +375,9 @@ public class Table  {
     }
 
     public String getRefGeneration() {
+        if(getmap && null != update){
+            return update.refGeneration;
+        }
         return refGeneration;
     }
 
@@ -373,6 +391,9 @@ public class Table  {
     }
 
     public <T extends Column> LinkedHashMap<String, T> getColumns() {
+        if(getmap && null != update){
+            return update.getColumns();
+        }
         if(null == columns){
             columns = new LinkedHashMap<>();
         }
@@ -394,6 +415,9 @@ public class Table  {
     }
 
     public <T extends Tag> LinkedHashMap<String, T> getTags() {
+        if(getmap && null != update){
+            return update.getTags();
+        }
         if(null == tags){
             tags = new LinkedHashMap<>();
         }
@@ -414,12 +438,18 @@ public class Table  {
         return this;
     }
     public <T extends Index> LinkedHashMap<String, T> getIndexs() {
+        if(getmap && null != update){
+            return update.getIndexs();
+        }
         if(null == indexs){
             indexs = new LinkedHashMap<>();
         }
         return (LinkedHashMap<String, T>) indexs;
     }
     public PrimaryKey getPrimaryKey(){
+        if(getmap && null != update){
+            return update.getPrimaryKey();
+        }
         if(null == primaryKey){
             for(Column column: columns.values()){
                 if(column.isPrimaryKey() ==1){
@@ -456,6 +486,9 @@ public class Table  {
     }
 
     public <T extends Constraint> LinkedHashMap<String, T> getConstraints() {
+        if(getmap && null != update){
+            return update.getConstraints();
+        }
         if(null == constraints){
             constraints = new LinkedHashMap<>();
         }
@@ -472,16 +505,25 @@ public class Table  {
     }
 
     public Column getColumn(String name){
+        if(getmap && null != update){
+            return update.getColumn(name);
+        }
         if(null == columns || null == name){
             return null;
         }
         return columns.get(name.toUpperCase());
     }
     public Column getTag(String name){
+        if(getmap && null != update){
+            return update.getTag(name);
+        }
         return tags.get(name.toUpperCase());
     }
 
     public String getEngine() {
+        if(getmap && null != update){
+            return update.engine;
+        }
         return engine;
     }
 
@@ -495,6 +537,9 @@ public class Table  {
     }
 
     public String getCharset() {
+        if(getmap && null != update){
+            return update.charset;
+        }
         return charset;
     }
 
@@ -508,6 +553,9 @@ public class Table  {
     }
 
     public String getCollate() {
+        if(getmap && null != update){
+            return update.collate;
+        }
         return collate;
     }
 
@@ -521,6 +569,9 @@ public class Table  {
     }
 
     public int getSrid() {
+        if(getmap && null != update){
+            return update.srid;
+        }
         return srid;
     }
 
