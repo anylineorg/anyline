@@ -2167,9 +2167,17 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildRenameRunSQL(org.anyline.entity.data.Procedure procedure) throws Exception{
-		return super.buildRenameRunSQL(procedure);
+
+	/**
+	 * 修改存储过程名
+	 * 不支持
+	 * @param procedure 存储过程
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Procedure procedure) throws Exception{
+		return null;
 	}
+
 
 	/* *****************************************************************************************************************
 	 * 													function
