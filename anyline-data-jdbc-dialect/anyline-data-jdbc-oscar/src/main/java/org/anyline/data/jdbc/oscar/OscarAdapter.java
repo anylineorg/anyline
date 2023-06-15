@@ -1294,7 +1294,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
-			Table table = column.getTable();
+			Table table = column.getTable(true);
 			builder.append("ALTER TABLE ");
 			name(builder, table);
 		}
@@ -1350,7 +1350,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public String buildRenameRunSQL(Column column)  throws Exception{
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable());
+		name(builder, column.getTable(true));
 		builder.append(" RENAME COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TO ");
@@ -1396,7 +1396,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 				StringBuilder builder = new StringBuilder();
 				builder.append("UPDATE ");
-				name(builder, column.getTable());
+				name(builder, column.getTable(true));
 				builder.append(" SET ");
 				SQLUtil.delimiter(builder, uname, getDelimiterFr(), getDelimiterTo());
 				builder.append(" = ");
@@ -1412,7 +1412,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE ");
-				name(builder, column.getTable());
+				name(builder, column.getTable(true));
 				builder.append(" MODIFY(");
 				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 				type(builder, column.getUpdate());
@@ -1440,7 +1440,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable()).append(" MODIFY ");
+		name(builder, column.getTable(true)).append(" MODIFY ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" DEFAULT ");
 		if(null != def){
@@ -1470,7 +1470,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 			StringBuilder builder = new StringBuilder();
 			builder.append("ALTER TABLE ");
-			name(builder, column.getTable()).append(" MODIFY ");
+			name(builder, column.getTable(true)).append(" MODIFY ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			if(uNullable == 0){
 				builder.append(" NOT ");
@@ -1507,7 +1507,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		if(BasicUtil.isNotEmpty(comment)) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON COLUMN ");
-			name(builder, column.getTable()).append(".");
+			name(builder, column.getTable(true)).append(".");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			builder.append(" IS '").append(comment).append("'");
 			return builder.toString();

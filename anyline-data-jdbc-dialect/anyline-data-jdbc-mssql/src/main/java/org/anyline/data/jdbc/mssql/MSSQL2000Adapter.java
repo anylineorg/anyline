@@ -265,7 +265,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         StringBuilder builder = new StringBuilder();
         String schema = column.getSchema();
         if(BasicUtil.isEmpty(schema)){
-            schema = column.getTable().getSchema();
+            schema = column.getTable(true).getSchema();
         }
         builder.append("EXEC sp_addextendedproperty ");
         builder.append("'MS_Description',");
@@ -309,7 +309,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         StringBuilder builder = new StringBuilder();
         String schema = column.getSchema();
         if(BasicUtil.isEmpty(schema)){
-            schema = column.getTable().getSchema();
+            schema = column.getTable(true).getSchema();
         }
         builder.append("EXEC sp_updateextendedproperty ");
         builder.append("'MS_Description',");

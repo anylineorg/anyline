@@ -453,6 +453,12 @@ public class Table  {
         }
         return this;
     }
+    public Index getIndex(String name){
+        if(null != indexs && null != name){
+            return indexs.get(name.toUpperCase());
+        }
+        return null;
+    }
     public <T extends Index> LinkedHashMap<String, T> getIndexs() {
         if(getmap && null != update){
             return update.getIndexs();

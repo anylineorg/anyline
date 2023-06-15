@@ -276,6 +276,20 @@ public class Column {
         return table;
     }
 
+    /**
+     * 相关表
+     * @param update 是否检测upate
+     * @return table
+     */
+    public Table getTable(boolean update) {
+        if(update){
+            if(null != table && null != table.getUpdate()){
+                return table.getUpdate();
+            }
+        }
+        return table;
+    }
+
     public void setTable(Table table) {
         this.table = table;
     }

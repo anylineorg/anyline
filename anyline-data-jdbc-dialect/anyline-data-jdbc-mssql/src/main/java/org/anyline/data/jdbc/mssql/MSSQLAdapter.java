@@ -1039,7 +1039,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<String> sqls = new ArrayList<>(); 
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
-			Table table = column.getTable();
+			Table table = column.getTable(true);
 			builder.append("ALTER TABLE ");
 			name(builder, table);
 		}
@@ -1108,7 +1108,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		StringBuilder builder = new StringBuilder();
 		Column update = column.getUpdate();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable());
+		name(builder, column.getTable(true));
 		builder.append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" ");
@@ -1144,7 +1144,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable()).append(" ALTER COLUMN ");
+		name(builder, column.getTable(true)).append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		type(builder, update);
 		if(nullable == 0){
@@ -1168,7 +1168,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		StringBuilder builder = new StringBuilder();
 		String schema = column.getSchema();
 		if(BasicUtil.isEmpty(schema)){
-			schema = column.getTable().getSchema();
+			schema = column.getTable(true).getSchema();
 		}
 
 		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
@@ -1211,7 +1211,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		StringBuilder builder = new StringBuilder();
 		String schema = column.getSchema();
 		if(BasicUtil.isEmpty(schema)){
-			schema = column.getTable().getSchema();
+			schema = column.getTable(true).getSchema();
 		}
 		builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
 		builder.append(",@value=N'").append(comment).append("'");

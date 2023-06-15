@@ -4363,7 +4363,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public boolean alter(Column column) throws Exception{
-		Table table = column.getTable();
+		Table table = column.getTable(true);
 		if(null == table){
 			LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
 			if(tables.size() ==0){
@@ -5420,7 +5420,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 	public void checkSchema(JDBCRuntime runtime, Column column){
-		Table table = column.getTable();
+		Table table = column.getTable(true);
 		if(null != table){
 			checkSchema(runtime, table);
 			column.setCatalog(table.getCatalog());

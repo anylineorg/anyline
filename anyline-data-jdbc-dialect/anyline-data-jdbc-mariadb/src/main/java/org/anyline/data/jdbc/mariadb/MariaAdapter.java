@@ -1459,7 +1459,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
-			Table table = column.getTable();
+			Table table = column.getTable(true);
 			builder.append("ALTER TABLE ");
 			name(builder, table);
 		}
@@ -1500,7 +1500,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
-			Table table = column.getTable();
+			Table table = column.getTable(true);
 			builder.append("ALTER TABLE ");
 			name(builder, table);
 		}

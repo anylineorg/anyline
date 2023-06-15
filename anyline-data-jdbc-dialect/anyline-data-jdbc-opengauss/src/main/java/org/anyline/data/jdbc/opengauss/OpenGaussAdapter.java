@@ -1123,7 +1123,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	public String buildRenameRunSQL(Column column) throws Exception {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable());
+		name(builder, column.getTable(true));
 		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getUpdate().getName());
 		return builder.toString();
 	}
@@ -1139,7 +1139,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 		StringBuilder builder = new StringBuilder();
 		Column update = column.getUpdate();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable());
+		name(builder, column.getTable(true));
 		builder.append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TYPE ");
@@ -1180,7 +1180,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable()).append(" ALTER COLUMN ");
+		name(builder, column.getTable(true)).append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		if(null != def){
 			builder.append(" SET DEFAULT '").append(def).append("'");
@@ -1208,7 +1208,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 
 			StringBuilder builder = new StringBuilder();
 			builder.append("ALTER TABLE ");
-			name(builder, column.getTable()).append(" ALTER ");
+			name(builder, column.getTable(true)).append(" ALTER ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			if(uNullable == 0){
 				builder.append(" SET ");
@@ -1249,7 +1249,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 		if(BasicUtil.isNotEmpty(comment)) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON COLUMN ");
-			name(builder, column.getTable()).append(".");
+			name(builder, column.getTable(true)).append(".");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			builder.append(" IS '").append(comment).append("'");
 			return builder.toString();

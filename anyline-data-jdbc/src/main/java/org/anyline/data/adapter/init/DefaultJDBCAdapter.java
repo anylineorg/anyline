@@ -2728,7 +2728,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
-			Table table = column.getTable();
+			Table table = column.getTable(true);
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
 			name(builder, table);
 		}
@@ -2849,7 +2849,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		StringBuilder builder = new StringBuilder();
 		if(!slice) {
-			Table table = column.getTable();
+			Table table = column.getTable(true);
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
 			name(builder, table);
 		}
@@ -2882,7 +2882,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	@Override
 	public String buildRenameRunSQL(Column column) throws Exception{
 		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
+		Table table = column.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
 		builder.append(" RENAME ").append(column.getKeyword()).append(" ");
@@ -3720,7 +3720,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		builder.append(" INDEX ").append(name)
 				.append(" ON ");//.append(index.getTableName());
-		name(builder, index.getTable());
+		Table table = index.getTable();
+		Table utable = table.getUpdate();
+		if(null != utable){
+			table = utable;
+		}
+		name(builder, utable);
 		builder.append("(");
 		int qty = 0;
 		for(Column column:index.getColumns().values()){
