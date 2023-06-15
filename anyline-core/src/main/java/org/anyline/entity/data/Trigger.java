@@ -1,6 +1,9 @@
 package org.anyline.entity.data;
 
+import org.anyline.util.BeanUtil;
+
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Trigger  {
@@ -28,6 +31,10 @@ public class Trigger  {
     private boolean each = true; //每行触发发
     private String comment;
 
+    protected Trigger update;
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
+    
     public Table getTable() {
         return table;
     }
@@ -37,11 +44,11 @@ public class Trigger  {
     }
 
     
-    public org.anyline.entity.data.Trigger setTable(Table table) {
+    public Trigger setTable(Table table) {
         this.table = table;
         return this;
     }
-    public org.anyline.entity.data.Trigger setTable(String table) {
+    public Trigger setTable(String table) {
         this.table = new Table(table);
         return this;
     }
@@ -50,44 +57,73 @@ public class Trigger  {
         return name;
     }
 
-    public org.anyline.entity.data.Trigger setName(String name) {
+    public Trigger setName(String name) {
         this.name = name;
         return this;
     }
 
     public String getDefinition() {
+        if(getmap && null != update){
+            return update.definition;
+        }
         return definition;
     }
 
-    public org.anyline.entity.data.Trigger setDefinition(String definition) {
+    public Trigger setDefinition(String definition) {
+        if(setmap && null != update){
+            update.definition = definition;
+            return this;
+        }
         this.definition = definition;
         return this;
     }
 
     public TIME getTime() {
+        if(getmap && null != update){
+            return update.time;
+        }
         return time;
     }
 
-    public org.anyline.entity.data.Trigger setTime(TIME time) {
+    public Trigger setTime(TIME time) {
+        if(setmap && null != update){
+            update.time = time;
+            return this;
+        }
         this.time = time;
         return this;
     }
-    public org.anyline.entity.data.Trigger setTime(String time) {
+    public Trigger setTime(String time) {
+        if(setmap && null != update){
+            update.setTime(time);
+            return this;
+        }
         this.time = TIME.valueOf(time);
         return this;
     }
 
     public List<EVENT> getEvents() {
+        if(getmap && null != update){
+            return update.events;
+        }
         return events;
     }
 
-    public org.anyline.entity.data.Trigger addEvent(EVENT ... events) {
+    public Trigger addEvent(EVENT ... events) {
+        if(setmap && null != update){
+            update.addEvent(events);
+            return this;
+        }
         for(EVENT event:events){
             this.events.add(event);
         }
         return this;
     }
-    public org.anyline.entity.data.Trigger addEvent(String ... events) {
+    public Trigger addEvent(String ... events) {
+        if(setmap && null != update){
+            update.addEvent(events);
+            return this;
+        }
         for(String event:events){
             this.events.add(EVENT.valueOf(event));
         }
@@ -95,20 +131,84 @@ public class Trigger  {
     }
 
     public boolean isEach() {
+        if(getmap && null != update){
+            return update.each;
+        }
         return each;
     }
 
-    public org.anyline.entity.data.Trigger setEach(boolean each) {
+    public Trigger setEach(boolean each) {
+        if(setmap && null != update){
+            update.each = each;
+            return this;
+        }
         this.each = each;
         return this;
     }
 
     public String getComment() {
+        if(getmap && null != update){
+            return update.comment;
+        }
         return comment;
     }
 
-    public org.anyline.entity.data.Trigger setComment(String comment) {
+    public Trigger setComment(String comment) {
+        if(setmap && null != update){
+            update.comment = comment;
+            return this;
+        }
         this.comment = comment;
         return this;
+    }
+
+
+    public Trigger update(){
+        return update(true, true);
+    }
+    public Trigger update(boolean setmap, boolean getmap){
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update = clone();
+        update.update = null;
+        return update;
+    }
+
+
+    public Trigger getUpdate() {
+        return update;
+    }
+
+    public Trigger setUpdate(Trigger update, boolean setmap, boolean getmap) {
+        this.update = update;
+        this.setmap = setmap;
+        this.getmap = getmap;
+        update.update = null;
+        return this;
+    }
+
+    public Trigger setNewName(String newName){
+        return setNewName(newName, true, true);
+    }
+
+    public Trigger setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
+        return update;
+    }
+
+    public Trigger clone(){
+        Trigger copy = new Trigger();
+        BeanUtil.copyFieldValueNvl(copy, this);
+
+        copy.events.addAll(this.events);
+
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;;
+
+        return copy;
     }
 }
