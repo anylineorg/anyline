@@ -94,6 +94,7 @@ public class Column {
 
     protected Column update                       ;
     protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
 
 
 
@@ -120,11 +121,12 @@ public class Column {
 
 
     public Column update(){
-        return update(true);
+        return update(true, true);
     }
 
-    public Column update(boolean setmap){
+    public Column update(boolean setmap, boolean getmap){
         this.setmap = setmap;
+        this.getmap = getmap;
         update = clone();
         update.update = null;
         return update;
@@ -134,15 +136,19 @@ public class Column {
         return update;
     }
 
-    public Column setUpdate(Column update, boolean setmap) {
+    public Column setUpdate(Column update, boolean setmap, boolean getmap) {
         BeanUtil.copyFieldValueNvl(update, this);
         this.update = update;
         this.setmap = setmap;
+        this.getmap = getmap;
         update.update = null;
         return this;
     }
 
     public String getDateScale() {
+        if(getmap && null != update){
+            return update.getDateScale();
+        }
         return dateScale;
     }
 
@@ -168,6 +174,9 @@ public class Column {
     }
 
     public String getClassName() {
+        if(getmap && null != update){
+            return update.getClassName();
+        }
         return className;
     }
 
@@ -181,6 +190,9 @@ public class Column {
     }
 
     public Integer getDisplaySize() {
+        if(getmap && null != update){
+            return update.getDisplaySize();
+        }
         return displaySize;
     }
 
@@ -194,6 +206,9 @@ public class Column {
     }
 
     public String getComment() {
+        if(getmap && null != update){
+            return update.comment;
+        }
         return comment;
     }
 
@@ -222,6 +237,9 @@ public class Column {
     }
 
     public Integer getType() {
+        if(getmap && null != update){
+            return update.type;
+        }
         return type;
     }
 
@@ -267,10 +285,16 @@ public class Column {
     }
 
     public String getTypeName() {
+        if(getmap && null != update){
+            return update.typeName;
+        }
         return typeName;
     }
 
     public String getJdbcType() {
+        if(getmap && null != update){
+            return update.jdbcType;
+        }
         return jdbcType;
     }
 
@@ -324,6 +348,9 @@ public class Column {
     }
 
     public Integer getPrecision() {
+        if(getmap && null != update){
+            return update.precision;
+        }
         return precision;
     }
 
@@ -359,6 +386,10 @@ public class Column {
 
     public String getTableName() {
         if(null != table){
+            Table update = table.getUpdate();
+            if(null != update){
+                return update.getName();
+            }
             return table.getName();
         }
         return tableName;
@@ -371,6 +402,9 @@ public class Column {
     }
 
     public Object getValue() {
+        if(getmap && null != update){
+            return update.value;
+        }
         return value;
     }
 
@@ -384,6 +418,9 @@ public class Column {
     }
 
     public int isCaseSensitive() {
+        if(getmap && null != update){
+            return update.caseSensitive;
+        }
         return caseSensitive;
     }
 
@@ -411,6 +448,9 @@ public class Column {
     }
 
     public int isCurrency() {
+        if(getmap && null != update){
+            return update.isCurrency;
+        }
         return isCurrency;
     }
 
@@ -438,6 +478,9 @@ public class Column {
     }
 
     public int isSigned() {
+        if(getmap && null != update){
+            return update.isSigned;
+        }
         return isSigned;
     }
 
@@ -465,6 +508,9 @@ public class Column {
     }
 
     public Integer getScale() {
+        if(getmap && null != update){
+            return update.scale;
+        }
         return scale;
     }
 
@@ -478,6 +524,9 @@ public class Column {
     }
 
     public int isNullable() {
+        if(getmap && null != update){
+            return update.nullable;
+        }
         return nullable;
     }
 
@@ -505,6 +554,9 @@ public class Column {
     }
 
     public int isAutoIncrement() {
+        if(getmap && null != update){
+            return update.isAutoIncrement;
+        }
         return isAutoIncrement;
     }
 
@@ -554,6 +606,9 @@ public class Column {
     }
 
     public int isPrimaryKey() {
+        if(getmap && null != update){
+            return update.isPrimaryKey;
+        }
         return isPrimaryKey;
     }
 
@@ -582,6 +637,9 @@ public class Column {
     }
 
     public int isGenerated() {
+        if(getmap && null != update){
+            return update.isGenerated;
+        }
         return isGenerated;
     }
 
@@ -609,6 +667,9 @@ public class Column {
     }
 
     public Object getDefaultValue() {
+        if(getmap && null != update){
+            return update.defaultValue;
+        }
         return defaultValue;
     }
 
@@ -622,10 +683,16 @@ public class Column {
     }
 
     public Integer getPosition() {
+        if(getmap && null != update){
+            return update.position;
+        }
         return position;
     }
 
     public String getOrder() {
+        if(getmap && null != update){
+            return update.order;
+        }
         return order;
     }
 
@@ -648,10 +715,16 @@ public class Column {
     }
 
     public String getAfter() {
+        if(getmap && null != update){
+            return update.after;
+        }
         return after;
     }
 
     public Integer getIncrementSeed() {
+        if(getmap && null != update){
+            return update.incrementSeed;
+        }
         return incrementSeed;
     }
 
@@ -665,6 +738,9 @@ public class Column {
     }
 
     public Integer getIncrementStep() {
+        if(getmap && null != update){
+            return update.incrementStep;
+        }
         return incrementStep;
     }
 
@@ -678,6 +754,9 @@ public class Column {
     }
 
     public int isOnUpdate() {
+        if(getmap && null != update){
+            return update.isOnUpdate;
+        }
         return isOnUpdate;
     }
 
@@ -715,6 +794,9 @@ public class Column {
     }
 
     public String getOriginalName() {
+        if(getmap && null != update){
+            return update.originalName;
+        }
         return originalName;
     }
 
@@ -728,10 +810,16 @@ public class Column {
     }
 
     public String getBefore() {
+        if(getmap && null != update){
+            return update.before;
+        }
         return before;
     }
 
     public String getCharset() {
+        if(getmap && null != update){
+            return update.charset;
+        }
         return charset;
     }
 
@@ -745,6 +833,9 @@ public class Column {
     }
 
     public String getCollate() {
+        if(getmap && null != update){
+            return update.collate;
+        }
         return collate;
     }
 
@@ -757,12 +848,12 @@ public class Column {
         return this;
     }
     public Column setNewName(String newName){
-        return setNewName(newName, true);
+        return setNewName(newName, true, true);
     }
 
-    public Column setNewName(String newName, boolean setmap) {
+    public Column setNewName(String newName, boolean setmap, boolean getmap) {
         if(null == update){
-            update(setmap);
+            update(setmap, getmap);
         }
         update.setName(newName);
         return update;
@@ -776,12 +867,21 @@ public class Column {
         return this;
     } 
     public String getFullType(){
+        if(getmap && null != update){
+            return update.getFullType();
+        }
         return getFullType(typeName);
     }
     public String getFullType(String typeName){
+        if(getmap && null != update){
+            return update.getFullType(typeName);
+        }
         return getFullType(typeName, ignorePrecision());
     }
     public String getFullType(String typeName, boolean ignorePrecision){
+        if(getmap && null != update){
+            return update.getFullType(typeName, ignorePrecision);
+        }
         StringBuilder builder = new StringBuilder();
         builder.append(typeName);
         if(!ignorePrecision) {
@@ -868,6 +968,9 @@ public class Column {
 
     
     public ColumnType getColumnType() {
+        if(getmap && null != update){
+            return update.columnType;
+        }
         return columnType;
     }
 
@@ -883,6 +986,9 @@ public class Column {
 
     
     public JavaType getJavaType() {
+        if(getmap && null != update){
+            return update.javaType;
+        }
         return javaType;
     }
 
@@ -905,6 +1011,9 @@ public class Column {
     }
 
     public int getSrid() {
+        if(getmap && null != update){
+            return update.srid;
+        }
         return srid;
     }
 
@@ -918,6 +1027,9 @@ public class Column {
     }
 
     public String getReference() {
+        if(getmap && null != update){
+            return update.reference;
+        }
         return reference;
     }
 
@@ -982,36 +1094,11 @@ public class Column {
     }
     public Column clone(){
         Column copy = new Column();
-        copy.setName(name);
-        copy.setOriginalName(originalName);
-        copy.setTypeName(typeName);
-        copy.setCatalog(catalog);
-        copy.setClassName(className);
-        copy.setSchema(schema);
-        copy.setTableName(tableName);
-        copy.setDisplaySize(displaySize);
-        copy.setComment(comment);
-        copy.setType(type);
-        copy.setPrecision(precision);
-        copy.setScale(scale);
-        copy.setNullable(nullable);
-        copy.setCaseSensitive(caseSensitive);
-        copy.setCurrency(isCurrency);
-        copy.setSigned(isSigned);
-        copy.setPrimaryKey(isPrimaryKey);
-        copy.setGenerated(isGenerated);
-        copy.setDefaultValue(defaultValue);
-        copy.setPosition(position);
-        copy.setOrder(order);
-        copy.setBefore(before);
-        copy.setAfter(after);
-        copy.setCharset(charset);
-        copy.setCollate(collate);
-        copy.setColumnType(columnType);
-        copy.setAction(action);
-        copy.setSrid(srid);
-        copy.setReference(reference);
+        BeanUtil.copyFieldValueNvl(copy, this);
 
+        copy.update = null;
+        copy.setmap = false;
+        copy.getmap = false;
         return copy;
     }
     public String getKeyword() {
