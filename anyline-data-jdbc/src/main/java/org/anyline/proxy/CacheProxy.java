@@ -113,6 +113,9 @@ public class CacheProxy {
                 columns = (LinkedHashMap<String, T>) static_cache.get("keys");
             }
         }
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
         return columns;
     }
 
@@ -161,6 +164,9 @@ public class CacheProxy {
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                 tags = (LinkedHashMap<String, T>) static_cache.get("keys");
             }
+        }
+        if(null == tags){
+            tags = new LinkedHashMap<>();
         }
         return tags;
     }
