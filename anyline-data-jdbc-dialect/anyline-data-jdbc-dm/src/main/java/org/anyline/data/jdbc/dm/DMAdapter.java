@@ -50,8 +50,8 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 	public DMAdapter() {
 		super();
-		delimiterFr = "";
-		delimiterTo = "";
+		delimiterFr = "\"";
+		delimiterTo = "\"";
 		for (DMColumnTypeAlias alias : DMColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}

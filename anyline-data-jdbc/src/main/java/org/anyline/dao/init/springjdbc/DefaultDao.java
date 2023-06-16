@@ -148,7 +148,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return maps(true, prepare, configs, conditions);
 	}
-
 	protected List<Map<String,Object>> maps(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
@@ -1367,7 +1366,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 				log.info("{}[执行耗时:{}ms]", random, mid[0] - fr);
 			}
-			set.setDatalink(DataSourceHolder.curDataSource());
+			set.setDatalink(runtime.datasource());
 			if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
 			}
@@ -1880,7 +1879,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						set.setNavi(navi);
 					}
 
-					set.setDatalink(DataSourceHolder.curDataSource());
+					set.setDatalink(runtime.datasource());
 					if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 						log.info("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());
 					}
@@ -2308,7 +2307,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource());
+			DataRow table_map = CacheProxy.getTableMaps(runtime.datasource());
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -2513,7 +2512,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				tps = new String[]{"VIEW"};
 			}
 
-			DataRow view_map = CacheProxy.getViewMaps(DataSourceHolder.curDataSource());
+			DataRow view_map = CacheProxy.getViewMaps(runtime.datasource());
 			if(null != pattern){
 				if(view_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -2678,7 +2677,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
 			}
-			DataRow table_map = CacheProxy.getTableMaps(DataSourceHolder.curDataSource());
+			DataRow table_map = CacheProxy.getTableMaps(runtime.datasource());
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
@@ -3733,10 +3732,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}
-		List<String> alters = adapter.buildAlterRunSQL(table, cols.values());
-		if(null != alters && alters.size()>0){
-			result = execute(runtime, random, "alter table column", alters) && result;
-		}
+
 		//主键
 		PrimaryKey src_primary = primary(table);
 		PrimaryKey cur_primary = update.getPrimaryKey();
@@ -3748,12 +3744,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != cur_primary){
 			cur_define= BeanUtil.concat(cur_primary.getColumns().values(),"name", ",");
 		}
-
-		if(!cur_define.equalsIgnoreCase(src_define)){
+		boolean change_pk = !cur_define.equalsIgnoreCase(src_define);
+		//如果主键有更新 先删除主键 避免alters中把原主键列的非空取消时与主键约束冲突
+		if(change_pk){
 			//删除主键
 			if(null != src_primary){
 				drop(src_primary);
 			}
+		}
+		List<String> alters = adapter.buildAlterRunSQL(table, cols.values());
+		if(null != alters && alters.size()>0){
+			result = execute(runtime, random, "alter table column", alters) && result;
+		}
+		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
+		if(change_pk){
 			//添加主键
 			if(null != cur_primary) {
 				add(cur_primary);
