@@ -764,13 +764,15 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<String> buildRenameRunSQL(Table table)  throws Exception{
 		StringBuilder builder = new StringBuilder();
+		List<String> sqls = new ArrayList();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
 		builder.append(" RENAME TO ");
 		//去掉catalog schema前缀
 		Table update = new Table(table.getUpdate().getName());
 		name(builder, update);
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1121,11 +1123,13 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Column column) throws Exception {
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
 		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getUpdate().getName());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**

@@ -1155,12 +1155,14 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Table table) throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("RENAME TABLE ");
 		name(builder, table);
 		builder.append(" TO ");
 		name(builder, table.getUpdate());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	/**
 	 * 修改表备注

@@ -5,9 +5,10 @@ import org.anyline.entity.metadata.JavaType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Column {
+public class Column implements Serializable {
 
     public static <T extends Column> List<String> names(LinkedHashMap<String, T> columns){
         List<String> names = new ArrayList<>();

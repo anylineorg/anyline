@@ -3,7 +3,9 @@ package org.anyline.entity.data;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 
-public enum DatabaseType {
+import java.io.Serializable;
+
+public enum DatabaseType  implements Serializable {
         AntDB			    ("AntDB"	    , KEY_CASE.SRC,""),
         Cassandra			("CASSANDRA"	, KEY_CASE.SRC,""),
         ClickHouse			( "CLICKHOUSE"	, KEY_CASE.SRC, "ru.yandex.clickhouse.ClickHouseDriver"),

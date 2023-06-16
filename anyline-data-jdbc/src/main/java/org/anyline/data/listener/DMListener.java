@@ -57,7 +57,7 @@ public interface DMListener {
      * 查询之前调用<br/>
      * 不满足查询条件的不会走到这一步(如必须参数未提供)
      * 只有确定执行查询时才会到这一步，到了这一步已经不能修改查询条件<br/>
-     * 要修改查询条件可以在afterCreateQuery实现
+     * 要修改查询条件可以在beforeBuildQuery实现
      * @param run sql
      * @param total 上一步合计的总行数
      */

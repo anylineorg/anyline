@@ -993,6 +993,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Table table) throws Exception {
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
@@ -1000,7 +1001,8 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		//去掉catalog schema前缀
 		Table update = new Table(table.getUpdate().getName());
 		name(builder, update);
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
@@ -1348,6 +1350,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<String> buildRenameRunSQL(Column column)  throws Exception{
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
@@ -1355,7 +1358,8 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TO ");
 		SQLUtil.delimiter(builder, column.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 
@@ -1388,8 +1392,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				String tmp_name = column.getName() + "_TMP_UPDATE_TYPE";
 
 				update.setName(tmp_name);
-				String rename = buildRenameRunSQL(column);
-				sqls.add(rename);
+				sqls.addAll(buildRenameRunSQL(column));
 
 				update.setName(uname);
 				sqls.addAll(buildAddRunSQL(update));
