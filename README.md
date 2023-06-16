@@ -22,7 +22,7 @@
 有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致，有问题请联系下面的QQ群(86020680)或微信    
 [<img src="http://alcms.oss-cn-shanghai.aliyuncs.com/anyline/img/ab/rhodilywys.jpg"/>](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)   
 没有QQ的再联系微信  
-<img src="http://cdn.anyline.org/img/user/zhv.jpg" width="90">
+<img src="http://cdn.anyline.org/img/user/alv.jpg" width="90">
 
 
 ## 简介
