@@ -146,7 +146,7 @@ public class ForeignKey extends Constraint implements Serializable {
     public ForeignKey clone(){
         ForeignKey copy = new ForeignKey();
 
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         copy.reference = this.reference.clone();
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();

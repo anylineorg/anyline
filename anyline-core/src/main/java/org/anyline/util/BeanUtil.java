@@ -3623,23 +3623,28 @@ public class BeanUtil {
 			}
 		}
 	}
-	public static void copyFieldValue(Object src, Object copy){
-		List<Field> fields = ClassUtil.getFields(src.getClass());
+	/**
+	 * 复制copy的属性值到to
+	 * @param to 赋值给to
+	 * @param copy copy
+	 */
+	public static void copyFieldValue(Object to, Object copy){
+		List<Field> fields = ClassUtil.getFields(to.getClass());
 		for(Field field:fields){
-			setFieldValue(src, field, getFieldValue(copy, field));
+			setFieldValue(to, field, getFieldValue(copy, field));
 		}
 	}
 	/**
-	 * 复制copy的属性值到src(copy属性值is not null的情况下生效)
-	 * @param src src
+	 * 复制copy的属性值到to(copy属性值is not null的情况下生效)
+	 * @param to 赋值给to
 	 * @param copy copy
 	 */
-	public static void copyFieldValueWithoutNull(Object src, Object copy){
-		List<Field> fields = ClassUtil.getFields(src.getClass());
+	public static void copyFieldValueWithoutNull(Object to, Object copy){
+		List<Field> fields = ClassUtil.getFields(to.getClass());
 		for(Field field:fields){
 			Object value = getFieldValue(copy, field);
 			if(null != value){
-				setFieldValue(src, field, value);
+				setFieldValue(to, field, value);
 			}
 		}
 	}

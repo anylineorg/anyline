@@ -128,7 +128,7 @@ public class MasterTable extends Table  implements Serializable {
 
     public MasterTable clone(){
         MasterTable copy = new MasterTable();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

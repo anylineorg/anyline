@@ -89,7 +89,7 @@ public class Parameter  implements Serializable {
 
     public Parameter clone(){
         Parameter copy = new Parameter();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
         return copy;
     }
 

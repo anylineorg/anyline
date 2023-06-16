@@ -120,7 +120,7 @@ public class Index extends Constraint  implements Serializable {
     }
     public Index clone(){
         Index copy = new Index();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

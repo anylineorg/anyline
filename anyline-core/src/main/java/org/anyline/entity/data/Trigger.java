@@ -219,7 +219,7 @@ public class Trigger  implements Serializable {
 
     public Trigger clone(){
         Trigger copy = new Trigger();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         copy.events.addAll(this.events);
 

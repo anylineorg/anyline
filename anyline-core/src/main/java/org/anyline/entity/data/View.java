@@ -83,7 +83,7 @@ public class View extends Table implements Serializable {
 
     public View clone(){
         View copy = new View();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

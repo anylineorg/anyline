@@ -51,7 +51,7 @@ public class PartitionTable extends Table implements Serializable {
 
     public PartitionTable clone(){
         PartitionTable copy = new PartitionTable();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

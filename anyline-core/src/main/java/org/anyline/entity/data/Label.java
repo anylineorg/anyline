@@ -66,7 +66,7 @@ public class Label extends Table implements Serializable {
 
     public Label clone(){
         Label copy = new Label();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

@@ -1096,7 +1096,7 @@ public class Column implements Serializable {
     }
     public Column clone(){
         Column copy = new Column();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         copy.update = null;
         copy.setmap = false;

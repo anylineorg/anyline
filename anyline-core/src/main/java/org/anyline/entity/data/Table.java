@@ -85,7 +85,7 @@ public class Table   implements Serializable {
     }
     public Table clone(){
         Table copy = new Table();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

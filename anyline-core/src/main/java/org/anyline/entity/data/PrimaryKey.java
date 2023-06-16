@@ -50,7 +50,7 @@ public class PrimaryKey extends Index implements Serializable {
 
     public PrimaryKey clone(){
         PrimaryKey copy = new PrimaryKey();
-        BeanUtil.copyFieldValueNvl(copy, this);
+        BeanUtil.copyFieldValue(copy, this);
 
         LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){

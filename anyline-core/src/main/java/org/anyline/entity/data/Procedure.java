@@ -276,7 +276,7 @@ public class Procedure  implements Serializable {
 
 	public Procedure clone(){
 		Procedure copy = new Procedure();
-		BeanUtil.copyFieldValueNvl(copy, this);
+		BeanUtil.copyFieldValue(copy, this);
 
 		List<Parameter> parameters = new ArrayList<>();
 		for(Parameter parameter:this.parameters){
