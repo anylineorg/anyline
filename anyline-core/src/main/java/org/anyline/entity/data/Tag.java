@@ -3,7 +3,9 @@ package org.anyline.entity.data;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
-public class Tag extends Column{
+import java.io.Serializable;
+
+public class Tag extends Column implements Serializable {
     protected String keyword = "TAG"            ;
     protected Tag update = null;
 

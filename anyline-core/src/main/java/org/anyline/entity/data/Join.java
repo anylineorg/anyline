@@ -1,6 +1,8 @@
 package org.anyline.entity.data;
 
-public class Join {
+import java.io.Serializable;
+
+public class Join  implements Serializable {
     public static enum TYPE{
         INNER               {public String getCode(){return "INNER JOIN";} 	public String getName(){return "内连接";}},
         LEFT				{public String getCode(){return "LEFT JOIN";} 	public String getName(){return "左连接";}},

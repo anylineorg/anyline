@@ -3,9 +3,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class PartitionTable extends Table{
+public class PartitionTable extends Table implements Serializable {
     protected String masterName;
     protected MasterTable master;
     protected PartitionTable update;

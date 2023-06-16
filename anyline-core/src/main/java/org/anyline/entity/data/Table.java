@@ -5,12 +5,13 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class Table  {
+public class Table   implements Serializable {
     public static <T extends Table> List<String> names(LinkedHashMap<String, T> tables) {
         List<String> names = new ArrayList<>();
         for (T table : tables.values()) {

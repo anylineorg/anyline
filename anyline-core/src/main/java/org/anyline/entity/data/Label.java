@@ -2,9 +2,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class Label extends Table   {
+public class Label extends Table implements Serializable {
     protected String keyword = "Label"            ;
     protected Label update;
 

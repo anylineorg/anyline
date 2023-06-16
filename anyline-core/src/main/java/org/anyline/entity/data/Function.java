@@ -2,10 +2,11 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Function {
+public class Function  implements Serializable {
     private String catalog;
     private String schema;
     private String name;

@@ -2,9 +2,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class PrimaryKey extends Index{
+public class PrimaryKey extends Index implements Serializable {
     private PrimaryKey update;
     public boolean isPrimary(){
         return true;

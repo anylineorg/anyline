@@ -2,11 +2,12 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class Trigger  {
+public class Trigger  implements Serializable {
     public enum EVENT{
         INSERT,DELETE,UPDATE;
     }

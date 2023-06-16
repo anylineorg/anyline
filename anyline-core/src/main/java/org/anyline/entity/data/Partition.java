@@ -1,8 +1,9 @@
 package org.anyline.entity.data;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class Partition {
+public class Partition  implements Serializable {
     private String type;
     private LinkedHashMap<String, Column> columns;
 

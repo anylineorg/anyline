@@ -3,9 +3,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class ForeignKey extends Constraint{
+public class ForeignKey extends Constraint implements Serializable {
     public boolean isForeign(){
         return true;
     }

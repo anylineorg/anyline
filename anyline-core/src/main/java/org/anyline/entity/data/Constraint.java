@@ -2,9 +2,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class Constraint {
+public class Constraint  implements Serializable {
 
     protected String catalog      ;
     protected String schema       ;

@@ -4,9 +4,10 @@ package org.anyline.entity.data;
 import org.anyline.entity.DataRow;
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class MasterTable extends Table {
+public class MasterTable extends Table  implements Serializable {
     protected String keyword = "STABLE"             ;
     private LinkedHashMap<String,Table> partitions  ; // 分区表
     protected MasterTable update;

@@ -2,9 +2,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class Index extends Constraint {
+public class Index extends Constraint  implements Serializable {
     protected boolean primary     ; // 是否是主键
     protected boolean cluster     ; // 是否聚簇索引
     protected boolean fulltext    ;

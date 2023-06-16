@@ -3,7 +3,9 @@ package org.anyline.entity.data;
 import org.anyline.entity.metadata.ColumnType;
 import org.anyline.util.BeanUtil;
 
-public class Parameter {
+import java.io.Serializable;
+
+public class Parameter  implements Serializable {
     private boolean input;
     private boolean output;
     private String name;

@@ -2,9 +2,10 @@ package org.anyline.entity.data;
 
 import org.anyline.util.BeanUtil;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class View extends Table  {
+public class View extends Table implements Serializable {
     protected String keyword = "VIEW"            ;
     protected View update;
     protected String definition;
