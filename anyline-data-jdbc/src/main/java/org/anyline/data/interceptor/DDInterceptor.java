@@ -29,6 +29,14 @@ public interface DDInterceptor  extends JDBCInterceptor{
     default List<ACTION> actions(){return null;}
     default ACTION action(){return null;}
 
-    int before(Runtime runtime, Object entity);
+    /**
+     * 可触发的类型 Table.class Column.class
+     * @return List
+     */
+    List<Class> types();
+    Class type();
+    int prepare(Runtime runtime, ACTION action, Object entity);
+    int before(Runtime runtime, ACTION action, Object entity);
+    int after(Runtime runtime, ACTION action, Object entity, boolean result);
 
 }
