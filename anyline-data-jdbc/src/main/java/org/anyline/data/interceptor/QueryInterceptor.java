@@ -7,22 +7,9 @@ import org.anyline.data.run.Run;
 import org.anyline.entity.PageNavi;
 
 public interface QueryInterceptor extends DMInterceptor{
+
     /**
-     * prepare1
-     * prepare2
-     * prepare3
-     *
-     * before1
-     * before2
-     * before3
-     *
-     * after1
-     * after2
-     * after3
-     *
-     */
-    /**
-     * 创建查询(删除)SQL之前，可以在这一步修改查询条件
+     * 创建查询SQL之前，可以在这一步修改查询条件
      * @param runtime datasource/adapter/jdbctemplate
      * @param prepare 有或SQL或SQL.id
      * @param configs 查询条件
