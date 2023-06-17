@@ -1,7 +1,7 @@
 package org.anyline.proxy;
 
 import org.anyline.dao.AnylineDao;
-import org.anyline.dao.init.springjdbc.DefaultDao;
+import org.anyline.dao.init.springjdbc.FixDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
@@ -14,7 +14,7 @@ import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.*;
 import org.anyline.service.AnylineService;
-import org.anyline.service.init.DefaultService;
+import org.anyline.service.init.FixService;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1381,10 +1381,10 @@ public class ServiceProxy {
     public static AnylineService temporary(String key, DataSource ds, JDBCAdapter adapter){
         JdbcTemplate template = new JdbcTemplate(ds);
         JDBCRuntime runtime = new JDBCRuntime(key, template, adapter);
-        AnylineDao dao = new DefaultDao();
+        AnylineDao dao = new FixDao();
         //dao.setDatasource(key);
         dao.setRuntime(runtime);
-        AnylineService service = new DefaultService();
+        AnylineService service = new FixService();
         //service.setDataSource(key);
         service.setDao(dao);
         return service;
