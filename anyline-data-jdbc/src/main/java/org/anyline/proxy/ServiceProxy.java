@@ -1,6 +1,10 @@
 package org.anyline.proxy;
 
+import org.anyline.dao.AnylineDao;
+import org.anyline.dao.init.springjdbc.DefaultDao;
+import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -10,13 +14,16 @@ import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.data.*;
 import org.anyline.service.AnylineService;
+import org.anyline.service.init.DefaultService;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1363,4 +1370,28 @@ public class ServiceProxy {
             return service.ddl().drop(constraint);
         }
     }
+
+    /**
+     * 临时数据源
+     * @param key 数据源标识,输出日志时标记当前数据源
+     * @param ds 数据源
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @return service
+     */
+    public static AnylineService temporary(String key, DataSource ds, JDBCAdapter adapter){
+        JdbcTemplate template = new JdbcTemplate(ds);
+        JDBCRuntime runtime = new JDBCRuntime(key, template, adapter);
+        AnylineDao dao = new DefaultDao();
+        //dao.setDatasource(key);
+        dao.setRuntime(runtime);
+        AnylineService service = new DefaultService();
+        //service.setDataSource(key);
+        service.setDao(dao);
+        return service;
+    }
+
+    public static AnylineService temporary(DataSource ds){
+        return temporary("temporary",ds, null);
+    }
+
 }

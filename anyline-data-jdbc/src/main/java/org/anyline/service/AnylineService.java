@@ -19,6 +19,7 @@
 
 package org.anyline.service;
 
+import org.anyline.dao.AnylineDao;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.DataRow;
@@ -34,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface AnylineService<E>{
-
-
 	/**
 	 * 切换数据源
 	 * @param datasource 数据源
@@ -47,6 +46,8 @@ public interface AnylineService<E>{
 	AnylineService setDefaultDataSource();
 	AnylineService recoverDataSource();
 	String getDataSource();
+	AnylineService setDao(AnylineDao dao);
+
 
 	/* *****************************************************************************************************************
 	 *
@@ -1284,6 +1285,6 @@ public interface AnylineService<E>{
 		boolean alter(Function function) throws Exception;
 		boolean drop(Function function) throws Exception;
 		boolean rename(Function origin, String name) throws Exception;
-
 	}
+
 }

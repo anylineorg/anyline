@@ -1,6 +1,5 @@
 package org.anyline.data.jdbc.ds;
 
-import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
@@ -38,14 +37,16 @@ public class EnvironmentListener implements ApplicationContextAware {
                 // 多个数据源
                 try {
                     //返回bean id
-                    String ds = DataSourceUtil.buildDataSource(prefix, "spring.datasource." + prefix, env);
+                    String ds = DataSourceHolder.reg(prefix, "spring.datasource." + prefix, env);
                     if(null != ds) {
-                        //注册事务管理器
+                      /*  //注册事务管理器
                         DataSourceHolder.regTransactionManager(prefix, ds);
                         //记录数据源列表
                         DataSourceHolder.reg(prefix);
                         //注册运行环境
                         RuntimeHolder.reg(prefix, ds);
+                        //以上几行在reg内部已经执行了
+                        */
                         multiple = true;
                         log.info("[创建数据源][prefix:{}]", prefix);
                     }

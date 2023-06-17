@@ -81,7 +81,6 @@ public class RuntimeHolder {
         //daoBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         daoBuilder.addPropertyValue("runtime", runtime);
         daoBuilder.addPropertyValue("datasource", datasource);
-
         //daoBuilder.addPropertyValue("listener", SpringContextUtil.getBean(DMListener.class));
         //daoBuilder.addAutowiredProperty("listener");
         daoBuilder.setLazyInit(true);

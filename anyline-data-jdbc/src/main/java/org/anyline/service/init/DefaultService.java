@@ -75,8 +75,9 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao;
     }
 
-    public void setDao(AnylineDao dao) {
+    public AnylineService setDao(AnylineDao dao) {
         this.dao = dao;
+        return this;
     }
 
     @Override 
