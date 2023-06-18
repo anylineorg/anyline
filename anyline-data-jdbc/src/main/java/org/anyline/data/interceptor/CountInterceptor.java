@@ -27,10 +27,10 @@ public interface CountInterceptor extends DMInterceptor{
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
-     * @param exe 查询SQL是否执行过
+     * @param success 查询SQL是否执行成功
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @param millis 耗时
      * @return RESULT
      */
-    SWITCH after(JDBCRuntime runtime, Run run, boolean exe, int result, long millis);
+    SWITCH after(JDBCRuntime runtime, Run run, boolean success, int result, long millis);
 }
