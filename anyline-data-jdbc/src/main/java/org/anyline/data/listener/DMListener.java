@@ -204,6 +204,7 @@ public interface DMListener {
      * @param procedure 存储过程
      * @return 是否执行 如果返回false装不执行存储过程
      */
+    public boolean beforeBuildExecute(Procedure procedure);
     public boolean beforeExecute(Procedure procedure);
 
     /**
