@@ -1434,11 +1434,25 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName(true)));
 			column.setName(name);
 			if(null == column.getPrecision()) {
-				column.setPosition(row.getInt("ORDINAL_POSITION", 0));
+				column.setPosition(row.getInt("ORDINAL_POSITION", null));
 			}
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
 			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
-			column.setDefaultValue(BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue()));
+			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue())+"";
+			if(BasicUtil.isNotEmpty(def)) {
+				while(def.startsWith("(") && def.endsWith(")")){
+					def = def.substring(1, def.length()-1);
+				}
+				column.setDefaultValue(def);
+			}
+			if(-1 == column.isAutoIncrement()){
+				column.setAutoIncrement(row.getBoolean("IS_IDENTITY", null));
+			}
+			if(-1 == column.isAutoIncrement()){
+				column.setAutoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
+			}
+
+
 			//非空
 			if(-1 == column.isNullable()) {
 				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE"));
