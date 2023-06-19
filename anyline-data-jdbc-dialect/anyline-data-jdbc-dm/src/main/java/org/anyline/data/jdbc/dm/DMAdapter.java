@@ -55,6 +55,21 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		for (DMColumnTypeAlias alias : DMColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
+
+		for(DMWriter writer: DMWriter.values()){
+			Object[] supports = writer.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					writers.put(support, writer.writer());
+			}
+		}
+		for(DMReader reader: DMReader.values()){
+			Object[] supports = reader.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					readers.put(support, reader.reader());
+			}
+		}
 	}
 
 	/* *****************************************************************************************************************

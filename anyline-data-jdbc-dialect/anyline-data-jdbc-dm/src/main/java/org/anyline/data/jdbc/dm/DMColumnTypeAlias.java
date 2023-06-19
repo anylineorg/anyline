@@ -48,7 +48,7 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     LINE                    (StandardColumnType.ILLEGAL               ), //mysql,pg
     LONG                    (StandardColumnType.LONG                  ), //       ,oracle
     LONGBLOB                (StandardColumnType.BLOB                  ), //mysql
-    LONGTEXT                (StandardColumnType.CLOB                  ), //mysql
+    LONGTEXT                (StandardColumnType.TEXT                  ), //mysql
     LSEG                    (StandardColumnType.ILLEGAL               ), //     ,pg
     MACADDR                 (StandardColumnType.ILLEGAL               ), //     ,pg
     MONEY                   (StandardColumnType.NUMBER                ), //     ,pg,     ,mssql
@@ -61,7 +61,7 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     PATH                    (StandardColumnType.ILLEGAL               ), //     ,pg
     MEDIUMBLOB              (StandardColumnType.BLOB                  ), //mysql,
     MEDIUMINT               (StandardColumnType.NUMBER                ), //mysql,
-    MEDIUMTEXT              (StandardColumnType.CLOB                  ), //mysql,
+    MEDIUMTEXT              (StandardColumnType.TEXT                  ), //mysql,
     MULTILINESTRING         (StandardColumnType.ILLEGAL               ), //mysql,
     MULTIPOINT              (StandardColumnType.ILLEGAL               ), //mysql,
     MULTIPOLYGON            (StandardColumnType.ILLEGAL               ), //mysql,
@@ -82,7 +82,7 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     SMALLSERIAL             (StandardColumnType.NUMBER                ), //     ,pg,
     SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //              ,mssql
     SYSNAME                 (StandardColumnType.ILLEGAL               ), //              ,mssql
-    TEXT                    (StandardColumnType.CLOB                  ), //mysql,pg,     ,mssql,sqlite
+    TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg,     ,mssql,sqlite
     TIME                    (StandardColumnType.TIMESTAMP             ), //mysql,pg,     ,mssql
     TIMEZ                   (StandardColumnType.TIMESTAMP             ), //     ,pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql,pg,oracle,mssql
@@ -97,7 +97,7 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     VARBIT                  (StandardColumnType.BLOB                  ), //     ,pg
     TINYBLOB                (StandardColumnType.BLOB                  ), //mysql,
     TINYINT                 (StandardColumnType.NUMBER                ), //mysql         ,mssql
-    TINYTEXT                (StandardColumnType.CLOB                  ), //mysql,
+    TINYTEXT                (StandardColumnType.TEXT                  ), //mysql,
     VARBINARY               (StandardColumnType.BLOB                  ), //mysql         ,mssql
     VARCHAR                 (StandardColumnType.VARCHAR               ), //mysql,pg,oracle,mssql
     VARCHAR2                (StandardColumnType.VARCHAR2               ), //        ,oracle,
