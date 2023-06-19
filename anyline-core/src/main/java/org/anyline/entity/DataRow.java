@@ -1026,14 +1026,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return getContainer().getPrimaryKeys();
         }
 
-        /*本身与容器都没有主键 返回默认主键*/
+       /* *//*本身与容器都没有主键 返回默认主键*//*
         List<String> defaultPrimary = new ArrayList<>();
         String configKey = ConfigTable.DEFAULT_PRIMARY_KEY;
         if (null != configKey && !configKey.trim().equals("")) {
             defaultPrimary.add(configKey);
         }
+         return defaultPrimary;*/
+        return null;
 
-        return defaultPrimary;
     }
 
     public String getPrimaryKey() {
