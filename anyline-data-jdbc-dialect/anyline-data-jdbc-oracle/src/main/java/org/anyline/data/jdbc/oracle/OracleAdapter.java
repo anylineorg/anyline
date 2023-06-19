@@ -59,6 +59,21 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		for (OracleColumnTypeAlias alias : OracleColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
+
+		for(OracleWriter writer: OracleWriter.values()){
+			Object[] supports = writer.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					writers.put(support, writer.writer());
+			}
+		}
+		for(OracleReader reader: OracleReader.values()){
+			Object[] supports = reader.supports();
+			if(null != supports) {
+				for(Object support:supports)
+					readers.put(support, reader.reader());
+			}
+		}
 		types.put("BFILE", new AbstractColumnType("BFILE", DatabaseType.ORACLE, oracle.sql.BFILE.class, true, true));
 		types.put("ROWID", new AbstractColumnType("ROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
 		types.put("UROWID", new AbstractColumnType("UROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
