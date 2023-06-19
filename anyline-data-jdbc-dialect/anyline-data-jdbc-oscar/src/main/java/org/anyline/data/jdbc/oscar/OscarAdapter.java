@@ -364,7 +364,12 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			}
 		}else{
 			//单行的可以返回序列号
-			pks = new String[]{getPrimayKey(data)};
+			String pk = getPrimayKey(data);
+			if(null != pk){
+				pks = new String[]{pk};
+			}else{
+				pks = null;
+			}
 			cnt = super.insert(template, random, data, sql, values, pks);
 		}
 		return cnt;
