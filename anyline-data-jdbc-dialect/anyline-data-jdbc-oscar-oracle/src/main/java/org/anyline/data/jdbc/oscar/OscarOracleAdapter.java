@@ -51,7 +51,6 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		super();
 		delimiterFr = "";
 		delimiterTo = "";
-
 		for (OscarOracleColumnTypeAlias alias : OscarOracleColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
