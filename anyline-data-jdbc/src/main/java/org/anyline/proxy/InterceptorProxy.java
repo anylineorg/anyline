@@ -1,6 +1,7 @@
 package org.anyline.proxy;
 
 import org.anyline.data.interceptor.*;
+import org.anyline.data.interceptor.DDInterceptor.ACTION;
 import org.anyline.data.interceptor.JDBCInterceptor.SWITCH;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -12,10 +13,7 @@ import org.anyline.entity.data.Procedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("anyline.interceptor.proxy")
 public class InterceptorProxy {
@@ -97,6 +95,11 @@ public class InterceptorProxy {
         interceptors.add(interceptor);
     }
 
+    /*******************************************************************************************************************
+     *
+     *                                  DML
+     *
+     * ****************************************************************************************************************/
 
     public static SWITCH prepareQuery(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONINUE;
@@ -271,11 +274,33 @@ public class InterceptorProxy {
         return swt;
     }
 
-
-    public static SWITCH prepareDelete(JDBCRuntime runtime, String dest, Object data, boolean checkPrimary, List<String> columns){
+    public static SWITCH prepareDelete(JDBCRuntime runtime, String table, String key, Collection values){
         SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.prepare(runtime, dest, data,checkPrimary,  columns);
+            swt = interceptor.prepare(runtime,table, key, values);
+            if(swt == SWITCH.SKIP){
+                //跳过后续的 prepare
+                return swt;
+            }
+        }
+        return swt;
+    }
+    public static SWITCH prepareDelete(JDBCRuntime runtime, String table, ConfigStore configs, String ... conditions){
+        SWITCH swt = SWITCH.CONINUE;
+        for(DeleteInterceptor interceptor:deleteInterceptors){
+            swt = interceptor.prepare(runtime,table, configs, conditions);
+            if(swt == SWITCH.SKIP){
+                //跳过后续的 prepare
+                return swt;
+            }
+        }
+        return swt;
+    }
+
+    public static SWITCH prepareDelete(JDBCRuntime runtime, String dest, Object obj, String... columns){
+        SWITCH swt = SWITCH.CONINUE;
+        for(DeleteInterceptor interceptor:deleteInterceptors){
+            swt = interceptor.prepare(runtime, dest, obj, columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -370,6 +395,55 @@ public class InterceptorProxy {
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
+            }
+        }
+        return swt;
+    }
+    /*******************************************************************************************************************
+     *
+     *                                  DDL
+     *
+     * ****************************************************************************************************************/
+
+    public static SWITCH prepare(JDBCRuntime runtime, String random, ACTION action, Object metadata){
+        SWITCH swt = SWITCH.CONINUE;
+        List<DDInterceptor> interceptors = dds.get(action);
+        if(null != interceptors){
+            for(DDInterceptor interceptor:interceptors){
+                swt = interceptor.prepare(runtime, random, action, metadata);
+                if(swt == SWITCH.SKIP){
+                    //跳过后续的 after
+                    return swt;
+                }
+            }
+        }
+        return swt;
+    }
+
+    public static SWITCH before(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<String> sqls){
+        SWITCH swt = SWITCH.CONINUE;
+        List<DDInterceptor> interceptors = dds.get(action);
+        if(null != interceptors){
+            for(DDInterceptor interceptor:interceptors){
+                swt = interceptor.before(runtime, random, action, metadata, sqls);
+                if(swt == SWITCH.SKIP){
+                    //跳过后续的 after
+                    return swt;
+                }
+            }
+        }
+        return swt;
+    }
+    public static SWITCH after(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<String> sqls, boolean result, long millis){
+        SWITCH swt = SWITCH.CONINUE;
+        List<DDInterceptor> interceptors = dds.get(action);
+        if(null != interceptors){
+            for(DDInterceptor interceptor:interceptors){
+                swt = interceptor.after(runtime, random, action, metadata, sqls, result, millis);
+                if(swt == SWITCH.SKIP){
+                    //跳过后续的 after
+                    return swt;
+                }
             }
         }
         return swt;

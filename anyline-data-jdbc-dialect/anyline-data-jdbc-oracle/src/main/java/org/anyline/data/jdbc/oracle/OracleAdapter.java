@@ -1540,7 +1540,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			//format(builder, def);
 			builder.append(def);
 		}else{
-			builder.append("NULL");
+			builder.append(" NULL");
 		}
 		return builder.toString();
 	}
@@ -1567,7 +1567,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			if(uNullable == 0){
 				builder.append(" NOT ");
 			}
-			builder.append("NULL");
+			builder.append(" NULL");
 			column.setNullable(uNullable);
 			return builder.toString();
 		}

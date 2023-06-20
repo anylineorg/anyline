@@ -1457,7 +1457,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			//format(builder, def);
 			builder.append(def);
 		}else{
-			builder.append("NULL");
+			builder.append(" NULL");
 		}
 		return builder.toString();
 	}
@@ -1484,7 +1484,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			if(uNullable == 0){
 				builder.append(" NOT ");
 			}
-			builder.append("NULL");
+			builder.append(" NULL");
 			column.setNullable(uNullable);
 			return builder.toString();
 		}
