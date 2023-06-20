@@ -122,8 +122,10 @@ public class Table   implements Serializable {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
-        update.update = null;
-        update.origin = this;
+        if(null != update) {
+            update.update = null;
+            update.origin = this;
+        }
         return this;
     }
 

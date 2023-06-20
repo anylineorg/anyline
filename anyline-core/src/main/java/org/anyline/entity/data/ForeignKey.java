@@ -65,7 +65,9 @@ public class ForeignKey extends Constraint implements Serializable {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
-        update.update = null;
+        if(null != update) {
+            update.update = null;
+        }
         return this;
     }
 
