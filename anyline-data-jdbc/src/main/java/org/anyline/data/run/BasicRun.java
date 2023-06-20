@@ -28,7 +28,6 @@ import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.entity.*;
-import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
@@ -67,7 +66,6 @@ public abstract class BasicRun implements Run {
 	protected JDBCAdapter adapter;
 	protected String delimiterFr;
 	protected String delimiterTo;
-	protected static AnylineService service;
 	 
 	public void setAdapter(JDBCAdapter adapter){
 		this.adapter = adapter; 
