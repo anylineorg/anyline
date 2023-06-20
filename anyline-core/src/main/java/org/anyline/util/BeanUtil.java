@@ -3614,6 +3614,9 @@ public class BeanUtil {
 	 * @param copy copy
 	 */
 	public static void copyFieldValueNvl(Object src, Object copy){
+		if(null == src || null == copy){
+			return;
+		}
 		List<Field> fields = ClassUtil.getFields(src.getClass());
 		for(Field field:fields){
 			Object value = getFieldValue(src, field);
