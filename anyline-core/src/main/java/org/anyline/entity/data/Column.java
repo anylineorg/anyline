@@ -91,7 +91,7 @@ public class Column implements Serializable {
 
     protected boolean drop = false                ;
     protected String action = null                ; //ddl命令 add drop alter
-
+    protected Column origin                       ;
     protected Column update                       ;
     protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
     protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
@@ -142,6 +142,7 @@ public class Column implements Serializable {
         this.setmap = setmap;
         this.getmap = getmap;
         update.update = null;
+        update.origin = this;
         return this;
     }
 
@@ -1044,6 +1045,14 @@ public class Column implements Serializable {
         return this;
     }
 
+    public Column getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Column origin) {
+        this.origin = origin;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -1097,7 +1106,7 @@ public class Column implements Serializable {
     public Column clone(){
         Column copy = new Column();
         BeanUtil.copyFieldValue(copy, this);
-
+        copy.origin = this;
         copy.update = null;
         copy.setmap = false;
         copy.getmap = false;
