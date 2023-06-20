@@ -137,12 +137,16 @@ public class Column implements Serializable {
     }
 
     public Column setUpdate(Column update, boolean setmap, boolean getmap) {
-        BeanUtil.copyFieldValueNvl(update, this);
+        if(null != update) {
+            BeanUtil.copyFieldValueNvl(update, this);
+        }
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
-        update.update = null;
-        update.origin = this;
+        if(null != update) {
+            update.update = null;
+            update.origin = this;
+        }
         return this;
     }
 
