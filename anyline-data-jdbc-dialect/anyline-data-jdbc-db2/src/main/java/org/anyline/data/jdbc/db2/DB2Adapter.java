@@ -540,7 +540,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(Table table);
-	 * String buildCreateCommentRunSQL(Table table);
+	 * String buildAddCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns);
 	 * List<String> buildRenameRunSQL(Table table);
@@ -569,8 +569,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Table table) throws Exception {
-		return super.buildCreateCommentRunSQL(table);
+	public String buildAddCommentRunSQL(Table table) throws Exception {
+		return super.buildAddCommentRunSQL(table);
 	}
 	@Override
 	public List<String> buildAlterRunSQL(Table table) throws Exception{
@@ -674,7 +674,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(View view);
-	 * String buildCreateCommentRunSQL(View view);
+	 * String buildAddCommentRunSQL(View view);
 	 * List<String> buildAlterRunSQL(View view);
 	 * List<String> buildRenameRunSQL(View view);
 	 * String buildChangeCommentRunSQL(View view);
@@ -692,8 +692,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	}
 
 	@Override
-	public String buildCreateCommentRunSQL(View view) throws Exception{
-		return super.buildCreateCommentRunSQL(view);
+	public String buildAddCommentRunSQL(View view) throws Exception{
+		return super.buildAddCommentRunSQL(view);
 	}
 
 
@@ -753,7 +753,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(MasterTable master);
-	 * String buildCreateCommentRunSQL(MasterTable table);
+	 * String buildAddCommentRunSQL(MasterTable table);
 	 * List<String> buildAlterRunSQL(MasterTable master);
 	 * String buildDropRunSQL(MasterTable master);
 	 * List<String> buildRenameRunSQL(MasterTable master);
@@ -836,7 +836,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
 	 * String buildChangeCommentRunSQL(Column column)
-	 * String buildCreateCommentRunSQL(Column column)
+	 * String buildAddCommentRunSQL(Column column)
 	 * StringBuilder define(StringBuilder builder, Column column)
 	 * StringBuilder type(StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(Column column);
@@ -956,7 +956,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Column column) throws Exception {
+	public String buildAddCommentRunSQL(Column column) throws Exception {
 		return buildChangeCommentRunSQL(column);
 	}
 	/**
@@ -974,6 +974,15 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 
 
 
+	/**
+	 * 取消自增
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildDropAutoIncrement(Column column) throws Exception{
+		return super.buildDropAutoIncrement(column);
+	}
 	/**
 	 * 定义列
 	 * @param builder builder

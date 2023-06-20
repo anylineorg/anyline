@@ -922,7 +922,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildCreateCommentRunSQL(Table table) throws Exception;
+	String buildAddCommentRunSQL(Table table) throws Exception;
 
 	/**
 	 * 修改表
@@ -1024,7 +1024,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildCreateCommentRunSQL(View view) throws Exception;
+	String buildAddCommentRunSQL(View view) throws Exception;
 
 	/**
 	 * 修改视图
@@ -1093,7 +1093,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildCreateCommentRunSQL(MasterTable table) throws Exception;
+	String buildAddCommentRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表
@@ -1146,7 +1146,7 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildCreateCommentRunSQL(PartitionTable table) throws Exception;
+	String buildAddCommentRunSQL(PartitionTable table) throws Exception;
 	/**
 	 * 修改分区表
 	 * @param table 表
@@ -1279,7 +1279,17 @@ public interface JDBCAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	String buildCreateCommentRunSQL(Column column) throws Exception;
+	String buildAddCommentRunSQL(Column column) throws Exception;
+
+
+	/**
+	 * 取消自增
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	List<String> buildDropAutoIncrement(Column column) throws Exception;
+
 	/**
 	 * 定义列
 	 * @param builder builder

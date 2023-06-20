@@ -114,6 +114,7 @@ public class SQLAdapterUtil {
 			adapter = adapters.get(DatabaseType.MYSQL.name());
 		}else if(support(DatabaseType.MSSQL) && (name.contains("mssql") || name.contains("sqlserver"))){
 			if(null != version ){
+				version = version.split("\\.")[0];
 				double v = BasicUtil.parseDouble(version, 0d);
 				String key = null;
 				if(v >= 9.0){
@@ -127,10 +128,13 @@ public class SQLAdapterUtil {
 				adapter =  adapters.get(DatabaseType.MSSQL.name()+"_2005");
 			}
 		}else if(support(DatabaseType.ORACLE) && name.contains("oracle")){
+			/*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
 			if(null != version ){
 				version = RegularUtil.cut(version, "release","-");
-				if(null == version){
-					version = version.trim();
+				if(null != version){
+					//11.2.0.1.0
+					version = version.split("\\.")[0];
 				}
 				double v = BasicUtil.parseDouble(version, 0d);
 				String key = null;

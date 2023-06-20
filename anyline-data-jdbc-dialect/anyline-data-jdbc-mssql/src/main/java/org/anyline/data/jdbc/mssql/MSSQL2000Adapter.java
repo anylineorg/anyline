@@ -216,7 +216,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public String buildCreateCommentRunSQL(Table table) throws Exception {
+    public String buildAddCommentRunSQL(Table table) throws Exception {
         String comment = table.getComment();
         if(BasicUtil.isEmpty(comment)){
             return null;
@@ -257,7 +257,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public String buildCreateCommentRunSQL(Column column) throws Exception {
+    public String buildAddCommentRunSQL(Column column) throws Exception {
         String comment = column.getComment();
         if(BasicUtil.isEmpty(comment)){
             return null;

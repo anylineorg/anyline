@@ -1433,7 +1433,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			column.setTable(table);
 			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName(true)));
 			column.setName(name);
-			if(null == column.getPrecision()) {
+			if(null == column.getPosition()) {
 				column.setPosition(row.getInt("ORDINAL_POSITION", null));
 			}
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
@@ -1451,6 +1451,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(-1 == column.isAutoIncrement()){
 				column.setAutoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
 			}
+			if(-1 == column.isAutoIncrement()){
+				if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
+					column.setAutoIncrement(true);
+				}
+			}
+
 
 
 			//非空
@@ -2250,7 +2256,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(Table table);
-	 * String buildCreateCommentRunSQL(Table table);
+	 * String buildAddCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns);
      * List<String> buildRenameRunSQL(Table table);
@@ -2296,13 +2302,13 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		comment(builder, table);
 		list.add(builder.toString());
-		String tableComment = buildCreateCommentRunSQL(table);
+		String tableComment = buildAddCommentRunSQL(table);
 		if(null != tableComment) {
 			list.add(tableComment);
 		}
 		if(null != columns){
 			for(Column column:columns){
-				String columnComment = buildCreateCommentRunSQL(column);
+				String columnComment = buildAddCommentRunSQL(column);
 				if(null != columnComment){
 					list.add(columnComment);
 				}
@@ -2323,7 +2329,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 	@Override
-	 public String buildCreateCommentRunSQL(Table table) throws Exception{
+	 public String buildAddCommentRunSQL(Table table) throws Exception{
 		return null;
 	 }
 
@@ -2477,7 +2483,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(View view);
-	 * String buildCreateCommentRunSQL(View view);
+	 * String buildAddCommentRunSQL(View view);
 	 * List<String> buildAlterRunSQL(View view);
 	 * List<String> buildRenameRunSQL(View view);
 	 * String buildChangeCommentRunSQL(View view);
@@ -2497,12 +2503,12 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		name(builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
 		list.add(builder.toString());
-		list.add(buildCreateCommentRunSQL(view));
+		list.add(buildAddCommentRunSQL(view));
 		return list;
 	}
 
 	@Override
-	public String buildCreateCommentRunSQL(View view) throws Exception{
+	public String buildAddCommentRunSQL(View view) throws Exception{
 		return null;
 	}
 
@@ -2584,7 +2590,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(MasterTable table);
-	 * String buildCreateCommentRunSQL(MasterTable table);
+	 * String buildAddCommentRunSQL(MasterTable table);
 	 * List<String> buildAlterRunSQL(MasterTable table);
 	 * String buildDropRunSQL(MasterTable table);
 	 * List<String> buildRenameRunSQL(MasterTable table);
@@ -2603,7 +2609,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 	@Override
-	public String buildCreateCommentRunSQL(MasterTable table) throws Exception{
+	public String buildAddCommentRunSQL(MasterTable table) throws Exception{
 		return null;
 	}
 	@Override
@@ -2640,7 +2646,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(PartitionTable table);
-	 * String buildCreateCommentRunSQL(MasterTable table) throws Exception
+	 * String buildAddCommentRunSQL(MasterTable table) throws Exception
 	 * List<String> buildAlterRunSQL(PartitionTable table);
 	 * String buildDropRunSQL(PartitionTable table);
 	 * List<String> buildRenameRunSQL(PartitionTable table);
@@ -2660,7 +2666,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return null;
 	}
 	@Override
-	public String buildCreateCommentRunSQL(PartitionTable table) throws Exception{
+	public String buildAddCommentRunSQL(PartitionTable table) throws Exception{
 		return null;
 	}
 	@Override
@@ -2707,7 +2713,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
 	 * String buildChangeCommentRunSQL(Column column)
-	 * String buildCreateCommentRunSQL(Column column)
+	 * String buildAddCommentRunSQL(Column column)
 	 * StringBuilder define(StringBuilder builder, Column column)
 	 * StringBuilder type(StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(Column column);
@@ -2752,7 +2758,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		define(builder, column);
 		// }
 		sqls.add(builder.toString());
-		sqls.add(buildCreateCommentRunSQL(column));
+		sqls.add(buildAddCommentRunSQL(column));
 		return sqls;
 	}
 	@Override
@@ -2968,12 +2974,22 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String buildCreateCommentRunSQL(Column column) throws Exception{
+	public String buildAddCommentRunSQL(Column column) throws Exception{
 		return null;
 	}
 
-
-
+	/**
+	 * 取消自增
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildDropAutoIncrement(Column column) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> buildDropAutoIncrement(Column column)", 37));
+		}
+		return null;
+	}
 	/**
 	 * 定义列
 	 * @param builder builder
@@ -2993,7 +3009,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		//主键
 		primary(builder, column);
 		// 递增
-		increment(builder, column);
+		if(column.isPrimaryKey() == 1) {
+			increment(builder, column);
+		}
 		// 更新行事件
 		onupdate(builder, column);
 		// 备注

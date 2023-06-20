@@ -48,6 +48,7 @@ public class Table   implements Serializable {
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
+    protected Table origin;
     protected Table update;
     protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog,schema,name)
     protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了catalog,schema,name)
@@ -93,7 +94,7 @@ public class Table   implements Serializable {
             cols.put(col.getName().toUpperCase(), col);
         }
         copy.columns = cols;
-
+        copy.origin = this;
         copy.update = null;
         copy.setmap = false;
         copy.getmap = false;
@@ -108,6 +109,7 @@ public class Table   implements Serializable {
         this.getmap = getmap;
         update = clone();
         update.update = null;
+        update.origin = this;
         return update;
     }
 
@@ -121,6 +123,7 @@ public class Table   implements Serializable {
         this.setmap = setmap;
         this.getmap = getmap;
         update.update = null;
+        update.origin = this;
         return this;
     }
 
@@ -618,6 +621,14 @@ public class Table   implements Serializable {
         }
         this.checkSchemaTime = checkSchemaTime;
         return this;
+    }
+
+    public Table getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Table origin) {
+        this.origin = origin;
     }
 
     public String getKeyword() {

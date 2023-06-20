@@ -941,7 +941,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(Table table)
-	 * String buildCreateCommentRunSQL(Table table);
+	 * String buildAddCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
 	 * List<String> buildRenameRunSQL(Table table)
@@ -966,7 +966,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String buildCreateCommentRunSQL(Table table) throws Exception {
+	public String buildAddCommentRunSQL(Table table) throws Exception {
 		if(BasicUtil.isEmpty(table.getComment())){
 			return null;
 		}
@@ -1078,7 +1078,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	/**
 	 * 备注
-	 * 不支持在创建表时带备注，创建后单独添加 buildCreateCommentRunSQL(table)
+	 * 不支持在创建表时带备注，创建后单独添加 buildAddCommentRunSQL(table)
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder
@@ -1105,7 +1105,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(View view);
-	 * String buildCreateCommentRunSQL(View view);
+	 * String buildAddCommentRunSQL(View view);
 	 * List<String> buildAlterRunSQL(View view);
 	 * List<String> buildRenameRunSQL(View view);
 	 * String buildChangeCommentRunSQL(View view);
@@ -1123,8 +1123,8 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	@Override
-	public String buildCreateCommentRunSQL(View view) throws Exception{
-		return super.buildCreateCommentRunSQL(view);
+	public String buildAddCommentRunSQL(View view) throws Exception{
+		return super.buildAddCommentRunSQL(view);
 	}
 
 
@@ -1184,7 +1184,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(MasterTable table)
-	 * String buildCreateCommentRunSQL(MasterTable table)
+	 * String buildAddCommentRunSQL(MasterTable table)
 	 * List<String> buildAlterRunSQL(MasterTable table)
 	 * String buildDropRunSQL(MasterTable table)
 	 * List<String> buildRenameRunSQL(MasterTable table)
@@ -1267,7 +1267,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
 	 * String buildChangeCommentRunSQL(Column column)
-	 * String buildCreateCommentRunSQL(Column column)
+	 * String buildAddCommentRunSQL(Column column)
 	 * StringBuilder define(StringBuilder builder, Column column)
 	 * StringBuilder type(StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(Column column);
@@ -1313,7 +1313,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		define(builder, column);
 		//}
 		sqls.add(builder.toString());
-		sqls.add(buildCreateCommentRunSQL(column));
+		sqls.add(buildAddCommentRunSQL(column));
 		return sqls;
 	}
 
@@ -1495,7 +1495,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Column column) throws Exception {
+	public String buildAddCommentRunSQL(Column column) throws Exception {
 		return buildChangeCommentRunSQL(column);
 	}
 	/**
@@ -1525,6 +1525,15 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 
+	/**
+	 * 取消自增
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildDropAutoIncrement(Column column) throws Exception{
+		return super.buildDropAutoIncrement(column);
+	}
 	/**
 	 * 定义列
 	 * @param builder builder
