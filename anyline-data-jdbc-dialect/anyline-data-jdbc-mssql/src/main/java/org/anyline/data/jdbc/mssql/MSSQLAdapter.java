@@ -382,16 +382,23 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append("SELECT * FROM ");
 			name(builder, table);
 			builder.append(" WHERE 1=0");
+			sqls.add(builder.toString());
 		}else{
-			builder.append("SELECT A.NAME AS TABLE_NAME,C.NAME AS COLUMN_NAME, B.VALUE COLUMN_COMMENT , C.PRECISION, C.SCALE, C.COLLATION_NAME, C.IS_NULLABLE, C.MAX_LENGTH  \n");
-			builder.append("FROM SYSOBJECTS A \n");
-			builder.append("LEFT JOIN  SYS.COLUMNS C ON A.ID = C.OBJECT_ID\n");
-			builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = A.ID AND B.MINOR_ID = C.COLUMN_ID\n");
-			if (null != table) {
-				builder.append("WHERE A.NAME='").append(objectName(table.getName())).append("'");
+			builder.append("SELECT C.NAME AS COLUMN_NAME, B.VALUE COLUMN_COMMENT, OBJECT_NAME(c.OBJECT_ID) AS TABLE_NAME, C.*  \n");
+			builder.append("FROM SYS.COLUMNS C \n");
+			builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = c.OBJECT_ID AND B.MINOR_ID = C.COLUMN_ID\n");
+ 			if (null != table) {
+				builder.append("WHERE OBJECT_NAME(c.OBJECT_ID) ='").append(objectName(table.getName())).append("'");
 			}
+
+			sqls.add(builder.toString());
+			builder = new StringBuilder();
+			builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS \n");
+			if (null != table) {
+				builder.append("WHERE TABLE_NAME ='").append(objectName(table.getName())).append("'");
+			}
+			sqls.add(builder.toString());
 		}
-		sqls.add(builder.toString());
 		return sqls;
 	}
 
@@ -668,7 +675,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(Table table);
-	 * String buildCreateCommentRunSQL(Table table);
+	 * String buildAddCommentRunSQL(Table table);
 	 * List<String> buildAlterRunSQL(Table table)
 	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns);
 	 * List<String> buildRenameRunSQL(Table table);
@@ -735,7 +742,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Table table) throws Exception {
+	public String buildAddCommentRunSQL(Table table) throws Exception {
 		String comment = table.getComment();
 		if(BasicUtil.isEmpty(comment)){
 			return null;
@@ -757,7 +764,6 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-
 		builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
 		builder.append(",@value=N'").append(comment).append("'");
 		builder.append(",@level0type=N'SCHEMA'");
@@ -846,7 +852,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(View view);
-	 * String buildCreateCommentRunSQL(View view);
+	 * String buildAddCommentRunSQL(View view);
 	 * List<String> buildAlterRunSQL(View view);
 	 * List<String> buildRenameRunSQL(View view);
 	 * String buildChangeCommentRunSQL(View view);
@@ -864,8 +870,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	@Override
-	public String buildCreateCommentRunSQL(View view) throws Exception{
-		return super.buildCreateCommentRunSQL(view);
+	public String buildAddCommentRunSQL(View view) throws Exception{
+		return super.buildAddCommentRunSQL(view);
 	}
 
 
@@ -929,7 +935,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<String> buildCreateRunSQL(MasterTable table);
-	 * String buildCreateCommentRunSQL(MasterTable table)
+	 * String buildAddCommentRunSQL(MasterTable table)
 	 * List<String> buildAlterRunSQL(MasterTable table);
 	 * String buildDropRunSQL(MasterTable table);
 	 * List<String> buildRenameRunSQL(MasterTable table);
@@ -1020,7 +1026,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * String buildChangeDefaultRunSQL(Column column)
 	 * String buildChangeNullableRunSQL(Column column)
 	 * String buildChangeCommentRunSQL(Column column)
-	 * String buildCreateCommentRunSQL(Column column)
+	 * String buildAddCommentRunSQL(Column column)
 	 * StringBuilder define(StringBuilder builder, Column column)
 	 * StringBuilder type(StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(Column column);
@@ -1061,7 +1067,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
 		sqls.add(builder.toString());
-		sqls.add(buildCreateCommentRunSQL(column));
+		sqls.add(buildAddCommentRunSQL(column));
 		return sqls;
 	}
 
@@ -1176,7 +1182,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildCreateCommentRunSQL(Column column) throws Exception {
+	public String buildAddCommentRunSQL(Column column) throws Exception {
 		String comment = column.getComment();
 		if(BasicUtil.isEmpty(comment)){
 			return null;
@@ -1241,6 +1247,23 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 
+	/**
+	 * 取消自增
+	 * @param column 列
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	public List<String> buildDropAutoIncrement(Column column) throws Exception{
+		List<String> sqls = new ArrayList<>();
+		/*StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable(true));
+		builder.append(" ALTER COLUMN ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" DROP IDENTITY");
+		sqls.add(builder.toString());*/
+		return sqls;
+	}
 	/**
 	 * 定义列
 	 * @param builder builder
