@@ -2,6 +2,7 @@ package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.SimpleRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -216,39 +218,43 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public String buildAddCommentRunSQL(Table table) throws Exception {
+    public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun();
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
         String comment = table.getComment();
-        if(BasicUtil.isEmpty(comment)){
-            return null;
+        if(BasicUtil.isNotEmpty(comment)){
+            builder.append("EXEC sp_addextendedproperty ");
+            builder.append("'MS_Description',");
+            builder.append("N'").append(comment).append("',");
+            builder.append("'USER',");
+            builder.append("'").append(table.getSchema()).append("',");
+            builder.append("'TABLE',");
+            builder.append("'").append(table.getName()).append("'");
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append("EXEC sp_addextendedproperty ");
-        builder.append("'MS_Description',");
-        builder.append("N'").append(comment).append("',");
-        builder.append("'USER',");
-        builder.append("'").append(table.getSchema()).append("',");
-        builder.append("'TABLE',");
-        builder.append("'").append(table.getName()).append("'");
 
-        return builder.toString();
+        return runs;
     }
 
     @Override
-    public String buildChangeCommentRunSQL(Table table) throws Exception{
+    public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun();
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
         String comment = table.getComment();
-        if(BasicUtil.isEmpty(comment)){
-            return null;
+        if(BasicUtil.isNotEmpty(comment)){
+            builder.append("EXEC sp_updateextendedproperty ");
+            builder.append("'MS_Description',");
+            builder.append("N'").append(comment).append("',");
+            builder.append("'USER',");
+            builder.append("'").append(table.getSchema()).append("',");
+            builder.append("'TABLE',");
+            builder.append("'").append(table.getName()).append("'");
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append("EXEC sp_updateextendedproperty ");
-        builder.append("'MS_Description',");
-        builder.append("N'").append(comment).append("',");
-        builder.append("'USER',");
-        builder.append("'").append(table.getSchema()).append("',");
-        builder.append("'TABLE',");
-        builder.append("'").append(table.getName()).append("'");
 
-        return builder.toString();
+        return runs;
     }
 
     /**
@@ -257,27 +263,30 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public String buildAddCommentRunSQL(Column column) throws Exception {
+    public List<Run> buildAddCommentRunSQL(Column column) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun();
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
         String comment = column.getComment();
-        if(BasicUtil.isEmpty(comment)){
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-        String schema = column.getSchema();
-        if(BasicUtil.isEmpty(schema)){
-            schema = column.getTable(true).getSchema();
-        }
-        builder.append("EXEC sp_addextendedproperty ");
-        builder.append("'MS_Description',");
-        builder.append("N'").append(comment).append("',");
-        builder.append("'USER',");
-        builder.append("'").append(schema).append("',");
-        builder.append("'TABLE',");
-        builder.append("'").append(column.getTableName(true)).append("',");
-        builder.append("'COLUMN',");
-        builder.append("'").append(column.getName()).append("'");
+        if(BasicUtil.isNotEmpty(comment)){
 
-        return builder.toString();
+            String schema = column.getSchema();
+            if(BasicUtil.isEmpty(schema)){
+                schema = column.getTable(true).getSchema();
+            }
+            builder.append("EXEC sp_addextendedproperty ");
+            builder.append("'MS_Description',");
+            builder.append("N'").append(comment).append("',");
+            builder.append("'USER',");
+            builder.append("'").append(schema).append("',");
+            builder.append("'TABLE',");
+            builder.append("'").append(column.getTableName(true)).append("',");
+            builder.append("'COLUMN',");
+            builder.append("'").append(column.getName()).append("'");
+        }
+
+        return runs;
     }
 
     /**
@@ -296,32 +305,34 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return String
      */
     @Override
-    public String buildChangeCommentRunSQL(Column column) throws Exception{
+    public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun();
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
         String comment = null;
         if(null != column.getUpdate()){
             comment = column.getUpdate().getComment();
         }else {
             comment = column.getComment();
         }
-        if(BasicUtil.isEmpty(comment)){
-            return null;
+        if(BasicUtil.isNotEmpty(comment)){
+            String schema = column.getSchema();
+            if(BasicUtil.isEmpty(schema)){
+                schema = column.getTable(true).getSchema();
+            }
+            builder.append("EXEC sp_updateextendedproperty ");
+            builder.append("'MS_Description',");
+            builder.append("N'").append(comment).append("',");
+            builder.append("'USER',");
+            builder.append("'").append(schema).append("',");
+            builder.append("'TABLE',");
+            builder.append("'").append(column.getTableName(true)).append("',");
+            builder.append("'COLUMN',");
+            builder.append("'").append(column.getName()).append("'");
         }
-        StringBuilder builder = new StringBuilder();
-        String schema = column.getSchema();
-        if(BasicUtil.isEmpty(schema)){
-            schema = column.getTable(true).getSchema();
-        }
-        builder.append("EXEC sp_updateextendedproperty ");
-        builder.append("'MS_Description',");
-        builder.append("N'").append(comment).append("',");
-        builder.append("'USER',");
-        builder.append("'").append(schema).append("',");
-        builder.append("'TABLE',");
-        builder.append("'").append(column.getTableName(true)).append("',");
-        builder.append("'COLUMN',");
-        builder.append("'").append(column.getName()).append("'");
 
-        return builder.toString();
+        return runs;
     }
 
 }

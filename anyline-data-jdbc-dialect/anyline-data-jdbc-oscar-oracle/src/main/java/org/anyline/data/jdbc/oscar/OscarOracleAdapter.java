@@ -4,7 +4,7 @@ package org.anyline.data.jdbc.oscar;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
-import org.anyline.data.run.TextRun;
+import org.anyline.data.run.SimpleRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -68,15 +68,16 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param names 序列名
 	 * @return String
 	 */
-	public String buildQuerySequence(boolean next, String ... names){
+	public List<Run> buildQuerySequence(boolean next, String ... names){
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		String key = "CURRVAL";
 		if(next){
 			key = "NEXTVAL";
 		}
-		StringBuilder builder = new StringBuilder();
-		Run run = null;
 		if(null != names && names.length>0) {
-			run = new TextRun();
 			builder.append("SELECT ");
 			boolean first = true;
 			for (String name : names) {
@@ -88,7 +89,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			}
 			builder.append(" FROM DUAL");
 		}
-		return builder.toString();
+		return runs;
 	}
 	@Override 
 	public String parseFinalQuery(Run run){
@@ -419,8 +420,8 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
@@ -435,9 +436,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 //		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
 //		builder.append("FROM SYS.ALL_ALL_TABLES T \n");
 //		builder.append("LEFT JOIN SYS.ALL_TAB_COMMENTS TC  ON  TC.OWNER  = T.OWNER  AND TC.TABLE_NAME  = T.TABLE_NAME \n");
@@ -449,8 +452,8 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 //			builder.append(" AND T.TABLE_NAME = '").append(pattern).append("'");
 //		}
 //
-//		sqls.add(builder.toString());
-//		return sqls;
+//		runs.add(run);
+//		return runs;
 		// jack 2023年5月2日 19点55分 由于之前查询表名的方式会意外失效，特进行调整,兼容table和view
 		//增加types列用于后期扩展
 		builder.append(" SELECT * FROM (" );
@@ -475,8 +478,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			}
 			builder.append(")");
 		}
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -488,14 +490,16 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM USER_TAB_COMMENTS\n");
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append("WHERE TABLE_NAME = '").append(pattern).append("'");
 		}
-		return sqls;
+		return runs;
 	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
@@ -524,7 +528,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
 	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
@@ -537,16 +541,16 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
-
+	public List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT A.VIEW_NAME,A.TEXT DEFINITION_SQL,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
 		}
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -582,7 +586,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
@@ -595,7 +599,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryMasterTableRunSQL(catalog, schema, pattern, types);
 	}
 
@@ -634,9 +638,9 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
-	 * List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
+	 * List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
+	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
@@ -650,15 +654,15 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
+	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
 		return super.buildQueryPartitionTableRunSQL(master, tags, name);
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
+	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
 		return super.buildQueryPartitionTableRunSQL(master, tags);
 	}
 
@@ -700,7 +704,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
+	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
@@ -713,9 +717,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		if(metadata){
 			builder.append("SELECT * FROM ");
 			name(builder, table);
@@ -727,8 +733,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 				builder.append("WHERE M.TABLE_NAME = '").append(table.getName()).append("'");
 			}
 		}
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -759,7 +764,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryTagRunSQL(Table table, boolean metadata)
+	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
@@ -771,7 +776,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
 		return super.buildQueryTagRunSQL(table, metadata);
 	}
 
@@ -801,7 +806,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryIndexRunSQL(Table table, boolean metadata)
+	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata)
 	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception
@@ -813,7 +818,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, String name){
+	public List<Run> buildQueryIndexRunSQL(Table table, String name){
 		return super.buildQueryIndexRunSQL(table, name);
 	}
 
@@ -844,7 +849,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)
+	 * List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata)
 	 * LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception
@@ -856,7 +861,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
 		return super.buildQueryConstraintRunSQL(table, metadata);
 	}
 
@@ -890,7 +895,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
+	 * List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
@@ -901,7 +906,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 */
 
 	@Override
-	public List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
+	public List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
 		return super.buildQueryTriggerRunSQL(table, events);
 	}
 
@@ -945,13 +950,13 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(Table table)
-	 * String buildAddCommentRunSQL(Table table);
-	 * List<String> buildAlterRunSQL(Table table)
-	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
-	 * List<String> buildRenameRunSQL(Table table)
-	 * String buildChangeCommentRunSQL(Table table)
-	 * String buildDropRunSQL(Table table)
+	 * List<Run> buildCreateRunSQL(Table table)
+	 * List<Run> buildAddCommentRunSQL(Table table);
+	 * List<Run> buildAlterRunSQL(Table table)
+	 * List<Run> buildAlterRunSQL(Table table, Collection<Column> columns)
+	 * List<Run> buildRenameRunSQL(Table table)
+	 * List<Run> buildChangeCommentRunSQL(Table table)
+	 * List<Run> buildDropRunSQL(Table table)
 	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
 	 * StringBuilder primary(StringBuilder builder, Table table)
 	 * StringBuilder comment(StringBuilder builder, Table table)
@@ -960,7 +965,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 
 
 	@Override
-	public List<String> buildCreateRunSQL(Table table) throws Exception{
+	public List<Run> buildCreateRunSQL(Table table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 
@@ -971,18 +976,21 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String buildAddCommentRunSQL(Table table) throws Exception {
+	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isEmpty(table.getComment())){
-			return null;
+			return runs;
 		}
-		StringBuilder builder = new StringBuilder();
 		builder.append(" COMMENT ON TABLE ");
 		name(builder, table);
 		builder.append("  IS '").append(table.getComment()).append("'");
-		return builder.toString();
+		return runs;
 	}
 	@Override
-	public List<String> buildAlterRunSQL(Table table) throws Exception{
+	public List<Run> buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	/**
@@ -992,7 +1000,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
+	public List<Run> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
 		return super.buildAlterRunSQL(table, columns);
 	}
 	/**
@@ -1002,17 +1010,18 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Table table) throws Exception {
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildRenameRunSQL(Table table) throws Exception {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
 		builder.append(" RENAME TO ");
 		//去掉catalog schema前缀
 		Table update = new Table(table.getUpdate().getName());
 		name(builder, update);
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -1022,17 +1031,18 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeCommentRunSQL(Table table) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
-			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append(" IS '").append(comment).append("'");
-			return builder.toString();
-		}else{
-			return null;
 		}
+		return runs;
 	}
 	/**
 	 * 删除表
@@ -1040,7 +1050,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Table table) throws Exception{
+	public List<Run> buildDropRunSQL(Table table) throws Exception{
 		return super.buildDropRunSQL(table);
 	}
 
@@ -1108,12 +1118,12 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(View view);
-	 * String buildAddCommentRunSQL(View view);
-	 * List<String> buildAlterRunSQL(View view);
-	 * List<String> buildRenameRunSQL(View view);
-	 * String buildChangeCommentRunSQL(View view);
-	 * String buildDropRunSQL(View view);
+	 * List<Run> buildCreateRunSQL(View view);
+	 * List<Run> buildAddCommentRunSQL(View view);
+	 * List<Run> buildAlterRunSQL(View view);
+	 * List<Run> buildRenameRunSQL(View view);
+	 * List<Run> buildChangeCommentRunSQL(View view);
+	 * List<Run> buildDropRunSQL(View view);
 	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
 	 * StringBuilder primary(StringBuilder builder, View view)
 	 * StringBuilder comment(StringBuilder builder, View view)
@@ -1122,18 +1132,18 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 
 
 	@Override
-	public List<String> buildCreateRunSQL(View view) throws Exception{
+	public List<Run> buildCreateRunSQL(View view) throws Exception{
 		return super.buildCreateRunSQL(view);
 	}
 
 	@Override
-	public String buildAddCommentRunSQL(View view) throws Exception{
+	public List<Run> buildAddCommentRunSQL(View view) throws Exception{
 		return super.buildAddCommentRunSQL(view);
 	}
 
 
 	@Override
-	public List<String> buildAlterRunSQL(View view) throws Exception{
+	public List<Run> buildAlterRunSQL(View view) throws Exception{
 		return super.buildAlterRunSQL(view);
 	}
 	/**
@@ -1144,12 +1154,12 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(View view) throws Exception{
+	public List<Run> buildRenameRunSQL(View view) throws Exception{
 		return super.buildRenameRunSQL(view);
 	}
 
 	@Override
-	public String buildChangeCommentRunSQL(View view) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(View view) throws Exception{
 		return super.buildChangeCommentRunSQL(view);
 	}
 	/**
@@ -1158,7 +1168,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(View view) throws Exception{
+	public List<Run> buildDropRunSQL(View view) throws Exception{
 		return super.buildDropRunSQL(view);
 	}
 
@@ -1187,12 +1197,12 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(MasterTable table)
-	 * String buildAddCommentRunSQL(MasterTable table)
-	 * List<String> buildAlterRunSQL(MasterTable table)
-	 * String buildDropRunSQL(MasterTable table)
-	 * List<String> buildRenameRunSQL(MasterTable table)
-	 * String buildChangeCommentRunSQL(MasterTable table)
+	 * List<Run> buildCreateRunSQL(MasterTable table)
+	 * List<Run> buildAddCommentRunSQL(MasterTable table)
+	 * List<Run> buildAlterRunSQL(MasterTable table)
+	 * List<Run> buildDropRunSQL(MasterTable table)
+	 * List<Run> buildRenameRunSQL(MasterTable table)
+	 * List<Run> buildChangeCommentRunSQL(MasterTable table)
 	 ******************************************************************************************************************/
 	/**
 	 * 创建主表
@@ -1200,23 +1210,23 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String>  buildCreateRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildCreateRunSQL(MasterTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
-	public List<String> buildAlterRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildAlterRunSQL(MasterTable table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	@Override
-	public String buildDropRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildDropRunSQL(MasterTable table) throws Exception{
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public List<String> buildRenameRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildRenameRunSQL(MasterTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
-	public String buildChangeCommentRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(MasterTable table) throws Exception{
 		return super.buildChangeCommentRunSQL(table);
 	}
 
@@ -1224,11 +1234,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(PartitionTable table)
-	 * List<String> buildAlterRunSQL(PartitionTable table)
-	 * String buildDropRunSQL(PartitionTable table)
-	 * List<String> buildRenameRunSQL(PartitionTable table)
-	 * String buildChangeCommentRunSQL(PartitionTable table)
+	 * List<Run> buildCreateRunSQL(PartitionTable table)
+	 * List<Run> buildAlterRunSQL(PartitionTable table)
+	 * List<Run> buildDropRunSQL(PartitionTable table)
+	 * List<Run> buildRenameRunSQL(PartitionTable table)
+	 * List<Run> buildChangeCommentRunSQL(PartitionTable table)
 	 ******************************************************************************************************************/
 	/**
 	 * 创建分区表
@@ -1236,23 +1246,23 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String>  buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildCreateRunSQL(PartitionTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
-	public List<String> buildAlterRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildAlterRunSQL(PartitionTable table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	@Override
-	public String buildDropRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildDropRunSQL(PartitionTable table) throws Exception{
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public List<String> buildRenameRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildRenameRunSQL(PartitionTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
-	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(PartitionTable table) throws Exception{
 		return super.buildChangeCommentRunSQL(table);
 	}
 
@@ -1260,18 +1270,18 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * String alterColumnKeyword()
-	 * List<String> buildAddRunSQL(Column column, boolean slice)
-	 * List<String> buildAddRunSQL(Column column)
-	 * List<String> buildAlterRunSQL(Column column, boolean slice)
-	 * List<String> buildAlterRunSQL(Column column)
-	 * String buildDropRunSQL(Column column, boolean slice)
-	 * String buildDropRunSQL(Column column)
-	 * List<String> buildRenameRunSQL(Column column)
-	 * List<String> buildChangeTypeRunSQL(Column column)
-	 * String buildChangeDefaultRunSQL(Column column)
-	 * String buildChangeNullableRunSQL(Column column)
-	 * String buildChangeCommentRunSQL(Column column)
-	 * String buildAddCommentRunSQL(Column column)
+	 * List<Run> buildAddRunSQL(Column column, boolean slice)
+	 * List<Run> buildAddRunSQL(Column column)
+	 * List<Run> buildAlterRunSQL(Column column, boolean slice)
+	 * List<Run> buildAlterRunSQL(Column column)
+	 * List<Run> buildDropRunSQL(Column column, boolean slice)
+	 * List<Run> buildDropRunSQL(Column column)
+	 * List<Run> buildRenameRunSQL(Column column)
+	 * List<Run> buildChangeTypeRunSQL(Column column)
+	 * List<Run> buildChangeDefaultRunSQL(Column column)
+	 * List<Run> buildChangeNullableRunSQL(Column column)
+	 * List<Run> buildChangeCommentRunSQL(Column column)
+	 * List<Run> buildAddCommentRunSQL(Column column)
 	 * StringBuilder define(StringBuilder builder, Column column)
 	 * StringBuilder type(StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(Column column);
@@ -1300,9 +1310,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildAddRunSQL(Column column, boolean slice) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		Table table = column.getTable(true);
 		builder.append("ALTER TABLE ");
 		name(builder, table);
@@ -1313,9 +1325,8 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
 		//}
-		sqls.add(builder.toString());
-		sqls.add(buildAddCommentRunSQL(column));
-		return sqls;
+		runs.addAll(buildAddCommentRunSQL(column));
+		return runs;
 	}
 
 	/**
@@ -1324,9 +1335,10 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
-		return super.buildAlterRunSQL(column);
+	public List<Run> buildAlterRunSQL(Column column, boolean slice) throws Exception{
+		return super.buildAlterRunSQL(column, slice);
 	}
+
 	
 
 	/**
@@ -1336,11 +1348,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Column column, boolean slice) throws Exception{
-		return super.buildDropRunSQL(column);
+	public List<Run> buildDropRunSQL(Column column, boolean slice) throws Exception{
+		return super.buildDropRunSQL(column, slice);
 	}
 	@Override
-	public String buildDropRunSQL(Column column) throws Exception{
+	public List<Run> buildDropRunSQL(Column column) throws Exception{
 		return buildDropRunSQL(column, false);
 	}
 
@@ -1352,17 +1364,19 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Column column)  throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildRenameRunSQL(Column column)  throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
 		builder.append(" RENAME COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TO ");
 		SQLUtil.delimiter(builder, column.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
-		sqls.add(builder.toString());
-		return sqls;
+		column.setName(column.getUpdate().getName());
+		return runs;
 	}
 
 
@@ -1375,8 +1389,8 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param column 列
 	 * @return sql
 	 */
-	public List<String> buildChangeTypeRunSQL(Column column) throws Exception{
-		List<String> sqls = new ArrayList<>();
+	public List<Run> buildChangeTypeRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
 		Column update = column.getUpdate();
 		String name = column.getName();
 		String type = column.getTypeName();
@@ -1386,7 +1400,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		String uname = update.getName();
 		String utype = update.getTypeName();
 		if(uname.endsWith("_TMP_UPDATE_TYPE")){
-			sqls.add(buildDropRunSQL(update));
+			runs.addAll(buildDropRunSQL(update));
 		}else {
 			if (utype != null && utype.contains("(")) {
 				utype = utype.substring(0, utype.indexOf("("));
@@ -1395,10 +1409,10 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 				String tmp_name = column.getName() + "_TMP_UPDATE_TYPE";
 
 				update.setName(tmp_name);
-				sqls.addAll(buildRenameRunSQL(column));
+				runs.addAll(buildRenameRunSQL(column));
 
 				update.setName(uname);
-				sqls.addAll(buildAddRunSQL(update));
+				runs.addAll(buildAddRunSQL(update));
 
 				StringBuilder builder = new StringBuilder();
 				builder.append("UPDATE ");
@@ -1407,15 +1421,16 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 				SQLUtil.delimiter(builder, uname, getDelimiterFr(), getDelimiterTo());
 				builder.append(" = ");
 				SQLUtil.delimiter(builder, tmp_name, getDelimiterFr(), getDelimiterTo());
-				sqls.add(builder.toString());
+				runs.add(new SimpleRun(builder));
 
 				column.setName(tmp_name);
-				String drop = buildDropRunSQL(column);
-				sqls.add(drop);
+				List<Run> drop = buildDropRunSQL(column);
+				runs.addAll(drop);
 
 				column.setName(name);
-				update.setName(tmp_name);
+				update.setName(name);
 				column.setNullable(update.isNullable());
+
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE ");
@@ -1424,13 +1439,12 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 				type(builder, column.getUpdate());
 				builder.append(")");
-				sqls.add(builder.toString());
+				runs.add(new SimpleRun(builder));
 			}
 		}
 		// column.setName(name);
-		return sqls;
+		return runs;
 	}
-
 	/**
 	 * 修改默认值
 	 * ALTER TABLE MY_TEST_TABLE MODIFY B DEFAULT 2
@@ -1438,14 +1452,17 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeDefaultRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeDefaultRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		Object def = null;
 		if(null != column.getUpdate()){
 			def = column.getUpdate().getDefaultValue();
 		}else {
 			def = column.getDefaultValue();
 		}
-		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true)).append(" MODIFY ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1457,7 +1474,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		}else{
 			builder.append(" NULL");
 		}
-		return builder.toString();
+		return runs;
 	}
 
 	/**
@@ -1467,15 +1484,17 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeNullableRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
-				return null;
+				return runs;
 			}
-
-			StringBuilder builder = new StringBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable(true)).append(" MODIFY ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1484,9 +1503,8 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			}
 			builder.append(" NULL");
 			column.setNullable(uNullable);
-			return builder.toString();
 		}
-		return null;
+		return runs;
 	}
 
 	/**
@@ -1495,7 +1513,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildAddCommentRunSQL(Column column) throws Exception {
+	public List<Run> buildAddCommentRunSQL(Column column) throws Exception {
 		return buildChangeCommentRunSQL(column);
 	}
 	/**
@@ -1505,7 +1523,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeCommentRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		if(null != column.getUpdate()){
 			comment = column.getUpdate().getComment();
@@ -1513,17 +1535,20 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
-			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+			Column update = column.getUpdate();
+			String name = null;
+			if(null != update){
+				name = update.getName();
+			}else{
+				name = column.getName();
+			}
+			SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
 			builder.append(" IS '").append(comment).append("'");
-			return builder.toString();
-		}else{
-			return null;
 		}
+		return runs;
 	}
-
 
 	/**
 	 * 取消自增
@@ -1531,7 +1556,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildDropAutoIncrement(Column column) throws Exception{
+	public List<Run> buildDropAutoIncrement(Column column) throws Exception{
 		return super.buildDropAutoIncrement(column);
 	}
 	/**
@@ -1647,14 +1672,14 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(Tag tag)
-	 * List<String> buildAlterRunSQL(Tag tag)
-	 * String buildDropRunSQL(Tag tag)
-	 * List<String> buildRenameRunSQL(Tag tag)
-	 * String buildChangeDefaultRunSQL(Tag tag)
-	 * String buildChangeNullableRunSQL(Tag tag)
-	 * String buildChangeCommentRunSQL(Tag tag)
-	 * List<String> buildChangeTypeRunSQL(Tag tag)
+	 * List<Run> buildAddRunSQL(Tag tag)
+	 * List<Run> buildAlterRunSQL(Tag tag)
+	 * List<Run> buildDropRunSQL(Tag tag)
+	 * List<Run> buildRenameRunSQL(Tag tag)
+	 * List<Run> buildChangeDefaultRunSQL(Tag tag)
+	 * List<Run> buildChangeNullableRunSQL(Tag tag)
+	 * List<Run> buildChangeCommentRunSQL(Tag tag)
+	 * List<Run> buildChangeTypeRunSQL(Tag tag)
 	 * StringBuilder checkTagExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
@@ -1665,7 +1690,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAddRunSQL(Tag tag) throws Exception{
 		return super.buildAddRunSQL(tag);
 	}
 
@@ -1676,7 +1701,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAlterRunSQL(Tag tag) throws Exception{
 		return super.buildAlterRunSQL(tag);
 	}
 
@@ -1688,7 +1713,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Tag tag) throws Exception{
+	public List<Run> buildDropRunSQL(Tag tag) throws Exception{
 		return super.buildDropRunSQL(tag);
 	}
 
@@ -1701,7 +1726,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Tag tag)  throws Exception{
+	public List<Run> buildRenameRunSQL(Tag tag)  throws Exception{
 		return super.buildRenameRunSQL(tag);
 	}
 
@@ -1713,7 +1738,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeDefaultRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeDefaultRunSQL(Tag tag) throws Exception{
 		return super.buildChangeDefaultRunSQL(tag);
 	}
 
@@ -1725,7 +1750,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeNullableRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeNullableRunSQL(Tag tag) throws Exception{
 		return super.buildChangeNullableRunSQL(tag);
 	}
 	/**
@@ -1736,7 +1761,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildChangeCommentRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception{
 		return super.buildChangeCommentRunSQL(tag);
 	}
 
@@ -1748,7 +1773,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeTypeRunSQL(Tag tag) throws Exception{
 		return super.buildChangeTypeRunSQL(tag);
 	}
 
@@ -1766,10 +1791,10 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(PrimaryKey primary) throws Exception
-	 * List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
-	 * String buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -1777,8 +1802,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(PrimaryKey primary) throws Exception{
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
@@ -1795,7 +1823,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			builder.append(")");
 
 		}
-		return builder.toString();
+		return runs;
 	}
 	/**
 	 * 修改主键
@@ -1804,7 +1832,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildAlterRunSQL(primary);
 	}
 
@@ -1814,12 +1842,15 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, primary.getTable(true));
 		builder.append(" DROP PRIMARY KEY");
-		return builder.toString();
+		return runs;
 	}
 	/**
 	 * 修改主键名
@@ -1828,7 +1859,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildRenameRunSQL(primary);
 	}
 
@@ -1841,7 +1872,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildAddRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildAddRunSQL(foreign);
 	}
 	/**
@@ -1849,7 +1880,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param foreign 外键
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildAlterRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildAlterRunSQL(foreign);
 	}
 
@@ -1858,7 +1889,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildDropRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildDropRunSQL(foreign);
 	}
 
@@ -1868,14 +1899,14 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildRenameRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildRenameRunSQL(foreign);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception
 	 * PrimaryKey primary(int index, Table table, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -1884,9 +1915,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
-		List<String> list = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT COL.* FROM DBA_CONSTRAINTS CON ,DBA_CONS_COLUMNS COL\n");
 		builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
 		builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
@@ -1894,8 +1927,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		if(BasicUtil.isNotEmpty(table.getSchema())){
 			builder.append(" AND COL.OWNER = '").append(table.getSchema()).append("'");
 		}
-		list.add(builder.toString());
-		return list;
+		return runs;
 	}
 
 	/**
@@ -1929,7 +1961,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -1939,9 +1971,11 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryForeignsRunSQL(Table table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT UC.CONSTRAINT_NAME, UC.TABLE_NAME, KCU.COLUMN_NAME, UC.R_CONSTRAINT_NAME, RC.TABLE_NAME AS REFERENCED_TABLE_NAME, RCC.COLUMN_NAME AS REFERENCED_COLUMN_NAME, RCC.POSITION AS ORDINAL_POSITION\n");
 		builder.append("FROM USER_CONSTRAINTS UC \n");
 		builder.append("JOIN USER_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
@@ -1953,8 +1987,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 			}
 			builder.append(" AND UC.TABLE_NAME = '").append(table.getName()).append("'\n");
 		}
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -1988,10 +2021,10 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(Index index) throws Exception
-	 * List<String> buildAlterRunSQL(Index index) throws Exception
-	 * String buildDropRunSQL(Index index) throws Exception
-	 * List<String> buildRenameRunSQL(Index index) throws Exception
+	 * List<Run> buildAddRunSQL(Index index) throws Exception
+	 * List<Run> buildAlterRunSQL(Index index) throws Exception
+	 * List<Run> buildDropRunSQL(Index index) throws Exception
+	 * List<Run> buildRenameRunSQL(Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -1999,7 +2032,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Index index) throws Exception{
+	public List<Run> buildAddRunSQL(Index index) throws Exception{
 		return super.buildAddRunSQL(index);
 	}
 	/**
@@ -2009,7 +2042,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Index index) throws Exception{
+	public List<Run> buildAlterRunSQL(Index index) throws Exception{
 		return super.buildAlterRunSQL(index);
 	}
 
@@ -2019,8 +2052,20 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Index index) throws Exception{
-		return super.buildDropRunSQL(index);
+	public List<Run> buildDropRunSQL(Index index) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		Table table = index.getTable(true);
+		if(index.isPrimary()){
+			builder.append("ALTER TABLE ");
+			name(builder, table);
+			builder.append(" DROP CONSTRAINT ").append(index.getName());
+		}else {
+			builder.append("DROP INDEX ").append(index.getName());
+		}
+		return runs;
 	}
 	/**
 	 * 修改索引名
@@ -2029,7 +2074,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Index index) throws Exception{
+	public List<Run> buildRenameRunSQL(Index index) throws Exception{
 		return super.buildRenameRunSQL(index);
 	}
 	/**
@@ -2043,10 +2088,10 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(Constraint constraint) throws Exception
-	 * List<String> buildAlterRunSQL(Constraint constraint) throws Exception
-	 * String buildDropRunSQL(Constraint constraint) throws Exception
-	 * List<String> buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildAddRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildAlterRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildDropRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -2054,7 +2099,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildAddRunSQL(Constraint constraint) throws Exception{
 		return super.buildAddRunSQL(constraint);
 	}
 	/**
@@ -2064,7 +2109,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildAlterRunSQL(Constraint constraint) throws Exception{
 		return super.buildAlterRunSQL(constraint);
 	}
 
@@ -2074,7 +2119,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildDropRunSQL(Constraint constraint) throws Exception{
 		return super.buildDropRunSQL(constraint);
 	}
 	/**
@@ -2084,17 +2129,17 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildRenameRunSQL(Constraint constraint) throws Exception{
 		return super.buildRenameRunSQL(constraint);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(Trigger trigger) throws Exception
-	 * List<String> buildAlterRunSQL(Trigger trigger) throws Exception;
-	 * String buildDropRunSQL(Trigger trigger) throws Exception;
-	 * List<String> buildRenameRunSQL(Trigger trigger) throws Exception;
+	 * List<Run> buildCreateRunSQL(Trigger trigger) throws Exception
+	 * List<Run> buildAlterRunSQL(Trigger trigger) throws Exception;
+	 * List<Run> buildDropRunSQL(Trigger trigger) throws Exception;
+	 * List<Run> buildRenameRunSQL(Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -2102,7 +2147,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildCreateRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildCreateRunSQL(Trigger trigger) throws Exception{
 		return super.buildCreateRunSQL(trigger);
 	}
 	public void each(StringBuilder builder, Trigger trigger){
@@ -2115,7 +2160,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildAlterRunSQL(Trigger trigger) throws Exception{
 		return super.buildAlterRunSQL(trigger);
 	}
 
@@ -2125,7 +2170,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildDropRunSQL(Trigger trigger) throws Exception{
 		return super.buildDropRunSQL(trigger);
 	}
 
@@ -2136,7 +2181,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildRenameRunSQL(Trigger trigger) throws Exception{
 		return super.buildRenameRunSQL(trigger);
 	}
 
@@ -2144,17 +2189,17 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(Procedure procedure) throws Exception
-	 * List<String> buildAlterRunSQL(Procedure procedure) throws Exception;
-	 * String buildDropRunSQL(Procedure procedure) throws Exception;
-	 * List<String> buildRenameRunSQL(Procedure procedure) throws Exception;
+	 * List<Run> buildCreateRunSQL(Procedure procedure) throws Exception
+	 * List<Run> buildAlterRunSQL(Procedure procedure) throws Exception;
+	 * List<Run> buildDropRunSQL(Procedure procedure) throws Exception;
+	 * List<Run> buildRenameRunSQL(Procedure procedure) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildCreateRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildCreateRunSQL(Procedure procedure) throws Exception{
 		return super.buildCreateRunSQL(procedure);
 	}
 
@@ -2164,7 +2209,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildAlterRunSQL(Procedure procedure) throws Exception{
 		return super.buildAlterRunSQL(procedure);
 	}
 
@@ -2173,7 +2218,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public String buildDropRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildDropRunSQL(Procedure procedure) throws Exception{
 		return super.buildDropRunSQL(procedure);
 	}
 
@@ -2183,17 +2228,17 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<String> buildRenameRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildRenameRunSQL(Procedure procedure) throws Exception{
 		return super.buildRenameRunSQL(procedure);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildCreateRunSQL(Function function) throws Exception
-	 * List<String> buildAlterRunSQL(Function function) throws Exception;
-	 * String buildDropRunSQL(Function function) throws Exception;
-	 * List<String> buildRenameRunSQL(Function function) throws Exception;
+	 * List<Run> buildCreateRunSQL(Function function) throws Exception
+	 * List<Run> buildAlterRunSQL(Function function) throws Exception;
+	 * List<Run> buildDropRunSQL(Function function) throws Exception;
+	 * List<Run> buildRenameRunSQL(Function function) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -2201,7 +2246,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildCreateRunSQL(Function function) throws Exception{
+	public List<Run> buildCreateRunSQL(Function function) throws Exception{
 		return super.buildCreateRunSQL(function);
 	}
 
@@ -2211,7 +2256,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param function 函数
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Function function) throws Exception{
+	public List<Run> buildAlterRunSQL(Function function) throws Exception{
 		return super.buildAlterRunSQL(function);
 	}
 
@@ -2220,7 +2265,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param function 函数
 	 * @return String
 	 */
-	public String buildDropRunSQL(Function function) throws Exception{
+	public List<Run> buildDropRunSQL(Function function) throws Exception{
 		return super.buildDropRunSQL(function);
 	}
 
@@ -2230,7 +2275,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<String> buildRenameRunSQL(Function function) throws Exception{
+	public List<Run> buildRenameRunSQL(Function function) throws Exception{
 		return super.buildRenameRunSQL(function);
 	}
 

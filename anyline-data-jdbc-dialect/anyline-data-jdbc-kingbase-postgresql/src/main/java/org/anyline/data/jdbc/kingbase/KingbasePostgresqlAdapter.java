@@ -4,6 +4,7 @@ package org.anyline.data.jdbc.kingbase;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.SimpleRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -96,7 +97,8 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param names 序列名
 	 * @return String
 	 */
-	public String buildQuerySequence(boolean next, String ... names){
+	public List<Run> buildQuerySequence(boolean next, String ... names){
+		List<Run> runs = new ArrayList<>();
 		String key = "CURRVAL";
 		if(next){
 			key = "NEXTVAL";
@@ -114,8 +116,9 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 				first = false;
 				builder.append(key).append("('").append(name).append("') AS ").append(name);
 			}
+			runs.add(run);
 		}
-		return builder.toString();
+		return runs;
 	}
 
 
@@ -143,8 +146,8 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
@@ -158,7 +161,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryTableRunSQL(catalog, schema, pattern, types);
 	}
 
@@ -171,7 +174,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
@@ -188,7 +191,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
@@ -202,7 +205,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryMasterTableRunSQL(catalog, schema, pattern, types);
 	}
 
@@ -241,8 +244,8 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags);
+	 * List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags);
 	 * LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 	 * LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
@@ -256,11 +259,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags) throws Exception{
+	public List<Run> buildQueryPartitionTableRunSQL(MasterTable table, Map<String,Object> tags) throws Exception{
 		return super.buildQueryPartitionTableRunSQL(table, tags);
 	}
 
@@ -302,7 +305,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
+	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata);
 	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
@@ -315,9 +318,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		if(metadata){
 			builder.append("SELECT * FROM ");
 			name(builder, table);
@@ -337,8 +342,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 			}
 			builder.append(" AND M.TABLE_NAME = '").append(objectName(objectName(table.getName()))).append("'");
 		}
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -369,7 +373,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryTagRunSQL(Table table, boolean metadata);
+	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata);
 	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
@@ -381,7 +385,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
 		return super.buildQueryTagRunSQL(table, metadata);
 	}
 
@@ -411,7 +415,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryPrimaryRunSQL(Table table) throws Exception
+	 * List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception
 	 * PrimaryKey primary(int index, Table table, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -420,9 +424,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<String> buildQueryPrimaryRunSQL(Table table) throws Exception{
-		List<String> list = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		//test_pk_pkey	| p	| {2,1}	| 	PRIMARY KEY (id, name)
 		builder.append("SELECT  m.conname,  pg_get_constraintdef(m.oid, true) AS define\n");
 		builder.append("FROM pg_constraint m \n");
@@ -433,8 +439,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 		if(BasicUtil.isNotEmpty(schema)){
 			builder.append(" AND ns.nspname = '").append(schema).append("'");
 		}
-		list.add(builder.toString());
-		return list;
+		return runs;
 	}
 
 	/**
@@ -466,7 +471,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
@@ -475,7 +480,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<String> buildQueryForeignsRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryForeignsRunSQL(Table table) throws Exception{
 		return super.buildQueryForeignsRunSQL(table);
 	}
 
@@ -494,7 +499,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
+	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata);
 	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
@@ -506,7 +511,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildQueryIndexRunSQL(Table table, String name){
+	public List<Run> buildQueryIndexRunSQL(Table table, String name){
 		return super.buildQueryIndexRunSQL(table, name);
 	}
 
@@ -537,7 +542,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
+	 * List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata);
 	 * LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
@@ -549,7 +554,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
 		return super.buildQueryConstraintRunSQL(table, metadata);
 	}
 
@@ -584,7 +589,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
+	 * List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
@@ -595,9 +600,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 */
 
 	@Override
-	public List<String> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
 		if(null != table){
 			String schemae = table.getSchema();
@@ -620,8 +627,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 			}
 			builder.append(")");
 		}
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -702,13 +708,13 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(Table table)
-	 * String buildAddCommentRunSQL(Table table);
-	 * List<String> buildAlterRunSQL(Table table)
-	 * List<String> buildAlterRunSQL(Table table, Collection<Column> columns)
-	 * List<String> buildRenameRunSQL(Table table)
-	 * String buildChangeCommentRunSQL(Table table)
-	 * String buildDropRunSQL(Table table)
+	 * List<Run> buildCreateRunSQL(Table table)
+	 * List<Run> buildAddCommentRunSQL(Table table);
+	 * List<Run> buildAlterRunSQL(Table table)
+	 * List<Run> buildAlterRunSQL(Table table, Collection<Column> columns)
+	 * List<Run> buildRenameRunSQL(Table table)
+	 * List<Run> buildChangeCommentRunSQL(Table table)
+	 * List<Run> buildDropRunSQL(Table table)
 	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
 	 * StringBuilder primary(StringBuilder builder, Table table)
 	 * StringBuilder comment(StringBuilder builder, Table table)
@@ -717,13 +723,13 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 
 
 	@Override
-	public List<String> buildCreateRunSQL(Table table) throws Exception{
+	public List<Run> buildCreateRunSQL(Table table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 
 
 	@Override
-	public List<String> buildAlterRunSQL(Table table) throws Exception{
+	public List<Run> buildAlterRunSQL(Table table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	/**
@@ -733,7 +739,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
+	public List<Run> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
 		return super.buildAlterRunSQL(table, columns);
 	}
 	/**
@@ -743,17 +749,18 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Table table)  throws Exception{
-		List<String> sqls = new ArrayList();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildRenameRunSQL(Table table)  throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
 		builder.append(" RENAME TO ");
 		//去掉catalog schema前缀
 		Table update = new Table(table.getUpdate().getName());
 		name(builder, update);
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 	/**
@@ -763,17 +770,18 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeCommentRunSQL(Table table) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
-			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append(" IS '").append(comment).append("'");
-			return builder.toString();
-		}else{
-			return null;
 		}
+		return runs;
 	}
 
 	/**
@@ -782,7 +790,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildAddCommentRunSQL(Table table) throws Exception {
+	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
 		return buildChangeCommentRunSQL(table);
 	}
 	/**
@@ -791,7 +799,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Table table) throws Exception{
+	public List<Run> buildDropRunSQL(Table table) throws Exception{
 		return super.buildDropRunSQL(table);
 	}
 
@@ -865,12 +873,12 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(View view);
-	 * String buildAddCommentRunSQL(View view);
-	 * List<String> buildAlterRunSQL(View view);
-	 * List<String> buildRenameRunSQL(View view);
-	 * String buildChangeCommentRunSQL(View view);
-	 * String buildDropRunSQL(View view);
+	 * List<Run> buildCreateRunSQL(View view);
+	 * List<Run> buildAddCommentRunSQL(View view);
+	 * List<Run> buildAlterRunSQL(View view);
+	 * List<Run> buildRenameRunSQL(View view);
+	 * List<Run> buildChangeCommentRunSQL(View view);
+	 * List<Run> buildDropRunSQL(View view);
 	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
 	 * StringBuilder primary(StringBuilder builder, View view)
 	 * StringBuilder comment(StringBuilder builder, View view)
@@ -879,18 +887,18 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 
 
 	@Override
-	public List<String> buildCreateRunSQL(View view) throws Exception{
+	public List<Run> buildCreateRunSQL(View view) throws Exception{
 		return super.buildCreateRunSQL(view);
 	}
 
 	@Override
-	public String buildAddCommentRunSQL(View view) throws Exception{
+	public List<Run> buildAddCommentRunSQL(View view) throws Exception{
 		return super.buildAddCommentRunSQL(view);
 	}
 
 
 	@Override
-	public List<String> buildAlterRunSQL(View view) throws Exception{
+	public List<Run> buildAlterRunSQL(View view) throws Exception{
 		return super.buildAlterRunSQL(view);
 	}
 	/**
@@ -901,12 +909,12 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(View view) throws Exception{
+	public List<Run> buildRenameRunSQL(View view) throws Exception{
 		return super.buildRenameRunSQL(view);
 	}
 
 	@Override
-	public String buildChangeCommentRunSQL(View view) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(View view) throws Exception{
 		return super.buildChangeCommentRunSQL(view);
 	}
 	/**
@@ -915,7 +923,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(View view) throws Exception{
+	public List<Run> buildDropRunSQL(View view) throws Exception{
 		return super.buildDropRunSQL(view);
 	}
 
@@ -944,12 +952,12 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(MasterTable table);
-	 * String buildAddCommentRunSQL(MasterTable table)
-	 * List<String> buildAlterRunSQL(MasterTable table);
-	 * String buildDropRunSQL(MasterTable table);
-	 * List<String> buildRenameRunSQL(MasterTable table);
-	 * String buildChangeCommentRunSQL(MasterTable table);
+	 * List<Run> buildCreateRunSQL(MasterTable table);
+	 * List<Run> buildAddCommentRunSQL(MasterTable table)
+	 * List<Run> buildAlterRunSQL(MasterTable table);
+	 * List<Run> buildDropRunSQL(MasterTable table);
+	 * List<Run> buildRenameRunSQL(MasterTable table);
+	 * List<Run> buildChangeCommentRunSQL(MasterTable table);
 	 ******************************************************************************************************************/
 	/**
 	 * 创建主表
@@ -957,23 +965,23 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String>  buildCreateRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildCreateRunSQL(MasterTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
-	public List<String> buildAlterRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildAlterRunSQL(MasterTable table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	@Override
-	public String buildDropRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildDropRunSQL(MasterTable table) throws Exception{
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public List<String> buildRenameRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildRenameRunSQL(MasterTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
-	public String buildChangeCommentRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(MasterTable table) throws Exception{
 		return super.buildChangeCommentRunSQL(table);
 	}
 
@@ -981,11 +989,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<String> buildCreateRunSQL(PartitionTable table);
-	 * List<String> buildAlterRunSQL(PartitionTable table);
-	 * String buildDropRunSQL(PartitionTable table);
-	 * List<String> buildRenameRunSQL(PartitionTable table);
-	 * String buildChangeCommentRunSQL(PartitionTable table);
+	 * List<Run> buildCreateRunSQL(PartitionTable table);
+	 * List<Run> buildAlterRunSQL(PartitionTable table);
+	 * List<Run> buildDropRunSQL(PartitionTable table);
+	 * List<Run> buildRenameRunSQL(PartitionTable table);
+	 * List<Run> buildChangeCommentRunSQL(PartitionTable table);
 	 ******************************************************************************************************************/
 	/**
 	 * 创建分区表
@@ -993,23 +1001,23 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String>  buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildCreateRunSQL(PartitionTable table) throws Exception{
 		return super.buildCreateRunSQL(table);
 	}
 	@Override
-	public List<String> buildAlterRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildAlterRunSQL(PartitionTable table) throws Exception{
 		return super.buildAlterRunSQL(table);
 	}
 	@Override
-	public String buildDropRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildDropRunSQL(PartitionTable table) throws Exception{
 		return super.buildDropRunSQL(table);
 	}
 	@Override
-	public List<String> buildRenameRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildRenameRunSQL(PartitionTable table) throws Exception{
 		return super.buildRenameRunSQL(table);
 	}
 	@Override
-	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(PartitionTable table) throws Exception{
 		return super.buildChangeCommentRunSQL(table);
 	}
 
@@ -1017,18 +1025,18 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * String alterColumnKeyword()
-	 * List<String> buildAddRunSQL(Column column, boolean slice)
-	 * List<String> buildAddRunSQL(Column column)
-	 * List<String> buildAlterRunSQL(Column column, boolean slice)
-	 * List<String> buildAlterRunSQL(Column column)
-	 * String buildDropRunSQL(Column column, boolean slice)
-	 * String buildDropRunSQL(Column column)
-	 * List<String> buildRenameRunSQL(Column column)
-	 * List<String> buildChangeTypeRunSQL(Column column)
-	 * String buildChangeDefaultRunSQL(Column column)
-	 * String buildChangeNullableRunSQL(Column column)
-	 * String buildChangeCommentRunSQL(Column column)
-	 * String buildAddCommentRunSQL(Column column)
+	 * List<Run> buildAddRunSQL(Column column, boolean slice)
+	 * List<Run> buildAddRunSQL(Column column)
+	 * List<Run> buildAlterRunSQL(Column column, boolean slice)
+	 * List<Run> buildAlterRunSQL(Column column)
+	 * List<Run> buildDropRunSQL(Column column, boolean slice)
+	 * List<Run> buildDropRunSQL(Column column)
+	 * List<Run> buildRenameRunSQL(Column column)
+	 * List<Run> buildChangeTypeRunSQL(Column column)
+	 * List<Run> buildChangeDefaultRunSQL(Column column)
+	 * List<Run> buildChangeNullableRunSQL(Column column)
+	 * List<Run> buildChangeCommentRunSQL(Column column)
+	 * List<Run> buildAddCommentRunSQL(Column column)
 	 * StringBuilder define(StringBuilder builder, Column column)
 	 * StringBuilder type(StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(Column column);
@@ -1057,11 +1065,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildAddRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildAddRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildAddRunSQL(column, slice);
 	}
 	@Override
-	public List<String> buildAddRunSQL(Column column) throws Exception{
+	public List<Run> buildAddRunSQL(Column column) throws Exception{
 		return buildAddRunSQL(column, false);
 	}
 
@@ -1074,11 +1082,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildAlterRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildAlterRunSQL(column, slice);
 	}
 	@Override
-	public List<String> buildAlterRunSQL(Column column) throws Exception{
+	public List<Run> buildAlterRunSQL(Column column) throws Exception{
 		return buildAlterRunSQL(column, false);
 	}
 
@@ -1092,7 +1100,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildDropRunSQL(Column column, boolean slice) throws Exception{
 		return super.buildDropRunSQL(column, slice);
 	}
 
@@ -1103,14 +1111,16 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Column column) throws Exception {
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildRenameRunSQL(Column column) throws Exception {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
 		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getUpdate().getName());
-		sqls.add(builder.toString());
-		return sqls;
+		column.setName(column.getUpdate().getName());
+		return runs;
 	}
 
 	/**
@@ -1119,9 +1129,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildChangeTypeRunSQL(Column column) throws Exception{
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildChangeTypeRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		Column update = column.getUpdate();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true));
@@ -1134,8 +1146,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 			type = type.substring(0,type.indexOf("("));
 		}
 		builder.append(" USING ").append(column.getName()).append("::").append(type);
-		sqls.add(builder.toString());
-		return sqls;
+		return runs;
 	}
 
 
@@ -1147,7 +1158,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeDefaultRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeDefaultRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		Object def = null;
 		if(null != column.getUpdate()){
 			def = column.getUpdate().getDefaultValue();
@@ -1163,7 +1178,6 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 			def = str;
 		}
 
-		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, column.getTable(true)).append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1172,7 +1186,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 		}else{
 			builder.append(" DROP DEFAULT");
 		}
-		return builder.toString();
+		return runs;
 	}
 
 	/**
@@ -1183,28 +1197,28 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeNullableRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
-			if(nullable == uNullable){
-				return null;
+			if(nullable != uNullable){
+				builder.append("ALTER TABLE ");
+				name(builder, column.getTable(true)).append(" ALTER ");
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+				if(uNullable == 0){
+					builder.append(" SET ");
+				}else{
+					builder.append(" DROP ");
+				}
+				builder.append(" NOT NULL");
+				column.setNullable(uNullable);
 			}
-
-			StringBuilder builder = new StringBuilder();
-			builder.append("ALTER TABLE ");
-			name(builder, column.getTable(true)).append(" ALTER ");
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-			if(uNullable == 0){
-				builder.append(" SET ");
-			}else{
-				builder.append(" DROP ");
-			}
-			builder.append(" NOT NULL");
-			column.setNullable(uNullable);
-			return builder.toString();
 		}
-		return null;
+		return runs;
 	}
 
 	/**
@@ -1213,7 +1227,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public String buildAddCommentRunSQL(Column column) throws Exception {
+	public List<Run> buildAddCommentRunSQL(Column column) throws Exception {
 		return buildChangeCommentRunSQL(column);
 	}
 	/**
@@ -1223,7 +1237,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeCommentRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		Column update = column.getUpdate();
 		if(null != update){
@@ -1233,15 +1251,12 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
-			StringBuilder builder = new StringBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 			builder.append(" IS '").append(comment).append("'");
-			return builder.toString();
-		}else{
-			return null;
 		}
+		return runs;
 	}
 
 
@@ -1252,7 +1267,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<String> buildDropAutoIncrement(Column column) throws Exception{
+	public List<Run> buildDropAutoIncrement(Column column) throws Exception{
 		return super.buildDropAutoIncrement(column);
 	}
 	/**
@@ -1385,14 +1400,14 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(Tag tag);
-	 * List<String> buildAlterRunSQL(Tag tag);
-	 * String buildDropRunSQL(Tag tag);
-	 * List<String> buildRenameRunSQL(Tag tag);
-	 * String buildChangeDefaultRunSQL(Tag tag);
-	 * String buildChangeNullableRunSQL(Tag tag);
-	 * String buildChangeCommentRunSQL(Tag tag);
-	 * List<String> buildChangeTypeRunSQL(Tag tag);
+	 * List<Run> buildAddRunSQL(Tag tag);
+	 * List<Run> buildAlterRunSQL(Tag tag);
+	 * List<Run> buildDropRunSQL(Tag tag);
+	 * List<Run> buildRenameRunSQL(Tag tag);
+	 * List<Run> buildChangeDefaultRunSQL(Tag tag);
+	 * List<Run> buildChangeNullableRunSQL(Tag tag);
+	 * List<Run> buildChangeCommentRunSQL(Tag tag);
+	 * List<Run> buildChangeTypeRunSQL(Tag tag);
 	 * StringBuilder checkTagExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
@@ -1403,7 +1418,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAddRunSQL(Tag tag) throws Exception{
 		return super.buildAddRunSQL(tag);
 	}
 
@@ -1414,7 +1429,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sqls
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAlterRunSQL(Tag tag) throws Exception{
 		return super.buildAlterRunSQL(tag);
 	}
 
@@ -1426,7 +1441,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Tag tag) throws Exception{
+	public List<Run> buildDropRunSQL(Tag tag) throws Exception{
 		return super.buildDropRunSQL(tag);
 	}
 
@@ -1439,7 +1454,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Tag tag)  throws Exception{
+	public List<Run> buildRenameRunSQL(Tag tag)  throws Exception{
 		return super.buildRenameRunSQL(tag);
 	}
 
@@ -1451,7 +1466,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeDefaultRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeDefaultRunSQL(Tag tag) throws Exception{
 		return super.buildChangeDefaultRunSQL(tag);
 	}
 
@@ -1463,7 +1478,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeNullableRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeNullableRunSQL(Tag tag) throws Exception{
 		return super.buildChangeNullableRunSQL(tag);
 	}
 	/**
@@ -1474,7 +1489,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildChangeCommentRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception{
 		return super.buildChangeCommentRunSQL(tag);
 	}
 
@@ -1486,7 +1501,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return sql
 	 */
 	@Override
-	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeTypeRunSQL(Tag tag) throws Exception{
 		return super.buildChangeTypeRunSQL(tag);
 	}
 
@@ -1504,10 +1519,10 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(PrimaryKey primary) throws Exception
-	 * List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception
-	 * String buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -1515,8 +1530,11 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(PrimaryKey primary) throws Exception{
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
@@ -1531,9 +1549,9 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 				first = false;
 			}
 			builder.append(")");
-
 		}
-		return builder.toString();
+
+		return runs;
 	}
 	/**
 	 * 修改主键
@@ -1542,7 +1560,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildAlterRunSQL(primary);
 	}
 
@@ -1552,13 +1570,16 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(PrimaryKey primary) throws Exception{
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, primary.getTable(true));
 		builder.append(" DROP CONSTRAINT ");
 		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
+		return runs;
 	}
 	/**
 	 * 修改主键名
@@ -1567,7 +1588,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception{
 		return super.buildRenameRunSQL(primary);
 	}
 
@@ -1580,7 +1601,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildAddRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildAddRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildAddRunSQL(foreign);
 	}
 	/**
@@ -1588,7 +1609,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param foreign 外键
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildAlterRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildAlterRunSQL(foreign);
 	}
 
@@ -1597,7 +1618,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public String buildDropRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildDropRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildDropRunSQL(foreign);
 	}
 
@@ -1607,17 +1628,17 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<String> buildRenameRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildRenameRunSQL(ForeignKey foreign) throws Exception{
 		return super.buildRenameRunSQL(foreign);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(Index index) throws Exception
-	 * List<String> buildAlterRunSQL(Index index) throws Exception
-	 * String buildDropRunSQL(Index index) throws Exception
-	 * List<String> buildRenameRunSQL(Index index) throws Exception
+	 * List<Run> buildAddRunSQL(Index index) throws Exception
+	 * List<Run> buildAlterRunSQL(Index index) throws Exception
+	 * List<Run> buildDropRunSQL(Index index) throws Exception
+	 * List<Run> buildRenameRunSQL(Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -1625,7 +1646,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Index index) throws Exception{
+	public List<Run> buildAddRunSQL(Index index) throws Exception{
 		return super.buildAddRunSQL(index);
 	}
 	/**
@@ -1635,7 +1656,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Index index) throws Exception{
+	public List<Run> buildAlterRunSQL(Index index) throws Exception{
 		return super.buildAlterRunSQL(index);
 	}
 
@@ -1645,15 +1666,17 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Index index) throws Exception{
-
-		StringBuilder builder = new StringBuilder();
+	public List<Run> buildDropRunSQL(Index index) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		if(index.isPrimary()){
 			log.info("[主键索引,忽略删除][index:{}]", index.getName());
 		}else {
 			builder.append("DROP INDEX ").append(index.getName());
 		}
-		return builder.toString();
+		return runs;
 	}
 	/**
 	 * 修改索引名
@@ -1662,7 +1685,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Index index) throws Exception{
+	public List<Run> buildRenameRunSQL(Index index) throws Exception{
 		return super.buildRenameRunSQL(index);
 	}
 	/**
@@ -1676,10 +1699,10 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String buildAddRunSQL(Constraint constraint) throws Exception
-	 * List<String> buildAlterRunSQL(Constraint constraint) throws Exception
-	 * String buildDropRunSQL(Constraint constraint) throws Exception
-	 * List<String> buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildAddRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildAlterRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildDropRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -1687,7 +1710,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildAddRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildAddRunSQL(Constraint constraint) throws Exception{
 		return super.buildAddRunSQL(constraint);
 	}
 	/**
@@ -1697,7 +1720,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return List
 	 */
 	@Override
-	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildAlterRunSQL(Constraint constraint) throws Exception{
 		return super.buildAlterRunSQL(constraint);
 	}
 
@@ -1707,7 +1730,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public String buildDropRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildDropRunSQL(Constraint constraint) throws Exception{
 		return super.buildDropRunSQL(constraint);
 	}
 	/**
@@ -1717,7 +1740,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 	 * @return String
 	 */
 	@Override
-	public List<String> buildRenameRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildRenameRunSQL(Constraint constraint) throws Exception{
 		return super.buildRenameRunSQL(constraint);
 	}
 

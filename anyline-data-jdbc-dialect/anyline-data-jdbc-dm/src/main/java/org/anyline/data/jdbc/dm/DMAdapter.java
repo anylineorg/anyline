@@ -1355,8 +1355,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public List<Run> buildAlterRunSQL(Column column, boolean slice) throws Exception{
-		return super.buildAlterRunSQL(column);
+		return super.buildAlterRunSQL(column, slice);
 	}
+
 
 	
 
@@ -1368,7 +1369,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public List<Run> buildDropRunSQL(Column column, boolean slice) throws Exception{
-		return super.buildDropRunSQL(column);
+		return super.buildDropRunSQL(column, slice);
 	}
 	@Override
 	public List<Run> buildDropRunSQL(Column column) throws Exception{

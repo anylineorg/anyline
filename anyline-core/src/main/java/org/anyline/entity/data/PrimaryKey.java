@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 
 public class PrimaryKey extends Index implements Serializable {
     private PrimaryKey update;
+    public PrimaryKey(){
+        primary = true;
+    }
     public boolean isPrimary(){
         return true;
     }
@@ -44,7 +47,9 @@ public class PrimaryKey extends Index implements Serializable {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
-        update.update = null;
+        if(null != update) {
+            update.update = null;
+        }
         return this;
     }
 

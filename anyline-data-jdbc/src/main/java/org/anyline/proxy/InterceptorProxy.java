@@ -420,12 +420,12 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH before(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<String> sqls){
+    public static SWITCH before(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<Run> runs){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
             for(DDInterceptor interceptor:interceptors){
-                swt = interceptor.before(runtime, random, action, metadata, sqls);
+                swt = interceptor.before(runtime, random, action, metadata, runs);
                 if(swt == SWITCH.SKIP){
                     //跳过后续的 after
                     return swt;
@@ -434,12 +434,12 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH after(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<String> sqls, boolean result, long millis){
+    public static SWITCH after(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<Run> runs, boolean result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
             for(DDInterceptor interceptor:interceptors){
-                swt = interceptor.after(runtime, random, action, metadata, sqls, result, millis);
+                swt = interceptor.after(runtime, random, action, metadata, runs, result, millis);
                 if(swt == SWITCH.SKIP){
                     //跳过后续的 after
                     return swt;
