@@ -1500,6 +1500,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 				column.setName(name);
 				update.setName(tmp_name);
+				column.setNullable(update.isNullable());
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE ");

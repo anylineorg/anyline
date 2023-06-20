@@ -1392,6 +1392,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 
 				column.setName(name);
 				update.setName(tmp_name);
+				column.setNullable(update.isNullable());
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE ");

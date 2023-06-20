@@ -1415,6 +1415,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 
 				column.setName(name);
 				update.setName(tmp_name);
+				column.setNullable(update.isNullable());
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE ");

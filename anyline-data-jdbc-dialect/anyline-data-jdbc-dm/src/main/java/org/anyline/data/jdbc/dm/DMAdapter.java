@@ -1381,6 +1381,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 				column.setName(name);
 				update.setName(tmp_name);
+				column.setNullable(update.isNullable());
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE ");
