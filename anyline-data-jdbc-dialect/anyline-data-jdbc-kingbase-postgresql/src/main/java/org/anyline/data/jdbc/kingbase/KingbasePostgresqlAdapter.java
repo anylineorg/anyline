@@ -1201,6 +1201,7 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 				builder.append(" DROP ");
 			}
 			builder.append(" NOT NULL");
+			column.setNullable(uNullable);
 			return builder.toString();
 		}
 		return null;

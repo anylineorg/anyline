@@ -1459,6 +1459,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 				builder.append(" NOT ");
 			}
 			builder.append("NULL");
+			column.setNullable(uNullable);
 			return builder.toString();
 		}
 		return null;

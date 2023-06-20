@@ -1190,6 +1190,7 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 				builder.append(" DROP ");
 			}
 			builder.append(" NOT NULL");
+			column.setNullable(uNullable);
 			return builder.toString();
 		}
 		return null;

@@ -1448,6 +1448,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 				builder.append(" NOT ");
 			}
 			builder.append("NULL");
+			column.setNullable(uNullable);
 			return builder.toString();
 		}
 		return null;

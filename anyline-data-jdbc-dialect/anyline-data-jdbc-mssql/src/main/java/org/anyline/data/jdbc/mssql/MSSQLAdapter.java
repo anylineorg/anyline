@@ -1173,6 +1173,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			builder.append(" NOT");
 		}
 		builder.append(" NULL");
+		column.setNullable(nullable);
 		return builder.toString();
 	}
 
