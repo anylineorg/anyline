@@ -9,6 +9,13 @@ import java.util.List;
 
 public interface DDListener {
 
+    /**
+     * 准备添加列
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random
+     * @param column
+     * @return
+     */
     default boolean prepareAdd(JDBCRuntime runtime, String random,  Column column){
         return true;
     }
