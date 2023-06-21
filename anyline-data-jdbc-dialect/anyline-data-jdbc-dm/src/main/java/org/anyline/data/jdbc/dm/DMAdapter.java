@@ -165,14 +165,6 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 
 	/**
 	 * 批量插入
-	 *
-	 * 有序列时 只支持插入同一张表
-	 * INSERT INTO CRM_USER(ID, NAME)
-	 *  SELECT gloable_seq.nextval  AS ID  , M.* FROM (
-	 * 		SELECT  'A1' AS NM FROM  DUAL
-	 * 		UNION ALL SELECT    'A2' FROM DUAL
-	 * 		UNION ALL SELECT    'A3' FROM DUAL
-	 * ) M
 	 * @param template JdbcTemplate
 	 * @param run run
 	 * @param dest dest
@@ -180,78 +172,8 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
-		if(null == set || set.size() ==0){
-			return;
-		}
-		StringBuilder builder = run.getBuilder();
-		DataRow first = set.getRow(0);
-		Map<String,String> seqs = new HashMap<>();
-		for(String key:keys){
-			Object value = first.getStringNvl(key);
-			if(null != value && value instanceof String) {
-				String str = (String)value;
-				if (str.toUpperCase().contains(".NEXTVAL")) {
-					if (str.startsWith("${") && str.endsWith("}")) {
-						str = str.substring(2, str.length() - 1);
-					}
-					if(DMAdapter.IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						createPrimaryValue(template, set, str);
-					}else {
-						seqs.put(key, str);
-					}
-				}
-			}
-		}
-
-		List<String> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
-		if(null != generator){
-			pks = first.getPrimaryKeys();
-			BeanUtil.join(true, keys, pks);
-		}
-		builder.append("INSERT INTO ");
-		SQLUtil.delimiter(builder, dest, getDelimiterFr(), getDelimiterTo()).append(" (");
-		int keySize = keys.size();
-		for(int i=0; i<keySize; i++){
-			String key = keys.get(i);
-			builder.append(key);
-			if(i<keySize-1){
-				builder.append(", ");
-			}
-		}
-		builder.append(") \n");
-		builder.append("SELECT ");
-		for(int i=0; i<keySize; i++){
-			String key = keys.get(i);
-			String seq = seqs.get(key);
-			if(null != seq){
-				builder.append(seq);
-			}else{
-				builder.append("M.").append(key);
-			}
-			builder.append(" AS ").append(key);
-			if(i<keySize-1){
-				builder.append(", ");
-			}
-		}
-		builder.append("\nFROM( ");
-		keys.removeAll(seqs.keySet());
-		int col = 0;
-		for(DataRow row:set) {
-			if(row.hasPrimaryKeys() && null != generator){
-				generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-				//createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-			}
-
-			if(col > 0){
-				builder.append("\n\tUNION ALL");
-			}
-			builder.append("\n\tSELECT ");
-			insertValue(template, run, row, true, true,false, keys);
-			builder.append(" FROM DUAL ");
-			col ++;
-		}
-		builder.append(") M ");
+		//不要参考oracle,参考mysql就可以
+		super.createInserts(template, run, dest, set, keys);
 	}
 	@Override
 	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys){
@@ -1934,12 +1856,12 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT COL.* FROM DBA_CONSTRAINTS CON ,DBA_CONS_COLUMNS COL\n");
-		builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
-		builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
-		builder.append("AND COL.TABLE_NAME = '").append(objectName(table.getName())).append("'\n");
+		builder.append("SELECT A.*,  B.COLUMN_NAME , B.POSITION \n");
+		builder.append("FROM ALL_CONSTRAINTS A, ALL_CONS_COLUMNS B WHERE B.OWNER =A.OWNER AND A.TABLE_NAME =B.TABLE_NAME \n");
+		builder.append("AND A.CONSTRAINT_TYPE = 'P'\n");
+		builder.append("AND A.TABLE_NAME = '").append(objectName(table.getName())).append("'\n");
 		if(BasicUtil.isNotEmpty(table.getSchema())){
-			builder.append(" AND COL.OWNER = '").append(table.getSchema()).append("'");
+			builder.append(" AND A.OWNER = '").append(table.getSchema()).append("'");
 		}
 		return runs;
 	}
