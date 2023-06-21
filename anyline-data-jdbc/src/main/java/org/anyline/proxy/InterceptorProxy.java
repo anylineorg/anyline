@@ -1,24 +1,25 @@
 package org.anyline.proxy;
 
 import org.anyline.data.interceptor.*;
-import org.anyline.data.interceptor.DDInterceptor.ACTION;
-import org.anyline.data.interceptor.JDBCInterceptor.SWITCH;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.ACTION;
 import org.anyline.entity.data.Parameter;
 import org.anyline.entity.data.Procedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.anyline.entity.data.ACTION.SWITCH;
+import org.anyline.entity.data.ACTION.DDL;
 
 import java.util.*;
 
 @Component("anyline.interceptor.proxy")
 public class InterceptorProxy {
 
-    private static Map<DDInterceptor.ACTION, List<DDInterceptor>> dds = new HashMap<>();
+    private static Map<ACTION.DDL, List<DDInterceptor>> dds = new HashMap<>();
     private static List<QueryInterceptor> queryInterceptors = new ArrayList<>();
     private static List<CountInterceptor> countInterceptors = new ArrayList<>();
     private static List<UpdateInterceptor> updateInterceptors = new ArrayList<>();
@@ -71,13 +72,13 @@ public class InterceptorProxy {
     @Autowired(required=false)
     public void setDDInterceptors(Map<String, DDInterceptor> interceptors) {
         for(DDInterceptor interceptor:interceptors.values()){
-            List<DDInterceptor.ACTION> actions = interceptor.actions();
+            List<DDL> actions = interceptor.actions();
             if(null != actions){
-                for(DDInterceptor.ACTION action:actions){
+                for(DDL action:actions){
                     reg(action, interceptor);
                 }
             }
-            DDInterceptor.ACTION action = interceptor.action();
+            DDL action = interceptor.action();
             if(null != action){
                 reg(action, interceptor);
             }
@@ -87,7 +88,7 @@ public class InterceptorProxy {
             JDBCInterceptor.sort(list);
         }
     }
-    public void reg(DDInterceptor.ACTION action, DDInterceptor interceptor){
+    public void reg(DDL action, DDInterceptor interceptor){
         List<DDInterceptor> interceptors = dds.get(action);
         if(null == interceptors){
             interceptors = new ArrayList<>();
@@ -182,10 +183,10 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeCount(JDBCRuntime runtime, Run run){
-        SWITCH swt = JDBCInterceptor.SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.before(runtime, run);
-            if(swt == JDBCInterceptor.SWITCH.SKIP){
+            if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
             }
@@ -217,10 +218,10 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeUpdate(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
-        SWITCH swt = JDBCInterceptor.SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.before(runtime, run, dest, data, configs, columns);
-            if(swt == JDBCInterceptor.SWITCH.SKIP){
+            if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
             }
@@ -252,10 +253,10 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeInsert(JDBCRuntime runtime, Run run, String dest, Object data, boolean checkPrimary,  List<String> columns){
-        SWITCH swt = JDBCInterceptor.SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.before(runtime, run, dest, data,checkPrimary,  columns);
-            if(swt == JDBCInterceptor.SWITCH.SKIP){
+            if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
             }
@@ -309,10 +310,10 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeDelete(JDBCRuntime runtime, Run run){
-        SWITCH swt = JDBCInterceptor.SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.before(runtime, run);
-            if(swt == JDBCInterceptor.SWITCH.SKIP){
+            if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
             }
@@ -355,10 +356,10 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeExecute(JDBCRuntime runtime, Run run){
-        SWITCH swt = JDBCInterceptor.SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.before(runtime, run);
-            if(swt == JDBCInterceptor.SWITCH.SKIP){
+            if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
             }
@@ -367,10 +368,10 @@ public class InterceptorProxy {
     }
 
     public static SWITCH beforeExecute(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs){
-        SWITCH swt = JDBCInterceptor.SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.before(runtime, procedure, sql, inputs, outputs);
-            if(swt == JDBCInterceptor.SWITCH.SKIP){
+            if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
             }
@@ -405,7 +406,7 @@ public class InterceptorProxy {
      *
      * ****************************************************************************************************************/
 
-    public static SWITCH prepare(JDBCRuntime runtime, String random, ACTION action, Object metadata){
+    public static SWITCH prepare(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -420,7 +421,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH before(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<Run> runs){
+    public static SWITCH before(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -434,7 +435,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH after(JDBCRuntime runtime, String random, ACTION action, Object metadata, List<Run> runs, boolean result, long millis){
+    public static SWITCH after(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){

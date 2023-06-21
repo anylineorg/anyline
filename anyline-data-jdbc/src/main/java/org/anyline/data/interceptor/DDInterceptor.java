@@ -1,24 +1,13 @@
 package org.anyline.data.interceptor;
 
+import org.anyline.data.jdbc.ds.JDBCRuntime;
+import org.anyline.data.run.Run;
+import org.anyline.entity.data.ACTION;
+import org.anyline.entity.data.ACTION.SWITCH;
+
 import java.util.List;
 
 public interface DDInterceptor  extends JDBCInterceptor{
-    enum ACTION{
-        TABLE_CREATE    ("表创建"),
-        TABLE_ALTER     ("表结构修改"),
-        TABLE_DROP      ("表删除"),
-        TABLE_RENAME    ("表重命名"),
-
-        COLUMN_CREATE   ("列创建"),
-        COLUMN_ALTER    ("列结构修改"),
-        COLUMN_DROP     ("列删除"),
-        COLUMN_RENAME   ("列重命名"),
-        ;
-        private final String title;
-        ACTION(String title){
-            this.title = title;
-        }
-    }
 
 
     /**
@@ -26,17 +15,23 @@ public interface DDInterceptor  extends JDBCInterceptor{
      * 拦截多个事件的实现actions(),拦截一个事件的实现action()
      * @return List
      */
-    default List<ACTION> actions(){return null;}
-    default ACTION action(){return null;}
+    default List<ACTION.DDL> actions(){return null;}
+    default ACTION.DDL action(){return null;}
+
+    default SWITCH prepare(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata){return SWITCH.CONINUE;}
+    default SWITCH before(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){return SWITCH.CONINUE;}
 
     /**
-     * 可触发的类型 Table.class Column.class
-     * @return List
+     *
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param action 执行命令
+     * @param metadata table/column等
+     * @param runs 需要执行的SQL 有些命令需要多条SQL完成
+     * @param result SQL是否成功执行
+     * @param millis 执行耗时
+     * @return SWITCH
      */
-    List<Class> types();
-    Class type();
-    int prepare(Runtime runtime, ACTION action, Object entity);
-    int before(Runtime runtime, ACTION action, Object entity);
-    int after(Runtime runtime, ACTION action, Object entity, boolean result);
+    default SWITCH after(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){return SWITCH.CONINUE;}
 
 }

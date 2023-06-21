@@ -4,6 +4,7 @@ import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
+import org.anyline.entity.data.ACTION.SWITCH;
 
 public interface CountInterceptor extends DMInterceptor{
 

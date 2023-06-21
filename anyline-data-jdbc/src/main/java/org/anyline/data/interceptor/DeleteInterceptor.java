@@ -1,8 +1,11 @@
 package org.anyline.data.interceptor;
 
 import org.anyline.data.jdbc.ds.JDBCRuntime;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
+import org.anyline.entity.data.ACTION.SWITCH;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface DeleteInterceptor extends DMInterceptor{
@@ -16,6 +19,16 @@ public interface DeleteInterceptor extends DMInterceptor{
      * @return RESULT
      */
     default SWITCH prepare(JDBCRuntime runtime, String dest, Object data, boolean checkPrimary, List<String> columns){
+        return SWITCH.CONINUE;
+    }
+
+    default SWITCH prepare(JDBCRuntime runtime, String table, ConfigStore configs, String ... conditions){
+        return SWITCH.CONINUE;
+    }
+    default SWITCH prepare(JDBCRuntime runtime, String table, String key, Collection values){
+        return SWITCH.CONINUE;
+    }
+    default SWITCH prepare(JDBCRuntime runtime, String table, Object obj, String ... columns){
         return SWITCH.CONINUE;
     }
 

@@ -4,6 +4,8 @@ import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
+import org.anyline.entity.data.ACTION;
+import org.anyline.entity.data.ACTION.SWITCH;
 import org.anyline.entity.data.Parameter;
 import org.anyline.entity.data.Procedure;
 
@@ -19,7 +21,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param conditions 执行条件
      * @return RESULT
      */
-    default SWITCH prepare(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    default ACTION.SWITCH prepare(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
         return SWITCH.CONINUE;
     }
     default SWITCH prepare(JDBCRuntime runtime, Procedure procedure){
