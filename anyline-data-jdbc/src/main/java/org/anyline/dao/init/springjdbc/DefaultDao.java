@@ -202,9 +202,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != adapter) {
 					maps = adapter.process(maps);
 				}
-				if (null != dmListener) {
-					dmListener.afterQuery(runtime, run, maps, System.currentTimeMillis() - fr);
-				}
 				sql_success = true;
 			} else {
 				maps = new ArrayList<>();
@@ -214,6 +211,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if (null != dmListener) {
+			dmListener.afterQuery(runtime, run, sql_success, maps, System.currentTimeMillis() - fr);
 		}
 		InterceptorProxy.afterQuery(runtime, run, sql_success, maps, null,System.currentTimeMillis() - fr);
 		return maps;
@@ -289,7 +289,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 					if (null != dmListener) {
-						dmListener.afterTotal(runtime, run, total, System.currentTimeMillis() - fr);
+						dmListener.afterTotal(runtime, run, true, total, System.currentTimeMillis() - fr);
 					}
 					if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 						log.info("[查询记录总数][行数:{}]", total);
@@ -307,9 +307,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						return new DataSet();
 					}
 					set = select(runtime, prepare.getTable(), run.getFinalQuery(), run.getValues());
-					if(null != dmListener){
-						dmListener.afterQuery(runtime, run, set, System.currentTimeMillis() - fr);
-					}
 					sql_success = true;
 				}else{
 					set = new DataSet();
@@ -328,6 +325,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if(null != dmListener){
+			dmListener.afterQuery(runtime, run, sql_success, set, System.currentTimeMillis() - fr);
 		}
 		InterceptorProxy.afterQuery(runtime, run, sql_success, set, navi, System.currentTimeMillis() - fr);
 		return set;
@@ -415,7 +415,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 					if (null != dmListener) {
-						dmListener.afterTotal(runtime, run, total, System.currentTimeMillis() - fr);
+						dmListener.afterTotal(runtime, run, true, total, System.currentTimeMillis() - fr);
 					}
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
@@ -436,9 +436,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 					fr = System.currentTimeMillis();
 					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
-					if (null != dmListener) {
-						dmListener.afterQuery(runtime, run, list, System.currentTimeMillis() - fr);
-					}
 					sql_success = false;
 				}else{
 					list = new EntitySet<>();
@@ -455,6 +452,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if (null != dmListener) {
+			dmListener.afterQuery(runtime, run, sql_success, list, System.currentTimeMillis() - fr);
 		}
 		InterceptorProxy.afterQuery(runtime, run, sql_success, list, navi, System.currentTimeMillis() - fr);
 		return list;
@@ -525,14 +525,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			fr = System.currentTimeMillis();
 			count = getTotal(run.getTotalQuery(), run.getValues());
 			sql_success = true;
-			if(null != dmListener){
-				dmListener.afterCount(runtime, run, count, System.currentTimeMillis() - fr);
-			}
 		}finally{
 			// 自动切换回切换前的数据源
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if(null != dmListener){
+			dmListener.afterCount(runtime, run, sql_success, count, System.currentTimeMillis() - fr);
 		}
 		InterceptorProxy.afterCount(runtime, run, sql_success, count, System.currentTimeMillis() - fr);
 		return count;
@@ -591,7 +591,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				if(null != dmListener){
-					dmListener.afterExists(runtime, run, result, millis);
+					dmListener.afterExists(runtime, run, true, result, millis);
 				}
 				boolean slow = false;
 				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -600,7 +600,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						slow = true;
 						log.warn("{}[SLOW SQL][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 						if(null != dmListener){
-							dmListener.slow(runtime, "exists", run, txt, values, null, millis);
+							dmListener.slow(runtime, "exists", run, txt,  values, null, true, result, millis);
 						}
 					}
 				}
@@ -702,6 +702,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(run.getUpdateColumns(), values));
 		}
 		/*执行SQL*/
+		long millis = -1;
 		try{
 			swt = InterceptorProxy.beforeUpdate(runtime, run, dest, data, configs, columns);
 			if(swt == SWITCH.BREAK){
@@ -716,10 +717,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			result = runtime.getTemplate().update(sql, values.toArray());
 			checkMany2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 			checkOne2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
-			Long millis = System.currentTimeMillis() - fr;
-			if (null != dmListener) {
-				dmListener.afterUpdate(runtime, run, result, dest, data, columns, millis);
-			}
+			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
@@ -727,7 +725,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "update", run, sql, values, null, millis);
+						dmListener.slow(runtime, "update", run, sql, values, null, true , result, millis);
 					}
 				}
 			}
@@ -755,6 +753,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if (null != dmListener) {
+			dmListener.afterUpdate(runtime, run, result, dest, data, columns, sql_success, result,  millis);
 		}
 		InterceptorProxy.afterUpdate(runtime, run, dest, data, configs, columns, sql_success, result, System.currentTimeMillis() - fr);
 		return result;
@@ -959,6 +960,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(run.getInsertColumns(),values));
 		}
+		long millis = -1;
 		try{
 			swt = InterceptorProxy.beforeInsert(runtime, run, dest, data, checkPrimary, columns);
 			if(swt == SWITCH.BREAK){
@@ -974,11 +976,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
 			checkMany2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 			checkOne2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-			Long millis = System.currentTimeMillis() - fr;
-			if (null != dmListener) {
-				dmListener.afterInsert(runtime, run, cnt, dest, data, checkPrimary, columns, millis);
-			}
-
+			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
@@ -986,7 +984,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "insert", run, sql, values, null, millis);
+						dmListener.slow(runtime, "insert", run, sql, values, null, true, cnt, millis);
 					}
 				}
 			}
@@ -1014,6 +1012,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				DataSourceHolder.recoverDataSource();
 			}
 		}
+		if (null != dmListener) {
+			dmListener.afterInsert(runtime, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
+		}
+
 		InterceptorProxy.afterInsert(runtime, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
 		return cnt;
 	}
@@ -1256,7 +1258,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid-fr, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "select",null, sql, values, null, mid);
+						dmListener.slow(runtime, "select",null, sql, values, null, true, maps, mid);
 					}
 				}
 			}
@@ -1417,7 +1419,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(mid[0] - fr > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "select", null, sql, values, null, mid[0] - fr);
+						dmListener.slow(runtime, "select", null, sql, values, null, true, set,mid[0] - fr);
 					}
 				}
 			}
@@ -1651,6 +1653,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, txt, paramLogFormat(values));
 		}
+		long millis = -1;
 		try{
 
 			swt = InterceptorProxy.beforeExecute(runtime, run);
@@ -1669,7 +1672,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = runtime.getTemplate().update(txt);
 			}
 			sql_success = true;
-			Long millis = System.currentTimeMillis() - fr;
+			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
@@ -1677,12 +1680,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "execute", run, txt, values, null, millis);
+						dmListener.slow(runtime, "execute", run, txt, values, null, true, result, millis);
 					}
 				}
-			}
-			if (null != dmListener) {
-				dmListener.afterExecute(runtime, run, result, millis);
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
@@ -1705,6 +1705,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if (null != dmListener) {
+			dmListener.afterExecute(runtime, run,  sql_success, result, millis);
 		}
 		InterceptorProxy.afterExecute(runtime, run, sql_success, result, System.currentTimeMillis()-fr);
 		return result;
@@ -1762,6 +1765,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 			log.info("{}[sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, paramLogFormat(inputs), paramLogFormat(outputs));
 		}
+		long millis= -1;
 		try{
 
 			swt = InterceptorProxy.beforeExecute(runtime, procedure, sql, inputs, outputs);
@@ -1817,7 +1821,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			sql_success = true;
 			procedure.setResult(list);
 			result = true;
-			Long millis = System.currentTimeMillis() - fr;
+			millis = System.currentTimeMillis() - fr;
 
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -1825,7 +1829,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
 					if(null != dmListener){
-						dmListener.slow(runtime, "procedure",null, sql, inputs, list, millis);
+						dmListener.slow(runtime, "procedure",null, sql, inputs,  list, true, result, millis);
 					}
 				}
 			}
@@ -1888,6 +1892,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		final String rdm = random;
 		DataSet set = null;
+		long millis = -1;
 		try{
 			/*if(null != queryInterceptor){
 				int exe = queryInterceptor.before(procedure);
@@ -1987,7 +1992,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			});
 			sql_success = true;
-			Long millis = System.currentTimeMillis() - fr;
+			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
@@ -1999,12 +2004,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							, paramLogFormat(inputs)
 							, paramLogFormat(outputs));
 					if(null != dmListener){
-						dmListener.slow(runtime, "procedure", null, procedure.getName(), inputs, outputs, millis);
+						dmListener.slow(runtime, "procedure", null, procedure.getName(), inputs, outputs, true, set, millis);
 					}
 				}
-			}
-			if(null != dmListener){
-				dmListener.afterQuery(runtime, procedure, set, millis);
 			}
 /*			if(null != queryInterceptor){
 				queryInterceptor.after(procedure, set, millis);
@@ -2034,6 +2036,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(recover && !isFix() && DataSourceHolder.isAutoRecover()){
 				DataSourceHolder.recoverDataSource();
 			}
+		}
+		if(null != dmListener){
+			dmListener.afterQuery(runtime, procedure, sql_success, set, millis);
 		}
 		InterceptorProxy.afterQuery(runtime, procedure, inputs, outputs, navi, sql_success, set, System.currentTimeMillis()-fr);
 		return set;
@@ -2235,6 +2240,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(!exe){
 			return -1;
 		}
+		long millis = -1;
 		try{
 			if(null == values) {
 				result = runtime.getTemplate().update(sql);
@@ -2242,7 +2248,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				result = runtime.getTemplate().update(sql, values.toArray());
 			}
 			sql_success = true;
-			Long millis = System.currentTimeMillis() - fr;
+			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
@@ -2250,12 +2256,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "delete", run, sql, values, null, millis);
+						dmListener.slow(runtime, "delete", run, sql, values, null, sql_success, result, millis);
 					}
 				}
-			}
-			if(null != dmListener){
-				dmListener.afterDelete(runtime, run, result, millis);
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
@@ -2283,7 +2286,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				DataSourceHolder.recoverDataSource();
 			}
 		}
-		InterceptorProxy.afterDelete(runtime, run,  sql_success, result, System.currentTimeMillis()-fr);
+		if(null != dmListener){
+			dmListener.afterDelete(runtime, run, sql_success, result, millis);
+		}
+		InterceptorProxy.afterDelete(runtime, run,  sql_success, result, millis);
 		return result;
 	}
 
