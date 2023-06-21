@@ -25,8 +25,9 @@ import org.anyline.data.adapter.init.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.interceptor.DDInterceptor;
 import org.anyline.data.interceptor.JDBCInterceptor;
-import org.anyline.data.interceptor.JDBCInterceptor.SWITCH;
-import org.anyline.data.interceptor.DDInterceptor.ACTION;
+import org.anyline.entity.data.ACTION.SWITCH;
+import org.anyline.entity.data.ACTION.DDL;
+import org.anyline.entity.data.ACTION.DML;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.jdbc.ds.RuntimeHolder;
@@ -158,17 +159,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean sql_success = false;
 		Run run = null;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 
 		//query拦截
-		JDBCInterceptor.SWITCH swt = InterceptorProxy.prepareQuery(runtime, prepare, configs, conditions);
-		if(swt == JDBCInterceptor.SWITCH.BREAK){
+		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		if(swt == SWITCH.BREAK){
 			return new ArrayList<>();
 		}
 
 		//DM监听
 		boolean exe = true;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, prepare, configs, conditions);
+			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
 		if(!exe){
 			return new ArrayList<>();
@@ -191,14 +193,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			fr = System.currentTimeMillis();
 			if (run.isValid()) {
-				swt = InterceptorProxy.beforeQuery(runtime, run, null);
-				if(swt == JDBCInterceptor.SWITCH.BREAK){
+				swt = InterceptorProxy.beforeQuery(runtime, random,  run, null);
+				if(swt == SWITCH.BREAK){
 					return new ArrayList<>();
 				}
 				if (null != dmListener) {
-					dmListener.beforeQuery(runtime, run, -1);
+					dmListener.beforeQuery(runtime, random, run, -1);
 				}
-				maps = maps(runtime, run.getFinalQuery(), run.getValues());
+				maps = maps(runtime, random, run.getFinalQuery(), run.getValues());
 				if (null != adapter) {
 					maps = adapter.process(maps);
 				}
@@ -213,9 +215,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if (null != dmListener) {
-			dmListener.afterQuery(runtime, run, sql_success, maps, System.currentTimeMillis() - fr);
+			dmListener.afterQuery(runtime, random, run, sql_success, maps, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, run, sql_success, maps, null,System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, sql_success, maps, null,System.currentTimeMillis() - fr);
 		return maps;
 	}
 	public List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions){
@@ -232,25 +234,30 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		return querys(true, prepare, configs, conditions);
+		return querys(null, null, true, prepare, configs, conditions);
 	}
-	protected DataSet querys(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+	protected DataSet querys(JDBCRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		Long fr = System.currentTimeMillis();
 		boolean sql_success = false;
 		Run run = null;
 		PageNavi navi = null;
-		JDBCRuntime runtime = runtime();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		boolean exe = true;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, prepare, configs, conditions);
+			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
 		if(!exe){
 			return new DataSet();
 		}
 		//query拦截
-		JDBCInterceptor.SWITCH swt = InterceptorProxy.prepareQuery(runtime, prepare, configs, conditions);
-		if(swt == JDBCInterceptor.SWITCH.BREAK){
+		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		if(swt == SWITCH.BREAK){
 			return new DataSet();
 		}
 		try {
@@ -273,7 +280,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				if (null != navi) {
 					if (null != dmListener) {
-						dmListener.beforeTotal(runtime, run);
+						dmListener.beforeTotal(runtime, random, run);
 					}
 					fr = System.currentTimeMillis();
 					if (navi.getLastRow() == 0) {
@@ -289,7 +296,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 					if (null != dmListener) {
-						dmListener.afterTotal(runtime, run, true, total, System.currentTimeMillis() - fr);
+						dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
 					}
 					if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 						log.info("[查询记录总数][行数:{}]", total);
@@ -300,13 +307,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				if(null == navi || total > 0){
 					if(null != dmListener){
-						dmListener.beforeQuery(runtime, run, total);
+						dmListener.beforeQuery(runtime, random, run, total);
 					}
-					swt = InterceptorProxy.beforeQuery(runtime, run, navi);
-					if(swt == JDBCInterceptor.SWITCH.BREAK){
+					swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+					if(swt == SWITCH.BREAK){
 						return new DataSet();
 					}
-					set = select(runtime, prepare.getTable(), run.getFinalQuery(), run.getValues());
+					set = select(runtime, random, prepare.getTable(), run.getFinalQuery(), run.getValues());
 					sql_success = true;
 				}else{
 					set = new DataSet();
@@ -327,19 +334,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if(null != dmListener){
-			dmListener.afterQuery(runtime, run, sql_success, set, System.currentTimeMillis() - fr);
+			dmListener.afterQuery(runtime, random, run, sql_success, set, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, run, sql_success, set, navi, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, sql_success, set, navi, System.currentTimeMillis() - fr);
 		return set;
 	}
 
 	@Override
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
-		return querys(true, clazz, configs, conditions);
+		return querys(null, null, true, clazz, configs, conditions);
 	}
-	protected  <T> EntitySet<T> querys(boolean recover , Class<T> clazz, ConfigStore configs, String... conditions) {
+	protected  <T> EntitySet<T> querys(JDBCRuntime runtime, String random, boolean recover , Class<T> clazz, ConfigStore configs, String... conditions) {
 		RunPrepare prepare = new DefaultTablePrepare();
-		return querys(recover, prepare, clazz, configs, conditions);
+		return querys(runtime, random, recover, prepare, clazz, configs, conditions);
 	}
 	/**
 	 * 查询<br/>
@@ -351,27 +358,32 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public <T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
-		return querys(true, prepare, clazz, configs, conditions);
+		return querys(null, null, true, prepare, clazz, configs, conditions);
 	}
-	protected <T> EntitySet<T> querys(boolean recover, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
+	protected <T> EntitySet<T> querys(JDBCRuntime runtime, String random, boolean recover, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		Long fr = System.currentTimeMillis();
 		Run run = null;
-		JDBCRuntime runtime = runtime();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		boolean sql_success = false;
 		PageNavi navi = null;
 
 		boolean exe = true;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, prepare, configs, conditions);
+			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
 		if(!exe){
 			return new EntitySet();
 		}
 
 		//query拦截
-		JDBCInterceptor.SWITCH swt = InterceptorProxy.prepareQuery(runtime, prepare, configs, conditions);
-		if(swt == JDBCInterceptor.SWITCH.BREAK){
+		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		if(swt == SWITCH.BREAK){
 			return new EntitySet();
 		}
 		try {
@@ -399,7 +411,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (run.isValid()) {
 				if (null != navi) {
 					if (null != dmListener) {
-						dmListener.beforeTotal(runtime, run);
+						dmListener.beforeTotal(runtime, random, run);
 					}
 					fr = System.currentTimeMillis();
 					if (navi.getLastRow() == 0) {
@@ -415,7 +427,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					}
 					if (null != dmListener) {
-						dmListener.afterTotal(runtime, run, true, total, System.currentTimeMillis() - fr);
+						dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
 					}
 				}
 				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
@@ -426,16 +438,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			fr = System.currentTimeMillis();
 			if (run.isValid()) {
 				if((null == navi || total > 0)) {
-					swt = InterceptorProxy.beforeQuery(runtime, run, navi);
-					if(swt == JDBCInterceptor.SWITCH.BREAK){
+					swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+					if(swt == SWITCH.BREAK){
 						return new EntitySet();
 					}
 					if (null != dmListener) {
-						dmListener.beforeQuery(runtime, run, total);
+						dmListener.beforeQuery(runtime, random, run, total);
 					}
 
 					fr = System.currentTimeMillis();
-					list = select(runtime, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
+					list = select(runtime, random,clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
 					sql_success = false;
 				}else{
 					list = new EntitySet<>();
@@ -454,9 +466,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if (null != dmListener) {
-			dmListener.afterQuery(runtime, run, sql_success, list, System.currentTimeMillis() - fr);
+			dmListener.afterQuery(runtime, random, run, sql_success, list, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, run, sql_success, list, navi, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, sql_success, list, navi, System.currentTimeMillis() - fr);
 		return list;
 	}
 
@@ -477,12 +489,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	public DataRow sequence(boolean next, String ... names) {
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		List<Run> runs = adapter.buildQuerySequence(next, names);
 
 		if (null != runs && runs.size() > 0) {
 			Run run = runs.get(0);
-			DataSet set = select(runtime, "", run.getFinalQuery(), run.getValues());
+			DataSet set = select(runtime, random, null, run.getFinalQuery(), run.getValues());
 			if (set.size() > 0) {
 				return set.getRow(0);
 			}
@@ -490,23 +503,30 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return new DataRow();
 	}
 
+	@Override
 	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return count(true, prepare, configs, conditions);
+		return count(null, null, true, prepare, configs, conditions);
 	}
-	protected int count(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	protected int count(JDBCRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		Long fr = System.currentTimeMillis();
 		Run run = null;
-		JDBCRuntime runtime = runtime();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
+
 		boolean sql_success = false;
 
 		boolean exe = true;
-		SWITCH swt = InterceptorProxy.prepareCount(runtime, prepare, configs, conditions);
+		SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, prepare, configs, conditions);
+			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
 		if(!exe){
 			return -1;
@@ -516,9 +536,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			run = adapter.buildQueryRun(prepare, configs, conditions);
 			fr = System.currentTimeMillis();
 			if (null != dmListener) {
-				dmListener.beforeCount(runtime, run);
+				dmListener.beforeCount(runtime, random, run);
 			}
-			swt = InterceptorProxy.beforeCount(runtime, run);
+			swt = InterceptorProxy.beforeCount(runtime, random, run);
 			if(swt == SWITCH.BREAK){
 				return -1;
 			}
@@ -532,25 +552,31 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if(null != dmListener){
-			dmListener.afterCount(runtime, run, sql_success, count, System.currentTimeMillis() - fr);
+			dmListener.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterCount(runtime, run, sql_success, count, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
 		return count;
 	}
 	public int count(RunPrepare prepare, String ... conditions){
 		return count(prepare, null, conditions);
 	}
 
+	@Override
 	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return exists(true, prepare, configs, conditions);
+		return exists(null, null, true, prepare, configs, conditions);
 	}
-	protected boolean exists(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	protected boolean exists(JDBCRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		boolean result = false;
 
-		JDBCRuntime runtime = runtime();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		boolean exe = true;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, prepare, configs, conditions);
+			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
 		if(!exe){
 			return false;
@@ -563,16 +589,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			String txt = run.getFinalExists();
 			List<Object> values = run.getValues();
 
-			long fr = System.currentTimeMillis();
-			String random = "";
-			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				random = random();
+			long fr = System.currentTimeMillis(); 
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) { 
 				log.info("{}[sql:\n{}\n]\n[param:{}]", random, txt, paramLogFormat(values));
 			}
 			/*执行SQL*/
 			try {
 				if(null != dmListener){
-					dmListener.beforeExists(runtime, run);
+					dmListener.beforeExists(runtime, random, run);
 				}
 				Map<String, Object> map = null;
 				if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)){
@@ -591,7 +615,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Long millis = System.currentTimeMillis() - fr;
 				if(null != dmListener){
-					dmListener.afterExists(runtime, run, true, result, millis);
+					dmListener.afterExists(runtime, random, run, true, result, millis);
 				}
 				boolean slow = false;
 				long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -600,7 +624,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						slow = true;
 						log.warn("{}[SLOW SQL][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 						if(null != dmListener){
-							dmListener.slow(runtime, "exists", run, txt,  values, null, true, result, millis);
+							dmListener.slow(runtime, random, DML.EXISTS, run, txt,  values, null, true, result, millis);
 						}
 					}
 				}
@@ -638,7 +662,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
 		JDBCRuntime runtime = runtime();
-		DataSet set = select(runtime, (String)null, sql,values);
+		String random = random();
+		DataSet set = select(runtime, random, (String)null, sql,values);
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
@@ -652,21 +677,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int update(String dest, Object data, ConfigStore configs, List<String> columns){
-		return update(null, true, dest, data, configs, columns);
+		return update(null, null, true, dest, data, configs, columns);
 	}
-	protected int update(JDBCRuntime runtime, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
+	protected int update(JDBCRuntime runtime,  String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceHolder.parseDataSource(dest, data);
 		boolean exe = true;
 		boolean sql_success = false;
-		if(null == runtime) {
+		if(null == runtime){
 			runtime = runtime();
 		}
-		SWITCH swt = InterceptorProxy.prepareUpdate(runtime, dest, data, configs, columns);
+		if(null == random){
+			random = random();
+		}
+		SWITCH swt = InterceptorProxy.prepareUpdate(runtime, random, dest, data, configs, columns);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareUpdate(runtime, dest, data, configs, false, columns);
+			exe = dmListener.prepareUpdate(runtime, random, dest, data, configs, false, columns);
 		}
 		if(!exe){
 			return -1;
@@ -683,7 +711,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(data instanceof DataSet){
 			DataSet set = (DataSet)data;
 			for(int i=0; i<set.size(); i++){
-				result += update(runtime, false, dest, set.getRow(i), configs,  columns);
+				result += update(runtime, random, false, dest, set.getRow(i), configs,  columns);
 			}
 			return result;
 		}
@@ -696,27 +724,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
-		String random = "";
-		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(run.getUpdateColumns(), values));
-		}
 		/*执行SQL*/
 		long millis = -1;
 		try{
-			swt = InterceptorProxy.beforeUpdate(runtime, run, dest, data, configs, columns);
+			swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
 			if(swt == SWITCH.BREAK){
 				return -1;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeUpdate(runtime, run, dest, data, columns);
+				exe = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
 			}
 			if(!exe) {
 				return -1;
 			}
 			result = runtime.getTemplate().update(sql, values.toArray());
-			checkMany2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
-			checkOne2ManyDependencySave(runtime, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkMany2ManyDependencySave(runtime, random,data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkOne2ManyDependencySave(runtime, random,data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -725,7 +748,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "update", run, sql, values, null, true , result, millis);
+						dmListener.slow(runtime, random, DML.UPDATE, run, sql, values, null, true , result, millis);
 					}
 				}
 			}
@@ -755,9 +778,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if (null != dmListener) {
-			dmListener.afterUpdate(runtime, run, result, dest, data, columns, sql_success, result,  millis);
+			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, sql_success, result,  millis);
 		}
-		InterceptorProxy.afterUpdate(runtime, run, dest, data, configs, columns, sql_success, result, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, sql_success, result, System.currentTimeMillis() - fr);
 		return result;
 	}
 
@@ -910,19 +933,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, List<String> columns) {
-		return insert(true, dest, data, checkPrimary, columns);
+		return insert(null, null, true, dest, data, checkPrimary, columns);
 	}
-	protected int insert(boolean recover,String dest, Object data, boolean checkPrimary, List<String> columns) {
+	protected int insert(JDBCRuntime runtime, String random, boolean recover,String dest, Object data, boolean checkPrimary, List<String> columns) {
 		dest = DataSourceHolder.parseDataSource(dest, data);
-		JDBCRuntime runtime = runtime();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		boolean exe = true;
 		boolean sql_success = false;
-		SWITCH swt = InterceptorProxy.prepareInsert(runtime, dest, data, checkPrimary, columns);
+		SWITCH swt = InterceptorProxy.prepareInsert(runtime,random,  dest, data, checkPrimary, columns);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareInsert(runtime, dest, data, checkPrimary, columns);
+			exe = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
 		}
 		if(!exe){
 			return -1;
@@ -955,27 +983,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		final String sql = run.getFinalInsert();
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
-		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(run.getInsertColumns(),values));
 		}
 		long millis = -1;
 		try{
-			swt = InterceptorProxy.beforeInsert(runtime, run, dest, data, checkPrimary, columns);
+			swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
 			if(swt == SWITCH.BREAK){
 				return -1;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeInsert(runtime, run, dest, data, checkPrimary, columns);
+				exe = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
 			}
 			if(!exe) {
 				return -1;
 			}
 			cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
 			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
-			checkMany2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-			checkOne2ManyDependencySave(runtime, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -984,7 +1010,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "insert", run, sql, values, null, true, cnt, millis);
+						dmListener.slow(runtime, random, DML.INSERT, run, sql, values, null, true, cnt, millis);
 					}
 				}
 			}
@@ -1013,10 +1039,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if (null != dmListener) {
-			dmListener.afterInsert(runtime, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
+			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
 		}
 
-		InterceptorProxy.afterInsert(runtime, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
 		return cnt;
 	}
 
@@ -1028,7 +1054,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param mode 0:inser 1:update
 	 * @return int
 	 */
-	private int checkMany2ManyDependencySave(JDBCRuntime runtime, Object obj, int dependency, int mode){
+	private int checkMany2ManyDependencySave(JDBCRuntime runtime, String random, Object obj, int dependency, int mode){
 		int result = 0;
 		//ManyToMany
 		if(dependency <= 0){
@@ -1040,7 +1066,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(obj instanceof EntitySet){
 			EntitySet set = (EntitySet) obj;
 			for(Object entity:set){
-				checkMany2ManyDependencySave(runtime, entity, dependency, mode);
+				checkMany2ManyDependencySave(runtime, random, entity, dependency, mode);
 			}
 		}else{
 			Class clazz = obj.getClass();
@@ -1098,7 +1124,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(mode == 1) {
 						deletes(false, join.joinTable, join.joinColumn, pv + "");
 					}
-					insert(false, join.joinTable, set);
+					insert(runtime, random, false, join.joinTable, set);
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1113,7 +1139,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 
-	private int checkOne2ManyDependencySave(JDBCRuntime runtime, Object obj, int dependency, int mode){
+	private int checkOne2ManyDependencySave(JDBCRuntime runtime, String random, Object obj, int dependency, int mode){
 		int result = 0;
 		//OneToMany
 		if(dependency <= 0){
@@ -1125,7 +1151,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(obj instanceof EntitySet){
 			EntitySet set = (EntitySet) obj;
 			for(Object entity:set){
-				checkOne2ManyDependencySave(runtime, entity, dependency, mode);
+				checkOne2ManyDependencySave(runtime, random,entity, dependency, mode);
 			}
 		}else{
 			Class clazz = obj.getClass();
@@ -1172,7 +1198,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							items.add(item);
 						}
 					}
-					insert(false, join.dependencyTable, items);
+					insert(runtime, random, false, join.dependencyTable, items);
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1213,8 +1239,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int insert(String dest, Object data, String ... columns){
 		return insert(dest, data, false, BeanUtil.array2list(columns));
 	}
-	protected int insert(boolean recover, String dest, Object data, String ... columns){
-		return insert(recover, dest, data, false, BeanUtil.array2list(columns));
+	protected int insert(JDBCRuntime runtime, String random, boolean recover, String dest, Object data, String ... columns){
+		return insert(runtime, random, recover, dest, data, false, BeanUtil.array2list(columns));
 	}
 	@Override
 	public int insert(Object data, String ... columns){
@@ -1227,7 +1253,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param values  values
 	 * @return List
 	 */
-	protected List<Map<String,Object>> maps(JDBCRuntime runtime, String sql, List<Object> values){
+	protected List<Map<String,Object>> maps(JDBCRuntime runtime, String random, String sql, List<Object> values){
 		JDBCAdapter adapter = runtime.getAdapter();
 		List<Map<String,Object>> maps = null;
 		if(BasicUtil.isEmpty(sql)){
@@ -1239,9 +1265,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		long fr = System.currentTimeMillis();
-		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
 		try{
@@ -1258,7 +1282,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid-fr, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "select",null, sql, values, null, true, maps, mid);
+						dmListener.slow(runtime, random, DML.SELECT,null, sql, values, null, true, maps, mid);
 					}
 				}
 			}
@@ -1335,14 +1359,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return row;
 	}
 
-	protected DataSet select(JDBCRuntime runtime, String table, String sql, List<Object> values){
-		return select(false, runtime, table, sql, values);
+	protected DataSet select(JDBCRuntime runtime, String random, String table, String sql, List<Object> values){
+		return select(runtime, random, false, table, sql, values);
 	}
-	protected DataSet select(JDBCRuntime runtime, String table, Run run){
+	protected DataSet select(JDBCRuntime runtime, String random, String table, Run run){
 		if(null == run){
 			return new DataSet();
 		}
-		return select(false, runtime, table, run.getFinalQuery(), run.getValues());
+		return select( runtime, random, false,table, run.getFinalQuery(), run.getValues());
 	}
 
 	/**
@@ -1354,7 +1378,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param values 参数
 	 * @return DataSet
 	 */
-	protected DataSet select(boolean system, JDBCRuntime runtime, String table, String sql, List<Object> values){
+	protected DataSet select(JDBCRuntime runtime, String random, boolean system,  String table, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				throw new SQLQueryException("未指定SQL");
@@ -1364,9 +1388,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		long fr = System.currentTimeMillis();
-		String random = "";
-		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
 			random = random();
+		}
+		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
 		DataSet set = new DataSet();
@@ -1376,9 +1404,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
 		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
-			columns = columns(runtime, false,  new Table(null, null, table));
+			columns = columns(runtime, random,false,  new Table(null, null, table));
 		}
 		try{
+			final JDBCRuntime rt = runtime;
 			final long[] mid = {System.currentTimeMillis()};
 			final boolean[] process = {false};
 			final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
@@ -1391,7 +1420,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
-						DataRow row = row(system, runtime, metadatas, rs);
+						DataRow row = row(system, rt, metadatas, rs);
 						set.add(row);
 						process[0] = true;
 					}
@@ -1403,7 +1432,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if(!process[0]){
 							mid[0] = System.currentTimeMillis();
 						}
-						DataRow row = row(system, runtime, metadatas, rs);
+						DataRow row = row(system, rt, metadatas, rs);
 						set.add(row);
 						process[0] = true;
 					}
@@ -1419,7 +1448,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(mid[0] - fr > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "select", null, sql, values, null, true, set,mid[0] - fr);
+						dmListener.slow(runtime, random, DML.SELECT, null, sql, values, null, true, set,mid[0] - fr);
 					}
 				}
 			}
@@ -1459,9 +1488,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return EntitySet
 	 * @param <T> entity.class
 	 */
-	protected <T> EntitySet<T> select(JDBCRuntime runtime, Class<T> clazz, String table,  String sql, List<Object> values, int dependency){
+	protected <T> EntitySet<T> select(JDBCRuntime runtime, String random,  Class<T> clazz, String table,  String sql, List<Object> values, int dependency){
 		EntitySet<T> set = new EntitySet<>();
-		DataSet rows = select(runtime, table, sql, values);
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
+		DataSet rows = select(runtime, random,table, sql, values);
 		for(DataRow row:rows){
 			T entity = null;
 			if(EntityAdapterProxy.hasAdapter()){
@@ -1474,12 +1509,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		//检测依赖关系
 		if(dependency > 0) {
-			checkMany2ManyDependencyQuery(runtime, set, dependency);
-			checkOne2ManyDependencyQuery(runtime, set, dependency);
+			checkMany2ManyDependencyQuery(runtime, random,set, dependency);
+			checkOne2ManyDependencyQuery(runtime, random,set, dependency);
 		}
 		return set;
 	}
-	protected <T> void checkMany2ManyDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
+	protected <T> void checkMany2ManyDependencyQuery(JDBCRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//ManyToMany
 		if(set.size()==0 || dependency <= 0){
 			return;
@@ -1503,7 +1538,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						if (null == join.dependencyTable) {
 							//只通过中间表查主键 List<Long> departmentIds
 							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-							DataSet items = querys(false, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							DataSet items = querys(runtime, random, false, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
 
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
@@ -1513,7 +1548,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
 							List<Object> params = new ArrayList<>();
 							params.add(primaryValueMap.get(pk.toUpperCase()));
-							EntitySet<T> dependencys = select(runtime, join.itemClass, null, sql, params, dependency);
+							EntitySet<T> dependencys = select(runtime, random,join.itemClass, null, sql, params, dependency);
 							BeanUtil.setFieldValue(entity, field, dependencys);
 						}
 					}
@@ -1532,7 +1567,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?,?,?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet allItems = querys(false, new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet allItems = querys(runtime, random, false, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set){
 							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
@@ -1544,7 +1579,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet alls = querys(false, new DefaultTextPrepare(sql), conditions);
+						DataSet alls = querys(runtime, random, false, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set){
 							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
@@ -1561,7 +1596,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 
-	protected <T> void checkOne2ManyDependencyQuery(JDBCRuntime runtime, EntitySet<T> set, int dependency) {
+	protected <T> void checkOne2ManyDependencyQuery(JDBCRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//OneToMany
 		if(set.size()==0 || dependency <= 0){
 			return;
@@ -1588,7 +1623,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
 						List<Object> params = new ArrayList<>();
 						params.add(primaryValueMap.get(pk.toUpperCase()));
-						EntitySet<T> dependencys = querys(false, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
+						EntitySet<T> dependencys = querys(runtime, random, false, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
 						BeanUtil.setFieldValue(entity, field, dependencys);
 
 					}
@@ -1606,7 +1641,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
 					ConfigStore conditions = new DefaultConfigStore();
 					conditions.and(join.joinColumn, pvs);
-					EntitySet<T> alls = querys(false, join.dependencyClass, conditions);
+					EntitySet<T> alls = querys(runtime, random, false, join.dependencyClass, conditions);
 					for(T entity:set){
 						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
 						BeanUtil.setFieldValue(entity, field, items);
@@ -1625,15 +1660,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return execute(true, prepare, configs, conditions);
+		return execute(null, null, true, prepare, configs, conditions);
 	}
-	protected int execute(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	protected int execute(JDBCRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
 		boolean sql_success = false;
 		boolean exe = true;
-		JDBCRuntime runtime = runtime();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		SWITCH swt = InterceptorProxy.prepareExecute(runtime, prepare, configs, conditions);
+		SWITCH swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
@@ -1648,20 +1688,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String txt = run.getFinalExecute();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
-		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, txt, paramLogFormat(values));
 		}
 		long millis = -1;
 		try{
 
-			swt = InterceptorProxy.beforeExecute(runtime, run);
+			swt = InterceptorProxy.beforeExecute(runtime, random, run);
 			if(swt == SWITCH.BREAK){
 				return -1;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeExecute(runtime, run);
+				exe = dmListener.beforeExecute(runtime, random, run);
 			}
 			if(!exe) {
 				return -1;
@@ -1680,7 +1718,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					slow = true;
 					log.warn("{}[SLOW SQL][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, txt, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "execute", run, txt, values, null, true, result, millis);
+						dmListener.slow(runtime, random, DML.EXECUTE, run, txt, values, null, true, result, millis);
 					}
 				}
 			}
@@ -1707,9 +1745,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if (null != dmListener) {
-			dmListener.afterExecute(runtime, run,  sql_success, result, millis);
+			dmListener.afterExecute(runtime, random, run,  sql_success, result, millis);
 		}
-		InterceptorProxy.afterExecute(runtime, run, sql_success, result, System.currentTimeMillis()-fr);
+		InterceptorProxy.afterExecute(runtime, random, run, sql_success, result, System.currentTimeMillis()-fr);
 		return result;
 	}
 	@Override
@@ -1719,19 +1757,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean execute(Procedure procedure){
-		return execute(true, procedure);
+		return execute(null, null, true, procedure);
 	}
-	protected boolean execute(boolean recover, Procedure procedure){
+	protected boolean execute(JDBCRuntime runtime, String random, boolean recover, Procedure procedure){
 		boolean result = false;
 		boolean exe = true;
 		boolean sql_success = false;
-		JDBCRuntime runtime = runtime();
-		SWITCH swt = InterceptorProxy.prepareExecute(runtime, procedure);
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
+		SWITCH swt = InterceptorProxy.prepareExecute(runtime, random, procedure);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareExecute(runtime, procedure);
+			exe = dmListener.prepareExecute(runtime, random, procedure);
 		}
 		if(!exe){
 			return false;
@@ -1740,7 +1783,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		final List<Parameter> inputs = procedure.getInputs();
 		final List<Parameter> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
-		String random = "";
 		String sql = " {";
 
 		// 带有返回值
@@ -1762,18 +1804,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		sql += ")}";
 
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
 			log.info("{}[sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, paramLogFormat(inputs), paramLogFormat(outputs));
 		}
 		long millis= -1;
 		try{
 
-			swt = InterceptorProxy.beforeExecute(runtime, procedure, sql, inputs, outputs);
+			swt = InterceptorProxy.beforeExecute(runtime, random,procedure, sql, inputs, outputs);
 			if(swt == SWITCH.BREAK){
 				return false;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeExecute(runtime, procedure);
+				exe = dmListener.beforeExecute(runtime, random, procedure);
 			}
 			if(!exe) {
 				return false;
@@ -1829,12 +1870,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, paramLogFormat(inputs), paramLogFormat(list));
 					if(null != dmListener){
-						dmListener.slow(runtime, "procedure",null, sql, inputs,  list, true, result, millis);
+						dmListener.slow(runtime, random, DML.PROCEDURE,null, sql, inputs,  list, true, result, millis);
 					}
 				}
 			}
 			if (null != dmListener) {
-				dmListener.afterExecute(runtime, procedure, result, millis);
+				dmListener.afterExecute(runtime, random, procedure, result, millis);
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[执行耗时:{}ms]\n[output param:{}]", random, millis, list);
@@ -1860,7 +1901,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				DataSourceHolder.recoverDataSource();
 			}
 		}
-		InterceptorProxy.afterExecute(runtime, procedure, sql, inputs, outputs, sql_success, result, System.currentTimeMillis()-fr);
+		InterceptorProxy.afterExecute(runtime, random, procedure, sql, inputs, outputs, sql_success, result, System.currentTimeMillis()-fr);
 		return result;
 	}
 
@@ -1872,22 +1913,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public DataSet querys(Procedure procedure, PageNavi navi){
-		return querys(true, procedure, navi);
+		return querys(null, null, true, procedure, navi);
 	}
-	protected DataSet querys(boolean recover, Procedure procedure, PageNavi navi){
-		JDBCRuntime runtime = runtime();
+	protected DataSet querys(JDBCRuntime runtime, String random, boolean recover, Procedure procedure, PageNavi navi){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		boolean sql_success = false;
 		long fr = System.currentTimeMillis();
-		SWITCH swt = InterceptorProxy.prepareQuery(runtime, procedure, navi);
+		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, procedure, navi);
 		if(swt == SWITCH.BREAK){
 			return new DataSet();
 		}
 
 		final List<Parameter> inputs = procedure.getInputs();
 		final List<Parameter> outputs = procedure.getOutputs();
-		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
 			log.info("{}[sql:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), paramLogFormat(inputs), paramLogFormat(outputs));
 		}
 		final String rdm = random;
@@ -1900,13 +1944,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					return new DataSet();
 				}
 			}*/
-			swt = InterceptorProxy.beforeQuery(runtime, procedure, inputs, outputs, navi);
+			swt = InterceptorProxy.beforeQuery(runtime, random, procedure, inputs, outputs, navi);
 			if(swt == SWITCH.BREAK){
 				return new DataSet();
 			}
 			if(null != dmListener){
-				dmListener.beforeQuery(runtime, procedure);
+				dmListener.beforeQuery(runtime, random, procedure);
 			}
+			final JDBCRuntime rt = runtime;
 			set = (DataSet) runtime.getTemplate().execute(new CallableStatementCreator(){
 				public CallableStatement createCallableStatement(Connection conn) throws SQLException {
 					String sql = "{call " +procedure.getName()+"(";
@@ -1984,7 +2029,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						set.setNavi(navi);
 					}
 
-					set.setDatalink(runtime.datasource());
+					set.setDatalink(rt.datasource());
 					if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 						log.info("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());
 					}
@@ -2004,7 +2049,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							, paramLogFormat(inputs)
 							, paramLogFormat(outputs));
 					if(null != dmListener){
-						dmListener.slow(runtime, "procedure", null, procedure.getName(), inputs, outputs, true, set, millis);
+						dmListener.slow(runtime, random, DML.PROCEDURE, null, procedure.getName(), inputs, outputs, true, set, millis);
 					}
 				}
 			}
@@ -2038,33 +2083,39 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if(null != dmListener){
-			dmListener.afterQuery(runtime, procedure, sql_success, set, millis);
+			dmListener.afterQuery(runtime, random, procedure, sql_success, set, millis);
 		}
-		InterceptorProxy.afterQuery(runtime, procedure, inputs, outputs, navi, sql_success, set, System.currentTimeMillis()-fr);
+		InterceptorProxy.afterQuery(runtime, random, procedure, inputs, outputs, navi, sql_success, set, System.currentTimeMillis()-fr);
 		return set;
 	}
 
 	public <T> int deletes(String table, String key, Collection<T> values){
 		return deletes(true, table, key, values);
 	}
-	public <T> int deletes(boolean recover, String table, String key, Collection<T> values){
+	protected  <T> int deletes(JDBCRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values){
 		table = DataSourceHolder.parseDataSource(table, null);
-		JDBCRuntime runtime = runtime();
 
-		SWITCH swt = InterceptorProxy.prepareDelete(runtime, table, key, values);
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
+
+		SWITCH swt = InterceptorProxy.prepareDelete(runtime, random,table, key, values);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		boolean exe = true;
 		if(null != dmListener){
-			exe = dmListener.prepareDelete(runtime, table, key, values);
+			exe = dmListener.prepareDelete(runtime, random,table, key, values);
 		}
 		if(!exe){
 			return -1;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, values);
-		int result = exeDelete(recover, runtime, run);
+		int result = exeDelete(runtime, random, recover, run);
 		return result;
 	}
 
@@ -2091,6 +2142,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int delete(String dest, Object obj, String... columns) {
 		dest = DataSourceHolder.parseDataSource(dest,obj);
 		JDBCRuntime runtime = runtime();
+		String random = random();
+
 		int size = 0;
 		if(null != obj){
 			if(obj instanceof Collection){
@@ -2106,31 +2159,31 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 				}
 			}else{
-				SWITCH swt = InterceptorProxy.prepareDelete(runtime, dest, obj, columns);
+				SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, dest, obj, columns);
 				if(swt == SWITCH.BREAK){
 					return -1;
 				}
 				boolean exe = true;
 				if(null != dmListener){
-					exe = dmListener.prepareDelete(runtime, dest, obj, columns);
+					exe = dmListener.prepareDelete(runtime, random,dest, obj, columns);
 				}
 				if(!exe){
 					return -1;
 				}
 				JDBCAdapter adapter = runtime.getAdapter();
 				Run run = adapter.buildDeleteRun(dest, obj, columns);
-				size = exeDelete(true, runtime, run);
+				size = exeDelete(runtime, random, true, run);
 				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 					if(!(obj instanceof DataRow)){
-						checkMany2ManyDependencyDelete(runtime, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
-						checkOne2ManyDependencyDelete(runtime, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+						checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+						checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 					}
 				}
 			}
 		}
 		return size;
 	}
-	private int checkMany2ManyDependencyDelete(JDBCRuntime runtime, Object entity, int dependency){
+	private int checkMany2ManyDependencyDelete(JDBCRuntime runtime, String random, Object entity, int dependency){
 		int result = 0;
 		//ManyToMany
 		if(dependency <= 0){
@@ -2160,7 +2213,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	private int checkOne2ManyDependencyDelete(JDBCRuntime runtime, Object entity, int dependency){
+	private int checkOne2ManyDependencyDelete(JDBCRuntime runtime, String random, Object entity, int dependency){
 		int result = 0;
 		//OneToMany
 		if(dependency <= 0){
@@ -2194,20 +2247,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public int delete(String table, ConfigStore configs, String... conditions) {
 		table = DataSourceHolder.parseDataSource(table, null);
 		JDBCRuntime runtime = runtime();
+		String random = random();
+
 		boolean exe = true;
-		SWITCH swt = InterceptorProxy.prepareDelete(runtime, table, configs, conditions);
+		SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareDelete(runtime, table, configs, conditions);
+			exe = dmListener.prepareDelete(runtime,random, table, configs, conditions);
 		}
 		if(!exe){
 			return -1;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, configs, conditions);
-		int result = exeDelete(true, runtime, run);
+		int result = exeDelete(  runtime, random, true, run);
 		return result;
 	}
 
@@ -2218,24 +2273,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param run Run
 	 * @return int
 	 */
-	protected int exeDelete(boolean recover, JDBCRuntime runtime, Run run){
+	protected int exeDelete(JDBCRuntime runtime, String random, boolean recover, Run run){
 		int result = -1;
 		boolean sql_success = false;
 		boolean exe = true;
 		final String sql = run.getFinalDelete();
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
-		String random = "";
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			random = random();
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
-		SWITCH swt = InterceptorProxy.beforeDelete(runtime, run);
+		SWITCH swt = InterceptorProxy.beforeDelete(runtime, random, run);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.beforeDelete(runtime, run);
+			exe = dmListener.beforeDelete(runtime, random, run);
 		}
 		if(!exe){
 			return -1;
@@ -2256,7 +2309,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, "delete", run, sql, values, null, sql_success, result, millis);
+						dmListener.slow(runtime, random,DML.DELETE, run, sql, values, null, sql_success, result, millis);
 					}
 				}
 			}
@@ -2287,9 +2340,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		if(null != dmListener){
-			dmListener.afterDelete(runtime, run, sql_success, result, millis);
+			dmListener.afterDelete(runtime, random, run, sql_success, result, millis);
 		}
-		InterceptorProxy.afterDelete(runtime, run,  sql_success, result, millis);
+		InterceptorProxy.afterDelete(runtime, random, run,  sql_success, result, millis);
 		return result;
 	}
 
@@ -2356,7 +2409,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						databases = adapter.databases(idx++, true, databases, set);
 					}
 				}
@@ -2402,11 +2455,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
-	private void tableMap(JDBCRuntime runtime, DataSource ds, Connection con,  String catalog, String schema){
+	private void tableMap(JDBCRuntime runtime, String random, DataSource ds, Connection con,  String catalog, String schema){
 		Map<String,String> names = CacheProxy.names(catalog, schema);
 		if(null == names || names.isEmpty()){
+			if(null == runtime){
+				runtime = runtime();
+			}
+			if(null == random){
+				random = random();
+			}
 			JDBCAdapter adapter = runtime.getAdapter();
-			String random = random();
 			LinkedHashMap<String, Table> tables = new LinkedHashMap<>();
 			boolean sys = false; //根据系统表查询
 			try {
@@ -2414,7 +2472,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != runs && runs.size() > 0) {
 					int idx = 0;
 					for (Run run : runs) {
-						DataSet set = select(runtime, (String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random,(String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						sys = true;
 					}
@@ -2474,7 +2532,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			String origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			if(null == origin){
-				tableMap(runtime, ds, con, catalog, schema);
+				tableMap(runtime, random, ds, con, catalog, schema);
 			}
 			origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			if(null == origin){
@@ -2513,7 +2571,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 					}
 				}
@@ -2563,7 +2621,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
-							DataSet set = select(runtime, (String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
+							DataSet set = select(runtime, random,(String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
 							tables = adapter.comments(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -2724,7 +2782,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						views = adapter.views(idx++, true, catalog, schema, views, set);
 					}
 				}
@@ -2882,7 +2940,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 					}
 				}
@@ -3031,7 +3089,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					int idx = 0;
 					int total = runs.size();
 					for(Run run:runs) {
-						DataSet set = select(runtime, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.ptables(total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 					}
 				}
@@ -3099,10 +3157,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table){
-		return columns(runtime(), greedy, table);
+		return columns(null, null, greedy, table);
 	}
-	public <T extends Column> LinkedHashMap<String, T> columns(JDBCRuntime runtime, boolean greedy, Table table){
+	protected  <T extends Column> LinkedHashMap<String, T> columns(JDBCRuntime runtime, String random,  boolean greedy, Table table){
 
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return new LinkedHashMap();
 		}
@@ -3115,11 +3179,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
-		String random = null;
 		DatabaseMetaData metadata = null;
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			random = random();
-		}
 
 		try {
 			JDBCAdapter adapter = runtime.getAdapter();
@@ -3148,7 +3208,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
-						DataSet set = select(true, runtime, (String) null, run.getFinalQuery(), run.getValues());
+						DataSet set = select( runtime, random, true, (String) null, run.getFinalQuery(), run.getValues());
 						columns = adapter.columns(idx, true, table, columns, set);
 						idx++;
 					}
@@ -3256,12 +3316,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
-		String random = null;
+		String random = random();
 		DatabaseMetaData metadata = null;
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			random = random();
-		}
-
 		try {
 			JDBCAdapter adapter = runtime.getAdapter();
 			if (!greedy) {
@@ -3288,7 +3344,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != runs) {
 					int idx = 0;
 					for (Run run : runs) {
-							DataSet set = select(runtime, (String) null, run).toUpperKey();
+							DataSet set = select(runtime, random, (String) null, run).toUpperKey();
 							tags = adapter.tags(idx, true, table, tags, set);
 						idx++;
 					}
@@ -3407,18 +3463,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		DataSource ds = null;
-		String random = null;
+		String random = random();
 		DatabaseMetaData metadata = null;
-		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-			random = random();
-		}
 
 		try{
 			List<Run> runs = adapter.buildQueryPrimaryRunSQL(table);
 			if(null != runs){
 				int idx = 0;
 				for(Run run:runs){
-					DataSet set = select(runtime, (String)null, run).toUpperKey();
+					DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 					primary = adapter.primary(idx, table, set);
 					if(null != primary){
 						primary.setTable(table);
@@ -3476,9 +3529,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
+	@Override
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table){
 		LinkedHashMap<String, T> foreigns = new LinkedHashMap<>();
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		if(!greedy) {
 			checkSchema(runtime, table);
@@ -3488,7 +3543,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null != runs){
 				int idx = 0;
 				for(Run run:runs){
-					DataSet set = select(runtime, (String)null, run).toUpperKey();
+					DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 					foreigns = adapter.foreigns(idx,  table, foreigns, set);
 					idx++;
 				}
@@ -3522,6 +3577,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			table = new Table();
 		}
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		if(!greedy) {
 			checkSchema(runtime, table);
@@ -3554,7 +3610,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
 					indexs = adapter.indexs(idx, true, table, indexs, set);
 				}catch (Exception e){
@@ -3695,6 +3751,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			table = new Table();
 		}
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		if(!greedy) {
 			checkSchema(runtime, table);
@@ -3704,7 +3761,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
 					triggers = adapter.triggers(idx, true, table, triggers, set);
 				}catch (Exception e){
@@ -3723,16 +3780,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													procedure
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends org.anyline.entity.data.Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name){
 		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		List<Run> runs = adapter.buildQueryProcedureRunSQL(catalog, schema, name);
 
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
 					procedures = adapter.procedures(idx, true, procedures, set);
 				}catch (Exception e){
@@ -3750,15 +3808,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													function
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends org.anyline.entity.data.Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name){
+	public <T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name){
 		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		List<Run> runs = adapter.buildQueryFunctionRunSQL(catalog, schema, name);
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
 					functions = adapter.functions(idx, true, functions, set);
 				}catch (Exception e){
@@ -3807,7 +3866,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
-		SWITCH swt = InterceptorProxy.prepare(runtime, random, ACTION.TABLE_CREATE, table);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, DDL.TABLE_CREATE, table);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
@@ -3819,7 +3878,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		checkSchema(runtime, table);
 		List<Run> runs = adapter.buildCreateRunSQL(table);
-		swt = InterceptorProxy.before(runtime, random, ACTION.TABLE_CREATE, table, runs);
+		swt = InterceptorProxy.before(runtime, random, DDL.TABLE_CREATE, table, runs);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
@@ -3835,7 +3894,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null != ddListener){
 			//ddListener.afterCreate(runtime, random, table, sqls, result, System.currentTimeMillis()-fr);
 		}
-		InterceptorProxy.after(runtime, random, ACTION.TABLE_CREATE, table, runs, result, System.currentTimeMillis()-fr);
+		InterceptorProxy.after(runtime, random, DDL.TABLE_CREATE, table, runs, result, System.currentTimeMillis()-fr);
 		return result;
 	}
 
@@ -3853,7 +3912,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
-		SWITCH swt = InterceptorProxy.prepare(runtime, random, ACTION.TABLE_ALTER, table);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, DDL.TABLE_ALTER, table);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
@@ -3869,25 +3928,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		checkSchema(runtime, update);
 
 		if(!name.equalsIgnoreCase(uname)){
-			result = rename(runtime, table, uname);
+			result = rename(runtime, random,table, uname);
 			table.setName(uname);
 		}
 
 		//修改表备注
 		String comment = update.getComment()+"";
 		if(!comment.equals(table.getComment())){
-			swt = InterceptorProxy.prepare(runtime, random, ACTION.TABLE_COMMENT, table);
+			swt = InterceptorProxy.prepare(runtime, random, DDL.TABLE_COMMENT, table);
 			if(swt != SWITCH.BREAK) {
 				if(BasicUtil.isNotEmpty(table.getComment())) {
 					runs.addAll(adapter.buildChangeCommentRunSQL(update));
 				}else{
 					runs.addAll(adapter.buildAddCommentRunSQL(update));
 				}
-				swt = InterceptorProxy.before(runtime, random, ACTION.TABLE_COMMENT, table, runs);
+				swt = InterceptorProxy.before(runtime, random, DDL.TABLE_COMMENT, table, runs);
 				if(swt != SWITCH.BREAK) {
 					long rename_fr = System.currentTimeMillis();
 					result = execute(runtime, random, "alter table comment", runs) && result;
-					InterceptorProxy.after(runtime, random, ACTION.TABLE_COMMENT, table, runs, result, System.currentTimeMillis()-rename_fr);
+					InterceptorProxy.after(runtime, random, DDL.TABLE_COMMENT, table, runs, result, System.currentTimeMillis()-rename_fr);
 				}
 			}
 		}
@@ -4045,12 +4104,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean rename(Table origin, String name) throws Exception {
-		return rename(runtime(), origin, name);
+		return rename(null, null, origin, name);
 	}
 
-	public boolean rename(JDBCRuntime runtime, Table origin, String name) throws Exception {
+	public boolean rename(JDBCRuntime runtime, String random, Table origin, String name) throws Exception {
 		boolean exe = true;
-		String random = random();
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		if(null != ddListener){
 			//exe = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -4123,6 +4187,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String uname = update.getName();
 
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
 		checkSchema(runtime, view);
@@ -4255,7 +4320,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 
 		if(!name.equalsIgnoreCase(uname)){
-			result = rename(runtime, table, uname);
+			result = rename(runtime, random,table, uname);
 		}
 		// 更新列
 		for(Column ucolumn : ucolumns.values()){
@@ -4435,7 +4500,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String uname = update.getName();
 		long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
-			result = rename(runtime, table, uname);
+			result = rename(runtime, random,table, uname);
 		}
 		// 更新列
 		for(Column ucolumn : ucolumns.values()){
@@ -4490,7 +4555,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
  		checkSchema(runtime, table);
 		List<Run> runs = adapter.buildDropRunSQL(table);
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, "drop PartitionTable", runs);
+		boolean result = execute(runtime, random,"drop PartitionTable", runs);
 		if(null != ddListener){
 			//ddListener.afterDrop(runtime, random, table, sqls(sql), result, System.currentTimeMillis()-fr);
 		}
@@ -4499,23 +4564,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean rename(PartitionTable origin, String name) throws Exception {
-		return rename(runtime(), origin, name);
+		return rename(null, null, origin, name);
 	}
 
-	public boolean rename(JDBCRuntime runtime, PartitionTable origin, String name) throws Exception {
+	protected boolean rename(JDBCRuntime runtime, String random, PartitionTable origin, String name) throws Exception {
 		boolean exe = true;
 		if(null != ddListener){
-			////exe = ddListener.prepareRename(runtime, origin);
+			////exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe){
 			return false;
 		}
+		if(null == runtime){
+			runtime = runtime();
+		}
+		if(null == random){
+			random = random();
+		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename PartitionTable", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename PartitionTable", adapter.buildRenameRunSQL(origin));
 		if (null != ddListener) {
-			////ddListener.afterRename(runtime, origin, result);
+			////ddListener.afterRename(runtime, random,origin, result);
 		}
 		return false;
 	}
@@ -4535,7 +4606,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		if(null != ddListener){
-			////exe = ddListener.prepareAdd(runtime, column);
+			////exe = ddListener.prepareAdd(runtime, random,column);
 		}
 		if(!exe){
 			return false;
@@ -4547,7 +4618,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 		boolean result = execute(runtime, random, "add column", runs);
 		if(null != ddListener){
-			////ddListener.afterAdd(runtime, column, sqls, result, System.currentTimeMillis()-fr);
+			////ddListener.afterAdd(runtime, random,column, sqls, result, System.currentTimeMillis()-fr);
 		}
 		if(runs.size() > 1) {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
@@ -4582,8 +4653,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Column column) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			////exe = ddListener.prepareDrop(runtime, column);
+			////exe = ddListener.prepareDrop(runtime, random,column);
 		}
 		if(!exe){
 			return false;
@@ -4591,9 +4663,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
  		checkSchema(runtime, column);
 		List<Run> runs = adapter.buildDropRunSQL(column);
-		boolean result = execute(runtime, "drop column", runs);
+		boolean result = execute(runtime, random, "drop column", runs);
 		if (null != ddListener) {
-			////ddListener.afterDrop(runtime, column, result);
+			////ddListener.afterDrop(runtime, random,column, result);
 		}
 		return result;
 	}
@@ -4608,8 +4680,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			////exe = ddListener.prepareAlter(runtime, column);
+			////exe = ddListener.prepareAlter(runtime, random,column);
 		}
 		if(!exe){
 			return false;
@@ -4619,12 +4692,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, column);
 		long fr = System.currentTimeMillis();
-		String random = random();
 		List<Run> runs = adapter.buildAlterRunSQL(column, false);
 		try{
 			result = execute(runtime, random, "alter column", runs);
 			if(null != ddListener){
-				//ddListener.afterAlter(runtime, column, result);
+				//ddListener.afterAlter(runtime, random,column, result);
 			}
 		}catch (Exception e){
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
@@ -4634,7 +4706,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.toString());
 			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
  				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-					//exe = //ddListener.afterAlterColumnException(runtime, table, column, e);
+					//exe = //ddListener.afterAlterColumnException(runtime, random,table, column, e);
 				}
 				log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, exe);
 				if (exe) {
@@ -4657,8 +4729,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Column origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -4666,9 +4739,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename column", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename column", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -4687,8 +4760,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean add(Tag tag) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, tag);
+			//exe = ddListener.prepareAdd(runtime, random,tag);
 		}
 		if(!exe){
 			return false;
@@ -4696,9 +4770,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, tag);
 		List<Run> runs = adapter.buildAddRunSQL(tag);
-		boolean result = execute(runtime, "add tag", runs);
+		boolean result = execute(runtime, random, "add tag", runs);
 		if(null != ddListener){
-			//ddListener.afterAdd(runtime, tag, result);
+			//ddListener.afterAdd(runtime, random,tag, result);
 		}
 		return result;
 	}
@@ -4728,8 +4802,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Tag tag) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, tag);
+			//exe = ddListener.prepareDrop(runtime, random,tag);
 		}
 		if(!exe){
 			return false;
@@ -4737,9 +4812,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, tag);
 		List<Run> runs = adapter.buildDropRunSQL(tag);
-		boolean result = execute(runtime, "drop tag", runs);
+		boolean result = execute(runtime, random,"drop tag", runs);
 		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, tag, result);
+			//ddListener.afterDrop(runtime, random,tag, result);
 		}
 		return result;
 	}
@@ -4754,8 +4829,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	private boolean alter(Table table, Tag tag, boolean trigger) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, tag);
+			//exe = ddListener.prepareAlter(runtime, random,tag);
 		}
 		if(!exe){
 			return false;
@@ -4765,12 +4841,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, tag);
 		long fr = System.currentTimeMillis();
-		String random = random();
 		List<Run> runs = adapter.buildAlterRunSQL(tag);
 		try{
 			result = execute(runtime, random, "alter tag", runs);
 			if(null != ddListener){
-				//ddListener.afterAlter(runtime, tag, result);
+				//ddListener.afterAlter(runtime, random,tag, result);
 			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -4780,7 +4855,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改tag执行异常", 33), e.toString());
 			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
  				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-					//exe = //ddListener.afterAlterColumnException(runtime, table, tag, e);
+					//exe = //ddListener.afterAlterColumnException(runtime, random,table, tag, e);
 				}
 				log.warn("{}[修改tag执行异常][尝试修正数据][修正结果:{}]", random, exe);
 				if (exe) {
@@ -4803,8 +4878,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Tag origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -4812,9 +4888,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename tag", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename tag", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -4831,13 +4907,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean add(PrimaryKey primary) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, primary);
+			//exe = ddListener.prepareAdd(runtime, random,primary);
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, primary);
 		List<Run> runs = adapter.buildAddRunSQL(primary);
-		boolean result = execute(runtime, "add primary", runs);
+		boolean result = execute(runtime, random,"add primary", runs);
 		if(null != ddListener){
 			//ddListener.afterAdd(runtime,primary, result);
 		}
@@ -4865,20 +4942,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Table table, PrimaryKey primary) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, primary);
+			//exe = ddListener.prepareAlter(runtime, random,primary);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, primary);
-		String random = random();
 		long fr = System.currentTimeMillis();
 		List<Run> runs = adapter.buildAlterRunSQL(primary);
 		boolean result = execute(runtime, random, "alter primary", runs);
 		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, primary, result);
+			//ddListener.afterAlter(runtime, random,primary, result);
 		}
 		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[alter primary][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(true), primary.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -4889,8 +4966,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(PrimaryKey primary) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, primary);
+			//exe = ddListener.prepareAdd(runtime, random,primary);
 		}
 		if(!exe){
 			return false;
@@ -4898,9 +4976,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, primary);
 		List<Run> runs = adapter.buildDropRunSQL(primary);
-		boolean result = execute(runtime, "drop primary", runs);
+		boolean result = execute(runtime, random,"drop primary", runs);
 		if(null != ddListener){
-			//ddListener.afterDrop(runtime, primary, result);
+			//ddListener.afterDrop(runtime, random,primary, result);
 		}
 		return result;
 	}
@@ -4909,8 +4987,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(PrimaryKey origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -4918,9 +4997,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename primary", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename primary", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -4936,8 +5015,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean add(ForeignKey foreign) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, foreign);
+			//exe = ddListener.prepareAdd(runtime, random,foreign);
 		}
 		if(!exe){
 			return false;
@@ -4945,9 +5025,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, foreign);
 		List<Run> runs = adapter.buildAddRunSQL(foreign);
-		boolean result = execute(runtime, "add foreign", runs);
+		boolean result = execute(runtime, random,"add foreign", runs);
 		if (null != ddListener) {
-			//ddListener.afterAdd(runtime, foreign, result);
+			//ddListener.afterAdd(runtime, random,foreign, result);
 		}
 		return result;
 	}
@@ -4973,8 +5053,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Table table, ForeignKey foreign) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, foreign);
+			//exe = ddListener.prepareAlter(runtime, random,foreign);
 		}
 		if(!exe){
 			return false;
@@ -4982,11 +5063,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, foreign);
 		long fr = System.currentTimeMillis();
-		String random = random();
 		List<Run> runs = adapter.buildAlterRunSQL(foreign);
 		boolean result = execute(runtime, random, "alter foreign", runs);
 		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, foreign, result);
+			//ddListener.afterAlter(runtime, random,foreign, result);
 		}
 		if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[alter foreign][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(true), foreign.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -4997,8 +5077,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(ForeignKey foreign) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, foreign);
+			//exe = ddListener.prepareDrop(runtime, random,foreign);
 		}
 		if(!exe){
 			return false;
@@ -5006,9 +5087,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, foreign);
 		List<Run> runs = adapter.buildDropRunSQL(foreign);
-		boolean result = execute(runtime, "drop foreign", runs);
+		boolean result = execute(runtime, random,"drop foreign", runs);
 		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, foreign, result);
+			//ddListener.afterDrop(runtime, random,foreign, result);
 		}
 		return result;
 	}
@@ -5017,8 +5098,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(ForeignKey origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5026,9 +5108,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename foreign", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename foreign", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -5043,8 +5125,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean add(Index index) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, index);
+			//exe = ddListener.prepareAdd(runtime, random,index);
 		}
 		if(!exe){
 			return false;
@@ -5052,9 +5135,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
  		checkSchema(runtime, index);
 		List<Run> runs = adapter.buildAddRunSQL(index);
-		boolean result = execute(runtime, "add index", runs);
+		boolean result = execute(runtime, random,"add index", runs);
 		if (null != ddListener) {
-			//ddListener.afterAdd(runtime, index, result);
+			//ddListener.afterAdd(runtime, random,index, result);
 		}
 		return result;
 	}
@@ -5080,20 +5163,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Table table, Index index) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, index);
+			//exe = ddListener.prepareAlter(runtime, random,index);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		String random = random();
 		checkSchema(runtime, index);
 		List<Run> runs = adapter.buildAlterRunSQL(index);
 		boolean result = execute(runtime, random, "alter index", runs);
 		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, index, result);
+			//ddListener.afterAlter(runtime, random,index, result);
 		}
 		if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[alter index][table:{}][index:{}][qty:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(true), index.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -5104,8 +5187,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Index index) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, index);
+			//exe = ddListener.prepareDrop(runtime, random,index);
 		}
 		if(!exe){
 			return false;
@@ -5113,9 +5197,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, index);
 		List<Run> runs = adapter.buildDropRunSQL(index);
-		boolean  result = execute(runtime, "drop index", runs);
+		boolean  result = execute(runtime, random,"drop index", runs);
 		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, index, result);
+			//ddListener.afterDrop(runtime, random,index, result);
 		}
 		return result;
 	}
@@ -5123,8 +5207,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Index origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5132,9 +5217,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename index", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename index", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -5150,8 +5235,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean add(Constraint constraint) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, constraint);
+			//exe = ddListener.prepareAdd(runtime, random,constraint);
 		}
 		if(!exe){
 			return false;
@@ -5159,9 +5245,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, constraint);
 		List<Run> runs = adapter.buildAddRunSQL(constraint);
-		boolean result = execute(runtime, "add constraint", runs);
+		boolean result = execute(runtime, random,"add constraint", runs);
 		if (null != ddListener) {
-			//ddListener.afterAdd(runtime, constraint, result);
+			//ddListener.afterAdd(runtime, random,constraint, result);
 		}
 		return result;
 	}
@@ -5187,20 +5273,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Table table, Constraint constraint) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, constraint);
+			//exe = ddListener.prepareAlter(runtime, random,constraint);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		String random = random();
 		checkSchema(runtime, constraint);
 		long fr = System.currentTimeMillis();
 		List<Run> runs = adapter.buildAlterRunSQL(constraint);
 		boolean result = execute(runtime, random, "alter constraint", runs);
 		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, constraint, result);
+			//ddListener.afterAlter(runtime, random,constraint, result);
 		}
 		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[alter constraint][table:{}][constraint:{}][qty:{}][result:{}][执行耗时:{}ms]" , random, constraint.getTableName(true), constraint.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -5211,8 +5297,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Constraint constraint) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, constraint);
+			//exe = ddListener.prepareDrop(runtime, random,constraint);
 		}
 		if(!exe){
 			return false;
@@ -5220,9 +5307,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, constraint);
 		List<Run> runs = adapter.buildDropRunSQL(constraint);
-		boolean result = execute(runtime, "drop constraint", runs);
+		boolean result = execute(runtime, random,"drop constraint", runs);
 		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, constraint, result);
+			//ddListener.afterDrop(runtime, random,constraint, result);
 		}
 		return result;
 	}
@@ -5230,8 +5317,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Constraint origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5239,9 +5327,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename constraint", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename constraint", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -5258,8 +5346,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean create(Trigger trigger) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, trigger);
+			//exe = ddListener.prepareCreate(runtime, random,trigger);
 		}
 		if(!exe){
 			return false;
@@ -5267,9 +5356,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, trigger);
 		List<Run> runs = adapter.buildCreateRunSQL(trigger);
-		boolean result = execute(runtime, "create trigger", runs);
+		boolean result = execute(runtime, random,"create trigger", runs);
 		if(null != ddListener){
-			//ddListener.afterCreate(runtime, trigger, result);
+			//ddListener.afterCreate(runtime, random,trigger, result);
 		}
 		return result;
 	}
@@ -5279,20 +5368,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Trigger trigger) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareAlter(runtime, trigger);
+			//exe = ddListener.prepareAlter(runtime, random,trigger);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		String random = random();
 		checkSchema(runtime, trigger);
 		List<Run> runs = adapter.buildAlterRunSQL(trigger);
 		boolean result = execute(runtime, random, "alter trigger", runs);
 		if(null != ddListener){
-			//ddListener.afterAlter(runtime, trigger, result);
+			//ddListener.afterAlter(runtime, random,trigger, result);
 		}
 		if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[alter trigger][table:{}][trigger:{}][qty:{}][result:{}][执行耗时:{}ms]" , random, trigger.getTableName(true), trigger.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -5303,8 +5392,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Trigger trigger) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, trigger);
+			//exe = ddListener.prepareDrop(runtime, random,trigger);
 		}
 		if(!exe){
 			return false;
@@ -5312,9 +5402,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, trigger);
 		List<Run> runs = adapter.buildDropRunSQL(trigger);
-		boolean result = execute(runtime, "drop trigger", runs);
+		boolean result = execute(runtime, random,"drop trigger", runs);
 		if(null != ddListener){
-			//ddListener.afterDrop(runtime, trigger, result);
+			//ddListener.afterDrop(runtime, random,trigger, result);
 		}
 		return result;
 	}
@@ -5322,8 +5412,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Trigger origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5331,9 +5422,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename trigger", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename trigger", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -5350,8 +5441,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean create(Procedure procedure) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, procedure);
+			//exe = ddListener.prepareCreate(runtime, random,procedure);
 		}
 		if(!exe){
 			return false;
@@ -5359,9 +5451,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, procedure);
 		List<Run> runs = adapter.buildCreateRunSQL(procedure);
-		boolean result = execute(runtime, "create procedure", runs);
+		boolean result = execute(runtime, random,"create procedure", runs);
 		if(null != ddListener){
-			//ddListener.afterCreate(runtime, procedure, result);
+			//ddListener.afterCreate(runtime, random,procedure, result);
 		}
 		return result;
 	}
@@ -5371,20 +5463,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Procedure procedure) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareAlter(runtime, procedure);
+			//exe = ddListener.prepareAlter(runtime, random,procedure);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		String random = random();
 		checkSchema(runtime, procedure);
 		List<Run> runs = adapter.buildAlterRunSQL(procedure);
 		boolean result = execute(runtime, random, "alter procedure", runs);
 		if(null != ddListener){
-			//ddListener.afterAlter(runtime, procedure, result);
+			//ddListener.afterAlter(runtime, random,procedure, result);
 		}
 		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update procedure][procedure:{}][qty:{}][result:{}][执行耗时:{}ms]", random, procedure.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -5395,8 +5487,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Procedure procedure) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, procedure);
+			//exe = ddListener.prepareDrop(runtime, random,procedure);
 		}
 		if(!exe){
 			return false;
@@ -5404,9 +5497,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, procedure);
 		List<Run> runs = adapter.buildDropRunSQL(procedure);
-		boolean result = execute(runtime, "drop procedure", runs);
+		boolean result = execute(runtime, random,"drop procedure", runs);
 		if(null != ddListener){
-			//ddListener.afterDrop(runtime, procedure, result);
+			//ddListener.afterDrop(runtime, random,procedure, result);
 		}
 		return result;
 	}
@@ -5414,8 +5507,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Procedure origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5423,9 +5517,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename procedure", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random,"rename procedure", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
 	}
@@ -5441,8 +5535,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean create(Function function) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, function);
+			//exe = ddListener.prepareCreate(runtime, random,function);
 		}
 		if(!exe){
 			return false;
@@ -5450,9 +5545,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, function);
 		List<Run> runs = adapter.buildCreateRunSQL(function);
-		boolean result = execute(runtime, "create function", runs);
+		boolean result = execute(runtime, random,"create function", runs);
 		if(null != ddListener){
-			//ddListener.afterCreate(runtime, function, result);
+			//ddListener.afterCreate(runtime, random,function, result);
 		}
 		return result;
 	}
@@ -5463,7 +5558,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
 		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, function);
+			//exe = ddListener.prepareDrop(runtime, random,function);
 		}
 		if(!exe){
 			return false;
@@ -5475,7 +5570,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<Run> runs = adapter.buildAlterRunSQL(function);
 		boolean result = execute(runtime, random, "update function", runs);
 		if(null != ddListener){
-			//ddListener.afterAlter(runtime, function, result);
+			//ddListener.afterAlter(runtime, random,function, result);
 		}
 		if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update function][function:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, function.getName(), runs.size(), result, System.currentTimeMillis() - fr);
@@ -5487,8 +5582,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean drop(Function function) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, function);
+			//exe = ddListener.prepareDrop(runtime, random,function);
 		}
 		if(!exe) {
 			return false;
@@ -5496,9 +5592,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, function);
 		List<Run> runs = adapter.buildDropRunSQL(function);
-		boolean result = execute(runtime, "drop function", runs);
+		boolean result = execute(runtime, random, "drop function", runs);
 		if(null != ddListener){
-			//ddListener.afterDrop(runtime, function, result);
+			//ddListener.afterDrop(runtime, random,function, result);
 		}
 		return result;
 	}
@@ -5506,8 +5602,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Function origin, String name) throws Exception {
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, origin);
+			//exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5515,14 +5612,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, "rename function", adapter.buildRenameRunSQL(origin));
+		boolean result = execute(runtime, random ,"rename function", adapter.buildRenameRunSQL(origin));
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, origin, result);
+			//ddListener.afterRename(runtime, random,origin, result);
 		}
 		return result;
-	}
-	public boolean execute(JDBCRuntime runtime, String title, Run run){
-		return execute(runtime, random(), title, run);
 	}
 	public boolean execute(JDBCRuntime runtime, String random, String title, Run run){
 		if(null == run){
@@ -5551,9 +5645,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			result = execute(runtime, random + "-" + idx++, title, run) && result;
 		}
 		return result;
-	}
-	public boolean execute(JDBCRuntime runtime, String title, List<Run> runs){
-		return execute(runtime, random(), title, runs);
 	}
 	/* *****************************************************************************************************************
 	 *
