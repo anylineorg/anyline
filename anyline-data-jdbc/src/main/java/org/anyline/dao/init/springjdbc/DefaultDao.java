@@ -5557,20 +5557,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Function function) throws Exception{
 		boolean exe = true;
 		JDBCRuntime runtime = runtime();
+		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, random,function);
+			exe = ddListener.prepareDrop(runtime, random,function);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		String random = random();
 		checkSchema(runtime, function);
 		List<Run> runs = adapter.buildAlterRunSQL(function);
 		boolean result = execute(runtime, random, "update function", runs);
 		if(null != ddListener){
-			//ddListener.afterAlter(runtime, random,function, result);
+			ddListener.afterAlter(runtime, random,function, runs, result, System.currentTimeMillis()-fr);
 		}
 		if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update function][function:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, function.getName(), runs.size(), result, System.currentTimeMillis() - fr);
