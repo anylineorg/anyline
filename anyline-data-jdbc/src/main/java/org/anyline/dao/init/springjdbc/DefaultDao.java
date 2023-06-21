@@ -5497,9 +5497,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, procedure);
 		List<Run> runs = adapter.buildDropRunSQL(procedure);
+		long fr = System.currentTimeMillis();
 		boolean result = execute(runtime, random,"drop procedure", runs);
 		if(null != ddListener){
-			//ddListener.afterDrop(runtime, random,procedure, result);
+			ddListener.afterDrop(runtime, random,procedure, runs, result, System.currentTimeMillis()-fr);
 		}
 		return result;
 	}
