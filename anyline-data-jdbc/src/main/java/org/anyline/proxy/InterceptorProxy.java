@@ -102,7 +102,7 @@ public class InterceptorProxy {
      *
      * ****************************************************************************************************************/
 
-    public static SWITCH prepareQuery(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static SWITCH prepareQuery(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.prepare(runtime, prepare, configs, conditions);
@@ -113,7 +113,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH prepareQuery(JDBCRuntime runtime, Procedure procedure, PageNavi navi){
+    public static SWITCH prepareQuery(JDBCRuntime runtime, String random, Procedure procedure, PageNavi navi){
         SWITCH swt = SWITCH.CONINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.prepare(runtime, procedure, navi);
@@ -124,7 +124,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeQuery(JDBCRuntime runtime, Run run, PageNavi navi){
+    public static SWITCH beforeQuery(JDBCRuntime runtime, String random, Run run, PageNavi navi){
         SWITCH swt = SWITCH.CONINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.before(runtime, run, navi);
@@ -135,7 +135,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeQuery(JDBCRuntime runtime, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi){
+    public static SWITCH beforeQuery(JDBCRuntime runtime, String random, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi){
         SWITCH swt = SWITCH.CONINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.before(runtime, procedure, inputs, outputs, navi);
@@ -146,7 +146,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterQuery(JDBCRuntime runtime, Run run, boolean exe, Object result, PageNavi navi, long millis){
+    public static SWITCH afterQuery(JDBCRuntime runtime, String random, Run run, boolean exe, Object result, PageNavi navi, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.after(runtime, run, exe, result, navi, millis);
@@ -158,7 +158,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH afterQuery(JDBCRuntime runtime, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi, boolean success, Object resutl, long millis){
+    public static SWITCH afterQuery(JDBCRuntime runtime, String random, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi, boolean success, Object resutl, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.after(runtime, procedure, inputs, outputs, navi, success, resutl, millis);
@@ -171,7 +171,7 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareCount(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static SWITCH prepareCount(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.prepare(runtime, prepare, configs, conditions);
@@ -182,7 +182,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeCount(JDBCRuntime runtime, Run run){
+    public static SWITCH beforeCount(JDBCRuntime runtime, String random, Run run){
         SWITCH swt = SWITCH.CONINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.before(runtime, run);
@@ -193,7 +193,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterCount(JDBCRuntime runtime, Run run, boolean exe, int result, long millis){
+    public static SWITCH afterCount(JDBCRuntime runtime, String random, Run run, boolean exe, int result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.after(runtime, run, exe, result, millis);
@@ -206,7 +206,7 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareUpdate(JDBCRuntime runtime, String dest, Object data, ConfigStore configs, List<String> columns){
+    public static SWITCH prepareUpdate(JDBCRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.prepare(runtime, dest, data, configs, columns);
@@ -217,7 +217,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeUpdate(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
+    public static SWITCH beforeUpdate(JDBCRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.before(runtime, run, dest, data, configs, columns);
@@ -228,7 +228,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterUpdate(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){
+    public static SWITCH afterUpdate(JDBCRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.after(runtime, run, dest, data, configs, columns, success, result, millis);
@@ -241,7 +241,7 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareInsert(JDBCRuntime runtime, String dest, Object data, boolean checkPrimary, List<String> columns){
+    public static SWITCH prepareInsert(JDBCRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
         SWITCH swt = SWITCH.CONINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.prepare(runtime, dest, data,checkPrimary,  columns);
@@ -252,7 +252,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeInsert(JDBCRuntime runtime, Run run, String dest, Object data, boolean checkPrimary,  List<String> columns){
+    public static SWITCH beforeInsert(JDBCRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary,  List<String> columns){
         SWITCH swt = SWITCH.CONINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.before(runtime, run, dest, data,checkPrimary,  columns);
@@ -263,7 +263,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterInsert(JDBCRuntime runtime, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, int result, long millis){
+    public static SWITCH afterInsert(JDBCRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, int result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.after(runtime, run, dest, data,checkPrimary,  columns, success, result, millis);
@@ -275,7 +275,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareDelete(JDBCRuntime runtime, String table, String key, Collection values){
+    public static SWITCH prepareDelete(JDBCRuntime runtime, String random, String table, String key, Collection values){
         SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime,table, key, values);
@@ -286,7 +286,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH prepareDelete(JDBCRuntime runtime, String table, ConfigStore configs, String ... conditions){
+    public static SWITCH prepareDelete(JDBCRuntime runtime, String random, String table, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime,table, configs, conditions);
@@ -298,7 +298,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareDelete(JDBCRuntime runtime, String dest, Object obj, String... columns){
+    public static SWITCH prepareDelete(JDBCRuntime runtime, String random, String dest, Object obj, String... columns){
         SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime, dest, obj, columns);
@@ -309,7 +309,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeDelete(JDBCRuntime runtime, Run run){
+    public static SWITCH beforeDelete(JDBCRuntime runtime, String random, Run run){
         SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.before(runtime, run);
@@ -320,7 +320,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterDelete(JDBCRuntime runtime, Run run, boolean success, int result, long millis){
+    public static SWITCH afterDelete(JDBCRuntime runtime, String random, Run run, boolean success, int result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.after(runtime, run, success, result, millis);
@@ -333,7 +333,7 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareExecute(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static SWITCH prepareExecute(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.prepare(runtime, prepare, configs, conditions);
@@ -344,7 +344,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH prepareExecute(JDBCRuntime runtime, Procedure procedure){
+    public static SWITCH prepareExecute(JDBCRuntime runtime, String random, Procedure procedure){
         SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.prepare(runtime, procedure);
@@ -355,7 +355,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeExecute(JDBCRuntime runtime, Run run){
+    public static SWITCH beforeExecute(JDBCRuntime runtime, String random, Run run){
         SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.before(runtime, run);
@@ -367,7 +367,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH beforeExecute(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs){
+    public static SWITCH beforeExecute(JDBCRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs){
         SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.before(runtime, procedure, sql, inputs, outputs);
@@ -378,7 +378,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterExecute(JDBCRuntime runtime, Run run, boolean success, int result, long millis){
+    public static SWITCH afterExecute(JDBCRuntime runtime, String random, Run run, boolean success, int result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.after(runtime, run, success, result, millis);
@@ -389,7 +389,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterExecute(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs, boolean success, boolean result, long millis){
+    public static SWITCH afterExecute(JDBCRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs, boolean success, boolean result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.after(runtime, procedure, sql, inputs, outputs, success, result, millis);
@@ -421,7 +421,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH before(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){
+    public static SWITCH before(JDBCRuntime runtime, String random,  ACTION.DDL action, Object metadata, List<Run> runs){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -435,7 +435,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH after(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){
+    public static SWITCH after(JDBCRuntime runtime, String random,  ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){
         SWITCH swt = SWITCH.CONINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
