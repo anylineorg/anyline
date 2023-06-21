@@ -7,7 +7,8 @@ public interface ACTION {
         UPDATE,
         DELETE,
         EXISTS,
-        EXECUTE
+        EXECUTE,
+        PROCEDURE
     }
     enum DDL{
         TABLE_CREATE    ("表创建"),

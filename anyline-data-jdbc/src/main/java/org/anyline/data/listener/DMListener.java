@@ -23,6 +23,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
+import org.anyline.entity.data.ACTION;
 import org.anyline.entity.data.Procedure;
 
 import java.util.List;
@@ -315,12 +316,12 @@ public interface DMListener {
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao 
      * @param action 执行命令
      * @param run 包含最终执行的SQL以及占位参数值
-     * @param sql SQL
+     * @param sql SQL或存储过程名称
      * @param inputs 输入参数
      * @param outputs 输出参数
      * @param success SQL 是否成功执行
      * @param result 执行结果
      * @param millis 执行耗时
      */
-    default void slow(JDBCRuntime runtime, String action, Run run, String sql, List inputs, List outputs, boolean success, Object result, long millis){}
+    default void slow(JDBCRuntime runtime, ACTION.DML action, Run run, String sql, List inputs, List outputs, boolean success, Object result, long millis){}
 }
