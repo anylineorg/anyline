@@ -396,6 +396,7 @@ public interface AnylineService<E>{
 	List<Map<String,Object>> maps(String src, int first, int last, Object obj, String ... conditions);
 	List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
 	List<Map<String,Object>> maps(String src, String ... conditions);
+	List<Map<String,Object>> maps(String src, PageNavi nvi, String ... conditions);
 	List<Map<String,Object>> maps(String src, int first, int last, String ... conditions);
 
 

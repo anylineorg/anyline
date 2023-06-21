@@ -239,13 +239,17 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public List<Map<String, Object>> maps(String src, String... conditions) {
-        return maps(src, null, conditions);
+        return maps(src, null,null, conditions);
     }
 
-    
-    @Override 
+
+    @Override
     public List<Map<String, Object>> maps(String src, int fr, int to, String... conditions) {
         return maps(src, fr, to, null, conditions);
+    }
+    @Override
+    public List<Map<String, Object>> maps(String src, PageNavi navi, String... conditions) {
+        return maps(src,new DefaultConfigStore().setPageNavi(navi), null, conditions);
     }
 
     
