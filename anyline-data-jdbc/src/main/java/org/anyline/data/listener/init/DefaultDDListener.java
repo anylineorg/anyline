@@ -37,7 +37,7 @@ public class DefaultDDListener implements DDListener {
      * @return boolean 如果返回true(如处理完异常数据后),dao中会再执行一次ddl
      */
     @Override
-    public boolean afterAlterColumnException(JDBCRuntime runtime,Table table, Column column, Exception exception) {
+    public boolean afterAlterColumnException(JDBCRuntime runtime,String random, Table table, Column column, Exception exception) {
         AnylineDao dao = runtime.getDao();
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
             return false;
@@ -51,7 +51,7 @@ public class DefaultDDListener implements DDListener {
             prepare.setDataSource(table.getName());
             int rows = dao.count(prepare);
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
-                result = afterAlterColumnException(runtime, table, column, rows, exception);
+                result = afterAlterColumnException(runtime, random, table, column, rows, exception);
             }else{
                 result = exeAfterException(runtime,table, column, exception);
             }
