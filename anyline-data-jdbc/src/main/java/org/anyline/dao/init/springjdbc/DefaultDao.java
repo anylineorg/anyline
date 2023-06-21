@@ -5465,18 +5465,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareAlter(runtime, random,procedure);
+			exe = ddListener.prepareAlter(runtime, random,procedure);
 		}
 		if(!exe){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		long fr = System.currentTimeMillis();
 		checkSchema(runtime, procedure);
 		List<Run> runs = adapter.buildAlterRunSQL(procedure);
+		long fr = System.currentTimeMillis();
 		boolean result = execute(runtime, random, "alter procedure", runs);
 		if(null != ddListener){
-			//ddListener.afterAlter(runtime, random,procedure, result);
+			ddListener.afterAlter(runtime, random,procedure, runs, result, System.currentTimeMillis()-fr);
 		}
 		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			log.info("{}[update procedure][procedure:{}][qty:{}][result:{}][执行耗时:{}ms]", random, procedure.getName(), runs.size(), result, System.currentTimeMillis() - fr);
