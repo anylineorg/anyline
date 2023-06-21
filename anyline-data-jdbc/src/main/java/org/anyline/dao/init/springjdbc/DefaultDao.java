@@ -5509,7 +5509,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+			exe = ddListener.prepareRename(runtime, random,origin);
 		}
 		if(!exe) {
 			return false;
@@ -5517,9 +5517,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename procedure", adapter.buildRenameRunSQL(origin));
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		long fr = System.currentTimeMillis();
+		boolean result = execute(runtime, random,"rename procedure", runs);
 		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+			ddListener.afterRename(runtime, random,origin, runs, result, System.currentTimeMillis()-fr);
 		}
 		return result;
 	}
