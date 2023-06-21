@@ -5537,7 +5537,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, random,function);
+			exe = ddListener.prepareCreate(runtime, random,function);
 		}
 		if(!exe){
 			return false;
@@ -5545,9 +5545,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, function);
 		List<Run> runs = adapter.buildCreateRunSQL(function);
+		long fr = System.currentTimeMillis();
 		boolean result = execute(runtime, random,"create function", runs);
 		if(null != ddListener){
-			//ddListener.afterCreate(runtime, random,function, result);
+			ddListener.afterCreate(runtime, random,function, runs, result, System.currentTimeMillis()-fr);
 		}
 		return result;
 	}
