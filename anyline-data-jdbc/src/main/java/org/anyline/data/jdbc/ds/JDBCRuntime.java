@@ -8,9 +8,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 public class JDBCRuntime {
+    /**
+     * 表示数据源名称
+     */
     private String key;
+    /**
+     * JdbcTemplate
+     */
     private JdbcTemplate template;
+    /**
+     * JDBCAdapter 用来生成不同数据库的SQL
+     */
     private JDBCAdapter adapter;
+    /**
+     * dao
+     */
     private AnylineDao dao;
 
     public JDBCRuntime(){
