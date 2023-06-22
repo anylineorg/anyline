@@ -21,13 +21,9 @@ public interface QueryInterceptor extends DMInterceptor{
      * @param conditions  查询条件
      * @return RESULT
      */
-    default SWITCH prepare(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH prepare(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){ return SWITCH.CONTINUE;}
 
-    default SWITCH prepare(JDBCRuntime runtime, Procedure procedure, PageNavi navi){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH prepare(JDBCRuntime runtime, Procedure procedure, PageNavi navi){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
@@ -35,12 +31,8 @@ public interface QueryInterceptor extends DMInterceptor{
      * @param navi 分页
      * @return RESULT
      */
-    default SWITCH before(JDBCRuntime runtime, Run run, PageNavi navi){
-        return SWITCH.CONINUE;
-    }
-    default SWITCH before(JDBCRuntime runtime, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH before(JDBCRuntime runtime, Run run, PageNavi navi){ return SWITCH.CONTINUE;}
+    default SWITCH before(JDBCRuntime runtime, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
@@ -50,10 +42,6 @@ public interface QueryInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(JDBCRuntime runtime, Run run, boolean success, Object result, PageNavi navi, long millis){
-        return SWITCH.CONINUE;
-    }
-    default SWITCH after(JDBCRuntime runtime, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi, boolean success, Object result, long millis){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH after(JDBCRuntime runtime, Run run, boolean success, Object result, PageNavi navi, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(JDBCRuntime runtime, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi, boolean success, Object result, long millis){ return SWITCH.CONTINUE;}
 }

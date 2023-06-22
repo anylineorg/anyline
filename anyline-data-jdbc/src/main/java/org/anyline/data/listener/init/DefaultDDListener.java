@@ -13,6 +13,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.DefaultPageNavi;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.data.ACTION;
 import org.anyline.entity.data.Column;
 import org.anyline.entity.data.Table;
 import org.anyline.util.ConfigTable;
@@ -37,12 +38,12 @@ public class DefaultDDListener implements DDListener {
      * @return boolean 如果返回true(如处理完异常数据后),dao中会再执行一次ddl
      */
     @Override
-    public boolean afterAlterColumnException(JDBCRuntime runtime,String random, Table table, Column column, Exception exception) {
+    public ACTION.SWITCH afterAlterColumnException(JDBCRuntime runtime,String random, Table table, Column column, Exception exception) {
         AnylineDao dao = runtime.getDao();
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
-            return false;
+            return ACTION.SWITCH.CONTINUE;
         }
-        boolean result = false;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == 1){
             exeAfterException(runtime,table, column, exception);
         }else{
@@ -51,15 +52,15 @@ public class DefaultDDListener implements DDListener {
             prepare.setDataSource(table.getName());
             int rows = dao.count(prepare);
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
-                result = afterAlterColumnException(runtime, random, table, column, rows, exception);
+                swt = afterAlterColumnException(runtime, random, table, column, rows, exception);
             }else{
-                result = exeAfterException(runtime,table, column, exception);
+                swt = exeAfterException(runtime,table, column, exception);
             }
         }
-        return result;
+        return swt;
     }
 
-    public boolean exeAfterException(JDBCRuntime runtime, Table table, Column column, Exception exception){
+    public ACTION.SWITCH exeAfterException(JDBCRuntime runtime, Table table, Column column, Exception exception){
         JDBCAdapter adapter = runtime.getAdapter();
         AnylineDao dao = runtime.getDao();
         Column update = column.getUpdate();
@@ -74,7 +75,7 @@ public class DefaultDDListener implements DDListener {
             if(pks.size() == 0){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
                     // 没有主键
-                    return false;
+                    return ACTION.SWITCH.SKIP;
                 }
             }
             List<String> keys = new ArrayList<>();
@@ -118,7 +119,7 @@ public class DefaultDDListener implements DDListener {
                 page ++;
             }
         }
-        return true;
+        return ACTION.SWITCH.CONTINUE;
     }
     private String char2number(String value){
         value = value.replaceAll("\\s","");

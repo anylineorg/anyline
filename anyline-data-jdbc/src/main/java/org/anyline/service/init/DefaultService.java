@@ -4507,7 +4507,7 @@ public class DefaultService<E> implements AnylineService<E> {
          */
         @Override
         public boolean create(Trigger trigger) throws Exception{
-            boolean result = dao.create(trigger);
+            boolean result = dao.add(trigger);
             return result;
         }
         @Override

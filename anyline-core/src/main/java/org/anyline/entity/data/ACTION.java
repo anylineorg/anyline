@@ -32,27 +32,32 @@ public interface ACTION {
         PARTITION_TABLE_DROP     ("子表(分区表)删除"),
         PARTITION_TABLE_RENAME   ("子表(分区表)重命名"),
 
-        COLUMN_CREATE   ("列创建"),
+        COLUMN_ADD   ("列创建"),
         COLUMN_ALTER    ("列结构修改"),
         COLUMN_DROP     ("列删除"),
         COLUMN_RENAME   ("列重命名"),
 
-        PRIMARY_CREATE   ("主键创建"),
+        TAG_ADD   ("标签(子表列)创建"),
+        TAG_ALTER    ("标签(子表列)结构修改"),
+        TAG_DROP     ("标签(子表列)删除"),
+        TAG_RENAME   ("标签(子表列)重命名"),
+
+        PRIMARY_ADD   ("主键创建"),
         PRIMARY_ALTER    ("主键修改"),
         PRIMARY_DROP     ("主键删除"),
         PRIMARY_RENAME   ("主键重命名"),
 
-        FOREIGN_CREATE   ("外键创建"),
+        FOREIGN_ADD   ("外键创建"),
         FOREIGN_ALTER    ("外键修改"),
         FOREIGN_DROP     ("外键删除"),
         FOREIGN_RENAME   ("外键重命名"),
 
-        INDEX_CREATE   ("索引创建"),
+        INDEX_ADD   ("索引创建"),
         INDEX_ALTER    ("索引修改"),
         INDEX_DROP     ("索引删除"),
         INDEX_RENAME   ("索引重命名"),
 
-        CONSTRAINT_CREATE   ("约束创建"),
+        CONSTRAINT_ADD   ("约束添加"),
         CONSTRAINT_ALTER    ("约束修改"),
         CONSTRAINT_DROP     ("约束删除"),
         CONSTRAINT_RENAME   ("约束重命名"),
@@ -67,7 +72,7 @@ public interface ACTION {
         FUNCTION_DROP     ("函数删除"),
         FUNCTION_RENAME   ("函数重命名"),
 
-        TRIGGER_CREATE   ("触发器创建"),
+        TRIGGER_ADD   ("触发器创建"),
         TRIGGER_ALTER    ("触发器修改"),
         TRIGGER_DROP     ("触发器删除"),
         TRIGGER_RENAME   ("触发器重命名"),

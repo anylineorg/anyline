@@ -21,12 +21,8 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param conditions 执行条件
      * @return RESULT
      */
-    default ACTION.SWITCH prepare(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
-        return SWITCH.CONINUE;
-    }
-    default SWITCH prepare(JDBCRuntime runtime, Procedure procedure){
-        return SWITCH.CONINUE;
-    }
+    default ACTION.SWITCH prepare(JDBCRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){ return SWITCH.CONTINUE;}
+    default SWITCH prepare(JDBCRuntime runtime, Procedure procedure){ return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -34,9 +30,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @return RESULT
      */
-    default SWITCH before(JDBCRuntime runtime, Run run){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH before(JDBCRuntime runtime, Run run){ return SWITCH.CONTINUE;}
 
 
     /**
@@ -45,9 +39,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param procedure 存储过程
      * @return RESULT
      */
-    default SWITCH before(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH before(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
@@ -56,9 +48,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(JDBCRuntime runtime, Run run, boolean success, int result, long millis){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH after(JDBCRuntime runtime, Run run, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
@@ -67,7 +57,5 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs, boolean success, boolean result, long millis){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH after(JDBCRuntime runtime, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs, boolean success, boolean result, long millis){ return SWITCH.CONTINUE;}
 }

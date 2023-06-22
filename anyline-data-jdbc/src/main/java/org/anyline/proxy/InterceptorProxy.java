@@ -103,7 +103,7 @@ public class InterceptorProxy {
      * ****************************************************************************************************************/
 
     public static SWITCH prepareQuery(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.prepare(runtime, prepare, configs, conditions);
             if(swt == SWITCH.SKIP){
@@ -114,7 +114,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH prepareQuery(JDBCRuntime runtime, String random, Procedure procedure, PageNavi navi){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.prepare(runtime, procedure, navi);
             if(swt == SWITCH.SKIP){
@@ -125,7 +125,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeQuery(JDBCRuntime runtime, String random, Run run, PageNavi navi){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.before(runtime, run, navi);
             if(swt == SWITCH.SKIP){
@@ -136,7 +136,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeQuery(JDBCRuntime runtime, String random, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.before(runtime, procedure, inputs, outputs, navi);
             if(swt == SWITCH.SKIP){
@@ -147,7 +147,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterQuery(JDBCRuntime runtime, String random, Run run, boolean exe, Object result, PageNavi navi, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.after(runtime, run, exe, result, navi, millis);
             if(swt == SWITCH.SKIP){
@@ -159,7 +159,7 @@ public class InterceptorProxy {
     }
 
     public static SWITCH afterQuery(JDBCRuntime runtime, String random, Procedure procedure, List<Parameter> inputs, List<Parameter> outputs, PageNavi navi, boolean success, Object resutl, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
             swt = interceptor.after(runtime, procedure, inputs, outputs, navi, success, resutl, millis);
             if(swt == SWITCH.SKIP){
@@ -172,7 +172,7 @@ public class InterceptorProxy {
 
 
     public static SWITCH prepareCount(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.prepare(runtime, prepare, configs, conditions);
             if(swt == SWITCH.SKIP){
@@ -183,7 +183,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeCount(JDBCRuntime runtime, String random, Run run){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.before(runtime, run);
             if(swt == SWITCH.SKIP){
@@ -194,7 +194,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterCount(JDBCRuntime runtime, String random, Run run, boolean exe, int result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(CountInterceptor interceptor:countInterceptors){
             swt = interceptor.after(runtime, run, exe, result, millis);
             if(swt == SWITCH.SKIP){
@@ -207,7 +207,7 @@ public class InterceptorProxy {
 
 
     public static SWITCH prepareUpdate(JDBCRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.prepare(runtime, dest, data, configs, columns);
             if(swt == SWITCH.SKIP){
@@ -218,7 +218,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeUpdate(JDBCRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.before(runtime, run, dest, data, configs, columns);
             if(swt == SWITCH.SKIP){
@@ -229,7 +229,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterUpdate(JDBCRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.after(runtime, run, dest, data, configs, columns, success, result, millis);
             if(swt == SWITCH.SKIP){
@@ -242,7 +242,7 @@ public class InterceptorProxy {
 
 
     public static SWITCH prepareInsert(JDBCRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.prepare(runtime, dest, data,checkPrimary,  columns);
             if(swt == SWITCH.SKIP){
@@ -253,7 +253,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeInsert(JDBCRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary,  List<String> columns){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.before(runtime, run, dest, data,checkPrimary,  columns);
             if(swt == SWITCH.SKIP){
@@ -264,7 +264,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterInsert(JDBCRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, int result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.after(runtime, run, dest, data,checkPrimary,  columns, success, result, millis);
             if(swt == SWITCH.SKIP){
@@ -276,7 +276,7 @@ public class InterceptorProxy {
     }
 
     public static SWITCH prepareDelete(JDBCRuntime runtime, String random, String table, String key, Collection values){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime,table, key, values);
             if(swt == SWITCH.SKIP){
@@ -287,7 +287,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH prepareDelete(JDBCRuntime runtime, String random, String table, ConfigStore configs, String ... conditions){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime,table, configs, conditions);
             if(swt == SWITCH.SKIP){
@@ -299,7 +299,7 @@ public class InterceptorProxy {
     }
 
     public static SWITCH prepareDelete(JDBCRuntime runtime, String random, String dest, Object obj, String... columns){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime, dest, obj, columns);
             if(swt == SWITCH.SKIP){
@@ -310,7 +310,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeDelete(JDBCRuntime runtime, String random, Run run){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.before(runtime, run);
             if(swt == SWITCH.SKIP){
@@ -321,7 +321,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterDelete(JDBCRuntime runtime, String random, Run run, boolean success, int result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.after(runtime, run, success, result, millis);
             if(swt == SWITCH.SKIP){
@@ -334,7 +334,7 @@ public class InterceptorProxy {
 
 
     public static SWITCH prepareExecute(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.prepare(runtime, prepare, configs, conditions);
             if(swt == SWITCH.SKIP){
@@ -345,7 +345,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH prepareExecute(JDBCRuntime runtime, String random, Procedure procedure){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.prepare(runtime, procedure);
             if(swt == SWITCH.SKIP){
@@ -356,7 +356,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH beforeExecute(JDBCRuntime runtime, String random, Run run){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.before(runtime, run);
             if(swt == SWITCH.SKIP){
@@ -368,7 +368,7 @@ public class InterceptorProxy {
     }
 
     public static SWITCH beforeExecute(JDBCRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.before(runtime, procedure, sql, inputs, outputs);
             if(swt == SWITCH.SKIP){
@@ -379,7 +379,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterExecute(JDBCRuntime runtime, String random, Run run, boolean success, int result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.after(runtime, run, success, result, millis);
             if(swt == SWITCH.SKIP){
@@ -390,7 +390,7 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH afterExecute(JDBCRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs, boolean success, boolean result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.after(runtime, procedure, sql, inputs, outputs, success, result, millis);
             if(swt == SWITCH.SKIP){
@@ -407,12 +407,12 @@ public class InterceptorProxy {
      * ****************************************************************************************************************/
 
     public static SWITCH prepare(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
             for(DDInterceptor interceptor:interceptors){
                 swt = interceptor.prepare(runtime, random, action, metadata);
-                if(swt == SWITCH.SKIP){
+                if(swt != SWITCH.CONTINUE){
                     //跳过后续的 after
                     return swt;
                 }
@@ -422,12 +422,12 @@ public class InterceptorProxy {
     }
 
     public static SWITCH before(JDBCRuntime runtime, String random,  ACTION.DDL action, Object metadata, List<Run> runs){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
             for(DDInterceptor interceptor:interceptors){
                 swt = interceptor.before(runtime, random, action, metadata, runs);
-                if(swt == SWITCH.SKIP){
+                if(swt != SWITCH.CONTINUE){
                     //跳过后续的 after
                     return swt;
                 }
@@ -436,12 +436,12 @@ public class InterceptorProxy {
         return swt;
     }
     public static SWITCH after(JDBCRuntime runtime, String random,  ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){
-        SWITCH swt = SWITCH.CONINUE;
+        SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
             for(DDInterceptor interceptor:interceptors){
                 swt = interceptor.after(runtime, random, action, metadata, runs, result, millis);
-                if(swt == SWITCH.SKIP){
+                if(swt != SWITCH.CONTINUE){
                     //跳过后续的 after
                     return swt;
                 }

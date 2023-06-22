@@ -427,7 +427,7 @@ public interface AnylineDao<E>{
 	 * @return trigger
 	 * @throws Exception 异常 Exception
 	 */
-	boolean create(Trigger trigger) throws Exception;
+	boolean add(Trigger trigger) throws Exception;
 	boolean alter(Trigger trigger) throws Exception;
 	boolean drop(Trigger trigger) throws Exception;
 	boolean rename(Trigger origin, String name) throws Exception;

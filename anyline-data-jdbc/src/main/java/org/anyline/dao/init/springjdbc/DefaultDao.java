@@ -19,6 +19,7 @@
 
 package org.anyline.dao.init.springjdbc;
 
+import ch.qos.logback.classic.util.CopyOnInheritThreadLocal;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.PersistenceAdapter;
@@ -155,6 +156,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected List<Map<String,Object>> maps(boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
+		SWITCH swt = SWITCH.CONTINUE;
 		Long fr = System.currentTimeMillis();
 		boolean sql_success = false;
 		Run run = null;
@@ -162,17 +164,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random();
 
 		//query拦截
-		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return new ArrayList<>();
 		}
 
-		//DM监听
-		boolean exe = true;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return new ArrayList<>();
 		}
 
@@ -248,15 +248,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == random){
 			random = random();
 		}
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return new DataSet();
 		}
 		//query拦截
-		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return new DataSet();
 		}
@@ -373,16 +373,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean sql_success = false;
 		PageNavi navi = null;
 
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return new EntitySet();
 		}
 
 		//query拦截
-		SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return new EntitySet();
 		}
@@ -447,7 +447,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 
 					fr = System.currentTimeMillis();
-					list = select(runtime, random,clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
+					list = select(runtime, random, clazz, run.getTable(), run.getFinalQuery(), run.getValues(), ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
 					sql_success = false;
 				}else{
 					list = new EntitySet<>();
@@ -520,15 +520,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		boolean sql_success = false;
 
-		boolean exe = true;
-		SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
+		SWITCH swt = SWITCH.CONTINUE;
+		swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
@@ -574,11 +574,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == random){
 			random = random();
 		}
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		if (null != dmListener) {
-			exe = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 
@@ -681,7 +681,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected int update(JDBCRuntime runtime,  String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceHolder.parseDataSource(dest, data);
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		boolean sql_success = false;
 		if(null == runtime){
 			runtime = runtime();
@@ -689,14 +689,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == random){
 			random = random();
 		}
-		SWITCH swt = InterceptorProxy.prepareUpdate(runtime, random, dest, data, configs, columns);
+		swt = InterceptorProxy.prepareUpdate(runtime, random, dest, data, configs, columns);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareUpdate(runtime, random, dest, data, configs, false, columns);
+			swt = dmListener.prepareUpdate(runtime, random, dest, data, configs, false, columns);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
@@ -732,14 +732,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				return -1;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
+				swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
 			}
-			if(!exe) {
+			if(swt == SWITCH.BREAK) {
 				return -1;
 			}
 			result = runtime.getTemplate().update(sql, values.toArray());
-			checkMany2ManyDependencySave(runtime, random,data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
-			checkOne2ManyDependencySave(runtime, random,data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkMany2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkOne2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -861,7 +861,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}else{
 			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
 			Boolean override = checkOverride(data);
-			boolean exe = true;
+			SWITCH swt = SWITCH.CONTINUE;
 			if(null != override){
 				RunPrepare prepare = new DefaultTablePrepare(dest);
 				Map<String, Object> pvs = checkPv(data);
@@ -943,16 +943,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == random){
 			random = random();
 		}
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		boolean sql_success = false;
-		SWITCH swt = InterceptorProxy.prepareInsert(runtime,random,  dest, data, checkPrimary, columns);
+		swt = InterceptorProxy.prepareInsert(runtime,random,  dest, data, checkPrimary, columns);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
+			swt = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 
@@ -993,9 +993,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				return -1;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+				swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
 			}
-			if(!exe) {
+			if(swt == SWITCH.BREAK){
 				return -1;
 			}
 			cnt = adapter.insert(runtime.getTemplate(), random, data, sql, values, null);
@@ -1151,7 +1151,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(obj instanceof EntitySet){
 			EntitySet set = (EntitySet) obj;
 			for(Object entity:set){
-				checkOne2ManyDependencySave(runtime, random,entity, dependency, mode);
+				checkOne2ManyDependencySave(runtime, random, entity, dependency, mode);
 			}
 		}else{
 			Class clazz = obj.getClass();
@@ -1404,7 +1404,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
 		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
-			columns = columns(runtime, random,false,  new Table(null, null, table));
+			columns = columns(runtime, random, false,  new Table(null, null, table));
 		}
 		try{
 			final JDBCRuntime rt = runtime;
@@ -1496,7 +1496,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == random){
 			random = random();
 		}
-		DataSet rows = select(runtime, random,table, sql, values);
+		DataSet rows = select(runtime, random, table, sql, values);
 		for(DataRow row:rows){
 			T entity = null;
 			if(EntityAdapterProxy.hasAdapter()){
@@ -1509,8 +1509,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		//检测依赖关系
 		if(dependency > 0) {
-			checkMany2ManyDependencyQuery(runtime, random,set, dependency);
-			checkOne2ManyDependencyQuery(runtime, random,set, dependency);
+			checkMany2ManyDependencyQuery(runtime, random, set, dependency);
+			checkOne2ManyDependencyQuery(runtime, random, set, dependency);
 		}
 		return set;
 	}
@@ -1548,7 +1548,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
 							List<Object> params = new ArrayList<>();
 							params.add(primaryValueMap.get(pk.toUpperCase()));
-							EntitySet<T> dependencys = select(runtime, random,join.itemClass, null, sql, params, dependency);
+							EntitySet<T> dependencys = select(runtime, random, join.itemClass, null, sql, params, dependency);
 							BeanUtil.setFieldValue(entity, field, dependencys);
 						}
 					}
@@ -1665,7 +1665,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected int execute(JDBCRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
 		boolean sql_success = false;
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -1673,7 +1673,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		SWITCH swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
+		swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
@@ -1699,9 +1699,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				return -1;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeExecute(runtime, random, run);
+				swt = dmListener.beforeExecute(runtime, random, run);
 			}
-			if(!exe) {
+			if(swt == SWITCH.BREAK){
 				return -1;
 			}
 			if (null != values && values.size() > 0) {
@@ -1761,7 +1761,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected boolean execute(JDBCRuntime runtime, String random, boolean recover, Procedure procedure){
 		boolean result = false;
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		boolean sql_success = false;
 		if(null == runtime){
 			runtime = runtime();
@@ -1769,14 +1769,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == random){
 			random = random();
 		}
-		SWITCH swt = InterceptorProxy.prepareExecute(runtime, random, procedure);
+		swt = InterceptorProxy.prepareExecute(runtime, random, procedure);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareExecute(runtime, random, procedure);
+			swt = dmListener.prepareExecute(runtime, random, procedure);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		List<Object> list = new ArrayList<Object>();
@@ -1809,14 +1809,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long millis= -1;
 		try{
 
-			swt = InterceptorProxy.beforeExecute(runtime, random,procedure, sql, inputs, outputs);
+			swt = InterceptorProxy.beforeExecute(runtime, random, procedure, sql, inputs, outputs);
 			if(swt == SWITCH.BREAK){
 				return false;
 			}
 			if(null != dmListener){
-				exe = dmListener.beforeExecute(runtime, random, procedure);
+				swt = dmListener.beforeExecute(runtime, random, procedure);
 			}
-			if(!exe) {
+			if(swt == SWITCH.BREAK){
 				return false;
 			}
 			list = (List<Object>) runtime.getTemplate().execute(sql, new CallableStatementCallback<Object>() {
@@ -2102,15 +2102,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		SWITCH swt = InterceptorProxy.prepareDelete(runtime, random,table, key, values);
+		SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, table, key, values);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
-		boolean exe = true;
 		if(null != dmListener){
-			exe = dmListener.prepareDelete(runtime, random,table, key, values);
+			swt = dmListener.prepareDelete(runtime, random, table, key, values);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
@@ -2143,7 +2142,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		dest = DataSourceHolder.parseDataSource(dest,obj);
 		JDBCRuntime runtime = runtime();
 		String random = random();
-
+		SWITCH swt = SWITCH.CONTINUE;
 		int size = 0;
 		if(null != obj){
 			if(obj instanceof Collection){
@@ -2159,15 +2158,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 				}
 			}else{
-				SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, dest, obj, columns);
+				swt = InterceptorProxy.prepareDelete(runtime, random, dest, obj, columns);
 				if(swt == SWITCH.BREAK){
 					return -1;
 				}
-				boolean exe = true;
 				if(null != dmListener){
-					exe = dmListener.prepareDelete(runtime, random,dest, obj, columns);
+					swt = dmListener.prepareDelete(runtime, random, dest, obj, columns);
 				}
-				if(!exe){
+				if(swt == SWITCH.BREAK){
 					return -1;
 				}
 				JDBCAdapter adapter = runtime.getAdapter();
@@ -2249,15 +2247,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCRuntime runtime = runtime();
 		String random = random();
 
-		boolean exe = true;
-		SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
+		SWITCH swt = SWITCH.CONTINUE;
+		swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.prepareDelete(runtime,random, table, configs, conditions);
+			swt = dmListener.prepareDelete(runtime,random, table, configs, conditions);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
@@ -2276,21 +2274,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	protected int exeDelete(JDBCRuntime runtime, String random, boolean recover, Run run){
 		int result = -1;
 		boolean sql_success = false;
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		final String sql = run.getFinalDelete();
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
 		}
-		SWITCH swt = InterceptorProxy.beforeDelete(runtime, random, run);
+		swt = InterceptorProxy.beforeDelete(runtime, random, run);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			exe = dmListener.beforeDelete(runtime, random, run);
+			swt = dmListener.beforeDelete(runtime, random, run);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return -1;
 		}
 		long millis = -1;
@@ -2309,7 +2307,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(millis > SLOW_SQL_MILLIS){
 					log.warn("{}[SLOW SQL][action:delete][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, paramLogFormat(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, random,DML.DELETE, run, sql, values, null, sql_success, result, millis);
+						dmListener.slow(runtime, random, DML.DELETE, run, sql, values, null, sql_success, result, millis);
 					}
 				}
 			}
@@ -2409,7 +2407,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						databases = adapter.databases(idx++, true, databases, set);
 					}
 				}
@@ -2472,7 +2470,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if (null != runs && runs.size() > 0) {
 					int idx = 0;
 					for (Run run : runs) {
-						DataSet set = select(runtime, random,(String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random, (String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						sys = true;
 					}
@@ -2571,7 +2569,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 					}
 				}
@@ -2621,7 +2619,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
-							DataSet set = select(runtime, random,(String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
+							DataSet set = select(runtime, random, (String) null, run.getFinalQuery(), run.getValues()).toUpperKey();
 							tables = adapter.comments(idx++, true, catalog, schema, tables, set);
 						}
 					}
@@ -2782,7 +2780,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						views = adapter.views(idx++, true, catalog, schema, views, set);
 					}
 				}
@@ -2940,7 +2938,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random,(String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
+						DataSet set = select(runtime, random, (String)null, run.getFinalQuery(), run.getValues()).toUpperKey();
 						tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 					}
 				}
@@ -3860,41 +3858,45 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean rename(Table origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(Table table) throws Exception {
-		boolean exe = true;
-		boolean sql_success = false;
+	public boolean create(Table meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TABLE_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		SWITCH swt = InterceptorProxy.prepare(runtime, random, DDL.TABLE_CREATE, table);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeCreate(runtime, random, meta, runs);
+		}
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
-		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, random, table);
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action,  meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
-		if(!exe){
-			return false;
-		}
-		checkSchema(runtime, table);
-		List<Run> runs = adapter.buildCreateRunSQL(table);
-		swt = InterceptorProxy.before(runtime, random, DDL.TABLE_CREATE, table, runs);
-		if(swt == SWITCH.BREAK){
-			return false;
-		}
-		//exe = ddListener.beforeCreate(runtime, random, table, sqls);
-		if(!exe){
-			return false;
-		}
-		Long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random, "create table", runs);
-		if (runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[create table][table:{}][执行耗时:{}ms]", random, table.getName(), System.currentTimeMillis() - fr);
-		}
-		if(null != ddListener){
-			//ddListener.afterCreate(runtime, random, table, sqls, result, System.currentTimeMillis()-fr);
-		}
-		InterceptorProxy.after(runtime, random, DDL.TABLE_CREATE, table, runs, result, System.currentTimeMillis()-fr);
 		return result;
 	}
 
@@ -3913,23 +3915,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random();
 		JDBCAdapter adapter = runtime.getAdapter();
 		SWITCH swt = InterceptorProxy.prepare(runtime, random, DDL.TABLE_ALTER, table);
+		if(null != ddListener && swt == SWITCH.CONTINUE) {
+			swt = ddListener.parepareAlter(runtime, random, table);
+		}
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
-		boolean exe = true;
-		if(null != ddListener) {
-			exe = ddListener.parepareAlter(runtime, random, table);
-		}
-		if(!exe){
-			return false;
-		}
-		long fr = System.currentTimeMillis();
 		checkSchema(runtime, table);
 		checkSchema(runtime, update);
 
+		long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
-			result = rename(runtime, random,table, uname);
+			result = rename(runtime, random, table, uname);
 			table.setName(uname);
+		}
+		if(!result){
+			return result;
 		}
 
 		//修改表备注
@@ -3944,9 +3945,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				swt = InterceptorProxy.before(runtime, random, DDL.TABLE_COMMENT, table, runs);
 				if(swt != SWITCH.BREAK) {
-					long rename_fr = System.currentTimeMillis();
-					result = execute(runtime, random, "alter table comment", runs) && result;
-					InterceptorProxy.after(runtime, random, DDL.TABLE_COMMENT, table, runs, result, System.currentTimeMillis()-rename_fr);
+					long cmt_fr = System.currentTimeMillis();
+					result = execute(runtime, random, DDL.TABLE_COMMENT, runs) && result;
+					InterceptorProxy.after(runtime, random, DDL.TABLE_COMMENT, table, runs, result, System.currentTimeMillis()-cmt_fr);
 				}
 			}
 		}
@@ -4036,7 +4037,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != auto && auto.isAutoIncrement() == 1){//原主键科自增
 					if(!npks.containsKey(auto.getName().toUpperCase())){ //当前不是主键
 						auto.setPrimaryKey(false);
-						result = execute(runtime, random, "drop auto increment", adapter.buildDropAutoIncrement(auto)) && result;
+						result = execute(runtime, random, DDL.TABLE_ALTER, adapter.buildDropAutoIncrement(auto)) && result;
 					}
 				}
 			}
@@ -4047,7 +4048,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		List<Run> alters = adapter.buildAlterRunSQL(table, cols.values());
 		if(null != alters && alters.size()>0){
-			result = execute(runtime, random, "alter table column", alters) && result;
+			result = execute(runtime, random, DDL.COLUMN_ALTER, alters) && result;
 		}
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
 		if(change_pk){
@@ -4061,31 +4062,44 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean drop(Table table) throws Exception{
-		boolean exe = true;
+	public boolean drop(Table meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TABLE_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		JDBCAdapter adapter = runtime.getAdapter();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random, table);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-
-		checkSchema(runtime, table);
-		List<Run> runs = adapter.buildDropRunSQL(table);
-
-		if (null != ddListener) {
-			//exe = ddListener.beforeDrop(runtime, random, table, sqls(sql));
+		JDBCAdapter adapter = runtime.getAdapter();
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"drop table", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random, table, sqls(sql), result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4108,36 +4122,51 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public boolean rename(JDBCRuntime runtime, String random, Table origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TABLE_RENAME;
 		if(null == runtime){
 			runtime = runtime();
 		}
 		if(null == random){
 			random = random();
 		}
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random, origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
-
-		if(null != ddListener){
-			//exe = ddListener.beforeRename(runtime, random, origin, sqls);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"rename table", runs);
-		if (null != ddListener) {
-			//ddListener.afterRename(runtime, random, origin, sqls, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
-		return false;
+		return result;
 	}
 
 	/* *****************************************************************************************************************
@@ -4148,82 +4177,131 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(View view) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(View view) throws Exception {
-		boolean exe = true;
-		JDBCRuntime runtime = runtime();
-		String random = random();
-		JDBCAdapter adapter = runtime.getAdapter();
-		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, random, view);
-		}
-		if(!exe){
-			return false;
-		}
-		checkSchema(runtime, view);
-		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildCreateRunSQL(view);
-
-		if(null != ddListener){
-			//exe = ddListener.beforeCreate(runtime, random, view, sqls);
-		}
-		if(!exe){
-			return false;
-		}
-		boolean result = execute(runtime, random, "drop view", runs);
-		if (runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[create view][view:{}][执行耗时:{}ms]", random, view.getName(), System.currentTimeMillis() - fr);
-		}
-		if(null != ddListener){
-			//ddListener.afterCreate(runtime, random, view, sqls, result, System.currentTimeMillis()-fr);
-		}
-		return result;
-	}
-
-	@Override
-	public boolean alter(View view) throws Exception {
+	public boolean create(View meta) throws Exception {
 		boolean result = false;
-		View update = (View)view.getUpdate();
-		String name = view.getName();
-		String uname = update.getName();
-
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.VIEW_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		JDBCAdapter adapter = runtime.getAdapter();
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeCreate(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		checkSchema(runtime, view);
-		checkSchema(runtime, update);
-		if(!name.equalsIgnoreCase(uname)){
-			rename(runtime, view, uname);
-			CacheProxy.clear();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action,  meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean alter(View meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.VIEW_ALTER;
+		JDBCRuntime runtime = runtime();
+		String random = random();
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		JDBCAdapter adapter = runtime.getAdapter();
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action,  meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 
 		return result;
 	}
 
 	@Override
-	public boolean drop(View view) throws Exception{
-		boolean exe = true;
+	public boolean drop(View meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.VIEW_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		JDBCAdapter adapter = runtime.getAdapter();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random, view);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-		checkSchema(runtime, view);
-		List<Run> runs = adapter.buildDropRunSQL(view);
-		if (null != ddListener) {
-			//exe = ddListener.beforeDrop(runtime, random, view, sqls(sql));
+		JDBCAdapter adapter = runtime.getAdapter();
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"drop view", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random, view, sqls(sql), result,System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4234,24 +4312,49 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public boolean rename(JDBCRuntime runtime, View origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.VIEW_RENAME;
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random, origin);
+		origin.setNewName(name);
+		if(null == runtime){
+			runtime = runtime();
 		}
-		if(!exe){
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
+		}
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
-		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"rename view", runs);
-		if (null != ddListener) {
-			//ddListener.afterRename(runtime, random, origin, sqls, result, System.currentTimeMillis()-fr);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
 		}
-		return false;
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
+		}
+		return result;
 	}
 
 
@@ -4263,47 +4366,56 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(MasterTable table) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(MasterTable table) throws Exception{
-		boolean exe = true;
+	public boolean create(MasterTable meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.MASTER_TABLE_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, random, table);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, table);
-		List<Run> runs = adapter.buildCreateRunSQL(table);
-		if(null != ddListener){
-			//exe = ddListener.beforeDrop(runtime, random, table, sqls);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeCreate(runtime, random, meta, runs);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random, "create MasterTable", runs);
-		if(null != ddListener){
-			//ddListener.afterDrop(runtime, random, table, sqls, result, System.currentTimeMillis()-fr);
-		}
-		if(runs.size() >1) {
-			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
 	}
 	@Override
 	public boolean alter(MasterTable table) throws Exception{
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random, table);
+			//swt = ddListener.prepareAlter(runtime, random, table);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		boolean result = true;
@@ -4320,7 +4432,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		long fr = System.currentTimeMillis();
 
 		if(!name.equalsIgnoreCase(uname)){
-			result = rename(runtime, random,table, uname);
+			result = rename(runtime, random, table, uname);
 		}
 		// 更新列
 		for(Column ucolumn : ucolumns.values()){
@@ -4385,31 +4497,45 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public boolean drop(MasterTable table) throws Exception{
-		boolean exe = true;
+	public boolean drop(MasterTable meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.MASTER_TABLE_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random, table);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, table);
-		List<Run> runs = adapter.buildDropRunSQL(table);
-		if (null != ddListener) {
-			//exe = ddListener.beforeDrop(runtime, random, table, sqls(sql));
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"drop MasterTable", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random, table, sqls(sql), result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
-
 		return result;
 	}
 	@Override
@@ -4418,31 +4544,49 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	public boolean rename(JDBCRuntime runtime, MasterTable origin, String name) throws Exception {
-		boolean exe = true;
-		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random, origin);
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.MASTER_TABLE_RENAME;
+		if(null == runtime){
+			runtime = runtime();
 		}
-		if(!exe){
+		String random = random();
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
+		}
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
-
-		if(null != ddListener){
-			//exe = ddListener.beforeRename(runtime, random, origin, sqls);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"rename MasterTable", runs);
-		if (null != ddListener) {
-			//ddListener.afterRename(runtime, random, origin, sqls, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
-		return false;
+		return result;
 	}
 
 	/* *****************************************************************************************************************
@@ -4454,39 +4598,56 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public boolean create(PartitionTable table) throws Exception{
-		boolean exe = true;
+	public boolean create(PartitionTable meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PARTITION_TABLE_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareCreate(runtime, random, table);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, table);
-		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildCreateRunSQL(table);
-		boolean result = execute(runtime, random, "create PartitionTable", runs);
-		if(null != ddListener){
-			//ddListener.afterCreate(runtime, random, table, sqls, result, System.currentTimeMillis()-fr);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeCreate(runtime, random, meta, runs);
 		}
-		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][master:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getMasterName(), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
 	public boolean alter(PartitionTable table) throws Exception{
-		boolean exe = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random, table);
+			//swt = ddListener.prepareAlter(runtime, random, table);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		boolean result = true;
@@ -4500,7 +4661,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String uname = update.getName();
 		long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
-			result = rename(runtime, random,table, uname);
+			result = rename(runtime, random, table, uname);
 		}
 		// 更新列
 		for(Column ucolumn : ucolumns.values()){
@@ -4541,23 +4702,44 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public boolean drop(PartitionTable table) throws Exception{
-		boolean exe = true;
+	public boolean drop(PartitionTable meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PARTITION_TABLE_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random, table);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
- 		checkSchema(runtime, table);
-		List<Run> runs = adapter.buildDropRunSQL(table);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"drop PartitionTable", runs);
-		if(null != ddListener){
-			//ddListener.afterDrop(runtime, random, table, sqls(sql), result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][master:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getMasterName(), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4568,27 +4750,50 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	protected boolean rename(JDBCRuntime runtime, String random, PartitionTable origin, String name) throws Exception {
-		boolean exe = true;
-		if(null != ddListener){
-			////exe = ddListener.prepareRename(runtime, random,origin);
-		}
-		if(!exe){
-			return false;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PARTITION_TABLE_RENAME;
+		origin.setNewName(name);
+		if(null == random){
+			random = random();
 		}
 		if(null == runtime){
 			runtime = runtime();
 		}
-		if(null == random){
-			random = random();
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename PartitionTable", adapter.buildRenameRunSQL(origin));
-		if (null != ddListener) {
-			////ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
 		}
-		return false;
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][master:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getMasterName(), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
+		}
+		return result;
 	}
 	/* *****************************************************************************************************************
 	 * 													column
@@ -4601,28 +4806,43 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * private boolean alter(Table table, Column column, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(Column column) throws Exception{
-		boolean exe = true;
+	public boolean add(Column meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.COLUMN_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			////exe = ddListener.prepareAdd(runtime, random,column);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, column);
-
-		List<Run> runs = adapter.buildAddRunSQL(column);
-		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random, "add column", runs);
-		if(null != ddListener){
-			////ddListener.afterAdd(runtime, random,column, sqls, result, System.currentTimeMillis()-fr);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAddRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAdd(runtime, random, meta, runs);
 		}
-		if(runs.size() > 1) {
-			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(true), column.getName(), result, System.currentTimeMillis() - fr);
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4650,22 +4870,44 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return alter(table, column, true);
 	}
 	@Override
-	public boolean drop(Column column) throws Exception{
-		boolean exe = true;
+	public boolean drop(Column meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.COLUMN_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			////exe = ddListener.prepareDrop(runtime, random,column);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
- 		checkSchema(runtime, column);
-		List<Run> runs = adapter.buildDropRunSQL(column);
-		boolean result = execute(runtime, random, "drop column", runs);
-		if (null != ddListener) {
-			////ddListener.afterDrop(runtime, random,column, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4677,49 +4919,57 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
-	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
-		boolean exe = true;
+	private boolean alter(Table table, Column meta, boolean trigger) throws Exception{
+
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.COLUMN_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			////exe = ddListener.prepareAlter(runtime, random,column);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-		boolean result = true;
-
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, column);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta, false);
 		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildAlterRunSQL(column, false);
 		try{
-			result = execute(runtime, random, "alter column", runs);
-			if(null != ddListener){
-				//ddListener.afterAlter(runtime, random,column, result);
-			}
+			result = execute(runtime, random, action, runs);
 		}catch (Exception e){
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.toString());
-			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
+			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(meta.getTypeName(), meta.getUpdate().getTypeName())) {
  				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-					//exe = //ddListener.afterAlterColumnException(runtime, random,table, column, e);
+					swt = ddListener.afterAlterColumnException(runtime, random, table, meta, e);
 				}
-				log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, exe);
-				if (exe) {
-					result = alter(table, column, false);
+				log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, swt);
+				if (swt == SWITCH.CONTINUE) {
+					result = alter(table, meta, false);
 				}
 			}else{
 				log.error("{}[修改Column执行异常][中断执行]", random);
 				result = false;
 				throw e;
 			}
-		}
-		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(true), column.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4727,21 +4977,45 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean rename(Column origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.COLUMN_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename column", adapter.buildRenameRunSQL(origin));
-		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4757,22 +5031,44 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * private boolean alter(Table table, Tag tag, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(Tag tag) throws Exception{
-		boolean exe = true;
+	public boolean add(Tag meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TAG_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, random,tag);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, tag);
-		List<Run> runs = adapter.buildAddRunSQL(tag);
-		boolean result = execute(runtime, random, "add tag", runs);
-		if(null != ddListener){
-			//ddListener.afterAdd(runtime, random,tag, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAddRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAdd(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4799,98 +5095,150 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return alter(table, tag, true);
 	}
 	@Override
-	public boolean drop(Tag tag) throws Exception{
-		boolean exe = true;
+	public boolean drop(Tag meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TAG_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random,tag);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, tag);
-		List<Run> runs = adapter.buildDropRunSQL(tag);
-		boolean result = execute(runtime, random,"drop tag", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random,tag, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	/**
 	 * 修改标签
-	 * @param tag 标签
+	 * @param meta 标签
 	 * @param trigger 是否触发异常事件
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
-	private boolean alter(Table table, Tag tag, boolean trigger) throws Exception{
-		boolean exe = true;
+	private boolean alter(Table table, Tag meta, boolean trigger) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TAG_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random,tag);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-		boolean result = true;
-
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, tag);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta, false);
 		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildAlterRunSQL(tag);
 		try{
-			result = execute(runtime, random, "alter tag", runs);
-			if(null != ddListener){
-				//ddListener.afterAlter(runtime, random,tag, result);
-			}
+			result = execute(runtime, random, action, runs);
 		}catch (Exception e){
+			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}
-			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
-			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改tag执行异常", 33), e.toString());
-			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
- 				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-					//exe = //ddListener.afterAlterColumnException(runtime, random,table, tag, e);
+			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改TAG执行异常", 33), e.toString());
+			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(meta.getTypeName(), meta.getUpdate().getTypeName())) {
+				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
+					swt = ddListener.afterAlterColumnException(runtime, random, table, meta, e);
 				}
-				log.warn("{}[修改tag执行异常][尝试修正数据][修正结果:{}]", random, exe);
-				if (exe) {
-					result = alter(table, tag, false);
+				log.warn("{}[修改TAG执行异常][尝试修正数据][修正结果:{}]", random, swt);
+				if (swt == SWITCH.CONTINUE) {
+					result = alter(table, meta, false);
 				}
 			}else{
-				log.error("{}[修改tag执行异常][中断执行]", random);
+				log.error("{}[修改Column执行异常][中断执行]", random);
 				result = false;
 				throw e;
 			}
-		}
-
-		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[update tag][table:{}][tag:{}][qty:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(true), tag.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	@Override
 	public boolean rename(Tag origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TAG_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename tag", adapter.buildRenameRunSQL(origin));
-		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4904,19 +5252,44 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(PrimaryKey primary) throws Exception {
-		boolean exe = true;
+	public boolean add(PrimaryKey meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PRIMARY_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, random,primary);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAdd(runtime, random, meta);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, primary);
-		List<Run> runs = adapter.buildAddRunSQL(primary);
-		boolean result = execute(runtime, random,"add primary", runs);
-		if(null != ddListener){
-			//ddListener.afterAdd(runtime,primary, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAddRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAdd(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -4939,67 +5312,132 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return alter(table, primary);
 	}
 	@Override
-	public boolean alter(Table table, PrimaryKey primary) throws Exception{
-		boolean exe = true;
+	public boolean alter(Table table, PrimaryKey meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PRIMARY_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random,primary);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, primary);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildAlterRunSQL(primary);
-		boolean result = execute(runtime, random, "alter primary", runs);
-		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, random,primary, result);
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
-		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[alter primary][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]", random, primary.getTableName(true), primary.getName(), runs.size(), result, System.currentTimeMillis() - fr);
-		}
+
 		return result;
 	}
 	@Override
-	public boolean drop(PrimaryKey primary) throws Exception {
-		boolean exe = true;
+	public boolean drop(PrimaryKey meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PRIMARY_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, random,primary);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, primary);
-		List<Run> runs = adapter.buildDropRunSQL(primary);
-		boolean result = execute(runtime, random,"drop primary", runs);
-		if(null != ddListener){
-			//ddListener.afterDrop(runtime, random,primary, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	@Override
 	public boolean rename(PrimaryKey origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PRIMARY_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename primary", adapter.buildRenameRunSQL(origin));
-		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -5012,105 +5450,192 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(PrimaryKey foreign) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(ForeignKey foreign) throws Exception {
-		boolean exe = true;
+	public boolean add(ForeignKey meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.FOREIGN_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, random,foreign);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, foreign);
-		List<Run> runs = adapter.buildAddRunSQL(foreign);
-		boolean result = execute(runtime, random,"add foreign", runs);
-		if (null != ddListener) {
-			//ddListener.afterAdd(runtime, random,foreign, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAddRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAdd(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	@Override
-	public boolean alter(ForeignKey foreign) throws Exception {
-		Table table = foreign.getTable(true);
+	public boolean alter(ForeignKey meta) throws Exception {
+		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, foreign.getCatalog(), foreign.getSchema(), foreign.getTableName(true), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() == 0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + foreign.getTableName(true));
+					throw new AnylineException("表不存在:" + meta.getTableName(true));
 				}else{
-					log.error("表不存在:" + foreign.getTableName(true));
+					log.error("表不存在:" + meta.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
 			}
 		}
-		return alter(table, foreign);
+		return alter(table, meta);
 	}
 	@Override
-	public boolean alter(Table table, ForeignKey foreign) throws Exception{
-		boolean exe = true;
+	public boolean alter(Table table, ForeignKey meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TRIGGER_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random,foreign);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, foreign);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildAlterRunSQL(foreign);
-		boolean result = execute(runtime, random, "alter foreign", runs);
-		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, random,foreign, result);
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
-		if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[alter foreign][table:{}][primary:{}][qty:{}][result:{}][执行耗时:{}ms]", random, foreign.getTableName(true), foreign.getName(), runs.size(), result, System.currentTimeMillis() - fr);
-		}
+
 		return result;
 	}
 	@Override
-	public boolean drop(ForeignKey foreign) throws Exception {
-		boolean exe = true;
+	public boolean drop(ForeignKey meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.FOREIGN_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random,foreign);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, foreign);
-		List<Run> runs = adapter.buildDropRunSQL(foreign);
-		boolean result = execute(runtime, random,"drop foreign", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random,foreign, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	@Override
 	public boolean rename(ForeignKey origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.FOREIGN_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename foreign", adapter.buildRenameRunSQL(origin));
-		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -5122,104 +5647,191 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(Index index) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(Index index) throws Exception {
-		boolean exe = true;
+	public boolean add(Index meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.INDEX_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, random,index);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
- 		checkSchema(runtime, index);
-		List<Run> runs = adapter.buildAddRunSQL(index);
-		boolean result = execute(runtime, random,"add index", runs);
-		if (null != ddListener) {
-			//ddListener.afterAdd(runtime, random,index, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAddRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAdd(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	@Override
-	public boolean alter(Index index) throws Exception {
-		Table table = index.getTable(true);
+	public boolean alter(Index meta) throws Exception {
+		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, index.getCatalog(), index.getSchema(), index.getTableName(true), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + index.getTableName(true));
+					throw new AnylineException("表不存在:" + meta.getTableName(true));
 				}else{
-					log.error("表不存在:" + index.getTableName(true));
+					log.error("表不存在:" + meta.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
 			}
 		}
-		return alter(table, index);
+		return alter(table, meta);
 	}
 	@Override
 	public boolean alter(Table table, Index index) throws Exception{
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.INDEX_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random,index);
+		swt = InterceptorProxy.prepare(runtime, random, action, index);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, index);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		long fr = System.currentTimeMillis();
 		checkSchema(runtime, index);
 		List<Run> runs = adapter.buildAlterRunSQL(index);
-		boolean result = execute(runtime, random, "alter index", runs);
-		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, random,index, result);
+		swt = InterceptorProxy.before(runtime, random, action, index, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, index, runs);
 		}
-		if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[alter index][table:{}][index:{}][qty:{}][result:{}][执行耗时:{}ms]", random, index.getTableName(true), index.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		if(swt == SWITCH.BREAK){
+			return false;
 		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, index.getTableName(true), index.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, index, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, index, runs, result, millis);
+			}
+		}
+
 		return result;
 	}
 	@Override
-	public boolean drop(Index index) throws Exception {
-		boolean exe = true;
+	public boolean drop(Index meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.INDEX_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareDrop(runtime, random,index);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, index);
-		List<Run> runs = adapter.buildDropRunSQL(index);
-		boolean  result = execute(runtime, random,"drop index", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random,index, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
 	public boolean rename(Index origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.INDEX_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename index", adapter.buildRenameRunSQL(origin));
-		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -5232,104 +5844,190 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(Constraint constraint) throws Exception {
-		boolean exe = true;
+	public boolean add(Constraint meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.CONSTRAINT_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAdd(runtime, random,constraint);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, constraint);
-		List<Run> runs = adapter.buildAddRunSQL(constraint);
-		boolean result = execute(runtime, random,"add constraint", runs);
-		if (null != ddListener) {
-			//ddListener.afterAdd(runtime, random,constraint, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAddRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAdd(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 	@Override
-	public boolean alter(Constraint constraint) throws Exception {
-		Table table = constraint.getTable(true);
+	public boolean alter(Constraint meta) throws Exception {
+		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, constraint.getCatalog(), constraint.getSchema(), constraint.getTableName(true), "TABLE");
+			LinkedHashMap<String,Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-					throw new AnylineException("表不存在:" + constraint.getTableName(true));
+					throw new AnylineException("表不存在:" + meta.getTableName(true));
 				}else{
-					log.error("表不存在:" + constraint.getTableName(true));
+					log.error("表不存在:" + meta.getTableName(true));
 				}
 			}else {
 				table = tables.values().iterator().next();
 			}
 		}
-		return alter(table, constraint);
+		return alter(table, meta);
 	}
 	@Override
-	public boolean alter(Table table, Constraint constraint) throws Exception{
-		boolean exe = true;
+	public boolean alter(Table table, Constraint meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.CONSTRAINT_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if (null != ddListener) {
-			//exe = ddListener.prepareAlter(runtime, random,constraint);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, constraint);
-		long fr = System.currentTimeMillis();
-		List<Run> runs = adapter.buildAlterRunSQL(constraint);
-		boolean result = execute(runtime, random, "alter constraint", runs);
-		if (null != ddListener) {
-			//ddListener.afterAlter(runtime, random,constraint, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
 		}
-		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[alter constraint][table:{}][constraint:{}][qty:{}][result:{}][执行耗时:{}ms]" , random, constraint.getTableName(true), constraint.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
-	public boolean drop(Constraint constraint) throws Exception {
-		boolean exe = true;
+	public boolean drop(Constraint meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.CONSTRAINT_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, random,constraint);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, constraint);
-		List<Run> runs = adapter.buildDropRunSQL(constraint);
-		boolean result = execute(runtime, random,"drop constraint", runs);
-		if (null != ddListener) {
-			//ddListener.afterDrop(runtime, random,constraint, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
 	public boolean rename(Constraint origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.CONSTRAINT_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		boolean result = execute(runtime, random,"rename constraint", adapter.buildRenameRunSQL(origin));
-		if(null != ddListener){
-			//ddListener.afterRename(runtime, random,origin, result);
+		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -5343,90 +6041,175 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(Trigger trigger) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(Trigger trigger) throws Exception {
-		boolean exe = true;
+	public boolean add(Trigger meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TRIGGER_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareCreate(runtime, random,trigger);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, trigger);
-		List<Run> runs = adapter.buildCreateRunSQL(trigger);
-		boolean result = execute(runtime, random,"create trigger", runs);
-		if(null != ddListener){
-			//ddListener.afterCreate(runtime, random,trigger, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeCreate(runtime, random, meta, runs);
 		}
-		return result;
-	}
-
-
-	@Override
-	public boolean alter(Trigger trigger) throws Exception{
-		boolean exe = true;
-		JDBCRuntime runtime = runtime();
-		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareAlter(runtime, random,trigger);
-		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
-		JDBCAdapter adapter = runtime.getAdapter();
 		long fr = System.currentTimeMillis();
-		checkSchema(runtime, trigger);
-		List<Run> runs = adapter.buildAlterRunSQL(trigger);
-		boolean result = execute(runtime, random, "alter trigger", runs);
-		if(null != ddListener){
-			//ddListener.afterAlter(runtime, random,trigger, result);
-		}
-		if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[alter trigger][table:{}][trigger:{}][qty:{}][result:{}][执行耗时:{}ms]" , random, trigger.getTableName(true), trigger.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
+
+
 	@Override
-	public boolean drop(Trigger trigger) throws Exception {
-		boolean exe = true;
+	public boolean alter(Trigger meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TRIGGER_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, random,trigger);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, trigger);
-		List<Run> runs = adapter.buildDropRunSQL(trigger);
-		boolean result = execute(runtime, random,"drop trigger", runs);
-		if(null != ddListener){
-			//ddListener.afterDrop(runtime, random,trigger, result);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+		}
+
+		return result;
+	}
+	@Override
+	public boolean drop(Trigger meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TRIGGER_DROP;
+		JDBCRuntime runtime = runtime();
+		String random = random();
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		JDBCAdapter adapter = runtime.getAdapter();
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
 	public boolean rename(Trigger origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.TRIGGER_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareRename(runtime, random,origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"rename trigger", runs);
-		if(null != ddListener){
-			ddListener.afterRename(runtime, random,origin, runs, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][table:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -5440,92 +6223,174 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(Procedure procedure) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(Procedure procedure) throws Exception {
-		boolean exe = true;
+	public boolean create(Procedure meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
+		DDL action = DDL.PRIMARY_ADD;
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareCreate(runtime, random,procedure);
+		swt = InterceptorProxy.prepare(runtime, random,  action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, procedure);
-		List<Run> runs = adapter.buildCreateRunSQL(procedure);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeCreate(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"create procedure", runs);
-		if(null != ddListener){
-			ddListener.afterCreate(runtime, random,procedure, runs, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result,  millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 
 	@Override
-	public boolean alter(Procedure procedure) throws Exception{
-		boolean exe = true;
+	public boolean alter(Procedure meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.PROCEDURE_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareAlter(runtime, random,procedure);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, procedure);
-		List<Run> runs = adapter.buildAlterRunSQL(procedure);
-		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random, "alter procedure", runs);
-		if(null != ddListener){
-			ddListener.afterAlter(runtime, random,procedure, runs, result, System.currentTimeMillis()-fr);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
 		}
-		if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[update procedure][procedure:{}][qty:{}][result:{}][执行耗时:{}ms]", random, procedure.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() >1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
-	public boolean drop(Procedure procedure) throws Exception {
-		boolean exe = true;
+	public boolean drop(Procedure meta) throws Exception {
+		boolean result = true;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
+		DDL action = DDL.PROCEDURE_DROP;
 		String random = random();
-		if(null != ddListener){
-			//exe = ddListener.prepareDrop(runtime, random,procedure);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, procedure);
-		List<Run> runs = adapter.buildDropRunSQL(procedure);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"drop procedure", runs);
-		if(null != ddListener){
-			ddListener.afterDrop(runtime, random,procedure, runs, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
 	public boolean rename(Procedure origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		DDL action = DDL.PROCEDURE_RENAME;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
+		origin.setNewName(name);
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareRename(runtime, random,origin);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
 		}
-		if(!exe) {
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
+
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null == ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"rename procedure", runs);
-		if(null != ddListener){
-			ddListener.afterRename(runtime, random,origin, runs, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, origin.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
@@ -5538,97 +6403,184 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(Function function) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(Function function) throws Exception {
-		boolean exe = true;
+	public boolean create(Function meta) throws Exception {
+		boolean result = true;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.FUNCTION_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareCreate(runtime, random,function);
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, function);
-		List<Run> runs = adapter.buildCreateRunSQL(function);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildCreateRunSQL(meta);
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random,"create function", runs);
-		if(null != ddListener){
-			ddListener.afterCreate(runtime, random,function, runs, result, System.currentTimeMillis()-fr);
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			swt = SWITCH.CONTINUE;
+			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+			}
+
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 
 
 	@Override
-	public boolean alter(Function function) throws Exception{
-		boolean exe = true;
+	public boolean alter(Function meta) throws Exception{
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareDrop(runtime, random,function);
+		DDL action = DDL.FUNCTION_ALTER;
+		swt  = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
-		if(!exe){
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		long fr = System.currentTimeMillis();
-		checkSchema(runtime, function);
-		List<Run> runs = adapter.buildAlterRunSQL(function);
-		boolean result = execute(runtime, random, "update function", runs);
-		if(null != ddListener){
-			ddListener.afterAlter(runtime, random,function, runs, result, System.currentTimeMillis()-fr);
+		checkSchema(runtime, meta);
+		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt =  ddListener.beforeDrop(runtime, random, meta, runs);
 		}
-		if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[update function][function:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, function.getName(), runs.size(), result, System.currentTimeMillis() - fr);
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+			}
+
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE){
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+
 		}
 
 		return result;
 	}
 	@Override
-	public boolean drop(Function function) throws Exception {
-		boolean exe = true;
+	public boolean drop(Function meta) throws Exception {
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareDrop(runtime, random, function);
+		DDL action = DDL.FUNCTION_DROP;
+		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(swt == SWITCH.BREAK){
+			return false;
 		}
-		if(!exe) {
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
+		}
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
-		checkSchema(runtime, function);
-		List<Run> runs = adapter.buildDropRunSQL(function);
+		checkSchema(runtime, meta);
+
+		List<Run> runs = adapter.buildDropRunSQL(meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
 		long fr = System.currentTimeMillis();
-		boolean result = execute(runtime, random, "drop function", runs);
-		if(null != ddListener){
-			ddListener.afterDrop(runtime, random,function, runs, result, System.currentTimeMillis()-fr);
+		try{
+			result = execute(runtime, random , action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE) {
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
 		}
 		return result;
 	}
 	@Override
 	public boolean rename(Function origin, String name) throws Exception {
-		boolean exe = true;
+		boolean result = false;
+		SWITCH swt = SWITCH.CONTINUE;
+		DDL action = DDL.FUNCTION_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		if(null != ddListener){
-			exe = ddListener.prepareRename(runtime, random, origin);
+		origin.setNewName(name);
+
+		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(swt == SWITCH.BREAK){
+			return false;
 		}
-		if(!exe) {
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
+		}
+		if(swt == SWITCH.BREAK){
 			return false;
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		origin.setNewName(name);
-		long fr = System.currentTimeMillis();
+
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
-		boolean result = execute(runtime, random ,"rename function", runs);
-		if(null != ddListener){
-			ddListener.afterRename(runtime, random, origin, runs, result, System.currentTimeMillis()-fr);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random , action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][rename:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == SWITCH.CONTINUE) {
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
 		}
 		return result;
 	}
-	public boolean execute(JDBCRuntime runtime, String random, String title, Run run){
+	public boolean execute(JDBCRuntime runtime, String random, ACTION.DDL action, Run run){
 		if(null == run){
 			return false;
 		}
@@ -5638,21 +6590,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			Long fr = System.currentTimeMillis();
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				random = random();
-				log.info("{}[{}][ds:{}][sql:\n{}\n]", random, title, runtime.datasource(), sql);
+				log.info("{}[action:{}][ds:{}][sql:\n{}\n]", random, action, runtime.datasource(), sql);
 			}
 			runtime.getTemplate().update(sql);
 			result = true;
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[{}][ds:{}][result:{}][执行耗时:{}ms]", random, title, runtime.datasource(), result, System.currentTimeMillis() - fr);
+				log.info("{}[action:{}][ds:{}][result:{}][执行耗时:{}ms]", random, action, runtime.datasource(), result, System.currentTimeMillis() - fr);
 			}
 		}
 		return result;
 	}
-	public boolean execute(JDBCRuntime runtime, String random, String title, List<Run> runs){
+	public boolean execute(JDBCRuntime runtime, String random, ACTION.DDL action, List<Run> runs){
 		boolean result = true;
 		int idx = 0;
 		for(Run run:runs){
-			result = execute(runtime, random + "-" + idx++, title, run) && result;
+			result = execute(runtime, random + "-" + idx++, action, run) && result;
 		}
 		return result;
 	}

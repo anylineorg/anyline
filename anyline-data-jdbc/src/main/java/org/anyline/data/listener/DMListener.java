@@ -24,6 +24,7 @@ import org.anyline.data.run.Run;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.data.ACTION;
+import org.anyline.entity.data.ACTION.SWITCH;
 import org.anyline.entity.data.Procedure;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public interface DMListener {
      * @param conditions 查询条件
      * @return 如果返回false 则中断执行
      */
-    default boolean prepareQuery(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){return true;}
+    default SWITCH prepareQuery(JDBCRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){return SWITCH.CONTINUE;}
 
 
     /**
@@ -161,7 +162,7 @@ public interface DMListener {
      * @param configs 更新条件
      * @return 如果返回false 则中断执行
      */
-    default boolean prepareUpdate(JDBCRuntime runtime, String random, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){return true;}
+    default SWITCH  prepareUpdate(JDBCRuntime runtime, String random, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
 
 
     /**
@@ -176,7 +177,7 @@ public interface DMListener {
      * @param columns 需要更新的列
      * @return 是否执行  如果返回false 将不执行更新
      */
-    default boolean beforeUpdate(JDBCRuntime runtime, String random, Run run, String dest, Object obj, List<String> columns){return true;}
+    default SWITCH  beforeUpdate(JDBCRuntime runtime, String random, Run run, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 更新之前调用
      *
@@ -207,7 +208,7 @@ public interface DMListener {
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return 如果返回false 则中断执行
      */
-    default boolean prepareInsert(JDBCRuntime runtime, String random, String dest, Object obj, boolean checkPrimary, List<String> columns){return true;}
+    default SWITCH  prepareInsert(JDBCRuntime runtime, String random, String dest, Object obj, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 创建insert sql之前调用
      *
@@ -221,7 +222,7 @@ public interface DMListener {
      * @param columns 需要插入的列
      * @return 是否执行  如果返回false 将不执行插入
      */
-    default boolean beforeInsert(JDBCRuntime runtime, String random, Run run, String dest, Object obj, boolean checkPrimary, List<String> columns){return true;}
+    default SWITCH  beforeInsert(JDBCRuntime runtime, String random, Run run, String dest, Object obj, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
 
     /**
      * 插入之后调用
@@ -250,7 +251,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return 是否执行 如果返回false装不执行sql
      */
-    default boolean beforeExecute(JDBCRuntime runtime, String random, Run run){return true;}
+    default SWITCH  beforeExecute(JDBCRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL之后调用
@@ -274,8 +275,8 @@ public interface DMListener {
      * @param procedure 存储过程
      * @return 是否执行 如果返回false装不执行存储过程
      */
-    default boolean prepareExecute(JDBCRuntime runtime, String random, Procedure procedure){return true;}
-    default boolean beforeExecute(JDBCRuntime runtime, String random, Procedure procedure){return true;}
+    default SWITCH  prepareExecute(JDBCRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
+    default SWITCH  beforeExecute(JDBCRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
 
     /**
      * 执行存储过程之后调用
@@ -325,7 +326,7 @@ public interface DMListener {
      * @param columns 删除条件的我
      * @return 如果返回false 则中断执行
      */
-    default boolean prepareDelete(JDBCRuntime runtime, String random, String dest, Object obj, String ... columns){return true;}
+    default SWITCH  prepareDelete(JDBCRuntime runtime, String random, String dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
     /**
      * 创建删除SQL前调用(JDBCRuntime runtime, String random, 根据条件),修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
@@ -339,7 +340,7 @@ public interface DMListener {
      * @param values values
      * @return 如果返回false 则中断执行
      */
-    default boolean prepareDelete(JDBCRuntime runtime, String random, String table, String key, Object values){return true;}
+    default SWITCH  prepareDelete(JDBCRuntime runtime, String random, String table, String key, Object values){return SWITCH.CONTINUE;}
     /**
      * 执行删除前调用
      *
@@ -349,7 +350,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return 是否执行 如果返回false装不执行删除
      */
-    default boolean beforeDelete(JDBCRuntime runtime, String random, Run run){return true;}
+    default SWITCH  beforeDelete(JDBCRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
 
     /**
      * 执行删除后调用

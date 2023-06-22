@@ -19,9 +19,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param columns  需要更新的列
      * @return RESULT
      */
-    default ACTION.SWITCH prepare(JDBCRuntime runtime, String dest, Object data, ConfigStore configs, List<String> columns){
-        return SWITCH.CONINUE;
-    }
+    default ACTION.SWITCH prepare(JDBCRuntime runtime, String dest, Object data, ConfigStore configs, List<String> columns){ return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -29,9 +27,7 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @return RESULT
      */
-    default SWITCH before(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH before(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
@@ -40,7 +36,5 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){
-        return SWITCH.CONINUE;
-    }
+    default SWITCH after(JDBCRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
 }

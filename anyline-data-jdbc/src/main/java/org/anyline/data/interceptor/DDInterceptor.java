@@ -18,8 +18,8 @@ public interface DDInterceptor  extends JDBCInterceptor{
     default List<ACTION.DDL> actions(){return null;}
     default ACTION.DDL action(){return null;}
 
-    default SWITCH prepare(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata){return SWITCH.CONINUE;}
-    default SWITCH before(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){return SWITCH.CONINUE;}
+    default SWITCH prepare(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata){return SWITCH.CONTINUE;}
+    default SWITCH before(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){return SWITCH.CONTINUE;}
 
     /**
      *
@@ -32,6 +32,6 @@ public interface DDInterceptor  extends JDBCInterceptor{
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH after(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){return SWITCH.CONINUE;}
+    default SWITCH after(JDBCRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
 
 }
