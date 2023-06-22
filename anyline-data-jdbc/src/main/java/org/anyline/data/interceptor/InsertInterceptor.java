@@ -14,7 +14,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * @param dest 表
      * @param data  对象
      * @param columns  需要更新的列
-     * @return RESULT
+     * @return SWITCH
      */
     default SWITCH prepare(JDBCRuntime runtime, String dest, Object data, boolean checkPrimary, List<String> columns){ return SWITCH.CONTINUE;}
 
@@ -22,7 +22,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * 合计总数之前调用，到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
-     * @return RESULT
+     * @return SWITCH
      */
     default SWITCH before(JDBCRuntime runtime, Run run, String dest, Object data, boolean checkPrimary, List<String> columns){ return SWITCH.CONTINUE;}
     /**
@@ -31,7 +31,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * @param result 影响行数
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @param millis 耗时
-     * @return RESULT
+     * @return SWITCH
      */
     default SWITCH after(JDBCRuntime runtime, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
 }
