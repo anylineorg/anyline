@@ -180,7 +180,7 @@ public enum Compare {
     LIKE_PREFIX		{
         public int getCode(){return 51;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "START_WITH";}
+        public String getName(){return "like A%";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -194,7 +194,7 @@ public enum Compare {
     START_WITH		{
         public int getCode(){return 51;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "START_WITH";}
+        public String getName(){return "like A%";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -208,7 +208,7 @@ public enum Compare {
     LIKE_SUFFIX		{
         public int getCode(){return 52;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "END_WITH";}
+        public String getName(){return "like %A";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -222,7 +222,7 @@ public enum Compare {
     END_WITH		{
         public int getCode(){return 52;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "END_WITH";}
+        public String getName(){return "like %A";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -330,6 +330,96 @@ public enum Compare {
         public int getCode(){return 140;}
         public String getSQL(){return " NOT IN ";}
         public String getName(){return "不包含";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            if(value instanceof Collection){
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    NOT_LIKE			{
+        public int getCode(){return 150;}
+        public String getSQL(){return " NOT LIKE ";}
+        public String getName(){return "not like %A%";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            if(value instanceof Collection){
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    NOT_LIKE_PREFIX			{
+        public int getCode(){return 151;}
+        public String getSQL(){return " NOT LIKE ";}
+        public String getName(){return "not like A%";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            if(value instanceof Collection){
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    NOT_START_WITH			{
+        public int getCode(){return 151;}
+        public String getSQL(){return " NOT LIKE ";}
+        public String getName(){return "not like A%";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            if(value instanceof Collection){
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    NOT_LIKE_SUFFIX			{
+        public int getCode(){return 152;}
+        public String getSQL(){return " NOT LIKE ";}
+        public String getName(){return "not like %A";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            if(value instanceof Collection){
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    NOT_END_WITH			{
+        public int getCode(){return 152;}
+        public String getSQL(){return " NOT LIKE ";}
+        public String getName(){return "not like %A";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
