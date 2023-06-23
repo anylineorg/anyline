@@ -24,23 +24,23 @@ import org.anyline.data.run.RunValue;
 
 import java.util.List;
 import java.util.Map;
- 
- 
- 
+
+
+
 public interface Condition extends Cloneable{
-	public static enum EMPTY_VALUE_CROSS{
+	enum EMPTY_VALUE_CROSS{
 		 DEFAULT   //默认由参数格式决定  如 +ID:id  ++ID:id,默认情况下如果值为空则忽略当前条件
 		, BREAK	   //中断执行 整个SQL不执行
 		, CONTINUE //当前条件不参考最终SQL执行 其他条件继续执行
 		, NULL	   //生成 WHERE ID IS NULL
 		, SRC	   //原样处理 会生成 WHERE ID = NULL
 	}
-	public static String CONDITION_JOIN_TYPE_AND		= " AND "	;	// 拼接方式 AND
-	public static String CONDITION_JOIN_TYPE_OR			= " OR "	;	// 拼接方式 OR
+	String CONDITION_JOIN_TYPE_AND		= " AND "	;	// 拼接方式 AND
+	String CONDITION_JOIN_TYPE_OR		= " OR "	;	// 拼接方式 OR
 	// 参数变量类型
-	public static final int VARIABLE_FLAG_TYPE_INDEX	= 0			;	// 按下标区分
-	public static final int VARIABLE_FLAG_TYPE_KEY		= 1			;	// 按KEY区分
-	public static final int VARIABLE_FLAG_TYPE_NONE		= 2			;	// 没有变量
+	int VARIABLE_FLAG_TYPE_INDEX	= 0			;	// 按下标区分
+	int VARIABLE_FLAG_TYPE_KEY		= 1			;	// 按KEY区分
+	int VARIABLE_FLAG_TYPE_NONE		= 2			;	// 没有变量
 	 
 	/** 
 	 * 运行时文本 
@@ -48,53 +48,57 @@ public interface Condition extends Cloneable{
 	 * @param adapter adapter
 	 * @return String
 	 */
-	public String getRunText(String prefix, JDBCAdapter adapter);
+	String getRunText(String prefix, JDBCAdapter adapter);
 
 	/**
 	 * 静态SQL
 	 * @param text TEXT
 	 * @return Condition
 	 */
-	public Condition setRunText(String text);
+	Condition setRunText(String text);
 	/** 
 	 * 运行时参数值 
 	 * @return List
 	 */ 
-	public List<RunValue> getRunValues();
+	List<RunValue> getRunValues();
 	/** 
 	 * 拼接方式 
 	 * @return String
 	 */ 
-	public String getJoin(); 
-	public Condition setJoin(String join); 
+	String getJoin(); 
+	Condition setJoin(String join); 
 	/** 
 	 * 当前条件所处容器 
 	 * @return ConditionChain
 	 */ 
-	public ConditionChain getContainer(); 
-	public boolean hasContainer(); 
-	public boolean isContainer(); 
+	ConditionChain getContainer(); 
+	boolean hasContainer(); 
+	boolean isContainer(); 
 	/** 
 	 * 设置当前条件所处容器 
 	 * @param chain  chain
 	 * @return Condition
 	 */ 
-	public Condition setContainer(ConditionChain chain); 
+	Condition setContainer(ConditionChain chain); 
 	 
 	/** 
 	 * 初始化 
 	 */ 
-	public void init(); 
-	public void initRunValue(); 
-	public boolean isActive();
-	public boolean isRequired();
-	public void setRequired(boolean required);
-	public boolean isStrictRequired();
-	public void setStrictRequired(boolean strictRequired);
-	public boolean isValid();
-	public void setActive(boolean active); 
-	public int getVariableType();
-	public void setVariableType(int variableType);
+	void init(); 
+	void initRunValue(); 
+	boolean isActive();
+	boolean isRequired();
+	void setRequired(boolean required);
+	boolean isStrictRequired();
+	void setStrictRequired(boolean strictRequired);
+	boolean isValid();
+	void setActive(boolean active); 
+	int getVariableType();
+	void setVariableType(int variableType);
+
+	EMPTY_VALUE_CROSS getCross() ;
+
+	void setCross(EMPTY_VALUE_CROSS cross) ;
 	/* ************************************************************************************************************ 
 	 *  
 	 * 													 自动生成 
@@ -107,22 +111,22 @@ public interface Condition extends Cloneable{
 	 * 													 XML定义 
 	 * 
 	 * ***********************************************************************************************************/ 
-	public String getId();
-	public Object clone()throws CloneNotSupportedException; 
-	public void setValue(String key, Object value);
-	public void setTest(String test);
-	public String getTest();
-	public Map<String,Object> getRunValuesMap();
-	public List<Variable> getVariables();
-	public Variable getVariable(String name);
+	String getId();
+	Object clone()throws CloneNotSupportedException; 
+	void setValue(String key, Object value);
+	void setTest(String test);
+	String getTest();
+	Map<String,Object> getRunValuesMap();
+	List<Variable> getVariables();
+	Variable getVariable(String name);
 
 	/**
 	 * 是否只是用来给变量赋值的
 	 * 用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
 	 * @return boolean
 	 */
-	public boolean isVariableSlave();
-	public void setVariableSlave(boolean bol);
-	public boolean isSetValue();
-	public boolean isSetValue(String variable);
+	boolean isVariableSlave();
+	void setVariableSlave(boolean bol);
+	boolean isSetValue();
+	boolean isSetValue(String variable);
 } 
