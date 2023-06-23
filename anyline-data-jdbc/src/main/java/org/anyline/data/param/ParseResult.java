@@ -1,7 +1,8 @@
 package org.anyline.data.param;
 
-import org.anyline.entity.Compare;
 import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.Condition.EMPTY_VALUE_CROSS;
+import org.anyline.entity.Compare;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,8 @@ public class ParseResult {
 	private static final long serialVersionUID = 1L; 
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	// 单值 
 	public static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE  = 2;	// 数组 
-	 
+
+	private EMPTY_VALUE_CROSS cross = EMPTY_VALUE_CROSS.DEFAULT			; // 遇到空值处理方式
 	private boolean required				; // 是否必须(空值拼接IS NULL)
 	private boolean strictRequired			; // 是否严格必须(空值不查询)
 	private String prefix					; // xml定义中的id 或auto sql的表别名
@@ -153,5 +155,13 @@ public class ParseResult {
 
 	public void setArgs(List<String> args) {
 		this.args = args;
+	}
+
+	public EMPTY_VALUE_CROSS getCross() {
+		return cross;
+	}
+
+	public void setCross(EMPTY_VALUE_CROSS cross) {
+		this.cross = cross;
 	}
 }
