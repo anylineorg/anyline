@@ -44,7 +44,6 @@ public class DefaultConfig implements Config {
 	protected ParseResult parser;
 	protected boolean overCondition  = true;
 	protected boolean overValue		 = true;
-
 	@Override
 	public Object clone(){
 		DefaultConfig config = new DefaultConfig();
@@ -290,5 +289,15 @@ public class DefaultConfig implements Config {
 	@Override
 	public void setOverValue(boolean overValue) {
 		this.overValue = overValue;
+	}
+
+	@Override
+	public Condition.EMPTY_VALUE_CROSS getCross() {
+		return parser.getCross();
+	}
+
+	@Override
+	public void setCross(Condition.EMPTY_VALUE_CROSS cross) {
+		this.parser.setCross(cross);
 	}
 }
