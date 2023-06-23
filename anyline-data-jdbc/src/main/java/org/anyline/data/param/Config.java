@@ -91,4 +91,6 @@ public interface Config {
 	public void setOverValue(boolean over);
 	public boolean isOverCondition();
 	public boolean isOverValue();
+	public void setCross(Condition.EMPTY_VALUE_CROSS cross);
+	public Condition.EMPTY_VALUE_CROSS getCross();
 }
