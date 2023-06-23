@@ -41,6 +41,7 @@ public abstract class DefaultCondition implements Condition {
 	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
 	protected boolean required = false									;	// 是否必须
 	protected boolean strictRequired = false							;	// 是否必须
+	protected EMPTY_VALUE_CROSS cross = EMPTY_VALUE_CROSS.DEFAULT		;   // 遇到空值处理方式
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
@@ -209,5 +210,13 @@ public abstract class DefaultCondition implements Condition {
 			return var.isSetValue();
 		}
 		return false;
+	}
+
+	public EMPTY_VALUE_CROSS getCross() {
+		return cross;
+	}
+
+	public void setCross(EMPTY_VALUE_CROSS cross) {
+		this.cross = cross;
 	}
 }
