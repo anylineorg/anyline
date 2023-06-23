@@ -183,7 +183,8 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				builder.append(compare.getSQL());
 			}else if(compareCode == 40 || compareCode == 140){
 				adapter.buildConditionIn(builder, compare, val);
-			}else if(compareCode >= 50 && compareCode <= 52){
+			}else if((compareCode >= 50 && compareCode <= 52) || (compareCode >= 150 && compareCode <= 152)){
+				//LIKE NOT LIKE
 				val = adapter.buildConditionLike(builder, compare, val) ;
 			}
 		}
