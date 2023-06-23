@@ -816,11 +816,22 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     public Object buildConditionLike(StringBuilder builder, Compare compare, Object value){
-        if(compare == Compare.LIKE){
+        int code = compare.getCode();
+        if(code > 100){
+            builder.append(" NOT");
+            code = code - 100;
+        }
+        // %A% 50
+        // A%  51
+        // %A  52
+        // NOT %A% 150
+        // NOT A%  151
+        // NOT %A  152
+        if(code == 50){
             builder.append(" LIKE ").append(concat("'%'", "?" , "'%'"));
-        }else if(compare == Compare.LIKE_PREFIX|| compare == Compare.START_WITH){
+        }else if(code == 51){
             builder.append(" LIKE ").append(concat("?" , "'%'"));
-        }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH){
+        }else if(code == 52){
             builder.append(" LIKE ").append(concat("'%'", "?"));
         }
         return value;
