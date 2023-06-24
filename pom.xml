@@ -50,6 +50,7 @@
 		<module>anyline-map</module>
 		<module>anyline-ext/anyline-easemob</module>
 
+		<module>anyline-data-elasticsearch</module>
 		<module>anyline-data-mongodb</module>
 		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-antdb</module>				<!--亚信-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cassandra</module>
@@ -140,7 +141,7 @@
         <module>anyline-sms</module>
         <module>anyline-encrypt</module>
         <module>anyline-boot</module>
-	</modules>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
