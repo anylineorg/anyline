@@ -22,6 +22,7 @@ package org.anyline.data.run;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.*;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.*;
 
 import java.util.List;
@@ -32,16 +33,14 @@ public interface Run {
 	 
 	/** 
 	 * 添加查询条件 
-	 * @param required 			是否必须
-	 * @param strictRequired 	是否严格验证必须
+	 * @param swt 				遇到空值处理方式
 	 * @param prefix  			查询条件ID或表名
 	 * @param variable  		列名|变量key
 	 * @param value  			值
 	 * @param compare 			比较方式
 	 * @return Run
 	 */
-	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, Compare compare);
-	public Run setConditionValue(boolean required, String prefix, String variable, Object value, Compare compare);
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String prefix, String variable, Object value, Compare compare);
 	public void setGroupStore(GroupStore groups) ;
 	public GroupStore getGroupStore() ; 
 	public Run group(String group);
@@ -57,16 +56,14 @@ public interface Run {
  
 	/** 
 	 * 添加查询条件 
-	 * @param required 是否必须 
-	 * @param strictRequired 是否严格验证必须
+	 * @param swt 遇到空值处理方式
 	 * @param prefix 表名
 	 * @param var 列名
 	 * @param value 值 
 	 * @param compare 比较方式 
 	 * @return Run
 	 */
-	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare);
-	public Run addCondition(boolean required, String prefix, String var, Object value, Compare compare);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, Compare compare);
 	public Run setConditionChain(ConditionChain chain);
 
 	/**

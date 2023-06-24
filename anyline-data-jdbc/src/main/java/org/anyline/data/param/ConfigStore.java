@@ -19,7 +19,7 @@
 
 package org.anyline.data.param;
 
-import org.anyline.data.prepare.Condition.EMPTY_VALUE_CROSS;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.entity.Compare;
@@ -65,116 +65,116 @@ public interface ConfigStore {
 
 	/**
 	 * 构造IN查询条件,如果只提供一个值与and一样
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param compare 默认IN,可以换成FIND_IN_SET
-	 * @param col 列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用 这与cross作用一样,不要与cross混用
+	 * @param col 列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用 这与swt作用一样,不要与swt混用
 	 * @param values 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore ands(EMPTY_VALUE_CROSS cross, Compare compare, String col, Object ... values);
-	public ConfigStore ands(EMPTY_VALUE_CROSS cross, String col, Object ... values);
+	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values);
+	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, String col, Object ... values);
 	public ConfigStore ands(String col, Object ... values);
 	public ConfigStore ands(Compare compare, String col, Object ... values);
 
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合 如果是集合生成IN条件
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String var, Object value);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value);
 	public ConfigStore and(String var, Object value);
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param id 表别名或XML中查询条件的ID
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param overCondition 是否覆盖相同key的条件
 	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String id, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore and(String id, String var, Object value, boolean overCondition, boolean overValue);
 
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore and(String var, Object value, boolean overCondition, boolean overValue);
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param text 可以是一条原生的SQL查询条件
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String text);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text);
 	public ConfigStore and(String text);
 
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value);
 	public ConfigStore and(Compare compare, String var, Object value);
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param id 表别名或XML中查询条件的ID
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String id, String var, Object value);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value);
 	public ConfigStore and(Compare compare, String id, String var, Object value);
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue);
 	/**
 	 * 构造查询条件
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param id 表别名或XML中查询条件的ID
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore and(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 
 	/**
 	 * 构造查询条件
 	 * XML自定义SQL条件中指定变量赋值
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param id condition.id或表名
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String id, String var, Object value);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value);
 	public ConfigStore and(String id, String var, Object value);
 	/**
 	 * 构造查询条件
@@ -185,60 +185,60 @@ public interface ConfigStore {
 
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param id 自定义查询条件ID
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore param(EMPTY_VALUE_CROSS cross, String id, String var, Object value);
+	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value);
 	public ConfigStore param(String id, String var, Object value);
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore param(EMPTY_VALUE_CROSS cross, String var, Object value);
+	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String var, Object value);
 	public ConfigStore param(String var, Object value);
 	/**
 	 * 与ConfigStore中前一个条件合成or
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore or(EMPTY_VALUE_CROSS cross, String var, Object value);
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value);
 	public ConfigStore or(String var, Object value);
 	/**
 	 * 与ConfigStore中前一个条件合成or
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param compare 匹配方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore or(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value);
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value);
 	public ConfigStore or(Compare compare, String var, Object value);
 	/**
 	 * 与ConfigStore中当前所有的条件合成or
-	 * @param cross 遇到空值处理方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param swt 遇到空值处理方式
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore ors(EMPTY_VALUE_CROSS cross, String var, Object value);
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value);
 	public ConfigStore ors(String var, Object value);
 	/**
 	 * 与ConfigStore中当前所有的条件合成or
-	 * @param cross 遇到空值处理方式
+	 * @param swt 遇到空值处理方式
 	 * @param compare 匹配方式
-	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与cross作用一样,不要与cross混用
+	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	public ConfigStore ors(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value);
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value);
 	public ConfigStore ors(Compare compare, String var, Object value);
 	/** 
 	 * 添加排序 

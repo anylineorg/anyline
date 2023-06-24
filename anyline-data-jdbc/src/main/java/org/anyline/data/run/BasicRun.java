@@ -27,6 +27,7 @@ import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -360,7 +361,7 @@ public abstract class BasicRun implements Run {
 	} 
  
 	@Override 
-	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, Compare compare) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String prefix, String variable, Object value, Compare compare) {
 		return this; 
 	} 
 	@Override 
@@ -437,16 +438,15 @@ public abstract class BasicRun implements Run {
 	 ********************************************************************************************/
 	/**
 	 * 添加查询条件
-	 * @param required 是否必须
-	 * @param strictRequired 是否必须
+	 * @param swt 遇到空值处理方式
 	 * @param prefix 表名
 	 * @param var 列名
 	 * @param value 值
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
-		Condition condition = new DefaultAutoCondition(required,strictRequired,prefix,var, value, compare);
+	public Run addCondition(Compare.EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, Compare compare){
+		Condition condition = new DefaultAutoCondition(swt, prefix,var, value, compare);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		}
@@ -454,10 +454,6 @@ public abstract class BasicRun implements Run {
 			conditionChain.addCondition(condition);
 		}
 		return this;
-	}
-	@Override
-	public Run addCondition(boolean required, String prefix, String var, Object value, Compare compare){
-		return addCondition(required, false, prefix, var, value, compare);
 	}
 	@Override
 	public Run addCondition(Condition condition) {
@@ -645,7 +641,7 @@ public abstract class BasicRun implements Run {
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition,false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(),parser.getVar(),value,parser.getCompare());
+						addCondition(parser.getSwitch(), parser.getPrefix(),parser.getVar(),value,parser.getCompare());
 						continue;
 					}
 				}

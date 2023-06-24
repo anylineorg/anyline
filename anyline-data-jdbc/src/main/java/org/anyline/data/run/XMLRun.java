@@ -36,6 +36,7 @@ import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DefaultOgnlMemberAccess;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 import java.util.*;
 
@@ -60,8 +61,7 @@ public class XMLRun extends BasicRun implements Run {
 		super.init(); 
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.isRequire(),  
-						conf.isStrictRequired(), conf.getPrefix(), conf.getVariable(), conf.getValues(), conf.getCompare());
+				setConditionValue(conf.getSwitch(), conf.getPrefix(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			} 
 			 
 			OrderStore orderStore = configStore.getOrders(); 
@@ -86,25 +86,26 @@ public class XMLRun extends BasicRun implements Run {
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE){
 					 value = BeanUtil.object2list(value);
 				} 
-				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
+				setConditionValue(parser.getSwitch(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
 			} 
 		} 
 		// 检查必须条件required strictRequired 
 		for(Condition con:conditionChain.getConditions()){
-			if(!con.isActive()){//没有根据value激活 
-				if(con.isRequired()){
-					con.setActive(true); 
+			if(!con.isActive()){//没有根据value激活
+				if(con.getSwitch() == EMPTY_VALUE_SWITCH.BREAK){
+					log.warn("[valid:false][不具备执行条件][con:{}]",con.getId());
+					this.valid = false; 
+				}else if(con.getSwitch() == EMPTY_VALUE_SWITCH.IGNORE){
+					log.warn("[valid:false][忽略当前条件][con:{}]",con.getId());
+				}else{
+					con.setActive(true);
 					List<Variable> vars = con.getVariables();
 					if(null != vars){
 						for(Variable var:vars){
-							var.setValue(false,null); 
-						} 
-					} 
-				} 
-				if(con.isStrictRequired()){
-					log.warn("[valid:false][不具备执行条件][con:{}]",con.getId());
-					this.valid = false; 
-				} 
+							var.setValue(false,null);
+						}
+					}
+				}
 			} 
 		} 
 		GroupStore groupStore = prepare.getGroups();
@@ -441,8 +442,7 @@ public class XMLRun extends BasicRun implements Run {
 
 	/**
 	 *
-	 * @param required 是否必须
-	 * @param strictRequired 是否严格验证必须
+	 * @param swt 遇到空值处理方式
 	 * @param prefix  查询条件ID
 	 * @param variable  列名|变量key
 	 * @param value  值
@@ -450,7 +450,7 @@ public class XMLRun extends BasicRun implements Run {
 	 * @return Run
 	 */
 	@Override
-	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, Compare compare) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String prefix, String variable, Object value, Compare compare) {
 		/*不指定condition.id或condition.id = variable 时,根据var为SQL主体变量赋值*/
 		// 只提供var 不提供condition
 		if(null != variables &&  
@@ -483,7 +483,7 @@ public class XMLRun extends BasicRun implements Run {
 //				if(BasicUtil.isNotEmpty(prefix) && !prefix.equals(variable)){
 //					column = prefix + "." + variable;
 //				}
-				Condition newCon = new DefaultAutoCondition(required, strictRequired,prefix, variable, value, compare);
+				Condition newCon = new DefaultAutoCondition(swt, prefix, variable, value, compare);
 				conditionChain.addCondition(newCon); 
 				if(newCon.isActive()){
 					conditionChain.setActive(true); 
@@ -498,12 +498,7 @@ public class XMLRun extends BasicRun implements Run {
 			} 
 		} 
 		return this; 
-	} 
-	@Override 
-	public Run setConditionValue(boolean required, String condition, String variable, Object value, Compare compare) {
-		return setConditionValue(required, false, condition, variable, value, compare); 
-	} 
-	 
+	}
 		 
 	public Run addCondition(String ... conditions) {
 		/*添加查询条件*/ 
@@ -646,12 +641,9 @@ public class XMLRun extends BasicRun implements Run {
 	public void setConfigStore(ConfigStore configStore) {
 		this.configStore = configStore; 
 	} 
-	public Run addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare){
-		setConditionValue(required, strictRequired, column, null, value, compare); 
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, String column, Object value, Compare compare){
+		setConditionValue(swt, column, null, value, compare);
 		return this; 
-	} 
-	public Run addCondition(boolean required, String column, Object value, Compare compare){
-		return addCondition(required, false, column, value,compare); 
-	} 
+	}
 	 
 } 

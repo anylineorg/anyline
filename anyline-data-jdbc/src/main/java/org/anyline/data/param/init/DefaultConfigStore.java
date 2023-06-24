@@ -23,7 +23,7 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.Condition.EMPTY_VALUE_CROSS;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.init.DefaultGroup;
@@ -151,31 +151,31 @@ public class DefaultConfigStore implements ConfigStore {
 
 
 	@Override
-	public ConfigStore ands(EMPTY_VALUE_CROSS cross, String var, Object ... values){
-		return and(cross, Compare.IN, var, BeanUtil.array2list(values));
+	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object ... values){
+		return and(swt, Compare.IN, var, BeanUtil.array2list(values));
 	}
 	@Override
 	public ConfigStore ands(Compare compare, String col, Object ... values){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, col, BeanUtil.array2list(values));
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, compare, col, BeanUtil.array2list(values));
 	}
 	@Override
-	public ConfigStore ands(EMPTY_VALUE_CROSS cross,Compare compare, String col, Object ... values){
-		return and(cross, compare, col, BeanUtil.array2list(values));
+	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values){
+		return and(swt, compare, col, BeanUtil.array2list(values));
 	}
 	@Override
 	public ConfigStore ands(String var, Object ... values){
-		return ands(EMPTY_VALUE_CROSS.DEFAULT, var, values);
+		return ands(EMPTY_VALUE_SWITCH.DEFAULT, var, values);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String var, Object value, boolean overCondition, boolean overValue){
-		return and(cross, (String)null, var, value, overCondition, overValue);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, (String)null, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore and(String var, Object value, boolean overCondition, boolean overValue){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, var, value, overCondition, overValue);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, var, value, overCondition, overValue);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String text){
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text){
 		Config conf = new DefaultConfig();
 		conf.setText(text);
 		chain.addConfig(conf);
@@ -183,44 +183,44 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore and(String text){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, text);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, text);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String prefix, String var, Object value, boolean overCondition, boolean overValue){
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, boolean overCondition, boolean overValue){
 		Compare compare = compare(value);
-		return and(cross, compare, prefix, var, value, overCondition, overValue);
+		return and(swt, compare, prefix, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore and(String prefix, String var, Object value, boolean overCondition, boolean overValue){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, prefix, var, value, overCondition, overValue);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, prefix, var, value, overCondition, overValue);
 	}
 
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value) {
-		return and(cross, compare, var, value, false, false);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
+		return and(swt, compare, var, value, false, false);
 	}
 	@Override
 	public ConfigStore and(Compare compare, String var, Object value) {
-		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, var, value);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, compare, var, value);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String id, String var, Object value) {
-		return and(cross, compare, id, var, value, false, false);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
+		return and(swt, compare, id, var, value, false, false);
 	}
 	@Override
 	public ConfigStore and(Compare compare, String id, String var, Object value) {
-		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, id, var, value);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, compare, id, var, value);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String id, String var, Object value) {
-		return and(cross, id, var, value, false, false);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		return and(swt, id, var, value, false, false);
 	}
 	@Override
 	public ConfigStore and(String id, String var, Object value) {
-		return and(EMPTY_VALUE_CROSS.DEFAULT, id, var, value);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, id, var, value);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		Config conf = null;
 		boolean require = false;
 		boolean strictRequired = false;
@@ -246,9 +246,9 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		value = value(value);
 
-		if(EMPTY_VALUE_CROSS.BREAK == cross) {
+		if(EMPTY_VALUE_SWITCH.BREAK == swt) {
 			strictRequired = true;
-		} else if(EMPTY_VALUE_CROSS.IGNORE == cross) {
+		} else if(EMPTY_VALUE_SWITCH.IGNORE == swt) {
 			require = true;
 		}
 
@@ -259,7 +259,7 @@ public class DefaultConfigStore implements ConfigStore {
 				boolean first = true;
 				for(Object item:list){
 					if(first){
-						and(cross, compare, prefix, var, item, false, false);
+						and(swt, compare, prefix, var, item, false, false);
 						first = false;
 					}else {
 						or(compare, var, item);
@@ -268,7 +268,7 @@ public class DefaultConfigStore implements ConfigStore {
 			}else if(compareCode == 62){
 				//FIND_IN_AND
 				for(Object item:list){
-					and(cross, compare, prefix, var, item, false, false);
+					and(swt, compare, prefix, var, item, false, false);
 				}
 			}
 		}else{
@@ -296,15 +296,15 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore and(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, prefix, var, value, overCondition, overValue);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, compare, prefix, var, value, overCondition, overValue);
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(cross, compare, null, var, value, overCondition, overValue);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
+		return and(swt, compare, null, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_CROSS.DEFAULT, compare, var, value, overCondition, overValue);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, compare, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore and(Config conf) {
@@ -312,41 +312,41 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_CROSS cross, String var, Object value){
-		return and(cross, var, value, false, false);
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value){
+		return and(swt, var, value, false, false);
 	}
 	@Override
 	public ConfigStore and(String var, Object value){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, var, value);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, var, value);
 	}
 	@Override
-	public ConfigStore param(EMPTY_VALUE_CROSS cross, String var, Object value){
-		return and(cross, Compare.NONE, var, value);
+	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String var, Object value){
+		return and(swt, Compare.NONE, var, value);
 	}
 	//Compare.NONE 只作为参数值为占位符赋值,不能独立生成新的查询条件
 	@Override
 	public ConfigStore param(String var, Object value){
-		return and(EMPTY_VALUE_CROSS.DEFAULT,  Compare.NONE, var, value);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT,  Compare.NONE, var, value);
 	}
 	@Override
-	public ConfigStore param(EMPTY_VALUE_CROSS cross, String id, String var, Object value){
-		return and(cross, Compare.NONE,  id, var, value);
+	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
+		return and(swt, Compare.NONE,  id, var, value);
 	}
 	@Override
 	public ConfigStore param(String id, String var, Object value){
-		return and(EMPTY_VALUE_CROSS.DEFAULT, Compare.NONE,  id, var, value);
+		return and(EMPTY_VALUE_SWITCH.DEFAULT, Compare.NONE,  id, var, value);
 	}
 	@Override
-	public ConfigStore or(EMPTY_VALUE_CROSS cross, String var, Object value){
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value){
 		Compare compare = compare(value);
-		return or(cross, compare, var, value);
+		return or(swt, compare, var, value);
 	}
 	@Override
 	public ConfigStore or(String var, Object value){
-		return or(EMPTY_VALUE_CROSS.DEFAULT, var, value);
+		return or(EMPTY_VALUE_SWITCH.DEFAULT, var, value);
 	}
 	@Override
-	public ConfigStore or(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value) {
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		List<Config> configs = chain.getConfigs();
 		// 如果当前没有其他条件
 		if(configs.size()==0){
@@ -407,21 +407,21 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore or(Compare compare, String var, Object value){
-		return or(EMPTY_VALUE_CROSS.DEFAULT, compare, var, value);
+		return or(EMPTY_VALUE_SWITCH.DEFAULT, compare, var, value);
 	}
 
 
 	@Override
-	public ConfigStore ors(EMPTY_VALUE_CROSS cross, String var, Object value){
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value){
 		Compare compare = compare(value);
-		return ors(cross, compare, var, value);
+		return ors(swt, compare, var, value);
 	}
 	@Override
 	public ConfigStore ors(String var, Object value){
-		return ors(EMPTY_VALUE_CROSS.DEFAULT, var, value);
+		return ors(EMPTY_VALUE_SWITCH.DEFAULT, var, value);
 	}
 	@Override
-	public ConfigStore ors(EMPTY_VALUE_CROSS cross, Compare compare, String var, Object value) {
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
 
@@ -469,7 +469,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore ors(Compare compare, String var, Object value) {
-		return ors(EMPTY_VALUE_CROSS.DEFAULT, compare, var, value);
+		return ors(EMPTY_VALUE_SWITCH.DEFAULT, compare, var, value);
 	}
 
 	private Object value(Object value){

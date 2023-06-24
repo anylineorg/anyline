@@ -22,6 +22,7 @@ package org.anyline.data.param;
 import org.anyline.entity.Compare;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,6 @@ public interface Config {
 	public void setOverValue(boolean over);
 	public boolean isOverCondition();
 	public boolean isOverValue();
-	public void setCross(Condition.EMPTY_VALUE_CROSS cross);
-	public Condition.EMPTY_VALUE_CROSS getCross();
+	public void setSwitch(EMPTY_VALUE_SWITCH swt);
+	public EMPTY_VALUE_SWITCH getSwitch();
 }

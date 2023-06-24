@@ -29,6 +29,7 @@ import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -292,12 +293,12 @@ public class DefaultConfig implements Config {
 	}
 
 	@Override
-	public Condition.EMPTY_VALUE_CROSS getCross() {
-		return parser.getCross();
+	public EMPTY_VALUE_SWITCH getSwitch() {
+		return parser.getSwitch();
 	}
 
 	@Override
-	public void setCross(Condition.EMPTY_VALUE_CROSS cross) {
-		this.parser.setCross(cross);
+	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+		this.parser.setSwitch(swt);
 	}
 }

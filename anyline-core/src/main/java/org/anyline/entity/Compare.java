@@ -441,4 +441,11 @@ public enum Compare {
     public abstract int getCode();
     public abstract String getName();
 
+    public static enum EMPTY_VALUE_SWITCH {
+          DEFAULT   //默认由参数格式决定  如 +ID:id  ++ID:id, 运行前需要解析成其他几个具体值
+        , BREAK	   //中断执行 整个SQL不执行
+        , IGNORE   //忽略当前条件  其他条件继续执行
+        , NULL	   //生成 WHERE ID IS NULL
+        , SRC	   //原样处理 会生成 WHERE ID = NULL
+    }
 }

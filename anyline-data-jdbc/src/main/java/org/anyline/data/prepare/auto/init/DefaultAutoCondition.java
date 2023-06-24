@@ -22,6 +22,7 @@ package org.anyline.data.prepare.auto.init;
 import org.anyline.data.param.Config;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.entity.Compare;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.prepare.init.DefaultCondition;
 import org.anyline.data.prepare.Condition;
@@ -54,24 +55,20 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setValues(config.getValues()); 
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
-		setRequired(config.isRequire());
-		setStrictRequired(config.isStrictRequired()); 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
 		if(config.isRequire()){
 			setActive(true); 
 		} 
 	} 
 	/** 
-	 * @param required  是否必须 
-	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
+	 * @param swt  遇到空值处理方式
 	 * @param prefix  表
 	 * @param var  列
 	 * @param values 值 
 	 * @param compare  比较方式 
 	 */ 
-	public DefaultAutoCondition(boolean required, boolean strictRequired, String prefix, String var, Object values, Compare compare){
-		setRequired(required);
-		setStrictRequired(strictRequired);
+	public DefaultAutoCondition(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object values, Compare compare){
+		setSwitch(swt);
 		setTable(prefix);
 		setColumn(var);
 		setValues(values);
@@ -98,11 +95,11 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	public String getRunText(String prefix, JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		String text = "";
-		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
+		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){//没有变量
 			text = this.text; 
 		}else{
 			String txt = "";
-			if(BasicUtil.isNotEmpty(true, values) || isRequired()){
+			//if(BasicUtil.isNotEmpty(true, values) || isRequired()){
 				txt = getRunText(prefix, adapter, values, compare);
 				if(BasicUtil.isNotEmpty(txt)){
 					text = txt;
@@ -118,7 +115,6 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 					}
 				}
 			}
-		} 
 		return text; 
 	} 
 
@@ -127,6 +123,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
+		boolean empty = BasicUtil.isNotEmpty(true, values);
 		int compareCode = compare.getCode();
 		if(compareCode == -1){
 			//只作参数赋值
@@ -147,7 +144,9 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}
 
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
+		if(empty){
 
+		}
 		if(compareCode >=60 && compareCode <= 62){
 			// FIND_IN_SET(?, CODES)
 			val = adapter.buildConditionFindInSet(builder, col_builder.toString(), compare, val);

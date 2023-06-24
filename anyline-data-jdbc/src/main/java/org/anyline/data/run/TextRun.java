@@ -21,19 +21,16 @@ package org.anyline.data.run;
 
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.SyntaxHelper;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
-import org.anyline.data.prepare.init.DefaultVariable;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.DefaultOrderStore;
-import org.anyline.entity.PageNavi;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.Variable;
-import org.anyline.data.prepare.Condition;
-import org.anyline.entity.Compare;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.data.prepare.init.DefaultVariable;
+import org.anyline.entity.*;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -78,7 +75,7 @@ public class TextRun extends BasicRun implements Run {
 						}
 					} else{
 						//查询条件和SQL体变量赋值
-						setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
+						setConditionValue(con.getSwitch(), con.getId(), null, con.getValues(), con.getCompare());
 					}
 				}
 			} 
@@ -109,7 +106,7 @@ public class TextRun extends BasicRun implements Run {
 						if(!isConVarSetValue || overValue) {
 							isUse = true;
 							con.setVariableSlave(true);
-							setConditionValue(conf.isRequire(), conf.isStrictRequired(), varKey, varKey, values, conf.getCompare());
+							setConditionValue(conf.getSwitch(), varKey, varKey, values, conf.getCompare());
 						}
 					}
 				}
@@ -255,7 +252,7 @@ public class TextRun extends BasicRun implements Run {
 	} 
 
 	@Override 
-	public Run setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, Compare compare) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String condition, String variable, Object value, Compare compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
@@ -279,11 +276,6 @@ public class TextRun extends BasicRun implements Run {
 		con.setValue(variable, value); 
 		return this; 
 	} 
- 
-	@Override
-	public Run setConditionValue(boolean required, String condition, String variable, Object value, Compare compare) {
-		return setConditionValue(required, false, condition, variable, value, compare);
-	}
 
 		 
  
@@ -377,16 +369,15 @@ public class TextRun extends BasicRun implements Run {
  
 	/** 
 	 * 添加查询条件 
-	 * @param required  是否必须
-	 * @param strictRequired  是否必须
+	 * @param swt  空值处理方式
 	 * @param prefix 表名
 	 * @param var  列名
 	 * @param value  值
 	 * @param compare  比较方式
 	 * @return Run
 	 */ 
-	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, Compare compare){
-		Condition condition = new DefaultAutoCondition(required,strictRequired,prefix, var, value, compare);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, Compare compare){
+		Condition condition = new DefaultAutoCondition(swt, prefix, var, value, compare);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		} 

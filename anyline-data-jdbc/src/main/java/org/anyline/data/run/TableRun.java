@@ -19,16 +19,12 @@
 
 package org.anyline.data.run;
 
-import org.anyline.data.param.ConfigStore;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.DefaultOrderStore;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.Compare;
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 
 import java.util.List;
@@ -124,12 +120,8 @@ public class TableRun extends BasicRun implements Run {
 	}
 
 	@Override
-	public Run setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, Compare compare) {
+	public Run setConditionValue(Compare.EMPTY_VALUE_SWITCH swt, String condition, String variable, Object value, Compare compare) {
 		return this;
 	}
 
-	@Override
-	public Run setConditionValue(boolean required, String condition, String variable, Object value, Compare compare) {
-		return setConditionValue(required,  false, condition, variable, value, compare);
-	}
 } 

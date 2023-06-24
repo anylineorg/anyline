@@ -1,8 +1,8 @@
 package org.anyline.data.param;
 
 import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.Condition.EMPTY_VALUE_CROSS;
 import org.anyline.entity.Compare;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,7 @@ public class ParseResult {
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	// 单值 
 	public static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE  = 2;	// 数组 
 
-	private EMPTY_VALUE_CROSS cross = EMPTY_VALUE_CROSS.DEFAULT			; // 遇到空值处理方式
-	private boolean required				; // 是否必须(空值拼接IS NULL)
-	private boolean strictRequired			; // 是否严格必须(空值不查询)
+	private EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.DEFAULT			; // 遇到空值处理方式
 	private String prefix					; // xml定义中的id 或auto sql的表别名
 	private String var						; // 实体属性或表列名
 	private String clazz					; // 取值后处理类
@@ -49,12 +47,6 @@ public class ParseResult {
 	}
 	public void setOr(ParseResult or) {
 		this.or = or;
-	}
-	public boolean isRequired() {
-		return required; 
-	} 
-	public void setRequired(boolean required) {
-		this.required = required; 
 	} 
 	public Compare getCompare() {
 		return compare; 
@@ -122,10 +114,9 @@ public class ParseResult {
 	public void setPrefix(String prefix) {
 		if(null != prefix){
 			if(prefix.startsWith("++")){
-				setStrictRequired(true);
-			}
-			if(prefix.startsWith("+")){
-				setRequired(true);
+				setSwitch(EMPTY_VALUE_SWITCH.BREAK);
+			}else if(prefix.startsWith("+")){
+				setSwitch(EMPTY_VALUE_SWITCH.IGNORE);
 			}
 			prefix = prefix.replace("+", "");
 		}
@@ -136,13 +127,7 @@ public class ParseResult {
 	} 
 	public void setJoin(String join) {
 		this.join = join; 
-	} 
-	public boolean isStrictRequired() {
-		return strictRequired; 
-	} 
-	public void setStrictRequired(boolean strictRequired) {
-		this.strictRequired = strictRequired; 
-	}
+	}  
 
 
 	public ParseResult addArg(String arg){
@@ -157,11 +142,11 @@ public class ParseResult {
 		this.args = args;
 	}
 
-	public EMPTY_VALUE_CROSS getCross() {
-		return cross;
+	public EMPTY_VALUE_SWITCH getSwitch() {
+		return swt;
 	}
 
-	public void setCross(EMPTY_VALUE_CROSS cross) {
-		this.cross = cross;
+	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+		this.swt = swt;
 	}
 }

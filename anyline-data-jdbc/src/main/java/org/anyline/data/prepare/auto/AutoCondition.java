@@ -19,8 +19,8 @@
 
 package org.anyline.data.prepare.auto;
 
-import org.anyline.entity.Compare;
 import org.anyline.data.prepare.Condition;
+import org.anyline.entity.Compare;
 
 import java.util.List;
  

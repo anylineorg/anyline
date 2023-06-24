@@ -23,6 +23,7 @@ import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.run.RunValue;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public abstract class DefaultCondition implements Condition {
 	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
 	protected boolean required = false									;	// 是否必须
 	protected boolean strictRequired = false							;	// 是否必须
-	protected EMPTY_VALUE_CROSS cross = EMPTY_VALUE_CROSS.DEFAULT		;   // 遇到空值处理方式
+	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.DEFAULT		;   // 遇到空值处理方式
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
@@ -84,65 +85,62 @@ public abstract class DefaultCondition implements Condition {
 	@Override 
 	public void setActive(boolean active){
 		this.active = active; 
-	} 
+	}
+	@Override
 	public boolean isActive(){
 		return active; 
-	} 
+	}
+	@Override
 	public List<RunValue> getRunValues(){
 		return runValues; 
-	} 
-	 
+	}
+
+	@Override
 	public Condition setJoin(String join){
 		this.join = join; 
 		return this; 
-	} 
- 
+	}
+
+	@Override
 	public String getJoin(){
 		return join; 
-	} 
+	}
+	@Override
 	public ConditionChain getContainer() {
 		return container; 
-	} 
+	}
+	@Override
 	public Condition setContainer(ConditionChain container) {
 		this.container = container; 
 		return this; 
-	} 
+	}
+	@Override
 	public boolean hasContainer(){
 		return (null != container); 
-	} 
+	}
+	@Override
 	public boolean isContainer(){
 		return (this instanceof ConditionChain); 
-	} 
+	}
+	@Override
 	public String getId(){
 		return id; 
-	} 
+	}
+	@Override
 	public int getVariableType() {
 		return variableType;
-	} 
- 
+	}
+	@Override
 	public void setVariableType(int variableType) {
 		this.variableType = variableType; 
-	} 
-
-	public boolean isRequired() {
-		return required;
 	}
 
-	public boolean isStrictRequired() {
-		return strictRequired;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-	public void setStrictRequired(boolean strictRequired) {
-		this.strictRequired = strictRequired;
-	} 
 	/** 
 	 * 赋值 
 	 * @param variable  variable
 	 * @param values  values
-	 */ 
+	 */
+	@Override
 	public void setValue(String variable, Object values){
 		Variable var = getVariable(variable);
 		if(null != var){
@@ -163,6 +161,7 @@ public abstract class DefaultCondition implements Condition {
 	public Map<String,Object> getRunValuesMap(){
 		return runValuesMap;
 	}
+	@Override
 	public boolean isValid(){
 		if(strictRequired && BasicUtil.isEmpty(true, runValues)){
 			return false;
@@ -171,6 +170,7 @@ public abstract class DefaultCondition implements Condition {
 	}
 
 
+	@Override
 	public Variable getVariable(String var) {
 		if(null == variables || null == var){
 			return null;
@@ -186,6 +186,7 @@ public abstract class DefaultCondition implements Condition {
 		return null;
 	}
 
+	@Override
 	public List<Variable> getVariables(){
 		return variables;
 	}
@@ -212,11 +213,13 @@ public abstract class DefaultCondition implements Condition {
 		return false;
 	}
 
-	public EMPTY_VALUE_CROSS getCross() {
-		return cross;
+	@Override
+	public EMPTY_VALUE_SWITCH getSwitch() {
+		return swt;
 	}
 
-	public void setCross(EMPTY_VALUE_CROSS cross) {
-		this.cross = cross;
+	@Override
+	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+		this.swt = swt;
 	}
 }

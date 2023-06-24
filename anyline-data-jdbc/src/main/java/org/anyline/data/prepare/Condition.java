@@ -18,9 +18,10 @@
 
 
 package org.anyline.data.prepare;
- 
+
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.run.RunValue;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,7 @@ import java.util.Map;
 
 
 public interface Condition extends Cloneable{
-	enum EMPTY_VALUE_CROSS{
-		 DEFAULT   //默认由参数格式决定  如 +ID:id  ++ID:id,默认情况下如果值为空则忽略当前条件
-		, BREAK	   //中断执行 整个SQL不执行
-		, CONTINUE //当前条件不参考最终SQL执行 其他条件继续执行
-		, NULL	   //生成 WHERE ID IS NULL
-		, SRC	   //原样处理 会生成 WHERE ID = NULL
-	}
+
 	String CONDITION_JOIN_TYPE_AND		= " AND "	;	// 拼接方式 AND
 	String CONDITION_JOIN_TYPE_OR		= " OR "	;	// 拼接方式 OR
 	// 参数变量类型
@@ -87,18 +82,14 @@ public interface Condition extends Cloneable{
 	void init(); 
 	void initRunValue(); 
 	boolean isActive();
-	boolean isRequired();
-	void setRequired(boolean required);
-	boolean isStrictRequired();
-	void setStrictRequired(boolean strictRequired);
 	boolean isValid();
 	void setActive(boolean active); 
 	int getVariableType();
 	void setVariableType(int variableType);
 
-	EMPTY_VALUE_CROSS getCross() ;
+	EMPTY_VALUE_SWITCH getSwitch() ;
 
-	void setCross(EMPTY_VALUE_CROSS cross) ;
+	void setSwitch(EMPTY_VALUE_SWITCH swt) ;
 	/* ************************************************************************************************************ 
 	 *  
 	 * 													 自动生成 
