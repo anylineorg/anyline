@@ -67,11 +67,11 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 		join = ""; 
 		this.id = id; 
 		this.text = text; 
-		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
+		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 		if(!isStatic){
 			parseText(); 
 		}else{
-			setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
+			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		} 
 	} 
 	public void init(){
@@ -121,7 +121,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){
-				setVariableType(VARIABLE_FLAG_TYPE_KEY); 
+				setVariableType(VARIABLE_PLACEHOLDER_TYPE_KEY); 
 				int varType = Variable.VAR_TYPE_INDEX;
 				Compare compare = Compare.EQUAL;
 				for(int i=0; i<keys.size(); i++){
@@ -156,7 +156,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
 				if(BasicUtil.isNotEmpty(true,idxKeys)){
 					// 按下标区分变量 
-					this.setVariableType(VARIABLE_FLAG_TYPE_INDEX); 
+					this.setVariableType(VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 					int varType = Variable.VAR_TYPE_INDEX;
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();

@@ -70,7 +70,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 				continue;
 			}
 			List<RunValue> values = condition.getRunValues();
-			if(condition.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE 
+			if(condition.getVariableType() == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE 
 					|| !BasicUtil.isEmpty(true, values) 
 					|| condition.isActive()
 					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.NULL

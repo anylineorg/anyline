@@ -162,7 +162,7 @@ public class DefaultConfig implements Config {
 					condition.setRunText(text);
 					condition.setContainer(chain);
 					condition.setActive(true);
-					condition.setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
+					condition.setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 				}else {
 					condition = new DefaultAutoCondition(this).setOrCompare(getOrCompare()).setJoin(parser.getJoin());
 					condition.setContainer(chain);

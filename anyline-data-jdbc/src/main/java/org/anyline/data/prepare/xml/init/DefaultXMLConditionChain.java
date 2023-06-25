@@ -42,7 +42,7 @@ public class DefaultXMLConditionChain extends DefaultConditionChain implements C
 					continue;
 				}
 				String txt = ""; 
-				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){
+				if(condition.getVariableType() == VARIABLE_PLACEHOLDER_TYPE_NONE){
 					txt = condition.getRunText(prefix, adapter);
 				}else if(condition.isActive()){
 					txt = condition.getRunText(prefix, adapter);

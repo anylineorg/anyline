@@ -357,7 +357,7 @@ public class XMLRun extends BasicRun implements Run {
 						if(!result){
 							con.setActive(false); 
 						}else{
-							if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){
+							if(con.getVariableType() == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){
 								con.setActive(true); 
 								conditionChain.setActive(true); 
 							} 
@@ -367,7 +367,7 @@ public class XMLRun extends BasicRun implements Run {
 					} 
 				}else{
 					// 无test条件 
-					if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){
+					if(con.getVariableType() == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){
 						con.setActive(true); 
 						conditionChain.setActive(true); 
 					} 

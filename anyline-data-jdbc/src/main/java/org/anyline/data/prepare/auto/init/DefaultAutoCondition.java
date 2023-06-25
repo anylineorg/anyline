@@ -55,7 +55,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setValues(config.getValues()); 
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
-		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX);
+		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
 		setSwitch(config.getSwitch());
 		if(config.getSwitch() == EMPTY_VALUE_SWITCH.NULL || config.getSwitch() == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
@@ -75,7 +75,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setValues(values);
 		setCompare(compare);
 		setSwitch(swt);
-		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
+		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 		if(BasicUtil.isNotEmpty(true,values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
 		} 
@@ -83,7 +83,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	public DefaultAutoCondition(String text){
 		this.text = text; 
 		this.active = true; 
-		setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE); 
+		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE); 
 	} 
 
 
@@ -97,7 +97,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	public String getRunText(String prefix, JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		String text = "";
-		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){//没有变量
+		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){//没有变量
 			text = this.text; 
 		}else{
 			String txt = "";
@@ -157,13 +157,16 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 			builder.append(col_builder);
 			if(compareCode == 10){
 				Object v = getValue(val);
-				if("NULL".equals(v.toString())){
+				if("NULL".equals(v)){
 					builder.append(" IS NULL");
-					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				}else if (empty){//空值根据swt处理
 					if(swt == EMPTY_VALUE_SWITCH.NULL){
 						builder.append(" IS NULL");
-						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v){
+						builder.append(" IS NULL");
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 					}else{
 						builder.append(compare.getSQL());
 					}
@@ -173,7 +176,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				/*if(null == v || "NULL".equals(v.toString())){
 					builder.append(" IS NULL");
 					if("NULL".equals(getValue())){
-						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 					}
 				}else{
 					builder.append(compare.getSQL());
@@ -188,11 +191,14 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				Object v = getValue(val);
 				if("NULL".equals(v.toString())){
 					builder.append(" IS NOT NULL");
-					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				}else if (empty){//空值根据swt处理
 					if(swt == EMPTY_VALUE_SWITCH.NULL){
 						builder.append(" IS NOT NULL");
-						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
+					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v){
+						builder.append(" IS NOT NULL");
+						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 					}else{
 						builder.append(compare.getSQL());
 					}
@@ -212,7 +218,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}
 
 		// runtime value
-		if(variableType != Condition.VARIABLE_FLAG_TYPE_NONE){
+		if(variableType != Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){
 			if(null == val){
 				runValues.add(new RunValue(this.column, val));
 			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
