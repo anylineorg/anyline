@@ -74,23 +74,19 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 * *******************************************************************************************/
 	/**
 	 * 添加查询条件
-	 * @param required 是否必须
-	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
+	 * @param swt 空值处理方式
 	 * @param column  列名
 	 * @param value 值
 	 * @param compare  比较方式
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare){
+	public RunPrepare addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value){
 		if(null == chain){
 			chain = new DefaultAutoConditionChain();
 		}
-		Condition condition = new DefaultAutoCondition(required, strictRequired, null, column, value, compare);
+		Condition condition = new DefaultAutoCondition(swt, compare, null, column, value);
 		chain.addCondition(condition);
 		return this;
-	}
-	public RunPrepare addCondition(boolean required, String column, Object value, Compare compare){
-		return addCondition(required, false, column, value, compare);
 	}
 	/**
 	 * 添加静态文本查询条件
@@ -102,7 +98,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		if(condition.contains(":")){
 			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
-			addCondition(parser.isRequired(),parser.isStrictRequired(),parser.getVar(),value,parser.getCompare());
+			addCondition(parser.getSwitch(), parser.getCompare(), parser.getVar(),value);
 		}else{
 			Condition con = new DefaultAutoCondition(condition);
 			chain.addCondition(con);

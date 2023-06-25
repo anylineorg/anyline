@@ -22,6 +22,7 @@ package org.anyline.data.prepare.auto;
 
 import org.anyline.entity.Compare;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 public interface AutoPrepare extends RunPrepare {
 	public RunPrepare init();
@@ -40,15 +41,13 @@ public interface AutoPrepare extends RunPrepare {
 	 * *******************************************************************************************/ 
 	/** 
 	 * 添加查询条件 
-	 * @param required  是否必须 
-	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
+	 * @param swt 空值处理方式
 	 * @param column  列名 
 	 * @param value  值 
 	 * @param compare  比较方式 
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(boolean required, boolean strictRequired, String column, Object value, Compare compare);
-	public RunPrepare addCondition(boolean required, String column, Object value, Compare compare);
+	public RunPrepare addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value);
  
 	/** 
 	 * 添加静态文本查询条件 

@@ -40,9 +40,7 @@ import java.util.Map;
  */ 
 public abstract class DefaultCondition implements Condition {
 	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
-	protected boolean required = false									;	// 是否必须
-	protected boolean strictRequired = false							;	// 是否必须
-	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.DEFAULT		;   // 遇到空值处理方式
+	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE		;   // 遇到空值处理方式
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
@@ -163,7 +161,7 @@ public abstract class DefaultCondition implements Condition {
 	}
 	@Override
 	public boolean isValid(){
-		if(strictRequired && BasicUtil.isEmpty(true, runValues)){
+		if(swt == EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, runValues)){
 			return false;
 		}
 		return true;

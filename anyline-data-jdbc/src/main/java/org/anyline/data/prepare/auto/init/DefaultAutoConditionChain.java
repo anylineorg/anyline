@@ -26,11 +26,11 @@ import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.init.DefaultConditionChain;
 import org.anyline.data.run.RunValue;
+import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class DefaultAutoConditionChain extends DefaultConditionChain implements ConditionChain {
 	public DefaultAutoConditionChain(){}
@@ -73,7 +73,9 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 			if(condition.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE 
 					|| !BasicUtil.isEmpty(true, values) 
 					|| condition.isActive()
-					|| condition.isRequired()){
+					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.NULL
+					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.SRC
+			){
 				// condition instanceof ConditionChain
 				// if(i>0 /*&& !condition.isContainer()*/){
 				if(joinSize>0){

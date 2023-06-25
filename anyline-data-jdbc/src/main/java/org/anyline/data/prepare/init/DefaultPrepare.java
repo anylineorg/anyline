@@ -177,8 +177,13 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @param compare  比较方式
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(String column, Object value, Compare compare) {
-		Condition condition = new DefaultAutoCondition(false, false, null, column, value, compare) ;
+	public RunPrepare addCondition(Compare compare, String column, Object value) {
+		Condition condition = new DefaultAutoCondition(Compare.EMPTY_VALUE_SWITCH.IGNORE, compare, null, column, value) ;
+		addCondition(condition);
+		return this;
+	}
+	public RunPrepare addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value) {
+		Condition condition = new DefaultAutoCondition(swt, compare, null, column, value) ;
 		addCondition(condition);
 		return this;
 	}
@@ -187,7 +192,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 		if(null != value && value instanceof Collection){
 			compare = Compare.IN;
 		}
-		return addCondition(column, value, compare);
+		return addCondition(compare, column, value);
 	}
 
 

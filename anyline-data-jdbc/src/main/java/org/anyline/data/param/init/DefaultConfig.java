@@ -149,8 +149,9 @@ public class DefaultConfig implements Config {
 	 * @return Condition
 	 */ 
 	public Condition createAutoCondition(ConditionChain chain){
-		Condition condition = null; 
-		if(isRequire() || !isEmpty()){
+		Condition condition = null;
+		EMPTY_VALUE_SWITCH swt = parser.getSwitch();
+		if(!isEmpty() || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){ //非空 或 IS NULL 或 = ''
 			if(this instanceof ConfigChain){
 				condition = new DefaultAutoConditionChain((ConfigChain)this);
 				condition.setJoin(this.getJoin());
@@ -167,7 +168,10 @@ public class DefaultConfig implements Config {
 					condition.setContainer(chain);
 				}
 			} 
-		} 
+		}
+		if(null != condition){
+			condition.setSwitch(getSwitch());
+		}
 		return condition; 
 	} 
 	public String getPrefix() {
@@ -211,20 +215,7 @@ public class DefaultConfig implements Config {
 	public void setEmpty(boolean empty) {
 		this.empty = empty; 
 	} 
- 
-	public boolean isRequire() {
-		return parser.isRequired(); 
-	} 
-	 
-	public void setRequire(boolean require) {
-		parser.setRequired(require); 
-	} 
-	public boolean isStrictRequired() {
-		return parser.isStrictRequired();
-	}
-	public void setStrictRequired(boolean strictRequired) {
-		parser.setStrictRequired(strictRequired);
-	} 
+
 	public String getJoin() {
 		return parser.getJoin(); 
 	} 

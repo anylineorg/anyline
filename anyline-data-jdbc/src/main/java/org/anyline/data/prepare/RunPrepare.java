@@ -114,7 +114,7 @@ public interface RunPrepare extends Cloneable {
 	 * @param compare 比较方式 
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(String column, Object value, Compare compare);
+	public RunPrepare addCondition(Compare compare, String column, Object value);
 	public RunPrepare addCondition(String column, Object value);
  
 	 

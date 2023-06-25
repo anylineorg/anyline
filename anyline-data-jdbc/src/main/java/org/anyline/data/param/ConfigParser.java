@@ -104,11 +104,10 @@ public class ConfigParser {
 	 */
 	private static ParseResult parseInit(String config){
 		ParseResult result = new ParseResult();
-		boolean required = false;
-		boolean strictRequired = false;
 		String prefix = null;
 		String var = config;
 		String key = config;
+		Compare.EMPTY_VALUE_SWITCH swt = Compare.EMPTY_VALUE_SWITCH.IGNORE;
 		if(key.contains(":")){
 			var = config.substring(0,config.indexOf(":"));
 			if(key.contains("|")){
@@ -124,15 +123,16 @@ public class ConfigParser {
 		}
 		if(var.startsWith("+")){
 			// 必须参数
-			required = true;
+			//required = true;
+			swt = Compare.EMPTY_VALUE_SWITCH.NULL;
 			var = var.substring(1,var.length());
 			if(ConfigTable.getBoolean("CONDITION_VALUE_STRICT")){
-				strictRequired = true;
+				swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
 			}
 		}
 		if(var.startsWith("+")){
 			// 必须参数
-			strictRequired = true;
+			swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
 			var = var.substring(1,var.length());
 		}
 		if(var.contains(".")){
@@ -142,8 +142,7 @@ public class ConfigParser {
 			var = var.substring(var.indexOf(".")+1,var.length());
 			result.setPrefix(prefix);//其他不指定
 		}
-		result.setRequired(required);
-		result.setStrictRequired(strictRequired);
+		result.setSwitch(swt);
 		result.setVar(var);
 		result.setKey(key);
 		return result;

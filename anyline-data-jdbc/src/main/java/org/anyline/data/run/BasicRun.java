@@ -361,7 +361,7 @@ public abstract class BasicRun implements Run {
 	} 
  
 	@Override 
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String prefix, String variable, Object value, Compare compare) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value) {
 		return this; 
 	} 
 	@Override 
@@ -445,8 +445,8 @@ public abstract class BasicRun implements Run {
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(Compare.EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, Compare compare){
-		Condition condition = new DefaultAutoCondition(swt, prefix,var, value, compare);
+	public Run addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
+		Condition condition = new DefaultAutoCondition(swt, compare, prefix,var, value);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		}
@@ -641,7 +641,7 @@ public abstract class BasicRun implements Run {
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition,false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.getSwitch(), parser.getPrefix(),parser.getVar(),value,parser.getCompare());
+						addCondition(parser.getSwitch(),parser.getCompare(), parser.getPrefix(),parser.getVar(),value);
 						continue;
 					}
 				}

@@ -40,7 +40,7 @@ public interface Run {
 	 * @param compare 			比较方式
 	 * @return Run
 	 */
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String prefix, String variable, Object value, Compare compare);
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
 	public void setGroupStore(GroupStore groups) ;
 	public GroupStore getGroupStore() ; 
 	public Run group(String group);
@@ -63,7 +63,7 @@ public interface Run {
 	 * @param compare 比较方式 
 	 * @return Run
 	 */
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, Compare compare);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value);
 	public Run setConditionChain(ConditionChain chain);
 
 	/**

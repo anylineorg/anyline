@@ -120,7 +120,7 @@ public class TableRun extends BasicRun implements Run {
 	}
 
 	@Override
-	public Run setConditionValue(Compare.EMPTY_VALUE_SWITCH swt, String condition, String variable, Object value, Compare compare) {
+	public Run setConditionValue(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
 		return this;
 	}
 

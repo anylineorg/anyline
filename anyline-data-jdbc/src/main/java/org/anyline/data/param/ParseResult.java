@@ -16,7 +16,7 @@ public class ParseResult {
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	// 单值 
 	public static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE  = 2;	// 数组 
 
-	private EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.DEFAULT			; // 遇到空值处理方式
+	private EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE			; // 遇到空值处理方式
 	private String prefix					; // xml定义中的id 或auto sql的表别名
 	private String var						; // 实体属性或表列名
 	private String clazz					; // 取值后处理类
@@ -116,7 +116,7 @@ public class ParseResult {
 			if(prefix.startsWith("++")){
 				setSwitch(EMPTY_VALUE_SWITCH.BREAK);
 			}else if(prefix.startsWith("+")){
-				setSwitch(EMPTY_VALUE_SWITCH.IGNORE);
+				setSwitch(EMPTY_VALUE_SWITCH.NULL);
 			}
 			prefix = prefix.replace("+", "");
 		}
@@ -148,5 +148,11 @@ public class ParseResult {
 
 	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
 		this.swt = swt;
+	}
+	public boolean isRequired(){
+		if(swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
+			return true;
+		}
+		return false;
 	}
 }

@@ -61,7 +61,7 @@ public class XMLRun extends BasicRun implements Run {
 		super.init(); 
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.getSwitch(), conf.getPrefix(), conf.getVariable(), conf.getValues(), conf.getCompare());
+				setConditionValue(conf.getSwitch(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
 			} 
 			 
 			OrderStore orderStore = configStore.getOrders(); 
@@ -86,7 +86,7 @@ public class XMLRun extends BasicRun implements Run {
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE){
 					 value = BeanUtil.object2list(value);
 				} 
-				setConditionValue(parser.getSwitch(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
+				setConditionValue(parser.getSwitch(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
 			} 
 		} 
 		// 检查必须条件required strictRequired 
@@ -128,7 +128,7 @@ public class XMLRun extends BasicRun implements Run {
 		} 
 		if(null != variables){
 			for(Variable var:variables){
-				if(var.isRequired() || var.isStrictRequired()){
+				if(var.getSwitch() == EMPTY_VALUE_SWITCH.BREAK){
 					if(BasicUtil.isEmpty(true,var.getValues())){
 						log.warn("[valid:false][不具备执行条件][var:{}]",var.getKey());
 						this.valid = false; 
@@ -450,7 +450,7 @@ public class XMLRun extends BasicRun implements Run {
 	 * @return Run
 	 */
 	@Override
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String prefix, String variable, Object value, Compare compare) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value) {
 		/*不指定condition.id或condition.id = variable 时,根据var为SQL主体变量赋值*/
 		// 只提供var 不提供condition
 		if(null != variables &&  
@@ -483,7 +483,7 @@ public class XMLRun extends BasicRun implements Run {
 //				if(BasicUtil.isNotEmpty(prefix) && !prefix.equals(variable)){
 //					column = prefix + "." + variable;
 //				}
-				Condition newCon = new DefaultAutoCondition(swt, prefix, variable, value, compare);
+				Condition newCon = new DefaultAutoCondition(swt, compare, prefix, variable, value);
 				conditionChain.addCondition(newCon); 
 				if(newCon.isActive()){
 					conditionChain.setActive(true); 
@@ -641,8 +641,8 @@ public class XMLRun extends BasicRun implements Run {
 	public void setConfigStore(ConfigStore configStore) {
 		this.configStore = configStore; 
 	} 
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, String column, Object value, Compare compare){
-		setConditionValue(swt, column, null, value, compare);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value){
+		setConditionValue(swt, compare, column, null, value);
 		return this; 
 	}
 	 

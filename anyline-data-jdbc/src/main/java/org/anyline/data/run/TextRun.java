@@ -75,7 +75,7 @@ public class TextRun extends BasicRun implements Run {
 						}
 					} else{
 						//查询条件和SQL体变量赋值
-						setConditionValue(con.getSwitch(), con.getId(), null, con.getValues(), con.getCompare());
+						setConditionValue(con.getSwitch(), con.getCompare(), con.getId(), null, con.getValues());
 					}
 				}
 			} 
@@ -106,7 +106,7 @@ public class TextRun extends BasicRun implements Run {
 						if(!isConVarSetValue || overValue) {
 							isUse = true;
 							con.setVariableSlave(true);
-							setConditionValue(conf.getSwitch(), varKey, varKey, values, conf.getCompare());
+							setConditionValue(conf.getSwitch(), conf.getCompare(), varKey, varKey, values);
 						}
 					}
 				}
@@ -160,7 +160,7 @@ public class TextRun extends BasicRun implements Run {
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
-			if(BasicUtil.isNotEmpty(true,keys)){
+			if(BasicUtil.isNotEmpty(true, keys)){
 				// AND CD = :CD 
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i);
@@ -169,32 +169,7 @@ public class TextRun extends BasicRun implements Run {
 					if(null == var){
 						continue;
 					}
-					/*String prefix = keyItem.get(1).trim(); 	//
-					String fullKey = keyItem.get(2).trim();	// :CD ::CD {CD} ${CD}
-					String typeChar = keyItem.get(3);		// null || "'" || ")" 
-					String key = fullKey.replace(":", ""); 
-					if(fullKey.startsWith("::")){
-						// AND CD = ::CD 
-						varType = Variable.VAR_TYPE_REPLACE;
-					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){
-						// AND CD = ':CD' 
-						varType = Variable.VAR_TYPE_KEY_REPLACE;
-					}else{
-						// AND CD = :CD 
-						varType = Variable.VAR_TYPE_KEY;
-						// AND CD = :CD 
-						varType = Variable.VAR_TYPE_KEY;
-						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
-							// AND CD IN(:CD) 
-							compare = Compare.IN;
-						} 
-					} 
-					Variable var = new DefaultVariable();
-					var.setKey(key); 
-					var.setType(varType); 
-					var.setCompare(compare); 
-					addVariable(var);*/
-					var.setRequired(true);
+					var.setSwitch(EMPTY_VALUE_SWITCH.NULL);
 					addVariable(var);
 				}// end for 
 			}else{
@@ -204,7 +179,7 @@ public class TextRun extends BasicRun implements Run {
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setRequired(true);
+						var.setSwitch(EMPTY_VALUE_SWITCH.NULL);
 						addVariable(var); 
 					} 
 				} 
@@ -252,7 +227,7 @@ public class TextRun extends BasicRun implements Run {
 	} 
 
 	@Override 
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, String condition, String variable, Object value, Compare compare) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
@@ -376,8 +351,8 @@ public class TextRun extends BasicRun implements Run {
 	 * @param compare  比较方式
 	 * @return Run
 	 */ 
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, Compare compare){
-		Condition condition = new DefaultAutoCondition(swt, prefix, var, value, compare);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
+		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		} 

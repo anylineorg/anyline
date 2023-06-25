@@ -29,6 +29,7 @@ import org.anyline.data.prepare.init.DefaultPrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.xml.XMLPrepare;
+import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -147,7 +148,7 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 					if(null == var){
 						continue;
 					}
-					var.setRequired(true);
+					var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
 					addVariable(var); 
 				}// end for 
 			}else{
@@ -157,7 +158,7 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setRequired(true); 
+						var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
 						addVariable(var); 
 					} 
 				} 

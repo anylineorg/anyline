@@ -42,8 +42,6 @@ public class DefaultVariable implements Variable {
 		map.put("type", type);
 		map.put("sign type", signType);
 		map.put("compare", this.getCompare());
-		map.put("required", required);
-		map.put("strict required", strictRequired);
 		map.put("values", values);
 		str = BeanUtil.map2json(map);
 		return str;
@@ -56,9 +54,8 @@ public class DefaultVariable implements Variable {
 	private int signType = 1;		// 变量区分方式
 	private String keyPrefix;		// 变量前缀
 	private Compare compare;		// 比较方式
-	private boolean required;
-	private boolean strictRequired;
 	private boolean setValue;		//是否赋值过
+	private Compare.EMPTY_VALUE_SWITCH swt;
 	 
 	public Object clone() throws CloneNotSupportedException{
 		DefaultVariable clone = (DefaultVariable) super.clone();
@@ -140,21 +137,6 @@ public class DefaultVariable implements Variable {
 		this.signType = signType;
 	}
 
-	public boolean isRequired() {
-		return required;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-
-	public boolean isStrictRequired() {
-		return strictRequired;
-	}
-
-	public void setStrictRequired(boolean strictRequired) {
-		this.strictRequired = strictRequired;
-	}
 
 	public void setValues(List<Object> values) {
 		this.values = values;
@@ -198,6 +180,16 @@ public class DefaultVariable implements Variable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public Compare.EMPTY_VALUE_SWITCH getSwitch() {
+		return swt;
+	}
+
+	@Override
+	public void setSwitch(Compare.EMPTY_VALUE_SWITCH swt) {
+		this.swt = swt;
 	}
 
 	@Override

@@ -55,8 +55,9 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setValues(config.getValues()); 
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
-		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
-		if(config.isRequire()){
+		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX);
+		setSwitch(config.getSwitch());
+		if(config.getSwitch() == EMPTY_VALUE_SWITCH.NULL || config.getSwitch() == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
 		} 
 	} 
@@ -67,14 +68,15 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	 * @param values 值 
 	 * @param compare  比较方式 
 	 */ 
-	public DefaultAutoCondition(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object values, Compare compare){
+	public DefaultAutoCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object values){
 		setSwitch(swt);
 		setTable(prefix);
 		setColumn(var);
 		setValues(values);
-		setCompare(compare); 
+		setCompare(compare);
+		setSwitch(swt);
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
-		if(BasicUtil.isNotEmpty(true,values) || required){
+		if(BasicUtil.isNotEmpty(true,values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
 		} 
 	} 
@@ -123,15 +125,21 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
-		boolean empty = BasicUtil.isNotEmpty(true, values);
+		boolean empty = BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();
 		if(compareCode == -1){
 			//只作参数赋值
 			return "";
 		}
+		if(empty){
+			if(swt == EMPTY_VALUE_SWITCH.BREAK || swt == EMPTY_VALUE_SWITCH.IGNORE){
+				return  "";
+			}
+		}
 		if(BasicUtil.isNotEmpty(table)){
 			prefix = table;
 		}
+
 		StringBuilder col_builder = new StringBuilder();
 		if(!column.contains(".")){
 			if(BasicUtil.isNotEmpty(prefix)){
@@ -142,67 +150,81 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				}
 			}
 		}
-
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
-		if(empty){
-
-		}
-		if(compareCode >=60 && compareCode <= 62){
-			// FIND_IN_SET(?, CODES)
+		if(compareCode >=60 && compareCode <= 62){				// FIND_IN_SET(?, CODES)
 			val = adapter.buildConditionFindInSet(builder, col_builder.toString(), compare, val);
 		}else{
 			builder.append(col_builder);
 			if(compareCode == 10){
 				Object v = getValue(val);
-				if(null == v || "NULL".equals(v.toString())){
+				if("NULL".equals(v.toString())){
+					builder.append(" IS NULL");
+					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+				}else if (empty){//空值根据swt处理
+					if(swt == EMPTY_VALUE_SWITCH.NULL){
+						builder.append(" IS NULL");
+						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+					}else{
+						builder.append(compare.getSQL());
+					}
+				}else{
+					builder.append(compare.getSQL());
+				}
+				/*if(null == v || "NULL".equals(v.toString())){
 					builder.append(" IS NULL");
 					if("NULL".equals(getValue())){
 						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
 					}
 				}else{
 					builder.append(compare.getSQL());
+				}*/
+			}else if(compareCode == 20){ 							// > ?
+				builder.append(compare.getSQL());
+			}else if(compareCode == 21){ 							// >= ?
+				builder.append(compare.getSQL());
+			}else if(compareCode == 30){ 							// < ?
+				builder.append(compare.getSQL());
+			}else if(compareCode == 110){ 							// <> ?
+				Object v = getValue(val);
+				if("NULL".equals(v.toString())){
+					builder.append(" IS NOT NULL");
+					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+				}else if (empty){//空值根据swt处理
+					if(swt == EMPTY_VALUE_SWITCH.NULL){
+						builder.append(" IS NOT NULL");
+						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+					}else{
+						builder.append(compare.getSQL());
+					}
+				}else{
+					builder.append(compare.getSQL());
 				}
-			}else if(compareCode == 20){
-				// "> ?";
+			}else if(compareCode == 31){ 							// <= ?
 				builder.append(compare.getSQL());
-			}else if(compareCode == 21){
-				// ">= ?";
+			}else if(compareCode == 80){ 							// BETWEEN ? AND ?
 				builder.append(compare.getSQL());
-			}else if(compareCode == 30){
-				// "< ?";
-				builder.append(compare.getSQL());
-			}else if(compareCode == 110){
-				// "<> ?";
-				builder.append(compare.getSQL());
-			}else if(compareCode == 31){
-				// "<= ?";
-				builder.append(compare.getSQL());
-			}else if(compareCode == 80){
-				// " BETWEEN ? AND ?";
-				builder.append(compare.getSQL());
-			}else if(compareCode == 40 || compareCode == 140){
+			}else if(compareCode == 40 || compareCode == 140){		// IN(?,?,?)
 				adapter.buildConditionIn(builder, compare, val);
-			}else if((compareCode >= 50 && compareCode <= 52) || (compareCode >= 150 && compareCode <= 152)){
-				//LIKE NOT LIKE
+			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
+					|| (compareCode >= 150 && compareCode <= 152)){ // NOT LIKE ?
 				val = adapter.buildConditionLike(builder, compare, val) ;
 			}
 		}
 
-
-
 		// runtime value
-		if(null != val) {
-			if (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62)) {
-				List<Object> list = getValues(val);
-				if (null != list) {
-					for (Object obj : list) {
-						runValues.add(new RunValue(this.column, obj));
+		if(variableType != Condition.VARIABLE_FLAG_TYPE_NONE){
+			if(null == val){
+				runValues.add(new RunValue(this.column, val));
+			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
+				if (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62)) {
+					List<Object> list = getValues(val);
+					if (null != list) {
+						for (Object obj : list) {
+							runValues.add(new RunValue(this.column, obj));
+						}
 					}
-				}
-			} else {
-				Object value = getValue(val);
-				if ((null == value || "NULL".equals(value)) && compareCode == 10) {
 				} else {
+					Object value = getValue(val);
 					runValues.add(new RunValue(this.column, value));
 				}
 			}

@@ -25,6 +25,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.SQLStore;
 import org.anyline.data.prepare.xml.init.DefaultXMLCondition;
 import org.anyline.data.prepare.xml.init.DefaultXMLPrepare;
+import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -322,8 +323,19 @@ public class DefaultSQLStore extends SQLStore {
 	private static Condition parseCondition(RunPrepare prepare, Map<String, List<Condition>> map, Element element) {
 		Condition condition = null;
 		String id = element.attributeValue("id");    // 查询条件id
-		boolean required = BasicUtil.parseBoolean(element.attributeValue("required"), false);
-		boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"), false);
+		Compare.EMPTY_VALUE_SWITCH swt = Compare.EMPTY_VALUE_SWITCH.IGNORE;
+		String _swt = element.attributeValue("switch");
+		if(BasicUtil.isNotEmpty(_swt)){
+			swt = Compare.EMPTY_VALUE_SWITCH.valueOf(_swt.toUpperCase());
+		}else {
+			boolean required = BasicUtil.parseBoolean(element.attributeValue("required"), false);
+			boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"), false);
+			if(strictRequired){
+				swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
+			}else if(required){
+				swt = Compare.EMPTY_VALUE_SWITCH.NULL;
+			}
+		}
 		if (null != id) {
 			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"), false);    // 是否是静态文本
 			String text = element.getText().trim();            // 查询条件文本
@@ -331,8 +343,6 @@ public class DefaultSQLStore extends SQLStore {
 				text = "\nAND " + text;
 			}
 			condition = new DefaultXMLCondition(id, text, isStatic);
-			condition.setRequired(required);
-			condition.setStrictRequired(strictRequired);
 			String test = element.attributeValue("test");
 			condition.setTest(test);
 			if (null != prepare) {
@@ -349,6 +359,7 @@ public class DefaultSQLStore extends SQLStore {
 				}
 			}
 		}
+		condition.setSwitch(swt);
 		return condition;
 	}
 

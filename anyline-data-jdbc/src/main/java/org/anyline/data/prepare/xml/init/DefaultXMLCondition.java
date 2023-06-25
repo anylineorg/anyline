@@ -55,8 +55,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				} 
 				cVariables.add((Variable)var.clone());
 			}
-			clone.setRequired(this.isRequired());
-			clone.setStrictRequired(this.isStrictRequired()); 
+			clone.setSwitch(swt);
 			clone.variables = cVariables; 
 		} 
 		return clone; 
@@ -99,8 +98,9 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				continue;
 			} 
 			if(variable.equalsIgnoreCase(v.getKey())){
-				v.setValue(values); 
-				if(BasicUtil.isNotEmpty(true,values) || v.isRequired() || v.isStrictRequired()){
+				v.setValue(values);
+				Compare.EMPTY_VALUE_SWITCH swt = v.getSwitch();
+				if(BasicUtil.isNotEmpty(true,values) || swt == Compare.EMPTY_VALUE_SWITCH.NULL || swt == Compare.EMPTY_VALUE_SWITCH.SRC){
 					setActive(true); 
 				} 
 			} 
@@ -301,7 +301,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 					continue;
 				}
 				List<Object> values = variable.getValues();
-				if(isStrictRequired() && BasicUtil.isEmpty(true, values)){
+				if(swt == Compare.EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, values)){
 					return false;
 				}
 			}
