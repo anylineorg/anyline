@@ -28,12 +28,19 @@ public class SyntaxHelper {
 	 */ 
 	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){
 		int varType = -1;
+		if(null != prefix && null != fullKey){
+			if(prefix.endsWith(":") && fullKey.startsWith(":")){
+				//IN(::IDS) > IN(:,:IDS
+				prefix = prefix.substring(0, prefix.length()-1);
+				fullKey = ":"+fullKey;
+			}
+		}
 		if(BasicUtil.isNotEmpty(prefix)){
 			//CODE = 'A:1' prefix = "A"
 			//CODE = 'IN:1' prefix = "IN"
 			//CODE IN(:CODES)  prefix = "IN("
 			//CODE IN (:CODES)  prefix = "IN" afterChar =")"
-			if(prefix.matches(".*[a-zA-Z0-9]$") && !")".equals(afterChar)){
+			if(fullKey.startsWith(":") && !fullKey.startsWith("::") && prefix.matches(".*[a-zA-Z0-9]$") && !")".equals(afterChar)){
 				return null;
 			}
 		}

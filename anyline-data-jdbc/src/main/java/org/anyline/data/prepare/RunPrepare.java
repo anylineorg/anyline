@@ -34,8 +34,8 @@ public interface RunPrepare extends Cloneable {
 	public static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			// 存储过程输入参数类型 
 	public static final String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		// 存储过程输入参数值 
 
-	// 以:标识的执行时直接替换
-	// 以::标识的执行时以?占位 
+	// 以::标识的执行时直接替换
+	// 以:标识的执行时以?占位
 	// NAME LIKE :NM + '%' 
 	// (NAME = :NM) 
 	// NAME = ':NM' 
