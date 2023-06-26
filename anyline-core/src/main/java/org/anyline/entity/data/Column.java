@@ -78,6 +78,8 @@ public class Column implements Serializable {
     protected String collate                      ; // 排序编码
     protected String reference                    ; // 外键依赖列
     protected int srid                            ; // SRID
+    protected Boolean index                       ; // es
+    protected Boolean store                       ; // es
 
 
     protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
