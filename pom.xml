@@ -64,7 +64,6 @@
 		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-hotdb</module>				<!--热璞-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-dm</module>							<!--达梦-->
-		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-elasticsearch</module>
 		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-gaiadb</module>				<!--百度-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase</module>						<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-gbase-postgresql</module>			<!--南大通用(postgresql)-->
