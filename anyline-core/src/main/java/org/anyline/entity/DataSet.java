@@ -620,6 +620,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+    /**
+     * 计算行数
+     * @param empty 空值是否参与计算
+     * @param key 判断空值的属性
+     * @return int
+     */
+    public int count(boolean empty, String  key){
+        int result = 0;
+        if(empty){
+            result = rows.size();
+        }else {
+            for (DataRow row:rows) {
+                if(row.isNotEmpty(key)){
+                    result ++;
+                }
+            }
+        }
+        return result;
+    }
+
     public int getSize() {
         return size();
     }
@@ -1271,7 +1291,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, int scale, int round, List<String> fixs, String... keys) {
+    public DataRow avgs(DataRow result, boolean empty, int scale, int round, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
@@ -1281,20 +1301,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 list = getRow(0).numberKeys();
             }
             for (String key : keys) {
-                result.put(key, avg(key, scale, round));
+                result.put(key, avg(empty, scale, round, key));
             }
         }
         return result;
     }
 
-    public DataRow avgs(DataRow result, int scale, int round, String[] fixs, String... keys) {
-        return avgs(result, scale, round, BeanUtil.array2list(fixs, keys));
+    public DataRow avgs(DataRow result, boolean empty, int scale, int round, String[] fixs, String... keys) {
+        return avgs(result, empty, scale, round, BeanUtil.array2list(fixs, keys));
     }
-    public DataRow avgs(DataRow result, int scale, int round, String... keys) {
-        return avgs(result, scale, round, BeanUtil.array2list(keys));
+    public DataRow avgs(DataRow result, boolean empty, int scale, int round, String... keys) {
+        return avgs(result, empty, scale, round, BeanUtil.array2list(keys));
     }
-    public DataRow avgs(int scale, int round, String ... keys) {
-        return avgs(new DataRow(), scale, round, BeanUtil.array2list(keys));
+    public DataRow avgs(boolean empty, int scale, int round, String ... keys) {
+        return avgs(new DataRow(), empty, scale, round, BeanUtil.array2list(keys));
     }
     /**
      * 最大值
@@ -1477,13 +1497,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 平均值 空数据不参与加法但参与除法
      *
+     * @param empty 空值是否参与计算
      * @param top 多少行
      * @param key key
      * @param scale scale
      * @param round round
      * @return BigDecimal
      */
-    public BigDecimal avg(int top, String key, int scale, int round) {
+    public BigDecimal avg(boolean empty, int scale, int round, int top, String key) {
         BigDecimal result = BigDecimal.ZERO;
         int size = rows.size();
         if (size > top) {
@@ -1495,7 +1516,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null != tmp) {
                 result = result.add(tmp);
             }
-            count++;
+            if(null != tmp || empty) {
+                count++;
+            }
         }
         if (count > 0) {
             result = result.divide(new BigDecimal(count), scale, round);
@@ -1503,16 +1526,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
-    public BigDecimal avg(String key, int scale, int round) {
-        BigDecimal result = avg(size(), key, scale ,round);
+    public BigDecimal avg(int scale, int round, String key) {
+        BigDecimal result = avg(true, scale ,round, size(), key);
+        return result;
+    }
+    public BigDecimal avg(boolean empty, int scale, int round, String key) {
+        BigDecimal result = avg(empty, scale ,round, size(), key);
+        return result;
+    }
+
+    public BigDecimal avg(boolean empty, String key) {
+        BigDecimal result = avg(empty, size(), 2, BigDecimal.ROUND_HALF_UP, key);
         return result;
     }
 
     public BigDecimal avg(String key) {
-        BigDecimal result = avg(size(), key, 2, BigDecimal.ROUND_HALF_UP);
-        return result;
+        return avg(true, key);
     }
-
     /**
      * 求和
      * [
@@ -1544,25 +1574,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet avg(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet avg(String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.avg(field));
+            row.put(result, set.avg(scale, round, field));
         }
         return this;
     }
 
 
-    public DataSet var(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet var(String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.var(field));
+            row.put(result, set.var(scale, round, field));
         }
         return this;
     }
@@ -1586,109 +1616,99 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-    public DataSet count(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet count(String result, String items, boolean empty, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.size());
+            row.put(result, set.count(empty,field));
         }
         return this;
     }
-    public DataSet vara(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet vara(String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.vara(field));
-        }
-        return this;
-    }
-
-    public DataSet varp(String result, String items, String field,Compare compare,  String ... conditions){
-        for(DataRow row:rows){
-            DataSet set = row.getSet(items);
-            if(null != conditions && conditions.length>0){
-                set = set.getRows(compare, conditions);
-            }
-            row.put(result, set.varp(field));
+            row.put(result, set.vara(scale, round, field));
         }
         return this;
     }
 
-    public DataSet varpa(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet varp(String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.varpa(field));
-        }
-        return this;
-    }
-    public DataSet stdev(String result, String items, String field,Compare compare,  String ... conditions){
-        for(DataRow row:rows){
-            DataSet set = row.getSet(items);
-            if(null != conditions && conditions.length>0){
-                set = set.getRows(compare, conditions);
-            }
-            row.put(result, set.stdev(field));
+            row.put(result, set.varp(scale, round, field));
         }
         return this;
     }
 
-    public DataSet stdeva(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet varpa(String result, String items, int scale, int round,  String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.stdeva(field));
+            row.put(result, set.varpa(scale, round, field));
+        }
+        return this;
+    }
+    public DataSet stdev(String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(compare, conditions);
+            }
+            row.put(result, set.stdev(scale, round, field));
         }
         return this;
     }
 
-    public DataSet stdevp(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet stdeva(String result, String items, int scale, int round, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.stdevp(field));
+            row.put(result, set.stdeva(scale, round, field));
         }
         return this;
     }
 
-    public DataSet stdevpa(String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet stdevp(String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.stdevpa(field));
+            row.put(result, set.stdevp(scale, round, field));
         }
         return this;
     }
 
-    public DataSet agg(Aggregation agg, String result, String items, String field,Compare compare,  String ... conditions){
+    public DataSet stdevpa(String result, String items, int scale, int round, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.agg(agg, field));
+            row.put(result, set.stdevpa(scale, round, field));
         }
         return this;
     }
-    public DataSet agg(String agg, String result, String items, String field,Compare compare,  String ... conditions){
+
+    public DataSet agg(Aggregation agg, String result, String items, int scale, int round, String field, Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
                 set = set.getRows(compare, conditions);
             }
-            row.put(result, set.agg(agg, field));
+            row.put(result, set.agg(agg, scale, round, field));
         }
         return this;
     }
@@ -1696,13 +1716,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return sum(result, items, field, Compare.EQUAL, conditions);
     }
 
-    public DataSet avg(String result, String items, String field, String ... conditions){
-        return avg(result, items, field, Compare.EQUAL, conditions);
+    public DataSet avg(String result, String items, int scale, int round, String field, String ... conditions){
+        return avg(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
 
 
-    public DataSet var(String result, String items, String field, String ... conditions){
-        return var(result, items, field, Compare.EQUAL, conditions);
+    public DataSet var(String result, String items, int scale, int round, String field, String ... conditions){
+        return var(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
     public DataSet min(String result, String items, String field, String ... conditions){
         return min(result, items, field, Compare.EQUAL, conditions);
@@ -1710,37 +1730,34 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet max(String result, String items, String field, String ... conditions){
         return max(result, items, field, Compare.EQUAL, conditions);
     }
-    public DataSet count(String result, String items, String field, String ... conditions){
-        return count(result, items, field, Compare.EQUAL, conditions);
+    public DataSet count(String result, String items, boolean empty, String field, String ... conditions){
+        return count(result, items, empty, field, Compare.EQUAL, conditions);
     }
-    public DataSet vara(String result, String items, String field, String ... conditions){
-        return vara(result, items, field, Compare.EQUAL, conditions);
-    }
-
-    public DataSet varp(String result, String items, String field, String ... conditions){
-        return varp(result, items, field, Compare.EQUAL, conditions);
+    public DataSet vara(String result, String items, int scale, int round, String field, String ... conditions){
+        return vara(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
 
-    public DataSet varpa(String result, String items, String field, String ... conditions){
-        return varpa(result, items, field, Compare.EQUAL, conditions);
-    }
-    public DataSet stdev(String result, String items, String field, String ... conditions){
-        return stdev(result, items, field, Compare.EQUAL, conditions);
+    public DataSet varp(String result, String items, int scale, int round, String field, String ... conditions){
+        return varp(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
 
-    public DataSet stdeva(String result, String items, String field, String ... conditions){
-        return stdeva(result, items, field, Compare.EQUAL, conditions);
+    public DataSet varpa(String result, String items, int scale, int round, String field, String ... conditions){
+        return varpa(result, items, scale, round, field, Compare.EQUAL, conditions);
+    }
+    public DataSet stdev(String result, String items, int scale, int round, String field, String ... conditions){
+        return stdev(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
 
-    public DataSet stdevp(String result, String items, String field, String ... conditions){
-        return stdevp(result, items, field, Compare.EQUAL, conditions);
+    public DataSet stdeva(String result, String items, int scale, int round, String field, String ... conditions){
+        return stdeva(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
 
-    public DataSet agg(Aggregation agg, String result, String items, String field, String ... conditions){
-        return agg(agg, result, items, field, Compare.EQUAL, conditions);
+    public DataSet stdevp(String result, String items, int scale, int round, String field, String ... conditions){
+        return stdevp(result, items, scale, round, field, Compare.EQUAL, conditions);
     }
-    public DataSet agg(String agg, String result, String items, String field, String ... conditions) {
-        return agg(agg, result, items, field, Compare.EQUAL, conditions);
+
+    public DataSet agg(Aggregation agg, String result, String items, int scale, int round, String field, String ... conditions){
+        return agg(agg, result, items, scale, round, field, Compare.EQUAL, conditions);
     }
 
     public DataSet addRow(DataRow row) {
@@ -1993,7 +2010,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
-
+    public List<BigDecimal> getDecimals(String key, BigDecimal def){
+        List<BigDecimal> result = new ArrayList<>();
+        for(DataRow row:rows){
+            result.add(row.getDecimal(key, def));
+        }
+        return result;
+    }
     public List<Integer> getInts(String key) throws Exception {
         List<Integer> result = new ArrayList<Integer>();
         for (DataRow row : rows) {
@@ -3510,10 +3533,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys 分组条件
      * @return DataSet
      */
-    public DataSet group(boolean items, String field, String factor, Aggregation agg, String ... keys){
+    public DataSet group(boolean items,String field, String factor, Aggregation agg, int scale, int round, String ... keys){
         DataSet groups = group(keys);
         for(DataRow group:groups){
-            group.put(field, group.getItems().agg(agg, factor));
+            group.put(field, group.getItems().agg(agg, scale, round, factor));
             if(!items){
                 group.remove("ITEMS");
             }
@@ -3521,10 +3544,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return groups;
     }
     public DataSet group(String factor, Aggregation agg, String ... keys){
-        return group(false, agg.getCode(), factor, agg, keys);
+        return group(false, factor+"_"+agg.getCode(), factor, agg, 0, 0, keys);
     }
     public DataSet group(Aggregation agg, String ... keys){
-        return group(false, agg.getCode(), null, agg, keys);
+        return group(false, null, agg.getCode(), agg,  0, 0, keys);
     }
     public Object agg(String type, String key){
         Aggregation agg = Aggregation.valueOf(type);
@@ -3532,16 +3555,42 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public Object agg(Aggregation agg, String key){
+        return agg(agg, 2, BigDecimal.ROUND_HALF_UP, key);
+    }
+
+    /**
+     * 聚合计算
+     * @param agg 公式
+     * @param key 计算因子属性
+     * @param scale 小数位
+     * @param round 舍入方式参考BigDecimal
+     *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP 四舍五入<br/>
+     *       ROUND_HALF_DOWN 五舍六入<br/>
+     *       ROUND_HALF_EVEN=6 四舍六入 五留双(银行家舍入法) <br/>
+     *       如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *       如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *       如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *       ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
+     * @return Object
+     */
+    public Object agg(Aggregation agg, int scale, int round, String key){
         Object result = null;
         switch (agg){
             case COUNT:
-                result = this.size();
+                result = count(false, key);
                 break;
             case SUM:
                 result = sum(key);
                 break;
             case AVG:
-                result = avg(key);
+                result = avg(false, scale, round, key);
+                break;
+            case AVGA:
+                result = avg(true, scale, round, key);
                 break;
             case MAX:
                 result = max(key);
@@ -3574,56 +3623,108 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 result = minInt(key);
                 break;
             case STDEV:
-                result = stdev(key);
+                result = stdev(scale, round, key);
                 break;
             case STDEVP:
-                result = stdevp(key);
+                result = stdevp(scale, round, key);
                 break;
             case STDEVA:
-                result = stdeva(key);
+                result = stdeva(scale, round, key);
                 break;
             case STDEVPA:
-                result = stdevpa(key);
+                result = stdevpa(scale, round, key);
                 break;
             case VAR:
-                result = var(key);
+                result = var(scale, round, key);
                 break;
             case VARA:
-                result = vara(key);
+                result = vara(scale, round, key);
                 break;
             case VARP:
-                result = varp(key);
+                result = varp(scale, round, key);
                 break;
             case VARPA:
-                result = varpa(key);
+                result = varpa(scale, round, key);
                 break;
         }
         return result;
     }
 
-    public BigDecimal stdev(String key){
-        return null;
+    /**
+     * 标准差
+     * 标准差σ=sqrt(s^2)，即标准差=方差的平方根
+     * @param key 取值属性
+     * @param scale 小数位
+     * @param round 舍入方式参考BigDecimal
+     *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP 四舍五入<br/>
+     *       ROUND_HALF_DOWN 五舍六入<br/>
+     *       ROUND_HALF_EVEN=6 四舍六入 五留双(银行家舍入法) <br/>
+     *       如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *       如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *       如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *       ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
+     * @return 标准差
+     */
+    public BigDecimal stdev(int scale, int round, String key){
+        List<BigDecimal> values = getDecimals(key, null);
+        return NumberUtil.stdev(values, scale, round);
     }
-    public BigDecimal stdeva(String key){
-        return null;
+    public BigDecimal stdeva(int scale, int round, String key){
+        List<BigDecimal> values = getDecimals(key, null);
+        return NumberUtil.stdeva(values, scale, round);
     }
-    public BigDecimal stdevp(String key){
-        return null;
+    public BigDecimal stdevp(int scale, int round, String key){
+        List<BigDecimal> values = getDecimals(key, null);
+        return NumberUtil.stdevp(values, scale, round);
     }
-    public BigDecimal stdevpa(String key){
-        return null;
+    public BigDecimal stdevpa(int scale, int round, String key){
+        List<BigDecimal> values = getDecimals(key, null);
+        return NumberUtil.stdevpa(values, scale, round);
     }
-    public BigDecimal var(String key){
-        return null;
+
+    /**
+     * 方差
+     * s^2=[（x1-x）^2+（x2-x）^2+......（xn-x）^2]/（n）（x为平均数）
+     * @param empty 空值是否参与计算 var默认false, vara默认true
+     * @param key 取值属性
+     * @param scale 小数位
+     * @param round 舍入方式参考BigDecimal
+     *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP 四舍五入<br/>
+     *       ROUND_HALF_DOWN 五舍六入<br/>
+     *       ROUND_HALF_EVEN=6 四舍六入 五留双(银行家舍入法) <br/>
+     *       如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *       如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *       如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *       ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
+     * @return 标准差
+     */
+    public BigDecimal var(boolean empty, int scale, int round, String key){
+        List<BigDecimal> values = getDecimals(key, null);
+        return NumberUtil.var(values, scale, round);
     }
-    public BigDecimal vara(String key){
-        return null;
+    public BigDecimal var(int scale, int round, String key){
+        return var(false, scale, round, key);
     }
-    public BigDecimal varp(String key){
-        return null;
+    public BigDecimal vara(int scale, int round, String key){
+        return var(true, scale, round, key);
     }
-    public BigDecimal varpa(String key){
-        return null;
+    public BigDecimal varp(boolean empty, int scale, int round, String key){
+        List<BigDecimal> values = getDecimals(key, null);
+        return NumberUtil.varp(values, empty, scale, round);
+    }
+    public BigDecimal varp(int scale, int round, String key){
+        return varp(false, scale, round, key);
+    }
+    public BigDecimal varpa(int scale, int round, String key){
+        return varp(true, scale, round, key);
     }
     public DataSet or(DataSet set, String... keys) {
         return this.union(set, keys);
