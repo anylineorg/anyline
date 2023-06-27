@@ -45,7 +45,10 @@ public class BasicUtil {
 			return true; 
 		}
 		if (obj instanceof Collection && recursion) {
-			Collection collection = (Collection) obj; 
+			Collection collection = (Collection) obj;
+			if(collection.isEmpty()){
+				return true;
+			}
 			for (Object item : collection) {
 				if (!isEmpty(recursion, item)) {
 					return false; 
@@ -53,14 +56,14 @@ public class BasicUtil {
 			} 
 		} else if (obj instanceof Map) {
 			Map map = (Map) obj;
-			if(null == map || map.isEmpty()){
+			if(map.isEmpty()){
 				return true;
 			} 
 			if(recursion){
-				for (Iterator itrKey = map.keySet().iterator(); itrKey.hasNext();) {
-					if (!isEmpty(map.get(itrKey.next()))) {
-						return false; 
-					} 
+				for(Object item:map.values()){
+					if (!isEmpty(recursion, item)) {
+						return false;
+					}
 				}
 			}else{
 				return false;
