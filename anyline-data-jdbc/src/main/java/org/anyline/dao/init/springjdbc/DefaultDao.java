@@ -2135,7 +2135,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}
 		}
-		return deletes(recover, table, key, list);
+		return deletes(null, null, recover, table, key, list);
 	}
 	@Override
 	public int delete(String dest, Object obj, String... columns) {
