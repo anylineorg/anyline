@@ -78,8 +78,8 @@ public class Column implements Serializable {
     protected String collate                      ; // 排序编码
     protected String reference                    ; // 外键依赖列
     protected int srid                            ; // SRID
-    protected Boolean index                       ; // es
-    protected Boolean store                       ; // es
+    protected Boolean index                       ; // es 是否需要创建索引
+    protected Boolean store                       ; // es 是否需要存储
 
 
     protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
@@ -1049,6 +1049,22 @@ public class Column implements Serializable {
         }
         this.reference = reference;
         return this;
+    }
+
+    public Boolean getIndex() {
+        return index;
+    }
+
+    public void setIndex(Boolean index) {
+        this.index = index;
+    }
+
+    public Boolean getStore() {
+        return store;
+    }
+
+    public void setStore(Boolean store) {
+        this.store = store;
     }
 
     public Column getOrigin() {
