@@ -857,4 +857,146 @@ public class NumberUtil {
 		return byte2int(bytes, start, 4, big);
 	}
 
+	/**
+	 * 平均值
+	 * @param list 集合
+	 * @param scale 小数位
+	 * @param round 舍入方式参考BigDecimal
+	 *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+	 *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_HALF_UP 四舍五入<br/>
+	 *       ROUND_HALF_DOWN 五舍六入<br/>
+	 *       ROUND_HALF_EVEN=6 四舍六入 五留双(银行家舍入法) <br/>
+	 *       如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *       如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *       如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *       ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
+	 * @return 平均值
+	 */
+	public static BigDecimal avg(List<BigDecimal> list, int scale, int round) {
+		int qty = 0;
+		BigDecimal sum = BigDecimal.ZERO;
+		for (BigDecimal item:list) {        //求和
+			if(null != item){
+				sum = sum.add(item);
+			}
+			if(null != item){
+				qty ++;
+			}
+		}
+		if(qty > 0){
+			return sum.divide(new BigDecimal(qty), scale, round);
+		}
+		return null;
+	}
+	public static BigDecimal avga(List<BigDecimal> list, int scale, int round) {
+		int qty = list.size();
+		BigDecimal sum = BigDecimal.ZERO;
+		for (BigDecimal item:list) {        //求和
+			if(null != item){
+				sum = sum.add(item);
+			}
+		}
+		if(qty > 0){
+			return sum.divide(new BigDecimal(qty), scale, round);
+		}
+		return null;
+	}
+	/**
+	 * 方差variance
+	 * 方差s^2=[（x1-x）^2+（x2-x）^2+......（xn-x）^2]/（n）（x为平均数）
+	 * @param list 集合
+	 * @param scale 小数位
+	 * @param round 舍入方式参考BigDecimal
+	 *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+	 *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_HALF_UP 四舍五入<br/>
+	 *       ROUND_HALF_DOWN 五舍六入<br/>
+	 *       ROUND_HALF_EVEN=6 四舍六入 五留双(银行家舍入法) <br/>
+	 *       如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *       如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *       如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *       ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
+	 * @return 方差
+	 */
+	public static BigDecimal var(List<BigDecimal> list,  int scale, int round) {
+		int qty = 0;
+		BigDecimal avg = avg(list, scale, round);
+		BigDecimal var = BigDecimal.ZERO;
+		for (BigDecimal item : list) {
+			if(null != item){
+				BigDecimal sub = item.subtract(avg);
+				var = var.add(sub.multiply(sub));
+			}
+			if(null != item){
+				qty ++;
+			}
+		}
+		if(qty > 0){
+			return var.divide(new BigDecimal(qty), scale, round);
+		}
+		return null;
+	}
+	public static BigDecimal vara(List<BigDecimal> list,  int scale, int round) {
+		int qty = list.size();
+		BigDecimal avg = avga(list, scale, round);
+		BigDecimal var = BigDecimal.ZERO;
+		for (BigDecimal item : list) {
+			if(null != item){
+				BigDecimal sub = item.subtract(avg);
+				var = var.add(sub.multiply(sub));
+			}
+		}
+		if(qty > 0){
+			return var.divide(new BigDecimal(qty), scale, round);
+		}
+		return null;
+	}
+	public static BigDecimal varp(List<BigDecimal> list, boolean empty, int scale, int round) {
+		return null;
+	}
+
+	/**
+	 * 标准差(空值不参与)
+	 * 标准差σ=sqrt(s^2)，即标准差=方差的平方根
+	 * @param list 集合
+	 * @param scale 小数位
+	 * @param round 舍入方式参考BigDecimal
+	 *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+	 *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_HALF_UP 四舍五入<br/>
+	 *       ROUND_HALF_DOWN 五舍六入<br/>
+	 *       ROUND_HALF_EVEN=6 四舍六入 五留双(银行家舍入法) <br/>
+	 *       如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *       如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *       如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *       ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException<br/>
+	 * @return 标准差
+	 */
+	public static BigDecimal stdev(List<BigDecimal> list, int scale, int round) {
+		BigDecimal var = var(list, scale, round);
+		if(null != var){
+			return new BigDecimal(Math.sqrt(var.doubleValue()));
+		}
+		return  null;
+	}
+	public static BigDecimal stdeva(List<BigDecimal> list, int scale, int round) {
+		BigDecimal var = vara(list, scale, round);
+		if(null != var){
+			return new BigDecimal(Math.sqrt(var.doubleValue()));
+		}
+		return  null;
+	}
+	public static BigDecimal stdevp(List<BigDecimal> list, int scale, int round) {
+		return  null;
+	}
+	public static BigDecimal stdevpa(List<BigDecimal> list, int scale, int round) {
+		return  null;
+	}
 } 
