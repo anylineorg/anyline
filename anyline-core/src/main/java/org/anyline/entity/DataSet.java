@@ -3501,6 +3501,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return groups;
     }
 
+    /**
+     * 分组生聚合
+     * @param items 是否保留条目
+     * @param field 聚合结果保存属性
+     * @param factor 计算因子属性<br/> 求总行数时不需要
+     * @param agg 聚合公式
+     * @param keys 分组条件
+     * @return DataSet
+     */
+    public DataSet group(boolean items, String field, String factor, Aggregation agg, String ... keys){
+        DataSet groups = group(keys);
+        for(DataRow group:groups){
+            group.put(field, group.getItems().agg(agg, factor));
+            if(!items){
+                group.remove("ITEMS");
+            }
+        }
+        return groups;
+    }
+    public DataSet group(String factor, Aggregation agg, String ... keys){
+        return group(false, agg.getCode(), factor, agg, keys);
+    }
+    public DataSet group(Aggregation agg, String ... keys){
+        return group(false, agg.getCode(), null, agg, keys);
+    }
     public Object agg(String type, String key){
         Aggregation agg = Aggregation.valueOf(type);
         return agg(agg, key);
