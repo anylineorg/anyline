@@ -24,7 +24,9 @@ public class QQMapBean implements InitializingBean {
             return;
         }
         QQMapConfig config = QQMapConfig.register(KEY, BasicUtil.evl(SECRET, QQMapConfig.DEFAULT_SECRET));
-        config.HOST = this.HOST;
+        if(BasicUtil.isNotEmpty(this.HOST)) {
+            config.HOST = this.HOST;
+        }
     }
     @Bean("anyline.qq.map.init.client")
     public QQMapClient instance(){

@@ -26,7 +26,9 @@ public class AmapBean implements InitializingBean {
         }
         AmapConfig config = AmapConfig.register(KEY, BasicUtil.evl(SECRET, AmapConfig.DEFAULT_SECRET)
                 , BasicUtil.evl(TABLE, AmapConfig.DEFAULT_TABLE));
-        config.HOST = this.HOST;
+        if(BasicUtil.isNotEmpty(this.HOST)) {
+            config.HOST = this.HOST;
+        }
     }
     @Bean("anyline.amap.init.client")
     public AmapClient instance(){
