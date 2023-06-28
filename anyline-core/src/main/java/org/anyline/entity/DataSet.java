@@ -3978,7 +3978,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-
+    public DataRow add(KEY_CASE cs){
+        DataRow row = new DataRow(cs);
+        add(row);
+        return row;
+    }
+    public DataRow add(){
+        DataRow row = new DataRow();
+        add(row);
+        return row;
+    }
     /* ********************************************** 实现接口 *********************************************************** */
     public boolean add(DataRow e) {
         return rows.add((DataRow) e);
