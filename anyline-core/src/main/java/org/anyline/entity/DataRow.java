@@ -1421,7 +1421,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(null, key, value, pk, true);
         return this;
     }
-
+    public DataRow putRow(String key){
+        DataRow row = new DataRow(this.keyCase);
+        put(key, row);
+        return row;
+    }
+    public DataSet putSet(String key){
+        DataSet set = new DataSet();
+        put(key, set);
+        return set;
+    }
     /**
      * 这是重写的父类put不要改返回值类型
      * @param key key
