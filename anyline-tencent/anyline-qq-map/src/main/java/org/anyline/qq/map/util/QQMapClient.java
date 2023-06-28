@@ -107,6 +107,9 @@ public class QQMapClient extends AbstractMapClient implements MapClient {
         coordinate.setAddress(address);
         if(null != address){
             address = address.replace(" ","");
+            if(null != city && !address.contains(city)){
+                address = city + address;
+            }
         }
         String api = "/ws/geocoder/v1";
         Map<String,Object> params = new HashMap<>();
