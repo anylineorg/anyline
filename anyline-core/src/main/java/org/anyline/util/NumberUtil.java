@@ -861,7 +861,7 @@ public class NumberUtil {
 	 * 平均值
 	 * @param list 集合
 	 * @param scale 小数位
-	 * @param round 舍入方式参考BigDecimal
+	 * @param round 舍入方式参考BigDecimal静态常量
 	 *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
 	 *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
 	 *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
@@ -909,7 +909,7 @@ public class NumberUtil {
 	 * 方差s^2=[（x1-x）^2+（x2-x）^2+......（xn-x）^2]/（n）（x为平均数）
 	 * @param list 集合
 	 * @param scale 小数位
-	 * @param round 舍入方式参考BigDecimal
+	 * @param round 舍入方式参考BigDecimal静态常量
 	 *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
 	 *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
 	 *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
@@ -965,7 +965,7 @@ public class NumberUtil {
 	 * 标准差σ=sqrt(s^2)，即标准差=方差的平方根
 	 * @param list 集合
 	 * @param scale 小数位
-	 * @param round 舍入方式参考BigDecimal
+	 * @param round 舍入方式参考BigDecimal静态常量
 	 *       ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
 	 *       ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
 	 *       ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
