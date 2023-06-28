@@ -3526,11 +3526,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 分组生聚合
-     * @param items 是否保留条目
-     * @param field 聚合结果保存属性
-     * @param factor 计算因子属性<br/> 求总行数时不需要
-     * @param agg 聚合公式
-     * @param keys 分组条件
+     * @param items 是否保留条目 如果保留会在每个分组中添加ITEMS属性用来保存当前分组中的条件
+     * @param field 聚合结果保存属性 如果不指定则以 factor_agg命名 如 age_avg
+     * @param factor 计算因子属性 取条目中的factor属性的值参与计算
+     * @param agg 聚合公式 参考Aggregation枚举
+     * @param keys 分组条件 指定属性相同的条目合成一组
      * @param scale 精度(小数位)
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
@@ -3546,7 +3546,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataSet
      */
-    public DataSet group(boolean items,String field, String factor, Aggregation agg, int scale, int round, String ... keys){
+    public DataSet group(boolean items, String field, String factor, Aggregation agg, int scale, int round, String ... keys){
         DataSet groups = group(keys);
         for(DataRow group:groups){
             group.put(field, group.getItems().agg(agg, scale, round, factor));
