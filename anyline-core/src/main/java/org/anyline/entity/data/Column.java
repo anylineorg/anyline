@@ -78,8 +78,11 @@ public class Column implements Serializable {
     protected String collate                      ; // 排序编码
     protected String reference                    ; // 外键依赖列
     protected int srid                            ; // SRID
-    protected Boolean index                       ; // es 是否需要创建索引
-    protected Boolean store                       ; // es 是否需要存储
+
+    protected Boolean index                       ; // 是否需要创建索引
+    protected Boolean store                       ; // 是否需要存储
+    protected String analyzer                     ; // 分词器
+    protected String searchAnalyzer               ; // 查询分词器
 
 
     protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
@@ -983,7 +986,22 @@ public class Column implements Serializable {
         return columnType;
     }
 
-    
+    public String getAnalyzer() {
+        return analyzer;
+    }
+
+    public void setAnalyzer(String analyzer) {
+        this.analyzer = analyzer;
+    }
+
+    public String getSearchAnalyzer() {
+        return searchAnalyzer;
+    }
+
+    public void setSearchAnalyzer(String searchAnalyzer) {
+        this.searchAnalyzer = searchAnalyzer;
+    }
+
     public Column setColumnType(ColumnType columnType) {
         if(setmap && null != update){
             update.setColumnType(columnType);
