@@ -802,13 +802,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * key转换成小写
+     * @param recursion 是否递归
      * @param keys keys
      * @return DataRow
      */
-    public DataRow toLowerKey(String... keys) {
+    public DataRow toLowerKey(boolean recursion, String... keys) {
         if (null != keys && keys.length > 0) {
             for (String key : keys) {
                 Object value = get(key);
+                if(recursion && value instanceof DataRow){
+                    ((DataRow)value).toLowerKey(true, keys);
+                }
                 remove(keyAdapter.key(key));
                 key = key.toLowerCase();
                 put(KEY_CASE.SRC, key, value);
@@ -816,6 +820,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } else {
             for (String key : keys()) {
                 Object value = get(key);
+                if(recursion && value instanceof DataRow){
+                    ((DataRow)value).toLowerKey(true, keys);
+                }
                 remove(keyAdapter.key(key));
                 key = key.toLowerCase();
                 put(KEY_CASE.SRC, key, value);
@@ -825,6 +832,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow toLowerKey(String... keys) {
+        return toLowerKey(true, keys);
+    }
     /**
      * key转换成大写
      * @param keys keys
