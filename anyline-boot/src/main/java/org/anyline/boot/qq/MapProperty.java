@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration("anyline.boot.qq.map")
 @ConfigurationProperties(prefix = "anyline.qq.map")
 public class MapProperty {
+    private String host     ;
     private String key		;
     private String secret 	;
 
@@ -23,5 +24,13 @@ public class MapProperty {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }
