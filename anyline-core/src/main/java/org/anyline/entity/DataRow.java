@@ -110,7 +110,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private void parseKeycase(KEY_CASE keyCase) {
         if(null == keyCase){
             keyCase = this.keyCase;
+        }else{
+            this.keyCase = keyCase;
         }
+
         if (null != keyCase) {
             keyAdapter = KeyAdapter.parse(keyCase);
             if(keyCase == KEY_CASE.CONFIG){
