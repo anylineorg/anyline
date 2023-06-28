@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component("anyline.ampa.load.bean")
 public class AmapBean implements InitializingBean {
 
+    @Value("${anyline.amap.host:}")
+    private String HOST		;
     @Value("${anyline.amap.key:}")
     private String KEY		;
     @Value("${anyline.amap.secret:}")
@@ -22,8 +24,9 @@ public class AmapBean implements InitializingBean {
         if(BasicUtil.isEmpty(KEY)){
             return;
         }
-        AmapConfig.register(KEY, BasicUtil.evl(SECRET, AmapConfig.DEFAULT_SECRET)
+        AmapConfig config = AmapConfig.register(KEY, BasicUtil.evl(SECRET, AmapConfig.DEFAULT_SECRET)
                 , BasicUtil.evl(TABLE, AmapConfig.DEFAULT_TABLE));
+        config.HOST = this.HOST;
     }
     @Bean("anyline.amap.init.client")
     public AmapClient instance(){

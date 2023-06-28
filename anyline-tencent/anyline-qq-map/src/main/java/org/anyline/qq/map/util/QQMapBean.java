@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component("anyline.QQ.map.load.bean")
 public class QQMapBean implements InitializingBean {
 
+    @Value("${anyline.qq.map.host:}")
+    private String HOST		;
     @Value("${anyline.qq.map.key:}")
     private String KEY		;
     @Value("${anyline.qq.map.secret:}")
@@ -21,7 +23,8 @@ public class QQMapBean implements InitializingBean {
         if(BasicUtil.isEmpty(KEY)){
             return;
         }
-        QQMapConfig.register(KEY, BasicUtil.evl(SECRET, QQMapConfig.DEFAULT_SECRET));
+        QQMapConfig config = QQMapConfig.register(KEY, BasicUtil.evl(SECRET, QQMapConfig.DEFAULT_SECRET));
+        config.HOST = this.HOST;
     }
     @Bean("anyline.qq.map.init.client")
     public QQMapClient instance(){
