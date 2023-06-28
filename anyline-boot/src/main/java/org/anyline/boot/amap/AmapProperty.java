@@ -8,9 +8,18 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "anyline.amap")
 public class AmapProperty {
 
+    private String host     ;
     private String key		;
     private String secret 	;
     private String table 	;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 
     public String getKey() {
         return key;
