@@ -25,7 +25,7 @@ public interface QueryInterceptor extends DMInterceptor{
 
     default SWITCH prepare(JDBCRuntime runtime, Procedure procedure, PageNavi navi){ return SWITCH.CONTINUE;}
     /**
-     * 合计总数之前调用，到这一步SQL已创建完成
+     * 合计总数之后调用，行数页数等信息在navi中,到这一步SQL已创建完成
      * @param runtime datasource/adapter/jdbctemplate
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @param navi 分页
