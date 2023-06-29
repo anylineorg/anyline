@@ -296,8 +296,9 @@ public class Column implements Serializable {
         return table;
     }
 
-    public void setTable(Table table) {
+    public Column setTable(Table table) {
         this.table = table;
+        return this;
     }
 
     public String getTableName(boolean update) {
@@ -923,8 +924,9 @@ public class Column implements Serializable {
     }
 
     
-    public void setDelete(boolean drop) {
+    public Column setDelete(boolean drop) {
         this.drop = drop;
+        return this;
     }
 
     
@@ -938,8 +940,9 @@ public class Column implements Serializable {
     }
 
     
-    public void setDrop(boolean drop) {
+    public Column setDrop(boolean drop) {
         this.drop = drop;
+        return this;
     }
 
     
@@ -990,16 +993,18 @@ public class Column implements Serializable {
         return analyzer;
     }
 
-    public void setAnalyzer(String analyzer) {
+    public Column setAnalyzer(String analyzer) {
         this.analyzer = analyzer;
+        return this;
     }
 
     public String getSearchAnalyzer() {
         return searchAnalyzer;
     }
 
-    public void setSearchAnalyzer(String searchAnalyzer) {
+    public Column setSearchAnalyzer(String searchAnalyzer) {
         this.searchAnalyzer = searchAnalyzer;
+        return this;
     }
 
     public Column setColumnType(ColumnType columnType) {
@@ -1033,8 +1038,9 @@ public class Column implements Serializable {
         return action;
     }
 
-    public void setAction(String action) {
+    public Column setAction(String action) {
         this.action = action;
+        return this;
     }
 
     public int getSrid() {
@@ -1073,24 +1079,27 @@ public class Column implements Serializable {
         return index;
     }
 
-    public void setIndex(Boolean index) {
+    public Column setIndex(Boolean index) {
         this.index = index;
+        return this;
     }
 
     public Boolean getStore() {
         return store;
     }
 
-    public void setStore(Boolean store) {
+    public Column setStore(Boolean store) {
         this.store = store;
+        return this;
     }
 
     public Column getOrigin() {
         return origin;
     }
 
-    public void setOrigin(Column origin) {
+    public Column setOrigin(Column origin) {
         this.origin = origin;
+        return this;
     }
 
     /**
