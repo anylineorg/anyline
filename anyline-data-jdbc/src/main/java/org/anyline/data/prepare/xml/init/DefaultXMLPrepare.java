@@ -369,11 +369,5 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 	public List<String> getColumns() {
 		return null;
 	}
-	public boolean isStrict() {
-		return strict;
-	}
-	public void setStrict(boolean strict) {
-		this.strict = strict;
-	}
 	
 } 
