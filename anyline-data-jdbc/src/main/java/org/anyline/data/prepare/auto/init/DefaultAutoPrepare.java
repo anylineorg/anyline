@@ -313,12 +313,6 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	public List<Variable> getSQLVariables() {
 		return null;
 	}
-	@Override
-	public void setStrict(boolean strict) {}
-	@Override
-	public boolean isStrict() {
-		return false;
-	}
 
 	@Override
 	public List<Join> getJoins(){
