@@ -25,6 +25,7 @@ import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.entity.*;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.data.Join;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
@@ -48,6 +49,8 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected boolean valid 		   = true				;
 	protected String alias									;
 	protected boolean multiple		   = false				;
+	protected boolean strict		   = false				; //严格格式 不能追加条件
+	protected EMPTY_VALUE_SWITCH swt   = EMPTY_VALUE_SWITCH.IGNORE;
 
 
 	// 运行时参数值 
@@ -382,12 +385,6 @@ public abstract class DefaultPrepare implements RunPrepare{
 	public List<String> getFetchKeys(){
 		return fetchKeys;
 	}
-	public boolean isValid(){
-		return this.valid;
-	}
-	public void setValid(boolean valid){
-		this.valid = valid;
-	}
 
 	public RunPrepare join(Join join){
 		return this;
@@ -441,5 +438,12 @@ public abstract class DefaultPrepare implements RunPrepare{
 	public RunPrepare setId(String id) {
 		this.id = id;
 		return this;
+	}
+
+	public boolean isStrict() {
+		return strict;
+	}
+	public void setStrict(boolean strict) {
+		this.strict = strict;
 	}
 }
