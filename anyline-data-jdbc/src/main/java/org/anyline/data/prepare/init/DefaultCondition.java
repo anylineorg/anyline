@@ -24,7 +24,6 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,7 +160,7 @@ public abstract class DefaultCondition implements Condition {
 	}
 	@Override
 	public boolean isValid(){
-		if(swt == EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, runValues)){
+		if(swt == EMPTY_VALUE_SWITCH.BREAK && ! isActive()){
 			return false;
 		}
 		return true;
