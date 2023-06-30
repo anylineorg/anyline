@@ -28,8 +28,8 @@ import org.anyline.entity.*;
 import java.util.List;
 
 public interface Run {
-	public void setAdapter(JDBCAdapter adapter);
-	public void init();
+	void setAdapter(JDBCAdapter adapter);
+	void init();
 	 
 	/** 
 	 * 添加查询条件 
@@ -40,18 +40,18 @@ public interface Run {
 	 * @param compare 			比较方式
 	 * @return Run
 	 */
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
-	public void setGroupStore(GroupStore groups) ;
-	public GroupStore getGroupStore() ; 
-	public Run group(String group);
+	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
+	void setGroupStore(GroupStore groups) ;
+	GroupStore getGroupStore() ; 
+	Run group(String group);
  
-	public void setOrderStore(OrderStore orders) ; 
-	public void setOrders(String[] orders); 
-	public OrderStore getOrderStore() ; 
-	public Run order(String order);
+	void setOrderStore(OrderStore orders) ; 
+	void setOrders(String[] orders); 
+	OrderStore getOrderStore() ; 
+	Run order(String order);
 	 
-	public void setConfigStore(ConfigStore configs);
-	public ConfigStore getConfigStore() ; 
+	void setConfigStore(ConfigStore configs);
+	ConfigStore getConfigStore() ; 
 	 
  
 	/** 
@@ -63,25 +63,25 @@ public interface Run {
 	 * @param compare 比较方式 
 	 * @return Run
 	 */
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value);
-	public Run setConditionChain(ConditionChain chain);
+	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value);
+	Run setConditionChain(ConditionChain chain);
 
 	/**
 	 * 添加条件
 	 * @param conditions 查询条件、ORDER、GROUP、HAVING 等
 	 * @return Run
 	 */
-	public Run addCondition(String ... conditions);
-	public Run addCondition(Condition condition);
-	public Condition getCondition(String name);
+	Run addCondition(String ... conditions);
+	Run addCondition(Condition condition);
+	Condition getCondition(String name);
 
 	/**
 	 * 根据key查询条件,包括sql主体部分,有可能有多个相同key的条件
 	 * @param name name
 	 * @return List
 	 */
-	public List<Condition> getConditions(String name);
-	public ConditionChain getConditionChain() ; 
+	List<Condition> getConditions(String name);
+	ConditionChain getConditionChain() ; 
 
 	/** 
 	 * 添加参数值
@@ -91,42 +91,46 @@ public interface Run {
 	 * @param split 遇到集合/数组类型是否拆分处理
 	 * @return Run
 	 */ 
-	public Run addValues(Compare compare, String column, Object obj, boolean split);
+	Run addValues(Compare compare, String column, Object obj, boolean split);
 
-	public Run addOrders(OrderStore orderStore);
-	public Run addOrder(Order order);
-	public RunPrepare getPrepare() ;
-	public String getTable();
-	public String getCatalog();
-	public String getSchema();
-	public String getDataSource();
-	public Run setPrepare(RunPrepare prepare) ;
-	public Run setInsertColumns(List<String> keys);
-	public List<String> getInsertColumns();
-	public Run setUpdateColumns(List<String> keys);
-	public List<String> getUpdateColumns();
-	public String getBaseQuery() ; 
-	public String getFinalQuery() ; 
-	public String getTotalQuery() ;
-	public String getFinalExists(); 
-	public String getFinalInsert();
-	public String getFinalDelete(); 
-	public String getFinalUpdate();
-	public String getFinalExecute();
-	public List<RunValue> getRunValues() ;
-	public List<Object> getValues() ;
-	public PageNavi getPageNavi() ; 
-	public void setPageNavi(PageNavi pageNavi) ;
-	public String getQueryColumns();
-	public void setStrict(boolean strict);
-	public boolean isStrict();
-	public boolean isValid();
-	public StringBuilder getBuilder();
-	public void setBuilder(StringBuilder builder);
+	Run addOrders(OrderStore orderStore);
+	Run addOrder(Order order);
+	RunPrepare getPrepare() ;
+	String getTable();
+	String getCatalog();
+	String getSchema();
+	String getDataSource();
+	Run setPrepare(RunPrepare prepare) ;
+	Run setInsertColumns(List<String> keys);
+	List<String> getInsertColumns();
+	Run setUpdateColumns(List<String> keys);
+	List<String> getUpdateColumns();
+	String getBaseQuery() ; 
+	String getFinalQuery() ; 
+	String getTotalQuery() ;
+	String getFinalExists(); 
+	String getFinalInsert();
+	String getFinalDelete(); 
+	String getFinalUpdate();
+	String getFinalExecute();
+	List<RunValue> getRunValues() ;
+	List<Object> getValues() ;
+	PageNavi getPageNavi() ; 
+	void setPageNavi(PageNavi pageNavi) ;
+	String getQueryColumns();
+
+	EMPTY_VALUE_SWITCH getStrict();
+
+	void setSwitch(EMPTY_VALUE_SWITCH swt);
+	boolean isValid();
+	boolean checkValid();
+	void setValid(boolean valid);
+	StringBuilder getBuilder();
+	void setBuilder(StringBuilder builder);
 	//1-DataRow 2-Entity
-	public int getFrom();
-	public void setFrom(int from);
-	public boolean isSetValue(String condition, String variable);
-	public boolean isSetValue(String variable);
-	public Variable getVariable(String var);
+	int getFrom();
+	void setFrom(int from);
+	boolean isSetValue(String condition, String variable);
+	boolean isSetValue(String variable);
+	Variable getVariable(String var);
 }
