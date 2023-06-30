@@ -740,31 +740,19 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			run = new TextRun();
 		}
 		if(null != run){
-			run.setStrict(prepare.isStrict());
 			run.setAdapter(this);
 			//如果是text类型 将解析文本并抽取出变量
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
 			run.addCondition(conditions);
-			//为变量赋值
-			run.init();
-			//构造最终的查询SQL
-			buildQueryRunContent(run);
+			if(run.checkValid()) {
+				//为变量赋值
+				run.init();
+				//构造最终的查询SQL
+				buildQueryRunContent(run);
+			}
 		}
 		return run;
-	}
-
-	/**
-	 * 查询序列cur 或 next value
-	 * @param next  是否生成返回下一个序列 false:cur true:next
-	 * @param names 序列名
-	 * @return String
-	 */
-	public List<Run> buildQuerySequence(boolean next, String ... names){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQuerySequence(boolean next, String ... names)", 37));
-		}
-		return new ArrayList<>();
 	}
 
 	/**
@@ -792,6 +780,20 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 	protected void buildQueryRunContent(TableRun run){
 	}
+
+	/**
+	 * 查询序列cur 或 next value
+	 * @param next  是否生成返回下一个序列 false:cur true:next
+	 * @param names 序列名
+	 * @return String
+	 */
+	public List<Run> buildQuerySequence(boolean next, String ... names){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQuerySequence(boolean next, String ... names)", 37));
+		}
+		return new ArrayList<>();
+	}
+
 	/**
 	 * 构造查询主体
 	 * @param run run
@@ -842,7 +844,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
 			run.addCondition(conditions);
-			run.init();
+			run.init(); //
 			//构造最终的执行SQL
 			buildQueryRunContent(run);
 		}
