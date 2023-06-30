@@ -725,6 +725,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, paramLogFormat(values));
+		}
 		long millis = -1;
 		try{
 			swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);

@@ -57,7 +57,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setCompare(config.getCompare());
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
 		setSwitch(config.getSwitch());
-		if(config.getSwitch() == EMPTY_VALUE_SWITCH.NULL || config.getSwitch() == EMPTY_VALUE_SWITCH.SRC){
+		if(BasicUtil.isNotEmpty(true, values) || config.getSwitch() == EMPTY_VALUE_SWITCH.NULL || config.getSwitch() == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
 		} 
 	} 
