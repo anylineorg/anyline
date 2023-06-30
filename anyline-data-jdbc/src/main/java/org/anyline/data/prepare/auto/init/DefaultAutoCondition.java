@@ -74,9 +74,8 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		setColumn(var);
 		setValues(values);
 		setCompare(compare);
-		setSwitch(swt);
-		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 
-		if(BasicUtil.isNotEmpty(true,values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
+		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
+		if(BasicUtil.isNotEmpty(true, values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
 		} 
 	} 
