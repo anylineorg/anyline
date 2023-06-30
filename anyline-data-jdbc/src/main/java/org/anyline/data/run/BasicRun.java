@@ -57,7 +57,7 @@ public abstract class BasicRun implements Run {
 	protected GroupStore groupStore;
 	protected String having;
 	protected List<Variable> variables;
-	protected boolean strict = false;
+	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE;
 	protected boolean valid = true;
 	protected List<String> insertColumns;
 	protected List<String> updateColumns;
@@ -526,17 +526,26 @@ public abstract class BasicRun implements Run {
 
 
 	@Override
-	public boolean isStrict() {
-		return strict;
+	public EMPTY_VALUE_SWITCH getStrict() {
+		return swt;
 	}
 
 	@Override
-	public void setStrict(boolean strict) {
-		this.strict = strict;
+	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+		this.swt = swt;
 	}
 	@Override
 	public boolean isValid(){
-		return this.valid;
+		if(!valid){
+			return false;
+		}
+		valid = checkValid();
+		return valid;
+	}
+
+	@Override
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 
 	@Override
@@ -645,6 +654,7 @@ public abstract class BasicRun implements Run {
 						continue;
 					}
 				}
+				//原生SQL
 				Condition con = new DefaultAutoCondition(condition);
 				addCondition(con);
 			}
