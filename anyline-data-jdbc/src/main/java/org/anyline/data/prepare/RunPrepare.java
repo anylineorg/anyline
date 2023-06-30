@@ -28,11 +28,11 @@ import org.anyline.entity.data.Join;
 import java.util.Collection;
 import java.util.List;
 
- 
+
 public interface RunPrepare extends Cloneable {
 
-	public static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			// 存储过程输入参数类型 
-	public static final String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		// 存储过程输入参数值 
+	static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			// 存储过程输入参数类型 
+	static final String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		// 存储过程输入参数值 
 
 	// 以::标识的执行时直接替换
 	// 以:标识的执行时以?占位
@@ -41,7 +41,7 @@ public interface RunPrepare extends Cloneable {
 	// NAME = ':NM' 
 	// NM IN (:NM)
 
-	public static final String SQL_PARAM_VARIABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+\\w+)(\\s|'|\\)|%|\\,)?";
+	static final String SQL_PARAM_VARIABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+\\w+)(\\s|'|\\)|%|\\,)?";
 	// 与上一种方式　二选一不能同时支持
 	//新版本中不要用{key} 避免与json格式冲突
 	// 以${}标识的执行时直接替换
@@ -54,15 +54,15 @@ public interface RunPrepare extends Cloneable {
 	// NM LIKE '%#{NM}%'
 	// NM IN(${NM})
 	// NM IN(#{NM})
-	public static final String SQL_PARAM_VARIABLE_REGEX_EL = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
+	static final String SQL_PARAM_VARIABLE_REGEX_EL = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
 
 
 	
 	// 自定义SQL.id格式 文件名:id
-	public static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
+	static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
 
-	public String getId();
-	public RunPrepare setId(String id);
+	String getId();
+	RunPrepare setId(String id);
 	/** 
 	 * 设置数据源 
 	 * <p> 
@@ -80,28 +80,28 @@ public interface RunPrepare extends Cloneable {
 	 * @param ds  数据源 : 表|视图|自定义SQL.id
 	 * @return RunPrepare
 	 */
-	public RunPrepare setDataSource(String ds);
-	public String getDataSource();
-	public String getSchema();
-	public String getTable();
+	RunPrepare setDataSource(String ds);
+	String getDataSource();
+	String getSchema();
+	String getTable();
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
 	 * @return RunPrepare
 	 */ 
-	public RunPrepare order(String order);
-	public RunPrepare order(String col, Order.TYPE type);
-	public RunPrepare order(Order order);
+	RunPrepare order(String order);
+	RunPrepare order(String col, Order.TYPE type);
+	RunPrepare order(Order order);
  
 	/** 
 	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
 	 * @param group  group
 	 * @return RunPrepare
 	 */ 
-	public RunPrepare group(String group);
+	RunPrepare group(String group);
  
-	public void setPageNavi(PageNavi navi); 
-	public PageNavi getPageNavi(); 
+	void setPageNavi(PageNavi navi); 
+	PageNavi getPageNavi(); 
 	/* ******************************************************************************************************* 
 	 *  
 	 * 											自动生成SQL 
@@ -114,8 +114,8 @@ public interface RunPrepare extends Cloneable {
 	 * @param compare 比较方式 
 	 * @return RunPrepare
 	 */
-	public RunPrepare addCondition(Compare compare, String column, Object value);
-	public RunPrepare addCondition(String column, Object value);
+	RunPrepare addCondition(Compare compare, String column, Object value);
+	RunPrepare addCondition(String column, Object value);
  
 	 
 	/* ******************************************************************************************************* 
@@ -128,7 +128,7 @@ public interface RunPrepare extends Cloneable {
 	 * @param text  text
 	 * @return RunPrepare
 	 */
-	public RunPrepare setText(String text);
+	RunPrepare setText(String text);
 	 
 	/** 
 	 * 设置查询条件变量值 
@@ -137,50 +137,53 @@ public interface RunPrepare extends Cloneable {
 	 * @param value  值 
 	 * @return RunPrepare
 	 */ 
-	public RunPrepare setConditionValue(String condition, String variable, Object value);
-	public OrderStore getOrders();
-	public GroupStore getGroups();
-	public void setOrders(OrderStore ordres); 
-	public int getVersion(); 
-	public ConditionChain getConditionChain();
-	public RunPrepare addCondition(Condition condition);
-	public String getText(); 
-	public List<Variable> getSQLVariables();
+	RunPrepare setConditionValue(String condition, String variable, Object value);
+	OrderStore getOrders();
+	GroupStore getGroups();
+	void setOrders(OrderStore ordres); 
+	int getVersion(); 
+	ConditionChain getConditionChain();
+	RunPrepare addCondition(Condition condition);
+	String getText(); 
+	List<Variable> getSQLVariables();
 	
 	
 
-	public RunPrepare addPrimaryKey(String ... primaryKeys);
-	public RunPrepare addPrimaryKey(Collection<String> primaryKeys);
-	public RunPrepare setPrimaryKey(String ... primaryKeys);
-	public RunPrepare setPrimaryKey(Collection<String> primaryKeys);
-	public List<String> getPrimaryKeys();
-	public String getPrimaryKey();
-	public boolean hasPrimaryKeys();
+	RunPrepare addPrimaryKey(String ... primaryKeys);
+	RunPrepare addPrimaryKey(Collection<String> primaryKeys);
+	RunPrepare setPrimaryKey(String ... primaryKeys);
+	RunPrepare setPrimaryKey(Collection<String> primaryKeys);
+	List<String> getPrimaryKeys();
+	String getPrimaryKey();
+	boolean hasPrimaryKeys();
 
-	public RunPrepare addFetchKey(String ... fetchKeys);
-	public RunPrepare addFetchKey(Collection<String> fetchKeys);
-	public RunPrepare setFetchKey(String ... fetchKeys);
-	public RunPrepare setFetchKey(Collection<String> fetchKeys);
-	public List<String> getFetchKeys();
-	public List<String> getColumns();
-	public void setStrict(boolean strict);
-	public boolean isStrict();
-	public boolean isValid();
-	public RunPrepare join(Join join);
-	public RunPrepare join(Join.TYPE type, String table, String condition);
-	public RunPrepare inner(String table, String condition);
-	public RunPrepare left(String table, String condition);
-	public RunPrepare right(String table, String condition);
-	public RunPrepare full(String table, String condition);
-	public List<Join> getJoins();
-	public void setAlias(String alias);
-	public String getAlias();
+	RunPrepare addFetchKey(String ... fetchKeys);
+	RunPrepare addFetchKey(Collection<String> fetchKeys);
+	RunPrepare setFetchKey(String ... fetchKeys);
+	RunPrepare setFetchKey(Collection<String> fetchKeys);
+	List<String> getFetchKeys();
+	List<String> getColumns();
+	RunPrepare join(Join join);
+	RunPrepare join(Join.TYPE type, String table, String condition);
+	RunPrepare inner(String table, String condition);
+	RunPrepare left(String table, String condition);
+	RunPrepare right(String table, String condition);
+	RunPrepare full(String table, String condition);
+	List<Join> getJoins();
+	void setAlias(String alias);
+	String getAlias();
 
 	/**
 	 * 相同ID是否有多个
 	 * @return boolean
 	 */
-	public boolean isMultiple();
-	public RunPrepare setMultiple(boolean multiple);
-	
+	boolean isMultiple();
+	RunPrepare setMultiple(boolean multiple);
+
+	/**
+	 * 是否严格格式，不能追加未定义的条件
+	 * @return boolean
+	 */
+	boolean isStrict();
+	void setStrict(boolean strict);
 } 
