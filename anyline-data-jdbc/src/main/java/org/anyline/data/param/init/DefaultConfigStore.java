@@ -737,4 +737,16 @@ public class DefaultConfigStore implements ConfigStore {
 		setNaviParam();
 		return this; 
 	}
-} 
+
+	@Override
+	public boolean isValid() {
+		if(null != chain){
+			for(Config config:chain.getConfigs()){
+				if(config.getSwitch() == EMPTY_VALUE_SWITCH.BREAK && config.isEmpty()){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+}
