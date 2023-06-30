@@ -91,10 +91,17 @@ public class TableRun extends BasicRun implements Run {
 		} 
 	}
 
-	public void checkValid(){
+	public boolean checkValid(){
+		if(!valid){
+			return false;
+		}
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false;
 		}
+		if(null != configStore && !configStore.isValid()){
+			this.valid = false;
+		}
+		return valid;
 	}
 	/** 
 	 * 拼接查询条件

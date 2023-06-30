@@ -28,15 +28,14 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
-import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.prepare.xml.init.DefaultXMLConditionChain;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DefaultOgnlMemberAccess;
-import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 import java.util.*;
 
@@ -119,12 +118,11 @@ public class XMLRun extends BasicRun implements Run {
 		} 
 		checkTest(); 
 		parseText();
-		checkValid();
 	}
 
-	private void checkValid(){
+	public boolean checkValid(){
 		if(!valid){
-			return; 
+			return false;
 		} 
 		if(null != variables){
 			for(Variable var:variables){
@@ -132,15 +130,16 @@ public class XMLRun extends BasicRun implements Run {
 					if(BasicUtil.isEmpty(true,var.getValues())){
 						log.warn("[valid:false][不具备执行条件][var:{}]",var.getKey());
 						this.valid = false; 
-						return; 
+						return false;
 					} 
 				} 
 			} 
 		} 
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false; 
-			return; 
-		} 
+			return false;
+		}
+		return valid;
 	} 
 	protected void parseText(){
 		String result = prepare.getText();
@@ -473,22 +472,18 @@ public class XMLRun extends BasicRun implements Run {
 		}
 
 		Variable var = getVariable(variable);
-		if(null == con && null == var){//没有对应的condition也没有对应的text中的变量 
-			if(this.isStrict()){
+		if(null == con && null == var){//没有对应的condition也没有对应的text中的变量
+			//追加条件  换成 调用addcondition
+			/*if(this.isStrict()){
 				return this; 
 			}else{
-				// 生成新条件 
-//				String column = variable;
-//				// String condition, String variable
-//				if(BasicUtil.isNotEmpty(prefix) && !prefix.equals(variable)){
-//					column = prefix + "." + variable;
-//				}
+				// 生成新条件
 				Condition newCon = new DefaultAutoCondition(swt, compare, prefix, variable, value);
 				conditionChain.addCondition(newCon); 
 				if(newCon.isActive()){
 					conditionChain.setActive(true); 
 				} 
-			} 
+			} */
 			return this; 
 		} 
 		if(null != con){
@@ -542,10 +537,9 @@ public class XMLRun extends BasicRun implements Run {
 	public void addSatticCondition(String condition){
 		if(null == staticConditions){
 			staticConditions = new ArrayList<>();
-		} 
-		if(!isStrict()){
+		}
 			staticConditions.add(condition); 
-		} 
+
 	} 
 	public Run addCondition(String condition) {
 		if(BasicUtil.isEmpty(condition)){
