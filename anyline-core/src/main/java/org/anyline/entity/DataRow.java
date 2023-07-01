@@ -1455,6 +1455,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(null, key, value, false, true);
         return this;
     }
+    public DataRow set(String key, Object value) {
+        put(null, key, value, false, true);
+        return this;
+    }
     public DataRow putWithoutNull(String key, Object value){
         if(null != value){
             this.put(key, value);
@@ -1493,13 +1497,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public DataRow set(String key, Object value) {
-        if(BasicUtil.isEmpty(value)){
-            return this;
-        }
-        put(null, key, value, false, true);
-        return this;
-    }
 
     public DataRow attr(String key, Object value) {
         if(null == attributes){
