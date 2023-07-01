@@ -359,7 +359,9 @@ public class DefaultSQLStore extends SQLStore {
 				}
 			}
 		}
-		condition.setSwitch(swt);
+		if(null != condition) {
+			condition.setSwitch(swt);
+		}
 		return condition;
 	}
 
