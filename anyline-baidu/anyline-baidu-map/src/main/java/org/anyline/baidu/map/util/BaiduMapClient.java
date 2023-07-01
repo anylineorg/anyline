@@ -1,7 +1,7 @@
 package org.anyline.baidu.map.util;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.geometry.Coordinate;
+import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;

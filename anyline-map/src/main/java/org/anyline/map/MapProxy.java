@@ -2,7 +2,7 @@ package org.anyline.map;
 
 import org.anyline.amap.util.AmapClient;
 import org.anyline.baidu.map.util.BaiduMapClient;
-import org.anyline.entity.geometry.Coordinate;
+import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.qq.map.util.QQMapClient;
 import org.anyline.util.BasicUtil;

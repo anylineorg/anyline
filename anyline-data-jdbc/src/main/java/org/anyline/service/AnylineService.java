@@ -779,7 +779,7 @@ public interface AnylineService<E>{
 		 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
 		 * @param struct 是否查询详细结构(列、索引、主外键、约束等)
-		 * @return
+		 * @return Table
 		 */
 		Table table(boolean greedy, String catalog, String schema, String name, boolean struct);
 		Table table(boolean greedy, String schema, String name, boolean struct);

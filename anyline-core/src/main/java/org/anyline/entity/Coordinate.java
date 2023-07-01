@@ -1,5 +1,6 @@
-package org.anyline.entity.geometry;
+package org.anyline.entity;
  
+import org.anyline.entity.geometry.Point;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.GISUtil;
 
