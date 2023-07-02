@@ -1,6 +1,6 @@
 package org.anyline.data.metadata;
 
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.metadata.type.ColumnType;
 
 public interface ColumnTypeAlias {
     public ColumnType standard();

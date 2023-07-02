@@ -28,8 +28,9 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.data.*;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.metadata.*;
+import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.DatabaseType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -872,7 +873,7 @@ public interface JDBCAdapter {
 
 	List<Run> buildQueryProcedureRunSQL(String catalog, String schema, String name) ;
 
-	<T extends org.anyline.entity.data.Procedure> LinkedHashMap<String, T> procedures(int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+	<T extends Procedure> LinkedHashMap<String, T> procedures(int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													function
@@ -880,7 +881,7 @@ public interface JDBCAdapter {
 
 	List<Run> buildQueryFunctionRunSQL(String catalog, String schema, String name) ;
 
-	<T extends org.anyline.entity.data.Function> LinkedHashMap<String, T> functions(int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
+	<T extends Function> LinkedHashMap<String, T> functions(int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 *

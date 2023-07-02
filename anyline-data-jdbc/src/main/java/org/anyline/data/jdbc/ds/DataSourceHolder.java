@@ -22,7 +22,7 @@ package org.anyline.data.jdbc.ds;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;

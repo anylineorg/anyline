@@ -3,8 +3,8 @@ package org.anyline.data.adapter.init;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.DataRow;
-import org.anyline.entity.data.Column;
-import org.anyline.entity.data.Table;
+import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.util.*;
 import org.springframework.stereotype.Component;
 

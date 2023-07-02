@@ -26,7 +26,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.*;
+import org.anyline.metadata.*;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -298,7 +298,7 @@ public interface AnylineDao<E>{
 	 * 													trigger
 	 ******************************************************************************************************************/
 
-	<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+	<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events);
 
 
 	/* *****************************************************************************************************************

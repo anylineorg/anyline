@@ -4,7 +4,7 @@ import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.entity.Compare;
 import org.anyline.entity.generator.GeneratorConfig;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.metadata.type.ColumnType;
 import org.anyline.listener.EntityListener;
 import org.anyline.util.ConfigTable;
 

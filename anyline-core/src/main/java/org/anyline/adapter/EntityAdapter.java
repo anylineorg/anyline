@@ -1,8 +1,8 @@
 package org.anyline.adapter;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.data.Column;
-import org.anyline.entity.data.Table;
+import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;

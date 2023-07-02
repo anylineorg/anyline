@@ -20,7 +20,7 @@
 package org.anyline.entity.generator;
 
 
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.entity.generator.init.*;
 
 import java.util.List;

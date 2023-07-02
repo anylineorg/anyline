@@ -3,10 +3,11 @@ package org.anyline.data.metadata;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.entity.*;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.entity.geometry.*;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -21,7 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import static org.anyline.entity.data.DatabaseType.*;
+import static org.anyline.metadata.type.DatabaseType.*;
 
 
 public enum StandardColumnType implements ColumnType {

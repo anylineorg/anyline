@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.util;
 
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;

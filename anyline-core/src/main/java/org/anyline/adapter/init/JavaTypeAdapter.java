@@ -1,8 +1,8 @@
 package org.anyline.adapter.init;
 
 
-import org.anyline.entity.metadata.DataType;
-import org.anyline.entity.metadata.init.DefaultJavaType;
+import org.anyline.metadata.type.DataType;
+import org.anyline.metadata.type.init.DefaultJavaType;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -11,14 +11,14 @@ public class JavaTypeAdapter {
     public JavaTypeAdapter(){
 
     }
-    public static org.anyline.entity.metadata.DataType type(Class clazz){
+    public static DataType type(Class clazz){
         if(null != clazz){
             return types.get(clazz);
         }else{
             return null;
         }
     }
-    public static void reg(Class clazz, org.anyline.entity.metadata.DataType type){
+    public static void reg(Class clazz, DataType type){
         types.put(clazz, type);
     }
     static {

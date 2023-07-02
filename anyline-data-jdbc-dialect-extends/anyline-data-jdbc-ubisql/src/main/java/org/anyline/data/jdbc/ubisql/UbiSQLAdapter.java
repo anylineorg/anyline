@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.ubisql;
 
 import org.anyline.data.jdbc.tidb.TiDBAdapter;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.metadata.type.DatabaseType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 

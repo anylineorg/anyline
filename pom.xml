@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.6.3-SNAPSHOT</version>
+	<version>8.6.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 
@@ -140,6 +140,7 @@
         <module>anyline-sms</module>
         <module>anyline-encrypt</module>
         <module>anyline-boot</module>
+        <module>anyline-data-elasticsearch</module>
     </modules>
 	<build>
 		<plugins>

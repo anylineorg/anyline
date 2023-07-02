@@ -33,8 +33,8 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
-import org.anyline.entity.data.*;
 import org.anyline.exception.AnylineException;
+import org.anyline.metadata.*;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
@@ -3594,30 +3594,30 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events) {
             return dao.triggers(greedy, table, events);
         }
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<Trigger.EVENT> events) {
             return triggers(greedy, new Table(catalog, schema, table), events);
         }
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<Trigger.EVENT> events) {
             return triggers(greedy, null, schema, table, events);
         }
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events) {
             return triggers(greedy, null, null, table, events);
         }
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<Trigger.EVENT> events) {
             return triggers(greedy, null, null, null, events);
         }
 
@@ -3629,25 +3629,25 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(String catalog, String schema, String name, List<Trigger.EVENT> events) {
             return triggers(false, catalog, schema, name, events);
         }
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(String schema, String name, List<Trigger.EVENT> events) {
             return triggers(false, null, schema, name, events);
         }
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(String name, List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(String name, List<Trigger.EVENT> events) {
             return triggers(false, null, null, name, events);
         }
 
 
         @Override
-        public <T extends Trigger> LinkedHashMap<String, T> triggers(List<org.anyline.entity.data.Trigger.EVENT> events) {
+        public <T extends Trigger> LinkedHashMap<String, T> triggers(List<Trigger.EVENT> events) {
             return triggers(false, null, null, null, events);
         }
 

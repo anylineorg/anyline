@@ -2,7 +2,7 @@ package org.anyline.data.jdbc.mariadb;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.metadata.type.ColumnType;
 
 public enum MariaColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  ,oracle,

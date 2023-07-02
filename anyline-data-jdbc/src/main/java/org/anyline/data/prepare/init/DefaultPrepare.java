@@ -26,7 +26,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.entity.data.Join;
+import org.anyline.entity.Join;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

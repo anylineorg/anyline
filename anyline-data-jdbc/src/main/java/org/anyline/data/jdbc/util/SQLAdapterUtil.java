@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.util;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.LogUtil;
 import org.anyline.util.SpringContextUtil;

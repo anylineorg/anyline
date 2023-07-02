@@ -26,7 +26,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.*;
+import org.anyline.metadata.*;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -735,7 +735,7 @@ public interface AnylineService<E>{
 		 * 查询所有数据库
 		 * @return databases
 		 */
-		LinkedHashMap<String,Database> databases();
+		LinkedHashMap<String, Database> databases();
 
 
 		/* *****************************************************************************************************************
@@ -973,7 +973,7 @@ public interface AnylineService<E>{
 		 * 													foreign
 		 ******************************************************************************************************************/
 
-		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy,Table table);
+		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table);
 		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy,String table);
 		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy,String catalog, String schema, String table);
 		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(Table table);
@@ -1019,7 +1019,7 @@ public interface AnylineService<E>{
 		 * 													constraint
 		 ******************************************************************************************************************/
 
-		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy,Table table);
+		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table);
 		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy,String table);
 		<T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy,String catalog, String schema, String table);
 		<T extends Constraint> LinkedHashMap<String, T> constraints(Table table);
@@ -1036,7 +1036,7 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													trigger
 		 ******************************************************************************************************************/
-		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events);
+		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events);
 		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String catalog, String schema, String table, List<Trigger.EVENT> events);
 		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String schema, String table, List<Trigger.EVENT> events);
 		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events);

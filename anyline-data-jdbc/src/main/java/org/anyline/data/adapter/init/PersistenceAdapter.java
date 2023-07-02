@@ -2,8 +2,8 @@ package org.anyline.data.adapter.init;
 
 import org.anyline.data.metadata.persistence.ManyToMany;
 import org.anyline.data.metadata.persistence.OneToMany;
-import org.anyline.entity.data.Column;
-import org.anyline.entity.data.Table;
+import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ClassUtil;
 
@@ -87,7 +87,7 @@ public class PersistenceAdapter {
         join.itemClass = ClassUtil.getComponentClass(field);	//Department
         if(!ClassUtil.isPrimitiveClass(join.itemClass) && String.class != join.itemClass){
             //List<Department> departments;
-            org.anyline.entity.data.Table table = EntityAdapterProxy.table(join.itemClass);
+            Table table = EntityAdapterProxy.table(join.itemClass);
             if(null != table){
                 join.dependencyTable = table.getName();
                 Column col = EntityAdapterProxy.primaryKey(join.itemClass);

@@ -2,7 +2,7 @@ package org.anyline.data.jdbc.gbase;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.entity.metadata.ColumnType;
+import org.anyline.metadata.type.ColumnType;
 
 public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
 

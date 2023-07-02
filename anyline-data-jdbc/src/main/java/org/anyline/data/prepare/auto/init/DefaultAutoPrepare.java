@@ -29,7 +29,7 @@ import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.init.DefaultPrepare;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Order;
-import org.anyline.entity.data.Join;
+import org.anyline.entity.Join;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;

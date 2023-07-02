@@ -9,7 +9,8 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.entity.data.*;
+import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
@@ -1898,7 +1899,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append(" ON ");
 		name(builder, trigger.getTable(true));
 		builder.append(" ").append(trigger.getTime().sql()).append(" ");
-		List<org.anyline.entity.data.Trigger.EVENT> events = trigger.getEvents();
+		List<Trigger.EVENT> events = trigger.getEvents();
 		boolean first = true;
 		for(Trigger.EVENT event:events){
 			if(!first){

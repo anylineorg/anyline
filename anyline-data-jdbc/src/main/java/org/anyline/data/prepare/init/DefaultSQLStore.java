@@ -92,7 +92,7 @@ public class DefaultSQLStore extends SQLStore {
 		lastLoadTime = System.currentTimeMillis();
 	}
 	private static synchronized void parse(String path) {
-		//\D:\ \target\anyline-simple-data-jdbc-xml-8.6.3.jar!\BOOT-INF\classes!\sql
+		//\D:\ \target\anyline-simple-data-jdbc-xml-8.6.5.jar!\BOOT-INF\classes!\sql
 		if(path.contains("jar!")){
 			//jar内部
 			String sub = path.substring(path.indexOf("jar!")+4).replace("!/", "") + FileUtil.getFileSeparator();

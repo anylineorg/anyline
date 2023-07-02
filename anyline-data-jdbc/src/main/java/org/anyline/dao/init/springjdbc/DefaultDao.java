@@ -19,16 +19,14 @@
 
 package org.anyline.dao.init.springjdbc;
 
-import ch.qos.logback.classic.util.CopyOnInheritThreadLocal;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
-import org.anyline.data.interceptor.DDInterceptor;
-import org.anyline.data.interceptor.JDBCInterceptor;
-import org.anyline.entity.data.ACTION.SWITCH;
-import org.anyline.entity.data.ACTION.DDL;
-import org.anyline.entity.data.ACTION.DML;
+import org.anyline.metadata.*;
+import org.anyline.metadata.ACTION.SWITCH;
+import org.anyline.metadata.ACTION.DDL;
+import org.anyline.metadata.ACTION.DML;
 import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.jdbc.ds.RuntimeHolder;
@@ -49,7 +47,6 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
-import org.anyline.entity.data.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
@@ -3746,7 +3743,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													trigger
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<org.anyline.entity.data.Trigger.EVENT> events){
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events){
 		LinkedHashMap<String,T> triggers = new LinkedHashMap<>();
 		if(null == table){
 			table = new Table();

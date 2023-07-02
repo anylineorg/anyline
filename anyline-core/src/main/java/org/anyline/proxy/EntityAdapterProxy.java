@@ -5,8 +5,8 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
-import org.anyline.entity.data.Column;
-import org.anyline.entity.data.Table;
+import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.util.ConfigTable;
 
 import java.lang.reflect.Field;

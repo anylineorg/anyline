@@ -4,10 +4,10 @@ import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
-import org.anyline.entity.data.ACTION;
-import org.anyline.entity.data.ACTION.SWITCH;
-import org.anyline.entity.data.Parameter;
-import org.anyline.entity.data.Procedure;
+import org.anyline.metadata.ACTION;
+import org.anyline.metadata.ACTION.SWITCH;
+import org.anyline.metadata.Parameter;
+import org.anyline.metadata.Procedure;
 
 import java.util.List;
 

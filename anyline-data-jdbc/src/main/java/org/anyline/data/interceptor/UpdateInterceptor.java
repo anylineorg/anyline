@@ -3,8 +3,8 @@ package org.anyline.data.interceptor;
 import org.anyline.data.jdbc.ds.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
-import org.anyline.entity.data.ACTION;
-import org.anyline.entity.data.ACTION.SWITCH;
+import org.anyline.metadata.ACTION;
+import org.anyline.metadata.ACTION.SWITCH;
 
 import java.util.List;
 

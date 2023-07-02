@@ -1,6 +1,6 @@
 package org.anyline.entity;
 
-import org.anyline.entity.data.Column;
+import org.anyline.metadata.Column;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;

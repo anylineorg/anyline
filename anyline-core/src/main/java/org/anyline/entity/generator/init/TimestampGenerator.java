@@ -1,7 +1,7 @@
 package org.anyline.entity.generator.init;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.data.DatabaseType;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;

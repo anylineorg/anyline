@@ -1,8 +1,8 @@
 package org.anyline.data.jdbc.oracle;
 
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.entity.metadata.ConvertException;
-import org.anyline.entity.metadata.init.AbstractConvert;
+import org.anyline.metadata.type.ConvertException;
+import org.anyline.metadata.type.init.AbstractConvert;
 import org.anyline.util.DateUtil;
 
 import java.util.Date;

@@ -26,7 +26,7 @@ import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.adapter.init.LowerKeyAdapter;
 import org.anyline.adapter.init.SrcKeyAdapter;
 import org.anyline.adapter.init.UpperKeyAdapter;
-import org.anyline.entity.data.Column;
+import org.anyline.metadata.Column;
 import org.anyline.entity.geometry.Point;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;

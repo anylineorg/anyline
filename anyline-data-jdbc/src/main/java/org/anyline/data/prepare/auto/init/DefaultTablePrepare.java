@@ -21,7 +21,7 @@ package org.anyline.data.prepare.auto.init;
 
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.entity.data.Join;
+import org.anyline.entity.Join;
 
 import java.util.List;
  
