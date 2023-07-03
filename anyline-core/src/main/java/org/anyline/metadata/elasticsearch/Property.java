@@ -64,9 +64,4 @@ public class Property {
      * 将该字段的值复制到目标字段，实现类似_all的作用。不会出现在_source中，只能用来搜索。
      */
     protected String[] copy_to;
-
-    /*
-        "fielddata": {},
-        "fields": {},
-        "format": []*/
 }
