@@ -492,6 +492,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		if (null != runs && runs.size() > 0) {
 			Run run = runs.get(0);
+			if(!run.isValid()){
+				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+					log.warn("[valid:false][不具备执行条件][sequence:"+names);
+				}
+				return new DataRow();
+			}
 			DataSet set = select(runtime, random, null, run.getFinalQuery(), run.getValues());
 			if (set.size() > 0) {
 				return set.getRow(0);
@@ -531,6 +537,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		try{
 			run = adapter.buildQueryRun(prepare, configs, conditions);
+			if(!run.isValid()){
+				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+					log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]");
+				}
+				return -1;
+			}
 			fr = System.currentTimeMillis();
 			if (null != dmListener) {
 				dmListener.beforeCount(runtime, random, run);
@@ -583,6 +595,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			JDBCAdapter adapter = runtime.getAdapter();
 			Run run = adapter.buildQueryRun(prepare, configs, conditions);
+			if(!run.isValid()){
+				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+					log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]");
+				}
+				return false;
+			}
 			String txt = run.getFinalExists();
 			List<Object> values = run.getValues();
 
@@ -714,6 +732,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
+
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+			}
+			return -1;
+		}
 		String sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
@@ -979,6 +1004,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == run){
 			return 0;
 		}
+
 		int cnt = 0;
 		final String sql = run.getFinalInsert();
 		final List<Object> values = run.getValues();
@@ -2114,6 +2140,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, key, values);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
 		int result = exeDelete(runtime, random, recover, run);
 		return result;
 	}
@@ -2170,6 +2202,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				JDBCAdapter adapter = runtime.getAdapter();
 				Run run = adapter.buildDeleteRun(dest, obj, columns);
+				if(!run.isValid()){
+					if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+						log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+					}
+					return -1;
+				}
 				size = exeDelete(runtime, random, true, run);
 				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 					if(!(obj instanceof DataRow)){
@@ -2260,6 +2298,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		JDBCAdapter adapter = runtime.getAdapter();
 		Run run = adapter.buildDeleteRun(table, configs, conditions);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
 		int result = exeDelete(  runtime, random, true, run);
 		return result;
 	}

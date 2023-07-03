@@ -83,6 +83,7 @@ public interface Condition extends Cloneable{
 	void initRunValue(); 
 	boolean isActive();
 	boolean isValid();
+	void setValid(boolean valid);
 	void setActive(boolean active); 
 	int getVariableType();
 	void setVariableType(int variableType);

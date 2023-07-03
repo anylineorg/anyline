@@ -452,6 +452,10 @@ public abstract class BasicRun implements Run {
 		}
 		if(condition.isActive()){
 			conditionChain.addCondition(condition);
+		}else{
+			if(swt == EMPTY_VALUE_SWITCH.BREAK) {
+				conditionChain.setValid(false);
+			}
 		}
 		return this;
 	}

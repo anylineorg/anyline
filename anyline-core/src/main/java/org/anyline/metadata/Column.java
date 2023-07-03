@@ -83,6 +83,7 @@ public class Column implements Serializable {
     protected Boolean store                       ; // 是否需要存储
     protected String analyzer                     ; // 分词器
     protected String searchAnalyzer               ; // 查询分词器
+    protected Integer ignoreAbove                 ; // 可创建索引的最大词长度
 
 
     protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
@@ -1004,6 +1005,15 @@ public class Column implements Serializable {
 
     public Column setSearchAnalyzer(String searchAnalyzer) {
         this.searchAnalyzer = searchAnalyzer;
+        return this;
+    }
+
+    public Integer getIgnoreAbove() {
+        return ignoreAbove;
+    }
+
+    public Column setIgnoreAbove(Integer ignoreAbove) {
+        this.ignoreAbove = ignoreAbove;
         return this;
     }
 

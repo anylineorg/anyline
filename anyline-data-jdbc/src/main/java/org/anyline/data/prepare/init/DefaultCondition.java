@@ -41,6 +41,7 @@ public abstract class DefaultCondition implements Condition {
 	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE		;   // 遇到空值处理方式
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)
+	protected Boolean vaild = null;
 	protected int variableType = VARIABLE_PLACEHOLDER_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
 	protected List<RunValue> runOrValues = new ArrayList<>()			;	// 运行时参数(or)
@@ -160,12 +161,18 @@ public abstract class DefaultCondition implements Condition {
 	}
 	@Override
 	public boolean isValid(){
+		if(null != vaild && !vaild){
+			return false;
+		}
 		if(swt == EMPTY_VALUE_SWITCH.BREAK && ! isActive()){
 			return false;
 		}
 		return true;
 	}
 
+	public void setValid(boolean valid){
+		this.vaild = valid;
+	}
 
 	@Override
 	public Variable getVariable(String var) {

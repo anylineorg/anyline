@@ -102,9 +102,11 @@ public abstract class DefaultConditionChain extends DefaultCondition implements 
 	} 
 	public List<Condition> getConditions() {
 		return conditions; 
-	} 
-
+	}
 	public boolean isValid(){
+		if(!super.isValid()){
+			return false;
+		}
 		for(Condition con:conditions){
 			if(null != con && !con.isValid()){
 				return false;
