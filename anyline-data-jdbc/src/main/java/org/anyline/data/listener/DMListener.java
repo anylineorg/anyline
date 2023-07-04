@@ -37,7 +37,6 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param random 用来标记同一组SQL、执行结构、参数等
      * @param prepare  prepare
      * @param configs 查询条件配置
      * @param conditions 查询条件
