@@ -57,7 +57,7 @@ public class BaiduSeoClient {
      * @param urls urls
      * @return SubmitResponse
      */
-    public SubmitResponse submit(List<String> urls) {
+    public SubmitResponse push(List<String> urls) {
         String api = "http://data.zz.baidu.com/urls?site="+config.SITE+"&token="+config.TOKEN;
         StringBuilder builder = new StringBuilder();
         for(String url:urls){
@@ -66,10 +66,10 @@ public class BaiduSeoClient {
         HttpResponse response = HttpUtil.post(api, "UTF-8" ,new StringEntity(builder.toString(),"utf-8"));
         return response(response);
     }
-    public SubmitResponse submit(String url){
+    public SubmitResponse push(String url){
         List<String> urls = new ArrayList<>();
         urls.add(url);
-        return submit(urls);
+        return push(urls);
     }
 
     /**
@@ -78,10 +78,10 @@ public class BaiduSeoClient {
      * @param file url文件 每行一个url
      * @return SubmitResponse
      */
-    public SubmitResponse submit(File file) {
+    public SubmitResponse push(File file) {
         SubmitResponse result = new SubmitResponse();
         String api = "http://data.zz.baidu.com/urls?site="+config.SITE+"&token="+config.TOKEN;
-        HttpResponse response = HttpUtil.post(api, "UTF-8" ,new StringEntity(FileUtil.read(file).toString(),"utf-8"));
+        HttpResponse response = HttpUtil.post(api, "UTF-8" , new StringEntity(FileUtil.read(file).toString(),"utf-8"));
         return response(response);
     }
     private SubmitResponse response(HttpResponse response){
