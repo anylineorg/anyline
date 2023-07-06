@@ -1033,14 +1033,16 @@ public class ExcelUtil {
 						}
 					}
 					Map<String,String> styles = td.getStyles();
-					if(null == style){
-						style = sheet.getWorkbook().createCellStyle();
-					}
-					parseStyle(style, styles);
-					Font font = sheet.getWorkbook().createFont();
-					font = parseFont(font, styles);
-					if(null != font){
-						style.setFont(font);
+					if(null != styles || !styles.isEmpty()){
+						if(null == style){
+							style = sheet.getWorkbook().createCellStyle();
+						}
+						parseStyle(style, styles);
+						Font font = sheet.getWorkbook().createFont();
+						font = parseFont(font, styles);
+						if(null != font){
+							style.setFont(font);
+						}
 					}
 					if (rowspan > 1 || colspan > 1) {
 						int firstRow = insert;
