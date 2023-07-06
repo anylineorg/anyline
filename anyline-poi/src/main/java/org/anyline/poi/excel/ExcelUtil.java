@@ -1062,13 +1062,17 @@ public class ExcelUtil {
 						if(colspan>1){
 							for(int cc=1; cc<colspan; cc++){
 								Cell mergeCell = row.createCell(colIndex + offset + cc);
-								mergeCell.setCellStyle(style);
+								if(null != style) {
+									mergeCell.setCellStyle(style);
+								}
 							}
 						}
 					}
 
 					Cell cell = row.createCell(colIndex + offset);
-					cell.setCellStyle(style);
+					if(null != style) {
+						cell.setCellStyle(style);
+					}
 					cell.setCellType(CellType.STRING);
 					cell.setCellValue(td.getTextTrim());
 				}
