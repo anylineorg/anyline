@@ -61,13 +61,13 @@ public class BingSeoClient {
         headers.put("Host","ssl.bing.com");
         StringBuilder builder = new StringBuilder();
         builder.append("{\"siteUrl\":\"").append(config.SITE).append("\"");
-        builder.append("\"urlList\":[");
+        builder.append(",\"urlList\":[");
         boolean first = true;
         for(String url:urls){
             if(!first){
                 builder.append(",");
-                first = false;
             }
+            first = false;
             builder.append("\"").append(url).append("\"");
         }
         builder.append("]}");
