@@ -15,7 +15,7 @@ public class BaiduSeoConfig extends AnylineConfig {
     public static String DEFAULT_TOKEN = ""				;
 
 
-    public String SITE			 = DEFAULT_SITE				;
+    public String SITE	         = DEFAULT_SITE				; //站点URL如 http://www.anyline.org
     public String TOKEN 		 = DEFAULT_TOKEN			;
     static{
         init();

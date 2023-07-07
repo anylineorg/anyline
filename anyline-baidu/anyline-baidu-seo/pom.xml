@@ -13,9 +13,9 @@
 
     <artifactId>anyline-baidu-seo</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-baidu-map</name>
-    <description>百度站点</description>
-    <url>http://www.anyline.org/baidu/site</url>
+    <name>anyline-baidu-seo</name>
+    <description>百度SEO</description>
+    <url>http://www.anyline.org/baidu/seo</url>
 
     <dependencies>
         <dependency>
