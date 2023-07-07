@@ -141,7 +141,8 @@
         <module>anyline-encrypt</module>
         <module>anyline-boot</module>
         <module>anyline-data-elasticsearch</module>
-    </modules>
+		<module>anyline-bing-seo</module>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
