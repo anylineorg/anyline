@@ -72,13 +72,13 @@ public class BaiduSeoConfig extends AnylineConfig {
     public static BaiduSeoConfig register(DataRow row){
         return register(DEFAULT_INSTANCE_KEY, row);
     }
-    public static BaiduSeoConfig register(String instance, String site, String token){
+    public static BaiduSeoConfig register(String instance, String site, String key){
         DataRow row = new DataRow();
         row.put("SITE", site);
-        row.put("TOKEN", token);
+        row.put("KEY", key);
         return register(instance, row);
     }
-    public static BaiduSeoConfig register(String site, String token){
-        return register(DEFAULT_INSTANCE_KEY, site, token);
+    public static BaiduSeoConfig register(String site, String key){
+        return register(DEFAULT_INSTANCE_KEY, site, key);
     }
 }

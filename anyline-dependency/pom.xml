@@ -138,6 +138,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-bing-seo</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-qq-map</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
