@@ -1,6 +1,6 @@
-package org.anyline.baidu.site.util;
+package org.anyline.baidu.seo.util;
 
-public class SubmitResponse {
+public class PushResponse {
     private boolean result  ; // 是否成功
     private int status      ; // http状态
     private String message  ; // 返回消息体

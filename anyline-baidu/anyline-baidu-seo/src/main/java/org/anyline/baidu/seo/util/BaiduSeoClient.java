@@ -1,4 +1,4 @@
-package org.anyline.baidu.site.util;
+package org.anyline.baidu.seo.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpResponse;
@@ -57,7 +57,7 @@ public class BaiduSeoClient {
      * @param urls urls
      * @return SubmitResponse
      */
-    public SubmitResponse push(List<String> urls) {
+    public PushResponse push(List<String> urls) {
         String api = "http://data.zz.baidu.com/urls?site="+config.SITE+"&token="+config.TOKEN;
         StringBuilder builder = new StringBuilder();
         for(String url:urls){
@@ -66,7 +66,7 @@ public class BaiduSeoClient {
         HttpResponse response = HttpUtil.post(api, "UTF-8" ,new StringEntity(builder.toString(),"utf-8"));
         return response(response);
     }
-    public SubmitResponse push(String url){
+    public PushResponse push(String url){
         List<String> urls = new ArrayList<>();
         urls.add(url);
         return push(urls);
@@ -78,14 +78,14 @@ public class BaiduSeoClient {
      * @param file url文件 每行一个url
      * @return SubmitResponse
      */
-    public SubmitResponse push(File file) {
-        SubmitResponse result = new SubmitResponse();
+    public PushResponse push(File file) {
+        PushResponse result = new PushResponse();
         String api = "http://data.zz.baidu.com/urls?site="+config.SITE+"&token="+config.TOKEN;
         HttpResponse response = HttpUtil.post(api, "UTF-8" , new StringEntity(FileUtil.read(file).toString(),"utf-8"));
         return response(response);
     }
-    private SubmitResponse response(HttpResponse response){
-        SubmitResponse result = new SubmitResponse();
+    private PushResponse response(HttpResponse response){
+        PushResponse result = new PushResponse();
         result.setStatus(response.getStatus());
         if(response.getStatus() == 200){
             result.setResult(true);

@@ -1,4 +1,4 @@
-package org.anyline.baidu.site.util;
+package org.anyline.baidu.seo.util;
 
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;

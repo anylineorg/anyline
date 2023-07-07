@@ -1,4 +1,4 @@
-package org.anyline.baidu.site.util;
+package org.anyline.baidu.seo.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
