@@ -17,23 +17,22 @@
  */
 
 
-package org.anyline.web.tag; 
-import java.math.BigDecimal;
+package org.anyline.web.tag;
+
+import org.anyline.util.BasicUtil;
+import org.anyline.util.NumberUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import java.math.BigDecimal;
 
-import org.anyline.util.BasicUtil;
-import org.anyline.util.NumberUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-/** 
+/**
  * 除法运算 主要处理0被除数异常 及格式化 
  * @author zh 
  * 
  */ 
-public class Division extends BodyTagSupport{
+public class Divide extends BodyTagSupport{
 	private static final long serialVersionUID = 1L; 
 	private String divisor;		// 除数 
 	private String dividend;	// 被除数 
