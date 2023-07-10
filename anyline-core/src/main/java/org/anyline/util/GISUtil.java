@@ -1,6 +1,8 @@
 package org.anyline.util;
 
 import org.anyline.entity.Coordinate;
+import org.anyline.entity.geometry.Point;
+import org.anyline.entity.geometry.Ring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -363,26 +365,35 @@ public class GISUtil {
     /**
      * 坐标点是否在多边形内
      * @param point 检测点
-     * @param points 多边形边界点
+     * @param ring 多边形边
      * @return boolean
      */
-    public static boolean pnpoly(Coordinate point, List<Coordinate> points) {
+    public static boolean pnpoly(Point point, Ring ring) {
         List<Double> lngs = new ArrayList<>();
         List<Double> lats = new ArrayList<>();
-        for(Coordinate p:points){
-            lngs.add(p.getLng());
-            lats.add(p.getLat());
+        for(Point p:ring.getPoints()){
+            lngs.add(p.x());
+            lats.add(p.y());
         }
-        return pnpoly(point.getLng(), point.getLat(), lngs, lats);
+        return pnpoly(point.x(), point.y(), lngs, lats);
     }
-    public static boolean pnpoly(Coordinate point, Coordinate... points) {
+    public static boolean pnpoly(Point point, Point... points) {
         List<Double> lngs = new ArrayList<>();
         List<Double> lats = new ArrayList<>();
-        for(Coordinate p:points){
-            lngs.add(p.getLng());
-            lats.add(p.getLat());
+        for(Point p:points){
+            lngs.add(p.x());
+            lats.add(p.y());
         }
-        return pnpoly(point.getLng(), point.getLat(), lngs, lats);
+        return pnpoly(point.x(), point.y(), lngs, lats);
+    }
+    public static boolean pnpoly(Point point, List<Point> points) {
+        List<Double> lngs = new ArrayList<>();
+        List<Double> lats = new ArrayList<>();
+        for(Point p:points){
+            lngs.add(p.x());
+            lats.add(p.y());
+        }
+        return pnpoly(point.x(), point.y(), lngs, lats);
     }
     /**
      * 坐标点是否在多边形内
