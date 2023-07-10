@@ -356,8 +356,8 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>division</name>
-		<tagclass>org.anyline.web.tag.Division</tagclass>
+		<name>divide</name>
+		<tagclass>org.anyline.web.tag.Divide</tagclass>
 		<bodycontent>empty</bodycontent>
 		<info>除法dividend/divisor</info>
 		<attribute>
