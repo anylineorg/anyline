@@ -3,11 +3,19 @@ package org.anyline.net;
 import org.anyline.util.BeanUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +36,23 @@ public class HttpBuilder {
     private Map<String, Object> files;    //可以是文件或byte[]
     private String returnType = "text";
 
-    public HttpClient build(){
+    public HttpClient build() {
         HttpClient client = new HttpClient();
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null,null,null);
+            SSLContext.setDefault(sslContext);
+            Registry<ConnectionSocketFactory> socketFactoryRegistry =
+                    RegistryBuilder.<ConnectionSocketFactory>create()
+                            .register("http", PlainConnectionSocketFactory.INSTANCE)
+                            .register("https", new SSLConnectionSocketFactory(sslContext)).build();
+            PoolingHttpClientConnectionManager mananger = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+            mananger.setMaxTotal(100);
+            mananger.setDefaultMaxPerRoute(20);
+            this.client = HttpClients.custom().setConnectionManager(mananger).build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         client.setClient(this.client);
         if(null != headers && !headers.isEmpty()){
             client.setHeaders(headers);
