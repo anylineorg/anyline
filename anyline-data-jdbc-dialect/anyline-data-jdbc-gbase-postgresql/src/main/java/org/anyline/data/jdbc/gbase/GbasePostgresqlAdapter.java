@@ -5,7 +5,6 @@ import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
-import org.anyline.data.run.TextRun;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -98,15 +97,14 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	 */
 	public List<Run> buildQuerySequence(boolean next, String ... names){
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String key = "CURRVAL";
 		if(next){
 			key = "NEXTVAL";
 		}
 		if(null != names && names.length>0) {
-			run = new TextRun();
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("SELECT ");
 			boolean first = true;
 			for (String name : names) {
@@ -767,11 +765,11 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append(" IS '").append(comment).append("'");
@@ -1189,14 +1187,14 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable != uNullable) {
+				Run run = new SimpleRun();
+				runs.add(run);
+				StringBuilder builder = run.getBuilder();
 				builder.append("ALTER TABLE ");
 				name(builder, column.getTable(true)).append(" ALTER ");
 				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1230,9 +1228,6 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		Column update = column.getUpdate();
 		if(null != update){
@@ -1242,6 +1237,9 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1524,11 +1522,11 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	@Override
 	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, primary.getTable(true));
 			builder.append(" ADD PRIMARY KEY (");

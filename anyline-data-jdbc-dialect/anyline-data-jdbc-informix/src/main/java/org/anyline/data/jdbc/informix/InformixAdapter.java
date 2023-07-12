@@ -129,14 +129,14 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	public List<Run> buildQuerySequence(boolean next, String ... names){
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String key = "CURRVAL";
 		if(next){
 			key = "NEXTVAL";
 		}
 		if(null != names && names.length>0) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("SELECT ");
 			boolean first = true;
 			for (String name : names) {
@@ -458,7 +458,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		//return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
-		return null;
+		return new ArrayList<>();
 	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
@@ -1045,7 +1045,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			runs.add(run);
 		}
 		return runs;*/
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1257,7 +1257,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<Run> buildChangeCommentRunSQL(MasterTable table) throws Exception{
 		//return super.buildChangeCommentRunSQL(table);
-		return null;
+		return new ArrayList<>();
 	}
 
 
@@ -1294,7 +1294,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<Run> buildChangeCommentRunSQL(PartitionTable table) throws Exception{
 		//return super.buildChangeCommentRunSQL(table);
-		return null;
+		return new ArrayList<>();
 	}
 
 	/* *****************************************************************************************************************
@@ -1491,15 +1491,15 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
-				return null;
+				return runs;
 			}
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable(true)).append(" ALTER ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1549,7 +1549,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}else{
 			return null;
 		}*/
-		return null;
+		return new ArrayList<>();
 	}
 
 
@@ -1810,7 +1810,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception{
 		//return super.buildChangeCommentRunSQL(tag);
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**

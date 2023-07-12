@@ -951,12 +951,12 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	@Override
 	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isEmpty(table.getComment())){
 			return runs;
 		}
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append(" COMMENT ON TABLE ");
 		name(builder, table);
 		builder.append("  IS '").append(table.getComment()).append("'");
@@ -1452,7 +1452,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		}else{
 			builder.append(" NULL");
 		}
-				return runs;
+		return runs;
 	}
 
 	/**
@@ -1464,16 +1464,16 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
-				return null;
+				return runs;
 			}
 
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable(true)).append(" MODIFY ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1504,9 +1504,6 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		if(null != column.getUpdate()){
 			comment = column.getUpdate().getComment();
@@ -1514,6 +1511,9 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
 			Column update = column.getUpdate();

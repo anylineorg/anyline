@@ -792,11 +792,11 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append(" IS '").append(comment).append("'");
@@ -1219,16 +1219,16 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
-				return null;
+				return runs;
 			}
 
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable(true)).append(" ALTER ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1262,9 +1262,6 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		Column update = column.getUpdate();
 		if(null != update){
@@ -1274,6 +1271,9 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1555,11 +1555,11 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, primary.getTable(true));
 			builder.append(" ADD PRIMARY KEY (");

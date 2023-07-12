@@ -1058,10 +1058,10 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	@Override
 	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isNotEmpty(table.getComment())){
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append(" COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append("  IS '").append(table.getComment()).append("'");

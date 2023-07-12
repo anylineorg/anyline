@@ -1921,7 +1921,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildAlterRunSQL(Trigger trigger) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**

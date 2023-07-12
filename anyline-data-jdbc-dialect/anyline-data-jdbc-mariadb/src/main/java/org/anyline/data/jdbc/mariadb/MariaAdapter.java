@@ -697,7 +697,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -713,15 +713,15 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
-		return null;
+		return new LinkedHashMap();
 	}
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
-		return null;
+		return new LinkedHashMap();
 	}
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return null;
+		return new LinkedHashMap();
 	}
 
 
@@ -1187,13 +1187,13 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Table table) {
 		List<Run> runs = new ArrayList<>();
+		String comment = table.getComment();
+		if(BasicUtil.isEmpty(comment)){
+			return runs;
+		}
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		String comment = table.getComment();
-		if(BasicUtil.isEmpty(comment)){
-			return null;
-		}
 		builder.append("ALTER TABLE ");
 		name(builder, table);
 		builder.append(" COMMENT '").append(comment).append("'");
@@ -1791,7 +1791,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildAddRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 
@@ -1802,7 +1802,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildAlterRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 
@@ -1814,7 +1814,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildDropRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 
@@ -1826,7 +1826,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildRenameRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1837,7 +1837,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildChangeDefaultRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1848,7 +1848,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 	/**
 	 * 修改备注
@@ -1859,7 +1859,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1870,7 +1870,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public List<Run> buildChangeTypeRunSQL(Tag tag) throws Exception{
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**

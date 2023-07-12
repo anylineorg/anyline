@@ -269,7 +269,7 @@ public interface JDBCAdapter {
 	 * @param builder builder
 	 * @param compare compare
 	 * @param value value
-	 * @return value
+	 * @return value 有占位符时返回 占位值，没有占位符返回null
 	 */
 	Object buildConditionLike(StringBuilder builder, Compare compare, Object value);
 

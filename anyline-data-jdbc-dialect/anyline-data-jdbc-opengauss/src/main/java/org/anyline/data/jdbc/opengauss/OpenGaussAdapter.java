@@ -800,11 +800,11 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append(" IS '").append(comment).append("'");
@@ -1221,13 +1221,13 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable != uNullable){
+				Run run = new SimpleRun();
+				runs.add(run);
+				StringBuilder builder = run.getBuilder();
 				builder.append("ALTER TABLE ");
 				name(builder, column.getTable(true)).append(" ALTER ");
 				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1261,9 +1261,6 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		Column update = column.getUpdate();
 		if(null != update){
@@ -1273,6 +1270,9 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());

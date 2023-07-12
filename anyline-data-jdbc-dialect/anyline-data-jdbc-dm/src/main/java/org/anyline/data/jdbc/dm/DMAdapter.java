@@ -87,14 +87,14 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 */
 	public List<Run> buildQuerySequence(boolean next, String ... names){
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String key = "CURRVAL";
 		if(next){
 			key = "NEXTVAL";
 		}
 		if(null != names && names.length>0) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("SELECT ");
 			boolean first = true;
 			for (String name : names) {
@@ -970,10 +970,10 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isNotEmpty(table.getComment())){
+			Run run = new SimpleRun();
+			StringBuilder builder = run.getBuilder();
+			runs.add(run);
 			builder.append(" COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append("  IS '").append(table.getComment()).append("'");
@@ -1024,11 +1024,11 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON TABLE ");
 			name(builder, table);
 			builder.append(" IS '").append(comment).append("'");
@@ -1420,16 +1420,16 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		int nullable = column.isNullable();
 		int uNullable = column.getUpdate().isNullable();
 		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
-				return null;
+				return runs;
 			}
 
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable(true)).append(" MODIFY ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1460,9 +1460,6 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		if(null != column.getUpdate()){
 			comment = column.getUpdate().getComment();
@@ -1470,6 +1467,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 			comment = column.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("COMMENT ON COLUMN ");
 			name(builder, column.getTable(true)).append(".");
 			Column update = column.getUpdate();
@@ -1741,11 +1741,11 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
 			name(builder, primary.getTable(true));
 			builder.append(" ADD CONSTRAINT ").append(primary.getTableName(true)).append("_PK").append(" PRIMARY KEY(");

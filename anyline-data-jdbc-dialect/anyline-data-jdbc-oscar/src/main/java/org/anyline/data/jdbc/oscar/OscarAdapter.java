@@ -974,12 +974,12 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	@Override
 	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isEmpty(table.getComment())){
 			return runs;
 		}
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append(" COMMENT ON TABLE ");
 		name(builder, table);
 		builder.append("  IS '").append(table.getComment()).append("'");
