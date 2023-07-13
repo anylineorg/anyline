@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<!--https://lbsyun.baidu.com/apiconsole/key#/home-->
+	<config key="default">
+		<property key="AK">YuFLj**************0PnOzEhBAKh</property>
+		<property key="SK">RVNpk58****************xM7sB1U</property>
+	</config>
+</configs>
