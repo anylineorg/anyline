@@ -377,7 +377,7 @@ public class BasicUtil {
 			return (Integer) value;
 		}
 		try {
-			return (int) Double.parseDouble(value.toString());
+			return (int) Double.parseDouble(value.toString().trim());
 		} catch (Exception e) {
 			return def;
 		}
