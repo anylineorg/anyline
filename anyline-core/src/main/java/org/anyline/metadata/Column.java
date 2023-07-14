@@ -350,9 +350,7 @@ public class Column implements Serializable {
         }
         if(null != typeName){
             typeName = typeName.trim().replace("'","");
-            if(typeName.toUpperCase().contains("IDENTITY")){
-                setAutoIncrement(true);
-            }
+            //数据类型中可能有空格 先处理 decimal(9, 2)
             if(typeName.contains("(")){
                 this.precision = 0;
                 this.scale = 0;
@@ -365,6 +363,9 @@ public class Column implements Serializable {
                     setPrecision(BasicUtil.parseInt(len,null));
                 }
                 typeName = typeName.substring(0,typeName.indexOf("(") );
+            }
+            if(typeName.toUpperCase().contains("IDENTITY")){
+                setAutoIncrement(true);
             }
             if(typeName.contains(" ")) {
                 // TYPE_NAME=int identity
