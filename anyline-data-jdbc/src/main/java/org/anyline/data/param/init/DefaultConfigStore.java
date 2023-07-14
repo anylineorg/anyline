@@ -231,7 +231,7 @@ public class DefaultConfigStore implements ConfigStore {
 			var = var.substring(var.indexOf(".")+1);
 		}
 		if(overCondition){
-			conf = chain.getConfig(prefix,var, compare);
+			conf = chain.getConfig(prefix, var, compare);
 		}
 		if(null == swt || EMPTY_VALUE_SWITCH.NONE == swt) {
 			if (null != var) {
@@ -353,6 +353,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value, boolean overCondition, boolean overValue) {
+		// TODO boolean overCondition, boolean overValue
 		List<Config> configs = chain.getConfigs();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
@@ -418,10 +419,13 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
+	public ConfigStore or(Compare compare, String prefix, String var, Object value){
+		return or(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value);
+	}
+	@Override
 	public ConfigStore or(Compare compare, String var, Object value){
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
-
 
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value){
@@ -436,8 +440,14 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		return ors(swt, compare, null, var, value);
 	}
+
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value) {
+		return ors(swt, compare, prefix, var, value, false, false);
+	}
+	@Override
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
+		// TODO boolean overCondition, boolean overValue
 		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
 
@@ -493,6 +503,10 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore ors(Compare compare, String var, Object value) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
+	}
+	@Override
+	public ConfigStore ors(Compare compare, String prefix, String var, Object value) {
+		return ors(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value);
 	}
 
 	private Object value(Object value){
