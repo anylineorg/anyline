@@ -25,7 +25,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         DATETIME2               (StandardColumnType.DATETIME2             ), //mysql,  ,     ,mssql
         DATETIMEOFFSET          (StandardColumnType.DATETIMEOFFSET        ), //mysql,  ,     ,mssql
         DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql
-        DOUBLE                  (StandardColumnType.DECIMAL               ), //mysql,
+        DOUBLE                  (StandardColumnType.DOUBLE                ), //mysql,
         ENUM                    (StandardColumnType.ENUM                  ), //mysql,
         FLOAT                   (StandardColumnType.FLOAT_MYSQL           ), //mysql,  ,oracle,mssql
         FLOAT4                  (StandardColumnType.FLOAT_MYSQL           ), //     ,pg
