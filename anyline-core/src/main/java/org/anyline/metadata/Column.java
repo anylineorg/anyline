@@ -353,10 +353,6 @@ public class Column implements Serializable {
             if(typeName.toUpperCase().contains("IDENTITY")){
                 setAutoIncrement(true);
             }
-            if(typeName.contains(" ")) {
-                // TYPE_NAME=int identity
-                typeName = typeName.split(" ")[0];
-            }
             if(typeName.contains("(")){
                 this.precision = 0;
                 this.scale = 0;
@@ -369,6 +365,10 @@ public class Column implements Serializable {
                     setPrecision(BasicUtil.parseInt(len,null));
                 }
                 typeName = typeName.substring(0,typeName.indexOf("(") );
+            }
+            if(typeName.contains(" ")) {
+                // TYPE_NAME=int identity
+                typeName = typeName.split(" ")[0];
             }
         }
         if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
