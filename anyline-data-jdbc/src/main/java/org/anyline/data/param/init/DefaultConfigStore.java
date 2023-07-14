@@ -345,10 +345,18 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
+		return or(swt, compare, null, var, value);
+	}
+	@Override
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value) {
 		List<Config> configs = chain.getConfigs();
+		if(null == prefix && var.contains(".")){
+			prefix = var.substring(0,var.indexOf("."));
+			var = var.substring(var.indexOf(".")+1);
+		}
 		// 如果当前没有其他条件
 		if(configs.size()==0){
-			and(compare, var, value);
+			and(swt, compare, prefix, var, value);
 		}else{
 			int compareCode = compare.getCode();
 			value = value(value);
@@ -357,7 +365,7 @@ public class DefaultConfigStore implements ConfigStore {
 				if(compareCode == 60 || compareCode == 61){
 					//FIND_IN_OR
 					for(Object item:list){
-						or(compare, var, item);
+						or(swt, compare, prefix, var, item);
 					}
 				}else if(compareCode == 62){
 					//FIND_IN_AND
@@ -367,6 +375,7 @@ public class DefaultConfigStore implements ConfigStore {
 						Config conf = new DefaultConfig();
 						conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 						conf.setCompare(compare);
+						conf.setPrefix(prefix);
 						conf.setVariable(var);
 						conf.setValue(item);
 						findChain.addConfig(conf);
@@ -394,6 +403,7 @@ public class DefaultConfigStore implements ConfigStore {
 				conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 				conf.setCompare(compare);
 				conf.setVariable(var);
+				conf.setPrefix(prefix);
 				conf.setValue(value);
 
 				orChain.addConfig(conf);
@@ -420,9 +430,17 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
+		return ors(swt, compare, null, var, value);
+	}
+	@Override
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value) {
 		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
 
+		if(null == prefix && var.contains(".")){
+			prefix = var.substring(0,var.indexOf("."));
+			var = var.substring(var.indexOf(".")+1);
+		}
 		int compareCode = compare.getCode();
 		value = value(value);
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
@@ -432,6 +450,7 @@ public class DefaultConfigStore implements ConfigStore {
 				for(Object item:list){
 					Config conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					conf.setPrefix(prefix);
 					conf.setCompare(compare);
 					conf.setVariable(var);
 					conf.setValue(item);
@@ -445,6 +464,7 @@ public class DefaultConfigStore implements ConfigStore {
 					Config conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 					conf.setCompare(compare);
+					conf.setPrefix(prefix);
 					conf.setVariable(var);
 					conf.setValue(item);
 					findChain.addConfig(conf);
@@ -455,6 +475,7 @@ public class DefaultConfigStore implements ConfigStore {
 			Config conf = new DefaultConfig();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 			conf.setCompare(compare);
+			conf.setPrefix(prefix);
 			conf.setVariable(var);
 			conf.setValue(value);
 
