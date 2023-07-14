@@ -349,6 +349,10 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value) {
+		return or(swt, compare, prefix, var, value, false, false);
+	}
+	@Override
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value, boolean overCondition, boolean overValue) {
 		List<Config> configs = chain.getConfigs();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));

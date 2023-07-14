@@ -218,8 +218,11 @@ public interface ConfigStore {
 	 * @param id 自定义查询条件ID或表名表别名
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
+	 * @param overCondition 覆盖相同key的条件
+	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
+	ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value);
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value);
 	ConfigStore or(Compare compare, String var, Object value);
