@@ -84,14 +84,15 @@ public class DESUtil {
 		this(DEFAULT_SECRET_KEY); 
 	} 
 	protected DESUtil(String key) throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
- 
-		Security.addProvider(new SunJCE()); 
-		Key _key = getKey(key.getBytes()); 
-		 
-		encryptCipher = Cipher.getInstance("DES"); 
+
+		//Security.addProvider(new SunJCE());
+		java.security.Security.getProvider("SunJCE");
+		Key _key = getKey(key.getBytes());
+
+		encryptCipher = Cipher.getInstance("DES");
 		encryptCipher.init(Cipher.ENCRYPT_MODE, _key);//加密 
-		 
-		decryptCipher = Cipher.getInstance("DES"); 
+
+		decryptCipher = Cipher.getInstance("DES");
 		decryptCipher.init(Cipher.DECRYPT_MODE, _key);//解密 
 	}
 	 
