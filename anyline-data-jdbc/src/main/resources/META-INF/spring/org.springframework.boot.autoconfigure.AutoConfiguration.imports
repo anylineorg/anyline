@@ -3,5 +3,8 @@ org.anyline.data.adapter.init.DefaultEntityAdapter
 org.anyline.data.jdbc.ds.EnvironmentListener
 org.anyline.proxy.CacheProxy
 org.anyline.proxy.ServiceProxy
+org.anyline.proxy.InterceptorProxy
 org.anyline.dao.init.springjdbc.DefaultDao
 org.anyline.service.init.DefaultService
+org.anyline.data.jdbc.util.SQLAdapterUtil
+org.anyline.web.controller.AbstractBasicController

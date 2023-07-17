@@ -64,8 +64,8 @@ public class AnylineController extends AbstractBasicController {
 			_request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		} 
 		return _request;
-	} 
-	@Autowired 
+	}
+
 	protected void setRequest(HttpServletRequest request){
 		this._request = request;
 		try{
@@ -79,8 +79,7 @@ public class AnylineController extends AbstractBasicController {
 			_response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		} 
 		return _response;
-	} 
-	@Autowired 
+	}
 	public void setResponse(HttpServletResponse response){
 		this._response = response;
 		try{
