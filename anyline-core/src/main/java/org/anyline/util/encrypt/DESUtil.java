@@ -19,7 +19,6 @@
 
 package org.anyline.util.encrypt;
 
-import com.sun.crypto.provider.SunJCE;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
