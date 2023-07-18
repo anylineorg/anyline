@@ -1921,7 +1921,7 @@ public class OscarOracleAdapter extends SQLAdapter implements JDBCAdapter, Initi
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT COL.* FROM DBA_CONSTRAINTS CON ,DBA_CONS_COLUMNS COL\n");
+		builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON ,USER_CONS_COLUMNS COL\n");
 		builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
 		builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
 		builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
