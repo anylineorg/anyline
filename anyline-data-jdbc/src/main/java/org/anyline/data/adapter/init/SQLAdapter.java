@@ -60,6 +60,9 @@ import java.util.*;
  */
 
 public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter {
+    public SQLAdapter(){
+        super();
+    }
     /* *****************************************************************************************************************
      *
      * 													DML
