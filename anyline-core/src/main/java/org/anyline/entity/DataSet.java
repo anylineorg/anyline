@@ -615,9 +615,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public int size() {
         int result = 0;
-        if (null != rows)
+        if (null != rows) {
             result = rows.size();
+        }
         return result;
+    }
+
+    /**
+     * 总行数 如果没有分页则与size()一致,否则取navi的total row
+     * @return int
+     */
+    public int total(){
+        if(null == navi){
+            return navi.getTotalRow();
+        }
+        return rows.size();
     }
 
     /**
