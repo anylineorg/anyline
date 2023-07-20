@@ -52,7 +52,7 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
  
 	@Override 
 	public List<String> getColumns() {
-		return this.columns; 
+		return super.getColumns();
 	}
 
 
