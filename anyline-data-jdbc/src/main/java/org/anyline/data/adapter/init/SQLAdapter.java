@@ -211,10 +211,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 insertValue(template, run, row, true, false,true, keys);
             }else{*/
-                boolean create = false;
-                if(EntityAdapterProxy.hasAdapter()){
-                    create = EntityAdapterProxy.createPrimaryValue(obj, keys);
-                }
+                boolean create = EntityAdapterProxy.createPrimaryValue(obj, keys);
                 if(!create && null != generator){
                     generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
@@ -263,10 +260,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
         }else{
             from = 2;
-            boolean create = false;
-            if(EntityAdapterProxy.hasAdapter()){
-                create = EntityAdapterProxy.createPrimaryValue(obj, columns);
-            }
+            boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             if(!create && null != generator){
                 generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
@@ -295,7 +289,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         for(int i=0; i<size; i++){
             String key = keys.get(i);
             Object value = null;
-            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
                 value = BeanUtil.getFieldValue(obj, key);
@@ -370,9 +364,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }else{
             first = list.iterator().next();
             if(BasicUtil.isEmpty(dest)) {
-                if (EntityAdapterProxy.hasAdapter()) {
-                    dest = EntityAdapterProxy.table(first.getClass()).getName();
-                }
+                dest = EntityAdapterProxy.table(first.getClass(), true);
             }
         }
         if(BasicUtil.isEmpty(dest)){
@@ -458,7 +450,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(obj instanceof DataRow){
             key = ((DataRow)obj).getPrimaryKey();
         }else{
-            key = EntityAdapterProxy.primaryKey(obj.getClass()).getName();
+            key = EntityAdapterProxy.primaryKey(obj.getClass(), true);
         }
         return key;
     }
@@ -618,11 +610,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null != columns && columns.size() >0 ){
             keys = columns;
         }else{
-            if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE))) ;
-            }
+            keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE))) ;
         }
-        if(EntityAdapterProxy.hasAdapter()){
+        if(EntityAdapterProxy.hasAdapter(obj.getClass())){
             primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
         }else{
             primaryKeys = new ArrayList<>();
@@ -653,7 +643,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
                 Object value = null;
-                if(EntityAdapterProxy.hasAdapter()){
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())){
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
@@ -706,7 +696,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     builder.append(" AND ");
                     SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                     updateColumns.add(pk);
-                    if (EntityAdapterProxy.hasAdapter()) {
+                    if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
                         addRunValue(run, Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, field));
                     } else {
@@ -1226,9 +1216,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             if(obj instanceof DataRow){
                 keys = ((DataRow)obj).getPrimaryKeys();
             }else{
-                if(EntityAdapterProxy.hasAdapter()){
-                    keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
-                }
+                keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
             }
         }
         int size = keys.size();
@@ -1244,7 +1232,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 if(obj instanceof DataRow){
                     value = ((DataRow)obj).get(key);
                 }else{
-                    if(EntityAdapterProxy.hasAdapter()){
+                    if(EntityAdapterProxy.hasAdapter(obj.getClass())){
                         value = BeanUtil.getFieldValue(obj,EntityAdapterProxy.field(obj.getClass(), key));
                     }else{
                         value = BeanUtil.getFieldValue(obj, key);

@@ -296,10 +296,7 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				}
 			}else{*/
-				boolean create = false;
-				if(EntityAdapterProxy.hasAdapter()){
-					create = EntityAdapterProxy.createPrimaryValue(obj, keys);
-				}
+				boolean create = EntityAdapterProxy.createPrimaryValue(obj, keys);
 				if(!create && null != generator){
 					generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 					//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);

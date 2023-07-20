@@ -237,7 +237,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      */
     @SuppressWarnings("rawtypes")
     public static DataRow parse(DataRow row, Object obj, String... keys) {
-        if (EntityAdapterProxy.hasAdapter()) {
+        if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
             row = EntityAdapterProxy.row(row, obj, keys);
             if (null != row) {
                 return row;
@@ -1264,7 +1264,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null == clazz) {
             return entity;
         }
-        if (EntityAdapterProxy.hasAdapter()) {
+        if (EntityAdapterProxy.hasAdapter(clazz)) {
             entity = EntityAdapterProxy.entity(clazz, this, metadatas);
             if (null != entity) {
                 return entity;

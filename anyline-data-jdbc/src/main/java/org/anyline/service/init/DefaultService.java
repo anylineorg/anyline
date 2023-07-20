@@ -1489,9 +1489,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if (data instanceof DataRow || data instanceof DataSet) {
                 dest = DataSourceHolder.parseDataSource(dest, data);
             } else {
-                if (EntityAdapterProxy.hasAdapter()) {
-                    dest = EntityAdapterProxy.table(data.getClass()).getName();
-                }
+                dest = EntityAdapterProxy.table(data.getClass(), true);
             }
         }
 
@@ -1755,14 +1753,19 @@ public class DefaultService<E> implements AnylineService<E> {
             dest = DataSourceHolder.parseDataSource(null, row);
             return dao.delete(dest, row, columns);
         } else {
-            if (EntityAdapterProxy.hasAdapter()) {
-                if (obj instanceof Collection) {
-                    dest = EntityAdapterProxy.table(((Collection) obj).iterator().next().getClass()).getName();
-                } else {
-                    dest = EntityAdapterProxy.table(obj.getClass()).getName();
+            if (obj instanceof Collection) {
+                Collection list =((Collection) obj);
+                if(!list.isEmpty()) {
+                    Class clazz = list.iterator().next().getClass();
+                    dest = EntityAdapterProxy.table(clazz, true);
                 }
+            } else {
+                    dest = EntityAdapterProxy.table(obj.getClass(), true);
+            }
+            if(null != dest) {
                 return dao.delete(dest, obj, columns);
             }
+
         }
         return 0;
     }
@@ -2064,9 +2067,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     Object value = BeanUtil.getFieldValue(entity, field);
                     if (BasicUtil.isNotEmpty(true, value)) {
                         String key = field.getName();
-                        if (EntityAdapterProxy.hasAdapter()) {
-                            key = EntityAdapterProxy.column(entity.getClass(), field).getName();
-                        }
+                        key = EntityAdapterProxy.column(entity.getClass(), field, true);
                         if (BasicUtil.isEmpty(key)) {
                             continue;
                         }

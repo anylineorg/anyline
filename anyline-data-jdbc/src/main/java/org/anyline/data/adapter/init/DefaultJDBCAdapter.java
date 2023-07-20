@@ -398,7 +398,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			}else{
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
-				if(EntityAdapterProxy.hasAdapter()){
+				if(EntityAdapterProxy.hasAdapter(obj.getClass())){
 					keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT)));
 				}else {
 					keys = new ArrayList<>();
@@ -432,7 +432,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 					continue;
 				}
 				Object value = null;
-				if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+				if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
 					value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
 				}else{
 					value = BeanUtil.getFieldValue(obj, key);
@@ -498,11 +498,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			DataRow row = (DataRow)obj;
 			row.put(row.getPrimaryKey(), value);
 		}else{
-			if(EntityAdapterProxy.hasAdapter()){
-				Column key = EntityAdapterProxy.primaryKey(obj.getClass());
-				Field field = EntityAdapterProxy.field(obj.getClass(), key);
-				BeanUtil.setFieldValue(obj, field, value);
-			}
+			Column key = EntityAdapterProxy.primaryKey(obj.getClass());
+			Field field = EntityAdapterProxy.field(obj.getClass(), key);
+			BeanUtil.setFieldValue(obj, field, value);
 		}
 	}
 	/**
@@ -910,11 +908,9 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 			if(obj instanceof Collection){
 				entity = ((Collection)obj).iterator().next();
 			}
-			if(EntityAdapterProxy.hasAdapter()){
-				Table table = EntityAdapterProxy.table(entity.getClass());
-				if(null != table){
-					dest = table.getName();
-				}
+			Table table = EntityAdapterProxy.table(entity.getClass());
+			if(null != table){
+				dest = table.getName();
 			}
 		}
 		if(obj instanceof ConfigStore){
@@ -4451,11 +4447,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			return ((DataRow)obj).getPrimaryKey();
 		}else{
-			if(EntityAdapterProxy.hasAdapter()){
-				return EntityAdapterProxy.primaryKey(obj.getClass()).getName();
-			}
+			return EntityAdapterProxy.primaryKey(obj.getClass(), true);
 		}
-		return null;
 	}
 	@Override
 	public Object getPrimaryValue(Object obj){
@@ -4465,10 +4458,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			return ((DataRow)obj).getPrimaryValue();
 		}else{
-			if(EntityAdapterProxy.hasAdapter()){
-				return EntityAdapterProxy.primaryValue(obj);
-			}
-			return null;
+			return EntityAdapterProxy.primaryValue(obj);
 		}
 	}
 
@@ -4590,7 +4580,7 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
 		}else {
-			if (EntityAdapterProxy.hasAdapter()) {
+			if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
 				Field field = EntityAdapterProxy.field(obj.getClass(), key);
 				value = BeanUtil.getFieldValue(obj, field);
 			} else {

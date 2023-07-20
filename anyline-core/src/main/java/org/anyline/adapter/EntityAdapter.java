@@ -3,14 +3,14 @@ package org.anyline.adapter;
 import org.anyline.entity.DataRow;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
+import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.util.*;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface EntityAdapter {
-    public static enum MODE{
+    enum MODE{
         /**
          * 只检测可INSERT的列
          */
@@ -24,19 +24,90 @@ public interface EntityAdapter {
          */
         DDL
     }
+
+    static void sort(List<? extends EntityAdapter> interceptors){
+        Collections.sort(interceptors, new Comparator<EntityAdapter>() {
+            public int compare(EntityAdapter r1, EntityAdapter r2) {
+                int order1 = r1.order();
+                int ordre2 = r2.order();
+                if(order1 > ordre2){
+                    return 1;
+                }else if(order1 < ordre2){
+                    return -1;
+                }
+                return 0;
+            }
+        });
+    }
+    default int order(){
+        return 10;
+    }
+    /**
+     * 针对哪些类有效
+     * @return 类
+     */
+    default Class type(){
+        return Object.class;
+    }
+
+    /**
+     * 针对多个类有效
+     * @return list
+     */
+    default List<Class> types(){
+        return new ArrayList<>();
+    }
     /**
      * 获取指定类关联的表名
      * @param clazz 类
      * @return String
      */
-    public Table table(Class clazz);
+    default Table table(Class clazz) {
+        String key = clazz.getName();
+        // 1.缓存
+        Table table = EntityAdapterProxy.class2table.get(key.toUpperCase());
+        if(null != table){
+            return table;
+        }
+        // 2.注解 以及父类注解直到Object
+        Class parent = clazz;
+        String name = null;
+        while (true){
+            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name", "table.value", "tableName.name", "tableName.value");
+            if(BasicUtil.isEmpty(name)){
+                parent = parent.getSuperclass();
+                if(null == parent){
+                    break;
+                }
+            }else{
+                table = new Table(name);
+                EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
+                return table;
+            }
+        }
+        // 3.类名转成表名
+        if("Camel_".equalsIgnoreCase(ConfigTable.ENTITY_CLASS_TABLE_MAP)){
+            name = BeanUtil.camel_(clazz.getSimpleName());
+            table = new Table(name);
+            EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
+            return table;
+        }
+        // 4.类名
+        name = clazz.getSimpleName();
+        table = new Table(name);
+        EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
+        return table;
+    }
+
 
     /**
      * 获取指定类的列名s
      * @param clazz 类
      * @return List
      */
-    public LinkedHashMap<String, Column> columns(Class clazz);
+    default LinkedHashMap<String, Column> columns(Class clazz) {
+        return columns(clazz, MODE.DDL);
+    }
 
     /**
      * 获取指定类的列名s
@@ -44,8 +115,54 @@ public interface EntityAdapter {
      * @param mode  insert环境  update环境 ddl环境
      * @return List
      */
-    public LinkedHashMap<String, Column> columns(Class clazz, MODE mode);
 
+    default LinkedHashMap<String, Column> columns(Class clazz, MODE mode) {
+        LinkedHashMap<String, Column> columns = null;
+        if(MODE.INSERT == mode) {
+            columns = EntityAdapterProxy.insert_columns.get(clazz.getName().toUpperCase());
+        }else if(MODE.UPDATE == mode){
+            columns = EntityAdapterProxy.update_columns.get(clazz.getName().toUpperCase());
+        }else if(MODE.DDL == mode){
+
+        }
+        if(null == columns) {
+            columns = new LinkedHashMap<>();
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
+            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient", "OneToMany", "ManyToMany");
+            fields.removeAll(ignores);
+            for (Field field : fields) {
+                Column column = column(clazz, field);
+                if(MODE.INSERT == mode){
+                    //检测是否需要insert
+                    String insertable = ClassUtil.parseAnnotationFieldValue(field, "column.insertable");
+                    if("false".equalsIgnoreCase(insertable)){
+                        continue;
+                    }
+                }else if(MODE.UPDATE == mode){
+                    //检测是否需要update
+                    String updatable = ClassUtil.parseAnnotationFieldValue(field, "column.updatable");
+                    if("false".equalsIgnoreCase(updatable)){
+                        continue;
+                    }
+                }else if(MODE.DDL == mode){
+
+                }
+                if(BasicUtil.isNotEmpty(column)) {
+                    columns.put(column.getName().toUpperCase(), column);
+                }
+            }
+            if(MODE.INSERT == mode) {
+                EntityAdapterProxy.insert_columns.put(clazz.getName().toUpperCase(),columns);
+            }else if(MODE.UPDATE == mode){
+                EntityAdapterProxy.update_columns.put(clazz.getName().toUpperCase(),columns);
+            }else if(MODE.DDL == mode){
+                EntityAdapterProxy.ddl_columns.put(clazz.getName().toUpperCase(),columns);
+            }
+        }
+        LinkedHashMap<String, Column> list = new LinkedHashMap();
+        list.putAll(columns);
+        return list;
+    }
     /**
      * 获取指定类.属性关联的列名
      * @param clazz 类
@@ -55,7 +172,50 @@ public interface EntityAdapter {
      *
      * @return String
      */
-    public Column column(Class clazz, Field field, String ... annotations);
+
+    default Column column(Class clazz, Field field, String ... annotations) {
+        String key = clazz.getName()+":"+field.getName().toUpperCase();
+        // 1.缓存
+        Column column = EntityAdapterProxy.field2column.get(key.toUpperCase());
+        if(null != column){
+            return column;
+        }
+        String name = null;
+        // 2.注解
+        if(null == annotations || annotations.length ==0 ){
+            if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
+                annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
+            }else {
+                annotations = "column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value".split(",");
+            }
+        }
+        name = ClassUtil.parseAnnotationFieldValue(field, annotations);
+
+        // 3.属性名转成列名
+        if(BasicUtil.isEmpty(name)){
+            if("camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)){
+                name = BeanUtil.camel_(field.getName());
+            }
+        }
+        // 4.属性名
+        if(BasicUtil.isEmpty(name)){
+            Class c = field.getType();
+            //boolean、char、byte、short、int、long、float、double
+            if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
+                name = field.getName();
+            }
+        }
+
+        //创建Column
+        if(BasicUtil.isNotEmpty(name)){
+            column = new Column(name);
+            EntityAdapterProxy.field2column.put(key.toUpperCase(), column);
+            EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);
+            return column;
+        }
+        return null;
+    }
+
 
     /**
      * 根据类与列名 获取相关的属性
@@ -63,8 +223,42 @@ public interface EntityAdapter {
      * @param column 列名
      * @return Field
      */
-    public Field field(Class clazz, String column);
-    public Field field(Class clazz, Column column);
+
+    default Field field(Class clazz, Column column) {
+        return field(clazz, column.getName());
+    }
+
+    /**
+     * 列存放易燃属性
+     * @param clazz 类
+     * @param column 列名
+     * @return 属性
+     */
+    default Field field(Class clazz, String column) {
+        Field field = EntityAdapterProxy.column2field.get(clazz.getName().toUpperCase()+":"+column.toUpperCase());
+        if(null == field){
+            fields(clazz);
+            field = EntityAdapterProxy.column2field.get(clazz.getName().toUpperCase()+":"+column.toUpperCase());
+        }
+        //可能是父类属性
+        if(null == field || field.getDeclaringClass() != clazz){
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
+            for(Field f:fields){
+                if(f.getName().equalsIgnoreCase(column) && f.getDeclaringClass() == clazz){
+                    field = f;
+                    EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+column.toUpperCase(), field);
+                    break;
+                }
+            }
+        }
+        return field;
+    }
+    default void fields(Class clazz){
+        List<Field> fields = ClassUtil.getFields(clazz, false, false);
+        for(Field field:fields){
+            column(clazz, field);
+        }
+    }
 
 
     /**
@@ -73,7 +267,13 @@ public interface EntityAdapter {
      * @param clazz 类
      * @return Column
      */
-    public Column primaryKey(Class clazz);
+    default Column primaryKey(Class clazz) {
+        LinkedHashMap<String, Column> list = primaryKeys(clazz);
+        for(Column column:list.values()){
+            return column;
+        }
+        return new Column(DataRow.DEFAULT_PRIMARY_KEY);
+    }
 
 
     /**
@@ -85,20 +285,59 @@ public interface EntityAdapter {
      * @param clazz 类
      * @return List
      */
-    public LinkedHashMap<String, Column> primaryKeys(Class clazz);
+
+    default LinkedHashMap<String, Column> primaryKeys(Class clazz) {
+        LinkedHashMap<String, Column> list = EntityAdapterProxy.primarys.get(clazz.getName().toUpperCase());
+        if(null == list) {
+            list = new LinkedHashMap<>();
+            String annotations = ConfigTable.ENTITY_PRIMARY_KEY_ANNOTATION;
+            if(BasicUtil.isEmpty(annotations)){
+                //如果配置文件中没有指定
+                annotations = "TableId,Id";
+            }
+            //根据注解提取属性s
+            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(","));
+            for (Field field : fields) {
+                //根据属性获取相应的列名
+                Column column = column(clazz, field, annotations.split(","));
+                if (null != column) {
+                    list.put(column.getName().toUpperCase(), column);
+                }
+            }
+            if(list.isEmpty()) {
+                //从所有属性中 过滤出名称与DataRow.DEFAULT_PRIMARY_KEY相同的属性
+                fields = ClassUtil.getFields(clazz, false, false);
+                Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
+                if (null != field) {
+                    Column column = column(clazz, field, annotations.split(","));
+                    if (null != column) {
+                        list.put(column.getName().toUpperCase(), column);
+                    }
+                }
+            }
+            if (list.size() == 0) {
+                list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(), new Column(DataRow.DEFAULT_PRIMARY_KEY));
+            }
+            EntityAdapterProxy.primarys.put(clazz.getName().toUpperCase(), list);
+
+        }
+        return list;
+    }
+
 
     /**
      * 主键值
      * @param obj obj
      * @return String
      */
-    public Map<String,Object> primaryValue(Object obj);
-    /**
-     * 主键值
-     * @param obj obj
-     * @return Map
-     */
-    public Map<String,Object> primaryValues(Object obj);
+    default Map<String, Object> primaryValue(Object obj) {
+        Column primary = primaryKey(obj.getClass());
+        Field field = EntityAdapterProxy.column2field.get(obj.getClass().getName().toUpperCase()+":"+primary.getName().toUpperCase());
+        Object value = BeanUtil.getFieldValue(obj, field);
+        Map<String,Object> map = new HashMap<>();
+        map.put(primary.getName().toUpperCase(), value);
+        return map;
+    }
 
     /**
      * 生成主键值
@@ -106,7 +345,27 @@ public interface EntityAdapter {
      * @param inserts 需要插入的列,注意成功创建主键后需要把主键key添加到inserts中
      * @return boolean 是否成功
      */
-    public boolean createPrimaryValue(Object obj, List<String> inserts);
+    default boolean createPrimaryValue(Object obj, List<String> inserts) {
+        return false;
+    }
+    /**
+     * 主键值
+     * @param obj obj
+     * @return Map
+     */
+
+    default Map<String, Object> primaryValues(Object obj) {
+        LinkedHashMap<String, Column> primarys = primaryKeys(obj.getClass());
+        Map<String,Object> map = new HashMap<>();
+        for(String primary:primarys.keySet()){
+            Field field = EntityAdapterProxy.column2field.get(obj.getClass().getName().toUpperCase()+":"+primary.toUpperCase());
+            Object value = BeanUtil.getFieldValue(obj, field);
+            map.put(primary.toUpperCase(), value);
+        }
+        return map;
+    }
+
+
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<br/>
      * 如果不实现当前可以返回null,将继续执行默认处理方式<br/>
@@ -115,7 +374,10 @@ public interface EntityAdapter {
      * @return T
      * @param <T> T
      */
-    public <T> T entity(Class<T> clazz, Map<String,Object> map, Map columns);
+
+    default <T> T entity(Class<T> clazz, Map<String, Object> map, Map columns) {
+        return entity(null, clazz, map, columns);
+    }
 
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<<br/>
@@ -123,11 +385,69 @@ public interface EntityAdapter {
      * @param entity 在此基础上执行,如果不提供则新创建
      * @param clazz 类
      * @param map map
-     * @param columns 列属性
+     * @param metadatas 列属性
      * @return T
      * @param <T> T
      */
-    public <T> T entity(T entity, Class<T> clazz, Map<String,Object> map, Map columns);
+
+    default <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map metadatas) {
+        List<Field> fields = ClassUtil.getFields(clazz, false, false);
+        Map<Field,String> fk = new HashMap<>();
+        //entity = BeanUtil.map2object(entity, map, clazz, metadatas, false, true, true);
+        if (null == entity) {
+            try {
+                entity = (T) clazz.newInstance();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        DataRow row = null;
+        if(map instanceof DataRow){
+            row = (DataRow) map;
+        }
+        for(Field field:fields){
+            Object value = null;
+            String columnName = field.getName();
+            //属性与列同名
+            if(null != row){
+                value = row.get(columnName);
+            }else{
+                value = map.get(columnName);
+                if (null == value) {
+                    value = map.get(columnName.toUpperCase());
+                }
+            }
+
+            if(null == value) {
+                //根据默认转换规则
+                Column column = column(clazz, field);//列名
+                columnName = column.getName();
+                if (null != row) {
+                    value = row.get(columnName);
+                } else {
+                    value = map.get(columnName);
+                    if (null == value) {
+                        value = map.get(columnName.toUpperCase());
+                    }
+                }
+            }
+
+
+            if(null != value) {
+                Column metadata = null;  //列属性
+                if(map instanceof DataRow){
+                    metadata = ((DataRow)map).getMetadata(columnName);
+                }
+                if(null == metadata && null != metadatas){
+                    metadata = (Column) metadatas.get(columnName.toUpperCase());
+                }
+                BeanUtil.setFieldValue(entity, field, metadata, value);
+
+            }
+        }
+        return entity;
+    }
+
 
 
     /**
@@ -137,7 +457,10 @@ public interface EntityAdapter {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow row(Object obj, String ... keys);
+
+    default DataRow row(Object obj, String... keys) {
+        return row(null, obj, keys);
+    }
 
 
 
@@ -150,16 +473,44 @@ public interface EntityAdapter {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow row(DataRow row, Object obj, String ... keys);
+    default DataRow row(DataRow row, Object obj, String... keys) {
+        // 注意不要调用 DataRow.default static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
+        return DataRow.parse(row, KeyAdapter.KEY_CASE.CONFIG, obj, keys);
+    }
 
     /**
      * 列名转换成http参数时调用
      * 如果不实现当前可以返回null,将继续执行默认处理方式
-     * @param metadata metadata
+     * @param metadatas metadata
      * @return List
      *
      */
-    public List<String> column2param(List<String> metadata);
-    public String column2param(String metadata);
+    default List<String> column2param(List<String> metadatas) {
+        List<String> params = new ArrayList<>();
+        for(String metadata:metadatas){
+            params.add(column2param(metadata));
+        }
+        return params;
+    }
+
+    default String column2param(String metadata){
+        String param = null;
+        // 注意这里只支持下划线转驼峰
+        // 如果数据库中已经是驼峰,不要配置这个参数
+        String keyCase = ConfigTable.HTTP_PARAM_KEY_CASE;
+        if("camel".equals(keyCase)){
+            param = metadata + ":" + BeanUtil.camel(metadata.toLowerCase());
+        }else if("Camel".equals(keyCase)){
+            String key = CharUtil.toUpperCaseHeader(metadata.toLowerCase());
+            param = metadata+":"+BeanUtil.Camel(key);
+        }else if("lower".equalsIgnoreCase(keyCase)){
+            param = metadata + ":" + metadata.toLowerCase();
+        }else if("upper".equalsIgnoreCase(keyCase)){
+            param = metadata + ":" + metadata.toUpperCase();
+        }else{
+            param = metadata + ":" + metadata;
+        }
+        return param;
+    }
 
 }

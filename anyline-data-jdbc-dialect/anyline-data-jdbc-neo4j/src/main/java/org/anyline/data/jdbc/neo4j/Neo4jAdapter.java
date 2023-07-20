@@ -242,10 +242,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
-            boolean create = false;
-            if(EntityAdapterProxy.hasAdapter()){
-                create = EntityAdapterProxy.createPrimaryValue(obj, columns);
-            }
+            boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             if(!create && null != generator){
                 generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
                 //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
@@ -267,7 +264,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         for(int i=0; i<size; i++){
             String key = keys.get(i);
             Object value = null;
-            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
                 value = BeanUtil.getFieldValue(obj, key);
@@ -778,11 +775,9 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(null != columns && columns.size() >0 ){
             keys = columns;
         }else{
-            if(EntityAdapterProxy.hasAdapter()){
-                keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)));
-            }
+            keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)));
         }
-        if(EntityAdapterProxy.hasAdapter()){
+        if(EntityAdapterProxy.hasAdapter(obj.getClass())){
             primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
         }else{
             primaryKeys = new ArrayList<>();
@@ -809,7 +804,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             for(int i=0; i<size; i++){
                 String key = keys.get(i);
                 Object value = null;
-                if(EntityAdapterProxy.hasAdapter()){
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())){
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
@@ -840,7 +835,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     builder.append(" AND ");
                     SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                     updateColumns.add(pk);
-                    if (EntityAdapterProxy.hasAdapter()) {
+                    if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
                         // values.add(BeanUtil.getFieldValue(obj, field));
                         run.addValues(Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, field), ConfigTable.IS_AUTO_SPLIT_ARRAY);
@@ -1031,9 +1026,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             if(obj instanceof DataRow){
                 keys = ((DataRow)obj).getPrimaryKeys();
             }else{
-                if(EntityAdapterProxy.hasAdapter()){
-                    keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
-                }
+                keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
             }
         }
         int size = keys.size();
@@ -1046,7 +1039,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
                 SQLUtil.delimiter(builder, "d."+key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
                 Object value = null;
-                if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter()){
+                if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
                     value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                 }else{
                     value = BeanUtil.getFieldValue(obj, key);

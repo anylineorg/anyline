@@ -786,9 +786,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             ks += "${"+key+"}";
         }
         if (null != rows) {
-            int size = rows.size();
-            for (int i = 0; i < size; i++) {
-                DataRow row = rows.get(i);
+            for (DataRow row:rows) {
                 // 查看result中是否已存在
                 String tag = row.getString(ks);
                 if(chks.containsKey(tag)){
@@ -4033,7 +4031,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public boolean remove(Object o) {
-        return rows.remove(o);
+        boolean result = false;
+        int size = rows.size();
+        for(int i=size-1; i>=0; i--){
+            DataRow item = rows.get(i);
+            if(item == o){
+                rows.remove(item);
+                result = true;
+            }
+        }
+        return result;
     }
 
     public boolean removeAll(Collection<?> c) {

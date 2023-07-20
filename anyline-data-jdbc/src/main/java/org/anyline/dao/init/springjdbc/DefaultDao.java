@@ -389,9 +389,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				//text xml格式的 不检测表名，避免一下步根据表名检测表结构
 				if(prepare instanceof TextPrepare || prepare instanceof XMLPrepare){
 				}else {
-					if (EntityAdapterProxy.hasAdapter()) {
-						prepare.setDataSource(EntityAdapterProxy.table(clazz).getName());
-					}
+					prepare.setDataSource(EntityAdapterProxy.table(clazz, true));
 				}
 			}
 			JDBCAdapter adapter = runtime.getAdapter();
@@ -936,12 +934,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			DataRow row = (DataRow)obj;
 			return row.isNew();
 		}else{
-			if(EntityAdapterProxy.hasAdapter()){
-				Map<String,Object> values = EntityAdapterProxy.primaryValues(obj);
-				for(Map.Entry entry:values.entrySet()){
-					if(BasicUtil.isNotEmpty(entry.getValue())){
-						return false;
-					}
+			Map<String,Object> values = EntityAdapterProxy.primaryValues(obj);
+			for(Map.Entry entry:values.entrySet()){
+				if(BasicUtil.isNotEmpty(entry.getValue())){
+					return false;
 				}
 			}
 		}
@@ -1525,7 +1521,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataSet rows = select(runtime, random, table, sql, values);
 		for(DataRow row:rows){
 			T entity = null;
-			if(EntityAdapterProxy.hasAdapter()){
+			if(EntityAdapterProxy.hasAdapter(clazz)){
 				//jdbc adapter需要参与 或者metadata里添加colun type
 				entity = EntityAdapterProxy.entity(clazz, row, null);
 			}else{
