@@ -92,6 +92,7 @@ public class InterceptorProxy {
         List<DDInterceptor> interceptors = dds.get(action);
         if(null == interceptors){
             interceptors = new ArrayList<>();
+            dds.put(action, interceptors);
         }
         interceptors.add(interceptor);
     }
