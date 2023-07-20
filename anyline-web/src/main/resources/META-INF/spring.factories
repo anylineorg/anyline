@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.web.listener.ConfigListener,org.anyline.web.controller.AbstractBasicController
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.anyline.web.listener.ConfigListener
