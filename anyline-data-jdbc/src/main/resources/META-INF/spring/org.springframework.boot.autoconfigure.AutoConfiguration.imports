@@ -7,4 +7,3 @@ org.anyline.proxy.InterceptorProxy
 org.anyline.dao.init.springjdbc.DefaultDao
 org.anyline.service.init.DefaultService
 org.anyline.data.jdbc.util.SQLAdapterUtil
-org.anyline.web.controller.AbstractBasicController
