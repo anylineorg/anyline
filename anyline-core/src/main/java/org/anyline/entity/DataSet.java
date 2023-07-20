@@ -3520,25 +3520,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataSet
      */
     public DataSet group(String[] fixs, String... keys) {
-        DataSet result = distinct(BeanUtil.merge(fixs, keys));
-        result.dispatchs(true,false, this, keys);
-        return result;
+        return group(BeanUtil.merge(fixs, keys));
     }
     public DataSet group(List<String> fixs, String... keys) {
-        DataSet result = distinct(BeanUtil.merge(fixs, keys));
-        result.dispatchs(true,false, this, keys);
-        return result;
+        return group(BeanUtil.merge(fixs, keys));
     }
-
-    public DataSet group(String... keys) {
+    public DataSet group(String field, Compare compare, String... keys) {
         DataSet groups = distinct(keys);
-        groups.dispatchs(true,false, this, keys);
+        groups.dispatchs(compare, field, true, false, this, keys);
         return groups;
     }
 
+    public DataSet group(String... keys) {
+        return group("ITEMS" ,Compare.EQUAL, keys);
+    }
     /**
      * 分组生聚合
-     * @param items 是否保留条目 如果保留会在每个分组中添加ITEMS属性用来保存当前分组中的条件
+     * @param items 是否保留条目 如果为空则不保留 否则保留会在每个分组中添加items属性用来保存当前分组中的条件
      * @param field 聚合结果保存属性 如果不指定则以 factor_agg命名 如 age_avg
      * @param factor 计算因子属性 取条目中的factor属性的值参与计算
      * @param agg 聚合公式 参考Aggregation枚举
@@ -3558,21 +3556,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataSet
      */
-    public DataSet group(boolean items, String field, String factor, Aggregation agg, int scale, int round, String ... keys){
-        DataSet groups = group(keys);
+    public DataSet group(String items, String field, String factor, Aggregation agg, int scale, int round, String ... keys){
+        String items_key = "ITEMS";
+        if(BasicUtil.isNotEmpty(items)){
+            items_key = items;
+        }
+        DataSet groups = group(items_key, Compare.EQUAL, keys);
         for(DataRow group:groups){
             group.put(field, group.getItems().agg(agg, scale, round, factor));
-            if(!items){
-                group.remove("ITEMS");
+            if(BasicUtil.isEmpty(items)){
+                group.remove(items_key);
             }
         }
         return groups;
     }
     public DataSet group(String factor, Aggregation agg, String ... keys){
-        return group(false, factor+"_"+agg.getCode(), factor, agg, 0, 0, keys);
+        String field = agg.getCode();
+        if(BasicUtil.isNotEmpty(factor)){
+            field = factor + "_" + field;
+        }
+        return group(null, field, factor, agg, 0, 0, keys);
     }
     public DataSet group(Aggregation agg, String ... keys){
-        return group(false, null, agg.getCode(), agg,  0, 0, keys);
+        return group(null, agg.getCode(), null, agg,  0, 0, keys);
     }
     public Object agg(String type, String key){
         Aggregation agg = Aggregation.valueOf(type);
