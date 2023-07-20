@@ -640,7 +640,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public int count(boolean empty, String  key){
         int result = 0;
-        if(empty){
+        if(empty || BasicUtil.isEmpty(key)){
             result = rows.size();
         }else {
             for (DataRow row:rows) {
