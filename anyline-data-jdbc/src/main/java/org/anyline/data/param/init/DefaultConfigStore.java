@@ -50,6 +50,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected PageNavi navi;
 	protected OrderStore orders;		// 排序依据
 	protected GroupStore groups;
+	protected List<String> columns = new ArrayList<>();
 
 	public DefaultConfigStore init(){
 		return new DefaultConfigStore();
@@ -756,10 +757,6 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return this;
 	}
-	public ConfigStore clone(){
-		ConfigStore store = new DefaultConfigStore();
-		return store;
-	}
 
 	@Override 
 	public ConfigStore setValue(Map<String, Object> values) {
@@ -777,6 +774,19 @@ public class DefaultConfigStore implements ConfigStore {
 		return this; 
 	}
 
+	/**
+	 * 设置城要查询的列
+	 * @param columns 需要查询的列
+	 * @return ConfigStore
+	 */
+	public ConfigStore columns(String ... columns){
+		if(null != columns){
+			for(String column:columns){
+				this.columns.add(column);
+			}
+		}
+		return this;
+	}
 	@Override
 	public boolean isValid() {
 		if(null != chain){
@@ -787,5 +797,10 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		return true;
+	}
+
+	public ConfigStore clone(){
+		ConfigStore store = new DefaultConfigStore();
+		return store;
 	}
 }
