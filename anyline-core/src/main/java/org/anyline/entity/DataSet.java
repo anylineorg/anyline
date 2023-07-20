@@ -626,7 +626,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return int
      */
     public int total(){
-        if(null == navi){
+        if(null != navi){
             return navi.getTotalRow();
         }
         return rows.size();
