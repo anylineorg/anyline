@@ -341,6 +341,15 @@ public interface ConfigStore {
 	ConfigStore setTotalLazy(long ms);
 
 	boolean isValid();
+
+	/**
+	 * 设置城要查询的列
+	 * @param columns 需要查询的列
+	 * @return ConfigStore
+	 */
+	ConfigStore columns(String ... columns);
+	List<String> columns();
+
 } 
  
  

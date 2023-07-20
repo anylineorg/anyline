@@ -787,6 +787,9 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return this;
 	}
+	public List<String> columns(){
+		return columns;
+	}
 	@Override
 	public boolean isValid() {
 		if(null != chain){
