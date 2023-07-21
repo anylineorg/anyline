@@ -281,6 +281,9 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				if(idx > 0){
 					builder.append(",");
 				}
+				if(tmp.equalsIgnoreCase("table")){
+					tmp = "BASE TABLE";
+				}
 				builder.append("'").append(tmp).append("'");
 				idx ++;
 			}

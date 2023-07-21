@@ -3900,11 +3900,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(Table meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TABLE_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -3934,7 +3933,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4104,11 +4103,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Table meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TABLE_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -4138,7 +4136,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4163,7 +4161,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	public boolean rename(JDBCRuntime runtime, String random, Table origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TABLE_RENAME;
 		if(null == runtime){
 			runtime = runtime();
@@ -4172,8 +4169,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			random = random();
 		}
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -4203,7 +4199,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -4219,11 +4215,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(View meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.VIEW_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -4253,7 +4248,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4262,11 +4257,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(View meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.VIEW_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -4296,7 +4290,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 
@@ -4306,11 +4300,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(View meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.VIEW_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -4340,7 +4333,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4353,15 +4346,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	public boolean rename(JDBCRuntime runtime, View origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.VIEW_RENAME;
 		String random = random();
 		origin.setNewName(name);
 		if(null == runtime){
 			runtime = runtime();
 		}
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -4391,7 +4382,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -4408,11 +4399,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(MasterTable meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.MASTER_TABLE_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -4442,7 +4432,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4539,11 +4529,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(MasterTable meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.MASTER_TABLE_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -4573,7 +4562,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4585,7 +4574,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	public boolean rename(JDBCRuntime runtime, MasterTable origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.MASTER_TABLE_RENAME;
 		if(null == runtime){
 			runtime = runtime();
@@ -4593,7 +4581,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random();
 		origin.setNewName(name);
 
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -4640,11 +4628,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(PartitionTable meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PARTITION_TABLE_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -4674,7 +4661,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4744,11 +4731,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(PartitionTable meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PARTITION_TABLE_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -4778,7 +4764,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4791,7 +4777,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	protected boolean rename(JDBCRuntime runtime, String random, PartitionTable origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PARTITION_TABLE_RENAME;
 		origin.setNewName(name);
 		if(null == random){
@@ -4800,7 +4785,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -4830,7 +4815,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -4848,11 +4833,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Column meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.COLUMN_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
@@ -4882,7 +4866,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4912,11 +4896,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Column meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.COLUMN_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -4946,7 +4929,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -4954,19 +4937,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 修改列
-	 * @param column 列
+	 * @param meta 列
 	 * @param trigger 是否触发异常事件
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
 	private boolean alter(Table table, Column meta, boolean trigger) throws Exception{
-
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.COLUMN_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -5001,14 +4982,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][namer:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = SWITCH.CONTINUE;
 			if(null != ddListener){
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5018,13 +4999,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(Column origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.COLUMN_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -5054,7 +5033,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -5073,11 +5052,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Tag meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TAG_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
@@ -5107,7 +5085,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5137,11 +5115,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Tag meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TAG_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -5171,7 +5148,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5186,11 +5163,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	private boolean alter(Table table, Tag meta, boolean trigger) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TAG_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -5232,7 +5208,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5241,13 +5217,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(Tag origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TAG_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -5277,7 +5251,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -5294,11 +5268,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(PrimaryKey meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PRIMARY_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
@@ -5328,7 +5301,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5354,11 +5327,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, PrimaryKey meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PRIMARY_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -5388,7 +5360,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 
@@ -5397,11 +5369,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(PrimaryKey meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PRIMARY_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -5431,7 +5402,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5440,13 +5411,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(PrimaryKey origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PRIMARY_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -5476,7 +5445,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -5492,11 +5461,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(ForeignKey meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.FOREIGN_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
@@ -5526,7 +5494,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5552,11 +5520,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, ForeignKey meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TRIGGER_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -5586,7 +5553,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 
@@ -5595,11 +5562,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(ForeignKey meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.FOREIGN_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -5629,7 +5595,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5638,13 +5604,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(ForeignKey origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.FOREIGN_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -5674,7 +5638,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -5689,11 +5653,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Index meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.INDEX_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
@@ -5723,7 +5686,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5749,11 +5712,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, Index index) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.INDEX_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, index);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, index);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, index);
 		}
@@ -5783,7 +5745,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, index, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, index, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, index, runs, result, millis);
 			}
 		}
 
@@ -5792,11 +5754,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Index meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.INDEX_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -5826,7 +5787,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5834,13 +5795,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(Index origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.INDEX_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -5870,7 +5829,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -5886,11 +5845,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Constraint meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.CONSTRAINT_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAdd(runtime, random, meta);
 		}
@@ -5920,7 +5878,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5946,11 +5904,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Table table, Constraint meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.CONSTRAINT_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -5980,7 +5937,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -5988,11 +5945,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Constraint meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.CONSTRAINT_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -6022,7 +5978,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -6030,13 +5986,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(Constraint origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.CONSTRAINT_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
 
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -6066,7 +6021,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -6083,11 +6038,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Trigger meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TRIGGER_ADD;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -6117,7 +6071,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -6127,11 +6081,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Trigger meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TRIGGER_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -6161,20 +6114,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
-
 		return result;
 	}
 	@Override
 	public boolean drop(Trigger meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TRIGGER_DROP;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -6204,7 +6155,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -6212,13 +6163,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(Trigger origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.TRIGGER_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
@@ -6248,7 +6197,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
 			}
 		}
 		return result;
@@ -6265,11 +6214,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(Procedure meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		DDL action = DDL.PRIMARY_ADD;
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random,  action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random,  action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -6299,7 +6247,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterCreate(runtime, random, meta, runs, result,  millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -6309,12 +6257,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Procedure meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.PROCEDURE_ALTER;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareAlter(runtime, random, meta);
 		}
@@ -6341,7 +6287,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -6349,11 +6295,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean drop(Procedure meta) throws Exception {
 		boolean result = true;
-		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		DDL action = DDL.PROCEDURE_DROP;
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -6383,7 +6328,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == SWITCH.CONTINUE){
-				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -6392,19 +6337,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean rename(Procedure origin, String name) throws Exception {
 		boolean result = false;
 		DDL action = DDL.PROCEDURE_RENAME;
-		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		origin.setNewName(name);
 		String random = random();
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareRename(runtime, random, origin);
 		}
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
-
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 		List<Run> runs = adapter.buildRenameRunSQL(origin);
@@ -6445,11 +6387,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(Function meta) throws Exception {
 		boolean result = true;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.FUNCTION_CREATE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -6483,11 +6424,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean alter(Function meta) throws Exception{
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		DDL action = DDL.FUNCTION_ALTER;
-		swt  = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt  = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.prepareDrop(runtime, random, meta);
 		}
@@ -6513,7 +6453,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(runs.size() > 1 && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[action:{}][name:{}][sqls:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
 			}
-
 			swt = SWITCH.CONTINUE;
 			if(null != ddListener){
 				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
@@ -6521,19 +6460,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(swt == SWITCH.CONTINUE){
 				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
-
 		}
-
 		return result;
 	}
 	@Override
 	public boolean drop(Function meta) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		DDL action = DDL.FUNCTION_DROP;
-		swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
@@ -6575,13 +6511,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean rename(Function origin, String name) throws Exception {
 		boolean result = false;
-		SWITCH swt = SWITCH.CONTINUE;
 		DDL action = DDL.FUNCTION_RENAME;
 		JDBCRuntime runtime = runtime();
 		String random = random();
 		origin.setNewName(name);
-
-		swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
 		if(swt == SWITCH.BREAK){
 			return false;
 		}
