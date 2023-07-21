@@ -21,6 +21,7 @@ public enum DatabaseType  implements Serializable {
         GaiaDB  			("百度GaiaDB-X"	, KEY_CASE.SRC,""),
         GreatDB  			("万里数据库"	, KEY_CASE.SRC,""),
         H2  				("H2"			, KEY_CASE.SRC,"org.h2.Driver"),
+        HANA  				("SAP HANA"    , KEY_CASE.SRC,"com.sap.db.jdbc.Driver"),
         HashData  			("酷克数据"	    , KEY_CASE.SRC,""),
         HighGo				("瀚高"			, KEY_CASE.SRC,"com.highgo.jdbc.Driver"),
         HotDB  			    ("热璞"         , KEY_CASE.SRC,""),

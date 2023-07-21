@@ -209,7 +209,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg
      */
-    CHAR("CHAR", new DatabaseType[]{MYSQL, PostgreSQL, Informix}, String.class, false, true){
+    CHAR("CHAR", new DatabaseType[]{MYSQL, PostgreSQL, Informix, HANA}, String.class, false, true){
         
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -242,13 +242,13 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * oracle
      */
-    ,NCLOB("NCLOB", new DatabaseType[]{ORACLE}, String.class, true, true){
+    ,NCLOB("NCLOB", new DatabaseType[]{ORACLE, HANA}, String.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
      * mssql
      */
-    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL, Informix}, String.class, false, true){
+    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL, Informix, HANA}, String.class, false, true){
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -290,7 +290,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg,oracle,Informix(长度不超过 255 )
      */
-    ,VARCHAR("VARCHAR", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, Informix}, String.class, false, true){
+    ,VARCHAR("VARCHAR", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, Informix, HANA}, String.class, false, true){
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     ,LVARCHAR("LVARCHAR", new DatabaseType[]{Informix}, String.class, false, true){
@@ -334,11 +334,11 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(byte[]),mssql
      */
-    ,BINARY("BINARY", new DatabaseType[]{MYSQL, MSSQL}, byte[].class, false, true)
+    ,BINARY("BINARY", new DatabaseType[]{MYSQL, MSSQL, HANA}, byte[].class, false, true)
     /**
      * mysql(byte[]),mssql
      */
-    ,VARBINARY("VARBINARY", new DatabaseType[]{MYSQL, MSSQL}, byte[].class, false, true)
+    ,VARBINARY("VARBINARY", new DatabaseType[]{MYSQL, MSSQL, HANA}, byte[].class, false, true)
 
 
     /* *****************************************************************************************************************
@@ -487,7 +487,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql
      */
-    ,BIGINT("BIGINT", new DatabaseType[]{MYSQL, Informix}, Long.class, true, true)
+    ,BIGINT("BIGINT", new DatabaseType[]{MYSQL, Informix, HANA}, Long.class, true, true)
     /**
      * mysql
      */
@@ -495,20 +495,20 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,sqlite
      */
-    ,INTEGER("MEDIUMINT", new DatabaseType[]{MYSQL, SQLite}, Integer.class, true, true)
+    ,INTEGER("MEDIUMINT", new DatabaseType[]{MYSQL, SQLite, HANA}, Integer.class, true, true)
     /**
      * mysql
      */
-    ,SMALLINT("SMALLINT", new DatabaseType[]{MYSQL, Informix}, Integer.class, true, true)
+    ,SMALLINT("SMALLINT", new DatabaseType[]{MYSQL, Informix, HANA}, Integer.class, true, true)
     /**
      * mysql
      */
-    ,TINYINT("TINYINT", new DatabaseType[]{MYSQL}, Integer.class, true, true){
+    ,TINYINT("TINYINT", new DatabaseType[]{MYSQL, HANA}, Integer.class, true, true){
     }
     /**
      * pg
      */
-    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL, Informix}, Boolean.class, true, true)
+    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL, Informix, HANA}, Boolean.class, true, true)
     /**
      * pg
      */
@@ -524,7 +524,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg,oracle
      */
-    ,DECIMAL("DECIMAL", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, Informix}, BigDecimal.class, false, false){
+    ,DECIMAL("DECIMAL", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, Informix, HANA}, BigDecimal.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
                 value = def;
@@ -536,10 +536,16 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return result;
         }
     }
+    ,SMALLDECIMAL("SMALLDECIMAL", new DatabaseType[]{HANA}, BigDecimal.class, false, false){
+        public Object write(Object value, Object def, boolean placeholder){
+            return DECIMAL.write(value, def, placeholder);
+        }
+    }
+    //
     /**
      * mysql
      */
-    ,DOUBLE("DOUBLE", new DatabaseType[]{MYSQL, Informix}, Double.class, false, false){
+    ,DOUBLE("DOUBLE", new DatabaseType[]{MYSQL, Informix, HANA}, Double.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
                 value = def;
@@ -636,7 +642,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(Double),sqlite
      */
-    ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite, Informix}, Double.class, false, false){
+    ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite, Informix, HANA}, Double.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
@@ -648,7 +654,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg
      */
-    ,DATE("DATE", new DatabaseType[]{MYSQL, PostgreSQL, Informix}, java.sql.Date.class, false, false){
+    ,DATE("DATE", new DatabaseType[]{MYSQL, PostgreSQL, Informix, HANA}, java.sql.Date.class, false, false){
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
                 value = def;
@@ -717,9 +723,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         public Object write(Object value, Object def, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
     /**
+     * mssql
+     */
+    ,SECONDDATE("SECONDDATE", new DatabaseType[]{HANA}, java.util.Date.class, true, true){
+        public Object write(Object value, Object def, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+    }
+    /**
      * mysql,pg
      */
-    ,TIME("TIME", new DatabaseType[]{MYSQL, PostgreSQL}, java.sql.Time.class, true, true){
+    ,TIME("TIME", new DatabaseType[]{MYSQL, PostgreSQL, HANA}, java.sql.Time.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
                 value = def;
@@ -751,7 +763,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg,oracle
      */
-    ,TIMESTAMP("TIMESTAMP", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE}, java.sql.Timestamp.class, true, true){
+    ,TIMESTAMP("TIMESTAMP", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, HANA}, java.sql.Timestamp.class, true, true){
         public Object write(Object value, Object def, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
@@ -788,7 +800,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(byte[]),  ,oracle,sqlite
      */
-    ,BLOB("BLOB", new DatabaseType[]{MYSQL, ORACLE, SQLite, Informix}, byte[].class, true, true){
+    ,BLOB("BLOB", new DatabaseType[]{MYSQL, ORACLE, SQLite, Informix, HANA}, byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(clazz == byte[].class){
 
@@ -879,20 +891,6 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             if(null == value){
                 return value;
             }
-            /*Point point = BasicUtil.parsePoint(value);
-            if(null == clazz){
-                value = point;
-            }else if(null != point){
-                if (clazz == Point.class) {
-                    value = point;
-                } else if (clazz == double[].class) {
-                    value = BeanUtil.Double2double(point.getArray(), 0);
-                } else if (clazz == Double[].class) {
-                    value = point.getArray();
-                } else if (clazz == byte[].class) {
-                    value = point.bytes();
-                }
-            }*/
             return value;
         }
         public Object write(Object value, Object def, boolean placeholder){
@@ -902,22 +900,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             if(value instanceof byte[]){
                 return value;
             }
-           /* if(value instanceof Point){
-                value = ((Point)value).bytes();
-            }else if(value instanceof double[]){
-                double[] ds = (double[]) value;
-                if(ds.length == 2){
-                    if (ds.length >= 2) {
-                        value = new Point(ds[0], ds[1]).bytes();
-                    }
-                }
-            }else if(value instanceof Double[]){
-                Double[] ds = (Double[]) value;
-                if(ds.length == 2 && null != ds[0] && null != ds[1]){
-                    value = new Point(ds[0], ds[1]).bytes();
-                }
-            }*/
             return value;
+        }
+    }
+    ,ST_POINT("ST_POINT", new DatabaseType[]{MYSQL, PostgreSQL}, Point.class, byte[].class, true, true){
+        public Object read(Object value, Object def, Class clazz){
+            return POINT.read(value, def, clazz);
+        }
+        public Object write(Object value, Object def, boolean placeholder){
+            return POINT.write(value, def, placeholder);
         }
     }
     /**
@@ -936,6 +927,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * mysql
      */
     ,GEOMETRY("GEOMETRY", new DatabaseType[]{MYSQL}, byte[].class, true, true)
+    ,ST_GEOMETRY("ST_GEOMETRY", new DatabaseType[]{HANA}, byte[].class, true, true)
     /**
      * mysql
      */

@@ -145,7 +145,8 @@
 		<module>anyline-start/anyline-start-mvc-jsp</module>
 		<module>anyline-start/anyline-start-mvc-jsp-mysql</module>
 		<module>anyline-start/anyline-start-mvc-mysql</module>
-	</modules>
+        <module>anyline-data-jdbc-dialect/anyline-data-jdbc-hana</module>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
