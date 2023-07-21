@@ -936,12 +936,46 @@ public class NumberUtil {
 				qty ++;
 			}
 		}
+		if(qty > 1){
+			return var.divide(new BigDecimal(qty-1), scale, round);
+		}
+		return null;
+	}
+	public static BigDecimal vara(List<BigDecimal> list,  int scale, int round) {
+		int qty = list.size();
+		BigDecimal avg = avga(list, scale, round);
+		BigDecimal var = BigDecimal.ZERO;
+		for (BigDecimal item : list) {
+			if(null != item){
+				BigDecimal sub = item.subtract(avg);
+				var = var.add(sub.multiply(sub));
+			}
+		}
+		if(qty > 1){
+			return var.divide(new BigDecimal(qty-1), scale, round);
+		}
+		return null;
+	}
+
+	public static BigDecimal varp(List<BigDecimal> list,  int scale, int round) {
+		int qty = 0;
+		BigDecimal avg = avg(list, scale, round);
+		BigDecimal var = BigDecimal.ZERO;
+		for (BigDecimal item : list) {
+			if(null != item){
+				BigDecimal sub = item.subtract(avg);
+				var = var.add(sub.multiply(sub));
+			}
+			if(null != item){
+				qty ++;
+			}
+		}
 		if(qty > 0){
 			return var.divide(new BigDecimal(qty), scale, round);
 		}
 		return null;
 	}
-	public static BigDecimal vara(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal varpa(List<BigDecimal> list,  int scale, int round) {
 		int qty = list.size();
 		BigDecimal avg = avga(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
@@ -956,10 +990,6 @@ public class NumberUtil {
 		}
 		return null;
 	}
-	public static BigDecimal varp(List<BigDecimal> list, boolean empty, int scale, int round) {
-		return null;
-	}
-
 	/**
 	 * 标准差(空值不参与)
 	 * 标准差σ=sqrt(s^2)，即标准差=方差的平方根
