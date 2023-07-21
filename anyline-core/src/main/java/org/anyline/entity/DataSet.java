@@ -3680,8 +3680,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 标准差
-     * 标准差σ=sqrt(s^2)，即标准差=方差的平方根
+     * 抽样标准差
+     * 抽样标准差σ=sqrt(s^2)，即标准差=方差的平方根
      * @param key 取值属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
@@ -3706,6 +3706,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
         List<BigDecimal> values = getDecimals(key, null);
         return NumberUtil.stdeva(values, scale, round);
     }
+    /**
+     * 总体标准差
+     * 总体标准差σ=sqrt(s^2)，即标准差=方差的平方根
+     * @param key 取值属性
+     * @param scale 小数位
+     * @param round 舍入模式 参考BigDecimal静态常量
+     *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_HALF_UP   = 4 四舍五入<br/>
+     *       ROUND_HALF_DOWN = 5 五舍六入<br/>
+     *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
+     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
+     * @return 标准差
+     */
     public BigDecimal stdevp(int scale, int round, String key){
         List<BigDecimal> values = getDecimals(key, null);
         return NumberUtil.stdevp(values, scale, round);
