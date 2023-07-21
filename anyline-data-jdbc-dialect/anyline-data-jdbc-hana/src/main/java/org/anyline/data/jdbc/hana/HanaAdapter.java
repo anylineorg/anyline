@@ -1656,7 +1656,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		return super.increment(builder, column);
+		///GENERATED ALWAYS AS IDENTITY
+		builder.append(" GENERATED ALWAYS AS IDENTITY");
+		return builder;
 	}
 
 

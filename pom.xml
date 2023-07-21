@@ -59,6 +59,7 @@
 		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-goldendb</module>			<!--中兴-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-greatdb</module>					<!--万里数据库-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hana</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-highgo</module>						<!--瀚高-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hsqldb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-influxdb</module>
@@ -145,7 +146,6 @@
 		<module>anyline-start/anyline-start-mvc-jsp</module>
 		<module>anyline-start/anyline-start-mvc-jsp-mysql</module>
 		<module>anyline-start/anyline-start-mvc-mysql</module>
-        <module>anyline-data-jdbc-dialect/anyline-data-jdbc-hana</module>
     </modules>
 	<build>
 		<plugins>

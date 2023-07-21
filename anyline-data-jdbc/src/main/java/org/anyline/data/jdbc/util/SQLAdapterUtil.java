@@ -186,6 +186,8 @@ With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
 			adapter =  adapters.get(DatabaseType.Neo4j.name());
 		}else if(support(DatabaseType.Neo4j) && name.contains("uxdb")){
 			adapter =  adapters.get(DatabaseType.UXDB.name());
+		}else if(support(DatabaseType.HANA) && name.contains("sap")){
+			adapter =  adapters.get(DatabaseType.HANA.name());
 		}
 		if(null != adapter) {
 			adapters.put("al-ds:"+datasource, adapter);
