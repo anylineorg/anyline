@@ -10,7 +10,7 @@
 低代码平台、数据中台等场景需要生成SQL(只生成不执行)参考  
 [【JDBCAdapter】](http://doc.anyline.org/ss/01_1193)
 或
-[【AnylineDao】](https://gitee.com/anyline/anyline/blob/master/anyline-data-jdbc/src/main/java/org/anyline/dao/init/springjdbc/DefaultDao.java)  
+[【AnylineDao】](https://gitee.com/anyline/anyline/blob/master/anyline-data-jdbc/src/main/java/org/anyline/dao/init/springjdbc/DefaultDao.java)
 
 ***快速开始请参考示例源码(各种各样最简单的hello world):***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
@@ -19,7 +19,7 @@
 ***一个字都不想看，就想直接启动项目的下载这个源码:***  
 [https://gitee.com/anyline/anyline-simple-clear](https://gitee.com/anyline/anyline-simple-clear)
 
-有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致,有问题请联系  
+有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致,有问题请联系
 
 [<img src="http://cdn.anyline.org/img/user/alq.png" width="150">](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="http://cdn.anyline.org/img/user/alg.jpg" width="150">  
@@ -29,57 +29,60 @@
 
 ## 简介
 AnyLine的核心是一个基于spring-jdbc生态的兼容各种数据库的(No-ORM)DBUtil。   
-  其重点是:
+其重点是:
 - 以最简单、快速、动态、统一的方生成或式执行DML与DDL,读写表结构、索引等元数据。
 
 
-### 与ORM最明显的区别是：    
-- 1）摒弃了各种繁琐呆板的实体类。以及相关的service/dao/mapping      
-- 2）强化了针对结果集的数据二次处理能力  
+### 与ORM最明显的区别是：
+- 1）摒弃了各种繁琐呆板的实体类。以及相关的service/dao/mapping
+- 2）强化了针对结果集的数据二次处理能力
 ### 换个方式说：
 - 1）让数据库操作更简单  
-   不要一动就是一整套的service/dao/mapping/VOPODTO有用没用的各种O，生成个SQL各种判断遍历。
+  不要一动就是一整套的service/dao/mapping/VOPODTO有用没用的各种O，生成个SQL各种判断遍历。
 - 2）结果集的数学计算尽量作到一键...一键...  
-   而不是像ORM提供的entity,map,list除了提供个get/set/foreach，稍微有点用的又要麻烦程序员各种判断各种遍历
+  而不是像ORM提供的entity,map,list除了提供个get/set/foreach，稍微有点用的又要麻烦程序员各种判断各种遍历
 
 经常用于一些有动态需求的场景，如数据中台、低代码开发平台、可视化数据源、数据清洗、动态表单等。参考【[适用场景](http://doc.anyline.org/ss/ed_14)】
 
-## 为什么还要要有AnyLine  
-现成的spring-data-jdbc,hibernate,mybatis还不满足么   
+## 为什么还要要有AnyLine
+AnyLine的用户按来源大概分两类，一类是技术选型过程中选到了AnyLine,这类用户既然有造型能力，那他需要什么以及AnyLine能提供什么自己是非常清晰的。对于这类用户也不需要解释什么了。  
+主要是第二类用户，是参与的项目中已经有了AnyLine，属于被动接收。  
+对于这类用户首先会有个疑问：已经了有spring-data-jdbc,hibernate,mybatis 为什么还要有AnyLine
+
 如果只是简单的CURD,那确实不需要，但实际应用中发现太难了。
 
-### 一、既要 简单方便。  
- 机械重复的工作不要让开发人员费心。  
+### 一、既要 简单方便。
+机械重复的工作不要让开发人员费心。
 
-#### 动态场景  
+#### 动态场景
 如果我们需要开发一个数据中台时或者一个数据清洗插件时，这时还不知道会有什么数据有什么实体，
 那只能定义一个高度抽象的实体了，想来想去也只有Map可以胜任。    
 当我们需要用Map处理数据或数据运算时，如删除所有值为空的属性包括,"",null,"null","\n","   "等各种乱七八糟的情况, 计算类型=1的这部分maps的标准方差，  
-这时就会发现Map太抽象了，要处理的细节太多了。除了GET/SET好像也没别的可施展了。  
+这时就会发现Map太抽象了，要处理的细节太多了。除了GET/SET好像也没别的可施展了。
 
 再比如多数据源的情况下，helloword里经常是在方法配置个拦截器来切换数据源。  
 在同一个方法里还能切换个数据源了？  
 数据中台里有可能有几百几千个数据源，还得配上几千个方法？  
-数据源是用户动态提交的呢怎么拦截呢？  
+数据源是用户动态提交的呢怎么拦截呢？
 
-#### 重复工作  
+#### 重复工作
 比如一个订单可能有几十上百列的数据，每个分析师需要根据不同的列查询。  
 有那么几十列上同时需要<>=!=IN FIND_IN_SET多种查询方式算正常吧  
 不能让开发人员挨个写一遍吧，写一遍是没问题，但修改起来可就不是一遍两遍的事了    
 所以需要提供一个字典让用户自己去配置，低代码开发平台、自定义报表、动态查询条件应该经常有这个需求。  
-当用户提交上来一个列名、一个运算算、一组值，怎么执行SQL呢，不能在代码中各种判断吧，如果=怎么合成SQL，如果IN怎么合成SQL  
+当用户提交上来一个列名、一个运算算、一组值，怎么执行SQL呢，不能在代码中各种判断吧，如果=怎么合成SQL，如果IN怎么合成SQL
 
-#### 多方言  
-DML方面hibernate还可以处理，DDL呢？国产库呢？  
+#### 多方言
+DML方面hibernate还可以处理，DDL呢？国产库呢？
 
-### 二、又要 在适当的时机暴露足够低层接口和数据结构  
+### 二、又要 在适当的时机暴露足够低层接口和数据结构
 没用的东西少封装，不要在需要的时候再费事拆开，碍手碍脚。  
 比如datasource/sql还需要暴露出来  
-不能因为封装成entity了就不管数据类型了  
+不能因为封装成entity了就不管数据类型了
 
 当然这种问题很难有定论，只能在实际应用过程中根据情况取舍。  
 可以参考【[适用场景](http://doc.anyline.org/ss/ed_14)】和【[实战对比](http://doc.anyline.org/ss/c9_1153)】中的示例  
-造型之前，当然要搞明白优势劣势，参考【[优势劣势](http://doc.anyline.org/aa/24_3712)】   
+造型之前，当然要搞明白优势劣势，参考【[优势劣势](http://doc.anyline.org/aa/24_3712)】
 
 ## 误解
 当然我们并不是要抛弃Entity或ORM，相反的 AnyLine源码中也使用了多达几十个Entity   
