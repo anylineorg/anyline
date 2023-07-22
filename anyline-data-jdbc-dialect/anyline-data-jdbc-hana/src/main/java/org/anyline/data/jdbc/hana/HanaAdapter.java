@@ -430,27 +430,24 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append(" SELECT * FROM (" );
-		builder.append(" SELECT A.TABLE_NAME, B.COMMENTS, 'TABLE' TABLE_TYPE FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME");
-		builder.append(" UNION ALL ");
-		builder.append(" SELECT A.VIEW_NAME,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
-		builder.append(" ) T WHERE 1=1");
+		builder.append("SELECT SCHEMA_NAME, TABLE_NAME, COMMENTS, 'TABLE' AS TABLE_TYPE FROM public.tables WHERE 1=1");
 
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND SCHEMA_NAME = '").append(schema).append("'");
+		}
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
 		}
-		if(BasicUtil.isNotEmpty(types)){
-			String[] tmps = types.split(",");
-			builder.append(" AND TABLE_TYPE IN(");
-			int idx = 0;
-			for(String tmp:tmps){
-				if(idx > 0){
-					builder.append(",");
-				}
-				builder.append("'").append(tmp).append("'");
-				idx ++;
+		if(null != types && types.toUpperCase().contains("VIEW")){
+			builder.append("UNION ALL \n");
+			builder.append("SELECT SCHEMA_NAME, VIEW_NAME, COMMENTS, 'VIEW' AS TABLE_TYPE FROM public.views WHERE 1=1");
+
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND SCHEMA_NAME = '").append(schema).append("'");
 			}
-			builder.append(")");
+			if(BasicUtil.isNotEmpty(pattern)){
+				builder.append(" AND VIEW_NAME LIKE '").append(pattern).append("'");
+			}
 		}
 		return runs;
 	}
@@ -466,13 +463,6 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	@Override
 	public List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM USER_TAB_COMMENTS\n");
-		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append("WHERE TABLE_NAME = '").append(pattern).append("'");
-		}
 		return runs;
 	}
 	@Override
@@ -484,7 +474,11 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			String name = row.getString("TABLE_NAME");
 			T table = tables.get(name.toUpperCase());
 			if(null == table){
-				table = (T)new Table();
+				if("VIEW".equals(row.getString("TABLE_TYPE"))){
+					table = (T)new View();
+				}else {
+					table = (T) new Table();
+				}
 			}
 			table.setCatalog(catalog);
 			table.setSchema(schema);
@@ -520,9 +514,13 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT A.VIEW_NAME,A.TEXT DEFINITION_SQL,  B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
+		builder.append("SELECT * FROM  public.views WHERE 1=1");
+
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND SCHEMA_NAME = '").append(schema).append("'");
+		}
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+			builder.append(" AND VIEW_NAME LIKE '").append(pattern).append("'");
 		}
 		return runs;
 	}
@@ -552,7 +550,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			view.setSchema(schema);
 			view.setName(name);
 			view.setComment(row.getString("COMMENTS"));
-			view.setDefinition(row.getString("DEFINITION_SQL"));
+			view.setDefinition(row.getString("DEFINITION"));
 			views.put(name.toUpperCase(), view);
 		}
 		return views;
@@ -701,10 +699,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			name(builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
-			builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM USER_TAB_COLUMNS    M \n");
-			builder.append("LEFT JOIN USER_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n");
+			builder.append("SELECT * FROM "+table.getKeyword()+"_COLUMNS \n");
 			if (BasicUtil.isNotEmpty(table)) {
-				builder.append("WHERE M.TABLE_NAME = '").append(table.getName()).append("'");
+				builder.append("WHERE "+table.getKeyword()+"_NAME = '").append(table.getName()).append("'");
 			}
 		}
 		return runs;
@@ -1960,12 +1957,11 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON ,USER_CONS_COLUMNS COL\n");
-		builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
-		builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
-		builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
+		builder.append("SELECT PUBLIC.INDEX_COLUMNS \n");
+		builder.append("WHERE CONSTRAINT = 'PRIMARY KEY'");
+		builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
 		if(BasicUtil.isNotEmpty(table.getSchema())){
-			builder.append(" AND COL.OWNER = '").append(table.getSchema()).append("'");
+			builder.append(" AND SCHEMA_NAME = '").append(table.getSchema()).append("'");
 		}
 		return runs;
 	}
@@ -1982,7 +1978,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		for(DataRow row:set){
 			if(null == primary){
 				primary = new PrimaryKey();
-				primary.setName(row.getString("CONSTRAINT_NAME"));
+				primary.setName(row.getString("INDEX_NAME"));
 				primary.setTable(table);
 			}
 			String col = row.getString("COLUMN_NAME");
