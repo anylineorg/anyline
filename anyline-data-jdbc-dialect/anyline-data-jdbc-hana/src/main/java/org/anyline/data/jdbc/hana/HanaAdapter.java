@@ -1,4 +1,4 @@
- 
+
 package org.anyline.data.jdbc.hana;
 
 import org.anyline.data.adapter.JDBCAdapter;
@@ -85,45 +85,45 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				first = false;
 				builder.append(name).append(".").append(key).append(" AS ").append(name);
 			}
-			builder.append(" FROM DUAL");
+			builder.append(" FROM DUMMY");
 		}
 		return runs;
 	}
-	@Override 
+	@Override
 	public String parseFinalQuery(Run run){
 		StringBuilder builder = new StringBuilder();
-		PageNavi navi = run.getPageNavi(); 
-		String sql = run.getBaseQuery(); 
-		OrderStore orders = run.getOrderStore(); 
+		PageNavi navi = run.getPageNavi();
+		String sql = run.getBaseQuery();
+		OrderStore orders = run.getOrderStore();
 		int first = 0;
-		String order = ""; 
+		String order = "";
 		if(null != orders){
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
-		} 
+		}
 		if(null != navi){
 			first = navi.getFirstRow();
-		} 
+		}
 		if(null == navi){
-			builder.append(sql).append("\n").append(order); 
+			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
 			builder.append(sql).append("\n").append(order);
 			builder.append(" LIMIT ").append(navi.getPageRows()).append(" OFFSET ").append(first);
-		} 
-		 
-		return builder.toString(); 
-		 
+		}
+
+		return builder.toString();
+
 	}
 
 	@Override
 	public String parseExists(Run run){
-		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
+		String sql = "SELECT 1 AS IS_EXISTS FROM DUMMY WHERE  EXISTS(" + run.getBuilder().toString() + ")";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
 	}
 	@Override
 	public String concat(String ... args){
-		return concatOr(args);
+		return concatFun(args);
 	}
 
 	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
@@ -131,7 +131,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
 		int size = list.size();
 		for(int i=0; i<size; i++){
-			builder.append("SELECT NULL FROM DUAL\n");
+			builder.append("SELECT NULL FROM DUMMY\n");
 			if(i<size-1){
 				builder.append("UNION ALL\n");
 			}
@@ -151,9 +151,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 有序列时 只支持插入同一张表
 	 * INSERT INTO CRM_USER(ID, NAME)
 	 *  SELECT gloable_seq.nextval  AS ID  , M.* FROM (
-	 * 		SELECT  'A1' AS NM FROM  DUAL
-	 * 		UNION ALL SELECT    'A2' FROM DUAL
-	 * 		UNION ALL SELECT    'A3' FROM DUAL
+	 * 		SELECT  'A1' AS NM FROM  DUMMY
+	 * 		UNION ALL SELECT    'A2' FROM DUMMY
+	 * 		UNION ALL SELECT    'A3' FROM DUMMY
 	 * ) M
 	 * @param template JdbcTemplate
 	 * @param run run
@@ -231,7 +231,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			}
 			builder.append("\n\tSELECT ");
 			insertValue(template, run, row, true, true,false, keys);
-			builder.append(" FROM DUAL ");
+			builder.append(" FROM DUMMY ");
 			col ++;
 		}
 		builder.append(") M ");
@@ -319,11 +319,11 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(),  null);
 				}
 			}else{*/
-				boolean create = EntityAdapterProxy.createPrimaryValue(obj, keys);
-				if(!create && null != generator){
-					generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks,  null);
-					//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
-				}
+			boolean create = EntityAdapterProxy.createPrimaryValue(obj, keys);
+			if(!create && null != generator){
+				generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks,  null);
+				//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
+			}
 			//}
 
 			if(col > 0){
@@ -331,7 +331,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			}
 			builder.append("\n\tSELECT ");
 			insertValue(template, run, obj, true, true,false, keys);
-			builder.append(" FROM DUAL ");
+			builder.append(" FROM DUMMY ");
 			col ++;
 		}
 		builder.append(") M ");
@@ -347,7 +347,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return int 影响行数
 	 * @throws Exception 异常
 	 */
-	@Override
+	/*@Override
 	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
 		int cnt = 0;
 		if(data instanceof Collection) {
@@ -369,11 +369,53 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			}else{
 				pks = null;
 			}
-			cnt = super.insert(template, random, data, sql, values, pks);
+			cnt = insert(template, random, data, sql, values, pks);
 		}
 		return cnt;
+	}*/
+	/**
+	 * 执行 insert
+	 * @param template JdbcTemplate
+	 * @param random random
+	 * @param data entity|DataRow|DataSet
+	 * @param sql sql
+	 * @param values 占位参数值
+	 * @param pks pks
+	 * @return int 影响行数
+	 * @throws Exception 异常
+	 */
+	@Override
+	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+		int cnt = 0;
+		if(null != values && values.size() > 0) {
+			cnt = template.update(sql, values.toArray());
+		}else{
+			cnt = template.update(sql);
+		}
+		/*
+			这个弱鸡不支持返回自增主键值
+		KeyHolder keyholder = new GeneratedKeyHolder();
+			cnt = template.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
+				PreparedStatement ps = null;
+				if(null != pks && pks.length>0){
+					ps = con.prepareStatement(sql, pks);
+				}else {
+					ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				}
+				int idx = 0;
+				if (null != values) {
+					for (Object obj : values) {
+						ps.setObject(++idx, obj);
+					}
+				}
+				return ps;
+			}
+		}, keyholder);
+		identity(random, data, keyholder);*/
+		return cnt;
 	}
-
 	@Override
 	public boolean identity(String random, Object data, KeyHolder keyholder){
 		if(data instanceof Collection) {
@@ -1375,7 +1417,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return buildAlterRunSQL(column, false);
 	}
 
-	
+
 
 	/**
 	 * 删除列
@@ -1391,7 +1433,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 * 修改列名
-	 * 
+	 *
 	 * ALTER TABLE 表名 RENAME COLUMN RENAME 老列名 TO 新列名
 	 * @param column 列
 	 * @return String
@@ -1957,7 +1999,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT PUBLIC.INDEX_COLUMNS \n");
+		builder.append("SELECT * FROM PUBLIC.INDEX_COLUMNS \n");
 		builder.append("WHERE CONSTRAINT = 'PRIMARY KEY'");
 		builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
 		if(BasicUtil.isNotEmpty(table.getSchema())){
