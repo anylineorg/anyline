@@ -475,6 +475,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
                 PreparedStatement ps = null;
                 if(null != pks && pks.length>0){
+                    //返回多个值
                     ps = con.prepareStatement(sql, pks);
                 }else {
                     ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
