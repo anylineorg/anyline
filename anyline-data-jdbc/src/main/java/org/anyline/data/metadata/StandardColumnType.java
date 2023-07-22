@@ -495,7 +495,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,sqlite
      */
-    ,INTEGER("MEDIUMINT", new DatabaseType[]{MYSQL, SQLite, HANA}, Integer.class, true, true)
+    ,INTEGER("INTEGER", new DatabaseType[]{MYSQL, SQLite, HANA}, Integer.class, true, true)
     /**
      * mysql
      */
