@@ -50,7 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+
 public class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
