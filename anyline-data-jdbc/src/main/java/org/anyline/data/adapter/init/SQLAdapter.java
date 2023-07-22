@@ -995,7 +995,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         List<String> columns = sql.getColumns();
         if(null == columns || columns.size() ==0){
             ConfigStore configs = run.getConfigStore();
-            columns = configs.columns();
+            if(null != configs) {
+                columns = configs.columns();
+            }
         }
         if(null != columns && columns.size()>0){
             // 指定查询列
