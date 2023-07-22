@@ -185,4 +185,4 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 <a style="display:inline-block;" href=""> <img alt="RethinkDB" src="http://cdn.anyline.org/img/logo/rethinkdb.png" width="100"/>RethinkDB</a> 
 <a style="display:inline-block;" href=""> <img alt="SAP HANA" src="http://cdn.anyline.org/img/logo/hana.png" width="100"/>SAP HANA</a> 
 
-没有示例的看这个目录下有没有 [【anyline-data-jdbc-dialect】](https://gitee.com/anyline/anyline/tree/master/anyline-data-jdbc-dialect)还没有的请QQ群管理管理员
+没有示例的看这个目录下有没有 [【anyline-data-jdbc-dialect】](https://gitee.com/anyline/anyline/tree/master/anyline-data-jdbc-dialect)还没有的请联系群管理员
