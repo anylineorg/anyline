@@ -452,7 +452,7 @@ public class HighgoAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 			String define = row.getString("define");
 			String[] cols = RegularUtil.cut(define, "(",")").split(",");
 			for(String col:cols){
-				Column column = new Column(col.trim());
+				Column column = new Column(col.trim().replace("\"", ""));
 				column.setTable(table);
 				primary.addColumn(column);
 			}
