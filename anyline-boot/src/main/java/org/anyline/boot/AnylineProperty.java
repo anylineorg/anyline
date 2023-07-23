@@ -185,6 +185,10 @@ public class AnylineProperty {
      */
     protected boolean ddlAutoDropColumn						    = false		    ;   // ddl执行时是否自动删除定义中不存在的列
     /**
+     * 查询列时，是否自动检测主键标识
+     */
+    protected boolean metadataAutoCheckColumnPrimary			= false			;   // 查询列时，是否自动检测主键标识
+    /**
      * 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
      */
     protected String sqlStoreDir								= null			;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
@@ -995,6 +999,15 @@ public class AnylineProperty {
     public void setGenerator(PrimaryGenerator.GENERATORS generator) {
         this.generator = generator;
         ConfigTable.GENERATOR.set(generator);
+    }
+
+    public boolean isMetadataAutoCheckColumnPrimary() {
+        return metadataAutoCheckColumnPrimary;
+    }
+
+    public void setMetadataAutoCheckColumnPrimary(boolean metadataAutoCheckColumnPrimary) {
+        this.metadataAutoCheckColumnPrimary = metadataAutoCheckColumnPrimary;
+        ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY = metadataAutoCheckColumnPrimary;
     }
 
     public Map<String, PrimaryGenerator.GENERATORS> getGenerators() {

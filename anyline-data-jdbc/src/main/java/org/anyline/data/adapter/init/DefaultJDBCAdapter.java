@@ -1458,6 +1458,11 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 				}
 			}
 
+			//主键
+			String column_key = row.getString("COLUMN_KEY");
+			if("PRI".equals(column_key)){
+				column.setPrimaryKey(1);
+			}
 
 
 			//非空
@@ -1506,8 +1511,6 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 						column.setName(name);
 					}
 					columns.put(column.getName().toUpperCase(), column);
-				}else{
-					continue;
 				}
 			}
 		}

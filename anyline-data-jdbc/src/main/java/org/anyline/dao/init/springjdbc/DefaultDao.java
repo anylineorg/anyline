@@ -3295,6 +3295,32 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
 			}
+			//检测主键
+			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
+				if (columns.size() > 0) {
+					boolean exists = false;
+					for(Column column:columns.values()){
+						if(column.isPrimaryKey() != -1){
+							exists = true;
+							break;
+						}
+					}
+					if(!exists){
+						PrimaryKey pk = primary(table);
+						if(null != pk){
+							LinkedHashMap<String,Column> pks = pk.getColumns();
+							if(null != pks){
+								for(String k:pks.keySet()){
+									Column column = columns.get(k);
+									if(null != column){
+										column.setPrimaryKey(true);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
