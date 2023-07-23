@@ -66,6 +66,8 @@ public class AnylineController extends AbstractBasicController {
 		return _request;
 	}
 
+	//Autowired注解不要删除
+	@Autowired
 	protected void setRequest(HttpServletRequest request){
 		this._request = request;
 		try{
@@ -80,6 +82,9 @@ public class AnylineController extends AbstractBasicController {
 		} 
 		return _response;
 	}
+
+	//Autowired注解不要删除
+	@Autowired
 	public void setResponse(HttpServletResponse response){
 		this._response = response;
 		try{
