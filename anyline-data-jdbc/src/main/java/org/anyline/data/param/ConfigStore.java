@@ -91,8 +91,8 @@ public interface ConfigStore {
 	 * @param id 表别名或XML中查询条件的ID
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
@@ -103,8 +103,8 @@ public interface ConfigStore {
 	 * @param swt 遇到空值处理方式
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
@@ -145,8 +145,8 @@ public interface ConfigStore {
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue);
@@ -158,8 +158,8 @@ public interface ConfigStore {
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
 	 * @param compare 匹配方式
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
@@ -213,8 +213,8 @@ public interface ConfigStore {
 	 * @param id 自定义查询条件ID或表名表别名
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
@@ -230,8 +230,8 @@ public interface ConfigStore {
 	 * @param swt 遇到空值处理方式
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
@@ -245,8 +245,8 @@ public interface ConfigStore {
 	 * @param id 自定义查询条件ID或表名表别名
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
@@ -262,8 +262,8 @@ public interface ConfigStore {
 	 * @param swt 遇到空值处理方式
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合
-	 * @param overCondition 覆盖相同key的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
-	 * @param overValue		覆盖相同key的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
+	 * @param overCondition 覆盖相同key并且相同运算符的条件,true在现有条件基础上修改(多个相同key的条件只留下第一个),false:添加新条件
+	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
