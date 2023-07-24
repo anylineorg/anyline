@@ -336,9 +336,18 @@ public class DefaultConfigStore implements ConfigStore {
 		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE,  id, var, value);
 	}
 	@Override
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		Compare compare = compare(value);
+		return or(swt, compare, null, var, value, overCondition, overValue);
+	}
+	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value){
 		Compare compare = compare(value);
 		return or(swt, compare, var, value);
+	}
+	@Override
+	public ConfigStore or(String var, Object value, boolean overCondition, boolean overValue){
+		return or(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore or(String var, Object value){
@@ -362,7 +371,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		// 如果当前没有其他条件
 		if(configs.size()==0){
-			and(swt, compare, prefix, var, value);
+			and(swt, compare, prefix, var, value, overCondition, overValue);
 		}else{
 			int compareCode = compare.getCode();
 			value = value(value);
@@ -420,14 +429,27 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
+	public ConfigStore or(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue){
+		return or(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value, overCondition, overValue);
+	}
+	@Override
 	public ConfigStore or(Compare compare, String prefix, String var, Object value){
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value);
+	}
+	@Override
+	public ConfigStore or(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+		return or(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore or(Compare compare, String var, Object value){
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
 
+	@Override
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		Compare compare = compare(value);
+		return ors(swt, compare, null, var, value, overCondition, overValue);
+	}
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value){
 		Compare compare = compare(value);
@@ -437,6 +459,12 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore ors(String var, Object value){
 		return ors(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
+	@Override
+	public ConfigStore ors(String var, Object value, boolean overCondition, boolean overValue){
+		return ors(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
+	}
+
+
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		return ors(swt, compare, null, var, value);
@@ -449,21 +477,32 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		// TODO boolean overCondition, boolean overValue
-		ConfigChain newChain = new DefaultConfigChain();
-		newChain.addConfig(chain);
 
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}
 		int compareCode = compare.getCode();
+		Config conf = chain.getConfig(prefix, var, compare);
+		if(null != conf && overCondition){
+			conf.setOverValue(overValue);
+			if(overValue){
+				conf.setOrValue(value);
+			}else{
+				conf.addOrValue(value);
+			}
+			return this;
+		}
+
+		ConfigChain newChain = new DefaultConfigChain();
+		newChain.addConfig(chain);
 		value = value(value);
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 			List list = (List)value;
 			if(compareCode == 60 || compareCode == 61){
 				//FIND_IN_OR
 				for(Object item:list){
-					Config conf = new DefaultConfig();
+					conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 					conf.setPrefix(prefix);
 					conf.setCompare(compare);
@@ -476,7 +515,7 @@ public class DefaultConfigStore implements ConfigStore {
 				ConfigChain findChain = new DefaultConfigChain();
 				findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 				for(Object item:list){
-					Config conf = new DefaultConfig();
+					conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 					conf.setCompare(compare);
 					conf.setPrefix(prefix);
@@ -487,7 +526,7 @@ public class DefaultConfigStore implements ConfigStore {
 				newChain.addConfig(findChain);
 			}
 		}else {
-			Config conf = new DefaultConfig();
+			conf = new DefaultConfig();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 			conf.setCompare(compare);
 			conf.setPrefix(prefix);
@@ -502,8 +541,16 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
+	public ConfigStore ors(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
+		return ors(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
+	}
+	@Override
 	public ConfigStore ors(Compare compare, String var, Object value) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
+	}
+	@Override
+	public ConfigStore ors(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
+		return ors(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore ors(Compare compare, String prefix, String var, Object value) {
