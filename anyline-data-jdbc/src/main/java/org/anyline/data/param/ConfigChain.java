@@ -28,9 +28,12 @@ import java.util.Map;
 public interface ConfigChain extends Config{
 	public void addConfig(Config config);
 	public Config getConfig(String prefix, String var);
+	public List<Config> getConfigs(String prefix, String var);
 	public Config getConfig(String prefix, String var, Compare type);
-	
+	public List<Config> getConfigs(String prefix, String var, Compare type);
+
 	public ConfigChain removeConfig(Config config);
+	public ConfigChain removeConfig(List<Config> config);
 	public ConfigChain removeConfig(String prefix, String  var);
 	public ConfigChain removeConfig(String prefix, String var, Compare type);
 	public void setValue(Map<String,Object> values); 

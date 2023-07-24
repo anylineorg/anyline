@@ -36,8 +36,10 @@ public interface Config {
 	public List<Object> getValues() ; 
 	public List<Object> getOrValues() ; 
 	public void addValue(Object value);
-	public void setValue(Object value); 
- 
+	public void setValue(Object value);
+
+	public void setOrValue(Object value);
+	public void addOrValue(Object value);
 	/** 
 	 *  
 	 * @param chain 容器 
