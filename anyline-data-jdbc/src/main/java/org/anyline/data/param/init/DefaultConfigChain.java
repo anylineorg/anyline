@@ -106,11 +106,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		for(Config conf: configs){
 			if(conf instanceof ConfigChain){
 				ConfigChain chain = (ConfigChain) conf;
-				conf = chain.getConfig(id, var);
-				if(null != conf){
-					list.add(conf);
-				}
-				continue;
+				list.addAll(chain.getConfigs(id, var));
 			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
@@ -138,9 +134,14 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 			return list;
 		}
 		for(Config conf: configs){
+			if(conf instanceof ConfigChain){
+				ConfigChain chain = (ConfigChain)conf;
+				list.addAll(chain.getConfigs(prefix, var, type));
+			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			Compare confType = conf.getCompare();
+
 			if(BasicUtil.isEmpty(prefix)){
 				// 只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){

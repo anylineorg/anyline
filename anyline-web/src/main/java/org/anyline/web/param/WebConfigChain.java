@@ -49,12 +49,8 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 		}
 		for(Config conf: configs){
 			if(conf instanceof ConfigChain){
-				ConfigChain chain = (ConfigChain) conf;
-				conf = chain.getConfig(id, var);
-				if(null != conf){
-					list.add(conf);
-				}
-				continue;
+				ConfigChain chain = (ConfigChain)conf;
+				list.addAll(chain.getConfigs(id, var));
 			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
@@ -83,6 +79,10 @@ public class WebConfigChain extends WebConfig implements  ConfigChain{
 			return list;
 		}
 		for(Config conf: configs){
+			if(conf instanceof ConfigChain){
+				ConfigChain chain = (ConfigChain)conf;
+				list.addAll(chain.getConfigs(prefix, var, type));
+			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			Compare confType = conf.getCompare();
