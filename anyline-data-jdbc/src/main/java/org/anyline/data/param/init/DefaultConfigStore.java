@@ -288,15 +288,14 @@ public class DefaultConfigStore implements ConfigStore {
 				conf = new DefaultConfig();
 				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 				conf.setCompare(compare);
-				conf.setValue(value);
-				chain.addConfig(conf);
-			}
-			if(null != conf) {
-				conf.setOverCondition(overCondition);
-				conf.setOverValue(overValue);
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
 				conf.setSwitch(swt);
+				conf.setValue(value);
+				chain.addConfig(conf);
+			}else{
+				conf.setOverCondition(overCondition);
+				conf.setOverValue(overValue);
 				if (overValue) {
 					conf.setValue(value);
 				} else {
