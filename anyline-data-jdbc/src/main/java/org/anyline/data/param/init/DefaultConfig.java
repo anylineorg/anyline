@@ -114,8 +114,29 @@ public class DefaultConfig implements Config {
 	} 
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public void addValue(Object value){
+		values = append(values, value);
+	}
+	public void setValue(Object value){
+		values = new ArrayList<Object>();
+		addValue(value);
+	} 
+	public void setOrValue(Object value){
+		orValues = new ArrayList<Object>();
+		addValue(value);
+	}
+	public void addOrValue(Object value){
+		orValues = append(orValues, value);
+	}
+
+	/**
+	 * 往values中追加value，如果values为空则新创建
+	 * @param values values
+	 * @param value Object | Collection | null
+	 * @return
+	 */
+	private List<Object> append(List<Object> values, Object value){
 		if(null == values){
-			values = new ArrayList<Object>();
+			values = new ArrayList<>();
 		}
 		if(null != value){
 			if(value instanceof Collection) {
@@ -134,15 +155,8 @@ public class DefaultConfig implements Config {
 		}else{
 			values.add(value);
 		}
+		return values;
 	}
-	public void setValue(Object value){
-		values = new ArrayList<Object>();
-		addValue(value);
-	} 
-	public void setOrValue(Object value){
-		orValues = new ArrayList<Object>();
-		addValue(value);
-	} 
 	/** 
 	 *  createAutoCondition
 	 * @param chain 容器 
