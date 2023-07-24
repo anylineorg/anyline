@@ -3945,7 +3945,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean rename(Table origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4004,7 +4004,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(View origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4059,7 +4059,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(MasterTable origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4114,7 +4114,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(PartitionTable origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4234,7 +4234,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean rename(Column origin, String name) throws Exception{
-            boolean result = false;
+            origin.setNewName(name);
+            boolean result = alter(origin);//dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4349,7 +4350,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean rename(Tag origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4383,7 +4384,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(PrimaryKey origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4419,8 +4420,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean rename(ForeignKey origin, String name) throws Exception{
-            boolean result = false;
-            dao.rename(origin, name);
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4456,7 +4456,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(Index origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4492,7 +4492,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(Constraint origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4526,7 +4526,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(Trigger origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             CacheProxy.clear();
             return result;
         }
@@ -4555,7 +4555,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(Procedure origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             return result;
         }
 
@@ -4585,7 +4585,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public boolean rename(Function origin, String name) throws Exception{
-            boolean result = false;
+            boolean result = dao.rename(origin, name);
             return result;
         }
 
