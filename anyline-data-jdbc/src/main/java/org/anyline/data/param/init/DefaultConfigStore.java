@@ -222,7 +222,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		Config conf = null;
+
 		if(null == compare){
 			compare = Compare.AUTO;
 		}
@@ -230,9 +230,6 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
-		}
-		if(overCondition){
-			conf = chain.getConfig(prefix, var, compare);
 		}
 		if(null == swt || EMPTY_VALUE_SWITCH.NONE == swt) {
 			if (null != var) {
@@ -251,9 +248,24 @@ public class DefaultConfigStore implements ConfigStore {
 
 		value = value(value);
 
+		List<Config> olds = new ArrayList<>();
+		Config conf = null;
+		if(overCondition){
+			olds = chain.getConfigs(prefix, var, compare);
+			if(olds.size()>0) {
+				conf = olds.get(0);
+				//相同参数只留一个 如 id = 1 and id = 2 and id = 3
+				//只留下id = 1 下一步有可能把值1覆盖
+				olds.remove(conf);
+				chain.removeConfig(olds);
+			}
+		}
 
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 			List list = (List)value;
+			if (overValue) {
+				chain.removeConfig(olds);
+			}
 			if(compareCode == 60 || compareCode == 61){
 				//FIND_IN_OR
 				boolean first = true;
@@ -311,6 +323,18 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 	@Override
+	public ConfigStore and(ConfigStore configs) {
+		chain.addConfig(configs.getConfigChain());
+		return this;
+	}
+	@Override
+	public ConfigStore or(ConfigStore configs) {
+		ConfigChain orChain = configs.getConfigChain();
+		orChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		chain.addConfig(orChain);
+		return this;
+	}
+	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value){
 		return and(swt, var, value, false, false);
 	}
@@ -363,11 +387,23 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value, boolean overCondition, boolean overValue) {
-		// TODO boolean overCondition, boolean overValue
 		List<Config> configs = chain.getConfigs();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
+		}
+
+		List<Config> olds = new ArrayList<>();
+		Config conf = null;
+		if(overCondition){
+			olds = chain.getConfigs(prefix, var, compare);
+			if(olds.size()>0) {
+				conf = olds.get(0);
+				//相同参数只留一个 如 id = 1 or id = 2 or id = 3
+				//只留下id = 1 下一步有可能把值1覆盖
+				olds.remove(conf);
+				chain.removeConfig(olds);
+			}
 		}
 		// 如果当前没有其他条件
 		if(configs.size()==0){
@@ -377,6 +413,9 @@ public class DefaultConfigStore implements ConfigStore {
 			value = value(value);
 			if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 				List list = (List)value;
+				if (overValue) {
+					chain.removeConfig(olds);
+				}
 				if(compareCode == 60 || compareCode == 61){
 					//FIND_IN_OR
 					for(Object item:list){
@@ -387,7 +426,7 @@ public class DefaultConfigStore implements ConfigStore {
 					ConfigChain findChain = new DefaultConfigChain();
 					findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 					for(Object item:list){
-						Config conf = new DefaultConfig();
+						conf = new DefaultConfig();
 						conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 						conf.setCompare(compare);
 						conf.setPrefix(prefix);
@@ -398,31 +437,37 @@ public class DefaultConfigStore implements ConfigStore {
 					chain.addConfig(findChain);
 				}
 			}else{
-				ConfigChain orChain = new DefaultConfigChain();
-				Config last = configs.get(configs.size()-1);
-				configs.remove(last);
-
-				if(last instanceof ConfigChain){
-					ConfigChain lastChain = (ConfigChain)last;
-					List<Config> lastItems = lastChain.getConfigs();
-					for(Config lastItem:lastItems){
-						orChain.addConfig(lastItem);
+				//覆盖原条件(不要新加)
+				if(null != conf){
+					if(overValue){
+						conf.setValue(value);
+					}else {
+						conf.addValue(value);
 					}
 				}else{
-					orChain.addConfig(last);
+					ConfigChain orChain = new DefaultConfigChain();
+					Config last = configs.get(configs.size()-1);
+					configs.remove(last);
+
+					if(last instanceof ConfigChain){
+						ConfigChain lastChain = (ConfigChain)last;
+						List<Config> lastItems = lastChain.getConfigs();
+						for(Config lastItem:lastItems){
+							orChain.addConfig(lastItem);
+						}
+					}else{
+						orChain.addConfig(last);
+					}
+					conf = new DefaultConfig();
+					orChain.addConfig(conf);
+					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+					conf.setCompare(compare);
+					conf.setVariable(var);
+					conf.setPrefix(prefix);
+					conf.setValue(value);
+
+					chain.addConfig(orChain);
 				}
-
-				Config conf = null;
-
-				conf = new DefaultConfig();
-				conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-				conf.setCompare(compare);
-				conf.setVariable(var);
-				conf.setPrefix(prefix);
-				conf.setValue(value);
-
-				orChain.addConfig(conf);
-				chain.addConfig(orChain);
 			}
 		}
 		return this;
@@ -483,15 +528,18 @@ public class DefaultConfigStore implements ConfigStore {
 			var = var.substring(var.indexOf(".")+1);
 		}
 		int compareCode = compare.getCode();
-		Config conf = chain.getConfig(prefix, var, compare);
-		if(null != conf && overCondition){
-			conf.setOverValue(overValue);
-			if(overValue){
-				conf.setOrValue(value);
-			}else{
-				conf.addOrValue(value);
+
+		List<Config> olds = new ArrayList<>();
+		Config conf = null;
+		if(overCondition){
+			olds = chain.getConfigs(prefix, var, compare);
+			if(olds.size()>0) {
+				conf = olds.get(0);
+				//相同参数只留一个 如 id = 1 or id = 2 or id = 3
+				//只留下id = 1 下一步有可能把值1覆盖
+				olds.remove(conf);
+				chain.removeConfig(olds);
 			}
-			return this;
 		}
 
 		ConfigChain newChain = new DefaultConfigChain();
@@ -499,6 +547,10 @@ public class DefaultConfigStore implements ConfigStore {
 		value = value(value);
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 			List list = (List)value;
+
+			if (overValue) {
+				chain.removeConfig(olds);
+			}
 			if(compareCode == 60 || compareCode == 61){
 				//FIND_IN_OR
 				for(Object item:list){
@@ -526,14 +578,22 @@ public class DefaultConfigStore implements ConfigStore {
 				newChain.addConfig(findChain);
 			}
 		}else {
-			conf = new DefaultConfig();
-			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-			conf.setCompare(compare);
-			conf.setPrefix(prefix);
-			conf.setVariable(var);
-			conf.setValue(value);
+			if(null != conf) {
+				if(overValue){
+					conf.setValue(value);
+				}else{
+					conf.addValue(value);
+				}
+			}else{
+				conf = new DefaultConfig();
+				conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+				conf.setCompare(compare);
+				conf.setPrefix(prefix);
+				conf.setVariable(var);
+				conf.setValue(value);
+				newChain.addConfig(conf);
+			}
 
-			newChain.addConfig(conf);
 		}
 		
 		chain = newChain;
