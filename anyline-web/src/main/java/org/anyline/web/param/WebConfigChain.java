@@ -34,60 +34,118 @@ import java.util.List;
 public class WebConfigChain extends WebConfig implements  ConfigChain{
 	private List<Config> configs = new ArrayList<Config>();
 
-	public Config getConfig(String prefix, String var){
-		return getConfig(prefix, var, Compare.EQUAL);
+
+	public Config getConfig(String id, String var){
+		List<Config> list = getConfigs(id, var);
+		if(list.size()>0){
+			return list.get(0);
+		}
+		return null;
 	}
-	public Config getConfig(String prefix, String var, Compare type){
-		if(BasicUtil.isEmpty(prefix, var)){
-			return null;
+	public List<Config> getConfigs(String id, String var){
+		List<Config> list = new ArrayList<>();
+		if(BasicUtil.isEmpty(id, var)){
+			return list;
 		}
 		for(Config conf: configs){
 			if(conf instanceof ConfigChain){
 				ConfigChain chain = (ConfigChain) conf;
-				conf = chain.getConfig(prefix, var, type);
+				conf = chain.getConfig(id, var);
 				if(null != conf){
-					return conf;
+					list.add(conf);
 				}
 				continue;
 			}
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
-			Compare confType = conf.getCompare();
-			if(BasicUtil.isEmpty(prefix)){
+			if(BasicUtil.isEmpty(id)){
 				// 只提供列名,不提供表名
-				if(var.equalsIgnoreCase(confVar) && type == confType){
-					return conf;
+				if(var.equalsIgnoreCase(confVar)){
+					list.add(conf);
 				}
 			}else if(BasicUtil.isEmpty(var)){
 				// 只提供查询条件id不提供变量名
-				if(prefix.equalsIgnoreCase(confId) && type == confType){
-					return conf;
+				if(id.equalsIgnoreCase(confId)){
+					list.add(conf);
 				}
 			}else{
-				if(prefix.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
-					return conf;
+				if(id.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar)){
+					list.add(conf);
 				}
 			}
 		}
 		return null;
 	}
 
+	public List<Config> getConfigs(String prefix, String var, Compare type){
+		List<Config> list = new ArrayList<>();
+		if(BasicUtil.isEmpty(prefix, var)){
+			return list;
+		}
+		for(Config conf: configs){
+			String confId = conf.getPrefix();
+			String confVar = conf.getVariable();
+			Compare confType = conf.getCompare();
+			if(BasicUtil.isEmpty(prefix)){
+				// 只提供列名,不提供表名
+				if(var.equalsIgnoreCase(confVar) && type == confType){
+					list.add(conf);
+				}
+			}else if(BasicUtil.isEmpty(var)){
+				// 只提供查询条件id不提供变量名
+				if(prefix.equalsIgnoreCase(confId) && type == confType){
+					list.add(conf);
+				}
+			}else{
+				if(prefix.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
+					list.add(conf);
+				}
+			}
+		}
+		return list;
+	}
+	public Config getConfig(String prefix, String var, Compare type){
+		if(BasicUtil.isEmpty(prefix, var)){
+			return null;
+		}
+		List<Config> list = getConfigs(prefix, var, type);
+		if(list.size()>0){
+			return list.get(0);
+		}
+		return null;
+	}
+
+
 
 	public ConfigChain removeConfig(String prefix, String var){
-		Config config = getConfig(prefix, var);
-		return removeConfig(config);
+		List<Config> configs = getConfigs(prefix, var);
+		return removeConfig(configs);
 	}
 	public ConfigChain removeConfig(String key, String var, Compare type){
-		Config config = getConfig(key, var, type);
-		return removeConfig(config);
+		List<Config> configs = getConfigs(key, var, type);
+		return removeConfig(configs);
 	}
 	public ConfigChain removeConfig(Config config){
 		if(null != config){
 			configs.remove(config);
+			for(Config item:configs){
+				if(item instanceof ConfigChain){
+					ConfigChain chain = ((ConfigChain)item);
+					chain.removeConfig(config);
+				}
+			}
 		}
 		return this;
 	}
 
+	public ConfigChain removeConfig(List<Config> list){
+		if(null != list){
+			for(Config config:list) {
+				removeConfig(config);
+			}
+		}
+		return this;
+	}
 
 	public void addConfig(Config config){
 		configs.add(config);
