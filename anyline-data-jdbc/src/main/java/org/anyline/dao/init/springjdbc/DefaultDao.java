@@ -4983,6 +4983,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		JDBCAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
 		List<Run> runs = adapter.buildAlterRunSQL(meta, false);
+
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == SWITCH.CONTINUE){
+			swt = ddListener.beforeAlter(runtime, random, meta, runs);
+		}
+		if(swt == SWITCH.BREAK){
+			return false;
+		}
+
 		long fr = System.currentTimeMillis();
 		try{
 			result = execute(runtime, random, action, runs);
