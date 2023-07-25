@@ -454,12 +454,6 @@ public class BasicUtil {
 		return result;
 	}
 	public static Long parseLong(Object value, Long def) {
-		if (null == value) {
-			return def;
-		}
-		if(def instanceof Long){
-			return (Long)def;
-		}
 		try{
 			return parseLong(value);
 		}catch (Exception e){
