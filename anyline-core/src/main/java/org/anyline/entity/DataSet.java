@@ -4446,13 +4446,24 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return map;
     }
+    public Map map(int key){
+        Map map = new LinkedHashMap();
+        if(null ==rows || rows.isEmpty()){
+            return map;
+        }
+        String k = rows.get(0).keys().get(0);
+        for(DataRow row:rows){
+            map.put(row.get(k), row);
+        }
+        return map;
+    }
     /**
      * @param key 作为key的列的下标
      * @param value 作为value的列的下标
      * @return LinkedHashMap
      */
     public Map map(int key, int value){
-        if(null != rows && rows.size() >0){
+        if(null != rows && !rows.isEmpty()){
             List<String> keys = rows.get(0).keys();
             if(keys.size()>key && keys.size()>value) {
                 return map(keys.get(key), keys.get(value));
