@@ -25,8 +25,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class TextUtil {
+    /**
+     * 相似度
+     * @param doc1 doc1
+     * @param doc2 doc2
+     * @return double
+     */
     public static double similarity(String doc1, String doc2) {
-        if (doc1 != null && doc1.trim().length() > 0 && doc2 != null&& doc2.trim().length() > 0) {
+        if (doc1 != null && doc1.trim().length() > 0 && doc2 != null && doc2.trim().length() > 0) {
 
             Map<Integer, int[]> AlgorithmMap = new HashMap<Integer, int[]>();
 
