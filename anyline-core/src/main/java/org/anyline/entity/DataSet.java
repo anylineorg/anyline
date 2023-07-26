@@ -4433,6 +4433,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return map;
     }
+
+    /**
+     * 将key列的值作为新map的key,this作为value
+     * @param key key
+     * @return map
+     */
+    public Map map(String key){
+        Map map = new LinkedHashMap();
+        for(DataRow row:rows){
+            map.put(row.get(key), row);
+        }
+        return map;
+    }
     /**
      * @param key 作为key的列的下标
      * @param value 作为value的列的下标
