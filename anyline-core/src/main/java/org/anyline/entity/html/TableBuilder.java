@@ -400,6 +400,26 @@ public class TableBuilder {
         this.fields = BeanUtil.array2list(fields);
         return this;
     }
+    public TableBuilder setConfigs(String ... configs) {
+        headers = new ArrayList<>();
+        fields = new ArrayList<>();
+        addConfigs(configs);
+        return this;
+    }
+    public TableBuilder addConfigs(String ... configs) {
+        for(String config:configs){
+            String head = config;
+            String field = config;
+            if(config.contains(":")){
+                String[] tmps = config.split(":");
+                head = tmps[0];
+                field = tmps[1];
+            }
+            addHeaders(head);
+            addFields(field);
+        }
+        return this;
+    }
     public TableBuilder addFields(String ... fields) {
         for(String field:fields){
             this.fields.add(field);
