@@ -61,6 +61,7 @@
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-h2</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hana</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-highgo</module>						<!--瀚高-->
+		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hive</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-hsqldb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-influxdb</module>
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-informix</module>
