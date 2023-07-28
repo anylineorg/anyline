@@ -666,4 +666,23 @@ public class Table   implements Serializable {
     public List<String> getDdls(boolean init) {
         return ddls;
     }
+
+    public String ddl() {
+        if(null != ddls && ddls.size()>0){
+            return ddls.get(0);
+        }
+        return null;
+    }
+    public String ddl(boolean init) {
+        if(null != ddls && ddls.size()>0){
+            return ddls.get(0);
+        }
+        return null;
+    }
+    public String getDdl(boolean init) {
+        if(null != ddls && ddls.size()>0){
+            return ddls.get(0);
+        }
+        return null;
+    }
 }
