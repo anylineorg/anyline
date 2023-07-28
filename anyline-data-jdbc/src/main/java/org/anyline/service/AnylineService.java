@@ -798,6 +798,18 @@ public interface AnylineService<E>{
 		Table table(String schema, String name);
 		Table table(String name);
 
+		/**
+		 * 表的创建SQL
+		 * @param table table
+		 * @param init 是否还原初始状态 默认false
+		 * @return ddl
+		 */
+		List<String> ddl(String table, boolean init);
+		List<String> ddl(Table table);
+		List<String> ddl(Table table, boolean init);
+		List<String> ddl(String table);
+
+
 		/* *****************************************************************************************************************
 		 * 													view
 		 ******************************************************************************************************************/
@@ -823,6 +835,7 @@ public interface AnylineService<E>{
 		View view(String catalog, String schema, String name);
 		View view(String schema, String name);
 		View view(String name);
+		List<String> ddl(View view);
 
 		/* *****************************************************************************************************************
 		 * 													master table
@@ -856,6 +869,7 @@ public interface AnylineService<E>{
 		MasterTable mtable(String catalog, String schema, String name);
 		MasterTable mtable(String schema, String name);
 		MasterTable mtable(String name);
+		List<String> ddl(MasterTable table);
 
 
 		/* *****************************************************************************************************************
@@ -902,6 +916,7 @@ public interface AnylineService<E>{
 		PartitionTable ptable(String catalog, String schema, String master, String name);
 		PartitionTable ptable(String schema, String master, String name);
 		PartitionTable ptable(String master, String name);
+		List<String> ddl(PartitionTable table);
 
 		/* *****************************************************************************************************************
 		 * 													column
@@ -1103,7 +1118,6 @@ public interface AnylineService<E>{
 		Function function(String catalog, String schema, String name);
 		Function function(String schema, String name);
 		Function function(String name);
-
 	}
 
 

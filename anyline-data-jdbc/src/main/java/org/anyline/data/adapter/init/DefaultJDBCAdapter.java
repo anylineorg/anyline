@@ -1050,6 +1050,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * List<Run> buildQueryDDLRunSQL(Table table) throws Exception
+	 * public List<String> ddl(int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -1159,6 +1161,39 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		return tables;
 	}
+
+	/**
+	 * 查询表DDL
+	 * @param table 表
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRunSQL(Table table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(Table table)", 37));
+		}
+		return runs;
+	}
+
+	/**
+	 * 查询表DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param table 表
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(int index, Table table, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, Table table, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1234,6 +1269,39 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		}
 		return views;
 	}
+
+	/**
+	 * 查询 view DDL
+	 * @param view view
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRunSQL(View view) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(View view)", 37));
+		}
+		return runs;
+	}
+
+	/**
+	 * 查询 view DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param view view
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(int index, View view, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, View view, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1300,6 +1368,38 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	}
 
 
+	/**
+	 * 查询 MasterTable DDL
+	 * @param table MasterTable
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRunSQL(MasterTable table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(MasterTable table)", 37));
+		}
+		return runs;
+	}
+
+	/**
+	 * 查询 MasterTable DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param table MasterTable
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(int index, MasterTable table, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, MasterTable table, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1380,6 +1480,38 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 		return tables;
 	}
 
+	/**
+	 * 查询 PartitionTable DDL
+	 * @param table PartitionTable
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRunSQL(PartitionTable table) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(PartitionTable table)", 37));
+		}
+		return runs;
+	}
+
+	/**
+	 * 查询 PartitionTable DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param table PartitionTable
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(int index, PartitionTable table, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, PartitionTable table, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------

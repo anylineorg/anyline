@@ -2516,6 +2516,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if (tables.size() > 0) {
                 table = tables.values().iterator().next();
                 if(struct) {
+                    List<String> ddls = ddl(table);
                     LinkedHashMap<String, Column> columns = columns(table);
                     table.setColumns(columns);
                     table.setTags(tags(table));
@@ -2603,6 +2604,22 @@ public class DefaultService<E> implements AnylineService<E> {
             return table(false, null, null, name, true);
         }
 
+        @Override
+        public List<String> ddl(Table table, boolean init) {
+            return dao.ddl(table, init);
+        }
+        @Override
+        public List<String> ddl(Table table) {
+            return dao.ddl(table, false);
+        }
+        @Override
+        public List<String> ddl(String table, boolean init) {
+            return dao.ddl(new Table(table), init);
+        }
+        @Override
+        public List<String> ddl(String table) {
+            return dao.ddl(new Table(table), false);
+        }
         /* *****************************************************************************************************************
          * 													view
          * -----------------------------------------------------------------------------------------------------------------
@@ -2702,6 +2719,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if (views.size() > 0) {
                 view = views.values().iterator().next();
                 view.setColumns(columns(view));
+                ddl(view);
                 //view.setTags(tags(view));
                 //view.setIndexs(indexs(view));
             }
@@ -2737,6 +2755,10 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public View view(String name) {
             return view(false, null, null, name);
+        }
+        @Override
+        public List<String> ddl(View view) {
+            return dao.ddl(view);
         }
         /* *****************************************************************************************************************
          * 													master table
@@ -2870,6 +2892,10 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
 
+        @Override
+        public List<String> ddl(MasterTable table) {
+            return dao.ddl(table);
+        }
         /* *****************************************************************************************************************
          * 													partition  table
          * -----------------------------------------------------------------------------------------------------------------
@@ -3026,6 +3052,10 @@ public class DefaultService<E> implements AnylineService<E> {
             return ptable(false, null, null, master, name);
         }
 
+        @Override
+        public List<String> ddl(PartitionTable table) {
+            return dao.ddl(table);
+        }
         /* *****************************************************************************************************************
          * 													column
          * -----------------------------------------------------------------------------------------------------------------
@@ -3863,6 +3893,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public Function function(String name) {
             return function(false, null, null, name);
         }
+
     };
     /* *****************************************************************************************************************
      *

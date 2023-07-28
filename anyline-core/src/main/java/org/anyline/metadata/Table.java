@@ -39,7 +39,7 @@ public class Table   implements Serializable {
     protected String collate                      ;
     protected Long ttl                            ;
     protected Date checkSchemaTime                ;
-    protected String ddl                          ;
+    protected List<String> ddls                   ;
 
 
     protected PrimaryKey primaryKey;
@@ -650,17 +650,20 @@ public class Table   implements Serializable {
         this.autoDropColumn = autoDropColumn;
     }
 
-    public String getDdl() {
-        return ddl;
+    public List<String> getDdls() {
+        return ddls;
     }
 
-    public void setDdl(String ddl) {
-        this.ddl = ddl;
+    public void setDdls(List<String> ddl) {
+        this.ddls = ddl;
     }
-    public String ddl() {
-        return ddl;
+    public List<String> ddls() {
+        return ddls;
     }
-    public String ddl(boolean init) {
-        return ddl;
+    public List<String> ddls(boolean init) {
+        return ddls;
+    }
+    public List<String> getDdls(boolean init) {
+        return ddls;
     }
 }

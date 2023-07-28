@@ -180,6 +180,14 @@ public interface AnylineDao<E>{
 	<T extends Table> LinkedHashMap<String, T> tables(String types);
 	<T extends Table> LinkedHashMap<String, T> tables();
 
+	/**
+	 * 查询表的创建SQL
+	 * @param table table
+	 * @param init 是否还原初始状态(自增ID)
+	 * @return list
+	 */
+	List<String> ddl(Table table, boolean init);
+
 
 	/* *****************************************************************************************************************
 	 * 													views
@@ -194,6 +202,7 @@ public interface AnylineDao<E>{
 	<T extends View> LinkedHashMap<String, T> views(String name, String types);
 	<T extends View> LinkedHashMap<String, T> views(String types);
 	<T extends View> LinkedHashMap<String, T> views();
+	List<String> ddl(View view);
 
 	/* *****************************************************************************************************************
 	 * 													master table
@@ -208,6 +217,7 @@ public interface AnylineDao<E>{
 	<T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types);
 	<T extends MasterTable> LinkedHashMap<String, T> mtables(String types);
 	<T extends MasterTable> LinkedHashMap<String, T> mtables();
+	List<String> ddl(MasterTable table);
 
 	/* *****************************************************************************************************************
 	 * 													partition table
@@ -226,6 +236,7 @@ public interface AnylineDao<E>{
 	<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master);
 	<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags, String name);
 	<T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags);
+	List<String> ddl(PartitionTable table);
 
 	/* *****************************************************************************************************************
 	 * 													column
@@ -307,14 +318,12 @@ public interface AnylineDao<E>{
 
 	<T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name);
 
+
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
 
 	<T extends Function> LinkedHashMap<String, T> functions(boolean greedy, String catalog, String schema, String name);
-
-
-
 
 
 	/* *****************************************************************************************************************

@@ -2738,6 +2738,42 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return tables(false, null, null, null, "TABLE");
 	}
 
+	/**
+	 * 查询表的创建SQL
+	 * @param table table
+	 * @param init 是否还原初始状态(如自增ID)
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(Table table, boolean init){
+		List<String> list = new ArrayList<>();
+
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		String random = random();
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, random, run.getFinalQuery(), run.getValues()).toUpperKey();
+					list = adapter.ddl(idx++, table, list,  set);
+				}
+				table.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), table.getName(), e.toString());
+			}
+		}
+		return list;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -2919,6 +2955,41 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public <T extends View> LinkedHashMap<String,T> views(){
 		return views(false, null, null, null, "TABLE");
 	}
+
+	/**
+	 * 查询view的创建SQL
+	 * @param view view
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(View view){
+		List<String> list = new ArrayList<>();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		String random = random();
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = adapter.buildQueryDDLRunSQL(view);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, random, run.getFinalQuery(), run.getValues()).toUpperKey();
+					list = adapter.ddl(idx++, view, list,  set);
+				}
+				view.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[view ddl][view:{}][result:{}][执行耗时:{}ms]", random, view.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[view ddl][{}][view:{}][msg:{}]", random, LogUtil.format("查询视图创建DDL失败", 33), view.getName(), e.toString());
+			}
+		}
+		return list;
+	}
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -3072,6 +3143,41 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public <T extends MasterTable> LinkedHashMap<String, T> mtables() {
 		return mtables(false, "STABLE");
 	}
+
+	/**
+	 * 查询MasterTable创建SQL
+	 * @param table MasterTable
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(MasterTable table){
+		List<String> list = new ArrayList<>();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		String random = random();
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, random, run.getFinalQuery(), run.getValues()).toUpperKey();
+					list = adapter.ddl(idx++, table, list,  set);
+				}
+				table.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[master table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[master table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询主表创建DDL失败", 33), table.getName(), e.toString());
+			}
+		}
+		return list;
+	}
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -3184,6 +3290,41 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(MasterTable master, Map<String, Object> tags, String name){
 		return ptables(false, master, tags, name);
+	}
+
+	/**
+	 * 查询 PartitionTable 创建SQL
+	 * @param table PartitionTable
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(PartitionTable table){
+		List<String> list = new ArrayList<>();
+		JDBCRuntime runtime = runtime();
+		JDBCAdapter adapter = runtime.getAdapter();
+		String random = random();
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, random, run.getFinalQuery(), run.getValues()).toUpperKey();
+					list = adapter.ddl(idx++, table, list,  set);
+				}
+				table.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[partition table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[partition table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询子表创建DDL失败", 33), table.getName(), e.toString());
+			}
+		}
+		return list;
 	}
 	/* *****************************************************************************************************************
 	 * 													column
@@ -3867,6 +4008,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return procedures;
 	}
+
 
 	/* *****************************************************************************************************************
 	 * 													function

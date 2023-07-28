@@ -484,6 +484,22 @@ public interface JDBCAdapter {
 	 */
 	<T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
+	/**
+	 * 查询表DDL
+	 * @param table 表
+	 * @return List
+	 */
+	List<Run> buildQueryDDLRunSQL(Table table) throws Exception;
+
+	/**
+	 * 查询表DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param table 表
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	List<String> ddl(int index, Table table, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
@@ -526,6 +542,21 @@ public interface JDBCAdapter {
 	<T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
+	/**
+	 * 查询viewDDL
+	 * @param view view
+	 * @return List
+	 */
+	List<Run> buildQueryDDLRunSQL(View view) throws Exception;
+	/**
+	 * 查询 view DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param view view
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	List<String> ddl(int index, View view, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
@@ -565,6 +596,21 @@ public interface JDBCAdapter {
 	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
+	/**
+	 * 查询 MasterTable DDL
+	 * @param table MasterTable
+	 * @return List
+	 */
+	List<Run> buildQueryDDLRunSQL(MasterTable table) throws Exception;
+	/**
+	 * 查询 MasterTable DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param table MasterTable
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	List<String> ddl(int index, MasterTable table, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
@@ -619,6 +665,22 @@ public interface JDBCAdapter {
 	<T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
 
 
+
+	/**
+	 * 查询 PartitionTable DDL
+	 * @param table PartitionTable
+	 * @return List
+	 */
+	List<Run> buildQueryDDLRunSQL(PartitionTable table) throws Exception;
+	/**
+	 * 查询 MasterTable DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param table MasterTable
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	List<String> ddl(int index, PartitionTable table, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
@@ -874,6 +936,7 @@ public interface JDBCAdapter {
 	List<Run> buildQueryProcedureRunSQL(String catalog, String schema, String name) ;
 
 	<T extends Procedure> LinkedHashMap<String, T> procedures(int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+
 
 	/* *****************************************************************************************************************
 	 * 													function
