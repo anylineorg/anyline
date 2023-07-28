@@ -39,6 +39,7 @@ public class Table   implements Serializable {
     protected String collate                      ;
     protected Long ttl                            ;
     protected Date checkSchemaTime                ;
+    protected String ddl                          ;
 
 
     protected PrimaryKey primaryKey;
@@ -647,5 +648,19 @@ public class Table   implements Serializable {
 
     public void setAutoDropColumn(boolean autoDropColumn) {
         this.autoDropColumn = autoDropColumn;
+    }
+
+    public String getDdl() {
+        return ddl;
+    }
+
+    public void setDdl(String ddl) {
+        this.ddl = ddl;
+    }
+    public String ddl() {
+        return ddl;
+    }
+    public String ddl(boolean init) {
+        return ddl;
     }
 }
