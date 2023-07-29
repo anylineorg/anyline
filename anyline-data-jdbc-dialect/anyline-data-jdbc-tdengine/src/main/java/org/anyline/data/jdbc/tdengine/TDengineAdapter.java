@@ -434,9 +434,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	@Override
 	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun();
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
+
 		String stable = null;
 		if(null != master) {
 			stable = master.getName();
@@ -464,6 +462,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 		if(null != tags && tags.size()>0){
 			for(String key:tags.keySet()){
+				Run run = new SimpleRun();
+				runs.add(run);
+				StringBuilder builder = run.getBuilder();
 				Object value = tags.get(key);
 				builder.append("SELECT table_name FROM INFORMATION_SCHEMA.INS_TAGS WHERE STABLE_NAME = '").append(stable).append("'")
 						.append(" AND TAG_NAME ='").append(key.toLowerCase()).append("'")
@@ -480,12 +481,13 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 				}
  			}
 		}
-		builder = new StringBuilder();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '").append(stable).append("'");
 		if(BasicUtil.isNotEmpty(name)){
 			builder.append(" AND TABLE_NAME = '").append(name).append("'");
 		}
-		runs.add(new SimpleRun(builder));
 		return runs;
 	}
 
