@@ -779,7 +779,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
-		//td jdbc 不支持1=0
+		//td jdbc 不支持1=0(server:3.0.7.1 driver:3.2.4)
 		//return super.tags(create, table, tags, set);
 		return tags;
 	}
@@ -1174,7 +1174,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 					 }
 					 SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 					 type(builder, tag);
-					 //不支持comment
+					 //不支持comment sever:3.0.7.1 driver:3.2.4
 					 //comment(builder, tag);
 					 idx ++;
 				 }
