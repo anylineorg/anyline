@@ -31,6 +31,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.TransactionDefinition;
@@ -552,14 +553,21 @@ public class DataSourceHolder {
 	 * @return boolean
 	 */
 	public static boolean validate(String ds){
-		DataSource dataSource = null;
-		Connection con = null;
+		return validate(RuntimeHolder.getRuntime(ds));
+	}
+	public static boolean validate(){
+		return validate(RuntimeHolder.getRuntime());
+	}
+	public static boolean validate(JDBCRuntime runtime){
+		JdbcTemplate jdbc = runtime.getTemplate();
+		return validate(jdbc);
+	}
+	public static boolean validate(JdbcTemplate jdbc){
 		try{
-			JDBCRuntime runtime = RuntimeHolder.getRuntime(ds);
-			dataSource = runtime.getTemplate().getDataSource();
-			con = dataSource.getConnection();
-			if (!DataSourceUtils.isConnectionTransactional(con, dataSource)) {
-				DataSourceUtils.releaseConnection(con, dataSource);
+			DataSource ds = jdbc.getDataSource();
+			Connection con = ds.getConnection();
+			if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
+				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}catch (Exception e){
 			return false;
