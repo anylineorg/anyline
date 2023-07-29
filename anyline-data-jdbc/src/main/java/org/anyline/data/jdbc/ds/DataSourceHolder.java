@@ -32,12 +32,14 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.util.*;
 
 import static org.anyline.data.jdbc.util.DataSourceUtil.DATASOURCE_TYPE_DEFAULT;
@@ -542,5 +544,26 @@ public class DataSourceHolder {
 			return null;
 		}
 		return ds_id;
+	}
+
+	/**
+	 * 检测数据源是否连接正常
+	 * @param ds 数据源名称
+	 * @return boolean
+	 */
+	public static boolean validate(String ds){
+		DataSource dataSource = null;
+		Connection con = null;
+		try{
+			JDBCRuntime runtime = RuntimeHolder.getRuntime(ds);
+			dataSource = runtime.getTemplate().getDataSource();
+			con = dataSource.getConnection();
+			if (!DataSourceUtils.isConnectionTransactional(con, dataSource)) {
+				DataSourceUtils.releaseConnection(con, dataSource);
+			}
+		}catch (Exception e){
+			return false;
+		}
+		return true;
 	}
 }
