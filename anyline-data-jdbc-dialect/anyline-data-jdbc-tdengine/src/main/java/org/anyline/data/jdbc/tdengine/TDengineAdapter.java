@@ -777,7 +777,9 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 */
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
-		return super.tags(create, table, tags, set);
+		//td jdbc 不支持1=0
+		//return super.tags(create, table, tags, set);
+		return tags;
 	}
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
@@ -1160,7 +1162,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			 Run sql = list.get(i);
 			 if(i ==0){
 				 StringBuilder builder = new StringBuilder();
-				 builder.append(sql);
+				 builder.append(sql.getFinalUpdate());
 				 builder.append(" TAGS (");
 				 LinkedHashMap<String,Tag> tags = table.getTags();
 				 int idx = 0;
@@ -1170,7 +1172,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 					 }
 					 SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 					 type(builder, tag);
-					 comment(builder, tag);
+					 //不支持comment
+					 //comment(builder, tag);
 					 idx ++;
 				 }
 				 builder.append(")");
@@ -1225,7 +1228,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 			throw new SQLException("未指定主表");
 		}
 		Table tab = table;
-		builder.append(super.buildCreateRunSQL(tab).get(0));
+		builder.append(super.buildCreateRunSQL(tab).get(0).getFinalUpdate());
 		builder.append(" USING ");
 		SQLUtil.delimiter(builder, stable, getDelimiterFr(), getDelimiterTo());
 		builder.append("(");
