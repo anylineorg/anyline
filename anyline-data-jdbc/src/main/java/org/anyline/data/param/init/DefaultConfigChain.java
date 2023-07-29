@@ -126,7 +126,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 				}
 			}
 		}
-		return null;
+		return list;
 	}
 	public List<Config> getConfigs(String prefix, String var, Compare type){
 		List<Config> list = new ArrayList<>();
