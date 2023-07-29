@@ -79,7 +79,7 @@ public class Tag extends Column implements Serializable {
     }
     public Tag clone(){
         Tag copy = new Tag();
-        BeanUtil.copyFieldValue(update, this);
+        BeanUtil.copyFieldValue(copy, this);
         return copy;
     }
     public String getKeyword() {
