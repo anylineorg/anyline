@@ -24,6 +24,7 @@ public enum DatabaseType  implements Serializable {
         HANA  				("SAP HANA"    , KEY_CASE.SRC,"com.sap.db.jdbc.Driver"),
         HashData  			("酷克数据"	    , KEY_CASE.SRC,""),
         HighGo				("瀚高"			, KEY_CASE.SRC,"com.highgo.jdbc.Driver"),
+        Hive				("Hive"		, KEY_CASE.SRC,"org.apache.hive.jdbc.HiveDriver"),
         HotDB  			    ("热璞"         , KEY_CASE.SRC,""),
         HSQLDB  			("HSQLDB"		, KEY_CASE.SRC,"org.hsqldb.jdbcDriver"),
         InfluxDB			("InfluxDB"	, KEY_CASE.SRC,""),
