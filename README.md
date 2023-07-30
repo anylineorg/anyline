@@ -160,6 +160,7 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 <a style="display:inline-block;" href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-opengauss"> <img alt="OpenGauss" src="http://cdn.anyline.org/img/logo/opengauss.png" width="100" />OpenGauss </a> 
 <a style="display:inline-block;" href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-neo4j"> <img alt="Neo4j" src="http://cdn.anyline.org/img/logo/neo4j.webp" width="100" />Neo4j </a> 
 <a style="display:inline-block;" href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-highgo"> <img alt="瀚高" src="http://cdn.anyline.org/img/logo/hgdb.webp" width="100" />瀚高 </a> 
+<a style="display:inline-block;" href=""> <img alt="Hive" src="http://cdn.anyline.org/img/logo/hive.svg" width="100" />Apache Hive</a> 
 <a style="display:inline-block;" href=""> <img alt="南大通用" src="http://cdn.anyline.org/img/logo/gbase.jpg" width="100" />南大通用 </a> 
 <a style="display:inline-block;" href=""> <img alt="cassandra" src="http://cdn.anyline.org/img/logo/cassandra.png" width="100" />cassandra </a> 
 <a style="display:inline-block;" href=""> <img alt="oceanbase" src="http://cdn.anyline.org/img/logo/oceanbase.webp" width="100" />oceanbase </a> 
