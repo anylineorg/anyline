@@ -178,7 +178,7 @@ With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
 			adapter =  adapters.get(DatabaseType.Informix.name());
 		}else if(support(DatabaseType.H2) && name.contains(":h2:")){
 			adapter =  adapters.get(DatabaseType.H2.name());
-		}else if(support(DatabaseType.Hive) && name.contains("jdbc:hive2")){
+		}else if(support(DatabaseType.Hive) && name.contains("hive")){
 			adapter =  adapters.get(DatabaseType.H2.name());
 		}else if(support(DatabaseType.HSQLDB) && name.contains("hsqldb")){
 			adapter =  adapters.get(DatabaseType.HSQLDB.name());
