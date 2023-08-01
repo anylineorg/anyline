@@ -2516,21 +2516,25 @@ public class DefaultService<E> implements AnylineService<E> {
             if (tables.size() > 0) {
                 table = tables.values().iterator().next();
                 if(struct) {
-                    List<String> ddls = ddl(table);
-                    LinkedHashMap<String, Column> columns = columns(table);
-                    table.setColumns(columns);
-                    table.setTags(tags(table));
-                    PrimaryKey pk = primary(table);
-                    if(null != pk){
-                        for(String col:pk.getColumns().keySet()){
-                            Column column = columns.get(col.toUpperCase());
-                            if(null != column){
-                                column.setPrimaryKey(true);
+                    ddl(table);
+
+                    LinkedHashMap<String, Column> columns = table.getColumns();
+                    if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
+                        columns = columns(table);
+                        table.setColumns(columns);
+                        table.setTags(tags(table));
+                        PrimaryKey pk = primary(table);
+                        if (null != pk) {
+                            for (String col : pk.getColumns().keySet()) {
+                                Column column = columns.get(col.toUpperCase());
+                                if (null != column) {
+                                    column.setPrimaryKey(true);
+                                }
                             }
                         }
+                        table.setPrimaryKey(pk);
+                        table.setIndexs(indexs(table));
                     }
-                    table.setPrimaryKey(pk);
-                    table.setIndexs(indexs(table));
                 }
             }
             return table;

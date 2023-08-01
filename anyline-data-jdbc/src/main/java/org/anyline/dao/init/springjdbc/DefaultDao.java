@@ -2754,13 +2754,35 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try {
 			long fr = System.currentTimeMillis();
 			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
-			if (null != runs) {
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, random, run.getFinalQuery(), run.getValues()).toUpperKey();
 					list = adapter.ddl(idx++, table, list,  set);
 				}
 				table.setDdls(list);
+			}else{
+				//数据库不支持的 根据metadata拼装
+				LinkedHashMap<String, Column> columns = columns(table);
+				table.setColumns(columns);
+				table.setTags(tags(table));
+				PrimaryKey pk = primary(table);
+				if (null != pk) {
+					for (String col : pk.getColumns().keySet()) {
+						Column column = columns.get(col.toUpperCase());
+						if (null != column) {
+							column.setPrimaryKey(true);
+						}
+					}
+				}
+				table.setPrimaryKey(pk);
+				table.setIndexs(indexs(table));
+				runs = adapter.buildCreateRunSQL(table);
+				for(Run run:runs){
+					list.add(run.getFinalUpdate());
+					table.setDdls(list);
+				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
