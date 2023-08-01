@@ -1169,10 +1169,8 @@ public abstract class DefaultJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDDLRunSQL(Table table) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(Table table)", 37));
-		}
+		//有支持直接查询DDL的在子类中实现
+		List<Run> runs = buildCreateRunSQL(table);
 		return runs;
 	}
 
