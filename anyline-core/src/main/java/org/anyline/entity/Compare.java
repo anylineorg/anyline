@@ -433,6 +433,25 @@ public enum Compare {
         public boolean isMultipleValue(){
             return true;
         }
+    },
+    //正则表达式，注意不是每个数据库都支持
+    REGEX			{
+        public int getCode(){return 999;}
+        public String getSQL(){return "";}
+        public String getName(){return "REGEX";}
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            if(value instanceof Collection){
+                Collection col = (Collection)value;
+                return col.contains(target);
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
     };
 
     public abstract boolean compare(Object value, Object target);
@@ -441,7 +460,7 @@ public enum Compare {
     public abstract int getCode();
     public abstract String getName();
 
-    public static enum EMPTY_VALUE_SWITCH {
+    public enum EMPTY_VALUE_SWITCH {
           IGNORE   //忽略当前条件  其他条件继续执行
         , BREAK	   //中断执行 整个SQL不执行
         , NULL	   //生成 WHERE ID IS NULL
