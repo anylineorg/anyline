@@ -28,13 +28,14 @@
 微信群
 
 ## 简介
-AnyLine的核心是一个基于spring-jdbc生态的兼容各种数据库的(No-ORM)DBUtil。   
+AnyLine的核心是一个基于spring-jdbc生态的兼容各种数据库的(No-ORM)DBUtil。
 其重点是:
 - 以最简单、快速方式操作 ***数据库*** 与 ***结果集***
 - 兼容各种数据库，统一生成或执行DML/DDL，读写表结构、索引等元数据
 - 一切基于动态、基于运行时
 
-
+常用于动态结构的场景中，作为SQL解析引擎或适配器出现 ,  
+如:数据中台、可视化、低代码后台、SAAS、自定义表单、异构数据库迁移同步、物联网车联网数据处理、数据清洗、运行时自定义报表/查询条件/数据结构、爬虫数据解析等
 ### 与ORM最明显的区别是：
 - ***摒弃了各种繁琐呆板的实体类***  
   让数据库操作更简单，不要一动就是一整套的service/dao/mapping/VOPODTO有用没用的各种O，生成个SQL各种判断遍历。  
@@ -138,6 +139,62 @@ public class UserService extends AnylinseService<User>
 userService.querys(condition(true,"anyline根据约定自动生成的查询条件")); 
 ```
 
+## 适用场景
+- **低代码后台**    
+  主要用来处理动态属性、动态数据源(下拉列表)以及用户自定义的一些属性    
+  灵活的DDL也可以快速统一的操作各种表结构(包括各种时序、列式数据库)   
+  [【示例】](https://gitee.com/anyline/service)
+
+
+- **数据中台**    
+  动态处理各种异构数据源、强大的结果集批量处理能力，不再需要对呆板的实体类各种遍历各种转换。  
+  [【示例】](https://gitee.com/anyline/anyline-simple)
+-
+- **可视化数据源**  
+  主要用来处理动态属性，以及适配前端的多维度多结构的数据转换   
+  [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f93f9eb865d5cc60b9b)
+
+
+- **物联网车联网数据处理**    
+  如车载终端、交通信号灯、数字化工厂传感器、环境检测设备数据等   
+  [【示例】](https://gitee.com/anyline/service)
+
+
+- **数据清洗、数据批量处理**  
+  各种结构的数据、更多的是不符合标准甚至是错误的结构  
+  这种场景下需要一个灵活的数据结构来统一处理各种结构的数据    
+  再想像一下临时有几个数据需要处理一下(如补齐或替换几个字符)  
+  这个时候先去创建个Entity,XML,Service,Dao吗  
+  [【示例】](https://gitee.com/anyline/service)
+
+
+- **报表输出，特别是用户自定义报表**  
+  类似于可视化环境,样式相对简单一点，但精度要求极高，需要控制到像素、字体等  
+  如检验检测报告、资质证书等，当然这需要配合 anyline-office  
+  [【office示例】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-office-word)
+
+
+- **运行时自定义表单/查询条件/数据结构**  
+  各个阶段都要自定义，比低代码要求更高的是:操作用户不懂编程
+  [【示例】](https://gitee.com/anyline/service)
+
+
+- **网络爬虫数据解析**    
+  不固定的结构、html解析(当然不是用正则或dom那太费脑子了)  
+  [【参考】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f51d08504f16eef5d4dd25719cf7844ce)
+
+
+
+- **异构数据库迁移同步**  
+  动态的数据结构可以灵活的适配多种不同的表,需不需要反复的get/set    
+  兼容多种数据库的DDL也可以方便的在不同类型的数据库中执行  
+  [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f9382274223893eaf06)
+  [【源码】](https://gitee.com/anyline/service/tree/master/anyline-service-sync)
+
+
+- **还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成**  
+  别说设计了，需求都有可能还没结束就催交付了,Entity哪里找  
+  [【示例】](https://gitee.com/anyline/service)
 
 ##  关于数据库的适配
 直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)  
