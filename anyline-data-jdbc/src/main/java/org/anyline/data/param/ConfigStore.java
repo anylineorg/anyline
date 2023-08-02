@@ -184,6 +184,65 @@ public interface ConfigStore {
 	 */
 	ConfigStore and(Config config);
 	ConfigStore and(ConfigStore config);
+
+	ConfigStore eq(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore eq(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore eq(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore eq(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore eq(String var, Object value);
+
+
+	ConfigStore gt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore gt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore gt(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore gt(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore gt(String var, Object value);
+
+	ConfigStore ge(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore ge(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore ge(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore ge(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore ge(String var, Object value);
+
+
+	ConfigStore lt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore lt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore lt(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore lt(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore lt(String var, Object value);
+
+	ConfigStore le(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore le(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore le(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore le(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore le(String var, Object value);
+
+
+	ConfigStore in(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore in(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore in(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore in(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore in(String var, Object value);
+
+
+	ConfigStore like(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore like(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore like(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore like(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore like(String var, Object value);
+
+
+	ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore startWith(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore startWith(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore startWith(String var, Object value);
+
+	ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore endWith(String id, String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore endWith(String var, Object value, boolean overCondition, boolean overValue);
+	ConfigStore endWith(String var, Object value);
 	ConfigStore or(ConfigStore config);
 
 
