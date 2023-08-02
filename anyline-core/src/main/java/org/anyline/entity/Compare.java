@@ -233,7 +233,7 @@ public enum Compare {
             return false;
         }
     },
-    FIND_IN_SET{
+    FIND_IN_SET{ // = FIND_IN_SET_OR
         public int getCode(){return 60;}
         public String getSQL(){return " FIND_IN_SET ";}
         public String getName(){return "find in set";}
