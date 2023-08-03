@@ -4,14 +4,15 @@ import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -82,7 +83,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		} 
 		PageNavi navi = run.getPageNavi(); 
 		if(null != navi){
-			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
+			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
 			if(limit < 0){
 				limit = 0; 
 			} 
@@ -244,7 +245,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * List<Run> buildQueryDDLRunSQL(Table table) throws Exception
 	 * public List<String> ddl(int index, Table table, List<String> ddls, DataSet set)
@@ -340,46 +341,59 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return tables;
 	}
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
-		ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+		DataSource ds = null;
+		Connection con = null;
+		try {
+			JdbcTemplate jdbc = jdbc(runtime);
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			DatabaseMetaData dbmd = con.getMetaData();
 
-		if(null == tables){
-			tables = new LinkedHashMap<>();
-		}
-		Map<String,Integer> keys = keys(set);
-		while(set.next()) {
-			String tableName = string(keys, "TABLE_NAME", set);
+			ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
 
-			if(BasicUtil.isEmpty(tableName)){
-				tableName = string(keys, "NAME", set);
+			if(null == tables){
+				tables = new LinkedHashMap<>();
 			}
-			if(BasicUtil.isEmpty(tableName)){
-				continue;
-			}
-			T table = tables.get(tableName.toUpperCase());
-			if(null == table){
-				if(create){
-					table = (T)new Table();
-					tables.put(tableName.toUpperCase(), table);
-				}else{
+			Map<String,Integer> keys = keys(set);
+			while(set.next()) {
+				String tableName = string(keys, "TABLE_NAME", set);
+
+				if (BasicUtil.isEmpty(tableName)) {
+					tableName = string(keys, "NAME", set);
+				}
+				if (BasicUtil.isEmpty(tableName)) {
 					continue;
 				}
+				T table = tables.get(tableName.toUpperCase());
+				if (null == table) {
+					if (create) {
+						table = (T) new Table();
+						tables.put(tableName.toUpperCase(), table);
+					} else {
+						continue;
+					}
+				}
+				//参考 checkSchema()
+				table.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+				table.setCatalog(null);
+
+				table.setName(tableName);
+				table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+				table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+				table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+				table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+				table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+				table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+				tables.put(tableName.toUpperCase(), table);
+
+				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}
-			//参考 checkSchema()
-			table.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
-			table.setCatalog(null);
-
-			table.setName(tableName);
-			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-			tables.put(tableName.toUpperCase(), table);
-
-			// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return tables;
 	}
@@ -424,7 +438,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
-	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询视图
@@ -486,46 +500,58 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return views;
 	}
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
-		ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+		DataSource ds = null;
+		Connection con = null;
+		try{
+			JdbcTemplate jdbc = jdbc(runtime);
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			DatabaseMetaData dbmd = con.getMetaData();
+			ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
 
-		if(null == views){
-			views = new LinkedHashMap<>();
-		}
-		Map<String,Integer> keys = keys(set);
-		while(set.next()) {
-			String viewName = string(keys, "TABLE_NAME", set);
+			if(null == views){
+				views = new LinkedHashMap<>();
+			}
+			Map<String,Integer> keys = keys(set);
+			while(set.next()) {
+				String viewName = string(keys, "TABLE_NAME", set);
 
-			if(BasicUtil.isEmpty(viewName)){
-				viewName = string(keys, "NAME", set);
-			}
-			if(BasicUtil.isEmpty(viewName)){
-				continue;
-			}
-			T view = views.get(viewName.toUpperCase());
-			if(null == view){
-				if(create){
-					view = (T)new View();
-					views.put(viewName.toUpperCase(), view);
-				}else{
+				if(BasicUtil.isEmpty(viewName)){
+					viewName = string(keys, "NAME", set);
+				}
+				if(BasicUtil.isEmpty(viewName)){
 					continue;
 				}
+				T view = views.get(viewName.toUpperCase());
+				if(null == view){
+					if(create){
+						view = (T)new View();
+						views.put(viewName.toUpperCase(), view);
+					}else{
+						continue;
+					}
+				}
+				//参考 checkSchema()
+				view.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+				view.setCatalog(null);
+
+				view.setName(viewName);
+				view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
+				view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
+				view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
+				view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
+				view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
+				view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
+				views.put(viewName.toUpperCase(), view);
+
+				// view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
 			}
-			//参考 checkSchema()
-			view.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
-			view.setCatalog(null);
-
-			view.setName(viewName);
-			view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
-			view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
-			view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
-			view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
-			view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
-			view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
-			views.put(viewName.toUpperCase(), view);
-
-			// view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return views;
 	}
@@ -570,7 +596,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -591,12 +617,12 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param dbmd DatabaseMetaData
+	 * @param runtime runtime
 	 * @return List
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
-		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.mtables(create, tables, runtime, catalog, schema, pattern, types);
 	}
 
 
@@ -624,7 +650,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
 	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception
+	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -673,13 +699,13 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param dbmd DatabaseMetaData
+	 * @param runtime runtime
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
-		return super.ptables(create, tables, dbmd, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception{
+		return super.ptables(create, tables, runtime, catalog, schema, master);
 	}
 
 
@@ -689,7 +715,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
+	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -743,13 +769,15 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
 		return super.columns(index, create, table, columns, set);
 	}
+
+
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
 		return super.columns(create, columns, table, set);
 	}
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.columns(create, columns, dbmd, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception{
+		return super.columns(create, columns, runtime, table, pattern);
 	}
 
 
@@ -759,7 +787,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
+	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 不支持
@@ -792,7 +820,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return new LinkedHashMap();
 	}
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception{
 		return new LinkedHashMap();
 	}
 
@@ -904,7 +932,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata)
 	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception
+	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -992,8 +1020,8 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.indexs(create, table, indexs, set);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
-		return super.indexs(create, indexs, dbmd, table, unique, approximate);
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception{
+		return super.indexs(create, indexs, runtime, table, unique, approximate);
 	}
 
 
