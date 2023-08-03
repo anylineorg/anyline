@@ -49,7 +49,7 @@ public class ClickhouseAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		} 
 		PageNavi navi = run.getPageNavi(); 
 		if(null != navi){
-			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
+			long limit = navi.getLastRow() - navi.getFirstRow() + 1; 
 			if(limit < 0){
 				limit = 0; 
 			} 
