@@ -236,7 +236,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
-        Run run = new TableRun(this,dest);
+        Run run = new TableRun(this, dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
         if(BasicUtil.isEmpty(dest)){
@@ -331,6 +331,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         builder.append(valuesBuilder);
         run.setBuilder(builder);
         run.setInsertColumns(insertColumns);
+        //解析value数据类型 返回后dao中调用
+        //convert(runtime, dest, run);
 
         return run;
     }
