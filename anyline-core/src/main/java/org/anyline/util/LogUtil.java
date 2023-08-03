@@ -1,6 +1,7 @@
 package org.anyline.util;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class LogUtil {
     /**
@@ -52,4 +53,53 @@ public class LogUtil {
     public static String format(boolean content, int color) {
         return format(content+"", color, 0);
     }
+
+
+    /**
+     * 参数日志格式化
+     * @param params params
+     * @return String
+     */
+    public static String param(List params){
+        StringBuilder builder = new StringBuilder();
+        if(null != params && params.size() > 0){
+            builder.append("\n");
+            int idx = 0;
+            for(Object param:params){
+                builder.append("param").append(idx++).append("=");
+                builder.append(param);
+                if(null != param){
+                    builder.append("(").append(ClassUtil.type(param)).append(")");
+                }
+                builder.append("\n");
+            }
+        }
+        return builder.toString();
+    }
+    public static String param(List keys, List values) {
+        StringBuilder builder = new StringBuilder();
+        if (null != keys && null != values && keys.size() > 0) {
+            builder.append("\n");
+            if(keys.size() == values.size()) {
+                int size = keys.size();
+                for (int i = 0; i < size; i++) {
+                    Object key = keys.get(i);
+                    Object value = values.get(i);
+                    builder.append(keys.get(i)).append("=");
+                    builder.append(value);
+                    if (null != value) {
+                        builder.append("(").append(ClassUtil.type(value)).append(")");
+                    }
+                    builder.append("\n");
+                }
+            }else{
+                return param(values);
+            }
+        }else if(null != values){
+            builder.append(BeanUtil.concat(values, true)).append("\n");
+        }
+        return builder.toString();
+
+    }
+
 }
