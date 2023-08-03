@@ -625,7 +625,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 总行数 如果没有分页则与size()一致,否则取navi的total row
      * @return int
      */
-    public int total(){
+    public long total(){
         if(null != navi){
             return navi.getTotalRow();
         }
