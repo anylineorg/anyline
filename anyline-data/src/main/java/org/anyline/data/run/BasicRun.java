@@ -62,14 +62,14 @@ public abstract class BasicRun implements Run {
 	protected List<String> insertColumns;
 	protected List<String> updateColumns;
 	protected int from = 1;
-	 
-	 
+
+
 	protected DriverAdapter adapter;
 	protected String delimiterFr;
 	protected String delimiterTo;
-	 
+
 	public void setAdapter(DriverAdapter adapter){
-		this.adapter = adapter; 
+		this.adapter = adapter;
 	}
 
 	@Override
@@ -86,8 +86,8 @@ public abstract class BasicRun implements Run {
 	public void init(){
 		this.delimiterFr = adapter.getDelimiterFr();
 		this.delimiterTo = adapter.getDelimiterTo();
-		 
- 
+
+
 		if(null != configStore){
 			setPageNavi(configStore.getPageNavi()); 
 			/*OrderStore orderStore = configStore.getOrders();
@@ -301,7 +301,8 @@ public abstract class BasicRun implements Run {
 		if(null == values){
 			values = new ArrayList<>();
 		}
-		adapter.convert(getCatalog(), getSchema(), getTable(), run);
+		//dao中统一调用
+		//adapter.convert(getCatalog(), getSchema(), getTable(), run);
 		values.add(run);
 		return this;
 	}
@@ -358,7 +359,7 @@ public abstract class BasicRun implements Run {
 	}
 	public DriverAdapter getAdapter() {
 		return adapter;
-	} 
+	}
  
 	@Override 
 	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value) {
