@@ -22,7 +22,6 @@ package org.anyline.data.adapter.init;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
@@ -32,14 +31,16 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.run.XMLRun;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.metadata.Column;
 import org.anyline.entity.Join;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
+import org.anyline.metadata.Column;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.util.*;
@@ -49,9 +50,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 
@@ -86,7 +85,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * void createInserts(Run run, String dest, DataSet set,  List<String> keys)
      * void createInserts(Run run, String dest, Collection list,  List<String> keys)
-     * int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values) throws Exception
+     * int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values) throws Exception
      *
      * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
@@ -94,7 +93,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      ******************************************************************************************************************/
     /**
      * 创建INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param dest 表
      * @param obj 实体
      * @param checkPrimary 是否需要检查重复主键,默认不检查
@@ -102,20 +101,20 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return Run
      */
     @Override
-    public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
-        return super.buildInsertRun(template, dest, obj, checkPrimary, columns);
+    public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
+        return super.buildInsertRun(runtime, dest, obj, checkPrimary, columns);
     }
 
     /**
      * 根据DataSet创建批量INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set,  List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -152,7 +151,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            insertValue(template, run, row, true, false,true, keys);
+            insertValue(runtime, run, row, true, false,true, keys);
             if(i<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append(batchInsertSeparator());
@@ -162,14 +161,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据Collection创建批量INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -179,7 +178,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(template, run, dest, set, keys);
+            createInserts(runtime, run, dest, set, keys);
             return;
         }
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
@@ -216,7 +215,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
-                insertValue(template, run, obj, true, false, true, keys);
+                insertValue(runtime, run, obj, true, false, true, keys);
             //}
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
@@ -228,7 +227,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param dest 表
      * @param obj 数据
      * @param checkPrimary 是否需要检查重复主键,默认不检查
@@ -236,7 +235,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return Run
      */
     @Override
-    protected Run createInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
@@ -338,7 +337,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据collection创建 INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否需要检查重复主键,默认不检查
@@ -346,7 +345,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
@@ -356,10 +355,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             DataSet set = (DataSet)list;
             first = set.getRow(0);
             if(BasicUtil.isEmpty(dest)){
-                dest = DataSourceHolder.parseDataSource(dest,set);
+                dest = DataSourceUtil.parseDataSource(dest,set);
             }
             if(BasicUtil.isEmpty(dest)){
-                dest = DataSourceHolder.parseDataSource(dest,first);
+                dest = DataSourceUtil.parseDataSource(dest,first);
             }
         }else{
             first = list.iterator().next();
@@ -375,7 +374,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null == keys || keys.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        createInserts(template, run, dest, list, keys);
+        createInserts(runtime, run, dest, list, keys);
 
         return run;
     }
@@ -383,7 +382,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * 生成insert sql的value部分,每个Entity(每行数据)调用一次
      * (1,2,3)
      * (?,?,?)
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run           run
      * @param obj           Entity或DataRow
      * @param placeholder   是否使用占位符(批量操作时不要超出数量)
@@ -391,7 +390,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param alias         是否添加别名
      * @param keys          需要插入的列
      */
-    protected void insertValue(JdbcTemplate template, Run run, Object obj, boolean placeholder, boolean alias, boolean scope, List<String> keys){
+    protected void insertValue(DataRuntime runtime, Run run, Object obj, boolean placeholder, boolean alias, boolean scope, List<String> keys){
         StringBuilder builder = run.getBuilder();
         int keySize = keys.size();
         if(scope) {
@@ -456,7 +455,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
     /**
      * 执行 insert
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param random random
      * @param data entity|DataRow|DataSet
      * @param sql sql
@@ -466,11 +465,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @throws Exception 异常
      */
     @Override
-    public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+    public int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         KeyHolder keyholder = new GeneratedKeyHolder();
-
-        cnt = template.update(new PreparedStatementCreator() {
+        JdbcTemplate jdbc = jdbc(runtime);
+        cnt = jdbc.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
                 PreparedStatement ps = null;
