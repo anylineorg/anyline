@@ -1,5 +1,5 @@
 org.anyline.data.listener.init.DefaultDDListener
-org.anyline.data.jdbc.ds.EnvironmentListener
+org.anyline.data.jdbc.listener.EnvironmentListener
 org.anyline.proxy.CacheProxy
 org.anyline.proxy.ServiceProxy
 org.anyline.proxy.InterceptorProxy
