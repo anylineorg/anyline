@@ -687,7 +687,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
-		adapter.convert(runtime, new Table(dest), run);
+
+		Table table = new Table(dest);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			table.setColumns(columns(runtime, random, false, table));
+		}
+		adapter.convert(runtime, table, run);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
@@ -926,7 +932,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		Run run = adapter.buildInsertRun(runtime, dest, data, checkPrimary, columns);
-		adapter.convert(runtime, new Table(dest), run);
+		Table table = new Table(dest);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			table.setColumns(columns(runtime, random, false, table));
+		}
+		adapter.convert(runtime, table, run);
 		if(null == run){
 			return 0;
 		}

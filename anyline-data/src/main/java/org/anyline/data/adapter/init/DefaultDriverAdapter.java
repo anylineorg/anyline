@@ -44,6 +44,7 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -4350,23 +4351,26 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return result;
 	}
 	public LinkedHashMap<String, Column> columns(DataRuntime runtime, Table table, boolean metadata){
-		LinkedHashMap<String, Column> columns = null;
-		String random = random(runtime);
-		try {
-			List<Run> runs = buildQueryColumnRunSQL(table, metadata);
-			if (null != runs) {
-				int idx = 0;
-				for (Run run: runs) {
-					DataSet set = select( runtime, random, true, (String) null, run);
-					columns = columns(idx, true, table, columns, set);
-					idx++;
+		LinkedHashMap<String, Column> columns = CacheProxy.columns(runtime.getKey(), table.getName());
+		if(null == columns || columns.isEmpty()) {
+			String random = random(runtime);
+			try {
+				List<Run> runs = buildQueryColumnRunSQL(table, metadata);
+				if (null != runs) {
+					int idx = 0;
+					for (Run run : runs) {
+						DataSet set = select(runtime, random, true, (String) null, run);
+						columns = columns(idx, true, table, columns, set);
+						idx++;
+					}
 				}
-			}
-		} catch (Exception e) {
-			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
-			} if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table.getCatalog(), table.getSchema(), table.getName(), e.toString());
+			} catch (Exception e) {
+				if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table.getCatalog(), table.getSchema(), table.getName(), e.toString());
+				}
 			}
 		}
 		return columns;
