@@ -5,6 +5,7 @@ import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -23,7 +24,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -95,7 +95,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQuery();
 		OrderStore orders = run.getOrderStore();
-		int first = 0;
+		long first = 0;
 		String order = "";
 		if(null != orders){
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
@@ -126,7 +126,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return concatFun(args);
 	}
 
-	protected void createPrimaryValue(JdbcTemplate template, Collection list, String seq){
+	protected void createPrimaryValue(DataRuntime runtime, Collection list, String seq){
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
 		int size = list.size();
@@ -137,7 +137,8 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			}
 		}
 		builder.append(") M");
-		List<Map<String,Object>> ids = template.queryForList(builder.toString());
+		JdbcTemplate jdbc = jdbc(runtime);
+		List<Map<String,Object>> ids = jdbc.queryForList(builder.toString());
 		int i=0;
 		for(Object obj:list){
 			Object value = ids.get(i++).get("ID");
@@ -155,13 +156,13 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 		UNION ALL SELECT    'A2' FROM DUMMY
 	 * 		UNION ALL SELECT    'A3' FROM DUMMY
 	 * ) M
-	 * @param template JdbcTemplate
+	 * @param runtime runtime
 	 * @param run run
 	 * @param dest dest
 	 * @param keys keys
 	 */
 	@Override
-	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
+	public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
 		if(null == set || set.size() ==0){
 			return;
 		}
@@ -177,7 +178,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 						str = str.substring(2, str.length() - 1);
 					}
 					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						createPrimaryValue(template, set, str);
+						createPrimaryValue(runtime, set, str);
 					}else {
 						seqs.put(key, str);
 					}
@@ -230,14 +231,14 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				builder.append("\n\tUNION ALL");
 			}
 			builder.append("\n\tSELECT ");
-			insertValue(template, run, row, true, true,false, keys);
+			insertValue(runtime, run, row, true, true,false, keys);
 			builder.append(" FROM DUMMY ");
 			col ++;
 		}
 		builder.append(") M ");
 	}
 	@Override
-	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys){
+	public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -248,7 +249,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInserts(template, run, dest, set, keys);
+			createInserts(runtime, run, dest, set, keys);
 			return;
 		}
 
@@ -263,7 +264,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 						str = str.substring(2, str.length() - 1);
 					}
 					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						createPrimaryValue(template, list, str);
+						createPrimaryValue(runtime, list, str);
 					}else {
 						seqs.put(key, str);
 					}
@@ -330,7 +331,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				builder.append("\n\tUNION ALL");
 			}
 			builder.append("\n\tSELECT ");
-			insertValue(template, run, obj, true, true,false, keys);
+			insertValue(runtime, run, obj, true, true,false, keys);
 			builder.append(" FROM DUMMY ");
 			col ++;
 		}
@@ -339,7 +340,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 * 执行 insert
-	 * @param template JdbcTemplate
+	 * @param runtime runtime
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
 	 * @param sql sql
@@ -348,7 +349,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	/*@Override
-	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+	public int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
 		int cnt = 0;
 		if(data instanceof Collection) {
 			if (null == values || values.isEmpty()) {
@@ -375,7 +376,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	}*/
 	/**
 	 * 执行 insert
-	 * @param template JdbcTemplate
+	 * @param runtime runtime
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
 	 * @param sql sql
@@ -385,12 +386,13 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+	public int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
 		int cnt = 0;
+		JdbcTemplate jdbc = jdbc(runtime);
 		if(null != values && values.size() > 0) {
-			cnt = template.update(sql, values.toArray());
+			cnt = jdbc.update(sql, values.toArray());
 		}else{
-			cnt = template.update(sql);
+			cnt = jdbc.update(sql);
 		}
 		/*
 			这个弱鸡不支持返回自增主键值
@@ -454,7 +456,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * List<Run> buildQueryDDLRunSQL(Table table) throws Exception
 	 * public List<String> ddl(int index, Table table, List<String> ddls, DataSet set)
@@ -533,8 +535,8 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return tables;
 	}
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
-		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(create, tables, runtime, catalog, schema, pattern, types);
 	}
 
 	/* *****************************************************************************************************************
@@ -542,7 +544,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
-	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询视图
@@ -604,7 +606,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -625,12 +627,12 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param dbmd DatabaseMetaData
+	 * @param runtime runtime
 	 * @return List
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
-		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.mtables(create, tables, runtime, catalog, schema, pattern, types);
 	}
 
 
@@ -658,7 +660,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
 	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception
+	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -707,13 +709,13 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param dbmd DatabaseMetaData
+	 * @param runtime runtime
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
-		return super.ptables(create, tables, dbmd, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception{
+		return super.ptables(create, tables, runtime, catalog, schema, master);
 	}
 
 
@@ -723,7 +725,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata)
 	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
+	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -771,8 +773,8 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return super.columns(create, columns, table, set);
 	}
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.columns(create, columns, dbmd, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception{
+		return super.columns(create, columns, runtime, table, pattern);
 	}
 
 
@@ -782,7 +784,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception
+	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -814,8 +816,8 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return super.tags(create, table, tags, set);
 	}
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.tags(create, tags, dbmd, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception{
+		return super.tags(create, tags, runtime, table, pattern);
 	}
 
 	/* *****************************************************************************************************************
@@ -824,7 +826,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata)
 	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception
+	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -856,8 +858,8 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return super.indexs(create, table, indexs, set);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
-		return super.indexs(create, indexs, dbmd, table, unique, approximate);
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception{
+		return super.indexs(create, indexs, runtime, table, unique, approximate);
 	}
 
 
