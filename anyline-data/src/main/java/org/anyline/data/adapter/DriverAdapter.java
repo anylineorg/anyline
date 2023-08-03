@@ -1795,6 +1795,7 @@ public interface DriverAdapter {
 	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
 	 */
 	boolean convert(String catalog, String schema, String table, RunValue run);
+	boolean convert(DataRuntime runtime, String table, Run run);
 
 	/**
 	 * 数据类型转换
