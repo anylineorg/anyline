@@ -5,6 +5,7 @@ import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
@@ -12,7 +13,6 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		} 
 		PageNavi navi = run.getPageNavi(); 
 		if(null != navi){
-			int limit = navi.getLastRow() - navi.getFirstRow() + 1; 
+			long limit = navi.getLastRow() - navi.getFirstRow() + 1; 
 			if(limit < 0){
 				limit = 0; 
 			} 
@@ -72,7 +72,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 
 
 	@Override
-	public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
