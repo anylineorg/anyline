@@ -2,9 +2,10 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.init.SQLAdapter; 
+import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
@@ -16,12 +17,10 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -73,8 +72,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQuery();
 		OrderStore orders = run.getOrderStore();
-		int first = 0;
-		int last = 0;
+		long first = 0;
+		long last = 0;
 		String order = "";
 		if(null != orders){
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
@@ -113,29 +112,29 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	/**
 	 * 根据DataSet创建批量INSERT RunPrepare
 	 * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
-	 * @param template JdbcTemplate
+	 * @param runtime runtime
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
-		super.createInserts(template, run, dest, set, keys);
+	public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
+		super.createInserts(runtime, run, dest, set, keys);
 	}
 
 	/**
 	 * 根据Collection创建批量INSERT RunPrepare
 	 * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
-	 * @param template JdbcTemplate
+	 * @param runtime runtime
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param list 集合
 	 * @param keys 需插入的列
 	 */
 	@Override
-	public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
-		super.createInserts(template, run, dest, list, keys);
+	public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
+		super.createInserts(runtime, run, dest, list, keys);
 	}
 
 	@Override 
@@ -193,7 +192,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
 	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
 	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
 	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
 	 * List<Run> buildQueryDDLRunSQL(Table table) throws Exception
 	 * public List<String> ddl(int index, Table table, List<String> ddls, DataSet set)
@@ -240,8 +239,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.tables(index, create, catalog, schema, tables, set);
 	}
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
-		return super.tables(create, tables, dbmd, catalog, schema, pattern, types);
+	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(create, tables, runtime, catalog, schema, pattern, types);
 	}
 
 	/* *****************************************************************************************************************
@@ -249,7 +248,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception;
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -270,14 +269,14 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param dbmd DatabaseMetaData
+	 * @param runtime runtime
 	 * @param pattern pattern
 	 * @param types types
 	 * @return List
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, String pattern, String ... types) throws Exception{
-		return super.mtables(create, tables, dbmd, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.mtables(create, tables, runtime, catalog, schema, pattern, types);
 	}
 
 
@@ -305,7 +304,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name);
 	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags);
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
-	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception;
+	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -354,13 +353,13 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param dbmd DatabaseMetaData
+	 * @param runtime runtime
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DatabaseMetaData dbmd, String catalog, String schema, MasterTable master) throws Exception{
-		return super.ptables(create, tables, dbmd, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception{
+		return super.ptables(create, tables, runtime, catalog, schema, master);
 	}
 
 
@@ -370,7 +369,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata);
 	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -426,8 +425,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.columns(create, columns, table, set);
 	}
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.columns(create, columns, dbmd, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception{
+		return super.columns(create, columns, runtime, table, pattern);
 	}
 
 
@@ -437,7 +436,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata);
 	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
 	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -469,8 +468,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.tags(create, table, tags, set);
 	}
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
-		return super.tags(create, tags, dbmd, table, pattern);
+	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception{
+		return super.tags(create, tags, runtime, table, pattern);
 	}
 
 	/* *****************************************************************************************************************
@@ -479,7 +478,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata);
 	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
 	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception;
+	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -511,8 +510,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return super.indexs(create, table, indexs, set);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DatabaseMetaData dbmd, Table table, boolean unique, boolean approximate) throws Exception{
-		return super.indexs(create, indexs, dbmd, table, unique, approximate);
+	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception{
+		return super.indexs(create, indexs, runtime, table, unique, approximate);
 	}
 
 
