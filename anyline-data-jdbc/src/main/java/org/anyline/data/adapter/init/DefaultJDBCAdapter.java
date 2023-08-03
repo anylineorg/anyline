@@ -80,15 +80,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		Object client = runtime.getClient();
 		return (JdbcTemplate) client;
 	}
-
-	protected String random(DataRuntime runtime){
-		StringBuilder builder = new StringBuilder();
-		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
-				.append("][thread:")
-				.append(Thread.currentThread().getId()).append("][ds:").append(runtime.datasource()).append("]");
-		return builder.toString();
-	}
-
 	@Override
 	public long total(DataRuntime runtime, String random, Run run) {
 		long total = 0;
