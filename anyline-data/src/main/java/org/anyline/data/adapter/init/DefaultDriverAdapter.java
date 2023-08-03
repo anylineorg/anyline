@@ -287,11 +287,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
 			if(list.size() >0){
-				return createInsertRunFromCollection(runtime, dest, list, checkPrimary,columns);
+				return createInsertRunFromCollection(runtime, dest, list, checkPrimary, columns);
 			}
 			return null;
 		}else {
-			return createInsertRun(runtime, dest, obj, checkPrimary,columns);
+			return createInsertRun(runtime, dest, obj, checkPrimary, columns);
 		}
 
 	}
@@ -4336,16 +4336,56 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 */
 	@Override
-	public boolean convert(String catalog, String schema, String table, RunValue run){
+	public boolean convert(String catalog, String schema, String table, RunValue value){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			LinkedHashMap<String, Column> columns = null;
 			if(null != dao) {
 				columns = dao.columns(catalog, schema, table);
 			}
-			result = convert(columns, run);
+			result = convert(columns, value);
 		}else{
-			result = convert((Column)null, run);
+			result = convert((Column)null, value);
+		}
+		return result;
+	}
+	public LinkedHashMap<String, Column> columns(DataRuntime runtime, Table table, boolean metadata){
+		LinkedHashMap<String, Column> columns = null;
+		String random = random(runtime);
+		try {
+			List<Run> runs = buildQueryColumnRunSQL(table, metadata);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run: runs) {
+					DataSet set = select( runtime, random, true, (String) null, run);
+					columns = columns(idx, true, table, columns, set);
+					idx++;
+				}
+			}
+		} catch (Exception e) {
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table.getCatalog(), table.getSchema(), table.getName(), e.toString());
+			}
+		}
+		return columns;
+	}
+	@Override
+	public boolean convert(DataRuntime runtime, String table, Run run){
+		boolean result = false;
+		LinkedHashMap<String, Column> columns = null;
+
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			columns = columns(runtime, new Table(table), false);
+		}
+		List<RunValue> values = run.getRunValues();
+		for(RunValue value:values){
+			if(ConfigTable.IS_AUTO_CHECK_METADATA){
+				result = convert(columns, value);
+			}else{
+				result = convert((Column)null, value);
+			}
 		}
 		return result;
 	}
@@ -4457,4 +4497,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return name;
 	}
+
+
+	protected String random(DataRuntime runtime){
+		StringBuilder builder = new StringBuilder();
+		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
+				.append("][thread:")
+				.append(Thread.currentThread().getId()).append("][ds:").append(runtime.datasource()).append("]");
+		return builder.toString();
+	}
+
 }
