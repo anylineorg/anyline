@@ -3,19 +3,19 @@ package org.anyline.data.jdbc.mssql;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
-import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         PageNavi navi = run.getPageNavi();
         String sql = run.getBaseQuery();
         OrderStore orders = run.getOrderStore();
-        int first = 0;
-        int last = 0;
+        long first = 0;
+        long last = 0;
         String order = "";
         if(null != orders){
             order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
@@ -63,7 +63,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             builder.append(sql).append("\n").append(order);
         }else{
             // 分页
-            int rows = navi.getPageRows();
+            long rows = navi.getPageRows();
             if(rows * navi.getCurPage() > navi.getTotalRow()){
                 // 最后一页不足10条
                 rows = navi.getTotalRow() % navi.getPageRows();
@@ -85,14 +85,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     /**
      * 根据DataSet创建批量INSERT RunPrepare
      * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set, List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder){
@@ -132,7 +132,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
-            insertValue(template, run, row, true, false,false, keys);
+            insertValue(runtime, run, row, true, false,false, keys);
             if(i<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");
@@ -143,14 +143,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     /**
      * 根据Collection创建批量INSERT RunPrepare
      * 2000版本单独处理  insert into tab(nm) select 1 union all select 2
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(JdbcTemplate template, Run run, String dest, Collection list, List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -158,7 +158,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(template, run, dest, set, keys);
+            createInserts(runtime, run, dest, set, keys);
             return;
         }
 
@@ -198,7 +198,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                     generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
-                insertValue(template, run, obj, true, false, false, keys);
+                insertValue(runtime, run, obj, true, false, false, keys);
            // }
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
