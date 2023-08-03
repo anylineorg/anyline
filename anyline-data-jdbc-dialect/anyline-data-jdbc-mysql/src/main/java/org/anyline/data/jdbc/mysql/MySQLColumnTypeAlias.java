@@ -62,6 +62,7 @@ public enum MySQLColumnTypeAlias implements ColumnTypeAlias {
         MEDIUMBLOB              (StandardColumnType.MEDIUMBLOB            ), //mysql,
         MEDIUMINT               (StandardColumnType.MEDIUMINT             ), //mysql,
         MEDIUMTEXT              (StandardColumnType.MEDIUMTEXT            ), //mysql,
+        MULTILINE               (StandardColumnType.MULTILINESTRING       ), //mysql,
         MULTILINESTRING         (StandardColumnType.MULTILINESTRING       ), //mysql,
         MULTIPOINT              (StandardColumnType.MULTIPOINT            ), //mysql,
         MULTIPOLYGON            (StandardColumnType.MULTIPOLYGON          ), //mysql,
