@@ -4372,12 +4372,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return columns;
 	}
 	@Override
-	public boolean convert(DataRuntime runtime, String table, Run run){
+	public boolean convert(DataRuntime runtime, Table table, Run run){
 		boolean result = false;
-		LinkedHashMap<String, Column> columns = null;
+		LinkedHashMap<String, Column> columns = table.getColumns();
 
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			columns = columns(runtime, new Table(table), false);
+			if(null == columns || columns.isEmpty()) {
+				columns = columns(runtime, table, false);
+			}
 		}
 		List<RunValue> values = run.getRunValues();
 		for(RunValue value:values){

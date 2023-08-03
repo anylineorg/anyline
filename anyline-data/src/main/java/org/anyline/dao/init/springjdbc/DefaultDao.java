@@ -687,7 +687,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
-		adapter.convert(runtime, dest, run);
+		adapter.convert(runtime, new Table(dest), run);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
@@ -926,7 +926,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		Run run = adapter.buildInsertRun(runtime, dest, data, checkPrimary, columns);
-		adapter.convert(runtime, dest, run);
+		adapter.convert(runtime, new Table(dest), run);
 		if(null == run){
 			return 0;
 		}
