@@ -20,10 +20,10 @@
 package org.anyline.data.jdbc.ds;
 
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
+import org.anyline.data.jdbc.runtime.JdbcRuntimeHolder;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.ClientHolder;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,163 +41,18 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
-import static org.anyline.data.jdbc.util.DataSourceUtil.DATASOURCE_TYPE_DEFAULT;
 
-
-public class DataSourceHolder {
-	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class);
-
-	// 切换前数据源 
-    private static final ThreadLocal<String> THREAD_RECALL_SOURCE = new ThreadLocal<String>(); 
-	// 当前数据源 
-    private static final ThreadLocal<String> THREAD_CUR_SOURCE = new ThreadLocal<String>(); 
-    // 是否还原默认数据源,执行一次操作后还原回  切换之前的数据源
-    private static final ThreadLocal<Boolean> THREAD_AUTO_RECOVER = new ThreadLocal<Boolean>(); 
-    private static List<String> dataSources = new ArrayList<>();
-	//数据源对应的数据库类型
-	private static Map<String, DatabaseType> types = new HashMap<>();
-
+public class DataSourceHolder extends ClientHolder {
+	private static Logger log = LoggerFactory.getLogger(DataSourceHolder.class);
 	private static Map<TransactionStatus, String> transactionStatus = new Hashtable<>();
-    static{
-    	THREAD_AUTO_RECOVER.set(false); 
-    }
+	public static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
 
-	/**
-	 * 已注册成功的所有数据源
-	 * @return List
-	 */
-	public static List<String> list(){
-		return dataSources;
-	}
-
-    public static String curDataSource() {
-        return THREAD_CUR_SOURCE.get();
-    }
-
-	public static DatabaseType dialect(){
-		String ds = curDataSource();
-		return types.get(ds);
-	}
-	public static void dialect(String ds, DatabaseType type){
-		types.put(ds, type);
-	}
-
-	/**
-	 * 设置当前数据源名称
-	 * @param dataSource 数据源在spring context中注册的名称
-	 */
-	public static void setDataSource(String dataSource) {
-		setDataSource(dataSource, false);
-    }
-	public static void destroyDataSource(String dataSource){
-		dataSources.remove(dataSource);
-		RuntimeHolder.destroyRuntime(dataSource);
-	}
-
-	/**
-	 * 设置当前数据源名称
-	 * @param dataSource 数据源在spring context中注册的名称
-	 * @param auto 执行完后切换回原来的数据库
-	 */
-    public static void setDataSource(String dataSource, boolean auto) {
-
-		//不要切换到默认数据源，避免误操作
-		/*if(BasicUtil.isEmpty(dataSource)){
-			setDefaultDataSource();
-			return;
-		}*/
-		if(null == dataSource || !dataSources.contains(dataSource)){
-			throw new RuntimeException("数据源未注册:"+dataSource);
-		}
-    	if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-    		log.info("[切换数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get(), dataSource, auto);
-    	} 
-    	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
-    	THREAD_CUR_SOURCE.set(dataSource); 
-    	THREAD_AUTO_RECOVER.set(auto); 
-    } 
-    // 恢复切换前数据源 
-    public static void recoverDataSource(){
-		String fr = THREAD_CUR_SOURCE.get();
-		String to = THREAD_RECALL_SOURCE.get();
-		if(null == fr && null == to){
-			return;
-		}
-		if(null != fr && fr.equals(to)){
-			return;
-		}
-    	THREAD_CUR_SOURCE.set(to);
-		log.info("[还原数据源][thread:{}][数据源:{}>{}][auto recover:{}]", Thread.currentThread().getId(), fr, to);
-    } 
-    public static void setDefaultDataSource(){
-    	clearDataSource();
-		if(dataSources.contains("dataSource")){
-			setDataSource("dataSource");
-		}else if(dataSources.contains("default")){
-			setDataSource("default");
-		}
-    	THREAD_AUTO_RECOVER.set(false);
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.info("[切换数据源][thread:{}][数据源:{}>默认数据源]",Thread.currentThread().getId(), THREAD_RECALL_SOURCE.get());
-		}
-	}
-    public static void clearDataSource() {
-    	THREAD_CUR_SOURCE.remove(); 
-    } 
-    public static boolean isAutoRecover(){
-    	if(null == THREAD_AUTO_RECOVER || null == THREAD_AUTO_RECOVER.get()){
-    		return false; 
-    	} 
-    	return THREAD_AUTO_RECOVER.get(); 
-    } 
- 
-	/** 
-	 * 解析数据源,并返回修改后的SQL 
-	 * &lt;mysql_ds&gt;crm_user 
-	 * @param src  src
-	 * @return String
-	 */ 
-	public static String parseDataSource(String src){
-		if(null != src && src.startsWith("<")){
-			int fr = src.indexOf("<"); 
-			int to = src.indexOf(">"); 
-			if(fr != -1){
-				String ds = src.substring(fr+1,to); 
-				src = src.substring(to+1); 
-				setDataSource(ds, true); 
-			} 
-		} 
-		return src;
-	}
-	public static String parseDataSource(String dest, Object obj){
-		if(BasicUtil.isNotEmpty(dest) || null == obj){
-			return parseDataSource(dest);
-		}
-		String result = "";
-		if(obj instanceof DataRow){
-			DataRow row = (DataRow)obj;
-			String link = row.getDataLink();
-			if(BasicUtil.isNotEmpty(link)){
-				DataSourceHolder.setDataSource(link, true);
-			}
-			result = row.getDataSource();
-		}else if(obj instanceof DataSet){
-			DataSet set = (DataSet)obj;
-			if(set.size()>0){
-				result = parseDataSource(dest, set.getRow(0));
-			}
-		} else if (obj instanceof Collection) {
-			Object first = ((Collection)obj).iterator().next();
-			result = EntityAdapterProxy.table(first.getClass(), true);
-		} else{
-			result = EntityAdapterProxy.table(obj.getClass(), true);
-		}
-		result = parseDataSource(result);
-		return result;
-	}
 	/**
 	 * 注册新的数据源,只是把spring context中现有的数据源名称添加到数据源名称列表
 	 * @param ds 数据源名称
@@ -361,27 +216,37 @@ public class DataSourceHolder {
 	 * @throws Exception 异常 Exception
 	 */
 	private static String addDataSource(String key, String ds, boolean over) throws Exception{
-		if(!over && dataSources.contains(key)){
-			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+		if(dataSources.contains(key)){
+			if(!over){
+				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+			}else{
+				//清空
+				JdbcRuntimeHolder.destroy(key);
+			}
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
 		regTransactionManager(key, ds);
 		reg(key);
-		RuntimeHolder.reg(key, ds);
+		JdbcRuntimeHolder.reg(key, ds);
 		return ds;
 	}
 	private static DataSource addDataSource(String key, DataSource ds, boolean over) throws Exception{
-		if(!over && dataSources.contains(key)){
-			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+		if(dataSources.contains(key)){
+			if(!over){
+				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+			}else{
+				//清空
+				JdbcRuntimeHolder.destroy(key);
+			}
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
 		regTransactionManager(key, ds);
 		reg(key);
-		RuntimeHolder.reg(key, ds);
+		JdbcRuntimeHolder.reg(key, ds);
 		return ds;
 	}
 
@@ -425,6 +290,9 @@ public class DataSourceHolder {
 
 	public static String reg(String key, Map param) throws Exception{
 		String ds = build(key, param);
+		if(null == ds) {//创建数据源失败
+			return null;
+		}
 		return addDataSource(key, ds, true);
 	}
 
@@ -439,10 +307,10 @@ public class DataSourceHolder {
 
 
 	public static DataSource getDataSource(){
-		return RuntimeHolder.getDataSource();
+		return JdbcRuntimeHolder.getDataSource();
 	}
 	public static DataSource getDataSource(String key){
-		return RuntimeHolder.getDataSource(key);
+		return JdbcRuntimeHolder.getDataSource(key);
 	}
 
 	public static String reg(String key, String prefix, Environment env) {
@@ -457,8 +325,12 @@ public class DataSourceHolder {
 			if (type == null) {
 				type = DATASOURCE_TYPE_DEFAULT;
 			}
-			String driverClassName = BeanUtil.value(prefix, env, "driver","driver-class","driver-class-name");
 			String url = BeanUtil.value(prefix, env, "url","jdbc-url");
+			if(!url.startsWith("jdbc:")){
+				//只注册jdbc驱动
+				return null;
+			}
+			String driverClassName = BeanUtil.value(prefix, env, "driver","driver-class","driver-class-name");
 			String username = BeanUtil.value(prefix, env,"user","username","user-name");
 			String password = BeanUtil.value(prefix, env, "password");
 
@@ -474,8 +346,11 @@ public class DataSourceHolder {
 			map.put("password",password);
 			//BeanUtil.setFieldsValue(ds, map, false);
 			String ds = build(key, map);
+			if(null == ds){//创建数据源失败
+				return null;
+			}
 			addDataSource(key, ds, false);
-			//return ds;
+			return ds;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -553,13 +428,13 @@ public class DataSourceHolder {
 	 * @return boolean
 	 */
 	public static boolean validate(String ds){
-		return validate(RuntimeHolder.getRuntime(ds));
+		return validate(JdbcRuntimeHolder.getRuntime(ds));
 	}
 	public static boolean validate(){
-		return validate(RuntimeHolder.getRuntime());
+		return validate(JdbcRuntimeHolder.getRuntime());
 	}
-	public static boolean validate(JDBCRuntime runtime){
-		JdbcTemplate jdbc = runtime.getTemplate();
+	public static boolean validate(DataRuntime runtime){
+		JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();
 		return validate(jdbc);
 	}
 	public static boolean validate(JdbcTemplate jdbc){

@@ -1,5 +1,9 @@
-package org.anyline.data.jdbc.ds;
+package org.anyline.data.jdbc.listener;
 
+import org.anyline.data.jdbc.ds.DataSourceHolder;
+import org.anyline.data.jdbc.runtime.JdbcRuntime;
+import org.anyline.data.jdbc.runtime.JdbcRuntimeHolder;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
@@ -12,7 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-@Component("anyline.listener.ds.EnvironmentListener")
+@Component("anyline.listener.jdbc.EnvironmentListener")
 public class EnvironmentListener implements ApplicationContextAware {
     public static Logger log = LoggerFactory.getLogger(EnvironmentListener.class);
 
@@ -23,7 +27,7 @@ public class EnvironmentListener implements ApplicationContextAware {
         context = applicationContext;
         factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
         SpringContextUtil.init(context);
-        RuntimeHolder.init(factory);
+        JdbcRuntimeHolder.init(factory);
         load();
     }
     //加载配置文件
@@ -48,7 +52,7 @@ public class EnvironmentListener implements ApplicationContextAware {
                         //以上几行在reg内部已经执行了
                         */
                         multiple = true;
-                        log.info("[创建数据源][prefix:{}]", prefix);
+                        log.info("[创建数据源][prefix:{}][bean:{}]", prefix, ds);
                     }
                 }catch (Exception e){
                     log.error("[创建数据源失败][prefix:{}][msg:{}]", prefix, e.toString());
@@ -64,15 +68,15 @@ public class EnvironmentListener implements ApplicationContextAware {
         if(null != template) {
             if(multiple) {
                 //注册一个默认运行环境
-                RuntimeHolder.reg("default", template, null);
+                JdbcRuntimeHolder.reg("default", template, null);
                 if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
                     //注册一个主事务管理器
                     DataSourceHolder.regTransactionManager("primary", template.getDataSource(), true);
                 }
             }
             //注册一个通用运行环境(可切换数据源)
-            JDBCRuntime runtime = new JDBCRuntime("common", template, null);
-            RuntimeHolder.reg("common", runtime);
+            DataRuntime runtime = new JdbcRuntime("common", template, null);
+            JdbcRuntimeHolder.reg("common", runtime);
         }
     }
 

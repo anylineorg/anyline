@@ -12,8 +12,6 @@ import java.util.Map;
 
 public class DataSourceUtil {
 
-    public static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
-
     public static Logger log = LoggerFactory.getLogger(DataSourceUtil.class);
 
 

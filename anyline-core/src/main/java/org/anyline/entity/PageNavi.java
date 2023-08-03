@@ -41,32 +41,32 @@ public interface PageNavi extends Serializable{
 	 * 第一行 
 	 * @return int
 	 */ 
-	public int getFirstRow(); 
+	public long getFirstRow();
 	/** 
 	 * 最后一行 
 	 * @return int
 	 */ 
-	public int getLastRow(); 
+	public long getLastRow();
 	/** 
 	 * 页面显示的第一页 
 	 * @return int
 	 */ 
-	public int getDisplayPageFirst() ; 
+	public long getDisplayPageFirst() ;
 	/** 
 	 * 设置页面显示的第一页 
 	 * @param displayPageFirst  displayPageFirst
 	 */ 
-	public void setDisplayPageFirst(int displayPageFirst); 
+	public void setDisplayPageFirst(long displayPageFirst);
 	/** 
 	 * 页面显示的最后一页 
 	 * @return int
 	 */ 
-	public int getDisplayPageLast() ; 
+	public long getDisplayPageLast() ;
 	/** 
 	 * 设置页面显示的最后一页 
 	 * @param displayPageLast  displayPageLast
 	 */ 
-	public void setDisplayPageLast(int displayPageLast) ; 
+	public void setDisplayPageLast(long displayPageLast) ;
  
 	public void addParam(String key, Object value); 
 	public Object getParams(String key); 
@@ -102,38 +102,38 @@ public interface PageNavi extends Serializable{
 	 * 设置总行数 
 	 * @param totalRow  totalRow
 	 * @return PageNavi
-	 */ 
-	public PageNavi setTotalRow(int totalRow) ; 
+	 */
+	public PageNavi setTotalRow(long totalRow) ;
 	/** 
 	 * 设置最后一页 
 	 * @param totalPage  totalPage
 	 * @return PageNavi
 	 */ 
-	public PageNavi setTotalPage(int totalPage) ; 
+	public PageNavi setTotalPage(long totalPage) ;
 	/** 
 	 * 设置当前页 
 	 * @param curPage  curPage
 	 * @return PageNavi
 	 */ 
-	public PageNavi setCurPage(int curPage) ; 
+	public PageNavi setCurPage(long curPage) ;
 	/** 
 	 * 设置每页显示的行数 
 	 * @param pageRows  pageRows
 	 * @return PageNavi
 	 */ 
 	public PageNavi setPageRows(int pageRows) ; 
-	public int getTotalRow() ; 
+	public long getTotalRow() ;
 	 
-	public int getTotalPage() ; 
+	public long getTotalPage() ;
  
-	public int getCurPage() ; 
+	public long getCurPage() ;
 	 
 	public int getPageRows() ; 
 	 
 	public String getBaseLink() ; 
 	public PageNavi setBaseLink(String baseLink) ; 
-	public PageNavi setFirstRow(int firstRow) ; 
-	public PageNavi setLastRow(int lastRow) ;
+	public PageNavi setFirstRow(long firstRow) ;
+	public PageNavi setLastRow(long lastRow) ;
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @return boolean

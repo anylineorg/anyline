@@ -1,29 +1,18 @@
-package org.anyline.data.jdbc.ds;
+package org.anyline.data.jdbc.runtime;
 
 import org.anyline.dao.init.springjdbc.FixDao;
 import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.service.init.FixService;
 import org.anyline.util.ConfigTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.Hashtable;
-import java.util.Map;
 
 
-public class RuntimeHolder {
-
-    private static Logger log = LoggerFactory.getLogger(RuntimeHolder.class);
-    private static Map<String, JDBCRuntime> runtimes = new Hashtable();
-    private static DefaultListableBeanFactory factory;
-    public static void init(DefaultListableBeanFactory factory){
-        RuntimeHolder.factory = factory;
-    }
+public class JdbcRuntimeHolder extends org.anyline.data.runtime.RuntimeHolder {
 
     /**
      * 注册运行环境
@@ -31,7 +20,7 @@ public class RuntimeHolder {
      * @param ds 数据源bean id
      */
     public static void reg(String key, String ds){
-        //DataSourceHolder.reg(key);
+        //ClientHolder.reg(key);
         String template_key = "anyline.jdbc.template." + key;
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
@@ -43,12 +32,12 @@ public class RuntimeHolder {
         reg(key, template, null);
     }
 
-    public static void reg(String key, JDBCRuntime runtime){
+    public static void reg(String key, DataRuntime runtime){
         runtimes.put(key, runtime);
     }
 
     public static void reg(String key, DataSource ds){
-        //DataSourceHolder.reg(key);
+        //ClientHolder.reg(key);
         String template_key = "anyline.jdbc.template." + key;
 
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
@@ -68,7 +57,10 @@ public class RuntimeHolder {
      */
     public static void reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
         log.info("[create jdbc runtime][key:{}]", datasource);
-        JDBCRuntime runtime = new JDBCRuntime(datasource, template, adapter);
+        DataRuntime runtime = new JdbcRuntime(datasource, template, adapter);
+        if(runtimes.containsKey(datasource)){
+            destroy(datasource);
+        }
         runtimes.put(datasource, runtime);
         if(!ConfigTable.IS_MULTIPLE_SERVICE){
             return;
@@ -98,9 +90,6 @@ public class RuntimeHolder {
         factory.registerBeanDefinition(service_key, serviceDefinition);
 
 
-    }
-    public static JDBCRuntime getRuntime(){
-        return getRuntime(DataSourceHolder.curDataSource());
     }
     public static void destroyRuntime(String key){
         destroy(key);
@@ -133,47 +122,34 @@ public class RuntimeHolder {
             e.printStackTrace();
         }
     }
-    public static JDBCRuntime getRuntime(String datasource){
-        JDBCRuntime runtime = null;
-        if(null == datasource){
-            if(null == runtime){
-                //通用数据源
-                datasource = "common";
-                runtime = runtimes.get(datasource);
-            }
-        }else {
-            runtime = runtimes.get(datasource);
-        }
-        if(null == runtime){
-            throw new RuntimeException("未注册数据源:"+datasource);
-        }
-        return runtime;
-    }
+
     public static JdbcTemplate getJdbcTemplate(){
-        JDBCRuntime runtime = getRuntime();
+        DataRuntime runtime = getRuntime();
         if(null != runtime){
-            return runtime.getTemplate();
+            return (JdbcTemplate) runtime.getClient();
         }
         return null;
     }
     public static DataSource getDataSource(){
-        JDBCRuntime runtime = getRuntime();
+        DataRuntime runtime = getRuntime();
         if(null != runtime){
-            return runtime.getDatasource();
+            JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();
+            return jdbc.getDataSource();
         }
         return null;
     }
     public static JdbcTemplate getJdbcTemplate(String key){
-        JDBCRuntime runtime = getRuntime(key);
+        DataRuntime runtime = getRuntime(key);
         if(null != runtime){
-            return runtime.getTemplate();
+            return (JdbcTemplate) runtime.getClient();
         }
         return null;
     }
     public static DataSource getDataSource(String key){
-        JDBCRuntime runtime = getRuntime(key);
+        DataRuntime runtime = getRuntime(key);
         if(null != runtime){
-            return runtime.getDatasource();
+            JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();
+            return jdbc.getDataSource();
         }
         return null;
     }

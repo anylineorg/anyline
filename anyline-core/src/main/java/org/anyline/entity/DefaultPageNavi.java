@@ -37,19 +37,19 @@ public class DefaultPageNavi implements PageNavi{
 	protected static final String TAB 					= "\t"; 
 	protected static final String BR_TAB 				= "\n\t"; 
 	 
-	protected int totalRow					= 0			; // 记录总数 (rows)
-	protected int totalPage					= 0 		; // 最大页数 (pages)
-	protected int curPage					= 1 		; // 当前页数
+	protected long totalRow					= 0			; // 记录总数 (rows)
+	protected long totalPage				= 0 		; // 最大页数 (pages)
+	protected long curPage					= 1 		; // 当前页数
 	 
 	protected int pageRange					= 10		; // 显示多少个分页下标
 	protected int pageRows					= 10		; // 每页多少条
-	protected int displayPageFirst 			= 0			; // 显示的第一页标签
-	protected int displayPageLast 			= 0			; // 显示的最后页标签
+	protected long displayPageFirst 		= 0			; // 显示的第一页标签
+	protected long displayPageLast 			= 0			; // 显示的最后页标签
 	protected String baseLink				= null		; // 基础URL
 	protected OrderStore orders				= null 		; // 排序依据(根据 orderCol 排序分页)
 	protected int calType 					= 0			; // 分页计算方式(0-按页数 1-按开始结束数)
-	protected int firstRow 					= 0			; // 第一行
-	protected int lastRow 					= -1		; // 最后一行
+	protected long firstRow 				= 0			; // 第一行
+	protected long lastRow 					= -1		; // 最后一行
 	protected boolean lazy 					= false		; // 是否懒加载
 	protected String flag  					= ""		; // 一个jsp中有多个分页时用来区分
 	protected long lazyPeriod 				= 0			; // 总条数懒加载时间间隔(秒)
@@ -120,7 +120,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * 计算分页变量 
 	 */ 
 	public void calculate() {
-		int totalPage = (totalRow - 1) / pageRows + 1; 
+		long totalPage = (totalRow - 1) / pageRows + 1;
 		// 当前页是否超出总页数 
 		if(curPage > totalPage){
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
@@ -148,7 +148,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * 第一行 
 	 * @return int
 	 */ 
-	public int getFirstRow(){
+	public long getFirstRow(){
 		if(calType == 0){
 			if(curPage <= 0) {
 				return 0; 
@@ -162,7 +162,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * 最后一行 
 	 * @return int
 	 */ 
-	public int getLastRow(){
+	public long getLastRow(){
 		if(calType == 0){
 			if(curPage == 0) {
 				return pageRows -1; 
@@ -176,28 +176,30 @@ public class DefaultPageNavi implements PageNavi{
 	 * 页面显示的第一页 
 	 * @return int
 	 */ 
-	public int getDisplayPageFirst() {
+	public long getDisplayPageFirst() {
 		return displayPageFirst; 
 	} 
 	/** 
 	 * 设置页面显示的第一页 
 	 * @param displayPageFirst  displayPageFirst
 	 */ 
-	public void setDisplayPageFirst(int displayPageFirst) {
+	public void setDisplayPageFirst(long displayPageFirst) {
 		this.displayPageFirst = displayPageFirst; 
 	} 
 	/** 
-	 * 页面显示的最后一页 
+	 * 页面显示的最后一页 set
 	 * @return int
 	 */ 
-	public int getDisplayPageLast() {
+	public long getDisplayPageLast() {
 		return displayPageLast; 
-	} 
+	}
+
+
 	/** 
 	 * 设置页面显示的最后一页 
 	 * @param displayPageLast  displayPageLast
 	 */ 
-	public void setDisplayPageLast(int displayPageLast) {
+	public void setDisplayPageLast(long displayPageLast) {
 		this.displayPageLast = displayPageLast; 
 	} 
  
@@ -316,19 +318,19 @@ public class DefaultPageNavi implements PageNavi{
 	/** 
 	 * 设置总行数 
 	 * @param totalRow  totalRow
-	 */ 
-	@Override 
-	public PageNavi setTotalRow(int totalRow) {
-		this.totalRow = totalRow; 
-		calculate(); 
-		return this; 
-	} 
+	 */
+	@Override
+	public PageNavi setTotalRow(long totalRow) {
+		this.totalRow = totalRow;
+		calculate();
+		return this;
+	}
 	/** 
 	 * 设置最后一页 
 	 * @param totalPage  totalPage
 	 */ 
 	@Override 
-	public PageNavi setTotalPage(int totalPage) {
+	public PageNavi setTotalPage(long totalPage) {
 		this.totalPage = totalPage; 
 		return this; 
 	} 
@@ -337,7 +339,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * @param curPage  curPage
 	 */ 
 	@Override 
-	public PageNavi setCurPage(int curPage) {
+	public PageNavi setCurPage(long curPage) {
 		this.curPage = curPage; 
 		return this; 
 	} 
@@ -353,17 +355,17 @@ public class DefaultPageNavi implements PageNavi{
 		return this; 
 	} 
 	@Override 
-	public int getTotalRow() {
+	public long getTotalRow() {
 		return totalRow; 
 	} 
  
 	@Override 
-	public int getTotalPage() {
+	public long getTotalPage() {
 		return totalPage; 
 	} 
  
 	@Override 
-	public int getCurPage() {
+	public long getCurPage() {
 		return curPage; 
 	} 
  
@@ -382,12 +384,12 @@ public class DefaultPageNavi implements PageNavi{
 		return this; 
 	} 
 	@Override 
-	public PageNavi setFirstRow(int firstRow) {
+	public PageNavi setFirstRow(long firstRow) {
 		this.firstRow = firstRow; 
 		return this; 
 	} 
 	@Override 
-	public PageNavi setLastRow(int lastRow) {
+	public PageNavi setLastRow(long lastRow) {
 		this.lastRow = lastRow; 
 		return this; 
 	} 
@@ -556,9 +558,9 @@ public class DefaultPageNavi implements PageNavi{
 		if(showStat){
 			stat.append(statFormat).append("\n"); 
 		} 
-		int range = config.VAR_PAGE_RANGE; 
-		int fr = NumberUtil.max(1,curPage - range/2); 
-		int to = fr + range - 1; 
+		int range = config.VAR_PAGE_RANGE;
+		long fr = NumberUtil.max(1,curPage - range/2);
+		long to = fr + range - 1;
 		boolean match = false; 
 		if(totalPage > range && curPage>range/2){
 			match = true; 
@@ -618,7 +620,7 @@ public class DefaultPageNavi implements PageNavi{
 					if(fr > 2){
 						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
-					for(int i=fr; i<=to; i++){
+					for(long i=fr; i<=to; i++){
 						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					if(to < totalPage-1){
@@ -642,7 +644,7 @@ public class DefaultPageNavi implements PageNavi{
 				// 下标 
 				if(config.VAR_SHOW_INDEX){
 					index.append("<div class='navi-num-border'>\n"); 
-					for(int i=fr; i<=to; i++){
+					for(long i=fr; i<=to; i++){
 						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					index.append("</div>\n"); 
@@ -714,7 +716,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * @param page 跳到第几页 
 	 * @param configFlag  configFlag
 	 */ 
-	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, int page, String configFlag){
+	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, long page, String configFlag){
 		boolean get = false;
 		if("get".equalsIgnoreCase(method)){
 			get = true;
