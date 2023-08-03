@@ -26,7 +26,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
-import org.anyline.data.runtime.Runtime;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -72,20 +72,20 @@ public interface DriverAdapter {
 
 
 
-	DataSet select(Runtime runtime, String random, boolean system, String table, Run run);
-	long total(Runtime runtime, String random, Run run);
-	List<Map<String,Object>> maps(Runtime runtime, String random, Run run);
-	Map<String,Object> map(Runtime runtime, String random, Run run);
-	int update(Runtime runtime, String random, String dest, Object data, Run run);
-	int execute(Runtime runtime, String random, Run run);
-	boolean execute(Runtime runtime, String random, Procedure procedure);
-	DataSet querys(Runtime runtime, String random, Procedure procedure, PageNavi navi);
+	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
+	long total(DataRuntime runtime, String random, Run run);
+	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
+	Map<String,Object> map(DataRuntime runtime, String random, Run run);
+	int update(DataRuntime runtime, String random, String dest, Object data, Run run);
+	int execute(DataRuntime runtime, String random, Run run);
+	boolean execute(DataRuntime runtime, String random, Procedure procedure);
+	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
 
 
 
 
 	//根据驱动内置接口补充 再根据metadata解析 SELECT * FROM T WHERE 1=0 SqlRowSet set = runtime.getTemplate().queryForRowSet(run.getFinalQuery());
-	<T extends Column> LinkedHashMap<String, T> columns(boolean create, Runtime runtime, Table table, LinkedHashMap<String, T> columns);
+	<T extends Column> LinkedHashMap<String, T> columns(boolean create, DataRuntime runtime, Table table, LinkedHashMap<String, T> columns);
 
 	///////////////////////////////////////////////////////////////////////
 
@@ -155,7 +155,7 @@ public interface DriverAdapter {
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run
 	 */
-	Run buildInsertRun(Runtime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
+	Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
 	/**
 	 * 根据Collection创建批量插入SQL
@@ -165,7 +165,7 @@ public interface DriverAdapter {
 	 * @param list 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	void createInserts(Runtime runtime, Run run, String dest, Collection list, List<String> keys);
+	void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
@@ -175,7 +175,7 @@ public interface DriverAdapter {
 	 * @param set 数据集
 	 * @param keys keys 南非要插入的列
 	 */
-	void createInserts(Runtime runtime, Run run, String dest, DataSet set, List<String> keys);
+	void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys);
 
 	/**
 	 * 确认需要插入的列
@@ -218,7 +218,7 @@ public interface DriverAdapter {
 	 * @return int
 	 * @throws Exception 异常
 	 */
-	int insert(Runtime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
+	int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
 
 	String generatedKey();
 	/* *****************************************************************************************************************
@@ -407,7 +407,7 @@ public interface DriverAdapter {
 
 	void checkSchema(DataSource dataSource, Table table);
 	void checkSchema(Connection con, Table table);
-	void checkSchema(Runtime runtime, Table table);
+	void checkSchema(DataRuntime runtime, Table table);
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/
@@ -479,7 +479,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, Runtime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -550,7 +550,7 @@ public interface DriverAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, Runtime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -604,7 +604,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, Runtime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -673,7 +673,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, Runtime runtime, String catalog, String schema, MasterTable master) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception;
 
 
 
@@ -726,7 +726,7 @@ public interface DriverAdapter {
 	 * @return attern attern
 	 * @throws Exception 异常
 	 */
-	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Runtime runtime, Table table, String pattern) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception;
 
 	Column column(Column column, ResultSetMetaData rsm, int index);
 	Column column(Column column, ResultSet rs);
@@ -768,7 +768,7 @@ public interface DriverAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	<T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, Runtime runtime, Table table, String pattern) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -851,7 +851,7 @@ public interface DriverAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, Runtime runtime, Table table, boolean unique, boolean approximate) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception;
 
 
 	/* *****************************************************************************************************************

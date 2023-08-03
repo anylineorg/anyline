@@ -1,7 +1,7 @@
 package org.anyline.data.util;
 
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.runtime.Runtime;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.LogUtil;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository("anyline.DriverAdapterUtil")
+@Repository("anyline.data.DriverAdapterHolder")
 public class DriverAdapterHolder {
 
 	private static final Logger log = LoggerFactory.getLogger(DriverAdapterHolder.class);
@@ -53,7 +53,7 @@ public class DriverAdapterHolder {
 	 * @param runtime runtime
 	 * @return DriverAdapter
 	 */
-	public static DriverAdapter getAdapter(String datasource, Runtime runtime){
+	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime){
 		if(null != defaultAdapter){
 			return defaultAdapter;
 		}
@@ -69,10 +69,14 @@ public class DriverAdapterHolder {
 		}
 		try {
 			String feature = runtime.getFeature();
-			String version = runtime.getVersion();
 			if(null != runtime){
-				//根据jdbc名称+版本号
-				adapter = getAdapter(datasource, feature, version);
+				//根据特征(先不要加版本号，提取版本号需要建立连接太慢)
+				adapter = getAdapter(datasource, feature, null);
+				if(null == adapter){
+					//根据特征+版本号
+					String version = runtime.getVersion();
+					adapter = getAdapter(datasource, feature, version);
+				}
 			}
 			if(null == adapter){
 
@@ -90,6 +94,36 @@ public class DriverAdapterHolder {
 		return adapter;
 	}
 	private static DriverAdapter getAdapter(){
+		return null;
+	}
+
+	/**
+	 * 检测版本数量
+	 * @return boolean
+	 */
+	private static int versions(String name, String ... versions){
+		int qty = 0;
+		for(String version:versions){
+			if(adapters.containsKey(DatabaseType.MSSQL.name()+"_"+version)){
+				qty ++;
+			}
+		}
+		return qty;
+	}
+
+	/**
+	 * 取第一个存在的版本
+	 * @param name name
+	 * @param versions 版本号
+	 * @return adapter
+	 */
+	private static DriverAdapter adapter(String name, String ... versions){
+		for(String version:versions){
+			DriverAdapter adapter = adapters.get(DatabaseType.MSSQL.name()+"_"+version);
+			if(null != adapter){
+				return adapter;
+			}
+		}
 		return null;
 	}
 	private static DriverAdapter getAdapter(String datasource, String name, String version){
@@ -111,7 +145,13 @@ public class DriverAdapterHolder {
 					key = "2000";
 				}
 				adapter =  adapters.get(DatabaseType.MSSQL.name()+"_"+key);
+			}else{
+				//如果没有提供版本号并且环境中只有一个版本
+				if(versions(DatabaseType.ORACLE.name(), "2000", "2005") == 1 ){
+					adapter = adapter(DatabaseType.MSSQL.name(), "2005", "2000");
+				}
 			}
+
 			if(null == adapter){
 				adapter =  adapters.get(DatabaseType.MSSQL.name()+"_2005");
 			}
@@ -131,6 +171,11 @@ public class DriverAdapterHolder {
 					key = "11";
 				}
 				adapter =  adapters.get(DatabaseType.ORACLE.name()+"_"+key);
+			}else{
+				//如果没有提供版本号并且环境中只有一个版本
+				if(versions(DatabaseType.ORACLE.name(), "11", "12") == 1 ){
+					adapter = adapter(DatabaseType.ORACLE.name(), "11", "12");
+				}
 			}
 			if(null == adapter) {
 				adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
