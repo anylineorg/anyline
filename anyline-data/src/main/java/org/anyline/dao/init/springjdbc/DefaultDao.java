@@ -687,7 +687,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
-
+		adapter.convert(runtime, dest, run);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
@@ -926,7 +926,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 		Run run = adapter.buildInsertRun(runtime, dest, data, checkPrimary, columns);
-
+		adapter.convert(runtime, dest, run);
 		if(null == run){
 			return 0;
 		}
@@ -1275,8 +1275,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param system 系统表不查询表结构
 	 * @param runtime runtime
 	 * @param table 查询表结构时使用
-	 * @param sql sql
-	 * @param values 参数
+	 * @param run run
 	 * @return DataSet
 	protected DataSet select(DataRuntime runtime, String random, boolean system,  String table, String sql, List<Object> values){
 	 */
@@ -1293,8 +1292,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param runtime runtime
 	 * @param clazz entity class
 	 * @param table table
-	 * @param sql sql
-	 * @param values value
+	 * @param run run
 	 * @param dependency 是否加载依赖 >0时加载
 	 * @return EntitySet
 	 * @param <T> entity.class
@@ -1978,8 +1976,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 缓存表名
 	 * @param runtime runtime
-	 * @param ds ds
-	 * @param con con
+	 * @param random random
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
@@ -2225,7 +2222,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, random, run).toUpperKey();
+					//不要传table,这里的table用来查询表结构
+					DataSet set = select(runtime, random, null, run).toUpperKey();
 					list = adapter.ddl(idx++, table, list,  set);
 				}
 				table.setDdls(list);
