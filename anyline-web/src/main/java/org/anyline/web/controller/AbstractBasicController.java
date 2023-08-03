@@ -21,11 +21,11 @@ package org.anyline.web.controller;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
-import org.anyline.data.jdbc.ds.DataSourceHolder;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.listener.EntityListener;
@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class AbstractBasicController {
+public abstract class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 
@@ -205,7 +204,7 @@ public class AbstractBasicController {
 				ParseResult parser = ConfigParser.parse(param,true);
 				String col = parser.getVar();
 				String key = parser.getKey();
-				if(!ThreadConfig.check(DataSourceHolder.curDataSource()).IS_IGNORE_EMPTY_HTTP_KEY() || requestValues.containsKey(key)) {
+				if(!ThreadConfig.check(ClientHolder.curDataSource()).IS_IGNORE_EMPTY_HTTP_KEY() || requestValues.containsKey(key)) {
 					Object value = ConfigParser.getValue(requestValues, parser);
 					row.put(col, value);
 				}
