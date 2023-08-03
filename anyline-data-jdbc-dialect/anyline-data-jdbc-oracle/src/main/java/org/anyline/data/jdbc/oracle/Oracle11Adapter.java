@@ -24,8 +24,8 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
         PageNavi navi = run.getPageNavi();
         String sql = run.getBaseQuery();
         OrderStore orders = run.getOrderStore();
-        int first = 0;
-        int last = 0;
+        long first = 0;
+        long last = 0;
         String order = "";
         if(null != orders){
             order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
