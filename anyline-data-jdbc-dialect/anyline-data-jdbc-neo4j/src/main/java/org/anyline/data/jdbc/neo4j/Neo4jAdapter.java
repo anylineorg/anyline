@@ -11,6 +11,7 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.run.TextRun;
 import org.anyline.data.run.XMLRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.type.DatabaseType;
@@ -80,12 +81,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      *
      * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
-     *  public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception
+     *  public int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception
      ******************************************************************************************************************/
 
     /**
      * 创建INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param dest 表
      * @param obj 实体
      * @param checkPrimary 是否检测主键
@@ -93,21 +94,21 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run
      */
     @Override
-    public Run buildInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
-        return super.buildInsertRun(template, dest, obj, checkPrimary, columns);
+    public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
+        return super.buildInsertRun(runtime, dest, obj, checkPrimary, columns);
     }
 
     /**
      * 根据DataSet创建批量INSERT RunPrepare
      * CREATE (:Dept{name:1}),(:Dept{name:2}),(:Dept{name:3})
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(JdbcTemplate template, Run run, String dest, DataSet set,  List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -139,14 +140,14 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /**
      * 根据Collection创建批量INSERT
      * create(:Dept{name:1}),(:Dept{name:2}),(:Dept{name:3})
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
      * @param keys 需插入的列
      */
     @Override
-    public void createInserts(JdbcTemplate template, Run run, String dest, Collection list,  List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -154,7 +155,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(template, run, dest, set, keys);
+            createInserts(runtime, run, dest, set, keys);
             return;
         }
         builder.append("CREATE ");
@@ -178,7 +179,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param dest dest
      * @param obj obj
      * @param checkPrimary 是否检测主键
@@ -186,7 +187,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run
      */
     @Override
-    protected Run createInsertRun(JdbcTemplate template, String dest, Object obj, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this, dest);
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
@@ -202,7 +203,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 根据collection创建 INSERT RunPrepare
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否检测主键
@@ -210,12 +211,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run
      */
     @Override
-    protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(this,dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
         }
-        createInserts(template, run, dest, list, columns);
+        createInserts(runtime, run, dest, list, columns);
 
         return run;
     }
@@ -301,7 +302,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 执行 insert
-     * @param template JdbcTemplate
+     * @param runtime runtime
      * @param random random
      * @param data data
      * @param sql sql
@@ -309,12 +310,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return int
      */
     @Override
-    public int insert(JdbcTemplate template, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
+    public int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
         int cnt = 0;
         DataSource ds = null;
         Connection con = null;
         try{
-            ds = template.getDataSource();
+            JdbcTemplate jdbc = jdbc(runtime);
+            ds = jdbc.getDataSource();
             con = DataSourceUtils.getConnection(ds);
             PreparedStatement ps = con.prepareStatement(sql);
             int idx = 0;
@@ -345,8 +347,6 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     log.info("{}[exe insert][生成主键:{}]", random, id);
                 }
             }
-
-
         }finally {
             if(!DataSourceUtils.isConnectionTransactional(con, ds)){
                 DataSourceUtils.releaseConnection(con, ds);
@@ -437,7 +437,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         builder.append(", ID(").append(alias).append(") AS __ID");
         PageNavi navi = run.getPageNavi();
         if(null != navi){
-            int limit = navi.getLastRow() - navi.getFirstRow() + 1;
+            long limit = navi.getLastRow() - navi.getFirstRow() + 1;
             if(limit < 0){
                 limit = 0;
             }
