@@ -32,13 +32,14 @@
 		<module>anyline-dependency-web</module>
 		<module>anyline-core</module>
 		<module>anyline-net</module>
-		<module>anyline-data-jdbc</module>
 		<module>anyline-encrypt</module>
 		<module>anyline-web</module>
 		<module>anyline-mvc</module>
 		<module>anyline-comm</module>
 		<module>anyline-boot</module>
 
+		<module>anyline-data</module>
+		<module>anyline-data-jdbc</module>
 		<module>anyline-data-mongodb</module>
 		<module>anyline-data-jdbc-dialect-extends/anyline-data-jdbc-antdb</module>				<!--亚信-->
 		<module>anyline-data-jdbc-dialect/anyline-data-jdbc-cassandra</module>

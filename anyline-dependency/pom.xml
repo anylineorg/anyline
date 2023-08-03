@@ -178,6 +178,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
