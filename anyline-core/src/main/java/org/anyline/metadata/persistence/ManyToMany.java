@@ -1,4 +1,4 @@
-package org.anyline.data.metadata.persistence;
+package org.anyline.metadata.persistence;
 
 public class ManyToMany {
 
