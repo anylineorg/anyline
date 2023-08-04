@@ -1,8 +1,12 @@
 package org.anyline.proxy;
 
+import org.anyline.dao.AnylineDao;
+import org.anyline.dao.init.springjdbc.FixDao;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -10,6 +14,7 @@ import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.service.AnylineService;
+import org.anyline.service.init.FixService;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1364,27 +1369,31 @@ public class ServiceProxy {
         }
     }
 
-    /*
+    /**
      * 临时数据源
      * @param key 数据源标识,输出日志时标记当前数据源
-     * @param ds 数据源
+     * @param source 数据源,如DruidDataSource,MongoClient
      * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
      * @return service
      */
-    /*public static AnylineService temporary(String key, DataSource ds, DriverAdapter adapter){
-        JdbcTemplate template = new JdbcTemplate(ds);
-        DataRuntime runtime = new DataRuntime(key, template, adapter);
+    public static AnylineService temporary(String key, Object source, DriverAdapter adapter){
+        DataRuntime runtime = RuntimeHolderProxy.runtime(key, source, adapter);
         AnylineDao dao = new FixDao();
         //dao.setDatasource(key);
         dao.setRuntime(runtime);
         AnylineService service = new FixService();
         //service.setDataSource(key);
         service.setDao(dao);
-        return service;
-    }*/
 
-    /*public static AnylineService temporary(DataSource ds){
-        return temporary("temporary",ds, null);
-    }*/
+        return service;
+    }
+
+    public static AnylineService temporary(Object source){
+        return temporary("temporary", source, null);
+    }
+
+    public static AnylineService temporary(String key, Object source){
+        return temporary(key, source, null);
+    }
 
 }
