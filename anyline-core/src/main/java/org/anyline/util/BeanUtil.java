@@ -1186,6 +1186,10 @@ public class BeanUtil {
 	}
 	public static String object2json(Object obj, JsonInclude.Include include){
 		if(null != obj) {
+			//json类型直接返回
+			if(obj.getClass().getName().toUpperCase().contains("JSON")){
+				return obj.toString();
+			}
 			try {
 				if (null != include) {
 					return newObjectMapper(include).writeValueAsString(obj);
