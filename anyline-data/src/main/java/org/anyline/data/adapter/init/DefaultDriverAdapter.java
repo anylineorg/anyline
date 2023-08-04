@@ -126,7 +126,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		//针对当前表的生成器
 		PrimaryGenerator generator = GeneratorConfig.get(table);
 		if(null != generator){
-			return generator;
+			if(generator != PrimaryGenerator.GENERATOR.DISABLE && generator != PrimaryGenerator.GENERATOR.AUTO) {
+				return generator;
+			}
 		}
 		//全局配置
 		if(null == primaryGenerator){

@@ -26,8 +26,14 @@ import org.anyline.entity.generator.init.*;
 import java.util.List;
 
 public interface PrimaryGenerator {
-	public enum GENERATOR implements PrimaryGenerator{
-		DISABLE{
+	enum GENERATOR implements PrimaryGenerator{
+		DISABLE{ //不生成主键，由数据库决定
+			@Override
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
+				return false;
+			}
+		},
+		AUTO{ //不设置，按配置文件
 			@Override
 			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
 				return false;
