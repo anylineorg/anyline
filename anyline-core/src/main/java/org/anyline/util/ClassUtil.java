@@ -312,7 +312,7 @@ public class ClassUtil {
 	 * 反射属性target上的注解,获取注解上指定的属性值
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
-	 * @param target 属性
+	 * @param target 类的属性
 	 * @param annotation 注解类名 支持模糊匹配 如: *, Table*
 	 * @param field 注解的属性名 如: *, value, name, *package*
 	 * @param qty 最多取几个值 -1:不限制
@@ -529,7 +529,6 @@ public class ClassUtil {
 		}
 		return list;
 	}
-
 	/**
 	 * 根据注解名称 获取属性上的注解
 	 * @param field 属性
