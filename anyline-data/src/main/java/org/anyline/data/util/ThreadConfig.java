@@ -96,6 +96,7 @@ public class ThreadConfig extends ConfigTable {
     public String PRIMARY_GENERATOR_TIME_FORMAT					= null			;	// 生成主键日期格式(默认yyyyMMddHHmmssSSS)
     public int PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH				= 3				;   // 生成主键TIME/TIMESTAMP后缀随机数长度
     public String SNOWFLAKE_TWEPOCH								= "2000-01-01"	;	// 雪花算法开始日期
+    public String GENERATOR_TABLES								= "*"			;   // 主键生成器适用的表
 
     public GeneratorConfig GENERATOR 						    = new GeneratorConfig();
 
@@ -531,5 +532,12 @@ public class ThreadConfig extends ConfigTable {
     }
     public GeneratorConfig GENERATOR(){
         return GENERATOR;
+    }
+
+    public String EL_ATTRIBUTE_PREFIX() {
+        return EL_ATTRIBUTE_PREFIX;
+    }
+    public String GENERATOR_TABLES() {
+        return GENERATOR_TABLES;
     }
 }

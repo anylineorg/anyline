@@ -320,9 +320,11 @@ public class AnylineProperty {
      */
     public boolean primaryGeneratorTimeActive					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
 
-    public PrimaryGenerator.GENERATORS generator                = null          ;   // 全局默认主键生成器
+    public PrimaryGenerator.GENERATOR generator                = null          ;   // 全局默认主键生成器
 
-    public Map<String, PrimaryGenerator.GENERATORS> generators          = new HashMap();
+    public String generatorTables                               = "*"           ;   // 主键生成器适用的表
+
+    public Map<String, PrimaryGenerator.GENERATOR> generators          = new HashMap();
 
 
 
@@ -992,11 +994,11 @@ public class AnylineProperty {
         ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE = printExceptionStackTrace;
     }
 
-    public PrimaryGenerator.GENERATORS getGenerator() {
+    public PrimaryGenerator.GENERATOR getGenerator() {
         return generator;
     }
 
-    public void setGenerator(PrimaryGenerator.GENERATORS generator) {
+    public void setGenerator(PrimaryGenerator.GENERATOR generator) {
         this.generator = generator;
         ConfigTable.GENERATOR.set(generator);
     }
@@ -1010,16 +1012,25 @@ public class AnylineProperty {
         ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY = metadataAutoCheckColumnPrimary;
     }
 
-    public Map<String, PrimaryGenerator.GENERATORS> getGenerators() {
+    public Map<String, PrimaryGenerator.GENERATOR> getGenerators() {
         return generators;
     }
 
-    public void setGenerators(Map<String, PrimaryGenerator.GENERATORS> generators) {
+    public void setGenerators(Map<String, PrimaryGenerator.GENERATOR> generators) {
         this.generators = generators;
         if(null != generators){
             for(String key:generators.keySet()){
                 ConfigTable.GENERATOR.put(key, generators.get(key));
             }
         }
+    }
+
+    public String getGeneratorTables() {
+        return generatorTables;
+    }
+
+    public void setGeneratorTables(String generatorTables) {
+        this.generatorTables = generatorTables;
+        ConfigTable.GENERATOR_TABLES = generatorTables;
     }
 }

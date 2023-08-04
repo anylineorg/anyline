@@ -136,15 +136,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(null == primaryGenerator) {
 				//全局配置
 				if (ConfigTable.PRIMARY_GENERATOR_SNOWFLAKE_ACTIVE) {
-					primaryGenerator = PrimaryGenerator.GENERATORS.SNOWFLAKE;
+					primaryGenerator = PrimaryGenerator.GENERATOR.SNOWFLAKE;
 				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
-					primaryGenerator = PrimaryGenerator.GENERATORS.RANDOM;
+					primaryGenerator = PrimaryGenerator.GENERATOR.RANDOM;
 				} else if (ConfigTable.PRIMARY_GENERATOR_UUID_ACTIVE) {
-					primaryGenerator = PrimaryGenerator.GENERATORS.UUID;
+					primaryGenerator = PrimaryGenerator.GENERATOR.UUID;
 				} else if (ConfigTable.PRIMARY_GENERATOR_TIME_ACTIVE) {
-					primaryGenerator = PrimaryGenerator.GENERATORS.TIME;
+					primaryGenerator = PrimaryGenerator.GENERATOR.TIME;
 				} else if (ConfigTable.PRIMARY_GENERATOR_TIMESTAMP_ACTIVE) {
-					primaryGenerator = PrimaryGenerator.GENERATORS.TIMESTAMP;
+					primaryGenerator = PrimaryGenerator.GENERATOR.TIMESTAMP;
 				}
 			}
 		}

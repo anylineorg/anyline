@@ -26,7 +26,7 @@ import org.anyline.entity.generator.init.*;
 import java.util.List;
 
 public interface PrimaryGenerator {
-	public enum GENERATORS implements PrimaryGenerator{
+	public enum GENERATOR implements PrimaryGenerator{
 		DISABLE{
 			@Override
 			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
