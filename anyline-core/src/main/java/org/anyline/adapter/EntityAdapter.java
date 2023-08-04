@@ -1,8 +1,11 @@
 package org.anyline.adapter;
 
 import org.anyline.entity.DataRow;
+import org.anyline.entity.generator.GeneratorConfig;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
+import org.anyline.metadata.persistence.ManyToMany;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 
@@ -275,7 +278,54 @@ public interface EntityAdapter {
         return new Column(DataRow.DEFAULT_PRIMARY_KEY);
     }
 
+    default PrimaryGenerator generator(String table, Field field){
+        PrimaryGenerator generator = null;
+        table = table.toUpperCase();
+        if(null == GeneratorConfig.get(table)){
+            Object generatorName = ClassUtil.parseAnnotationFieldValue(field, "GeneratedValue", "generator");
+            if(null != generatorName){
+                String name = generatorName.toString();
+                for(PrimaryGenerator.GENERATOR item:PrimaryGenerator.GENERATOR.values()){
+                    if(item.name().equalsIgnoreCase(name)){
+                        generator = item;
+                        break;
+                    }
+                }
+            }
+            if(null == generator){
+                generator = PrimaryGenerator.GENERATOR.AUTO;
+            }
+            GeneratorConfig.put(table, generator);
+        }
+        return generator;
+    }
+    default PrimaryGenerator generator(Class clazz, Field field){
+        String table = table(clazz).getName().toUpperCase();
+        return generator(table, field);
+    }
 
+    /**
+     * 解析主键生成器(包含当前表及属性关联表)
+     * @param clazz clazz
+     */
+    default void generator(Class clazz){
+        List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "GeneratedValue");
+        for(Field field:fields){
+            String table = null;
+            try {
+                ManyToMany manyToMany = PersistenceAdapter.manyToMany(field);
+                if(null != manyToMany){
+                    table = manyToMany.joinTable;
+                }
+            }catch (Exception e){
+            }
+            if(null == table) {
+                table = table(clazz).getName();
+            }
+            generator(table, field);
+        }
+
+    }
     /**
      * 检测主键(是主键名不是值)<br/>
      * 根据注解检测主键名s(注解名不区分大小写,支持模糊匹配如Table*)<br/>
@@ -319,8 +369,10 @@ public interface EntityAdapter {
                 list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(), new Column(DataRow.DEFAULT_PRIMARY_KEY));
             }
             EntityAdapterProxy.primarys.put(clazz.getName().toUpperCase(), list);
-
         }
+
+        //解析主键生成器(包含当前表及属性关联表)
+        generator(clazz);
         return list;
     }
 
