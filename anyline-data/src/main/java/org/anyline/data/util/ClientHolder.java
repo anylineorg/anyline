@@ -47,7 +47,6 @@ public class ClientHolder {
     	THREAD_AUTO_RECOVER.set(false); 
     }
 
-
 	/**
 	 * 已注册成功的所有数据源
 	 * @return List

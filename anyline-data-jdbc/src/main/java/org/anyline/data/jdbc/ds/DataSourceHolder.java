@@ -53,6 +53,7 @@ public class DataSourceHolder extends ClientHolder {
 	public static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
 
+
 	/**
 	 * 注册新的数据源,只是把spring context中现有的数据源名称添加到数据源名称列表
 	 * @param ds 数据源名称
