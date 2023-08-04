@@ -19,22 +19,12 @@
 
 package org.anyline.dao.init.springjdbc;
 
+import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.init.PersistenceAdapter;
 import org.anyline.data.cache.PageLazyStore;
-import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.util.ClientHolder;
-import org.anyline.data.util.DataSourceUtil;
-import org.anyline.data.runtime.RuntimeHolder;
-import org.anyline.metadata.*;
-import org.anyline.metadata.ACTION.SWITCH;
-import org.anyline.metadata.ACTION.DDL;
-import org.anyline.metadata.ACTION.DML; 
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.metadata.persistence.ManyToMany;
-import org.anyline.data.metadata.persistence.OneToMany;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -46,10 +36,20 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.data.util.ClientHolder;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLUpdateException;
+import org.anyline.metadata.*;
+import org.anyline.metadata.ACTION.DDL;
+import org.anyline.metadata.ACTION.DML;
+import org.anyline.metadata.ACTION.SWITCH;
+import org.anyline.metadata.persistence.ManyToMany;
+import org.anyline.metadata.persistence.OneToMany;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
@@ -58,11 +58,13 @@ import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary; 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.*;
 
 @Primary
@@ -1437,7 +1439,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(Compare.EQUAL == compare || set.size() == 1) {
 					//逐行查询
 					for (T entity : set) {
-
 						Object pv = EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase());
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						//通过子表完整查询 List<AttendanceRecord> records
@@ -1446,7 +1447,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						params.add(primaryValueMap.get(pk.toUpperCase()));
 						EntitySet<T> dependencys = querys(runtime, random, false, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
 						BeanUtil.setFieldValue(entity, field, dependencys);
-
 					}
 				}else if(Compare.IN == compare){
 					//查出所有相关 再逐行分配
