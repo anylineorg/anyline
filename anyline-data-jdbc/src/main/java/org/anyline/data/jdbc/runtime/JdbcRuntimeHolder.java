@@ -1,18 +1,39 @@
 package org.anyline.data.jdbc.runtime;
 
 import org.anyline.dao.init.springjdbc.FixDao;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.proxy.RuntimeHolderProxy;
 import org.anyline.service.init.FixService;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
 
-public class JdbcRuntimeHolder extends org.anyline.data.runtime.RuntimeHolder {
+@Component("anyline.data.runtime.holder.jdbc")
+public class JdbcRuntimeHolder extends RuntimeHolder {
+
+    public JdbcRuntimeHolder(){
+        RuntimeHolderProxy.reg(DataSource.class,this);
+    }
+    @Override
+    public DataRuntime runtime(String key, Object source, DriverAdapter adapter){
+        JdbcRuntime runtime = new JdbcRuntime();
+        runtime.setKey(key);
+        runtime.setAdapter(adapter);
+        if(source instanceof DataSource){
+            DataSource ds = (DataSource) source;
+            JdbcTemplate template = new JdbcTemplate(ds);
+            runtime.setClient(template);
+        }
+        return runtime;
+    }
 
     /**
      * 注册运行环境

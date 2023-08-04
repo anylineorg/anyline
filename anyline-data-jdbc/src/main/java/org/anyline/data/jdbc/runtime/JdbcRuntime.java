@@ -94,6 +94,8 @@ public class JdbcRuntime implements DataRuntime {
         setClient(jdbc);
         setAdapter(adapter);
     }
+    public JdbcRuntime(){
+    }
 
     public JdbcTemplate jdbc(){
         return (JdbcTemplate) client;
