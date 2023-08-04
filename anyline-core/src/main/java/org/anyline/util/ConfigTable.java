@@ -53,7 +53,7 @@ public class ConfigTable {
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
 	protected static final String version 				= "8.6.5-SNAPSHOT"	;	// 版本号
-	protected static final String minVersion 			= "0007"			;	// 版本号
+	protected static final String minVersion 			= "2023080410"		;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
 
@@ -152,6 +152,7 @@ public class ConfigTable {
 	public ConfigTable(){
 		debug();
 	}
+
 	private synchronized static void listener(){
 		if(listener_running){
 			return;
@@ -195,6 +196,9 @@ public class ConfigTable {
 		for(File file:files){
 			loadConfig(file);
 		}
+	}
+	public static String version(){
+		return version + "-" + minVersion;
 	}
 	public static Hashtable<String,Object> getConfigs(){
 		return configs;
