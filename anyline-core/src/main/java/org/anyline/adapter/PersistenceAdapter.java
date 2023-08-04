@@ -1,9 +1,9 @@
-package org.anyline.data.adapter.init;
+package org.anyline.adapter;
 
-import org.anyline.data.metadata.persistence.ManyToMany;
-import org.anyline.data.metadata.persistence.OneToMany;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
+import org.anyline.metadata.persistence.ManyToMany;
+import org.anyline.metadata.persistence.OneToMany;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.ClassUtil;
 
