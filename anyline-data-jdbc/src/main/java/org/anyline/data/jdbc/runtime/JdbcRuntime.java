@@ -98,7 +98,7 @@ public class JdbcRuntime implements DataRuntime {
     }
 
     public JdbcTemplate jdbc(){
-        return (JdbcTemplate) client;
+        return client;
     }
     public String getFeature() {
         if(null == feature){
