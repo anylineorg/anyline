@@ -19,13 +19,13 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.init.DefaultConditionChain;
 import org.anyline.data.run.RunValue;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 
@@ -47,7 +47,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 		}
 	}
 	@Override
-	public String getRunText(String prefix, DriverAdapter adapter){
+	public String getRunText(String prefix, DataRuntime runtime){
 		runValues = new ArrayList<>();
 		int size = conditions.size(); 
 		if(size == 0){
@@ -65,7 +65,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 			if(null == condition || condition.isVariableSlave()){
 				continue;
 			}
-			txt = condition.getRunText(prefix, adapter);
+			txt = condition.getRunText(prefix, runtime);
 			if(BasicUtil.isEmpty(txt)){
 				continue;
 			}
