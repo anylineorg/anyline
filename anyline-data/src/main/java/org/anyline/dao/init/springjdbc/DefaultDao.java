@@ -46,7 +46,6 @@ import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.ACTION.DDL;
-import org.anyline.metadata.ACTION.DML;
 import org.anyline.metadata.ACTION.SWITCH;
 import org.anyline.metadata.persistence.ManyToMany;
 import org.anyline.metadata.persistence.OneToMany;
@@ -168,7 +167,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 
 		DriverAdapter adapter = runtime.getAdapter();
-		run = adapter.buildQueryRun(prepare, configs, conditions);
+		run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
 		Long fr = System.currentTimeMillis();
 		try {
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
@@ -192,7 +191,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				maps = adapter.maps(runtime, random, run);
 				if (null != adapter) {
-					maps = adapter.process(maps);
+					maps = adapter.process(runtime, maps);
 				}
 				sql_success = true;
 			} else {
@@ -252,7 +251,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		try {
 			DriverAdapter adapter = runtime.getAdapter();
-			run = adapter.buildQueryRun(prepare, configs, conditions);
+			run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
 
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
@@ -395,7 +394,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			DriverAdapter adapter = runtime.getAdapter();
 
 
-			run = adapter.buildQueryRun(prepare, configs, conditions);
+			run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
 				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]";
@@ -485,7 +484,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		String random = random(runtime);
 		DriverAdapter adapter = runtime.getAdapter();
-		List<Run> runs = adapter.buildQuerySequence(next, names);
+		List<Run> runs = adapter.buildQuerySequence(runtime, next, names);
 
 		if (null != runs && runs.size() > 0) {
 			Run run = runs.get(0);
@@ -533,7 +532,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		try{
-			run = adapter.buildQueryRun(prepare, configs, conditions);
+			run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
 			if(!run.isValid()){
 				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 					log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]");
@@ -591,7 +590,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try {
 
 			DriverAdapter adapter = runtime.getAdapter();
-			Run run = adapter.buildQueryRun(prepare, configs, conditions);
+			Run run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
 			if(!run.isValid()){
 				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 					log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]");
@@ -688,14 +687,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			return result;
 		}
 
-		Run run = adapter.buildUpdateRun(dest, data, configs,false, columns);
+		Run run = adapter.buildUpdateRun(runtime, dest, data, configs,false, columns);
 
 		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			table.setColumns(columns(runtime, random, false, table));
 		}
-		adapter.convert(runtime, table, run);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
@@ -939,18 +937,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			table.setColumns(columns(runtime, random, false, table));
 		}
-		adapter.convert(runtime, table, run);
 		if(null == run){
 			return 0;
 		}
 
 		int cnt = 0;
-		final String sql = run.getFinalInsert();
-		final List<Object> values = run.getValues();
+		//final String sql = run.getFinalInsert();
+		//final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
-		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(run.getInsertColumns(),values));
-		}
 		long millis = -1;
 		try{
 			swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
@@ -963,40 +957,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(swt == SWITCH.BREAK){
 				return -1;
 			}
-			cnt = adapter.insert(runtime, random, data, sql, values, null);
+			cnt = adapter.insert(runtime, random, data, run, null);
+
 			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
 			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-			millis = System.currentTimeMillis() - fr;
-			boolean slow = false;
-			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
-			if(SLOW_SQL_MILLIS > 0){
-				if(millis > SLOW_SQL_MILLIS){
-					slow = true;
-					log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
-					if(null != dmListener){
-						dmListener.slow(runtime, random, DML.INSERT, run, sql, values, null, true, cnt, millis);
-					}
-				}
-			}
-			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
-			}
-
-		}catch(Exception e){
-			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
-			}
-			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
-				ex.setSql(sql);
-				ex.setValues(values);
-				throw ex;
-			}else{
-				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
-				}
-			}
 		}finally{
 			// 自动切换回切换前的数据源
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
@@ -1235,7 +1200,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param rs jdbc返回结果
 	 * @return DataRow
 	 */
-	protected static DataRow row(boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ResultSet rs) {
+	protected static DataRow row(DataRuntime runtime, boolean system, LinkedHashMap<String, Column> metadatas, ResultSet rs) {
 		DataRow row = new DataRow();
 		try {
 			DriverAdapter adapter = runtime.getAdapter();
@@ -1248,7 +1213,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						continue;
 					}
 					Column column = metadatas.get(name) ;
-					column = adapter.column((Column) column, rsmd, i);
+					column = adapter.column(runtime, column, rsmd, i);
 					metadatas.put(name.toUpperCase(), column);
 				}
 			}
@@ -1259,7 +1224,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-				Object value = adapter.read(column, rs.getObject(name), null);
+				Object value = adapter.read(runtime, column, rs.getObject(name), null);
 				row.put(false, name, value);
 			}
 			row.setMetadatas(metadatas);
@@ -1499,7 +1464,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			return -1;
 		}
 
-		Run run = adapter.buildExecuteRun(prepare, configs, conditions);
+		Run run = adapter.buildExecuteRun(runtime, prepare, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime().datasource() + "]");
@@ -1668,7 +1633,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			return -1;
 		}
 		DriverAdapter adapter = runtime.getAdapter();
-		Run run = adapter.buildDeleteRun(table, key, values);
+		Run run = adapter.buildDeleteRun(runtime, table, key, values);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -1730,7 +1695,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					return -1;
 				}
 				DriverAdapter adapter = runtime.getAdapter();
-				Run run = adapter.buildDeleteRun(dest, obj, columns);
+				Run run = adapter.buildDeleteRun(runtime, dest, obj, columns);
 				if(!run.isValid()){
 					if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 						log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -1826,7 +1791,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			return -1;
 		}
 		DriverAdapter adapter = runtime.getAdapter();
-		Run run = adapter.buildDeleteRun(table, configs, conditions);
+		Run run = adapter.buildDeleteRun(runtime, table, configs, conditions);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -1893,7 +1858,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		table = DataSourceUtil.parseDataSource(table);
 		DataRuntime runtime = runtime();
 		DriverAdapter adapter = runtime.getAdapter();
-		List<Run> runs = adapter.buildTruncateSQL(table);
+		List<Run> runs = adapter.buildTruncateRun(runtime, table);
 		if(null != runs && runs.size()>0) {
 			RunPrepare prepare = new DefaultTextPrepare(runs.get(0).getFinalUpdate());
 			return execute(prepare);
@@ -1946,12 +1911,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			////con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
 			try{
-				List<Run> runs = adapter.buildQueryDatabaseRunSQL();
+				List<Run> runs = adapter.buildQueryDatabaseRun(runtime);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-						databases = adapter.databases(idx++, true, databases, set);
+						databases = adapter.databases(runtime, idx++, true, databases, set);
 					}
 				}
 			}catch (Exception e){
@@ -2004,12 +1969,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			LinkedHashMap<String, Table> tables = new LinkedHashMap<>();
 			boolean sys = false; //根据系统表查询
 			try {
-				List<Run> runs = adapter.buildQueryTableRunSQL(null, null, null, null);
+				List<Run> runs = adapter.buildQueryTableRun(runtime, null, null, null, null);
 				if (null != runs && runs.size() > 0) {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, (String) null, run).toUpperKey();
-						tables = adapter.tables(idx++, true, catalog, schema, tables, set);
+						tables = adapter.tables(runtime, idx++, true, catalog, schema, tables, set);
 						sys = true;
 					}
 				}
@@ -2018,7 +1983,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			if(!sys){
 				try {
-					tables = adapter.tables(true, null, runtime, catalog, schema, null, null);
+					tables = adapter.tables(runtime, true, null, catalog, schema, null, null);
 				}catch (Exception e){
 					e.printStackTrace();
 				}
@@ -2084,12 +2049,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			// 根据系统表查询
 			try{
-				List<Run> runs = adapter.buildQueryTableRunSQL(catalog, schema, origin, types);
+				List<Run> runs = adapter.buildQueryTableRun(runtime, catalog, schema, origin, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-						tables = adapter.tables(idx++, true, catalog, schema, tables, set);
+						tables = adapter.tables(runtime, idx++, true, catalog, schema, tables, set);
 					}
 				}
 			}catch (Exception e){
@@ -2103,7 +2068,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			// 根据系统表查询失败后根据驱动内置接口补充
 			if(null == tables || tables.size() == 0) {
 				try {
-					LinkedHashMap<String, T> jdbcTables = adapter.tables(true, null, runtime, catalog, schema, origin, tps);
+					LinkedHashMap<String, T> jdbcTables = adapter.tables(runtime, true, null, catalog, schema, origin, tps);
 					for (String key : jdbcTables.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = jdbcTables.get(key);
@@ -2134,12 +2099,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			//表备注
 			if(!comment) {
 				try {
-					List<Run> runs = adapter.buildQueryTableCommentRunSQL(catalog, schema, null, types);
+					List<Run> runs = adapter.buildQueryTableCommentRun(runtime, catalog, schema, null, types);
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
 							DataSet set = select(runtime, random, (String) null, run).toUpperKey();
-							tables = adapter.comments(idx++, true, catalog, schema, tables, set);
+							tables = adapter.comments(runtime, idx++, true, catalog, schema, tables, set);
 						}
 					}
 				} catch (Exception e) {
@@ -2228,14 +2193,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random(runtime);
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
+			List<Run> runs = adapter.buildQueryDDLRun(runtime, table);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
 					DataSet set = select(runtime, random, null, run).toUpperKey();
-					list = adapter.ddl(idx++, table, list,  set);
+					list = adapter.ddl(runtime, idx++, table, list,  set);
 				}
 				table.setDdls(list);
 			}else{
@@ -2254,7 +2219,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				table.setPrimaryKey(pk);
 				table.setIndexs(indexs(table));
-				runs = adapter.buildCreateRunSQL(table);
+				runs = adapter.buildCreateRun(runtime, table);
 				for(Run run:runs){
 					list.add(run.getFinalUpdate());
 					table.setDdls(list);
@@ -2350,12 +2315,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 			// 根据系统表查询
 			try{
-				List<Run> runs = adapter.buildQueryViewRunSQL(catalog, schema, pattern, types);
+				List<Run> runs = adapter.buildQueryViewRun(runtime, catalog, schema, pattern, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-						views = adapter.views(idx++, true, catalog, schema, views, set);
+						views = adapter.views(runtime, idx++, true, catalog, schema, views, set);
 					}
 				}
 			}catch (Exception e){
@@ -2368,7 +2333,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null == views || views.size() ==0) {
 				// 根据驱动内置接口补充
 				try {
-					LinkedHashMap<String, T> tmps = adapter.views(true, null, runtime, catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> tmps = adapter.views(runtime, true, null, catalog, schema, pattern, tps);
 					for (String key : tmps.keySet()) {
 						if (!views.containsKey(key.toUpperCase())) {
 							T item = tmps.get(key);
@@ -2463,12 +2428,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random(runtime);
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = adapter.buildQueryDDLRunSQL(view);
+			List<Run> runs = adapter.buildQueryDDLRun(runtime, view);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, random, run).toUpperKey();
-					list = adapter.ddl(idx++, view, list,  set);
+					list = adapter.ddl(runtime, idx++, view, list,  set);
 				}
 				view.setDdls(list);
 			}
@@ -2539,12 +2504,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 根据系统表查询
 			try{
-				List<Run> runs = adapter.buildQueryMasterTableRunSQL(catalog, schema, pattern, types);
+				List<Run> runs = adapter.buildQueryMasterTableRun(runtime, catalog, schema, pattern, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-						tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
+						tables = adapter.mtables(runtime, idx++, true, catalog, schema, tables, set);
 					}
 				}
 			}catch (Exception e){
@@ -2558,7 +2523,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			if(null == tables || tables.size() ==0 ) {
 				// 根据驱动内置接口补充
 				try {
-					LinkedHashMap<String, T> tmps = adapter.mtables(true, null, runtime, catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> tmps = adapter.mtables(runtime, true, null, catalog, schema, pattern, tps);
 					for (String key : tmps.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = tmps.get(key);
@@ -2647,12 +2612,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random(runtime);
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
+			List<Run> runs = adapter.buildQueryDDLRun(runtime, table);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, random, run).toUpperKey();
-					list = adapter.ddl(idx++, table, list,  set);
+					list = adapter.ddl(runtime, idx++, table, list,  set);
 				}
 				table.setDdls(list);
 			}
@@ -2718,13 +2683,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			//con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
 			try{
-				List<Run> runs = adapter.buildQueryPartitionTableRunSQL(master, tags, name);
+				List<Run> runs = adapter.buildQueryPartitionTableRun(runtime, master, tags, name);
 				if(null != runs) {
 					int idx = 0;
 					int total = runs.size();
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-						tables = adapter.ptables(total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
+						tables = adapter.ptables(runtime, total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 					}
 				}
 			}catch (Exception e){
@@ -2791,12 +2756,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String random = random(runtime);
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = adapter.buildQueryDDLRunSQL(table);
+			List<Run> runs = adapter.buildQueryDDLRun(runtime, table);
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, random, run).toUpperKey();
-					list = adapter.ddl(idx++, table, list,  set);
+					list = adapter.ddl(runtime, idx++, table, list,  set);
 				}
 				table.setDdls(list);
 			}
@@ -2869,12 +2834,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			int qty_jdbc = 0; //根据驱动内置接口补充
 			// 优先根据系统表查询
 			try {
-				List<Run> runs = adapter.buildQueryColumnRunSQL(table, false);
+				List<Run> runs = adapter.buildQueryColumnRun(runtime, table, false);
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
-						DataSet set = select( runtime, random, true, (String) null, run);
-						columns = adapter.columns(idx, true, table, columns, set);
+						DataSet set = select(runtime, random, true, (String) null, run);
+						columns = adapter.columns(runtime, idx, true, table, columns, set);
 						idx++;
 					}
 				}
@@ -2890,7 +2855,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
 			if (columns.size() == 0) {
 				try {
-					columns = adapter.columns(true, runtime, table, columns);
+					columns = adapter.columns(runtime, true, table, columns);
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -3005,12 +2970,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			// 先根据系统表查询
 			try {
-				List<Run> runs = adapter.buildQueryTagRunSQL(table, false);
+				List<Run> runs = adapter.buildQueryTagRun(runtime, table, false);
 				if (null != runs) {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, (String) null, run).toUpperKey();
-						tags = adapter.tags(idx, true, table, tags, set);
+						tags = adapter.tags(runtime, idx, true, table, tags, set);
 						idx++;
 					}
 				}
@@ -3027,7 +2992,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				try {
 					// isAutoIncrement isGenerated remark default
 					// 这一步会查出所有列(包括非tag列)
-					tags = adapter.tags(false, tags, runtime, table, null);
+					tags = adapter.tags(runtime, false, tags, table, null);
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -3107,12 +3072,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DatabaseMetaData metadata = null;
 
 		try{
-			List<Run> runs = adapter.buildQueryPrimaryRunSQL(table);
+			List<Run> runs = adapter.buildQueryPrimaryRun(runtime, table);
 			if(null != runs){
 				int idx = 0;
 				for(Run run:runs){
 					DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-					primary = adapter.primary(idx, table, set);
+					primary = adapter.primary(runtime, idx, table, set);
 					if(null != primary){
 						primary.setTable(table);
 					}
@@ -3166,8 +3131,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table){
@@ -3179,12 +3144,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			checkSchema(runtime, table);
 		}
 		try {
-			List<Run> runs = adapter.buildQueryForeignsRunSQL(table);
+			List<Run> runs = adapter.buildQueryForeignsRun(runtime, table);
 			if(null != runs){
 				int idx = 0;
 				for(Run run:runs){
 					DataSet set = select(runtime, random, (String)null, run).toUpperKey();
-					foreigns = adapter.foreigns(idx,  table, foreigns, set);
+					foreigns = adapter.foreigns(runtime, idx,  table, foreigns, set);
 					idx++;
 				}
 			}
@@ -3229,7 +3194,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				//ds = runtime.getTemplate().getDataSource();
 				//con = DataSourceUtils.getConnection(ds);
 				//dbmd.getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), unique, approximate);
-				indexs = adapter.indexs(true, indexs, runtime, table, false, false);
+				indexs = adapter.indexs(runtime, true, indexs, table, false, false);
 				table.setIndexs(indexs);
 			} catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -3242,14 +3207,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				indexs.put(name.toUpperCase(), index);
 			}
 		}
-		List<Run> runs = adapter.buildQueryIndexRunSQL(table, name);
+		List<Run> runs = adapter.buildQueryIndexRun(runtime, table, name);
 
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
 				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
-					indexs = adapter.indexs(idx, true, table, indexs, set);
+					indexs = adapter.indexs(runtime, idx, true, table, indexs, set);
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -3333,26 +3298,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table, String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints( boolean greedy, Table table, String name) {
 		return null;
 	}
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, Table table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints( boolean greedy, Table table) {
 		return constraints(greedy, table, null);
 	}
 
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints( boolean greedy, String table) {
 		return constraints(greedy, new Table(table));
 	}
 
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String table, String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints( boolean greedy, String table, String name) {
 		return constraints(greedy, new Table(table), name);
 	}
 
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean greedy, String catalog, String schema, String table) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints( boolean greedy, String catalog, String schema, String table) {
 		return constraints(greedy, new Table(catalog, schema, table));
 	}
 	@Override
@@ -3393,14 +3358,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(!greedy) {
 			checkSchema(runtime, table);
 		}
-		List<Run> runs = adapter.buildQueryTriggerRunSQL(table, events);
+		List<Run> runs = adapter.buildQueryTriggerRun(runtime, table, events);
 
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
 				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
-					triggers = adapter.triggers(idx, true, table, triggers, set);
+					triggers = adapter.triggers(runtime, idx, true, table, triggers, set);
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -3422,14 +3387,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		String random = random(runtime);
 		DriverAdapter adapter = runtime.getAdapter();
-		List<Run> runs = adapter.buildQueryProcedureRunSQL(catalog, schema, name);
+		List<Run> runs = adapter.buildQueryProcedureRun(runtime, catalog, schema, name);
 
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
 				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
-					procedures = adapter.procedures(idx, true, procedures, set);
+					procedures = adapter.procedures(runtime, idx, true, procedures, set);
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -3451,13 +3416,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		String random = random(runtime);
 		DriverAdapter adapter = runtime.getAdapter();
-		List<Run> runs = adapter.buildQueryFunctionRunSQL(catalog, schema, name);
+		List<Run> runs = adapter.buildQueryFunctionRun(runtime, catalog, schema, name);
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
 				DataSet set = select(runtime, random, (String)null, run).toUpperKey();
 				try {
-					functions = adapter.functions(idx, true, functions, set);
+					functions = adapter.functions(runtime, idx, true, functions, set);
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -3512,7 +3477,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeCreate(runtime, random, meta, runs);
@@ -3578,9 +3543,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			swt = InterceptorProxy.prepare(runtime, random, DDL.TABLE_COMMENT, table);
 			if(swt != SWITCH.BREAK) {
 				if(BasicUtil.isNotEmpty(table.getComment())) {
-					runs.addAll(adapter.buildChangeCommentRunSQL(update));
+					runs.addAll(adapter.buildChangeCommentRun(runtime, update));
 				}else{
-					runs.addAll(adapter.buildAddCommentRunSQL(update));
+					runs.addAll(adapter.buildAddCommentRun(runtime, update));
 				}
 				swt = InterceptorProxy.before(runtime, random, DDL.TABLE_COMMENT, table, runs);
 				if(swt != SWITCH.BREAK) {
@@ -3676,7 +3641,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(null != auto && auto.isAutoIncrement() == 1){//原主键科自增
 					if(!npks.containsKey(auto.getName().toUpperCase())){ //当前不是主键
 						auto.setPrimaryKey(false);
-						result = execute(runtime, random, DDL.TABLE_ALTER, adapter.buildDropAutoIncrement(auto)) && result;
+						result = execute(runtime, random, DDL.TABLE_ALTER, adapter.buildDropAutoIncrement(runtime, auto)) && result;
 					}
 				}
 			}
@@ -3685,7 +3650,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				drop(src_primary);
 			}
 		}
-		List<Run> alters = adapter.buildAlterRunSQL(table, cols.values());
+		List<Run> alters = adapter.buildAlterRun(runtime, table, cols.values());
 		if(null != alters && alters.size()>0){
 			result = execute(runtime, random, DDL.COLUMN_ALTER, alters) && result;
 		}
@@ -3715,7 +3680,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -3759,7 +3724,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return rename(null, null, origin, name);
 	}
 
-	public boolean rename(DataRuntime runtime, String random, Table origin, String name) throws Exception {
+	protected boolean rename(DataRuntime runtime, String random, Table origin, String name) throws Exception {
 		boolean result = false;
 		DDL action = DDL.TABLE_RENAME;
 		if(null == runtime){
@@ -3778,7 +3743,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -3827,7 +3792,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeCreate(runtime, random, meta, runs);
@@ -3869,7 +3834,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, meta, runs);
@@ -3912,7 +3877,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -3944,7 +3909,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return rename(runtime(), origin, name);
 	}
 
-	public boolean rename(DataRuntime runtime, View origin, String name) throws Exception {
+	protected boolean rename(DataRuntime runtime, View origin, String name) throws Exception {
 		boolean result = false;
 		DDL action = DDL.VIEW_RENAME;
 		String random = random(runtime);
@@ -3961,7 +3926,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -4011,7 +3976,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeCreate(runtime, random, meta, runs);
@@ -4141,7 +4106,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -4190,7 +4155,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -4240,7 +4205,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeCreate(runtime, random, meta, runs);
@@ -4343,7 +4308,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -4394,7 +4359,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -4445,7 +4410,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAddRunSQL(meta);
+		List<Run> runs = adapter.buildAddRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -4508,7 +4473,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -4556,7 +4521,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta, false);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta, false);
 
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
@@ -4621,7 +4586,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -4673,7 +4638,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAddRunSQL(meta);
+		List<Run> runs = adapter.buildAddRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -4736,7 +4701,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -4784,7 +4749,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta, false);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta, false);
 		long fr = System.currentTimeMillis();
 		try{
 			result = execute(runtime, random, action, runs);
@@ -4839,7 +4804,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -4889,7 +4854,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAddRunSQL(meta);
+		List<Run> runs = adapter.buildAddRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -4948,7 +4913,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, meta, runs);
@@ -4990,7 +4955,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -5033,7 +4998,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -5082,7 +5047,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAddRunSQL(meta);
+		List<Run> runs = adapter.buildAddRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -5141,7 +5106,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, meta, runs);
@@ -5183,7 +5148,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -5226,7 +5191,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -5274,7 +5239,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAddRunSQL(meta);
+		List<Run> runs = adapter.buildAddRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -5333,7 +5298,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, index);
-		List<Run> runs = adapter.buildAlterRunSQL(index);
+		List<Run> runs = adapter.buildAlterRun(runtime, index);
 		swt = InterceptorProxy.before(runtime, random, action, index, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, index, runs);
@@ -5375,7 +5340,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -5417,7 +5382,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -5466,7 +5431,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAddRunSQL(meta);
+		List<Run> runs = adapter.buildAddRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -5525,7 +5490,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, meta, runs);
@@ -5566,7 +5531,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -5609,7 +5574,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -5659,7 +5624,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeCreate(runtime, random, meta, runs);
@@ -5702,7 +5667,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, meta, runs);
@@ -5743,7 +5708,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -5785,7 +5750,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -5835,7 +5800,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeCreate(runtime, random, meta, runs);
@@ -5878,7 +5843,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeAlter(runtime, random, meta, runs);
@@ -5916,7 +5881,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -5958,7 +5923,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null == ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -6008,7 +5973,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildCreateRunSQL(meta);
+		List<Run> runs = adapter.buildCreateRun(runtime, meta);
 		long fr = System.currentTimeMillis();
 		try {
 			result = execute(runtime, random, action, runs);
@@ -6045,7 +6010,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
-		List<Run> runs = adapter.buildAlterRunSQL(meta);
+		List<Run> runs = adapter.buildAlterRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt =  ddListener.beforeDrop(runtime, random, meta, runs);
@@ -6091,7 +6056,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, meta);
 
-		List<Run> runs = adapter.buildDropRunSQL(meta);
+		List<Run> runs = adapter.buildDropRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -6137,7 +6102,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DriverAdapter adapter = runtime.getAdapter();
 		checkSchema(runtime, origin);
 
-		List<Run> runs = adapter.buildRenameRunSQL(origin);
+		List<Run> runs = adapter.buildRenameRun(runtime, origin);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == SWITCH.CONTINUE){
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
