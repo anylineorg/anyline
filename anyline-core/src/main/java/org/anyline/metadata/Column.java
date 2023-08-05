@@ -682,7 +682,7 @@ public class Column implements Serializable {
         return this;
     }
 
-    public Object getDefaultValue() {
+    public Object getdefaultValue() {
         if(getmap && null != update){
             return update.defaultValue;
         }
@@ -962,7 +962,7 @@ public class Column implements Serializable {
         if(!BasicUtil.equals(scale, column.getScale())){
             return false;
         }
-        if(!BasicUtil.equals(defaultValue, column.getDefaultValue())){
+        if(!BasicUtil.equals(defaultValue, column.getdefaultValue())){
             return false;
         }
         if(!BasicUtil.equals(comment, column.getComment())){
