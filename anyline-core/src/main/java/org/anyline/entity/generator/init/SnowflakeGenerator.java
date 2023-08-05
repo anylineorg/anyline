@@ -20,6 +20,7 @@
 package org.anyline.entity.generator.init;
 
 import org.anyline.entity.DataRow;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -27,10 +28,12 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SnowflakeWorker;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class SnowflakeGenerator implements PrimaryGenerator {
 	private static SnowflakeWorker worker = null;
+	@Override
 	public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other){
 		if(null == columns){
 			if(entity instanceof DataRow){
@@ -46,9 +49,34 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 			if(null != BeanUtil.getFieldValue(entity, column)) {
 				continue;
 			}
-			Long value = worker.next();
-			BeanUtil.setFieldValue(entity, column, value, true);
+			create(entity, type, table, column, other);
 		}
+		return true;
+	}
+
+	@Override
+	public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other){
+		if(null == columns){
+			if(entity instanceof DataRow){
+				columns = ((DataRow)entity).getPrimaryColumns();
+			}else{
+				columns = EntityAdapterProxy.primaryKeys(entity.getClass());
+			}
+		}
+		if(null == worker){
+			worker = newInstance();
+		}
+		for(Column column:columns.values()){
+			if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+				continue;
+			}
+			create(entity, type, table, column.getName(), other);
+		}
+		return true;
+	}
+	public boolean create(Object entity, DatabaseType type, String table, String column, String other){
+		Long value = worker.next();
+		BeanUtil.setFieldValue(entity, column, value, true);
 		return true;
 	}
 	private SnowflakeWorker newInstance(){
