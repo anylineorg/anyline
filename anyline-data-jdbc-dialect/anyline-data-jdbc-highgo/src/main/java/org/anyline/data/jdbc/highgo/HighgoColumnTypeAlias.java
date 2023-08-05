@@ -42,10 +42,10 @@ public enum HighgoColumnTypeAlias implements ColumnTypeAlias {
     INT2                    (StandardColumnType.INT2                  ), //     ,pg
     INT4                    (StandardColumnType.INT4                  ), //
     INT8                    (StandardColumnType.INT8                  ), //
-    INTEGER                 (StandardColumnType.INT4                  ), //mysql                 ,,sqlite
+    INTEGER                 (StandardColumnType.INT4                  ), //mysql                 ,sqlite
     JSON                    (StandardColumnType.JSON                  ), //mysql,pg
     JSONB                   (StandardColumnType.JSONB                 ), //     ,pg
-        LINE                    (StandardColumnType.LINE                  ), //     ,pg
+    LINE                    (StandardColumnType.LINE                  ), //     ,pg
     LINESTRING              (StandardColumnType.LINE                  ), //mysql
     LONG                    (StandardColumnType.INT8                  ), //       ,oracle
     LONGBLOB                (StandardColumnType.BYTEA                 ), //mysql
