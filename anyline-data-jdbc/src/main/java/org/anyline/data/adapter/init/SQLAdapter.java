@@ -44,13 +44,9 @@ import org.anyline.metadata.Column;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.util.*;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.lang.reflect.Field;
-import java.sql.*;
 import java.util.*;
 
 
@@ -82,14 +78,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
-     * Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
-     * void createInserts(Run run, String dest, DataSet set,  List<String> keys)
-     * void createInserts(Run run, String dest, Collection list,  List<String> keys)
-     * int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values) throws Exception
+     * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
+     * void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String,Column> columns)
+     * void createInserts(DataRuntime runtime, Run run, String dest, Collection list,  LinkedHashMap<String,Column> columns)
+     * int insert(DataRuntime runtime, String random, Object data, Run run) throws Exception
      *
-     * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
-     * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
-     * protected void insertValue(Run run, Object obj, boolean placeholder , List<String> keys)
+     * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns)
+     * protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)
+     * protected void insertValue(Run run, Object obj, boolean placeholder, LinkedHashMap<String,Column> columns)
      ******************************************************************************************************************/
     /**
      * 创建INSERT RunPrepare
@@ -111,32 +107,32 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
-     * @param keys 需插入的列
+     * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
-        List<String> pks = null;
+        LinkedHashMap<String, Column> pks = null;
         PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         if(null != generator){
-            pks = set.getRow(0).getPrimaryKeys();
-            BeanUtil.join(true, keys, pks);
+            pks = set.getRow(0).getPrimaryColumns();
+            columns.putAll(pks);
         }
 
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
-
-        int keySize = keys.size();
-        for(int i=0; i<keySize; i++){
-            String key = keys.get(i);
-            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            if(i<keySize-1){
+        boolean first = true;
+        for(Column column:columns.values()){
+            if(!first){
                 builder.append(",");
             }
+            first = false;
+            String key = column.getName();
+            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
         }
         builder.append(") VALUES ");
         int dataSize = set.size();
@@ -147,11 +143,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
             if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
                 if(null != generator){
-                    generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
                 }
                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            insertValue(runtime, run, row, true, false,true, keys);
+            insertValue(runtime, run, row, true, false,true, columns);
             if(i<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append(batchInsertSeparator());
@@ -165,10 +161,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
-     * @param keys 需插入的列
+     * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -178,26 +174,25 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(runtime, run, dest, set, keys);
+            createInserts(runtime, run, dest, set, columns);
             return;
         }
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         Object entity = list.iterator().next();
         List<String> pks = null;
         if(null != generator) {
-            pks = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
-            BeanUtil.join(true, keys, pks);
+            columns.putAll(EntityAdapterProxy.primaryKeys(entity.getClass()));
         }
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
-        int keySize = keys.size();
-        for(int i=0; i<keySize; i++){
-            String key = keys.get(i);
-            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            if(i<keySize-1){
+        boolean first = true;
+        for(Column column:columns.values()){
+            if(!first){
                 builder.append(",");
             }
+            first = false;
+            SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
         }
         builder.append(") VALUES ");
         int dataSize = list.size();
@@ -210,12 +205,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 insertValue(template, run, row, true, false,true, keys);
             }else{*/
-                boolean create = EntityAdapterProxy.createPrimaryValue(obj, keys);
+                boolean create = EntityAdapterProxy.createPrimaryValue(obj, BeanUtil.getMapKeys(columns));
                 if(!create && null != generator){
                     generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
-                insertValue(runtime, run, obj, true, false, true, keys);
+                insertValue(runtime, run, obj, true, false, true, columns);
             //}
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
@@ -236,7 +231,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
-        Run run = new TableRun(this, dest);
+        Run run = new TableRun(runtime, dest);
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = new StringBuilder();
         if(BasicUtil.isEmpty(dest)){
@@ -260,15 +255,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }else{
             from = 2;
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
+            LinkedHashMap<String,Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
             if(!create && null != generator){
-                generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
         run.setFrom(from);
         /*确定需要插入的列*/
-        List<String> keys = confirmInsertColumns(dest, obj, columns, false);
-        if(null == keys || keys.size() == 0){
+        LinkedHashMap<String,Column> cols = confirmInsertColumns(runtime, dest, obj, columns, false);
+        if(null == cols || cols.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
         }
         boolean replaceEmptyNull = false;
@@ -284,9 +280,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         builder.append("(");
         valuesBuilder.append(") VALUES (");
         List<String> insertColumns = new ArrayList<>();
-        int size = keys.size();
-        for(int i=0; i<size; i++){
-            String key = keys.get(i);
+        boolean first = true;
+        for(Column column:cols.values()){
+            if(!first){
+                builder.append(",");
+                valuesBuilder.append(",");
+            }
+            first = false;
+            String key = column.getName();
             Object value = null;
             if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
@@ -305,7 +306,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 valuesBuilder.append(value);
             }else if(null != value && value instanceof SQL_BUILD_IN_VALUE){
                 //内置函数值
-                value = value(null, (SQL_BUILD_IN_VALUE)value);
+                value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
                 valuesBuilder.append(value);
             }else{
                 insertColumns.add(key);
@@ -316,15 +317,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }else if("".equals(value) && replaceEmptyNull){
                         value = null;
                     }
-                    addRunValue(run, Compare.EQUAL, key, value);
+                    addRunValue(runtime, run, Compare.EQUAL, column, value);
                 }else{
                     //format(valuesBuilder, value);
-                    valuesBuilder.append(write(null, value, false));
+                    valuesBuilder.append(write(runtime, null, value, false));
                 }
-            }
-            if(i<size-1){
-                builder.append(",");
-                valuesBuilder.append(",");
             }
         }
         valuesBuilder.append(")");
@@ -348,7 +345,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
-        Run run = new TableRun(this,dest);
+        Run run = new TableRun(runtime, dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
         }
@@ -372,11 +369,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             throw new SQLException("未指定表");
         }
         /*确定需要插入的列*/
-        List<String> keys = confirmInsertColumns(dest, first, columns, true);
-        if(null == keys || keys.size() == 0){
+        LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, columns, true);
+        if(null == cols || cols.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        createInserts(runtime, run, dest, list, keys);
+        createInserts(runtime, run, dest, list, cols);
 
         return run;
     }
@@ -390,11 +387,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param placeholder   是否使用占位符(批量操作时不要超出数量)
      * @param scope         是否带(), 拼接在select后时不需要
      * @param alias         是否添加别名
-     * @param keys          需要插入的列
+     * @param columns          需要插入的列
      */
-    protected void insertValue(DataRuntime runtime, Run run, Object obj, boolean placeholder, boolean alias, boolean scope, List<String> keys){
+    protected void insertValue(DataRuntime runtime, Run run, Object obj, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns){
         StringBuilder builder = run.getBuilder();
-        int keySize = keys.size();
         if(scope) {
             builder.append("(");
         }
@@ -403,9 +399,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             from = 1;
         }
         run.setFrom(from);
-        for(int i=0; i<keySize; i++){
+        boolean first = true;
+        for(Column column:columns.values()){
             boolean place = placeholder;
-            String key = keys.get(i);
+            String key = column.getName();
+            if (!first) {
+                builder.append(",");
+            }
+            first = false;
             Object value = null;
             if(obj instanceof DataRow){
                 value = BeanUtil.getFieldValue(obj, key);
@@ -426,17 +427,14 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }
             if(place){
                 builder.append("?");
-                addRunValue(run, Compare.EQUAL, key, value);
+                addRunValue(runtime, run, Compare.EQUAL, column, value);
             }else {
                 //value(builder, obj, key);
-                builder.append(write(null, obj, false));
+                builder.append(write(runtime, null, obj, false));
             }
 
             if(alias){
                 builder.append(" AS ").append(key);
-            }
-            if (i < keySize - 1) {
-                builder.append(",");
             }
         }
         if(scope) {
@@ -455,46 +453,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
         return key;
     }
-    /**
-     * 执行 insert
-     * @param runtime runtime
-     * @param random random
-     * @param data entity|DataRow|DataSet
-     * @param sql sql
-     * @param values 占位参数值
-     * @param pks pks
-     * @return int 影响行数
-     * @throws Exception 异常
-     */
     @Override
-    public int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception{
-        int cnt = 0;
-        KeyHolder keyholder = new GeneratedKeyHolder();
-        JdbcTemplate jdbc = jdbc(runtime);
-        cnt = jdbc.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
-                PreparedStatement ps = null;
-                if(null != pks && pks.length>0){
-                    //返回多个值
-                    ps = con.prepareStatement(sql, pks);
-                }else {
-                    ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                }
-                int idx = 0;
-                if (null != values) {
-                    for (Object obj : values) {
-                        ps.setObject(++idx, obj);
-                    }
-                }
-                return ps;
-            }
-        }, keyholder);
-        identity(random, data, keyholder);
-        return cnt;
-    }
-    @Override
-    public boolean identity(String random, Object data, KeyHolder keyholder){
+    public boolean identity(DataRuntime runtime, String random, Object data, KeyHolder keyholder){
         try {
             if(null == keyholder){
                 return false;
@@ -511,7 +471,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 Collection list = (Collection) data;
                 //检测是否有主键值
                 for(Object item:list){
-                    if(BasicUtil.isNotEmpty(true, getPrimaryValue(item))){
+                    if(BasicUtil.isNotEmpty(true, getPrimaryValue(runtime, item))){
                         //已经有主键值了
                         return true;
                     }
@@ -549,7 +509,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
             }else{
                 if(null != keys && keys.size() > 0) {
-                    if(BasicUtil.isEmpty(true, getPrimaryValue(data))){
+                    if(BasicUtil.isEmpty(true, getPrimaryValue(runtime, data))){
                         Object id = keys.get(0).get(id_key);
                         setPrimaryValue(data, id);
                         if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
@@ -572,7 +532,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * 													UPDATE
      * -----------------------------------------------------------------------------------------------------------------
      * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
-     * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
+     * protected Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
      ******************************************************************************************************************/
 
     /**
@@ -602,17 +562,18 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         }
         return false;
     }
-    protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
-        TableRun run = new TableRun(this,dest);
+    @Override
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns){
+        TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
-        List<String> keys = new ArrayList<>();
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
         List<String> primaryKeys = new ArrayList<>();
         if(null != columns && columns.size() >0 ){
-            keys = columns;
+            cols = columns;
         }else{
-            keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE))) ;
+            cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
         }
         if(EntityAdapterProxy.hasAdapter(obj.getClass())){
             primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
@@ -623,27 +584,25 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         // 不更新主键 除非显示指定
         for(String pk:primaryKeys){
-            if(!columns.contains(pk)) {
-                keys.remove(pk);
+            if(!columns.containsKey(pk.toUpperCase())) {
+                cols.remove(pk.toUpperCase());
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.contains(DataRow.DEFAULT_PRIMARY_KEY)) {
-            keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
+        if(!columns.containsKey(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
         boolean isReplaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
-        keys = checkMetadata(dest, keys);
-        keys = BeanUtil.distinct(keys);
+        cols = checkMetadata(runtime, dest, cols);
 
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
-        int size = keys.size();
-        if(size > 0){
+        if(!cols.isEmpty()){
             builder.append("UPDATE ").append(parseTable(dest));
             builder.append(" SET").append(BR_TAB);
             boolean first = true;
-            for(int i=0; i<size; i++){
-                String key = keys.get(i);
+            for(Column column:cols.values()){
+                String key = column.getName();
                 Object value = null;
                 if(EntityAdapterProxy.hasAdapter(obj.getClass())){
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
@@ -687,7 +646,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         if(isMultipleValue(run, key)){
                             compare = Compare.IN;
                         }
-                        addRunValue(run, compare, key, value);
+                        addRunValue(runtime, run, compare, column, value);
                     }
                 }
             }
@@ -700,9 +659,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     updateColumns.add(pk);
                     if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
                         Field field = EntityAdapterProxy.field(obj.getClass(), pk);
-                        addRunValue(run, Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, field));
+                        addRunValue(runtime, run, Compare.EQUAL, new Column(pk), BeanUtil.getFieldValue(obj, field));
                     } else {
-                        addRunValue(run, Compare.EQUAL, pk, BeanUtil.getFieldValue(obj, pk));
+                        addRunValue(runtime, run, Compare.EQUAL, new Column(pk), BeanUtil.getFieldValue(obj, pk));
                     }
                 }
             }else{
@@ -715,13 +674,15 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         return run;
     }
-    protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
-        TableRun run = new TableRun(this,dest);
+
+    @Override
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns){
+        TableRun run = new TableRun(runtime, dest);
         run.setFrom(1);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
-        List<String> keys = confirmUpdateColumns(dest, row, configs, columns);
+        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
             throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
@@ -729,26 +690,31 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         // 不更新主键 除非显示指定
         for(String pk:primaryKeys){
-            if(!columns.contains(pk)) {
-                keys.remove(pk);
+            if(!columns.containsKey(pk.toUpperCase())) {
+                cols.remove(pk.toUpperCase());
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.contains(DataRow.DEFAULT_PRIMARY_KEY)) {
-            keys.remove(DataRow.DEFAULT_PRIMARY_KEY);
+        if(!columns.containsKey(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
         boolean replaceEmptyNull = row.isReplaceEmptyNull();
 
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
-        int size = keys.size();
-        if(size > 0){
+
+        if(!cols.isEmpty()){
             builder.append("UPDATE ").append(parseTable(dest));
             builder.append(" SET").append(BR_TAB);
-            for(int i=0; i<size; i++){
-                String key = keys.get(i);
+            boolean first = true;
+            for(Column col:cols.values()){
+                String key = col.getName();
                 Object value = row.get(key);
+                if(!first){
+                    builder.append(",");
+                }
+                first = false;
                 if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
@@ -762,10 +728,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                     updateColumns.add(key);
                     Compare compare = Compare.EQUAL;
-                    addRunValue(run, compare, key, value);
-                }
-                if(i<size-1){
-                    builder.append(",");
+                    addRunValue(runtime, run, compare, col, value);
                 }
             }
             builder.append(BR);
@@ -775,7 +738,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     builder.append(" AND ");
                     SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
                     updateColumns.add(pk);
-                    addRunValue(run, Compare.EQUAL, pk, row.get(pk));
+                    addRunValue(runtime, run, Compare.EQUAL, new Column(pk), row.get(pk));
                 }
             }else{
                 run.setConfigStore(configs);
@@ -792,13 +755,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * Object buildConditionLike(StringBuilder builder, Compare compare)
-     * Object buildConditionFindInSet(StringBuilder builder, Compare compare, Object value)
-     * Object buildConditionIn(StringBuilder builder, Compare compare, Object value)
+     * Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
+     * Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
+     * Object buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      *
-     * protected void buildQueryRunContent(XMLRun run)
-     * protected void buildQueryRunContent(TextRun run)
-     * protected void buildQueryRunContent(TableRun run)
+     * protected void buildQueryRunContent(DataRuntime runtime, XMLRun run)
+     * protected void buildQueryRunContent(DataRuntime runtime, TextRun run)
+     * protected void buildQueryRunContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
     /**
@@ -810,7 +773,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return value
      */
     @Override
-    public Object buildConditionLike(StringBuilder builder, Compare compare, Object value){
+    public Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
         int code = compare.getCode();
         if(code > 100){
             builder.append(" NOT");
@@ -823,11 +786,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         // NOT A%  151
         // NOT %A  152
         if(code == 50){
-            builder.append(" LIKE ").append(concat("'%'", "?" , "'%'"));
+            builder.append(" LIKE ").append(concat(runtime, "'%'", "?" , "'%'"));
         }else if(code == 51){
-            builder.append(" LIKE ").append(concat("?" , "'%'"));
+            builder.append(" LIKE ").append(concat(runtime, "?" , "'%'"));
         }else if(code == 52){
-            builder.append(" LIKE ").append(concat("'%'", "?"));
+            builder.append(" LIKE ").append(concat(runtime, "'%'", "?"));
         }
         return value;
     }
@@ -842,8 +805,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return value
      */
     @Override
-    public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value){
-        log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value)",37));
+    public Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value){
+        log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value)",37));
         return null;
     }
     /**
@@ -854,7 +817,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value){
+    public StringBuilder buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
         if(compare == Compare.NOT_IN){
             builder.append(" NOT");
         }
@@ -876,18 +839,18 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
 
     @Override
-    protected void buildQueryRunContent(XMLRun run){
+    protected void buildQueryRunContent(DataRuntime runtime, XMLRun run){
     }
     @Override
-    protected void buildQueryRunContent(TextRun run){
-        replaceVariable(run);
+    protected void buildQueryRunContent(DataRuntime runtime, TextRun run){
+        replaceVariable(runtime, run);
         run.appendCondition();
         run.appendGroup();
         // appendOrderStore();
         run.checkValid();
     }
 
-    protected void replaceVariable(TextRun run){
+    protected void replaceVariable(DataRuntime runtime, TextRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -951,13 +914,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                             for(Object tmp:varValues){
                                 replaceDst += " ?";
                             }
-                            addRunValue(run, Compare.IN, var.getKey(), varValues);
+                            addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
                             replaceDst = replaceDst.trim().replace(" ", ",");
                             result = result.replace(var.getFullKey(), replaceDst);
                         }else{
                             // 单个值
                             result = result.replace(var.getFullKey(), "?");
-                            addRunValue(run, Compare.EQUAL, var.getKey(), varValues.get(0));
+                            addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
                         }
                     }else{
                         //没有提供参数值
@@ -977,7 +940,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     if(BasicUtil.isNotEmpty(true, varValues)){
                         value = (String)varValues.get(0);
                     }
-                    addRunValue(run, Compare.EQUAL, var.getKey(), value);
+                    addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
                 }
             }
         }
@@ -985,7 +948,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         builder.append(result);
     }
     @Override
-    protected void buildQueryRunContent(TableRun run){
+    protected void buildQueryRunContent(DataRuntime runtime, TableRun run){
         StringBuilder builder = run.getBuilder();
         TablePrepare sql = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
@@ -1069,11 +1032,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXISTS
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseExists(Run run)
+     * String parseExists(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
 
     @Override
-    public String parseExists(Run run){
+    public String parseExists(DataRuntime runtime, Run run){
         String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
         sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
@@ -1082,12 +1045,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
-     * void buildExecuteRunContent(Run run);
+     * void buildExecuteRunContent(DataRuntime runtime, Run run);
      ******************************************************************************************************************/
 
     @Override
-    protected void buildExecuteRunContent(TextRun run){
-        replaceVariable(run);
+    protected void buildExecuteRunContent(DataRuntime runtime, TextRun run){
+        replaceVariable(runtime,run);
         run.appendCondition();
         run.appendGroup();
         run.checkValid();
@@ -1095,7 +1058,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													TOTAL
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseTotalQuery(Run run)
+     * String parseTotalQuery(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
 
     /**
@@ -1105,7 +1068,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return String
      */
     @Override
-    public String parseTotalQuery(Run run){
+    public String parseTotalQuery(DataRuntime runtime, Run run){
         String sql = "SELECT COUNT(*) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
         sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
@@ -1116,8 +1079,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * protected Run buildDeleteRunContent(TableRun run)
-     * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
-     * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
+     * protected Run createDeleteRunFromTable(String table, String key, Object values)
+     * protected Run createDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
 
     protected Run buildDeleteRunContent(TableRun run){
@@ -1161,12 +1124,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         return run;
     }
     @SuppressWarnings("rawtypes")
-    protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
+    @Override
+    public Run createDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
         if(null == table || null == key || null == values){
             return null;
         }
         StringBuilder builder = new StringBuilder();
-        TableRun run = new TableRun(this,table);
+        TableRun run = new TableRun(runtime, table);
         builder.append("DELETE FROM ");
         SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
         builder.append(" WHERE ");
@@ -1193,19 +1157,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             }else{
                 throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
             }
-            addRunValue(run, Compare.IN, key, values);
+            addRunValue(runtime, run, Compare.IN, new Column(key), values);
         }else{
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
             builder.append("=?");
-            addRunValue(run, Compare.EQUAL, key, values);
+            addRunValue(runtime, run, Compare.EQUAL, new Column(key), values);
         }
 
         run.setBuilder(builder);
 
         return run;
     }
-    protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-        TableRun run = new TableRun(this,dest);
+    public Run createDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns){
+        TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         builder.append("DELETE FROM ");
@@ -1242,7 +1206,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                         value = BeanUtil.getFieldValue(obj, key);
                     }
                 }
-                addRunValue(run, Compare.EQUAL, key,value);
+                addRunValue(runtime, run, Compare.EQUAL, new Column(key),value);
             }
         }else{
             throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
@@ -1260,47 +1224,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected String concatAdd(String ... args)
      ******************************************************************************************************************/
 
-    /**
-     * 设置参数值
-     * @param run fun
-     * @param compare compare
-     * @param key key
-     * @param value value
-     */
-    protected void addRunValue(Run run, Compare compare, String key, Object value){
-        /*if(null != value && value instanceof SQL_BUILD_IN_VALUE){
-            value = buildInValue((SQL_BUILD_IN_VALUE)value);
-            if(null != value){
-                value = "${"+value+"}";
-            }
-        }*//*
-        下一步会执行convert
-        if(null != value){
-            Column column = null;
-            if(ConfigTable.IS_AUTO_CHECK_METADATA) {
-                String table = run.getTable();
-                if (null != table) {
-                    LinkedHashMap<String, Column> columns = ServiceProxy.metadata().columns(table);
-                    if(null != columns){
-                        column = columns.get(key.toUpperCase());
-                        if(null != column){
-                            if(value instanceof Collection) {
-                                List list = new ArrayList();
-                                for(Object item:(Collection)value){
-                                    list.add(convert(column, item));
-                                }
-                                value = list;
-                            }else{
-                                value = convert(column, value);
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
-
-        run.addValues(compare, key, value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
-    }
 
     /* ************** 拼接字符串 *************** */
     protected String concatFun(String ... args){
