@@ -23,7 +23,7 @@ import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.cache.CacheUtil;
-import org.anyline.data.cache.PageLazyStore; 
+import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
