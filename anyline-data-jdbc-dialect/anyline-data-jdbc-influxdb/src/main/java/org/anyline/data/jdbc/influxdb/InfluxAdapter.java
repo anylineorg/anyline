@@ -9,12 +9,14 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQuery(Run run){
+	public String parseFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){
@@ -66,7 +68,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	} 
  
  
-	public String concat(String ... args){
+	public String concat(DataRuntime runtime, String ... args){
 		return concatOr(args);
 	}
 
@@ -76,10 +78,10 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
-			run = new TableRun(this,dest);
+			run = new TableRun(runtime,dest);
 			if(obj instanceof DataRow){
 				DataRow row = (DataRow)obj;
-				List<String> cols = confirmInsertColumns(dest, obj, columns, false);
+				LinkedHashMap<String,Column> cols = confirmInsertColumns(runtime, dest, obj, columns, false);
 				// insert al, tag1=value1 qty=1,name=5
 				builder.append("insert ").append(parseTable(dest)).append(" ");
 				Map<String,Object> tags = row.getTags();
@@ -87,7 +89,8 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 					builder.append(",").append(tag).append("=").append(tags.get(tag));
 				}
 				int qty = 0;
-				for(String col:cols){
+				for(Column column:cols.values()){
+					String col = column.getName();
 					Object value = row.get(col);
 					if(null == value){
 						continue;
