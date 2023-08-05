@@ -44,7 +44,7 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     INT2                    (StandardColumnType.INT                   ), //     ,pg
     INT4                    (StandardColumnType.INT                   ), //
     INT8                    (StandardColumnType.INT8                  ), //                             ,Informix
-    INTEGER                 (StandardColumnType.INFORMIX_INTEGER      ), //mysql               ,,sqlite ,Informix
+    INTEGER                 (StandardColumnType.INFORMIX_INTEGER      ), //mysql               ,sqlite ,Informix
     JSON                    (StandardColumnType.TEXT                  ), //mysql,pg
     JSONB                   (StandardColumnType.TEXT                  ), //     ,pg
     LINE                    (StandardColumnType.ILLEGAL               ), //mysql,pg
