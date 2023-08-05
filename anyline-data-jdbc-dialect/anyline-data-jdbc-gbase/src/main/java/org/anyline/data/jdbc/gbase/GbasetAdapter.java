@@ -3,6 +3,7 @@ package org.anyline.data.jdbc.gbase;
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.type.DatabaseType;
@@ -30,7 +31,7 @@ public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	@Override
-	public String parseFinalQuery(Run run){
+	public String parseFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery();
 		String cols = run.getQueryColumns();
 		if(!"*".equals(cols)){
@@ -53,7 +54,7 @@ public class GbasetAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return sql;
 	}
 
-	public String concat(String ... args){
+	public String concat(DataRuntime runtime, String ... args){
 		return concatFun(args);
 	}
 } 
