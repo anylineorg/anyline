@@ -272,7 +272,7 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
+	 * List<Run> buildQueryForeignsRun(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table);
