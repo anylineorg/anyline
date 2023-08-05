@@ -13,13 +13,13 @@ import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return String
      */
     @Override
-    public String parseFinalQuery(Run run){
+    public String parseFinalQuery(DataRuntime runtime, Run run){
         StringBuilder builder = new StringBuilder();
         String cols = run.getQueryColumns();
         PageNavi navi = run.getPageNavi();
@@ -89,10 +89,10 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
-     * @param keys 需插入的列
+     * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder){
@@ -100,23 +100,24 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             run.setBuilder(builder);
         }
 
-        List<String> pks = null;
+        LinkedHashMap<String, Column> pks = null;
         PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         if(null != generator){
-            pks = set.getRow(0).getPrimaryKeys();
-            BeanUtil.join(true, keys, pks);
+            pks = set.getRow(0).getPrimaryColumns();
+            columns.putAll(pks);
         }
 
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
 
-        int keySize = keys.size();
-        for(int i=0; i<keySize; i++){
-            String key = keys.get(i);
-            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            if(i<keySize-1){
+        boolean start = true;
+        for(Column column:columns.values()){
+            if(!start){
                 builder.append(",");
             }
+            start = false;
+            String key = column.getName();
+            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
         }
         builder.append(")");
         int dataSize = set.size();
@@ -132,7 +133,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
-            insertValue(runtime, run, row, true, false,false, keys);
+            insertValue(runtime, run, row, true, false,false, columns);
             if(i<dataSize-1){
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");
@@ -147,10 +148,10 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
-     * @param keys 需插入的列
+     * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
+    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -158,28 +159,28 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(runtime, run, dest, set, keys);
+            createInserts(runtime, run, dest, set, columns);
             return;
         }
 
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
-        List<String> pks = null;
+        LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             Object entity = list.iterator().next();
-            pks = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
-            BeanUtil.join(true, keys, pks);
+            pks = EntityAdapterProxy.primaryKeys(entity.getClass());
+            columns.putAll(pks);
         }
 
         builder.append("INSERT INTO ").append(parseTable(dest));
         builder.append("(");
-
-        int keySize = keys.size();
-        for(int i=0; i<keySize; i++){
-            String key = keys.get(i);
-            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            if(i<keySize-1){
+        boolean start = true;
+        for(Column column:columns.values()){
+            if(!start){
                 builder.append(",");
             }
+            start = false;
+            String key = column.getName();
+            SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
         }
         builder.append(")\n ");
         int dataSize = list.size();
@@ -193,12 +194,12 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 }
                 insertValue(template, run, row, true, false,false, keys);
             }else{*/
-                boolean create = EntityAdapterProxy.createPrimaryValue(obj, keys);
+                boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
                 if(!create && null != generator){
                     generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
-                insertValue(runtime, run, obj, true, false, false, keys);
+                insertValue(runtime, run, obj, true, false, false, columns);
            // }
             if(idx<dataSize-1){
                 //多行数据之间的分隔符
@@ -215,7 +216,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
+    public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun();
         runs.add(run);
@@ -235,7 +236,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     }
 
     @Override
-    public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun();
         runs.add(run);
@@ -260,7 +261,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public List<Run> buildAddCommentRunSQL(Column column) throws Exception {
+    public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun();
         runs.add(run);
@@ -302,7 +303,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun();
         runs.add(run);
