@@ -2,6 +2,7 @@ package org.anyline.data.jdbc.oracle;
 
 import org.anyline.data.adapter.JDBCAdapter;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,7 +19,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
     }
 
     @Override
-    public String parseFinalQuery(Run run){
+    public String parseFinalQuery(DataRuntime runtime, Run run){
         StringBuilder builder = new StringBuilder();
         String cols = run.getQueryColumns();
         PageNavi navi = run.getPageNavi();
