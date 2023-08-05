@@ -27,8 +27,10 @@ import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.metadata.Column;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
@@ -64,12 +66,13 @@ public abstract class BasicRun implements Run {
 	protected int from = 1;
 
 
-	protected DriverAdapter adapter;
+	protected DataRuntime runtime;
 	protected String delimiterFr;
 	protected String delimiterTo;
 
-	public void setAdapter(DriverAdapter adapter){
-		this.adapter = adapter;
+	@Override
+	public void setRuntime(DataRuntime runtime){
+		this.runtime = runtime;
 	}
 
 	@Override
@@ -84,8 +87,8 @@ public abstract class BasicRun implements Run {
 
 	@Override
 	public void init(){
-		this.delimiterFr = adapter.getDelimiterFr();
-		this.delimiterTo = adapter.getDelimiterTo();
+		this.delimiterFr = runtime.getAdapter().getDelimiterFr();
+		this.delimiterTo = runtime.getAdapter().getDelimiterTo();
 
 
 		if(null != configStore){
@@ -204,90 +207,116 @@ public abstract class BasicRun implements Run {
 	 * 添加参数值
 	 * @param compare  compare
 	 * @param obj  obj
-	 * @param key  key
+	 * @param column  column
 	 * @param split  遇到集合/数组类型是否拆分处理
 	 * @return Run
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	@Override
-	public Run addValues(Compare compare, String key, Object obj, boolean split){
-		if(null == key){
-			key = "none";
-		}
+	public RunValue addValues(Compare compare, Column column, Object obj, boolean split){
+		RunValue rv = null;
 		if(null != obj){
 			// from:1-DataRow 2-Entity
 			if(split && getFrom() != 2){
 				/**/
+				boolean json = false;
+				if(null != column){
+					String type = column.getTypeName();
+					if(null != type){
+						if(type.toUpperCase().contains("JSON") || type.toUpperCase().contains("BSON")){
+							json = true;
+						}
+					}
+				}
 				if(obj.getClass().isArray()) {
-					if(obj instanceof Object[]){
+					if(obj instanceof Object[] && !json){
 						Object[] list = (Object[]) obj;
 						for(Object item:list){
-							addValues(new RunValue(key, item));
+							rv = new RunValue(column, item);
+							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
 							}
 						}
-					}else if(obj instanceof double[]){
+					}else if(obj instanceof double[] && !json){
 						double[] list = (double[]) obj;
 						for(double item:list){
-							addValues(new RunValue(key, item));
+							rv = new RunValue(column, item);
+							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
 							}
 						}
-					}else if(obj instanceof int[]){
+					}else if(obj instanceof long[] && !json){
+						long[] list = (long[]) obj;
+						for(long item:list){
+							rv = new RunValue(column, item);
+							addValues(rv);
+							if(Compare.EQUAL == compare){
+								break;
+							}
+						}
+					}else if(obj instanceof int[] && !json){
 						int[] list = (int[]) obj;
 						for(int item:list){
-							addValues(new RunValue(key, item));
+							rv = new RunValue(column, item);
+							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
 							}
 						}
-					}else if(obj instanceof float[]){
+					}else if(obj instanceof float[] && !json){
 						float[] list = (float[]) obj;
 						for(float item:list){
-							addValues(new RunValue(key, item));
+							rv = new RunValue(column, item);
+							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
 							}
 						}
-					}else if(obj instanceof short[]){
+					}else if(obj instanceof short[] && !json){
 						short[] list = (short[]) obj;
 						for(short item:list){
-							addValues(new RunValue(key, item));
+							rv = new RunValue(column, item);
+							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
 							}
 						}
-					}else if(obj instanceof Object[]){
+					}else if(obj instanceof Object[] && !json){
 						Object[] list = (Object[]) obj;
 						for(Object item:list){
-							addValues(new RunValue(key, item));
+							rv = new RunValue(column, item);
+							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
 							}
 						}
 					}
-				}else if(obj instanceof Collection){
+				}else if(obj instanceof Collection && !json){
 					Collection list = (Collection)obj;
 					for(Object item:list){
-						addValues(new RunValue(key, item));
+						rv = new RunValue(column, item);
+						addValues(rv);
 						if(Compare.EQUAL == compare){
 							break;
 						}
 					}
 				}else{
-					addValues(new RunValue(key, obj));
+					rv = new RunValue(column, obj);
+					addValues(rv);
 				}
 			}
 			else{
-				addValues(new RunValue(key, obj));
+				rv = new RunValue(column, obj);
+				addValues(rv);
 			}
 
 		}else{
-			addValues(new RunValue(key, obj));
+			rv = new RunValue(column, obj);
+			addValues(rv);
 		}
-		return this;
+		return rv;
 	}
 
 
@@ -358,7 +387,7 @@ public abstract class BasicRun implements Run {
 		this.delimiterTo = delimiterTo;
 	}
 	public DriverAdapter getAdapter() {
-		return adapter;
+		return runtime.getAdapter();
 	}
  
 	@Override 
@@ -375,7 +404,7 @@ public abstract class BasicRun implements Run {
 	} 
 	@Override 
 	public String getFinalQuery() {
-		String text = adapter.parseFinalQuery(this);
+		String text = runtime.getAdapter().parseFinalQuery(runtime,this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -383,7 +412,7 @@ public abstract class BasicRun implements Run {
 	} 
 	@Override 
 	public String getTotalQuery() {
-		String text = adapter.parseTotalQuery(this);
+		String text = runtime.getAdapter().parseTotalQuery(runtime,this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -391,7 +420,7 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public String getFinalExists(){
-		String text =  adapter.parseExists(this);
+		String text =  runtime.getAdapter().parseExists(runtime,this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -744,9 +773,9 @@ public abstract class BasicRun implements Run {
 				for(String col:cols){
 					if(null == result){
 
-						result = SQLUtil.delimiter(col, adapter.getDelimiterFr() , adapter.getDelimiterTo());
+						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
 					}else{
-						result += "," + SQLUtil.delimiter(col, adapter.getDelimiterFr() , adapter.getDelimiterTo());
+						result += "," + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
 					}
 				}
 			}
