@@ -400,6 +400,9 @@ public interface EntityAdapter {
     default boolean createPrimaryValue(Object obj, List<String> inserts) {
         return false;
     }
+    default boolean createPrimaryValue(Object obj, LinkedHashMap<String, Column> inserts) {
+        return false;
+    }
     /**
      * 主键值
      * @param obj obj
