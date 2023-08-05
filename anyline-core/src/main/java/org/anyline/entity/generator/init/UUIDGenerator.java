@@ -1,11 +1,13 @@
 package org.anyline.entity.generator.init;
 
 import org.anyline.entity.DataRow;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BeanUtil;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +27,24 @@ public class UUIDGenerator implements PrimaryGenerator {
             }
             String value = UUID.randomUUID().toString();
             BeanUtil.setFieldValue(entity, column, value, true);
+        }
+        return true;
+    }
+    @Override
+    public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
+        if(null == columns){
+            if(entity instanceof DataRow){
+                columns = ((DataRow)entity).getPrimaryColumns();
+            }else{
+                columns = EntityAdapterProxy.primaryKeys(entity.getClass());
+            }
+        }
+        for(Column column:columns.values()){
+            if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+                continue;
+            }
+            String value = UUID.randomUUID().toString();
+            BeanUtil.setFieldValue(entity, column.getName(), value, true);
         }
         return true;
     }
