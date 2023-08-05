@@ -70,7 +70,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQuery(Run run){
+	public String parseFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){
@@ -93,7 +93,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return sql; 
 	}
 
-	public String concat(String ... args){
+	public String concat(DataRuntime runtime, String ... args){
 		return concatFun(args);
 	}
 
@@ -109,7 +109,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return value
 	 */
 	@Override
-	public Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value){
+	public Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value){
 		List<Object> values = new ArrayList<>();
 		if(null != value){
 			if(value instanceof Collection){
@@ -166,7 +166,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 ******************************************************************************************************************/
 
 	@Override
-	public void checkSchema(Connection con, Table table){
+	public void checkSchema(DataRuntime runtime, Connection con, Table table){
 		try {
 			if (null == table.getSchema()) {
 				table.setSchema(con.getCatalog());
@@ -176,7 +176,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		table.setCheckSchemaTime(new Date());
 	}
 	@Override
-	public void checkSchema(DataSource dataSource, Table table){
+	public void checkSchema(DataRuntime runtime, DataSource dataSource, Table table){
 		if(null == table || null != table.getCheckSchemaTime()){
 			return;
 		}
@@ -206,10 +206,10 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													database
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryDatabaseRunSQL() throws Exception
-	 * LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
+	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
 	 ******************************************************************************************************************/
-	public List<Run> buildQueryDatabaseRunSQL() throws Exception{
+	public List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -220,14 +220,14 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 * 根据查询结果集构造 Database
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param databases 上一步查询结果
 	 * @param set DataSet
 	 * @return databases
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
 		if(null == databases){
 			databases = new LinkedHashMap<>();
 		}
@@ -242,13 +242,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
-	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * List<Run> buildQueryDDLRunSQL(Table table) throws Exception
-	 * public List<String> ddl(int index, Table table, List<String> ddls, DataSet set)
+	 * List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception
+	 * public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
@@ -260,7 +260,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -275,7 +275,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(objectName(pattern)).append("'");
+			builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
 		}
 		if(BasicUtil.isNotEmpty(types)){
 			String[] tmps = types.split(",");
@@ -306,12 +306,12 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableCommentRunSQL(catalog, schema, pattern, types);
+	public List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryTableCommentRun(runtime, catalog, schema, pattern, types);
 	}
 	/**
 	 *
-	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -320,7 +320,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -342,7 +342,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
 		DataSource ds = null;
 		Connection con = null;
@@ -352,7 +352,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
 
-			ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+			ResultSet set = dbmd.getTables( catalog, schema, pattern, types);
 
 			if(null == tables){
 				tables = new LinkedHashMap<>();
@@ -404,26 +404,26 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("show create table ");
-		name(builder, table);
+		name(runtime, builder, table);
 		return runs;
 	}
 
 	/**
 	 * 查询表DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(int index, Table table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
 		if(null == ddls){
 			ddls = new ArrayList<>();
 		}
@@ -437,9 +437,9 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
-	 * <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
-	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询视图
@@ -450,7 +450,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -465,14 +465,14 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(objectName(pattern)).append("'");
+			builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
 		}
 		return runs;
 	}
 
 	/**
 	 *
-	 * @param index 第几条SQL 对照buildQueryViewRunSQL返回顺序
+	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param views 上一步查询结果
@@ -481,7 +481,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception{
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception{
 		if(null == views){
 			views = new LinkedHashMap<>();
 		}
@@ -501,7 +501,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return views;
 	}
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
 		DataSource ds = null;
 		Connection con = null;
@@ -510,7 +510,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
-			ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+			ResultSet set = dbmd.getTables( catalog, schema, pattern, types);
 
 			if(null == views){
 				views = new LinkedHashMap<>();
@@ -563,26 +563,26 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRunSQL(View view) throws Exception{
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("show create view ");
-		name(builder, view);
+		name(runtime, builder, view);
 		return runs;
 	}
 
 	/**
 	 * 查询 view DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(int index, View view, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
 		if(null == ddls){
 			ddls = new ArrayList<>();
 		}
@@ -595,9 +595,9 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -608,8 +608,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryMasterTableRunSQL(catalog, schema, pattern, types);
+	public List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryMasterTableRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -622,8 +622,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
-		return super.mtables(create, tables, runtime, catalog, schema, pattern, types);
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.mtables(runtime, create, tables, catalog, schema, pattern, types);
 	}
 
 
@@ -639,19 +639,19 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
-		return super.mtables(index, create, catalog, schema, tables, set);
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+		return super.mtables(runtime, index, create, catalog, schema, tables, set);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
-	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
-	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception
+	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name)
+	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
+	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -663,22 +663,22 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
+	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryPartitionTableRun(runtime, catalog, schema, pattern, types);
 	}
 	@Override
-	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(master, tags, name);
+	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
+		return super.buildQueryPartitionTableRun(runtime, master, tags, name);
 	}
 	@Override
-	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(master, tags);
+	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
+		return super.buildQueryPartitionTableRun(runtime, master, tags);
 	}
 
 	/**
 	 *  根据查询结果集构造Table
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -689,8 +689,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
-		return super.ptables(total, index, create, master, catalog, schema, tables, set);
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+		return super.ptables(runtime, total, index, create, master, catalog, schema, tables, set);
 	}
 
 	/**
@@ -705,18 +705,18 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception{
-		return super.ptables(create, tables, runtime, catalog, schema, master);
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, MasterTable master) throws Exception{
+		return super.ptables(runtime, create, tables, catalog, schema, master);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata)
-	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception
+	 * List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata)
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -732,14 +732,14 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		if(metadata){
 			builder.append("SELECT * FROM ");
-			name(builder, table);
+			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
 			String catalog = table.getCatalog();
@@ -751,7 +751,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			if(BasicUtil.isNotEmpty(schema)){
 				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
 			}
-			builder.append(" AND TABLE_NAME = '").append(objectName(table.getName())).append("'");
+			builder.append(" AND TABLE_NAME = '").append(objectName(runtime, table.getName())).append("'");
 			builder.append(" ORDER BY ORDINAL_POSITION");
 		}
 		return runs;
@@ -759,7 +759,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 * 根据查询结果集构造Tag
-	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
 	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
@@ -767,26 +767,26 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
-		return super.columns(index, create, table, columns, set);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
+		return super.columns(runtime, index, create, table, columns, set);
 	}
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
-		return super.columns(create, columns, table, set);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
+		return super.columns(runtime, create, columns, table, set);
 	}
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception{
-		return super.columns(create, columns, runtime, table, pattern);
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception{
+		return super.columns(runtime, create, columns, table, pattern);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata)
-	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception
+	 * List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata)
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 不支持
@@ -795,14 +795,14 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		return new ArrayList<>();
 	}
 
 	/**
 	 * 不支持
 	 * 根据查询结果集构造Tag
-	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -811,15 +811,15 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
 		return new LinkedHashMap();
 	}
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
 		return new LinkedHashMap();
 	}
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception{
 		return new LinkedHashMap();
 	}
 
@@ -827,8 +827,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception
-	 * PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 * List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception
+	 * PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -836,25 +836,25 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SHOW INDEX FROM ");
-		name(builder, table);
+		name(runtime, builder, table);
 
 		return runs;
 	}
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
 		PrimaryKey primary = null;
 		set = set.getRows("Key_name", "PRIMARY");
 		if(set.size() > 0){
@@ -872,8 +872,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -881,7 +881,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<Run> buildQueryForeignsRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -899,13 +899,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param index 第几条查询SQL 对照 buildQueryForeignsRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
 		if(null == foreigns){
 			foreigns = new LinkedHashMap<>();
 		}
@@ -928,10 +928,10 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception
+	 * List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, boolean metadata)
+	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
+	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
+	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -940,7 +940,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildQueryIndexRunSQL(Table table, String name){
+	public List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name){
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -952,7 +952,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				builder.append("AND TABLE_SCHEMA='").append(table.getSchema()).append("'\n");
 			}
 			if (null != table.getName()) {
-				builder.append("AND TABLE_NAME='").append(objectName(table.getName())).append("'\n");
+				builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");
 			}
 		}
 		if(BasicUtil.isNotEmpty(name)){
@@ -964,7 +964,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 *
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -973,7 +973,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
@@ -1015,22 +1015,22 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return indexs;
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception{
-		return super.indexs(create, table, indexs, set);
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception{
+		return super.indexs(runtime, create, table, indexs, set);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception{
-		return super.indexs(create, indexs, runtime, table, unique, approximate);
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
+		return super.indexs(runtime, create, indexs, table, unique, approximate);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata)
+	 * List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata)
 	 * LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception
-	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception
-	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -1039,13 +1039,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryConstraintRunSQL(table, metadata);
+	public List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+		return super.buildQueryConstraintRun(runtime, table, metadata);
 	}
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
@@ -1054,26 +1054,26 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(int index , boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index , boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception{
 
-		return super.constraints(index, create, table, constraints, set);
+		return super.constraints(runtime, index, create, table, constraints, set);
 	}
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception{
-		return super.constraints(create, table, constraints, set);
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception{
+		return super.constraints(runtime, create, table, constraints, set);
 	}
 
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
-		return super.constraints(create, table, constraints, set);
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
+		return super.constraints(runtime, create, table, constraints, set);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -1083,7 +1083,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 */
 
 	@Override
-	public List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
+	public List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -1115,7 +1115,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param triggers 上一步查询结果
@@ -1125,7 +1125,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 */
 
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(null == triggers){
 			triggers = new LinkedHashMap<>();
 		}
@@ -1186,23 +1186,23 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Table table)
-	 * List<Run> buildAddCommentRunSQL(Table table);
-	 * List<Run> buildAlterRunSQL(Table table)
-	 * List<Run> buildAlterRunSQL(Table table, Collection<Column> columns)
-	 * List<Run> buildRenameRunSQL(Table table)
-	 * List<Run> buildChangeCommentRunSQL(Table table)
-	 * List<Run> buildDropRunSQL(Table table)
-	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
-	 * StringBuilder primary(StringBuilder builder, Table table)
-	 * StringBuilder comment(StringBuilder builder, Table table)
-	 * StringBuilder name(StringBuilder builder, Table table)
+	 * List<Run> buildCreateRun(DataRuntime runtime, Table table)
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Table table)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Table table)
+	 * List<Run> buildDropRun(DataRuntime runtime, Table table)
+	 * StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table)
+	 * StringBuilder name(DataRuntime runtime, StringBuilder builder, Table table)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public List<Run> buildCreateRunSQL(Table table) throws Exception{
-		return super.buildCreateRunSQL(table);
+	public List<Run> buildCreateRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildCreateRun(runtime, table);
 	}
 
 	/**
@@ -1211,7 +1211,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRunSQL(Table table) throws Exception {
+	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		String comment = table.getComment();
 		if(BasicUtil.isEmpty(comment)){
@@ -1221,13 +1221,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" COMMENT '").append(comment).append("'");
 		return runs;
 	}
 	@Override
-	public List<Run> buildAlterRunSQL(Table table) throws Exception{
-		return super.buildAlterRunSQL(table);
+	public List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildAlterRun(runtime, table);
 	}
 	/**
 	 * 修改列
@@ -1236,23 +1236,23 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		if (columns.size() > 0) {
 			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
-			name(builder, table);
+			name(runtime, builder, table);
 			List<Run> slices = new ArrayList<>();
 			for(Column column:columns){
 				String action = column.getAction();
 				if("add".equals(action)){
-					slices.addAll(buildAddRunSQL(column, true));
+					slices.addAll(buildAddRun(runtime, column, true));
 				}else if("alter".equals(action)){
-					slices.addAll(buildAlterRunSQL(column, true));
+					slices.addAll(buildAlterRun(runtime, column, true));
 				}else if("drop".equals(action)){
-					slices.addAll(buildDropRunSQL(column, true));
+					slices.addAll(buildDropRun(runtime, column, true));
 				}
 			}
 			boolean first = true;
@@ -1272,20 +1272,20 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/**
 	 * 修改表名
 	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param table 表
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Table table) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("RENAME TABLE ");
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" TO ");
-		name(builder, table.getUpdate());
+		name(runtime, builder, table.getUpdate());
 		return runs;
 	}
 	/**
@@ -1295,7 +1295,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildChangeCommentRunSQL(Table table) {
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) {
 		List<Run> runs = new ArrayList<>();
 		String comment = table.getComment();
 		if(BasicUtil.isEmpty(comment)){
@@ -1305,7 +1305,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" COMMENT '").append(comment).append("'");
 		return runs;
 	}
@@ -1315,14 +1315,14 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Table table) throws Exception{
-		return super.buildDropRunSQL(table);
+	public List<Run> buildDropRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildDropRun(runtime, table);
 	}
 
 
 	@Override
-	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
-		return super.checkTableExists(builder, exists);
+	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+		return super.checkTableExists(runtime, builder, exists);
 	}
 
 
@@ -1333,7 +1333,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder primary(StringBuilder builder, Table table){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table){
 		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
@@ -1362,8 +1362,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder comment(StringBuilder builder, Table table){
-		return super.comment(builder, table);
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table){
+		return super.comment(runtime, builder, table);
 	}
 
 	/**
@@ -1373,64 +1373,64 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder name(StringBuilder builder, Table table){
-		return super.name(builder, table);
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Table table){
+		return super.name(runtime, builder, table);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(View view);
-	 * List<Run> buildAddCommentRunSQL(View view);
-	 * List<Run> buildAlterRunSQL(View view);
-	 * List<Run> buildRenameRunSQL(View view);
-	 * List<Run> buildChangeCommentRunSQL(View view);
-	 * List<Run> buildDropRunSQL(View view);
-	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
-	 * StringBuilder primary(StringBuilder builder, View view)
-	 * StringBuilder comment(StringBuilder builder, View view)
-	 * StringBuilder name(StringBuilder builder, View view)
+	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
+	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildDropRun(DataRuntime runtime, View view);
+	 * StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, View view)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, View view)
+	 * StringBuilder name(DataRuntime runtime, StringBuilder builder, View view)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public List<Run> buildCreateRunSQL(View view) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("CREATE OR REPLACE VIEW ");
-		name(builder, view);
+		name(runtime, builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
- 		runs.addAll(buildAddCommentRunSQL(view));
+ 		runs.addAll(buildAddCommentRun(runtime, view));
 		return runs;
 	}
 
 	@Override
-	public List<Run> buildAddCommentRunSQL(View view) throws Exception{
-		return super.buildAddCommentRunSQL(view);
+	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildAddCommentRun(runtime, view);
 	}
 
 
 	@Override
-	public List<Run> buildAlterRunSQL(View view) throws Exception{
-		return super.buildAlterRunSQL(view);
+	public List<Run> buildAlterRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildAlterRun(runtime, view);
 	}
 	/**
 	 * 修改视图名
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param view 视图
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(View view) throws Exception{
-		return super.buildRenameRunSQL(view);
+	public List<Run> buildRenameRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildRenameRun(runtime, view);
 	}
 
 	@Override
-	public List<Run> buildChangeCommentRunSQL(View view) throws Exception{
-		return super.buildChangeCommentRunSQL(view);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildChangeCommentRun(runtime, view);
 	}
 	/**
 	 * 删除视图
@@ -1438,8 +1438,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(View view) throws Exception{
-		return super.buildDropRunSQL(view);
+	public List<Run> buildDropRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildDropRun(runtime, view);
 	}
 
 	/**
@@ -1449,8 +1449,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
-		return super.checkViewExists(builder, exists);
+	public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+		return super.checkViewExists(runtime, builder, exists);
 	}
 
 	/**
@@ -1460,19 +1460,19 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder comment(StringBuilder builder, View view){
-		return super.comment(builder, view);
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View view){
+		return super.comment(runtime, builder, view);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(MasterTable table)
-	 * List<Run> buildAddCommentRunSQL(MasterTable table)
-	 * List<Run> buildAlterRunSQL(MasterTable table)
-	 * List<Run> buildDropRunSQL(MasterTable table)
-	 * List<Run> buildRenameRunSQL(MasterTable table)
-	 * List<Run> buildChangeCommentRunSQL(MasterTable table)
+	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table)
 	 ******************************************************************************************************************/
 	/**
 	 * 创建主表
@@ -1480,35 +1480,35 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run>  buildCreateRunSQL(MasterTable table) throws Exception{
-		return super.buildCreateRunSQL(table);
+	public List<Run>  buildCreateRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildCreateRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildAlterRunSQL(MasterTable table) throws Exception{
-		return super.buildAlterRunSQL(table);
+	public List<Run> buildAlterRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildAlterRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildDropRunSQL(MasterTable table) throws Exception{
-		return super.buildDropRunSQL(table);
+	public List<Run> buildDropRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildDropRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildRenameRunSQL(MasterTable table) throws Exception{
-		return super.buildRenameRunSQL(table);
+	public List<Run> buildRenameRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildRenameRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildChangeCommentRunSQL(MasterTable table) throws Exception{
-		return super.buildChangeCommentRunSQL(table);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildChangeCommentRun(runtime, table);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(PartitionTable table)
-	 * List<Run> buildAlterRunSQL(PartitionTable table)
-	 * List<Run> buildDropRunSQL(PartitionTable table)
-	 * List<Run> buildRenameRunSQL(PartitionTable table)
-	 * List<Run> buildChangeCommentRunSQL(PartitionTable table)
+	 * List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildDropRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table)
 	 ******************************************************************************************************************/
 	/**
 	 * 创建分区表
@@ -1516,63 +1516,63 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run>  buildCreateRunSQL(PartitionTable table) throws Exception{
-		return super.buildCreateRunSQL(table);
+	public List<Run>  buildCreateRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildCreateRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildAlterRunSQL(PartitionTable table) throws Exception{
-		return super.buildAlterRunSQL(table);
+	public List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildAlterRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildDropRunSQL(PartitionTable table) throws Exception{
-		return super.buildDropRunSQL(table);
+	public List<Run> buildDropRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildDropRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildRenameRunSQL(PartitionTable table) throws Exception{
-		return super.buildRenameRunSQL(table);
+	public List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildRenameRun(runtime, table);
 	}
 	@Override
-	public List<Run> buildChangeCommentRunSQL(PartitionTable table) throws Exception{
-		return super.buildChangeCommentRunSQL(table);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildChangeCommentRun(runtime, table);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String alterColumnKeyword()
-	 * List<Run> buildAddRunSQL(Column column, boolean slice)
-	 * List<Run> buildAddRunSQL(Column column)
-	 * List<Run> buildAlterRunSQL(Column column, boolean slice)
-	 * List<Run> buildAlterRunSQL(Column column)
-	 * List<Run> buildDropRunSQL(Column column, boolean slice)
-	 * List<Run> buildDropRunSQL(Column column)
-	 * List<Run> buildRenameRunSQL(Column column)
-	 * List<Run> buildChangeTypeRunSQL(Column column)
-	 * List<Run> buildChangeDefaultRunSQL(Column column)
-	 * List<Run> buildChangeNullableRunSQL(Column column)
-	 * List<Run> buildChangeCommentRunSQL(Column column)
-	 * List<Run> buildAddCommentRunSQL(Column column)
-	 * StringBuilder define(StringBuilder builder, Column column)
-	 * StringBuilder type(StringBuilder builder, Column column)
-	 * boolean isIgnorePrecision(Column column);
-	 * boolean isIgnoreScale(Column column);
-	 * Boolean checkIgnorePrecision(String datatype);
-	 * Boolean checkIgnoreScale(String datatype);
-	 * boolean isIgnorePrecision(Column column);
-	 * boolean isIgnoreScale(Column column);
-	 * Boolean checkIgnorePrecision(String datatype);
-	 * Boolean checkIgnoreScale(String datatype);
-	 * StringBuilder nullable(StringBuilder builder, Column column)
-	 * StringBuilder charset(StringBuilder builder, Column column)
-	 * StringBuilder defaultValue(StringBuilder builder, Column column)
-	 * StringBuilder increment(StringBuilder builder, Column column)
-	 * StringBuilder onupdate(StringBuilder builder, Column column)
-	 * StringBuilder position(StringBuilder builder, Column column)
-	 * StringBuilder comment(StringBuilder builder, Column column)
-	 * StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
+	 * String alterColumnKeyword(DataRuntime runtime)
+	 * List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildAddRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Column column)
+	 * List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildDropRun(DataRuntime runtime, Column column)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeTypeRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
+	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
+	 * boolean isIgnoreScale(DataRuntime runtime, Column column);
+	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype);
+	 * Boolean checkIgnoreScale(DataRuntime runtime, String datatype);
+	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
+	 * boolean isIgnoreScale(DataRuntime runtime, Column column);
+	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype);
+	 * Boolean checkIgnoreScale(DataRuntime runtime, String datatype);
+	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 	@Override
-	public String alterColumnKeyword(){
+	public String alterColumnKeyword(DataRuntime runtime){
 		return "ALTER COLUMN ";
 	}
 
@@ -1585,7 +1585,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -1593,30 +1593,30 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		if(!slice) {
 			Table table = column.getTable(true);
 			builder.append("ALTER TABLE ");
-			name(builder, table);
+			name(runtime, builder, table);
 		}
 		Column update = column.getUpdate();
 		if(null == update){
 			// 添加列
-			addColumnGuide(builder, column);
+			addColumnGuide(runtime, builder, column);
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			// 数据类型
-			type(builder, column);
+			type(runtime, builder, column);
 			// 编码
-			charset(builder, column);
+			charset(runtime, builder, column);
 			// 默认值
-			defaultValue(builder, column);
+			defaultValue(runtime, builder, column);
 			// 非空
-			nullable(builder, column);
+			nullable(runtime, builder, column);
 			// 更新事件
-			onupdate(builder, column);
+			onupdate(runtime, builder, column);
 			// 备注
-			comment(builder, column);
+			comment(runtime, builder, column);
 			// 位置
-			position(builder, column);
+			position(runtime, builder, column);
 		}
 
-		runs.addAll(buildAddCommentRunSQL(column));
+		runs.addAll(buildAddCommentRun(runtime, column));
 		return runs;
 	}
 
@@ -1627,7 +1627,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -1635,14 +1635,14 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		if(!slice) {
 			Table table = column.getTable(true);
 			builder.append("ALTER TABLE ");
-			name(builder, table);
+			name(runtime, builder, table);
 		}
 		Column update = column.getUpdate();
 		if(null != update){
 			builder.append(" CHANGE ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			define(builder, update);
+			define(runtime, builder, update);
 		}
 		return runs;
 	}
@@ -1656,67 +1656,67 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Column column, boolean slice) throws Exception{
-		return super.buildDropRunSQL(column, slice);
+	public List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception{
+		return super.buildDropRun(runtime, column, slice);
 	}
 
 	/**
 	 * 修改列名
 	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Column column) throws Exception {
-		return super.buildRenameRunSQL(column);
+	public List<Run> buildRenameRun(DataRuntime runtime, Column column) throws Exception {
+		return super.buildRenameRun(runtime, column);
 	}
 
 
 	/**
 	 * 修改数据类型
 	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildChangeTypeRunSQL(Column column) throws Exception{
-		return super.buildChangeTypeRunSQL(column);
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception{
+		return super.buildChangeTypeRun(runtime, column);
 	}
 	/**
 	 * 修改默认值
 	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRunSQL(Column column) throws Exception{
-		return super.buildChangeDefaultRunSQL(column);
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column) throws Exception{
+		return super.buildChangeDefaultRun(runtime, column);
 	}
 
 	/**
 	 * 修改非空限制
 	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
-		return super.buildChangeNullableRunSQL(column);
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column column) throws Exception{
+		return super.buildChangeNullableRun(runtime, column);
 	}
 	/**
 	 * 修改备注
 	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
-		return super.buildChangeCommentRunSQL(column);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception{
+		return super.buildChangeCommentRun(runtime, column);
 	}
 
 
@@ -1728,9 +1728,9 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildDropAutoIncrement(Column column) throws Exception{
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column) throws Exception{
 		column.update().setAutoIncrement(false);
-		return buildAlterRunSQL(column);
+		return buildAlterRun(runtime, column);
 	}
 	/**
 	 * 定义列
@@ -1739,8 +1739,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder define(StringBuilder builder, Column column){
-		return super.define(builder, column);
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column){
+		return super.define(runtime, builder, column);
 	}
 
 
@@ -1751,26 +1751,26 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder type(StringBuilder builder, Column column){
-		return super.type(builder, column);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column){
+		return super.type(runtime, builder, column);
 	}
 
 	@Override
-	public boolean isIgnorePrecision(Column column) {
-		return super.isIgnorePrecision(column);
+	public boolean isIgnorePrecision(DataRuntime runtime, Column column) {
+		return super.isIgnorePrecision(runtime, column);
 	}
 
 	@Override
-	public boolean isIgnoreScale(Column column) {
-		return super.isIgnoreScale(column);
+	public boolean isIgnoreScale(DataRuntime runtime, Column column) {
+		return super.isIgnoreScale(runtime, column);
 	}
 	@Override
-	public Boolean checkIgnorePrecision(String datatype) {
-		return super.checkIgnorePrecision(datatype);
+	public Boolean checkIgnorePrecision(DataRuntime runtime, String datatype) {
+		return super.checkIgnorePrecision(runtime, datatype);
 	}
 	@Override
-	public Boolean checkIgnoreScale(String datatype) {
-		return super.checkIgnoreScale(datatype);
+	public Boolean checkIgnoreScale(DataRuntime runtime, String datatype) {
+		return super.checkIgnoreScale(runtime, datatype);
 	}
 
 	/**
@@ -1780,8 +1780,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder nullable(StringBuilder builder, Column column){
-		return super.nullable(builder, column);
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column){
+		return super.nullable(runtime, builder, column);
 	}
 	/**
 	 * 编码
@@ -1790,8 +1790,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder charset(StringBuilder builder, Column column){
-		return super.charset(builder, column);
+	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column){
+		return super.charset(runtime, builder, column);
 	}
 	/**
 	 * 默认值
@@ -1800,8 +1800,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder defaultValue(StringBuilder builder, Column column){
-		return super.defaultValue(builder, column);
+	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column){
+		return super.defaultValue(runtime, builder, column);
 	}
 	/**
 	 * 递增列
@@ -1810,7 +1810,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder increment(StringBuilder builder, Column column){
+	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column){
 		if(column.isAutoIncrement() == 1){
 			builder.append(" AUTO_INCREMENT");
 		}
@@ -1826,7 +1826,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param column 列
 	 * @return builder
 	 */
-	public StringBuilder onupdate(StringBuilder builder, Column column){
+	public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column){
 		if(column.isOnUpdate() == 1){
 			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
 		}
@@ -1839,7 +1839,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder position(StringBuilder builder, Column column){
+	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column){
 		Integer position = column.getPosition();
 		if(null != position && 0 == position){
 			builder.append(" FIRST");
@@ -1859,7 +1859,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder comment(StringBuilder builder, Column column){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column){
 		String comment = column.getComment();
 		if(BasicUtil.isNotEmpty(comment)){
 			builder.append(" COMMENT '").append(comment).append("'");
@@ -1874,21 +1874,21 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 */
 	@Override
-	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists){
-		return super.checkColumnExists(builder, exists);
+	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+		return super.checkColumnExists(runtime, builder, exists);
 	}
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(Tag tag);
-	 * List<Run> buildAlterRunSQL(Tag tag);
-	 * List<Run> buildDropRunSQL(Tag tag);
-	 * List<Run> buildRenameRunSQL(Tag tag);
-	 * List<Run> buildChangeDefaultRunSQL(Tag tag);
-	 * List<Run> buildChangeNullableRunSQL(Tag tag);
-	 * List<Run> buildChangeCommentRunSQL(Tag tag);
-	 * List<Run> buildChangeTypeRunSQL(Tag tag);
-	 * StringBuilder checkTagExists(StringBuilder builder, boolean exists)
+	 * List<Run> buildAddRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildAlterRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildDropRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildRenameRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag);
+	 * List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag);
+	 * StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1898,7 +1898,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1909,7 +1909,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1921,7 +1921,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Tag tag) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1933,7 +1933,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Tag tag) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1944,7 +1944,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1955,7 +1955,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 	/**
@@ -1966,7 +1966,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1977,7 +1977,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildChangeTypeRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -1988,17 +1988,17 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 */
 	@Override
-	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
-		return super.checkTagExists(builder, exists);
+	public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+		return super.checkTagExists(runtime, builder, exists);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception
-	 * List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception
-	 * List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception
+	 * List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception
+	 * List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -2006,7 +2006,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -2014,7 +2014,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		Map<String,Column> columns = primary.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, primary.getTable(true));
+			name(runtime, builder, primary.getTable(true));
 			builder.append(" ADD PRIMARY KEY (");
 			boolean first = true;
 			for(Column column:columns.values()){
@@ -2035,8 +2035,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildAlterRunSQL(primary);
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
+		return super.buildAlterRun(runtime, primary);
 	}
 
 	/**
@@ -2045,25 +2045,25 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable(true));
+		name(runtime, builder, primary.getTable(true));
 		builder.append(" DROP PRIMARY KEY");
 		return runs;
 	}
 	/**
 	 * 修改主键名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param primary 主键
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception{
-		return super.buildRenameRunSQL(primary);
+	public List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
+		return super.buildRenameRun(runtime, primary);
 	}
 
 	/* *****************************************************************************************************************
@@ -2079,16 +2079,16 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<Run> buildAddRunSQL(ForeignKey foreign) throws Exception{
-		return super.buildAddRunSQL(foreign);
+	public List<Run> buildAddRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
+		return super.buildAddRun(runtime, foreign);
 	}
 	/**
 	 * 添加外键
 	 * @param foreign 外键
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(ForeignKey foreign) throws Exception{
-		return super.buildAlterRunSQL(foreign);
+	public List<Run> buildAlterRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
+		return super.buildAlterRun(runtime, foreign);
 	}
 
 	/**
@@ -2096,27 +2096,27 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<Run> buildDropRunSQL(ForeignKey foreign) throws Exception{
-		return super.buildDropRunSQL(foreign);
+	public List<Run> buildDropRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
+		return super.buildDropRun(runtime, foreign);
 	}
 
 	/**
 	 * 修改外键名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<Run> buildRenameRunSQL(ForeignKey foreign) throws Exception{
-		return super.buildRenameRunSQL(foreign);
+	public List<Run> buildRenameRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
+		return super.buildRenameRun(runtime, foreign);
 	} 
 	
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(Index index) throws Exception
-	 * List<Run> buildAlterRunSQL(Index index) throws Exception
-	 * List<Run> buildDropRunSQL(Index index) throws Exception
-	 * List<Run> buildRenameRunSQL(Index index) throws Exception
+	 * List<Run> buildAddRun(DataRuntime runtime, Index index) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Index index) throws Exception
+	 * List<Run> buildDropRun(DataRuntime runtime, Index index) throws Exception
+	 * List<Run> buildRenameRun(DataRuntime runtime, Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -2124,8 +2124,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Index index) throws Exception{
-		return super.buildAddRunSQL(index);
+	public List<Run> buildAddRun(DataRuntime runtime, Index index) throws Exception{
+		return super.buildAddRun(runtime, index);
 	}
 	/**
 	 * 修改索引
@@ -2134,8 +2134,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Index index) throws Exception{
-		return super.buildAlterRunSQL(index);
+	public List<Run> buildAlterRun(DataRuntime runtime, Index index) throws Exception{
+		return super.buildAlterRun(runtime, index);
 	}
 
 	/**
@@ -2144,13 +2144,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Index index) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Index index) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, index.getTable(true));
+		name(runtime, builder, index.getTable(true));
 		if(index.isPrimary()){
 			builder.append(" DROP PRIMARY KEY");
 		}else {
@@ -2160,20 +2160,20 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	}
 	/**
 	 * 修改索引名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param index 索引
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Index index) throws Exception{
-		return super.buildRenameRunSQL(index);
+	public List<Run> buildRenameRun(DataRuntime runtime, Index index) throws Exception{
+		return super.buildRenameRun(runtime, index);
 	}
 	/**
 	 * 索引备注
 	 * @param builder
 	 * @param index
 	 */
-	public void comment(StringBuilder builder, Index index){
+	public void comment(DataRuntime runtime, StringBuilder builder, Index index){
 		String comment = index.getComment();
 		if(BasicUtil.isNotEmpty(comment)){
 			builder.append(" COMMENT '").append(comment).append("'");
@@ -2182,10 +2182,10 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(Constraint constraint) throws Exception
-	 * List<Run> buildAlterRunSQL(Constraint constraint) throws Exception
-	 * List<Run> buildDropRunSQL(Constraint constraint) throws Exception
-	 * List<Run> buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildAddRun(DataRuntime runtime, Constraint constraint) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint) throws Exception
+	 * List<Run> buildDropRun(DataRuntime runtime, Constraint constraint) throws Exception
+	 * List<Run> buildRenameRun(DataRuntime runtime, Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -2193,8 +2193,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Constraint constraint) throws Exception{
-		return super.buildAddRunSQL(constraint);
+	public List<Run> buildAddRun(DataRuntime runtime, Constraint constraint) throws Exception{
+		return super.buildAddRun(runtime, constraint);
 	}
 	/**
 	 * 修改约束
@@ -2203,8 +2203,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Constraint constraint) throws Exception{
-		return super.buildAlterRunSQL(constraint);
+	public List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint) throws Exception{
+		return super.buildAlterRun(runtime, constraint);
 	}
 
 	/**
@@ -2213,27 +2213,27 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Constraint constraint) throws Exception{
-		return super.buildDropRunSQL(constraint);
+	public List<Run> buildDropRun(DataRuntime runtime, Constraint constraint) throws Exception{
+		return super.buildDropRun(runtime, constraint);
 	}
 	/**
 	 * 修改约束名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param constraint 约束
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Constraint constraint) throws Exception{
-		return super.buildRenameRunSQL(constraint);
+	public List<Run> buildRenameRun(DataRuntime runtime, Constraint constraint) throws Exception{
+		return super.buildRenameRun(runtime, constraint);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Trigger trigger) throws Exception
-	 * List<Run> buildAlterRunSQL(Trigger trigger) throws Exception;
-	 * List<Run> buildDropRunSQL(Trigger trigger) throws Exception;
-	 * List<Run> buildRenameRunSQL(Trigger trigger) throws Exception;
+	 * List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -2241,11 +2241,11 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildCreateRunSQL(Trigger trigger) throws Exception{
-		return super.buildCreateRunSQL(trigger);
+	public List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception{
+		return super.buildCreateRun(runtime, trigger);
 	}
-	public void each(StringBuilder builder, Trigger trigger){
-		super.each(builder, trigger);
+	public void each(DataRuntime runtime, StringBuilder builder, Trigger trigger){
+		super.each(runtime, builder, trigger);
 	}
 	/**
 	 * 修改触发器
@@ -2254,8 +2254,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Trigger trigger) throws Exception{
-		return super.buildAlterRunSQL(trigger);
+	public List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception{
+		return super.buildAlterRun(runtime, trigger);
 	}
 
 	/**
@@ -2264,37 +2264,37 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Trigger trigger) throws Exception{
-		return super.buildDropRunSQL(trigger);
+	public List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception{
+		return super.buildDropRun(runtime, trigger);
 	}
 
 	/**
 	 * 修改触发器名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param trigger 触发器
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Trigger trigger) throws Exception{
-		return super.buildRenameRunSQL(trigger);
+	public List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception{
+		return super.buildRenameRun(runtime, trigger);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Procedure procedure) throws Exception
-	 * List<Run> buildAlterRunSQL(Procedure procedure) throws Exception;
-	 * List<Run> buildDropRunSQL(Procedure procedure) throws Exception;
-	 * List<Run> buildRenameRunSQL(Procedure procedure) throws Exception;
+	 * List<Run> buildCreateRun(DataRuntime runtime, Procedure procedure) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<Run> buildCreateRunSQL(Procedure procedure) throws Exception{
-		return super.buildCreateRunSQL(procedure);
+	public List<Run> buildCreateRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		return super.buildCreateRun(runtime, procedure);
 	}
 
 	/**
@@ -2303,8 +2303,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Procedure procedure) throws Exception{
-		return super.buildAlterRunSQL(procedure);
+	public List<Run> buildAlterRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		return super.buildAlterRun(runtime, procedure);
 	}
 
 	/**
@@ -2312,13 +2312,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<Run> buildDropRunSQL(Procedure procedure) throws Exception{
-		return super.buildDropRunSQL(procedure);
+	public List<Run> buildDropRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		return super.buildDropRun(runtime, procedure);
 	}
 
 	/**
 	 * 修改存储过程名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param procedure 存储过程
 	 * @return String
 	 */
@@ -2329,7 +2329,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<Run> buildRenameRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Procedure procedure) throws Exception{
 		log.warn("Hive不支持 rename procedure("+procedure.getName()+")");
 		return new ArrayList<>();
 	}
@@ -2338,10 +2338,10 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Function function) throws Exception
-	 * List<Run> buildAlterRunSQL(Function function) throws Exception;
-	 * List<Run> buildDropRunSQL(Function function) throws Exception;
-	 * List<Run> buildRenameRunSQL(Function function) throws Exception;
+	 * List<Run> buildCreateRun(DataRuntime runtime, Function function) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Function function) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -2349,8 +2349,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<Run> buildCreateRunSQL(Function function) throws Exception{
-		return super.buildCreateRunSQL(function);
+	public List<Run> buildCreateRun(DataRuntime runtime, Function function) throws Exception{
+		return super.buildCreateRun(runtime, function);
 	}
 
 	/**
@@ -2359,8 +2359,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param function 函数
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Function function) throws Exception{
-		return super.buildAlterRunSQL(function);
+	public List<Run> buildAlterRun(DataRuntime runtime, Function function) throws Exception{
+		return super.buildAlterRun(runtime, function);
 	}
 
 	/**
@@ -2368,17 +2368,17 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<Run> buildDropRunSQL(Function function) throws Exception{
-		return super.buildDropRunSQL(function);
+	public List<Run> buildDropRun(DataRuntime runtime, Function function) throws Exception{
+		return super.buildDropRun(runtime, function);
 	}
 
 	/**
 	 * 修改函数名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<Run> buildRenameRunSQL(Function function) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Function function) throws Exception{
 		log.warn("Hive不支持 rename function("+function.getName()+")");
 		return new ArrayList<>();
 	}
@@ -2387,17 +2387,17 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 *
 	 * 													common
 	 *------------------------------------------------------------------------------------------------------------------
-	 * boolean isBooleanColumn(Column column)
-	 *  boolean isNumberColumn(Column column)
-	 * boolean isCharColumn(Column column)
-	 * String value(Column column, SQL_BUILD_IN_VALUE value)
+	 * boolean isBooleanColumn(DataRuntime runtime, Column column)
+	 *  boolean isNumberColumn(DataRuntime runtime, Column column)
+	 * boolean isCharColumn(DataRuntime runtime, Column column)
+	 * String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value)
 	 * String type(String type)
 	 * String type2class(String type)
 	 ******************************************************************************************************************/
 
 	@Override
-	public boolean isBooleanColumn(Column column) {
-		return super.isBooleanColumn(column);
+	public boolean isBooleanColumn(DataRuntime runtime, Column column) {
+		return super.isBooleanColumn(runtime, column);
 	}
 	/**
 	 * 是否同数字
@@ -2405,13 +2405,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return boolean
 	 */
 	@Override
-	public  boolean isNumberColumn(Column column){
-		return super.isNumberColumn(column);
+	public  boolean isNumberColumn(DataRuntime runtime, Column column){
+		return super.isNumberColumn(runtime, column);
 	}
 
 	@Override
-	public boolean isCharColumn(Column column) {
-		return super.isCharColumn(column);
+	public boolean isCharColumn(DataRuntime runtime, Column column) {
+		return super.isCharColumn(runtime, column);
 	}
 	/**
 	 * 内置函数
@@ -2420,7 +2420,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 */
 
 	@Override
-	public String value(Column column, SQL_BUILD_IN_VALUE value){
+	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "now()";
 		}
