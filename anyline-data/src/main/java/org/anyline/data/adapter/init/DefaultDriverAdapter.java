@@ -25,7 +25,6 @@ import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
@@ -37,6 +36,8 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
+import org.anyline.data.util.ThreadConfig;
+import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.generator.GeneratorConfig;
@@ -81,19 +82,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 
 	//单数据源 或 固定数据源(不可切换)时赋
-	protected AnylineDao dao;
+	//protected AnylineDao dao;
 
 	protected Map<String,String> versions = new Hashtable<>();
 
-	@Override
-	public AnylineDao getDao() {
-		return dao;
-	}
+	//@Override
+	//public AnylineDao getDao() {
+	//	return dao;
+	//}
 
-	@Override
-	public void setDao(AnylineDao dao) {
-		this.dao = dao;
-	}
+	//@Override
+	//public void setDao(AnylineDao dao) {
+	//	this.dao = dao;
+	//}
 
 
 	public String version(){return null;}
@@ -256,16 +257,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
-	 * void createInserts(Run run, String dest, DataSet set,  List<String> keys)
-	 * void createInserts(Run run, String dest, Collection list,  List<String> keys)
-	 * List<String> confirmInsertColumns(String dest, Object obj, List<String> columns)
+	 * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns)
+	 * void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns)
+	 * void createInserts(DataRuntime runtime, Run run, String dest, Collection list,LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String,Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, List<String> columns)
 	 * String batchInsertSeparator ()
 	 * boolean supportInsertPlaceholder ()
-	 * List<Map<String,Object>> process(List<Map<String,Object>> list)
+	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
 	 *
-	 * protected void insertValue(Run run, Object obj, boolean placeholder, List<String> keys)
-	 * protected Run createInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns)
+	 * protected void insertValue(Run run, Object obj, boolean placeholder, LinkedHashMap<String,Column> columns)
+	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
 	 * protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)
 	 ******************************************************************************************************************/
 
@@ -305,10 +306,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
-	 * @param keys 需插入的列
+	 * @param columns 需插入的列
 	 */
 	@Override
-	public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys){
+	public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 	}
 
 	/**
@@ -317,10 +318,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run run
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param list 集合
-	 * @param keys 需插入的列
+	 * @param columns 需插入的列
 	 */
 	@Override
-	public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys){
+	public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 	}
 
 	/**
@@ -345,26 +346,26 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> confirmInsertColumns(String dest, Object obj, List<String> columns, boolean batch){
-		List<String> keys = new ArrayList<>();/*确定需要插入的列*/
+	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, List<String> columns, boolean batch){
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();/*确定需要插入的列*/
 		if(null == obj){
-			return new ArrayList<>();
+			return new LinkedHashMap<>();
 		}
-		List<String> mastKeys = new ArrayList<>();		// 必须插入列
+		LinkedHashMap<String, Column> mastKeys = new LinkedHashMap<>();		// 必须插入列
 		List<String> ignores = new ArrayList<>();		// 必须不插入列
 		List<String> factKeys = new ArrayList<>();		// 根据是否空值
 
 		boolean each = true;//是否需要从row中查找列
 		if(null != columns && columns.size()>0){
 			each = false;
-			keys = new ArrayList<>();
+			cols = new LinkedHashMap<>();
 			for(String column:columns){
 				if(BasicUtil.isEmpty(column)){
 					continue;
 				}
 				if(column.startsWith("+")){
 					column = column.substring(1);
-					mastKeys.add(column);
+					mastKeys.put(column.toUpperCase(), new Column(column));
 					each = true;
 				}else if(column.startsWith("-")){
 					column = column.substring(1);
@@ -375,7 +376,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					factKeys.add(column);
 					each = true;
 				}
-				keys.add(column);
+				cols.put(column.toUpperCase(), new Column(column));
 			}
 		}
 		if(each){
@@ -385,9 +386,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			DataRow row = null;
 			if(obj instanceof DataRow){
 				row = (DataRow)obj;
-				mastKeys.addAll(row.getUpdateColumns());
+				mastKeys.putAll(row.getUpdateColumns(true));
+
 				ignores.addAll(row.getIgnoreUpdateColumns());
-				keys = row.keys();
+				cols = row.getColumns();
 
 				isInsertNullColumn = row.isInsertNullColumn();
 				isInsertEmptyColumn = row.isInsertEmptyColumn();
@@ -396,14 +398,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				isInsertNullColumn = ConfigTable.IS_INSERT_NULL_FIELD;
 				isInsertEmptyColumn = ConfigTable.IS_INSERT_EMPTY_FIELD;
 				if(EntityAdapterProxy.hasAdapter(obj.getClass())){
-					keys.addAll(Column.names(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT)));
+					cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.INSERT));
 				}else {
-					keys = new ArrayList<>();
+					cols = new LinkedHashMap<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass(), false, false);
 					for (Field field : fields) {
 						Class clazz = field.getType();
 						if (clazz == String.class || clazz == Date.class || ClassUtil.isPrimitiveClass(clazz)) {
-							keys.add(field.getName());
+							cols.put(field.getName().toUpperCase(), new Column(field.getName()));
 						}
 					}
 				}
@@ -414,17 +416,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 
 			if(log.isDebugEnabled()) {
-				log.debug("[confirm insert columns][columns:{}]", keys);
+				log.debug("[confirm insert columns][columns:{}]", cols);
 			}
 			BeanUtil.removeAll(ignores, columns);
-			BeanUtil.removeAll(keys, ignores);
+			for(String ignore:ignores){
+				cols.remove(ignore);
+			}
 			if(log.isDebugEnabled()) {
 				log.debug("[confirm insert columns][ignores:{}]", ignores);
 			}
-			int size = keys.size();
-			for(int i=size-1;i>=0; i--){
-				String key = keys.get(i);
-				if(mastKeys.contains(key)){
+			List<String> keys = BeanUtil.getMapKeys(cols);
+			for(String key:keys){
+				key = key.toUpperCase();
+				if(mastKeys.containsKey(key)){
 					// 必须插入
 					continue;
 				}
@@ -437,20 +441,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 				if(null == value){
 					if(factKeys.contains(key)){
-						keys.remove(key);
+						cols.remove(key);
 						continue;
 					}
 					if(!isInsertNullColumn){
-						keys.remove(i);	
+						cols.remove(key);
 						continue;
 					}
 				}else if("".equals(value.toString().trim())){
 					if(factKeys.contains(key)){
-						keys.remove(key);
+						cols.remove(key);
 						continue;
 					}
 					if(!isInsertEmptyColumn){
-						keys.remove(i);
+						cols.remove(key);
 						continue;
 					}
 				}
@@ -458,11 +462,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(log.isDebugEnabled()) {
-			log.debug("[confirm insert columns][result:{}]", keys);
+			log.debug("[confirm insert columns][result:{}]", cols);
 		}
-		keys = checkMetadata(dest, keys);
-		keys = BeanUtil.distinct(keys);
-		return keys;
+		cols = checkMetadata(runtime, dest, cols);
+ 		return cols;
 	}
 
 	/**
@@ -533,17 +536,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
 	 * List<String> checkMetadata(String table, List<String> columns)
 	 *
 	 * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
-	 * protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
-	 * protected List<String> confirmUpdateColumns(String dest, DataRow row, List<String> columns)
+	 * protected Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
+	 * protected List<Column> confirmUpdateColumns(String dest, DataRow row, List<String> columns)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		if(null == obj){
 			return null;
 		}
@@ -556,17 +559,29 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 
 		if(obj instanceof DataRow){
-			return buildUpdateRunFromDataRow(dest, (DataRow)obj, configs, checkPrimary, columns);
+			return buildUpdateRunFromDataRow(runtime, dest, (DataRow)obj, configs, checkPrimary, columns);
 		}else{
-			return buildUpdateRunFromEntity(dest, obj, configs, checkPrimary, columns);
+			return buildUpdateRunFromEntity(runtime, dest, obj, configs, checkPrimary, columns);
 		}
 	}
 
-	protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
-		return null;
+	protected Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+		if(null != columns){
+			for(String column:columns){
+				cols.put(column.toUpperCase(), new Column(column));
+			}
+		}
+		return buildUpdateRunFromEntity(runtime, dest, obj, configs, checkPrimary, cols);
 	}
-	protected Run buildUpdateRunFromDataRow(String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
-		return null;
+	protected Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+		if(null != columns){
+			for(String column:columns){
+				cols.put(column.toUpperCase(), new Column(column));
+			}
+		}
+		return buildUpdateRunFromDataRow(runtime, dest, row, configs, checkPrimary, cols);
 	}
 
 	/**
@@ -575,25 +590,25 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns columns
 	 * @return List
 	 */
-	public List<String> checkMetadata(String table, List<String> columns){
-		if(!ConfigTable.IS_AUTO_CHECK_METADATA || null == dao){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, LinkedHashMap<String, Column> columns){
+		if(!ConfigTable.IS_AUTO_CHECK_METADATA){
 			return columns;
 		}
-		List<String> list = new ArrayList<>();
-		Set<String> metadatas = dao.columns(table).keySet();
+		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
+		LinkedHashMap<String, Column> metadatas = columns(runtime, new Table(table), false);
 		if(metadatas.size() > 0) {
-			for (String item : columns) {
-				if (metadatas.contains(item.toUpperCase())) {
-					list.add(item);
+			for (String key:columns.keySet()) {
+				if (metadatas.containsKey(key)) {
+					result.put(key, columns.get(key));
 				} else {
-					log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, item);
+					log.warn("[{}][column:{}.{}][insert/update忽略当前列名]", LogUtil.format("列名检测不存在", 33), table, key);
 				}
 			}
 		}else{
 			log.warn("[{}][table:{}][忽略列名检测]", LogUtil.format("表结构检测失败(检查表名是否存在)", 33), table);
 		}
-		log.info("[check column metadata][src:{}][result:{}]", columns.size(), list.size());
-		return list;
+		log.info("[check column metadata][src:{}][result:{}]", columns.size(), result.size());
+		return result;
 	}
 
 	/**
@@ -618,28 +633,28 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
-	protected List<String> confirmUpdateColumns(String dest, DataRow row, ConfigStore configs, List<String> columns){
-		List<String> keys = null;/*确定需要更新的列*/
+	protected LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+		LinkedHashMap<String,Column> cols = null;/*确定需要更新的列*/
 		if(null == row){
-			return new ArrayList<>();
+			return new LinkedHashMap<>();
 		}
 		boolean each = true;//是否需要从row中查找列
 		List<String> conditions = new ArrayList<>()							; // 更新条件
- 		List<String> masters = BeanUtil.copy(row.getUpdateColumns())		; // 必须更新列
+		LinkedHashMap<String, Column> masters = row.getUpdateColumns(true)		; // 必须更新列
 		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; // 必须不更新列
 		List<String> factKeys = new ArrayList<>()							; // 根据是否空值
 		BeanUtil.removeAll(ignores, columns);
 
 		if(null != columns && columns.size()>0){
 			each = false;
-			keys = new ArrayList<>();
+			cols = new LinkedHashMap<>();
 			for(String column:columns){
 				if(BasicUtil.isEmpty(column)){
 					continue;
 				}
 				if(column.startsWith("+")){
 					column = column.substring(1);
-					masters.add(column);
+					masters.put(column.toUpperCase(), new Column(column));
 					each = true;
 				}else if(column.startsWith("-")){
 					column = column.substring(1);
@@ -650,27 +665,23 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					factKeys.add(column);
 					each = true;
 				}
-				keys.add(column);
+				cols.put(column.toUpperCase(), new Column(column));
 			}
 		}else if(null != masters && masters.size()>0){
 			each = false;
-			keys = masters;
+			cols = masters;
 		}
 		if(each){
-			keys = row.keys();
-			for(String k:masters){
-				if(!keys.contains(k)){
-					keys.add(k);
-				}
-			}
+			cols = row.getUpdateColumns(true);
+			cols.putAll(masters);
 			// 是否更新null及""列
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();
 			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
-			BeanUtil.removeAll(keys, ignores);
+			List<String> keys = BeanUtil.getMapKeys(cols);
 			int size = keys.size();
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);
-				if(masters.contains(key)){
+				if(masters.containsKey(key)){
 					// 必须更新
 					continue;
 				}
@@ -698,24 +709,27 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 			}
 		}
-		keys.removeAll(ignores);
-		keys = checkMetadata(dest, keys);
-		keys = BeanUtil.distinct(keys);
-		return keys;
+		if(null != ignores){
+			for(String ignore:ignores){
+				cols.remove(ignore.toUpperCase());
+			}
+		}
+		cols = checkMetadata(runtime, dest, cols);
+		return cols;
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * List<Map<String,Object>> process(List<Map<String,Object>> list)
-	 * Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 *
-	 * void buildQueryRunContent(Run run)
-	 * protected void buildQueryRunContent(XMLRun run)
-	 * protected void buildQueryRunContent(TextRun run)
-	 * protected void buildQueryRunContent(TableRun run)
+	 * void buildQueryRunContent(DataRuntime runtime, Run run)
+	 * protected void buildQueryRunContent(DataRuntime runtime, XMLRun run)
+	 * protected void buildQueryRunContent(DataRuntime runtime, TextRun run)
+	 * protected void buildQueryRunContent(DataRuntime runtime, TableRun run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -726,17 +740,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run
 	 */
 	@Override
-	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof TablePrepare){
-			run = new TableRun(this,prepare.getTable());
+			run = new TableRun(runtime, prepare.getTable());
 		}else if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
 		}else if(prepare instanceof TextPrepare){
 			run = new TextRun();
 		}
 		if(null != run){
-			run.setAdapter(this);
+			run.setRuntime(runtime);
 			//如果是text类型 将解析文本并抽取出变量
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
@@ -745,7 +759,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				//为变量赋值
 				run.init();
 				//构造最终的查询SQL
-				buildQueryRunContent(run);
+				buildQueryRunContent(runtime, run);
 			}
 		}
 		return run;
@@ -756,25 +770,25 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run run
 	 */
 	@Override
-	public void buildQueryRunContent(Run run){
+	public void buildQueryRunContent(DataRuntime runtime, Run run){
 		if(null != run){
 			if(run instanceof TableRun){
 				TableRun r = (TableRun) run;
-				buildQueryRunContent(r);
+				buildQueryRunContent(runtime, r);
 			}else if(run instanceof XMLRun){
 				XMLRun r = (XMLRun) run;
-				buildQueryRunContent(r);
+				buildQueryRunContent(runtime, r);
 			}else if(run instanceof TextRun){
 				TextRun r = (TextRun) run;
-				buildQueryRunContent(r);
+				buildQueryRunContent(runtime, r);
 			}
 		}
 	}
-	protected void buildQueryRunContent(XMLRun run){
+	protected void buildQueryRunContent(DataRuntime runtime, XMLRun run){
 	}
-	protected void buildQueryRunContent(TextRun run){
+	protected void buildQueryRunContent(DataRuntime runtime, TextRun run){
 	}
-	protected void buildQueryRunContent(TableRun run){
+	protected void buildQueryRunContent(DataRuntime runtime, TableRun run){
 	}
 
 	/**
@@ -783,9 +797,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param names 序列名
 	 * @return String
 	 */
-	public List<Run> buildQuerySequence(boolean next, String ... names){
+	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQuerySequence(boolean next, String ... names)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -795,25 +809,25 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run run
 	 */
 	@Override
-	public void buildExecuteRunContent(Run run){
+	public void buildExecuteRunContent(DataRuntime runtime, Run run){
 		if(null != run){
 			if(run instanceof TableRun){
 				TableRun r = (TableRun) run;
-				buildExecuteRunContent(r);
+				buildExecuteRunContent(runtime, r);
 			}else if(run instanceof XMLRun){
 				XMLRun r = (XMLRun) run;
-				buildExecuteRunContent(r);
+				buildExecuteRunContent(runtime, r);
 			}else if(run instanceof TextRun){
 				TextRun r = (TextRun) run;
-				buildExecuteRunContent(r);
+				buildExecuteRunContent(runtime, r);
 			}
 		}
 	}
-	protected void buildExecuteRunContent(XMLRun run){
+	protected void buildExecuteRunContent(DataRuntime runtime, XMLRun run){
 	}
-	protected void buildExecuteRunContent(TextRun run){
+	protected void buildExecuteRunContent(DataRuntime runtime, TextRun run){
 	}
-	protected void buildExecuteRunContent(TableRun run){
+	protected void buildExecuteRunContent(DataRuntime runtime, TableRun run){
 	}
 
 
@@ -823,12 +837,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return  DataSet
 	 */
 	@Override
-	public List<Map<String,Object>> process(List<Map<String,Object>> list){
+	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
 		return list;
 	}
 
 	@Override
-	public Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
@@ -836,13 +850,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			run = new TextRun();
 		}
 		if(null != run){
-			run.setAdapter(this);
+			run.setRuntime(runtime);
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);
 			run.addCondition(conditions);
 			run.init(); //
 			//构造最终的执行SQL
-			buildQueryRunContent(run);
+			buildQueryRunContent(runtime, run);
 		}
 		return run;
 	}
@@ -851,18 +865,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													EXISTS
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String parseExists(Run run)
+	 * String parseExists(DataRuntime runtime, Run run)
 	 ******************************************************************************************************************/
 
 	@Override
-	public String parseExists(Run run){
+	public String parseExists(DataRuntime runtime, Run run){
 		return null;
 	}
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String parseTotalQuery(Run run)
+	 * String parseTotalQuery(DataRuntime runtime, Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * 求总数SQL
@@ -871,7 +885,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String parseTotalQuery(Run run){
+	public String parseTotalQuery(DataRuntime runtime, Run run){
 		return null;
 	}
 
@@ -880,19 +894,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * Run buildDeleteRun(String table, String key, Object values)
-	 * Run buildDeleteRun(String dest, Object obj, String ... columns)
-	 * Run buildDeleteRunContent(Run run)
+	 * Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values)
+	 * Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns)
+	 * Run buildDeleteRunContent(DataRuntime runtime, Run run)
 	 *
-	 * protected Run createDeleteRunSQLFromTable(String table, String key, Object values)
-	 * protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns)
+	 * protected Run createDeleteRunFromTable(String table, String key, Object values)
+	 * protected Run createDeleteRunFromEntity(String dest, Object obj, String ... columns)
 	 ******************************************************************************************************************/
 	@Override
-	public Run buildDeleteRun(String table, String key, Object values){
-		return createDeleteRunSQLFromTable(table, key, values);
+	public Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values){
+		return createDeleteRunFromTable(runtime, table, key, values);
 	}
 	@Override
-	public Run buildDeleteRun(String dest, Object obj, String ... columns){
+	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
 		if(null == obj){
 			return null;
 		}
@@ -911,16 +925,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(obj instanceof ConfigStore){
-			run = new TableRun(this,dest);
+			run = new TableRun(runtime,dest);
 			RunPrepare prepare = new DefaultTablePrepare();
 			prepare.setDataSource(dest);
 			run.setPrepare(prepare);
 			run.setConfigStore((ConfigStore)obj);
 			run.addCondition(columns);
 			run.init();
-			buildDeleteRunContent(run);
+			buildDeleteRunContent(runtime, run);
 		}else{
-			run = createDeleteRunSQLFromEntity(dest, obj, columns);
+			run = createDeleteRunFromEntity(runtime, dest, obj, columns);
 		}
 		return run;
 	}
@@ -931,29 +945,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run
 	 */
 	@Override
-	public Run buildDeleteRunContent(Run run){
+	public Run buildDeleteRunContent(DataRuntime runtime, Run run){
 		if(null != run){
 			if(run instanceof TableRun){
 				TableRun r = (TableRun) run;
-				return buildDeleteRunContent(r);
+				return buildDeleteRunContent(runtime, r);
 			}
 		}
 		return run;
 	}
 
-	protected Run buildDeleteRunContent(TableRun run){
-		return null;
-	}
- 
-	protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
-		return null;
-	}
-	protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-		return null;
-	}
 
 	@Override
-	public List<Run> buildTruncateSQL(String table){
+	public List<Run> buildTruncateRun(DataRuntime runtime, String table){
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -987,20 +991,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													database
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryDatabaseRunSQL() throws Exception
-	 * public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
+	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception
+	 * public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public List<Run> buildQueryDatabaseRunSQL() throws Exception{
+	public List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception{
         if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDatabaseRunSQL()", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDatabaseRun(DataRuntime runtime)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
 	}
@@ -1008,13 +1012,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)
-	 * <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
-	 * <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * List<Run> buildQueryDDLRunSQL(Table table) throws Exception
-	 * public List<String> ddl(int index, Table table, List<String> ddls, DataSet set)
+	 * List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception
+	 * public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -1025,9 +1029,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -1040,17 +1044,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	public List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1058,9 +1062,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return tables;
 	}
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1070,7 +1074,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 表备注
-	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1079,7 +1083,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		for(DataRow row:set){
 			String name = row.getString("TABLE_NAME");
 			String comment = row.getString("TABLE_COMMENT");
@@ -1099,36 +1103,36 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception{
 		//有支持直接查询DDL的在子类中实现
-		List<Run> runs = buildCreateRunSQL(table);
+		List<Run> runs = buildCreateRun(runtime, table);
 		return runs;
 	}
 
 	/**
 	 * 查询表DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(int index, Table table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
 		if(null == ddls){
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, Table table, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)", 37));
 		}
 		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)
-	 * <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
-	 * <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -1139,17 +1143,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception{
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set)", 37));
 		}
 		if(null == views){
 			views = new LinkedHashMap<>();
@@ -1157,9 +1161,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return views;
 	}
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types)", 37));
 		}
 		if(null == views){
 			views = new LinkedHashMap<>();
@@ -1173,38 +1177,38 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRunSQL(View view) throws Exception{
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(View view)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRun(DataRuntime runtime, View view)", 37));
 		}
 		return runs;
 	}
 
 	/**
 	 * 查询 view DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(int index, View view, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
 		if(null == ddls){
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, View view, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)", 37));
 		}
 		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception
+	 * List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -1215,9 +1219,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -1234,9 +1238,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1257,9 +1261,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1274,40 +1278,40 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table)", 37));
 		}
 		return runs;
 	}
 
 	/**
 	 * 查询 MasterTable DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(int index, MasterTable table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
 		if(null == ddls){
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, MasterTable table, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)", 37));
 		}
 		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
-	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)
-	 * List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)
- 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
-	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception
+	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)
+	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name)
+	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
+ 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception
+	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, MasterTable master) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -1319,23 +1323,23 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception{
+	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception{
+	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -1343,7 +1347,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 *  根据查询结果集构造Table
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -1354,9 +1358,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-            log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, PartitionTable> ptables(int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)", 37));
+            log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, PartitionTable> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)", 37));
         }
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1376,9 +1380,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception{
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, MasterTable master) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, PartitionTable> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, PartitionTable> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, MasterTable master)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1392,43 +1396,43 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return runs;
 	}
 
 	/**
 	 * 查询 PartitionTable DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table PartitionTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(int index, PartitionTable table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
 		if(null == ddls){
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(int index, PartitionTable table, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)", 37));
 		}
 		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryColumnRunSQL(Table table, boolean metadata)
-	 * <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
-	 * <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception
-	 * Column column(Column column, SqlRowSetMetaData rsm, int index);
-	 * Column column(Column column, ResultSet rs);
-	 * protected Column column(Column column, SqlRowSetMetaData rsm, int index)
-	 * protected Column column(Column column, ResultSet rs)
+	 * List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata)
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception
+	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception
+	 * Column column(DataRuntime runtime, Column column, SqlRowSetMetaData rsm, int index);
+	 * Column column(DataRuntime runtime, Column column, ResultSet rs);
+	 * protected Column column(DataRuntime runtime, Column column, SqlRowSetMetaData rsm, int index)
+	 * protected Column column(DataRuntime runtime, Column column, ResultSet rs)
 	 * protected List<String> keys(ResultSet rs) throws Exception
 	 ******************************************************************************************************************/
 
@@ -1439,16 +1443,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryColumnRunSQL(Table table, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	/**
 	 *
-	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
@@ -1457,7 +1461,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1477,7 +1481,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
 			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
-			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue())+"";
+			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getdefaultValue())+"";
 			if(BasicUtil.isNotEmpty(def)) {
 				while(def.startsWith("(") && def.endsWith(")")){
 					def = def.substring(1, def.length()-1);
@@ -1564,7 +1568,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		IS_GENERATEDCOLUMN                    = NO
 */
 	@Override
-	public Column column(Column column, ResultSet rs){
+	public Column column(DataRuntime runtime, Column column, ResultSet rs){
 		if(null == column){
 			column = new Column();
 		}
@@ -1607,7 +1611,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(null == column.getPosition()){
 				column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
 			}
-			if (BasicUtil.isEmpty(column.getDefaultValue())) {
+			if (BasicUtil.isEmpty(column.getdefaultValue())) {
 				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
 			}
 			ColumnType columnType = type(column.getTypeName());
@@ -1638,10 +1642,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryTagRunSQL(Table table, boolean metadata)
-	 * <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
-	 * <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception
+	 * List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata)
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception
+	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -1650,16 +1654,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTagRunSQL(Table table, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	/**
 	 *  根据查询结果集构造Tag
-	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -1668,9 +1672,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)", 37));
 		}
 		if(null == tags){
 			tags = new LinkedHashMap<>();
@@ -1678,9 +1682,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return tags;
 	}
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)", 37));
 		}
 		if(null == tags){
 			tags = new LinkedHashMap<>();
@@ -1691,8 +1695,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception
-	 * PrimaryKey primary(int index, Table table, DataSet set) throws Exception
+	 * List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception
+	 * PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -1700,23 +1704,23 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPrimaryRunSQL(Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	public PrimaryKey primary(int index, Table table, DataSet set) throws Exception{
+	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 PrimaryKey primary(int index, Table table, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set)", 37));
 		}
 		return null;
 	}
@@ -1725,8 +1729,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -1734,24 +1738,24 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
-	public List<Run> buildQueryForeignsRunSQL(Table table) throws Exception{
+	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryForeignsRunSQL(Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param index 第几条查询SQL 对照 buildQueryForeignsRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
 	}
@@ -1761,10 +1765,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryIndexRunSQL(Table table, boolean metadata)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
-	 * <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception
+	 * List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, boolean metadata)
+	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception
+	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception
+	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的索引
@@ -1773,16 +1777,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildQueryIndexRunSQL(Table table, String name){
+	public List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryIndexRunSQL(Table table, String name)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	/**
 	 *
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -1791,9 +1795,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)", 37));
 		}
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
@@ -1801,9 +1805,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return indexs;
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate)", 37));
 		}
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
@@ -1815,10 +1819,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata)
+	 * List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata)
 	 * LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception
-	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception
-	 * <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception
+	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -1827,14 +1831,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
-		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata)",37));
+	public List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+		log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata)",37));
 		return new ArrayList<>();
 	}
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
@@ -1843,7 +1847,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(int constraint, boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int constraint, boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set)", 37));
 		}
@@ -1853,9 +1857,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return constraints;
 	}
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set)", 37));
 		}
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
@@ -1866,8 +1870,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)
-	 * <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
+	 * List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的trigger
@@ -1877,16 +1881,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 
 	@Override
-	public List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) {
+	public List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param triggers 上一步查询结果
@@ -1896,9 +1900,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)", 37));
 		}
 		if(null == triggers){
 			readers = new LinkedHashMap<>();
@@ -1910,11 +1914,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													procedure
 	 ******************************************************************************************************************/
 
-	public List<Run> buildQueryProcedureRunSQL(String catalog, String schema, String name) {
+	public List<Run> buildQueryProcedureRun(DataRuntime runtime, String catalog, String schema, String name) {
 		return new ArrayList<>();
 	}
 
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception{
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception{
 		return new LinkedHashMap<>();
 	}
 
@@ -1922,11 +1926,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													function
 	 ******************************************************************************************************************/
 
-	public List<Run> buildQueryFunctionRunSQL(String catalog, String schema, String name) {
+	public List<Run> buildQueryFunctionRun(DataRuntime runtime, String catalog, String schema, String name) {
 		return new ArrayList<>();
 	}
 
-	public <T extends Function> LinkedHashMap<String, T> functions(int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception{
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception{
 		return new LinkedHashMap<>();
 	}
 
@@ -1955,29 +1959,29 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Table table);
-	 * List<Run> buildAddCommentRunSQL(Table table);
-	 * List<Run> buildAlterRunSQL(Table table)
-	 * List<Run> buildAlterRunSQL(Table table, Collection<Column> columns);
-     * List<Run> buildRenameRunSQL(Table table);
-	 * List<Run> buildChangeCommentRunSQL(Table table);
-	 * List<Run> buildDropRunSQL(Table table);
-	 * StringBuilder checkTableExists(StringBuilder builder, boolean exists)
-	 * StringBuilder primary(StringBuilder builder, Table table)
-	 * StringBuilder comment(StringBuilder builder, Table table)
-	 * StringBuilder name(StringBuilder builder, Table table)
+	 * List<Run> buildCreateRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns);
+     * List<Run> buildRenameRun(DataRuntime runtime, Table table);
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildDropRun(DataRuntime runtime, Table table);
+	 * StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table)
+	 * StringBuilder name(DataRuntime runtime, StringBuilder builder, Table table)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public List<Run> buildCreateRunSQL(Table table) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
  		builder.append("CREATE ").append(table.getKeyword()).append(" ");
-		checkTableExists(builder, false);
-		name(builder, table);
+		checkTableExists(runtime, builder, false);
+		name(runtime, builder, table);
 		LinkedHashMap columMap = table.getColumns();
 		Collection<Column> columns = null;
 		List<Column> pks = table.primarys();
@@ -1992,24 +1996,24 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 						builder.append(",");
 					}
 					SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-					define(builder, column).append("\n");
+					define(runtime, builder, column).append("\n");
 					idx ++;
 				}
 				builder.append("\t");
 				if(pks.size()== 1) {
-					primary(builder, table);
+					primary(runtime, builder, table);
 				}
 				builder.append(")");
 			}
 		}
-		comment(builder, table);
-		List<Run> tableComment = buildAddCommentRunSQL(table);
+		comment(runtime, builder, table);
+		List<Run> tableComment = buildAddCommentRun(runtime, table);
 		if(null != tableComment) {
 			runs.addAll(tableComment);
 		}
 		if(null != columns){
 			for(Column column:columns){
-				List<Run> columnComment = buildAddCommentRunSQL(column);
+				List<Run> columnComment = buildAddCommentRun(runtime, column);
 				if(null != columnComment){
 					runs.addAll(columnComment);
 				}
@@ -2021,7 +2025,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			for (Column col:pks){
 				primary.addColumn(col);
 			}
-			List<Run> pksql = buildAddRunSQL(primary);
+			List<Run> pksql = buildAddRun(runtime, primary);
 			if(null != pksql){
 				runs.addAll(pksql);
 			}
@@ -2030,15 +2034,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	 public List<Run> buildAddCommentRunSQL(Table table) throws Exception{
+	 public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception{
 		return new ArrayList<>();
 	 }
 
 
 	@Override
-	public List<Run> buildAlterRunSQL(Table table) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRunSQL(Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2049,16 +2053,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		for(Column column:columns){
 			String action = column.getAction();
 			if("add".equalsIgnoreCase(action)){
-				runs.addAll(buildAddRunSQL(column, false));
+				runs.addAll(buildAddRun(runtime, column, false));
 			}else if("alter".equalsIgnoreCase(action)){
-				runs.addAll(buildAlterRunSQL(column, false));
+				runs.addAll(buildAlterRun(runtime, column, false));
 			}else if("drop".equalsIgnoreCase(action)){
-				runs.addAll(buildDropRunSQL(column, false));
+				runs.addAll(buildDropRun(runtime, column, false));
 			}
 		}
 		return runs;
@@ -2066,22 +2070,22 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改表名
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param table 表
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Table table) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Table table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRunSQL(Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<Run> buildChangeCommentRunSQL(Table table) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRunSQL(Table table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, Table table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2091,7 +2095,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Table table) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Table table) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -2099,8 +2103,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		builder.append("DROP ").append(table.getKeyword()).append(" ");
-		checkTableExists(builder, true);
-		name(builder, table);
+		checkTableExists(runtime, builder, true);
+		name(runtime, builder, table);
 		return runs;
 	}
 
@@ -2111,7 +2115,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
+	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		builder.append(" IF ");
 		if(!exists){
 			builder.append("NOT ");
@@ -2128,7 +2132,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder primary(StringBuilder builder, Table table){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table){
 		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
@@ -2153,7 +2157,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder comment(StringBuilder builder, Table table){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table){
 		String comment = table.getComment();
 		if(BasicUtil.isNotEmpty(comment)) {
 			builder.append(" COMMENT'").append(comment).append("'");
@@ -2168,7 +2172,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder name(StringBuilder builder, Table table){
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Table table){
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		String name = table.getName();
@@ -2185,69 +2189,69 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(View view);
-	 * List<Run> buildAddCommentRunSQL(View view);
-	 * List<Run> buildAlterRunSQL(View view);
-	 * List<Run> buildRenameRunSQL(View view);
-	 * List<Run> buildChangeCommentRunSQL(View view);
-	 * List<Run> buildDropRunSQL(View view);
-	 * StringBuilder checkViewExists(StringBuilder builder, boolean exists)
-	 * StringBuilder primary(StringBuilder builder, View view)
-	 * StringBuilder comment(StringBuilder builder, View view)
-	 * StringBuilder name(StringBuilder builder, View view)
+	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
+	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildDropRun(DataRuntime runtime, View view);
+	 * StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists)
+	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, View view)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, View view)
+	 * StringBuilder name(DataRuntime runtime, StringBuilder builder, View view)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public List<Run> buildCreateRunSQL(View view) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("CREATE VIEW ");
-		name(builder, view);
+		name(runtime, builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
 
-		runs.addAll(buildAddCommentRunSQL(view));
+		runs.addAll(buildAddCommentRun(runtime, view));
 		return runs;
 	}
 
 	@Override
-	public List<Run> buildAddCommentRunSQL(View view) throws Exception{
+	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
 		return new ArrayList<>();
 	}
 
 
 	@Override
-	public List<Run> buildAlterRunSQL(View view) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, View view) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER VIEW ");
-		name(builder, view);
+		name(runtime,builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
 		return runs;
 	}
 	/**
 	 * 修改视图名
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param view 视图
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(View view) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, View view) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRunSQL(View view)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, View view)", 37));
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<Run> buildChangeCommentRunSQL(View view) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, View view) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRunSQL(View view)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, View view)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2257,14 +2261,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(View view) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, View view) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("DROP ").append(view.getKeyword()).append(" ");
-		checkViewExists(builder, true);
-		name(builder, view);
+		checkViewExists(runtime,builder, true);
+		name(runtime,builder, view);
 		return runs;
 	}
 
@@ -2275,7 +2279,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkViewExists(StringBuilder builder, boolean exists){
+	public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		builder.append(" IF ");
 		if(!exists){
 			builder.append("NOT ");
@@ -2291,19 +2295,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder comment(StringBuilder builder, View view){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View view){
 		return builder;
 	}
 
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(MasterTable table);
-	 * List<Run> buildAddCommentRunSQL(MasterTable table);
-	 * List<Run> buildAlterRunSQL(MasterTable table);
-	 * List<Run> buildDropRunSQL(MasterTable table);
-	 * List<Run> buildRenameRunSQL(MasterTable table);
-	 * List<Run> buildChangeCommentRunSQL(MasterTable table);
+	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table);
 	 ******************************************************************************************************************/
 	/**
 	 * 创建主表
@@ -2311,41 +2315,41 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildCreateRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, MasterTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildCreateRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, MasterTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildAddCommentRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception{
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildAlterRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, MasterTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, MasterTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildDropRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, MasterTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildDropRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildDropRun(DataRuntime runtime, MasterTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildRenameRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, MasterTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, MasterTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildChangeCommentRunSQL(MasterTable table) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRunSQL(MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2354,12 +2358,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(PartitionTable table);
-	 * List<Run> buildAddCommentRunSQL(MasterTable table) throws Exception
-	 * List<Run> buildAlterRunSQL(PartitionTable table);
-	 * List<Run> buildDropRunSQL(PartitionTable table);
-	 * List<Run> buildRenameRunSQL(PartitionTable table);
-	 * List<Run> buildChangeCommentRunSQL(PartitionTable table);
+	 * List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table);
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table);
+	 * List<Run> buildDropRun(DataRuntime runtime, PartitionTable table);
+	 * List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table);
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table);
 	 ******************************************************************************************************************/
 	/**
 	 * 创建分区表
@@ -2367,42 +2371,42 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildCreateRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table) throws Exception{
 
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildCreateRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildAddCommentRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildAddCommentRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildAlterRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildDropRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildDropRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildDropRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildRenameRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildChangeCommentRunSQL(PartitionTable table) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRunSQL(PartitionTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2410,36 +2414,36 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String alterColumnKeyword()
-	 * List<Run> buildAddRunSQL(Column column, boolean slice)
-	 * List<Run> buildAddRunSQL(Column column)
-	 * List<Run> buildAlterRunSQL(Column column, boolean slice)
-	 * List<Run> buildAlterRunSQL(Column column)
-	 * List<Run> buildDropRunSQL(Column column, boolean slice)
-	 * List<Run> buildDropRunSQL(Column column)
-	 * List<Run> buildRenameRunSQL(Column column)
-	 * List<Run> buildChangeTypeRunSQL(Column column)
-	 * List<Run> buildChangeDefaultRunSQL(Column column)
-	 * List<Run> buildChangeNullableRunSQL(Column column)
-	 * List<Run> buildChangeCommentRunSQL(Column column)
-	 * List<Run> buildAddCommentRunSQL(Column column)
-	 * StringBuilder define(StringBuilder builder, Column column)
-	 * StringBuilder type(StringBuilder builder, Column column)
-	 * boolean isIgnorePrecision(Column column);
-	 * boolean isIgnoreScale(Column column);
-	 * Boolean checkIgnorePrecision(String datatype);
-	 * Boolean checkIgnoreScale(String datatype);
-	 * StringBuilder nullable(StringBuilder builder, Column column)
-	 * StringBuilder charset(StringBuilder builder, Column column)
-	 * StringBuilder defaultValue(StringBuilder builder, Column column)
-	 * StringBuilder increment(StringBuilder builder, Column column)
-	 * StringBuilder onupdate(StringBuilder builder, Column column)
-	 * StringBuilder position(StringBuilder builder, Column column)
-	 * StringBuilder comment(StringBuilder builder, Column column)
-	 * StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
+	 * String alterColumnKeyword(DataRuntime runtime)
+	 * List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildAddRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Column column)
+	 * List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice)
+	 * List<Run> buildDropRun(DataRuntime runtime, Column column)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeTypeRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
+	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
+	 * boolean isIgnoreScale(DataRuntime runtime, Column column);
+	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype);
+	 * Boolean checkIgnoreScale(DataRuntime runtime, String datatype);
+	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 	@Override
-	public String alterColumnKeyword(){
+	public String alterColumnKeyword(DataRuntime runtime){
 		return "ALTER";
 	}
 
@@ -2450,7 +2454,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -2458,22 +2462,22 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(!slice) {
 			Table table = column.getTable(true);
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
-			name(builder, table);
+			name(runtime, builder, table);
 		}
 		// Column update = column.getUpdate();
 		// if(null == update){
 		// 添加列
 		//builder.append(" ADD ").append(column.getKeyword()).append(" ");
-		addColumnGuide(builder, column);
+		addColumnGuide(runtime, builder, column);
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-		define(builder, column);
+		define(runtime, builder, column);
 		// }
-		runs.addAll(buildAddCommentRunSQL(column));
+		runs.addAll(buildAddCommentRun(runtime, column));
 		return runs;
 	}
 	@Override
-	public List<Run> buildAddRunSQL(Column column) throws Exception{
-		return buildAddRunSQL(column, false);
+	public List<Run> buildAddRun(DataRuntime runtime, Column column) throws Exception{
+		return buildAddRun(runtime, column, false);
 	}
 
 	/**
@@ -2482,7 +2486,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public StringBuilder addColumnGuide(StringBuilder builder, Column column){
+	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column){
 		return builder.append(" ADD ").append(column.getKeyword()).append(" ");
 	}
 
@@ -2492,7 +2496,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception{
 		List<Run> runs = new ArrayList<>();
 
 		Column update = column.getUpdate();
@@ -2502,14 +2506,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String name = column.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
-				runs.addAll(buildRenameRunSQL(column));
+				runs.addAll(buildRenameRun(runtime, column));
 			}
 			// 修改数据类型
-			String type = type(null, column).toString();
-			String utype = type(null, update).toString();
+			String type = type(runtime, null, column).toString();
+			String utype = type(runtime, null, update).toString();
 			boolean exe = false;
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
-				List<Run> list = buildChangeTypeRunSQL(column);
+				List<Run> list = buildChangeTypeRun(runtime, column);
 				if(null != list){
 					runs.addAll(list);
 					exe = true;
@@ -2517,7 +2521,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}else{
 				//数据类型没变但长度变了
 				if(column.getPrecision() != update.getPrecision() || column.getScale() != update.getScale()){
-					List<Run> list = buildChangeTypeRunSQL(column);
+					List<Run> list = buildChangeTypeRun(runtime, column);
 					if(null != list){
 						runs.addAll(list);
 						exe = true;
@@ -2525,10 +2529,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 			}
 			// 修改默认值
-			Object def = column.getDefaultValue();
-			Object udef = update.getDefaultValue();
+			Object def = column.getdefaultValue();
+			Object udef = update.getdefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)){
-				List<Run> defs = buildChangeDefaultRunSQL(column);
+				List<Run> defs = buildChangeDefaultRun(runtime, column);
 				if(null != defs){
 					runs.addAll(defs);
 				}
@@ -2537,7 +2541,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			int nullable = column.isNullable();
 			int unullable = update.isNullable();
 			if(nullable != unullable){
-				List<Run> nulls = buildChangeNullableRunSQL(column);
+				List<Run> nulls = buildChangeNullableRun(runtime, column);
 				if(null != nulls){
 					runs.addAll(nulls);
 				}
@@ -2546,7 +2550,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String comment = column.getComment();
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
-				List<Run> cmts = buildChangeCommentRunSQL(column);
+				List<Run> cmts = buildChangeCommentRun(runtime, column);
 				if(null != cmts){
 					runs.addAll(cmts);
 				}
@@ -2557,8 +2561,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public List<Run> buildAlterRunSQL(Column column) throws Exception{
-		return buildAlterRunSQL(column, false);
+	public List<Run> buildAlterRun(DataRuntime runtime, Column column) throws Exception{
+		return buildAlterRun(runtime, column, false);
 	}
 
 	/**
@@ -2568,28 +2572,28 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Column column, boolean slice) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		if(column instanceof Tag){
 			Tag tag = (Tag)column;
-			return buildDropRunSQL(tag);
+			return buildDropRun(runtime, tag);
 		}
 		if(!slice) {
 			Table table = column.getTable(true);
 			builder.append("ALTER ").append(table.getKeyword()).append(" ");
-			name(builder, table);
+			name(runtime, builder, table);
 		}
-		dropColumnGuide(builder, column);
+		dropColumnGuide(runtime, builder, column);
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		return runs;
 	}
 
 	@Override
-	public List<Run> buildDropRunSQL(Column column) throws Exception{
-		return buildDropRunSQL(column, false);
+	public List<Run> buildDropRun(DataRuntime runtime, Column column) throws Exception{
+		return buildDropRun(runtime, column, false);
 	}
 
 	/**
@@ -2598,25 +2602,25 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public StringBuilder dropColumnGuide(StringBuilder builder, Column column){
+	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column){
 		return builder.append(" DROP ").append(column.getKeyword()).append(" ");
 	}
 	/**
 	 * 修改列名
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Column column) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Column column) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		Table table = column.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" RENAME ").append(column.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" ");
@@ -2629,28 +2633,28 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改数据类型
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildChangeTypeRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeTypeRunSQL(Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeTypeRun(DataRuntime runtime, Column column)", 37));
 		}
 		return new ArrayList<>();
 	}
 	/**
 	 * 修改默认值
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeDefaultRunSQL(Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2658,28 +2662,28 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改非空限制
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column column) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeNullableRunSQL(Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)", 37));
 		}
 		return new ArrayList<>();
 	}
 	/**
 	 * 修改备注
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRunSQL(Column column) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRunSQL(Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2691,7 +2695,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildAddCommentRunSQL(Column column) throws Exception{
+	public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -2701,9 +2705,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildDropAutoIncrement(Column column) throws Exception{
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildDropAutoIncrement(Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2714,27 +2718,27 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder define(StringBuilder builder, Column column){
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column){
 		// 数据类型
-		type(builder, column);
+		type(runtime, builder, column);
 		// 编码
-		charset(builder, column);
+		charset(runtime, builder, column);
 		// 默认值
-		defaultValue(builder, column);
+		defaultValue(runtime, builder, column);
 		// 非空
-		nullable(builder, column);
+		nullable(runtime, builder, column);
 		//主键
-		primary(builder, column);
+		primary(runtime, builder, column);
 		// 递增
 		if(column.isPrimaryKey() == 1) {
-			increment(builder, column);
+			increment(runtime, builder, column);
 		}
 		// 更新行事件
-		onupdate(builder, column);
+		onupdate(runtime, builder, column);
 		// 备注
-		comment(builder, column);
+		comment(runtime, builder, column);
 		// 位置
-		position(builder, column);
+		position(runtime, builder, column);
 		return builder;
 	}
 	/**
@@ -2744,7 +2748,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder type(StringBuilder builder, Column column){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column){
 		if(null == builder){
 			builder = new StringBuilder();
 		}
@@ -2760,10 +2764,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			isIgnoreScale = type.ignoreScale();
 			typeName = type.getName();
 		}else{
-			isIgnorePrecision = isIgnorePrecision(column);
-			isIgnoreScale = isIgnoreScale(column);
+			isIgnorePrecision = isIgnorePrecision(runtime, column);
+			isIgnoreScale = isIgnoreScale(runtime, column);
 		}
-		return type(builder, column, typeName, isIgnorePrecision, isIgnoreScale);
+		return type(runtime, builder, column, typeName, isIgnorePrecision, isIgnoreScale);
 	}
 
 	/**
@@ -2776,7 +2780,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		if(null == builder){
 			builder = new StringBuilder();
 		}
@@ -2800,7 +2804,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public Boolean checkIgnorePrecision(String type) {
+	public Boolean checkIgnorePrecision(DataRuntime runtime, String type) {
 		type = type.toUpperCase();
 		if (type.contains("INT")) {
 			return false;
@@ -2844,7 +2848,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Boolean 检测不妯来时返回null
 	 */
 	@Override
-	public Boolean checkIgnoreScale(String type) {
+	public Boolean checkIgnoreScale(DataRuntime runtime, String type) {
 		type = type.toUpperCase();
 		if (type.contains("INT")) {
 			return true;
@@ -2883,7 +2887,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public boolean isIgnorePrecision(Column column) {
+	public boolean isIgnorePrecision(DataRuntime runtime, Column column) {
 		ColumnType type = column.getColumnType();
 		if(null != type){
 			return type.ignorePrecision();
@@ -2891,7 +2895,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		String typeName = column.getTypeName();
 		if(null != typeName){
 			String chk = typeName.toUpperCase();
-			Boolean chkResult = checkIgnorePrecision(chk);
+			Boolean chkResult = checkIgnorePrecision(runtime, chk);
 			if(null != chkResult){
 				return chkResult;
 			}
@@ -2900,7 +2904,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public boolean isIgnoreScale(Column column) {
+	public boolean isIgnoreScale(DataRuntime runtime, Column column) {
 		ColumnType type = column.getColumnType();
 		if(null != type){
 			return type.ignoreScale();
@@ -2908,7 +2912,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		String name = column.getTypeName();
 		if(null != name){
 			String chk = name.toUpperCase();
-			Boolean chkResult = checkIgnoreScale(chk);
+			Boolean chkResult = checkIgnoreScale(runtime, chk);
 			if(null != chkResult){
 				return chkResult;
 			}
@@ -2923,7 +2927,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder nullable(StringBuilder builder, Column column){
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column){
 		if(column.isNullable() == 0) {
 			int nullable = column.isNullable();
 			if(nullable != -1) {
@@ -2942,7 +2946,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder charset(StringBuilder builder, Column column){
+	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column){
 		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
 		String typeName = column.getTypeName();
 		if(null != typeName && typeName.toLowerCase().contains("char")) {
@@ -2964,20 +2968,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder defaultValue(StringBuilder builder, Column column){
-		Object def = column.getDefaultValue();
+	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column){
+		Object def = column.getdefaultValue();
 		if(null != def) {
 			builder.append(" DEFAULT ");
-			boolean isCharColumn = isCharColumn(column);
+			boolean isCharColumn = isCharColumn(runtime, column);
 			if(def instanceof SQL_BUILD_IN_VALUE){
-				String value = value(column, (SQL_BUILD_IN_VALUE)def);
+				String value = value(runtime, column, (SQL_BUILD_IN_VALUE)def);
 				if(null != value){
 					builder.append(value);
 				}
 			}else {
-				def = write(column, def, false);
+				def = write(runtime, column, def, false);
 				if(null == def){
-					def = column.getDefaultValue();
+					def = column.getdefaultValue();
 				}
 				//format(builder, def);
 				builder.append(def);
@@ -2993,7 +2997,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder primary(StringBuilder builder, Column column){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column){
 		return builder;
 	}
 
@@ -3005,9 +3009,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder increment(StringBuilder builder, Column column){
+	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder increment(StringBuilder builder, Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column)", 37));
 		}
 		return builder;
 	}
@@ -3023,9 +3027,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder onupdate(StringBuilder builder, Column column){
+	public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder onupdate(StringBuilder builder, Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column)", 37));
 		}
 		return builder;
 	}
@@ -3038,9 +3042,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder position(StringBuilder builder, Column column){
+	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder position(StringBuilder builder, Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column)", 37));
 		}
 		return builder;
 	}
@@ -3053,9 +3057,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder comment(StringBuilder builder, Column column){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder comment(StringBuilder builder, Column column)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column)", 37));
 		}
 		return builder;
 	}
@@ -3067,9 +3071,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 */
 	@Override
-	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists){
+	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 checkColumnExists(StringBuilder builder, boolean exists)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists)", 37));
 		}
 		return builder;
 	}
@@ -3077,15 +3081,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(Tag tag)
-	 * List<Run> buildAlterRunSQL(Tag tag)
-	 * List<Run> buildDropRunSQL(Tag tag)
-	 * List<Run> buildRenameRunSQL(Tag tag)
-	 * List<Run> buildChangeDefaultRunSQL(Tag tag)
-	 * List<Run> buildChangeNullableRunSQL(Tag tag)
-	 * List<Run> buildChangeCommentRunSQL(Tag tag)
-	 * List<Run> buildChangeTypeRunSQL(Tag tag)
-	 * StringBuilder checkTagExists(StringBuilder builder, boolean exists)
+	 * List<Run> buildAddRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildDropRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag)
+	 * List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag)
+	 * StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
 	/**
@@ -3095,20 +3099,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, Tag tag) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
+		name(runtime, builder, table);
 		// Tag update = tag.getUpdate();
 		// if(null == update){
 		// 添加标签
 		builder.append(" ADD TAG ");
 		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-		define(builder, tag);
+		define(runtime, builder, tag);
 		// }
 		return runs;
 	}
@@ -3120,7 +3124,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Tag tag) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Tag tag) throws Exception{
 		List<Run> runs = new ArrayList<>();
 
 		Tag update = tag.getUpdate();
@@ -3129,43 +3133,43 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String name = tag.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
-				runs.addAll(buildRenameRunSQL(tag));
+				runs.addAll(buildRenameRun(runtime, tag));
 			}
 			tag.setName(uname);
 			// 修改数据类型
-			String type = type(null, tag).toString();
-			String utype = type(null, update).toString();
+			String type = type(runtime, null, tag).toString();
+			String utype = type(runtime, null, update).toString();
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
-				List<Run> list = buildChangeTypeRunSQL(tag);
+				List<Run> list = buildChangeTypeRun(runtime, tag);
 				if(null != list){
 					runs.addAll(list);
 				}
 			}else{
 				//数据类型没变但长度变了
 				if(tag.getPrecision() != update.getPrecision() || tag.getScale() != update.getScale()){
-					List<Run> list = buildChangeTypeRunSQL(tag);
+					List<Run> list = buildChangeTypeRun(runtime, tag);
 					if(null != list){
 						runs.addAll(list);
 					}
 				}
 			}
 			// 修改默认值
-			Object def = tag.getDefaultValue();
-			Object udef = update.getDefaultValue();
+			Object def = tag.getdefaultValue();
+			Object udef = update.getdefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)){
-				runs.addAll(buildChangeDefaultRunSQL(tag));
+				runs.addAll(buildChangeDefaultRun(runtime, tag));
 			}
 			// 修改非空限制
 			int nullable = tag.isNullable();
 			int unullable = update.isNullable();
 			if(nullable != unullable){
-				runs.addAll(buildChangeNullableRunSQL(tag));
+				runs.addAll(buildChangeNullableRun(runtime, tag));
 			}
 			// 修改备注
 			String comment = tag.getComment();
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
-				runs.addAll(buildChangeCommentRunSQL(tag));
+				runs.addAll(buildChangeCommentRun(runtime, tag));
 			}
 		}
 
@@ -3180,14 +3184,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Tag tag) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Tag tag) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" DROP ").append(tag.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
 		return runs;
@@ -3197,19 +3201,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改标签名
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Tag tag) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Tag tag) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		Table table = tag.getTable(true);
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" RENAME ").append(tag.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" ");
@@ -3220,14 +3224,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改默认值
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeDefaultRunSQL(Tag tag)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3235,28 +3239,28 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改非空限制
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeNullableRunSQL(Tag tag)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag)", 37));
 		}
 		return new ArrayList<>();
 	}
 	/**
 	 * 修改备注
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRunSQL(Tag tag)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3264,14 +3268,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 修改数据类型
 	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return sql
 	 */
 	@Override
-	public List<Run> buildChangeTypeRunSQL(Tag tag) throws Exception{
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeTypeRunSQL(Tag tag)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3284,9 +3288,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
+	public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder checkTagExists(StringBuilder builder, boolean exists)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists)", 37));
 		}
 		return builder;
 	}
@@ -3295,10 +3299,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception
-	 * List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception
-	 * List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception
-	 * List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception
+	 * List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception
+	 * List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception
+	 * List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加主键
@@ -3306,9 +3310,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRunSQL(PrimaryKey primary)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3319,9 +3323,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRunSQL(PrimaryKey primary)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3332,27 +3336,27 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, primary.getTable(true));
+		name(runtime, builder, primary.getTable(true));
 		builder.append(" DROP CONSTRAINT ");
 		SQLUtil.delimiter(builder, primary.getName(), getDelimiterFr(), getDelimiterTo());
 		return runs;
 	}
 	/**
 	 * 修改主键名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param primary 主键
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRunSQL(PrimaryKey primary)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3366,7 +3370,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<Run> buildAddRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3374,7 +3378,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		Map<String,Column> columns = foreign.getColumns();
 		if(columns.size()>0) {
 			builder.append("ALTER TABLE ");
-			name(builder, foreign.getTable(true));
+			name(runtime, builder, foreign.getTable(true));
 			builder.append(" ADD");
 			if(BasicUtil.isNotEmpty(foreign.getName())){
 				builder.append(" CONSTRAINT ").append(foreign.getName());
@@ -3408,9 +3412,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param foreign 外键
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRunSQL(PrimaryKey primary)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3420,36 +3424,36 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<Run> buildDropRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE");
-		name(builder, foreign.getTable(true));
+		name(runtime, builder, foreign.getTable(true));
 		builder.append(" DROP FOREIGN KEY ").append(foreign.getName());
 		return runs;
 	}
 
 	/**
 	 * 修改外键名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param foreign 外键
 	 * @return String
 	 */
-	public List<Run> buildRenameRunSQL(ForeignKey foreign) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, ForeignKey foreign) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRunSQL(ForeignKey foreign) ", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, ForeignKey foreign) ", 37));
 		}
 		return new ArrayList<>();
 	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(Index index) throws Exception
-	 * List<Run> buildAlterRunSQL(Index index) throws Exception
-	 * List<Run> buildDropRunSQL(Index index) throws Exception
-	 * List<Run> buildRenameRunSQL(Index index) throws Exception
+	 * List<Run> buildAddRun(DataRuntime runtime, Index index) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Index index) throws Exception
+	 * List<Run> buildDropRun(DataRuntime runtime, Index index) throws Exception
+	 * List<Run> buildRenameRun(DataRuntime runtime, Index index) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
@@ -3458,7 +3462,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Index index) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, Index index) throws Exception{
 		String name = index.getName();
 		if(BasicUtil.isEmpty(name)){
 			name = "index_"+BasicUtil.getRandomString(10);
@@ -3478,7 +3482,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		builder.append(" INDEX ").append(name)
 				.append(" ON ");//.append(index.getTableName(true));
 		Table table = index.getTable(true);
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append("(");
 		int qty = 0;
 		for(Column column:index.getColumns().values()){
@@ -3497,7 +3501,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(BasicUtil.isNotEmpty(type)){
 			builder.append("USING ").append(type).append(" ");
 		}
-		comment(builder, index);
+		comment(runtime, builder, index);
 		return runs;
 	}
 	/**
@@ -3507,9 +3511,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Index index) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Index index) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRunSQL(Index index)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRun(DataRuntime runtime, Index index)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3520,7 +3524,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Index index) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Index index) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3528,27 +3532,27 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		Table table = index.getTable(true);
 		if(index.isPrimary()){
 			builder.append("ALTER TABLE ");
-			name(builder, table);
+			name(runtime, builder, table);
 			builder.append(" DROP CONSTRAINT ").append(index.getName());
 		}else {
 			builder.append("DROP INDEX ").append(index.getName());
 			if (BasicUtil.isNotEmpty(table)) {
 				builder.append(" ON ");
-				name(builder, table);
+				name(runtime, builder, table);
 			}
 		}
 		return runs;
 	}
 	/**
 	 * 修改索引名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param index 索引
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Index index) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Index index) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRunSQL(Index index)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRun(DataRuntime runtime, Index index)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3558,15 +3562,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param builder
 	 * @param index
 	 */
-	public void comment(StringBuilder builder, Index index){
+	public void comment(DataRuntime runtime, StringBuilder builder, Index index){
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildAddRunSQL(Constraint constraint) throws Exception
-	 * List<Run> buildAlterRunSQL(Constraint constraint) throws Exception
-	 * List<Run> buildDropRunSQL(Constraint constraint) throws Exception
-	 * List<Run> buildRenameRunSQL(Constraint constraint) throws Exception
+	 * List<Run> buildAddRun(DataRuntime runtime, Constraint constraint) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint) throws Exception
+	 * List<Run> buildDropRun(DataRuntime runtime, Constraint constraint) throws Exception
+	 * List<Run> buildRenameRun(DataRuntime runtime, Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 添加约束
@@ -3574,9 +3578,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildAddRun(DataRuntime runtime, Constraint constraint) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRunSQL(Constraint constraint)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAddRun(DataRuntime runtime, Constraint constraint)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3586,9 +3590,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param constraint 约束
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRunSQL(Constraint constraint)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3599,25 +3603,25 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Constraint constraint) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("ALTER TABLE ");
 		Table table = constraint.getTable(true);
-		name(builder, table);
+		name(runtime, builder, table);
 		builder.append(" DROP CONSTRAINT ").append(constraint.getName());
 		 return runs;
 	}
 	/**
 	 * 修改约束名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param constraint 约束
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Constraint constraint) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Constraint constraint) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3642,10 +3646,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Trigger trigger) throws Exception
-	 * List<Run> buildAlterRunSQL(Trigger trigger) throws Exception;
-	 * List<Run> buildDropRunSQL(Trigger trigger) throws Exception;
-	 * List<Run> buildRenameRunSQL(Trigger trigger) throws Exception;
+	 * List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加触发器
@@ -3653,7 +3657,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildCreateRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3670,14 +3674,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			first = false;
 		}
 		builder.append(" ON ");
-		name(builder, trigger.getTable(true));
-		each(builder, trigger);
+		name(runtime, builder, trigger.getTable(true));
+		each(runtime, builder, trigger);
 
 		builder.append("\n").append(trigger.getDefinition());
 
 		return runs;
 	}
-	public void each(StringBuilder builder, Trigger trigger){
+	public void each(DataRuntime runtime, StringBuilder builder, Trigger trigger){
 		if(trigger.isEach()){
 			builder.append(" FOR EACH ROW ");
 		}else{
@@ -3691,7 +3695,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -3701,7 +3705,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3724,12 +3728,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 修改触发器名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param trigger 触发器
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRunSQL(Trigger trigger) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3755,17 +3759,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Procedure procedure) throws Exception
-	 * List<Run> buildAlterRunSQL(Procedure procedure) throws Exception;
-	 * List<Run> buildDropRunSQL(Procedure procedure) throws Exception;
-	 * List<Run> buildRenameRunSQL(Procedure procedure) throws Exception;
+	 * List<Run> buildCreateRun(DataRuntime runtime, Procedure procedure) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<Run> buildCreateRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, Procedure procedure) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3791,13 +3795,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(!first){
 				builder.append(",");
 			}
-			parameter(builder, parameter);
+			parameter(runtime, builder, parameter);
 		}
 		for(Parameter parameter:outs){
 			if(!first){
 				builder.append(",");
 			}
-			parameter(builder, parameter);
+			parameter(runtime, builder, parameter);
 		}
 		builder.append("\n)");
 		String returnType = procedure.getReturnType();
@@ -3814,7 +3818,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @param parameter parameter
 	 */
-	public void parameter(StringBuilder builder, Parameter parameter){
+	public void parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter){
 		boolean in = parameter.isInput();
 		boolean out = parameter.isOutput();
 		if(in){
@@ -3851,7 +3855,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Procedure procedure) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -3860,7 +3864,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<Run> buildDropRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Procedure procedure) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3880,11 +3884,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 修改存储过程名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	public List<Run> buildRenameRunSQL(Procedure procedure) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Procedure procedure) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3907,10 +3911,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildCreateRunSQL(Function function) throws Exception
-	 * List<Run> buildAlterRunSQL(Function function) throws Exception;
-	 * List<Run> buildDropRunSQL(Function function) throws Exception;
-	 * List<Run> buildRenameRunSQL(Function function) throws Exception;
+	 * List<Run> buildCreateRun(DataRuntime runtime, Function function) throws Exception
+	 * List<Run> buildAlterRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildDropRun(DataRuntime runtime, Function function) throws Exception;
+	 * List<Run> buildRenameRun(DataRuntime runtime, Function function) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -3918,7 +3922,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<Run> buildCreateRunSQL(Function function) throws Exception{
+	public List<Run> buildCreateRun(DataRuntime runtime, Function function) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -3928,7 +3932,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param function 函数
 	 * @return List
 	 */
-	public List<Run> buildAlterRunSQL(Function function) throws Exception{
+	public List<Run> buildAlterRun(DataRuntime runtime, Function function) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -3937,7 +3941,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<Run> buildDropRunSQL(Function function) throws Exception{
+	public List<Run> buildDropRun(DataRuntime runtime, Function function) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3958,11 +3962,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 修改函数名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param function 函数
 	 * @return String
 	 */
-	public List<Run> buildRenameRunSQL(Function function) throws Exception{
+	public List<Run> buildRenameRun(DataRuntime runtime, Function function) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -3985,10 +3989,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 *
 	 * 													common
 	 *------------------------------------------------------------------------------------------------------------------
-	 * boolean isBooleanColumn(Column column)
-	 *  boolean isNumberColumn(Column column)
-	 * boolean isCharColumn(Column column)
-	 * String value(Column column, SQL_BUILD_IN_VALUE value)
+	 * boolean isBooleanColumn(DataRuntime runtime, Column column)
+	 *  boolean isNumberColumn(DataRuntime runtime, Column column)
+	 * boolean isCharColumn(DataRuntime runtime, Column column)
+	 * String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value)
 	 * String type(String type)
 	 * String type2class(String type)
 	 *
@@ -4002,7 +4006,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 ******************************************************************************************************************/
 
 	@Override
-	public boolean isBooleanColumn(Column column) {
+	public boolean isBooleanColumn(DataRuntime runtime, Column column) {
 		String clazz = column.getClassName();
 		if(null != clazz){
 			clazz = clazz.toLowerCase();
@@ -4027,7 +4031,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public  boolean isNumberColumn(Column column){
+	public  boolean isNumberColumn(DataRuntime runtime, Column column){
 		String clazz = column.getClassName();
 		if(null != clazz){
 			clazz = clazz.toLowerCase();
@@ -4066,8 +4070,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public boolean isCharColumn(Column column) {
-		return !isNumberColumn(column) && !isBooleanColumn(column);
+	public boolean isCharColumn(DataRuntime runtime, Column column) {
+		return !isNumberColumn(runtime, column) && !isBooleanColumn(runtime, column);
 	}
 	/**
 	 * 内置函数
@@ -4076,7 +4080,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String value(Column column, SQL_BUILD_IN_VALUE value){
+	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
 		return null;
 	}
 
@@ -4138,7 +4142,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public String getPrimaryKey(Object obj){
+	public String getPrimaryKey(DataRuntime runtime, Object obj){
 		if(null == obj){
 			return null;
 		}
@@ -4149,7 +4153,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 	}
 	@Override
-	public Object getPrimaryValue(Object obj){
+	public Object getPrimaryValue(DataRuntime runtime, Object obj){
 		if(null == obj){
 			return null;
 		}
@@ -4187,7 +4191,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Object
 	 */
 	@Override
-	public Object write(Column metadata, Object value, boolean placeholder){
+	public Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder){
 		if(null == value){
 			return value;
 		}
@@ -4238,7 +4242,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Object
 	 */
 	@Override
-	public Object read(Column metadata, Object value, Class clazz){
+	public Object read(DataRuntime runtime, Column metadata, Object value, Class clazz){
 		//Object result = ConvertAdapter.convert(value, clazz);
 		Object result = value;
 		if(null == value){
@@ -4273,7 +4277,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public void value(StringBuilder builder, Object obj, String key){
+	public void value(DataRuntime runtime, StringBuilder builder, Object obj, String key){
 		Object value = null;
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
@@ -4287,7 +4291,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		if(null == value){
 			if(value instanceof SQL_BUILD_IN_VALUE){
-				builder.append(value(null, (SQL_BUILD_IN_VALUE)value));
+				builder.append(value(runtime, null, (SQL_BUILD_IN_VALUE)value));
 			}else {
 				ColumnType type = type(value.getClass().getName());
 				if (null != type) {
@@ -4339,16 +4343,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 */
 	@Override
-	public boolean convert(String catalog, String schema, String table, RunValue value){
+	public boolean convert(DataRuntime runtime, String catalog, String schema, String table, RunValue value){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = null;
-			if(null != dao) {
-				columns = dao.columns(catalog, schema, table);
-			}
-			result = convert(columns, value);
+			LinkedHashMap<String, Column> columns = columns(runtime, new Table(catalog, schema, table), false);
+			result = convert(runtime, columns, value);
 		}else{
-			result = convert((Column)null, value);
+			result = convert(runtime,(Column)null, value);
 		}
 		return result;
 	}
@@ -4357,12 +4358,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(null == columns || columns.isEmpty()) {
 			String random = random(runtime);
 			try {
-				List<Run> runs = buildQueryColumnRunSQL(table, metadata);
+				List<Run> runs = buildQueryColumnRun(runtime, table, metadata);
 				if (null != runs) {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, run);
-						columns = columns(idx, true, table, columns, set);
+						columns = columns(runtime, idx, true, table, columns, set);
 						idx++;
 					}
 				}
@@ -4375,7 +4376,66 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
+		CacheProxy.columns(runtime.getKey(), table.getName(), columns);
 		return columns;
+	}
+
+	/**
+	 * 设置参数值,主要根据数据类型格执行式化，如对象,list,map等插入json列
+	 * @param run run
+	 * @param compare compare
+	 * @param column column
+	 * @param value value
+	 */
+	@Override
+	public void addRunValue(DataRuntime runtime, Run run, Compare compare, Column column, Object value){
+
+        /*if(null != value && value instanceof SQL_BUILD_IN_VALUE){
+            value = buildInValue((SQL_BUILD_IN_VALUE)value);
+            if(null != value){
+                value = "${"+value+"}";
+            }
+        }
+        下一步会执行convert
+        if(null != value){
+            Column column = null;
+            if(ConfigTable.IS_AUTO_CHECK_METADATA) {
+                String table = run.getTable();
+                if (null != table) {
+                    LinkedHashMap<String, Column> columns = ServiceProxy.metadata().columns(table);
+                    if(null != columns){
+                        column = columns.get(key.toUpperCase());
+                        if(null != column){
+                            if(value instanceof Collection) {
+                                List list = new ArrayList();
+                                for(Object item:(Collection)value){
+                                    list.add(convert(column, item));
+                                }
+                                value = list;
+                            }else{
+                                value = convert(column, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }*/
+		boolean split = ConfigTable.IS_AUTO_SPLIT_ARRAY;
+		if(ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA()){
+			String type = null;
+			if(null != column){
+				type = column.getTypeName();
+			}
+			if(null == type){
+				LinkedHashMap<String,Column> columns = columns(runtime, new Table(run.getTable()), true);
+				column = columns.get(column.getName().toUpperCase());
+				type = column.getTypeName();
+			}
+		}
+		RunValue rv = run.addValues(compare, column, value, split);
+		if(null != column){
+			value = convert(runtime, column, rv);
+		}
 	}
 	@Override
 	public boolean convert(DataRuntime runtime, Table table, Run run){
@@ -4388,21 +4448,23 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		List<RunValue> values = run.getRunValues();
-		for(RunValue value:values){
-			if(ConfigTable.IS_AUTO_CHECK_METADATA){
-				result = convert(columns, value);
-			}else{
-				result = convert((Column)null, value);
+		if (null != values) {
+			for (RunValue value : values) {
+				if (ConfigTable.IS_AUTO_CHECK_METADATA) {
+					result = convert(runtime, columns, value);
+				} else {
+					result = convert(runtime, (Column) null, value);
+				}
 			}
 		}
 		return result;
 	}
 	@Override
-	public boolean convert(Map<String,Column> columns, RunValue value){
+	public boolean convert(DataRuntime runtime, Map<String,Column> columns, RunValue value){
 		boolean result = false;
 		if(null != columns && null != value){
 			Column meta = columns.get(value.getKey().toUpperCase());
-			result = convert(meta, value);
+			result = convert(runtime,meta, value);
 		}
 		return result;
 	}
@@ -4413,7 +4475,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run RunValue
 	 * @return boolean 是否完成类型转换,决定下一步是否继续
 	 */
-	public boolean convert(Column metadata, RunValue run){
+	@Override
+	public boolean convert(DataRuntime runtime, Column metadata, RunValue run){
 		if(null == run){
 			return true;
 		}
@@ -4424,7 +4487,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		try {
 			if(null != metadata) {
 				//根据列属性转换(最终也是根据java类型转换)
-				value = convert(metadata, value);
+				value = convert(runtime, metadata, value);
 			}else{
 				DataWriter writer = writer(value.getClass());
 				if(null != writer){
@@ -4438,21 +4501,23 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
-	public Object convert(Column metadata, Object value){
+	@Override
+	public Object convert(DataRuntime runtime, Column metadata, Object value){
 		if(null == value){
 			return value;
 		}
 		try {
 			if(null != metadata) {
 				ColumnType columnType = metadata.getColumnType();
-				value = convert(columnType, value);
+				value = convert(runtime, columnType, value);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return value;
 	}
-	public Object convert(ColumnType columnType, Object value){
+	@Override
+	public Object convert(DataRuntime runtime, ColumnType columnType, Object value){
 		if(null == columnType){
 			return value;
 		}
@@ -4498,7 +4563,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public String objectName(String name) {
+	public String objectName(DataRuntime runtime, String name) {
 		KeyAdapter.KEY_CASE keyCase = type().nameCase();
 		if(null != keyCase){
 			return keyCase.convert(name);
