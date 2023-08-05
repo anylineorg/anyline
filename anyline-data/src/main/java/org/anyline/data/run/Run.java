@@ -19,16 +19,20 @@
 
 package org.anyline.data.run;
 
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.*;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.entity.*;
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
+import org.anyline.metadata.Column;
 
 import java.util.List;
 
 public interface Run {
-	void setAdapter(DriverAdapter adapter);
+	void setRuntime(DataRuntime runtime);
 	void init();
 	 
 	/** 
@@ -90,8 +94,8 @@ public interface Run {
 	 * @param obj  obj
 	 * @param split 遇到集合/数组类型是否拆分处理
 	 * @return Run
-	 */ 
-	Run addValues(Compare compare, String column, Object obj, boolean split);
+	 */
+	RunValue addValues(Compare compare, Column column, Object obj, boolean split);
 
 	Run addOrders(OrderStore orderStore);
 	Run addOrder(Order order);
