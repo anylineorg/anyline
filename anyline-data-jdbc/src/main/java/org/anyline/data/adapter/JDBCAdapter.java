@@ -38,8 +38,8 @@ public interface JDBCAdapter extends DriverAdapter{
 	 * @param keyholder  keyholder
 	 * @return boolean
 	 */
-	boolean identity(String random, Object data, KeyHolder keyholder);
-	Column column(Column column, SqlRowSetMetaData rsm, int index);
+	boolean identity(DataRuntime runtime, String random, Object data, KeyHolder keyholder);
+	Column column(DataRuntime runtime, Column column, SqlRowSetMetaData rsm, int index);
 
 	/**
 	 * 解析查询结果metadata(0=1)
@@ -50,8 +50,8 @@ public interface JDBCAdapter extends DriverAdapter{
 	 * @return columns columns
 	 * @throws Exception 异常
 	 */
-	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
-	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
 	/**
 	 * 解析查询结果metadata(0=1)
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -61,7 +61,7 @@ public interface JDBCAdapter extends DriverAdapter{
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	<T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception;
 	/**
 	 *
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -71,8 +71,8 @@ public interface JDBCAdapter extends DriverAdapter{
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
-	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception;
 
 	/**
 	 * 封装查询结果
@@ -83,4 +83,5 @@ public interface JDBCAdapter extends DriverAdapter{
 	 * @return DataRow
 	 */
 	DataRow row(boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ResultSet rs);
+
 }
