@@ -21,13 +21,13 @@ package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
@@ -85,12 +85,10 @@ public interface DriverAdapter {
 
 
 	//根据驱动内置接口补充 再根据metadata解析 SELECT * FROM T WHERE 1=0 SqlRowSet set = runtime.getTemplate().queryForRowSet(run.getFinalQuery());
-	<T extends Column> LinkedHashMap<String, T> columns(boolean create, DataRuntime runtime, Table table, LinkedHashMap<String, T> columns);
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
 
 	///////////////////////////////////////////////////////////////////////
 
-	AnylineDao getDao();
-	void setDao(AnylineDao dao);
 
 
 	/**
@@ -163,9 +161,9 @@ public interface DriverAdapter {
 	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param list 数据集
-	 * @param keys keys 南非要插入的列
+	 * @param columns 插入的列
 	 */
-	void createInserts(DataRuntime runtime, Run run, String dest, Collection list, List<String> keys);
+	void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
@@ -173,9 +171,9 @@ public interface DriverAdapter {
 	 * @param run run
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
-	 * @param keys keys 南非要插入的列
+	 * @param columns 需要插入的列
 	 */
-	void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, List<String> keys);
+	void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns);
 
 	/**
 	 * 确认需要插入的列
@@ -194,7 +192,7 @@ public interface DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列
 	 * @return List
 	 */
-	List<String> confirmInsertColumns(String dest, Object data, List<String> columns, boolean batch);
+	LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object data, List<String> columns, boolean batch);
 
 	/**
 	 * 批量插入数据时,多行数据之间分隔符
@@ -212,13 +210,14 @@ public interface DriverAdapter {
 	 * @param runtime runtime
 	 * @param random random
 	 * @param data data
-	 * @param sql sql
-	 * @param values value
+	 * @param run run
 	 * @param pks pks
 	 * @return int
 	 * @throws Exception 异常
 	 */
-	int insert(DataRuntime runtime, String random, Object data, String sql, List<Object> values, String[] pks) throws Exception;
+	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
+	//有些不支持返回自增的单独执行
+	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 
 	String generatedKey();
 	/* *****************************************************************************************************************
@@ -234,9 +233,9 @@ public interface DriverAdapter {
 	 * @param configs 更新条件
 	 * @return Run
 	 */
-	Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
-
-
+	Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns);
+	Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns);
 
 	/* *****************************************************************************************************************
 	 * 													QUERY
@@ -249,20 +248,20 @@ public interface DriverAdapter {
 	 * @param conditions 查询条件
 	 * @return Run
 	 */
-	Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 创建查询序列SQL
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param names names
 	 * @return String
 	 */
-	List<Run> buildQuerySequence(boolean next, String ... names);
+	List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names);
 
 	/**
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
 	 * @param run run
 	 */
-	void buildQueryRunContent(Run run);
+	void buildQueryRunContent(DataRuntime runtime, Run run);
 
 
 	/**
@@ -270,7 +269,7 @@ public interface DriverAdapter {
 	 * @param run  run
 	 * @return String
 	 */
-	String parseFinalQuery(Run run);
+	String parseFinalQuery(DataRuntime runtime, Run run);
 
 
 	/**
@@ -281,7 +280,7 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return value 有占位符时返回 占位值，没有占位符返回null
 	 */
-	Object buildConditionLike(StringBuilder builder, Compare compare, Object value);
+	Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * 构造 FIND_IN_SET 查询条件
@@ -292,7 +291,7 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	Object buildConditionFindInSet(StringBuilder builder, String column, Compare compare, Object value);
+	Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value);
 	/**
 	 * 构造(NOT) IN 查询条件
 	 * @param builder builder
@@ -300,14 +299,14 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return builder
 	 */
-	StringBuilder buildConditionIn(StringBuilder builder, Compare compare, Object value);
+	StringBuilder buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * JDBC执行完成后的结果处理
 	 * @param list JDBC执行结果
 	 * @return  DataSet
 	 */
-	List<Map<String,Object>> process(List<Map<String,Object>> list);
+	List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list);
 
 
 	/* *****************************************************************************************************************
@@ -319,7 +318,7 @@ public interface DriverAdapter {
 	 * @param run  Run
 	 * @return String
 	 */
-	String parseTotalQuery(Run run);
+	String parseTotalQuery(DataRuntime runtime, Run run);
 
 
 	/* *****************************************************************************************************************
@@ -331,7 +330,7 @@ public interface DriverAdapter {
 	 * @param run run
 	 * @return String
 	 */
-	String parseExists(Run run);
+	String parseExists(DataRuntime runtime, Run run);
 
 
 	/* *****************************************************************************************************************
@@ -345,13 +344,13 @@ public interface DriverAdapter {
 	 * @param conditions conditions
 	 * @return Run
 	 */
-	Run buildExecuteRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 构造执行主体
 	 * @param run run
 	 */
-	void buildExecuteRunContent(Run run);
+	void buildExecuteRunContent(DataRuntime runtime, Run run);
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
@@ -364,7 +363,7 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列，根据columns取obj值并合成删除条件
 	 * @return Run
 	 */
-	Run buildDeleteRun(String dest, Object obj, String ... columns);
+	Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns);
 	/**
 	 * 根据key values删除
 	 * @param table 表
@@ -372,16 +371,17 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run
 	 */
-	Run buildDeleteRun(String table, String key, Object values);
-
+	Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values);
+	Run createDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values);
+	Run createDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns);
 	/**
 	 * 构造删除主体
 	 * @param run run
 	 * @return Run
 	 */
-	Run buildDeleteRunContent(Run run);
+	Run buildDeleteRunContent(DataRuntime runtime, Run run);
 
-	List<Run> buildTruncateSQL(String table);
+	List<Run> buildTruncateRun(DataRuntime runtime, String table);
 
 
 
@@ -405,8 +405,8 @@ public interface DriverAdapter {
 	 * function         : 函数
 	 ******************************************************************************************************************/
 
-	void checkSchema(DataSource dataSource, Table table);
-	void checkSchema(Connection con, Table table);
+	void checkSchema(DataRuntime runtime, DataSource dataSource, Table table);
+	void checkSchema(DataRuntime runtime, Connection con, Table table);
 	void checkSchema(DataRuntime runtime, Table table);
 	/* *****************************************************************************************************************
 	 * 													database
@@ -417,18 +417,18 @@ public interface DriverAdapter {
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryDatabaseRunSQL() throws Exception;
+	List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception;
 
 	/**
 	 *  根据查询结果集构造 Database
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param databases 上一步查询结果
 	 * @param set set
 	 * @return databases
 	 * @throws Exception 异常
 	 */
-	LinkedHashMap<String, Database> databases(int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
+	LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													table
@@ -442,7 +442,7 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 * 查询表备注
@@ -452,11 +452,11 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryTableCommentRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
-	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -465,7 +465,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据驱动内置方法补充
@@ -479,12 +479,12 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
 	 * 表备注
-	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -493,24 +493,24 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> comments(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 查询表DDL
 	 * @param table 表
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRunSQL(Table table) throws Exception;
+	List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * 查询表DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(int index, Table table, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
@@ -523,11 +523,11 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryViewRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造View
-	 * @param index 第几条SQL 对照buildQueryViewRunSQL返回顺序
+	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -536,7 +536,7 @@ public interface DriverAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> LinkedHashMap<String, T> views(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> views, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC补充
@@ -550,7 +550,7 @@ public interface DriverAdapter {
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -558,16 +558,16 @@ public interface DriverAdapter {
 	 * @param view view
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRunSQL(View view) throws Exception;
+	List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception;
 	/**
 	 * 查询 view DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(int index, View view, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
@@ -579,11 +579,11 @@ public interface DriverAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	List<Run> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -592,7 +592,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -604,7 +604,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception;
 
 
 	/**
@@ -612,16 +612,16 @@ public interface DriverAdapter {
 	 * @param table MasterTable
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRunSQL(MasterTable table) throws Exception;
+	List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception;
 	/**
 	 * 查询 MasterTable DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(int index, MasterTable table, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
@@ -634,7 +634,7 @@ public interface DriverAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	List<Run> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 * 根据主表查询分区表
@@ -644,13 +644,13 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags, String name) throws Exception;
-	List<Run> buildQueryPartitionTableRunSQL(MasterTable master, Map<String,Object> tags) throws Exception;
+	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception;
+	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -660,7 +660,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends PartitionTable> LinkedHashMap<String, T> ptables(int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -673,7 +673,7 @@ public interface DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends PartitionTable> LinkedHashMap<String,T> ptables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, MasterTable master) throws Exception;
+	<T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, MasterTable master) throws Exception;
 
 
 
@@ -682,16 +682,16 @@ public interface DriverAdapter {
 	 * @param table PartitionTable
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception;
 	/**
 	 * 查询 MasterTable DDL
-	 * @param index 第几条SQL 对照 buildQueryDDLRunSQL 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
-	List<String> ddl(int index, PartitionTable table, List<String> ddls, DataSet set);
+	List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
@@ -702,11 +702,11 @@ public interface DriverAdapter {
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
-	List<Run> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception;
+	List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Tag
-	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
@@ -714,8 +714,7 @@ public interface DriverAdapter {
 	 * @return tags tags
 	 * @throws Exception 异常
 	 */
-	<T extends Column> LinkedHashMap<String, T>
-	columns(int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 
 	/**
 	 * 解析JDBC get columns结果
@@ -726,10 +725,10 @@ public interface DriverAdapter {
 	 * @return attern attern
 	 * @throws Exception 异常
 	 */
-	<T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception;
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
 
-	Column column(Column column, ResultSetMetaData rsm, int index);
-	Column column(Column column, ResultSet rs);
+	Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index);
+	Column column(DataRuntime runtime, Column column, ResultSet rs);
 
 
 	/* *****************************************************************************************************************
@@ -742,11 +741,11 @@ public interface DriverAdapter {
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
-	List<Run> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception;
+	List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Tag
-	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -754,7 +753,7 @@ public interface DriverAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	<T extends Tag> LinkedHashMap<String, T> tags(int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception;
 
 
 	/**
@@ -768,7 +767,7 @@ public interface DriverAdapter {
 	 * @return tags
 	 * @throws Exception 异常
 	 */
-	<T extends Tag> LinkedHashMap<String, T> tags(boolean create, LinkedHashMap<String, T> tags, DataRuntime runtime, Table table, String pattern) throws Exception;
+	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -780,24 +779,24 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
-	List<Run> buildQueryPrimaryRunSQL(Table table) throws Exception;
+	List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	PrimaryKey primary(int index, Table table, DataSet set) throws Exception;
+	PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception;
 
 
 
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRunSQL(Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -805,17 +804,17 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
-	List<Run> buildQueryForeignsRunSQL(Table table) throws Exception;
+	List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param index 第几条查询SQL 对照 buildQueryForeignsRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
+	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -828,11 +827,11 @@ public interface DriverAdapter {
 	 * @param name 名称
 	 * @return sqls
 	 */
-	List<Run> buildQueryIndexRunSQL(Table table, String name);
+	List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name);
 
 	/**
 	 *  根据查询结果集构造Index
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -840,7 +839,7 @@ public interface DriverAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
 
 
 	/**
@@ -851,7 +850,7 @@ public interface DriverAdapter {
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -864,11 +863,11 @@ public interface DriverAdapter {
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
-	List<Run> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception;
+	List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
@@ -876,8 +875,8 @@ public interface DriverAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	<T extends Constraint> LinkedHashMap<String, T> constraints(int index, boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
-	<T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
+	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, ResultSet set) throws Exception;
 
 
 
@@ -892,11 +891,11 @@ public interface DriverAdapter {
 	 * @param events INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	List<Run> buildQueryTriggerRunSQL(Table table, List<Trigger.EVENT> events) ;
+	List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) ;
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param triggers 上一步查询结果
@@ -904,7 +903,7 @@ public interface DriverAdapter {
 	 * @return constraints constraints
 	 * @throws Exception 异常
 	 */
-	<T extends Trigger> LinkedHashMap<String, T> triggers(int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
+	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
 
 
 
@@ -912,18 +911,18 @@ public interface DriverAdapter {
 	 * 													procedure
 	 ******************************************************************************************************************/
 
-	List<Run> buildQueryProcedureRunSQL(String catalog, String schema, String name) ;
+	List<Run> buildQueryProcedureRun(DataRuntime runtime, String catalog, String schema, String name) ;
 
-	<T extends Procedure> LinkedHashMap<String, T> procedures(int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
+	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
 
 
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
 
-	List<Run> buildQueryFunctionRunSQL(String catalog, String schema, String name) ;
+	List<Run> buildQueryFunctionRun(DataRuntime runtime, String catalog, String schema, String name) ;
 
-	<T extends Function> LinkedHashMap<String, T> functions(int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
+	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 *
@@ -957,7 +956,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildCreateRunSQL(Table table) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -965,7 +964,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRunSQL(Table table) throws Exception;
+	List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * 修改表
@@ -973,7 +972,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAlterRunSQL(Table table) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception;
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
@@ -981,7 +980,7 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Table table, Collection<Column> columns) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception;
 
 	/**
 	 * 重命名
@@ -989,7 +988,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildRenameRunSQL(Table table) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * 修改备注
@@ -997,7 +996,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildChangeCommentRunSQL(Table table) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * 删除表
@@ -1005,7 +1004,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropRunSQL(Table table) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * 创建或删除表之前  检测表是否存在
@@ -1014,7 +1013,7 @@ public interface DriverAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	StringBuilder checkTableExists(StringBuilder builder, boolean exists);
+	StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists);
 
 
 	/**
@@ -1023,7 +1022,7 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return StringBuilder
 	 */
-	StringBuilder primary(StringBuilder builder, Table table);
+	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table);
 
 	/**
 	 * 单独创建主键
@@ -1037,7 +1036,7 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return StringBuilder
 	 */
-	StringBuilder comment(StringBuilder builder, Table table);
+	StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table);
 
 	/**
 	 * 构造表名
@@ -1045,7 +1044,7 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return builder
 	 */
-	StringBuilder name(StringBuilder builder, Table table);
+	StringBuilder name(DataRuntime runtime, StringBuilder builder, Table table);
 
 
 
@@ -1059,7 +1058,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildCreateRunSQL(View view) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * 添加视图备注(视图创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1067,7 +1066,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRunSQL(View view) throws Exception;
+	List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * 修改视图
@@ -1075,7 +1074,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAlterRunSQL(View view) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * 重命名
@@ -1083,7 +1082,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildRenameRunSQL(View view) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * 修改备注
@@ -1091,7 +1090,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildChangeCommentRunSQL(View view) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * 删除视图
@@ -1099,7 +1098,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropRunSQL(View view) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * 创建或删除视图之前  检测视图是否存在
@@ -1108,7 +1107,7 @@ public interface DriverAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	StringBuilder checkViewExists(StringBuilder builder, boolean exists);
+	StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists);
 
 	/**
 	 * 视图备注
@@ -1116,7 +1115,7 @@ public interface DriverAdapter {
 	 * @param view 视图
 	 * @return StringBuilder
 	 */
-	StringBuilder comment(StringBuilder builder, View view);
+	StringBuilder comment(DataRuntime runtime, StringBuilder builder, View view);
 
 	/* *****************************************************************************************************************
 	 * 													master table
@@ -1128,7 +1127,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildCreateRunSQL(MasterTable table) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, MasterTable table) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1136,7 +1135,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRunSQL(MasterTable table) throws Exception;
+	List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表
@@ -1144,7 +1143,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAlterRunSQL(MasterTable table) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, MasterTable table) throws Exception;
 
 	/**
 	 * 主表重命名
@@ -1152,7 +1151,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildRenameRunSQL(MasterTable table) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表备注
@@ -1160,7 +1159,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildChangeCommentRunSQL(MasterTable table) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table) throws Exception;
 
 	/**
 	 * 删除主表
@@ -1168,7 +1167,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropRunSQL(MasterTable table) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, MasterTable table) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1181,7 +1180,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildCreateRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1189,14 +1188,14 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildAddCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
 	/**
 	 * 修改分区表
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAlterRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
 	/**
 	 * 分区表重命名
@@ -1204,7 +1203,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildRenameRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
 	/**
 	 * 修改分区表备注
@@ -1212,7 +1211,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildChangeCommentRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
 	/**
 	 * 删除分区表
@@ -1220,7 +1219,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropRunSQL(PartitionTable table) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1231,7 +1230,7 @@ public interface DriverAdapter {
 	 * 修改表的关键字
 	 * @return String
 	 */
-	String alterColumnKeyword();
+	String alterColumnKeyword(DataRuntime runtime);
 
 	/**
 	 * 添加列
@@ -1239,8 +1238,8 @@ public interface DriverAdapter {
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
-	List<Run> buildAddRunSQL(Column column, boolean slice) throws Exception;
-	List<Run> buildAddRunSQL(Column column) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 添加列引导
@@ -1248,7 +1247,7 @@ public interface DriverAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	StringBuilder addColumnGuide(StringBuilder builder, Column column);
+	StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 修改列
@@ -1257,8 +1256,8 @@ public interface DriverAdapter {
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Column column, boolean slice) throws Exception;
-	List<Run> buildAlterRunSQL(Column column) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 删除列
@@ -1266,55 +1265,55 @@ public interface DriverAdapter {
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Column column, boolean slice) throws Exception;
-	List<Run> buildDropRunSQL(Column column) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Column column) throws Exception;
 	/**
 	 * 删除列引导
 	 * @param builder StringBuilder
 	 * @param column column
 	 * @return String
 	 */
-	StringBuilder dropColumnGuide(StringBuilder builder, Column column);
+	StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 修改列名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Column column) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 修改数据类型
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeTypeRunSQL(Column column) throws Exception;
+	List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 修改默认值
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeDefaultRunSQL(Column column) throws Exception;
+	List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 修改非空限制
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeNullableRunSQL(Column column) throws Exception;
+	List<Run> buildChangeNullableRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 修改备注
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeCommentRunSQL(Column column) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
@@ -1322,7 +1321,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRunSQL(Column column) throws Exception;
+	List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception;
 
 
 	/**
@@ -1331,7 +1330,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropAutoIncrement(Column column) throws Exception;
+	List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column) throws Exception;
 
 	/**
 	 * 定义列
@@ -1339,7 +1338,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder define(StringBuilder builder, Column column);
+	StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 数据类型
@@ -1347,7 +1346,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder type(StringBuilder builder, Column column);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * 列数据类型定义
 	 * @param builder builder
@@ -1357,21 +1356,21 @@ public interface DriverAdapter {
 	 * @param isIgnoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	StringBuilder type(StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
 
 
 
-	boolean isIgnorePrecision(Column column);
-	boolean isIgnoreScale(Column column);
-	Boolean checkIgnorePrecision(String datatype);
-	Boolean checkIgnoreScale(String datatype);
+	boolean isIgnorePrecision(DataRuntime runtime, Column column);
+	boolean isIgnoreScale(DataRuntime runtime, Column column);
+	Boolean checkIgnorePrecision(DataRuntime runtime, String datatype);
+	Boolean checkIgnoreScale(DataRuntime runtime, String datatype);
 	/**
 	 * 非空
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder nullable(StringBuilder builder, Column column);
+	StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 编码
@@ -1379,7 +1378,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder charset(StringBuilder builder, Column column);
+	StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 默认值
@@ -1387,7 +1386,8 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder defaultValue(StringBuilder builder, Column column);
+	StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column);
+
 
 	/**
 	 * 主键(注意不要跟表定义中的主键重复)
@@ -1395,14 +1395,14 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder primary(StringBuilder builder, Column column);
+	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * 递增列
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder increment(StringBuilder builder, Column column);
+	StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 更新行事件
@@ -1410,7 +1410,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder onupdate(StringBuilder builder, Column column);
+	StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 位置
@@ -1418,7 +1418,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder position(StringBuilder builder, Column column);
+	StringBuilder position(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 备注
@@ -1426,7 +1426,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder comment(StringBuilder builder, Column column);
+	StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column column);
 
 	/**
 	 * 创建或删除列之前  检测表是否存在
@@ -1435,7 +1435,7 @@ public interface DriverAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	StringBuilder checkColumnExists(StringBuilder builder, boolean exists);
+	StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists);
 
 
 	/* *****************************************************************************************************************
@@ -1447,7 +1447,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildAddRunSQL(Tag tag) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 修改标签
@@ -1455,54 +1455,54 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Tag tag) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 删除标签
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Tag tag) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 修改标签名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Tag tag) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 修改默认值
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeDefaultRunSQL(Tag tag) throws Exception;
+	List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 修改非空限制
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeNullableRunSQL(Tag tag) throws Exception;
+	List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 修改备注
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeCommentRunSQL(Tag tag) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 修改数据类型
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeTypeRunSQL(Tag tag) throws Exception;
+	List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag) throws Exception;
 
 	/**
 	 * 创建或删除标签之前  检测表是否存在
@@ -1511,7 +1511,7 @@ public interface DriverAdapter {
 	 * @param exists exists
 	 * @return StringBuilder
 	 */
-	StringBuilder checkTagExists(StringBuilder builder, boolean exists);
+	StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists);
 
 
 	/* *****************************************************************************************************************
@@ -1523,7 +1523,7 @@ public interface DriverAdapter {
 	 * @param primary 主键
 	 * @return String
 	 */
-	List<Run> buildAddRunSQL(PrimaryKey primary) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
 
 	/**
 	 * 修改主键
@@ -1531,22 +1531,22 @@ public interface DriverAdapter {
 	 * @param primary 主键
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(PrimaryKey primary) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
 
 	/**
 	 * 删除主键
 	 * @param primary 主键
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(PrimaryKey primary) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
 
 	/**
 	 * 修改主键名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param primary 主键
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(PrimaryKey primary) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
 
 
 
@@ -1559,29 +1559,29 @@ public interface DriverAdapter {
 	 * @param foreign 外键
 	 * @return String
 	 */
-	List<Run> buildAddRunSQL(ForeignKey foreign) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
 
 	/**
 	 * 修改外键
 	 * @param foreign 外键
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(ForeignKey foreign) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
 
 	/**
 	 * 删除外键
 	 * @param foreign 外键
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(ForeignKey foreign) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
 
 	/**
 	 * 修改外键名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param foreign 外键
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(ForeignKey foreign) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
@@ -1591,7 +1591,7 @@ public interface DriverAdapter {
 	 * @param index 索引
 	 * @return String
 	 */
-	List<Run> buildAddRunSQL(Index index) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, Index index) throws Exception;
 
 	/**
 	 * 修改索引
@@ -1599,29 +1599,29 @@ public interface DriverAdapter {
 	 * @param index 索引
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Index index) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Index index) throws Exception;
 
 	/**
 	 * 删除索引
 	 * @param index 索引
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Index index) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Index index) throws Exception;
 
 	/**
 	 * 修改索引名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param index 索引
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Index index) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Index index) throws Exception;
 
 	/**
 	 * 索引备注
 	 * @param builder
 	 * @param index
 	 */
-	void comment(StringBuilder builder, Index index);
+	void comment(DataRuntime runtime, StringBuilder builder, Index index);
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
@@ -1631,7 +1631,7 @@ public interface DriverAdapter {
 	 * @param constraint 约束
 	 * @return String
 	 */
-	List<Run> buildAddRunSQL(Constraint constraint) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, Constraint constraint) throws Exception;
 
 	/**
 	 * 修改约束
@@ -1639,22 +1639,22 @@ public interface DriverAdapter {
 	 * @param constraint 约束
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Constraint constraint) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint) throws Exception;
 
 	/**
 	 * 删除约束
 	 * @param constraint 约束
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Constraint constraint) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Constraint constraint) throws Exception;
 
 	/**
 	 * 修改约束名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param constraint 约束
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Constraint constraint) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Constraint constraint) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1666,8 +1666,8 @@ public interface DriverAdapter {
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	List<Run> buildCreateRunSQL(Trigger trigger) throws Exception;
-	void each(StringBuilder builder, Trigger trigger);
+	List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	void each(DataRuntime runtime, StringBuilder builder, Trigger trigger);
 
 	/**
 	 * 修改触发器
@@ -1675,22 +1675,22 @@ public interface DriverAdapter {
 	 * @param trigger 触发器
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Trigger trigger) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
 
 	/**
 	 * 删除触发器
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Trigger trigger) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception;
 
 	/**
 	 * 修改触发器名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param trigger 触发器
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Trigger trigger) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1701,36 +1701,36 @@ public interface DriverAdapter {
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	List<Run> buildCreateRunSQL(Procedure procedure) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, Procedure procedure) throws Exception;
 
 	/**
 	 * 生在输入输出参数
 	 * @param builder builder
 	 * @param parameter parameter
 	 */
-	void parameter(StringBuilder builder, Parameter parameter);
+	void parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter);
 	/**
 	 * 修改存储过程
 	 * 有可能生成多条SQL
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Procedure procedure) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Procedure procedure) throws Exception;
 
 	/**
 	 * 删除存储过程
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Procedure procedure) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Procedure procedure) throws Exception;
 
 	/**
 	 * 修改存储过程名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param procedure 存储过程
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Procedure procedure) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Procedure procedure) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													function
@@ -1741,7 +1741,7 @@ public interface DriverAdapter {
 	 * @param function 函数
 	 * @return String
 	 */
-	List<Run> buildCreateRunSQL(Function function) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, Function function) throws Exception;
 
 	/**
 	 * 修改函数
@@ -1749,22 +1749,22 @@ public interface DriverAdapter {
 	 * @param function 函数
 	 * @return List
 	 */
-	List<Run> buildAlterRunSQL(Function function) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Function function) throws Exception;
 
 	/**
 	 * 删除函数
 	 * @param function 函数
 	 * @return String
 	 */
-	List<Run> buildDropRunSQL(Function function) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Function function) throws Exception;
 
 	/**
 	 * 修改函数名
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param function 函数
 	 * @return String
 	 */
-	List<Run> buildRenameRunSQL(Function function) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Function function) throws Exception;
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
@@ -1776,14 +1776,14 @@ public interface DriverAdapter {
 	 * @param obj obj
 	 * @return String
 	 */
-	String getPrimaryKey(Object obj);
+	String getPrimaryKey(DataRuntime runtime, Object obj);
 
 	/**
 	 * 获取单主键值
 	 * @param obj obj
 	 * @return Object
 	 */
-	Object getPrimaryValue(Object obj);
+	Object getPrimaryValue(DataRuntime runtime, Object obj);
 /*
 	*//**
 	 * 数据类型转换
@@ -1794,7 +1794,7 @@ public interface DriverAdapter {
 	 * @param run  值
 	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
 	 */
-	boolean convert(String catalog, String schema, String table, RunValue run);
+	boolean convert(DataRuntime runtime, String catalog, String schema, String table, RunValue run);
 	boolean convert(DataRuntime runtime, Table table, Run run);
 
 	/**
@@ -1803,7 +1803,7 @@ public interface DriverAdapter {
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
-	boolean convert(Map<String, Column> columns, RunValue run);
+	boolean convert(DataRuntime runtime, Map<String, Column> columns, RunValue run);
 
 	/**
 	 * 数据类型转换,没有提供column的根据value类型
@@ -1811,9 +1811,9 @@ public interface DriverAdapter {
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
-	boolean convert(Column column, RunValue run);
-	Object convert(Column column, Object value);
-
+	boolean convert(DataRuntime runtime, Column column, RunValue run);
+	Object convert(DataRuntime runtime, Column column, Object value);
+	Object convert(DataRuntime runtime, ColumnType columnType, Object value);
 	/**
 	 * 在不检测数据库结构时才生效,否则会被convert代替
 	 * 生成value格式 主要确定是否需要单引号  或  类型转换
@@ -1823,7 +1823,7 @@ public interface DriverAdapter {
 	 * @param row DataRow 或 Entity
 	 * @param key 列名
 	 */
-	void value(StringBuilder builder, Object row, String key);
+	void value(DataRuntime runtime, StringBuilder builder, Object row, String key);
 
 	/**
 	 * 根据数据类型生成SQL(如是否需要'',是否需要格式转换函数)
@@ -1839,7 +1839,7 @@ public interface DriverAdapter {
 	 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
 	 * @return Object
 	 */
-	Object read(Column metadata, Object value, Class clazz);
+	Object read(DataRuntime runtime, Column metadata, Object value, Class clazz);
 
 	/**
 	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
@@ -1848,27 +1848,27 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return Object
 	 */
-	Object write(Column metadata, Object value, boolean placeholder);
+	Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder);
  	/**
 	 * 拼接字符串
 	 * @param args args
 	 * @return String
 	 */
-	String concat(String ... args);
+	String concat(DataRuntime runtime, String ... args);
 
 	/**
 	 * 是否是数字列
 	 * @param column 列
 	 * @return boolean
 	 */
-	boolean isNumberColumn(Column column);
+	boolean isNumberColumn(DataRuntime runtime, Column column);
 
 	/**
 	 * 是否是boolean列
 	 * @param column 列
 	 * @return boolean
 	 */
-	boolean isBooleanColumn(Column column);
+	boolean isBooleanColumn(DataRuntime runtime, Column column);
 
 	/**
 	 * 是否是字符类型
@@ -1878,7 +1878,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return boolean
 	 */
-	boolean isCharColumn(Column column);
+	boolean isCharColumn(DataRuntime runtime, Column column);
 
 	/**
 	 * 内置函数
@@ -1887,8 +1887,8 @@ public interface DriverAdapter {
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
-	String value(Column column, SQL_BUILD_IN_VALUE value);
-
+	String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value);
+	void addRunValue(DataRuntime runtime, Run run, Compare compare, Column column, Object value);
 	/**
 	 * 转换成相应数据库的数据类型包含精度
 	 * @param column column
@@ -1908,5 +1908,5 @@ public interface DriverAdapter {
 	 * @param name name
 	 * @return String
 	 */
-	String objectName(String name);
+	String objectName(DataRuntime runtime, String name);
 }
