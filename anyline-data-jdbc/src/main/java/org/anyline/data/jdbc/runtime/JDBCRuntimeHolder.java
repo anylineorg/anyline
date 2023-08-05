@@ -17,14 +17,14 @@ import javax.sql.DataSource;
 
 
 @Component("anyline.data.runtime.holder.jdbc")
-public class JdbcRuntimeHolder extends RuntimeHolder {
+public class JDBCRuntimeHolder extends RuntimeHolder {
 
-    public JdbcRuntimeHolder(){
+    public JDBCRuntimeHolder(){
         RuntimeHolderProxy.reg(DataSource.class,this);
     }
     @Override
     public DataRuntime runtime(String key, Object source, DriverAdapter adapter){
-        JdbcRuntime runtime = new JdbcRuntime();
+        JDBCRuntime runtime = new JDBCRuntime();
         runtime.setKey(key);
         runtime.setAdapter(adapter);
         if(source instanceof DataSource){
@@ -78,7 +78,7 @@ public class JdbcRuntimeHolder extends RuntimeHolder {
      */
     public static void reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
         log.info("[create jdbc runtime][key:{}]", datasource);
-        DataRuntime runtime = new JdbcRuntime(datasource, template, adapter);
+        DataRuntime runtime = new JDBCRuntime(datasource, template, adapter);
         if(runtimes.containsKey(datasource)){
             destroy(datasource);
         }

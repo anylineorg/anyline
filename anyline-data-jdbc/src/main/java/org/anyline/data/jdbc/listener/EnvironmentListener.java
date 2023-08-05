@@ -1,8 +1,8 @@
 package org.anyline.data.jdbc.listener;
 
 import org.anyline.data.jdbc.ds.DataSourceHolder;
-import org.anyline.data.jdbc.runtime.JdbcRuntime;
-import org.anyline.data.jdbc.runtime.JdbcRuntimeHolder;
+import org.anyline.data.jdbc.runtime.JDBCRuntime;
+import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
@@ -27,7 +27,7 @@ public class EnvironmentListener implements ApplicationContextAware {
         context = applicationContext;
         factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
         SpringContextUtil.init(context);
-        JdbcRuntimeHolder.init(factory);
+        JDBCRuntimeHolder.init(factory);
         load();
     }
     //加载配置文件
@@ -68,15 +68,15 @@ public class EnvironmentListener implements ApplicationContextAware {
         if(null != template) {
             if(multiple) {
                 //注册一个默认运行环境
-                JdbcRuntimeHolder.reg("default", template, null);
+                JDBCRuntimeHolder.reg("default", template, null);
                 if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
                     //注册一个主事务管理器
                     DataSourceHolder.regTransactionManager("primary", template.getDataSource(), true);
                 }
             }
             //注册一个通用运行环境(可切换数据源)
-            DataRuntime runtime = new JdbcRuntime("common", template, null);
-            JdbcRuntimeHolder.reg("common", runtime);
+            DataRuntime runtime = new JDBCRuntime("common", template, null);
+            JDBCRuntimeHolder.reg("common", runtime);
         }
     }
 

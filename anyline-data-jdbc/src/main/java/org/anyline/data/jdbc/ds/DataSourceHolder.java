@@ -20,7 +20,7 @@
 package org.anyline.data.jdbc.ds;
 
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.data.jdbc.runtime.JdbcRuntimeHolder;
+import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.metadata.type.DatabaseType;
@@ -222,7 +222,7 @@ public class DataSourceHolder extends ClientHolder {
 				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 			}else{
 				//清空
-				JdbcRuntimeHolder.destroy(key);
+				JDBCRuntimeHolder.destroy(key);
 			}
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
@@ -230,7 +230,7 @@ public class DataSourceHolder extends ClientHolder {
 		}
 		regTransactionManager(key, ds);
 		reg(key);
-		JdbcRuntimeHolder.reg(key, ds);
+		JDBCRuntimeHolder.reg(key, ds);
 		return ds;
 	}
 	private static DataSource addDataSource(String key, DataSource ds, boolean over) throws Exception{
@@ -239,7 +239,7 @@ public class DataSourceHolder extends ClientHolder {
 				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 			}else{
 				//清空
-				JdbcRuntimeHolder.destroy(key);
+				JDBCRuntimeHolder.destroy(key);
 			}
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
@@ -247,7 +247,7 @@ public class DataSourceHolder extends ClientHolder {
 		}
 		regTransactionManager(key, ds);
 		reg(key);
-		JdbcRuntimeHolder.reg(key, ds);
+		JDBCRuntimeHolder.reg(key, ds);
 		return ds;
 	}
 
@@ -308,10 +308,10 @@ public class DataSourceHolder extends ClientHolder {
 
 
 	public static DataSource getDataSource(){
-		return JdbcRuntimeHolder.getDataSource();
+		return JDBCRuntimeHolder.getDataSource();
 	}
 	public static DataSource getDataSource(String key){
-		return JdbcRuntimeHolder.getDataSource(key);
+		return JDBCRuntimeHolder.getDataSource(key);
 	}
 
 	public static String reg(String key, String prefix, Environment env) {
@@ -429,10 +429,10 @@ public class DataSourceHolder extends ClientHolder {
 	 * @return boolean
 	 */
 	public static boolean validate(String ds){
-		return validate(JdbcRuntimeHolder.getRuntime(ds));
+		return validate(JDBCRuntimeHolder.getRuntime(ds));
 	}
 	public static boolean validate(){
-		return validate(JdbcRuntimeHolder.getRuntime());
+		return validate(JDBCRuntimeHolder.getRuntime());
 	}
 	public static boolean validate(DataRuntime runtime){
 		JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();

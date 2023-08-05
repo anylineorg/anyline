@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
-public class JdbcRuntime implements DataRuntime {
+public class JDBCRuntime implements DataRuntime {
 
     /**
      * 表示数据源名称
@@ -72,9 +72,6 @@ public class JdbcRuntime implements DataRuntime {
                 ds = ClientHolder.curDataSource();
             }
             adapter = DriverAdapterHolder.getAdapter(ds, this);
-            if(null != adapter && null == adapter.getDao()){
-                //adapter.setDao(dao);
-            }
         }
         return adapter;
     }
@@ -89,12 +86,12 @@ public class JdbcRuntime implements DataRuntime {
         this.adapter = adapter;
     }
 
-    public JdbcRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter){
+    public JDBCRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter){
         setKey(key);
         setClient(jdbc);
         setAdapter(adapter);
     }
-    public JdbcRuntime(){
+    public JDBCRuntime(){
     }
 
     public JdbcTemplate jdbc(){
