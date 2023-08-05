@@ -19,19 +19,22 @@
 
 package org.anyline.data.prepare.auto.init;
 
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.Config;
+import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.auto.AutoCondition;
+import org.anyline.data.prepare.init.DefaultCondition;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.data.prepare.init.DefaultCondition;
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.run.RunValue;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
  
  
 /** 
@@ -89,11 +92,11 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	/** 
 	 * 运行时文本
 	 * @param prefix 前缀
-	 * @param adapter adapter
+	 * @param runtime runtime
 	 * @return String
 	 */
 	@Override
-	public String getRunText(String prefix, DriverAdapter adapter){
+	public String getRunText(String prefix, DataRuntime runtime){
 		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){//没有变量
@@ -101,12 +104,12 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}else{
 			String txt = "";
 			//if(BasicUtil.isNotEmpty(true, values) || isRequired()){
-				txt = getRunText(prefix, adapter, values, compare);
+				txt = getRunText(prefix, runtime, values, compare);
 				if(BasicUtil.isNotEmpty(txt)){
 					text = txt;
 				}
 				if(BasicUtil.isNotEmpty(true, orValues)){
-					txt = getRunText(prefix, adapter, orValues, orCompare);
+					txt = getRunText(prefix, runtime, orValues, orCompare);
 					if(BasicUtil.isNotEmpty(txt)){
 						if(BasicUtil.isEmpty(text)){
 							text = txt;
@@ -120,10 +123,10 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	} 
 
 	@SuppressWarnings({"rawtypes", "unchecked" })
-	public String getRunText(String prefix, DriverAdapter adapter, Object val, Compare compare){
+	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare){
 		StringBuilder builder = new StringBuilder();
-		String delimiterFr = adapter.getDelimiterFr();
-		String delimiterTo = adapter.getDelimiterTo();
+		String delimiterFr = runtime.getAdapter().getDelimiterFr();
+		String delimiterTo = runtime.getAdapter().getDelimiterTo();
 		boolean empty = BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();
 		if(compareCode == -1){
@@ -151,7 +154,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
 		if(compareCode >=60 && compareCode <= 62){				// FIND_IN_SET(?, CODES)
-			val = adapter.buildConditionFindInSet(builder, col_builder.toString(), compare, val);
+			val = runtime.getAdapter().buildConditionFindInSet(runtime, builder, col_builder.toString(), compare, val);
 		}else{
 			builder.append(col_builder);
 			if(compareCode == 10){
@@ -209,10 +212,10 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 			}else if(compareCode == 80){ 							// BETWEEN ? AND ?
 				builder.append(compare.getSQL());
 			}else if(compareCode == 40 || compareCode == 140){		// IN(?,?,?)
-				adapter.buildConditionIn(builder, compare, val);
+				runtime.getAdapter().buildConditionIn(runtime, builder, compare, val);
 			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
 					|| (compareCode >= 150 && compareCode <= 152)){ // NOT LIKE ?
-				val = adapter.buildConditionLike(builder, compare, val) ;
+				val = runtime.getAdapter().buildConditionLike(runtime, builder, compare, val) ;
 			}
 		}
 
