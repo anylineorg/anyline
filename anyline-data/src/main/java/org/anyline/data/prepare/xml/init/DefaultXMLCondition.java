@@ -19,14 +19,14 @@
 
 package org.anyline.data.prepare.xml.init;
 
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.prepare.Condition;
-import org.anyline.data.run.RunValue;
-import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.entity.Compare;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.init.DefaultCondition;
 import org.anyline.data.prepare.init.DefaultVariable;
+import org.anyline.data.run.RunValue;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.Compare;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.regular.Regular;
@@ -193,7 +193,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 
 
 	@Override
-	public String getRunText(String prefix, DriverAdapter adapter) {
+	public String getRunText(String prefix, DataRuntime runtime) {
 		String result = text; 
 		runValues = new ArrayList<>();
 		if(null == variables){
@@ -280,7 +280,7 @@ public class DefaultXMLCondition extends DefaultCondition implements Condition {
 				if(BasicUtil.isNotEmpty(true,values)){
 					value = (String)values.get(0); 
 				} 
-				runValues.add(new RunValue(null, value));
+				runValues.add(new RunValue((String)null, value));
 			} 
 		} 
 		return result; 
