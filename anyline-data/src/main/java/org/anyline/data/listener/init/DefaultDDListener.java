@@ -64,8 +64,8 @@ public class DefaultDDListener implements DDListener {
         DriverAdapter adapter = runtime.getAdapter();
         AnylineDao dao = runtime.getDao();
         Column update = column.getUpdate();
-        boolean isNum = adapter.isNumberColumn(update);
-        if(adapter.isCharColumn(column) && !adapter.isCharColumn(update)){
+        boolean isNum = adapter.isNumberColumn(runtime, update);
+        if(adapter.isCharColumn(runtime, column) && !adapter.isCharColumn(runtime, update)){
             // 原来是String类型 修改成 boolean或number类型 失败
             int page = 1;
             int vol = 100;
@@ -106,7 +106,7 @@ public class DefaultDDListener implements DDListener {
                         }
                         RunValue run = new RunValue();
                         run.setValue(value);
-                        adapter.convert(update, run);
+                        adapter.convert(runtime, update, run);
                         convert = run.getValue();
                         row.put(column.getName(), convert);
                         log.warn("[after exception][数据修正][{}>{}]", value, convert);
