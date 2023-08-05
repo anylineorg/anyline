@@ -33,6 +33,7 @@ import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.metadata.Column;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DefaultOgnlMemberAccess;
@@ -212,27 +213,27 @@ public class XMLRun extends BasicRun implements Run {
 						String replaceKey = var.getFullKey();
 						if(var.getCompare() == Compare.LIKE){
 							// CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
-							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
+							result = result.replace("'%"+replaceKey+"%'", runtime.getAdapter().concat(runtime,"'%'","?","'%'"));
+							addValues(Compare.EQUAL, new Column(var.getKey()), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						}else if(var.getCompare() == Compare.LIKE_SUFFIX){
-							result = result.replace("'%"+replaceKey+"'", adapter.concat("'%'","?"));
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
+							result = result.replace("'%"+replaceKey+"'", runtime.getAdapter().concat(runtime,"'%'","?"));
+							addValues(Compare.EQUAL, new Column(var.getKey()), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						}else if(var.getCompare() == Compare.LIKE_PREFIX){
-							result = result.replace("'"+replaceKey+"%'", adapter.concat("?","'%'"));
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
+							result = result.replace("'"+replaceKey+"%'", runtime.getAdapter().concat(runtime,"?","'%'"));
+							addValues(Compare.EQUAL, new Column(var.getKey()), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						}else if(var.getCompare() == Compare.IN){
 							// 多个值IN 
 							String replaceDst = "";  
 							for(Object tmp:varValues){
 								replaceDst += " ?"; 
 							}
-							addValues(Compare.IN, var.getKey(), varValues, IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.IN, new Column(var.getKey()), varValues, IS_AUTO_SPLIT_ARRAY);
 							replaceDst = replaceDst.trim().replace(" ", ","); 
 							result = result.replace(replaceKey, replaceDst); 
 						}else{
 							// 单个值 
 							result = result.replace(replaceKey, "?"); 
-							addValues(Compare.EQUAL, var.getKey(), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
+							addValues(Compare.EQUAL, new Column(var.getKey()), varValues.get(0), IS_AUTO_SPLIT_ARRAY);
 						} 
 					} 
 				} 
@@ -249,7 +250,7 @@ public class XMLRun extends BasicRun implements Run {
 					if(BasicUtil.isNotEmpty(true, varValues)){
 						value = (String)varValues.get(0); 
 					} 
-					addValues(Compare.EQUAL, var.getKey(), value, IS_AUTO_SPLIT_ARRAY);
+					addValues(Compare.EQUAL, new Column(var.getKey()), value, IS_AUTO_SPLIT_ARRAY);
 				} 
 			} 
 		}
@@ -384,7 +385,7 @@ public class XMLRun extends BasicRun implements Run {
 		if(!endWithWhere(builder.toString())){
 			builder.append(" WHERE 1=1");
 		}
-		builder.append(conditionChain.getRunText(null, adapter));
+		builder.append(conditionChain.getRunText(null, runtime));
 		addValues(conditionChain.getRunValues()); 
 //		if(null != staticConditions){
 //			for(String con:staticConditions){
