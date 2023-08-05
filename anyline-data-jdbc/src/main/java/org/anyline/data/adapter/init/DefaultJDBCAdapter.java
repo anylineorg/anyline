@@ -35,23 +35,24 @@ import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.proxy.InterceptorProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.CallableStatementCallback;
-import org.springframework.jdbc.core.CallableStatementCreator;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 
 
 /**
@@ -111,7 +112,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						continue;
 					}
 					Column column = metadatas.get(name) ;
-					column = adapter.column((Column) column, rsmd, i);
+					column = adapter.column(runtime, (Column) column, rsmd, i);
 					metadatas.put(name.toUpperCase(), column);
 				}
 			}
@@ -122,7 +123,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 				Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-				Object value = adapter.read(column, rs.getObject(name), null);
+				Object value = adapter.read(runtime, column, rs.getObject(name), null);
 				row.put(false, name, value);
 			}
 			row.setMetadatas(metadatas);
@@ -160,7 +161,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
 		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
-			columns = columns(false, runtime, new Table(null, null, table), null);
+			columns = columns(runtime, false, new Table(null, null, table), null);
 		}
 		try{
 			final DataRuntime rt = runtime;
@@ -271,7 +272,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 				log.info("{}[执行耗时:{}ms]", random, mid - fr);
 			}
-			maps = process(maps);
+			maps = process(runtime, maps);
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
 				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, maps.size());
 			}
@@ -396,6 +397,169 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
+	/**
+	 * 执行 insert
+	 * @param runtime runtime
+	 * @param random random
+	 * @param data entity|DataRow|DataSet
+	 * @param run run
+	 * @param pks pks
+	 * @return int 影响行数
+	 * @throws Exception 异常
+	 */
+	@Override
+	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+		int cnt = 0;
+
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
+			}
+			return -1;
+		}
+		String sql = run.getFinalInsert();
+		if(BasicUtil.isEmpty(sql)){
+			log.warn("[不具备执行条件][dest:{}]",run.getTable());
+			return -1;
+		}
+		List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
+		/*执行SQL*/
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+		}
+		long millis = -1;
+
+		KeyHolder keyholder = new GeneratedKeyHolder();
+		JdbcTemplate jdbc = jdbc(runtime);
+		try {
+			cnt = jdbc.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
+					PreparedStatement ps = null;
+					if (null != pks && pks.length > 0) {
+						//返回多个值
+						ps = con.prepareStatement(sql, pks);
+					} else {
+						ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+					}
+					int idx = 0;
+					if (null != values) {
+						for (Object obj : values) {
+							ps.setObject(++idx, obj);
+						}
+					}
+					return ps;
+				}
+			}, keyholder);
+
+			millis = System.currentTimeMillis() - fr;
+			boolean slow = false;
+			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
+			if(SLOW_SQL_MILLIS > 0){
+				if(millis > SLOW_SQL_MILLIS){
+					slow = true;
+					log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+					if(null != dmListener){
+						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
+					}
+				}
+			}
+			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+			}
+			identity(runtime, random, data, keyholder);
+		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
+				ex.setSql(sql);
+				ex.setValues(values);
+				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
+				}
+			}
+		}
+		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(run.getInsertColumns(),values));
+		}
+		return cnt;
+	}
+	//有些不支持返回自增的单独执行
+	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
+		int cnt = 0;
+
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
+			}
+			return -1;
+		}
+		String sql = run.getFinalInsert();
+		if(BasicUtil.isEmpty(sql)){
+			log.warn("[不具备执行条件][dest:{}]",run.getTable());
+			return -1;
+		}
+		List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
+		/*执行SQL*/
+		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+		}
+		long millis = -1;
+
+		try {
+
+			JdbcTemplate jdbc = jdbc(runtime);
+			if (null == values || values.isEmpty()) {
+				cnt = jdbc.update(sql);
+			} else {
+				int size = values.size();
+				Object[] params = new Object[size];
+				for (int i = 0; i < size; i++) {
+					params[i] = values.get(i);
+				}
+				cnt = jdbc.update(sql, params);
+			}
+			millis = System.currentTimeMillis() - fr;
+			boolean slow = false;
+			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
+			if(SLOW_SQL_MILLIS > 0){
+				if(millis > SLOW_SQL_MILLIS){
+					slow = true;
+					log.warn("{}[SLOW SQL][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+					if(null != dmListener){
+						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
+					}
+				}
+			}
+			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+			}
+		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
+				ex.setSql(sql);
+				ex.setValues(values);
+				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
+				}
+			}
+		}
+		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(run.getInsertColumns(),values));
+		}
+		return cnt;
+	}
 	public int execute(DataRuntime runtime, String random, Run run){
 		int result = -1;
 		String sql = run.getFinalExecute();
@@ -714,7 +878,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, LinkedHashMap<String, T> indexs, DataRuntime runtime, Table table, boolean unique, boolean approximate) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
 		DataSource ds = null;
 		Connection con = null;
 		if(null == indexs){
@@ -791,7 +955,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(boolean create, LinkedHashMap<String, T> tables, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		DataSource ds = null;
 		Connection con = null;
 		try{
@@ -799,7 +963,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
-			ResultSet set = dbmd.getTables(catalog, schema, pattern, types);
+			ResultSet set = dbmd.getTables( catalog, schema, pattern, types);
 			if(null == tables){
 				tables = new LinkedHashMap<>();
 			}
@@ -844,7 +1008,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(boolean create, LinkedHashMap<String, T> views, DataRuntime runtime, String catalog, String schema, String pattern, String ... types) throws Exception{
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception{
 		DataSource ds = null;
 		Connection con = null;
 		try {
@@ -900,7 +1064,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public void checkSchema(DataSource dataSource, Table table){
+	public void checkSchema(DataRuntime runtime, DataSource dataSource, Table table){
 		if(null == table || null != table.getCheckSchemaTime()){
 			return;
 		}
@@ -908,7 +1072,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		try {
 			if (null == table.getCatalog() || null == table.getSchema()) {
 				con = DataSourceUtils.getConnection(dataSource);
-				checkSchema(con, table);
+				checkSchema(runtime, con, table);
 			}
 		}catch (Exception e){
 			log.warn("[check schema][fail:{}]", e.toString());
@@ -920,7 +1084,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public void checkSchema(Connection con, Table table){
+	public void checkSchema(DataRuntime runtime, Connection con, Table table){
 		try {
 			if (null == table.getCatalog()) {
 				table.setCatalog(con.getCatalog());
@@ -935,10 +1099,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public void checkSchema(DataRuntime runtime, Table table){
 		JdbcTemplate jdbc = jdbc(runtime);
-		checkSchema(jdbc.getDataSource(), table);
+		checkSchema(runtime, jdbc.getDataSource(), table);
 	}
 	@Override
-	public Column column(Column column, SqlRowSetMetaData rsm, int index){
+	public Column column(DataRuntime runtime, Column column, SqlRowSetMetaData rsm, int index){
 		if(null == column) {
 			column = new Column();
 			try {
@@ -1018,7 +1182,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return column;
 	}
 	@Override
-	public Column column(Column column, ResultSetMetaData rsm, int index){
+	public Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index){
 		if(null == column){
 			column = new Column();
 		}
@@ -1103,7 +1267,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1116,7 +1280,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			T column = columns.get(name.toUpperCase());
 			if(null == column){
 				if(create){
-					column = (T)column(column, rsm, i);
+					column = (T)column(runtime, column, rsm, i);
 					if(BasicUtil.isEmpty(column.getName())) {
 						column.setName(name);
 					}
@@ -1128,17 +1292,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, DataRuntime runtime, Table table, LinkedHashMap<String, T> columns) {
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create,  Table table, LinkedHashMap<String, T> columns) {
 	// 根据系统表查询失败 再根据metadata解析 SELECT * FROM T WHERE 1=0
 		JdbcTemplate jdbc = jdbc(runtime);
 		String random = random(runtime);
 		if (null == columns || columns.size() == 0) {
 			try {
-				List<Run> runs = buildQueryColumnRunSQL(table, true);
+				List<Run> runs = buildQueryColumnRun(runtime, table, true);
 				if (null != runs) {
 					for (Run run : runs) {
 						SqlRowSet set = jdbc.queryForRowSet(run.getFinalQuery());
-						columns = columns(true, columns, table, set);
+						columns = columns(runtime, true, columns, table, set);
 					}
 				}
 			} catch (Exception e) {
@@ -1160,7 +1324,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				ds = jdbc.getDataSource();
 				con = DataSourceUtils.getConnection(ds);
 				DatabaseMetaData metadata = null;
-				columns = columns(true, columns, metadata, table, null);
+				columns = columns(runtime, true, columns, metadata, table, null);
 			} catch (Exception e) {
 				if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
@@ -1175,7 +1339,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1226,12 +1390,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			column.setPrecision(integer(keys, "COLUMN_SIZE", set, column.getPrecision()));
 			column.setScale(integer(keys, "DECIMAL_DIGITS", set, column.getScale()));
 			column.setNullable(bool(keys, "NULLABLE", set, column.isNullable()));
-			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
+			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getdefaultValue()));
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 			ColumnType columnType = type(column.getTypeName());
 			column.setColumnType(columnType);
-			column(column, set);
+			column(runtime, column, set);
 			column.setName(name);
 		}
 
@@ -1250,7 +1414,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(boolean create, LinkedHashMap<String, T> columns, DataRuntime runtime, Table table, String pattern) throws Exception{
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1311,12 +1475,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				column.setPrecision(integer(keys, "COLUMN_SIZE", set, column.getPrecision()));
 				column.setScale(integer(keys, "DECIMAL_DIGITS", set, column.getScale()));
 				column.setNullable(bool(keys, "NULLABLE", set, column.isNullable()));
-				column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
+				column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getdefaultValue()));
 				column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 				column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 				ColumnType columnType = type(column.getTypeName());
 				column.setColumnType(columnType);
-				column(column, set);
+				column(runtime, column, set);
 				column.setName(name);
 			}
 
@@ -1341,9 +1505,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set)", 37));
 		}
 		if(null == tags){
 			tags = new LinkedHashMap<>();
@@ -1352,9 +1516,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception{
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> indexs, SqlRowSet set)", 37));
 		}
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
@@ -1363,13 +1527,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception{
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Constraint> LinkedHashMap<String, T> constraints(boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> constraints, SqlRowSet set)", 37));
 		}
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
 		return constraints;
 	}
+
 }
