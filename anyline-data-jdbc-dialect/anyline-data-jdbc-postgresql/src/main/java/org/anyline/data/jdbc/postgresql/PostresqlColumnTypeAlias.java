@@ -42,7 +42,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     INT2                    (StandardColumnType.INT2                  ), //     ,pg
     INT4                    (StandardColumnType.INT4                  ), //
     INT8                    (StandardColumnType.INT8                  ), //
-    INTEGER                 (StandardColumnType.INT4                  ), //mysql                 ,,sqlite
+    INTEGER                 (StandardColumnType.INT4                  ), //mysql                 ,sqlite
     JSON                    (StandardColumnType.JSON                  ), //mysql,pg
     JSONB                   (StandardColumnType.JSONB                 ), //     ,pg
     LINE                    (StandardColumnType.LINE                  ), //     ,pg
