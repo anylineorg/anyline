@@ -19,11 +19,11 @@
 
 package org.anyline.data.run;
 
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 
@@ -31,12 +31,12 @@ import java.util.List;
 
 public class TableRun extends BasicRun implements Run {
 
-	public TableRun(DriverAdapter adapter, String table){
+	public TableRun(DataRuntime runtime, String table){
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
 		this.table = table;
-		this.adapter = adapter;
+		this.runtime = runtime;
 	}
 
 	private void parseDataSource(){
@@ -114,7 +114,7 @@ public class TableRun extends BasicRun implements Run {
 		if(null != prepare){
 			alias = prepare.getAlias();
 		}
-		builder.append(conditionChain.getRunText(alias, adapter));
+		builder.append(conditionChain.getRunText(alias, runtime));
 		List<RunValue> values = conditionChain.getRunValues();
 		addValues(values);
 	} 
