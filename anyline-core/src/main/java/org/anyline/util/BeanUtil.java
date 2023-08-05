@@ -3597,6 +3597,7 @@ public class BeanUtil {
 		return src;
 	}
 
+
 	public static List<String> removeAll(List<String> src, String ... remove){
 		return removeAll(src, array2list(remove));
 	}
