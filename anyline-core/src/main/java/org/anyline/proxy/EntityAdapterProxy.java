@@ -271,6 +271,16 @@ public class EntityAdapterProxy {
         }
         return false;
     }
+    public static boolean createPrimaryValue(Object obj, LinkedHashMap<String, Column> inserts){
+        List<EntityAdapter> list = getAdapters(obj.getClass());
+        for(EntityAdapter adapter:list){
+            boolean create = adapter.createPrimaryValue(obj, inserts);
+            if(create){
+                return create;
+            }
+        }
+        return false;
+    }
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
      * 如果不实现当前可以返回null,将继续执行默认处理方式
