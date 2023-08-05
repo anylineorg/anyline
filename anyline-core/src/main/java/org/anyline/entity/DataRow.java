@@ -600,10 +600,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
     public LinkedHashMap<String, Column> getMetadatas(){
-        if(null == metadatas && null != container){
-            return container.getMetadatas();
+        return getMetadatas(false);
+    }
+
+    /**
+     *
+     * @param create 如果没有metadata是否通过keys创建
+     * @return LinkedHashMap
+     */
+    public LinkedHashMap<String, Column> getMetadatas(boolean create){
+        LinkedHashMap<String, Column> result = metadatas;
+        if(null == result || result.isEmpty()){
+            if(null != container){
+                result = container.getMetadatas();
+            }
         }
-        return metadatas;
+        if(null == result || result.isEmpty()){
+            if(create){
+                result = new LinkedHashMap<>();
+                for(String key:keySet()){
+                    result.put(key.toUpperCase(), new Column(key));
+                }
+            }
+        }
+        return result;
     }
     public Column getMetadata(String column){
         LinkedHashMap<String, Column> metadatas = getMetadatas();
@@ -1023,6 +1043,24 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return setPrimaryKey(false, pks);
     }
 
+
+    public LinkedHashMap<String, Column> getPrimaryColumns() {
+        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+        List<String> pks = getPrimaryKeys();
+        if(null != pks){
+           for(String pk:pks){
+               Column column = null;
+               if(null != metadatas){
+                   column = metadatas.get(pk.toUpperCase());
+               }
+               if(null == column){
+                   column = new Column(pk);
+               }
+               columns.put(pk.toUpperCase(), column);
+           }
+        }
+        return columns;
+    }
     /**
      * 读取主键
      * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
@@ -2198,6 +2236,36 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public List<String> getUpdateColumns() {
         return updateColumns;
+    }
+    public LinkedHashMap<String, Column> getUpdateColumns(boolean metadata) {
+        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+        if(null != updateColumns){
+            for(String column:updateColumns){
+                Column col = null;
+                if(null != metadatas){
+                    col = metadatas.get(column.toUpperCase());
+                }
+                if(null == col){
+                    col = new Column(column);
+                }
+                columns.put(column.toUpperCase(), col);
+            }
+        }
+        return columns;
+    }
+    public LinkedHashMap<String, Column> getColumns() {
+        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+        for(String key:keySet()){
+            Column column = null;
+            if(null != metadatas){
+                column = metadatas.get(key.toUpperCase());
+            }
+            if(null == column){
+                column = new Column(key);
+            }
+            columns.put(key.toUpperCase(), column);
+        }
+        return columns;
     }
 
     public List<String> getIgnoreUpdateColumns() {
