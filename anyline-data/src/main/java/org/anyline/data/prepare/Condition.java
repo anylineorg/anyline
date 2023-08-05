@@ -19,8 +19,8 @@
 
 package org.anyline.data.prepare;
 
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.run.RunValue;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 
 import java.util.List;
@@ -40,10 +40,10 @@ public interface Condition extends Cloneable{
 	/** 
 	 * 运行时文本 
 	 * @param prefix 前缀
-	 * @param adapter adapter
+	 * @param runtime runtime
 	 * @return String
 	 */
-	String getRunText(String prefix, DriverAdapter adapter);
+	String getRunText(String prefix, DataRuntime runtime);
 
 	/**
 	 * 静态SQL
