@@ -98,13 +98,13 @@ public class DriverAdapterHolder {
 	}
 
 	/**
-	 * 检测版本数量
+	 * 检测可支持版本数量
 	 * @return boolean
 	 */
-	private static int versions(String name, String ... versions){
+	private static int versions(DatabaseType type, String ... versions){
 		int qty = 0;
 		for(String version:versions){
-			if(adapters.containsKey(DatabaseType.MSSQL.name()+"_"+version)){
+			if(adapters.containsKey(type.name()+"_"+version)){
 				qty ++;
 			}
 		}
@@ -113,28 +113,36 @@ public class DriverAdapterHolder {
 
 	/**
 	 * 取第一个存在的版本
-	 * @param name name
+	 * @param type DatabaseType
 	 * @param versions 版本号
 	 * @return adapter
 	 */
-	private static DriverAdapter adapter(String name, String ... versions){
+	private static DriverAdapter adapter(DatabaseType type, String ... versions){
 		for(String version:versions){
-			DriverAdapter adapter = adapters.get(DatabaseType.MSSQL.name()+"_"+version);
+			DriverAdapter adapter = adapters.get(type.name() + "_" + version);
 			if(null != adapter){
 				return adapter;
 			}
 		}
 		return null;
 	}
-	private static DriverAdapter getAdapter(String datasource, String name, String version){
+
+	/**
+	 * 根据数据源特征定位适配器
+	 * @param datasource 数据源key
+	 * @param feature 特征
+	 * @param version 版本
+	 * @return 适配器
+	 */
+	private static DriverAdapter getAdapter(String datasource, String feature, String version){
 		DriverAdapter adapter = null;
 		if(null != version){
 			version = version.toLowerCase();
 		}
 
-		if(support(DatabaseType.MYSQL) && name.contains("mysql")){
+		if(support(DatabaseType.MYSQL) && feature.contains("mysql")){
 			adapter = adapters.get(DatabaseType.MYSQL.name());
-		}else if(support(DatabaseType.MSSQL) && (name.contains("mssql") || name.contains("sqlserver"))){
+		}else if(support(DatabaseType.MSSQL) && (feature.contains("mssql") || feature.contains("sqlserver"))){
 			if(null != version ){
 				version = version.split("\\.")[0];
 				double v = BasicUtil.parseDouble(version, 0d);
@@ -147,15 +155,15 @@ public class DriverAdapterHolder {
 				adapter =  adapters.get(DatabaseType.MSSQL.name()+"_"+key);
 			}else{
 				//如果没有提供版本号并且环境中只有一个版本
-				if(versions(DatabaseType.ORACLE.name(), "2000", "2005") == 1 ){
-					adapter = adapter(DatabaseType.MSSQL.name(), "2005", "2000");
+				if(versions(DatabaseType.ORACLE, "2000", "2005") == 1 ){
+					adapter = adapter(DatabaseType.MSSQL, "2005", "2000");
 				}
 			}
 
 			if(null == adapter){
 				adapter =  adapters.get(DatabaseType.MSSQL.name()+"_2005");
 			}
-		}else if(support(DatabaseType.ORACLE) && name.contains("oracle")){
+		}else if(support(DatabaseType.ORACLE) && feature.contains("oracle")){
 			/*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
 			if(null != version ){
 				version = RegularUtil.cut(version, "release","-");
@@ -173,59 +181,61 @@ public class DriverAdapterHolder {
 				adapter =  adapters.get(DatabaseType.ORACLE.name()+"_"+key);
 			}else{
 				//如果没有提供版本号并且环境中只有一个版本
-				if(versions(DatabaseType.ORACLE.name(), "11", "12") == 1 ){
-					adapter = adapter(DatabaseType.ORACLE.name(), "11", "12");
+				if(versions(DatabaseType.ORACLE, "11", "12") == 1 ){
+					adapter = adapter(DatabaseType.ORACLE, "11", "12");
 				}
 			}
 			if(null == adapter) {
 				adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
 			}
-		}else if(support(DatabaseType.PostgreSQL) && name.contains("postgresql")){
+		}else if(support(DatabaseType.PostgreSQL) && feature.contains("postgresql")){
 			adapter =  adapters.get(DatabaseType.PostgreSQL.name());
 		}
 
-		else if(support(DatabaseType.ClickHouse) && name.contains("clickhouse")){
+		else if(support(DatabaseType.ClickHouse) && feature.contains("clickhouse")){
 			adapter =  adapters.get(DatabaseType.ClickHouse.name());
-		}else if(support(DatabaseType.DB2) && name.contains("db2")){
+		}else if(support(DatabaseType.DB2) && feature.contains("db2")){
 			adapter =  adapters.get(DatabaseType.DB2.name());
-		}else if(support(DatabaseType.Derby) && name.contains("derby")){
+		}else if(support(DatabaseType.Derby) && feature.contains("derby")){
 			adapter =  adapters.get(DatabaseType.Derby.name());
-		}else if(support(DatabaseType.DM) && name.contains("dmdbms")){
+		}else if(support(DatabaseType.DM) && feature.contains("dmdbms")){
 			adapter =  adapters.get(DatabaseType.DM.name());
-		}else if(support(DatabaseType.HighGo) && name.contains("hgdb") || name.contains("highgo")){
+		}else if(support(DatabaseType.HighGo) && feature.contains("hgdb") || feature.contains("highgo")){
 			adapter =  adapters.get(DatabaseType.HighGo.name());
-		}else if(support(DatabaseType.KingBase) && name.contains("kingbase")){
+		}else if(support(DatabaseType.KingBase) && feature.contains("kingbase")){
 			adapter =  adapters.get(DatabaseType.KingBase.name());
-		}else if(support(DatabaseType.GBase) && name.contains("gbase")){
+		}else if(support(DatabaseType.GBase) && feature.contains("gbase")){
 			adapter =  adapters.get(DatabaseType.GBase.name());
-		}else if(support(DatabaseType.OceanBase) && name.contains("oceanbase")){
+		}else if(support(DatabaseType.OceanBase) && feature.contains("oceanbase")){
 			adapter =  adapters.get(DatabaseType.OceanBase.name());
-		}else if(support(DatabaseType.OpenGauss) && name.contains("opengauss")){
+		}else if(support(DatabaseType.OpenGauss) && feature.contains("opengauss")){
 			adapter =  adapters.get(DatabaseType.OpenGauss.name());
-		}else if(support(DatabaseType.PolarDB) && name.contains("polardb")){
+		}else if(support(DatabaseType.PolarDB) && feature.contains("polardb")){
 			adapter =  adapters.get(DatabaseType.PolarDB.name());
-		}else if(support(DatabaseType.SQLite) && name.contains("sqlite")){
+		}else if(support(DatabaseType.SQLite) && feature.contains("sqlite")){
 			adapter =  adapters.get(DatabaseType.SQLite.name());
-		}else if(support(DatabaseType.SQLite) && name.contains("informix")){
+		}else if(support(DatabaseType.SQLite) && feature.contains("informix")){
 			adapter =  adapters.get(DatabaseType.Informix.name());
-		}else if(support(DatabaseType.H2) && name.contains(":h2:")){
+		}else if(support(DatabaseType.H2) && feature.contains(":h2:")){
 			adapter =  adapters.get(DatabaseType.H2.name());
-		}else if(support(DatabaseType.Hive) && name.contains("hive")){
+		}else if(support(DatabaseType.Hive) && feature.contains("hive")){
 			adapter =  adapters.get(DatabaseType.H2.name());
-		}else if(support(DatabaseType.HSQLDB) && name.contains("hsqldb")){
+		}else if(support(DatabaseType.HSQLDB) && feature.contains("hsqldb")){
 			adapter =  adapters.get(DatabaseType.HSQLDB.name());
-		}else if(support(DatabaseType.TDengine) && name.contains("taos")){
+		}else if(support(DatabaseType.TDengine) && feature.contains("taos")){
 			adapter =  adapters.get(DatabaseType.TDengine.name());
-		}else if(support(DatabaseType.Neo4j) && name.contains("neo4j")){
+		}else if(support(DatabaseType.Neo4j) && feature.contains("neo4j")){
 			adapter =  adapters.get(DatabaseType.Neo4j.name());
-		}else if(support(DatabaseType.Neo4j) && name.contains("uxdb")){
+		}else if(support(DatabaseType.Neo4j) && feature.contains("uxdb")){
 			adapter =  adapters.get(DatabaseType.UXDB.name());
-		}else if(support(DatabaseType.HANA) && name.contains("sap")){
+		}else if(support(DatabaseType.HANA) && feature.contains("sap")){
 			adapter =  adapters.get(DatabaseType.HANA.name());
+		}else if(support(DatabaseType.MongoDB) && feature.contains("mongo")){
+			adapter =  adapters.get(DatabaseType.MongoDB.name());
 		}
 		if(null != adapter) {
 			adapters.put("al-ds:"+datasource, adapter);
-			log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]",datasource, name, adapter);
+			log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]",datasource, feature, adapter);
 		}
 		return adapter;
 	}
