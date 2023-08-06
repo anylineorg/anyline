@@ -1375,8 +1375,9 @@ public class ServiceProxy {
      * @param source 数据源,如DruidDataSource,MongoClient
      * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
      * @return service
+     * @throws Exception 异常 Exception
      */
-    public static AnylineService temporary(String key, Object source, DriverAdapter adapter){
+    public static AnylineService temporary(String key, Object source, DriverAdapter adapter) throws Exception{
         DataRuntime runtime = RuntimeHolderProxy.runtime(key, source, adapter);
         AnylineDao dao = new FixDao();
         //dao.setDatasource(key);
@@ -1388,11 +1389,11 @@ public class ServiceProxy {
         return service;
     }
 
-    public static AnylineService temporary(Object source){
+    public static AnylineService temporary(Object source) throws Exception{
         return temporary("temporary", source, null);
     }
 
-    public static AnylineService temporary(String key, Object source){
+    public static AnylineService temporary(String key, Object source) throws Exception{
         return temporary(key, source, null);
     }
 
