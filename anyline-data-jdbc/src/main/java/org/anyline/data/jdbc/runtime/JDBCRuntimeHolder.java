@@ -23,14 +23,18 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
         RuntimeHolderProxy.reg(DataSource.class,this);
     }
     @Override
-    public DataRuntime runtime(String key, Object source, DriverAdapter adapter){
+    public DataRuntime runtime(String key, Object source, DriverAdapter adapter) throws Exception{
         JDBCRuntime runtime = new JDBCRuntime();
-        runtime.setKey(key);
-        runtime.setAdapter(adapter);
         if(source instanceof DataSource){
-            DataSource ds = (DataSource) source;
-            JdbcTemplate template = new JdbcTemplate(ds);
-            runtime.setClient(template);
+            runtime.setKey(key);
+            runtime.setAdapter(adapter);
+            if(source instanceof DataSource){
+                DataSource ds = (DataSource) source;
+                JdbcTemplate template = new JdbcTemplate(ds);
+                runtime.setClient(template);
+            }
+        }else{
+            throw new Exception("请提供javax.sql.DataSource");
         }
         return runtime;
     }
