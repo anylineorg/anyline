@@ -40,7 +40,7 @@ public interface Condition extends Cloneable{
 	/** 
 	 * 运行时文本 
 	 * @param prefix 前缀
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return String
 	 */
 	String getRunText(String prefix, DataRuntime runtime);

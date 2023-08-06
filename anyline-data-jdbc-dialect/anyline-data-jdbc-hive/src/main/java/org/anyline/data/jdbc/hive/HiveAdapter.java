@@ -109,7 +109,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return value
 	 */
 	@Override
-	public Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value){
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value){
 		List<Object> values = new ArrayList<>();
 		if(null != value){
 			if(value instanceof Collection){
@@ -618,7 +618,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return List
 	 */
 	@Override
@@ -700,7 +700,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return tables
 	 * @throws Exception 异常
 	 */

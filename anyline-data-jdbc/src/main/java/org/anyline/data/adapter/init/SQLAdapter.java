@@ -79,8 +79,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
-     * void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String,Column> columns)
-     * void createInserts(DataRuntime runtime, Run run, String dest, Collection list,  LinkedHashMap<String,Column> columns)
+     * void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String,Column> columns)
+     * void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list,  LinkedHashMap<String,Column> columns)
      * int insert(DataRuntime runtime, String random, Object data, Run run) throws Exception
      *
      * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns)
@@ -110,7 +110,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+    public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -164,7 +164,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -174,7 +174,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(runtime, run, dest, set, columns);
+            createInsertContent(runtime, run, dest, set, columns);
             return;
         }
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
@@ -373,7 +373,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null == cols || cols.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        createInserts(runtime, run, dest, list, cols);
+        createInsertContent(runtime, run, dest, list, cols);
 
         return run;
     }
@@ -755,13 +755,13 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
-     * Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
-     * Object buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
+     * Object createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
+     * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
+     * Object createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      *
-     * protected void buildQueryRunContent(DataRuntime runtime, XMLRun run)
-     * protected void buildQueryRunContent(DataRuntime runtime, TextRun run)
-     * protected void buildQueryRunContent(DataRuntime runtime, TableRun run)
+     * protected void createQueryContent(DataRuntime runtime, XMLRun run)
+     * protected void createQueryContent(DataRuntime runtime, TextRun run)
+     * protected void createQueryContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
     /**
@@ -773,7 +773,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return value
      */
     @Override
-    public Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
+    public Object createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
         int code = compare.getCode();
         if(code > 100){
             builder.append(" NOT");
@@ -805,8 +805,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return value
      */
     @Override
-    public Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value){
-        log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value)",37));
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value){
+        log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.","") + ")未实现 Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value)",37));
         return null;
     }
     /**
@@ -817,7 +817,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
         if(compare == Compare.NOT_IN){
             builder.append(" NOT");
         }
@@ -839,10 +839,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
 
     @Override
-    protected void buildQueryRunContent(DataRuntime runtime, XMLRun run){
+    protected void createQueryContent(DataRuntime runtime, XMLRun run){
     }
     @Override
-    protected void buildQueryRunContent(DataRuntime runtime, TextRun run){
+    protected void createQueryContent(DataRuntime runtime, TextRun run){
         replaceVariable(runtime, run);
         run.appendCondition();
         run.appendGroup();
@@ -948,7 +948,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         builder.append(result);
     }
     @Override
-    protected void buildQueryRunContent(DataRuntime runtime, TableRun run){
+    protected void createQueryContent(DataRuntime runtime, TableRun run){
         StringBuilder builder = run.getBuilder();
         TablePrepare sql = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
@@ -1045,11 +1045,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
-     * void buildExecuteRunContent(DataRuntime runtime, Run run);
+     * void createExecuteRunContent(DataRuntime runtime, Run run);
      ******************************************************************************************************************/
 
     @Override
-    protected void buildExecuteRunContent(DataRuntime runtime, TextRun run){
+    protected void createExecuteRunContent(DataRuntime runtime, TextRun run){
         replaceVariable(runtime,run);
         run.appendCondition();
         run.appendGroup();
@@ -1078,12 +1078,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
-     * protected Run buildDeleteRunContent(TableRun run)
-     * protected Run createDeleteRunFromTable(String table, String key, Object values)
-     * protected Run createDeleteRunFromEntity(String dest, Object obj, String ... columns)
+     * protected Run createDeleteRunContent(TableRun run)
+     * protected Run buildDeleteRunFromTable(String table, String key, Object values)
+     * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
 
-    protected Run buildDeleteRunContent(TableRun run){
+    protected Run createDeleteRunContent(TableRun run){
         AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
@@ -1125,7 +1125,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
     @SuppressWarnings("rawtypes")
     @Override
-    public Run createDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
+    public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
         if(null == table || null == key || null == values){
             return null;
         }
@@ -1168,7 +1168,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         return run;
     }
-    public Run createDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns){
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();

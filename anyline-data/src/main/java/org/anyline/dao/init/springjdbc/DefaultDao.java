@@ -978,7 +978,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 检测级联insert/update
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param obj obj
 	 * @param dependency dependency
 	 * @param mode 0:inser 1:update
@@ -1251,9 +1251,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 查询
 	 * @param system 系统表不查询表结构
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 查询表结构时使用
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return DataSet
 	protected DataSet select(DataRuntime runtime, String random, boolean system,  String table, String sql, List<Object> values){
 	 */
@@ -1267,10 +1267,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 查询
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param clazz entity class
 	 * @param table table
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dependency 是否加载依赖 >0时加载
 	 * @return EntitySet
 	 * @param <T> entity.class
@@ -1806,7 +1806,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 执行删除
 	 * @param recover 执行完成后是否根据设置自动还原数据源
 	 * @param runtime DataRuntime
-	 * @param run Run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return int
 	 */
 	protected int exeDelete(DataRuntime runtime, String random, boolean recover, Run run){
@@ -1951,7 +1951,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 缓存表名
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param random random
 	 * @param catalog catalog
 	 * @param schema schema

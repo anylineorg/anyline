@@ -92,7 +92,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+    public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder){
@@ -151,7 +151,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -159,7 +159,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(runtime, run, dest, set, columns);
+            createInsertContent(runtime, run, dest, set, columns);
             return;
         }
 

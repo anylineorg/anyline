@@ -399,10 +399,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 	/**
 	 * 执行 insert
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param pks pks
 	 * @return int 影响行数
 	 * @throws Exception 异常

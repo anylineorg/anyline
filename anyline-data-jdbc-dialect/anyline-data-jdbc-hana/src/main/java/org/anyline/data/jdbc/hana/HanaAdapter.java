@@ -154,13 +154,13 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 		UNION ALL SELECT    'A2' FROM DUMMY
 	 * 		UNION ALL SELECT    'A3' FROM DUMMY
 	 * ) M
-	 * @param runtime runtime
-	 * @param run run
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest dest
 	 * @param columns 需要插入的列
 	 */
 	@Override
-	public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+	public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		if(null == set || set.size() ==0){
 			return;
 		}
@@ -242,7 +242,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		builder.append(") M ");
 	}
 	@Override
-	public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+	public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -253,7 +253,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInserts(runtime, run, dest, set, columns);
+			createInsertContent(runtime, run, dest, set, columns);
 			return;
 		}
 
@@ -350,7 +350,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 
 	/**
 	 * 执行 insert
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
 	 * @param sql sql
@@ -386,10 +386,10 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	}*/
 	/**
 	 * 执行 insert
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param random random
 	 * @param data entity|DataRow|DataSet
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param pks pks
 	 * @return int 影响行数
 	 * @throws Exception 异常
@@ -653,7 +653,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return List
 	 */
 	@Override
@@ -735,7 +735,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return tables
 	 * @throws Exception 异常
 	 */

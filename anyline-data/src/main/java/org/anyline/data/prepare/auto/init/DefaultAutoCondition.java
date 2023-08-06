@@ -92,7 +92,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	/** 
 	 * 运行时文本
 	 * @param prefix 前缀
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return String
 	 */
 	@Override
@@ -154,7 +154,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
 		if(compareCode >=60 && compareCode <= 62){				// FIND_IN_SET(?, CODES)
-			val = runtime.getAdapter().buildConditionFindInSet(runtime, builder, col_builder.toString(), compare, val);
+			val = runtime.getAdapter().createConditionFindInSet(runtime, builder, col_builder.toString(), compare, val);
 		}else{
 			builder.append(col_builder);
 			if(compareCode == 10){
@@ -212,10 +212,10 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 			}else if(compareCode == 80){ 							// BETWEEN ? AND ?
 				builder.append(compare.getSQL());
 			}else if(compareCode == 40 || compareCode == 140){		// IN(?,?,?)
-				runtime.getAdapter().buildConditionIn(runtime, builder, compare, val);
+				runtime.getAdapter().createConditionIn(runtime, builder, compare, val);
 			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
 					|| (compareCode >= 150 && compareCode <= 152)){ // NOT LIKE ?
-				val = runtime.getAdapter().buildConditionLike(runtime, builder, compare, val) ;
+				val = runtime.getAdapter().createConditionLike(runtime, builder, compare, val) ;
 			}
 		}
 

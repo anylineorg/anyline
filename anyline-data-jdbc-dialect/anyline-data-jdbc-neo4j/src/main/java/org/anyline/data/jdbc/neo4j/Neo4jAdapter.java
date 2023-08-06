@@ -74,8 +74,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
-     * void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String,Column> columns)
-     * void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String,Column> columns)
+     * void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String,Column> columns)
+     * void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String,Column> columns)
      *
      * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
@@ -106,7 +106,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+    public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -145,7 +145,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param columns 需插入的列
      */
     @Override
-    public void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -153,7 +153,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInserts(runtime, run, dest, set, columns);
+            createInsertContent(runtime, run, dest, set, columns);
             return;
         }
         builder.append("CREATE ");
@@ -255,7 +255,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             throw new SQLException("未指定表");
         }
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, columns, true);
-        createInserts(runtime, run, dest, list, cols);
+        createInsertContent(runtime, run, dest, list, cols);
 
         return run;
     }
@@ -428,13 +428,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
      * String parseFinalQuery(DataRuntime runtime, Run run)
-     * StringBuilder buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
-     * StringBuilder buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
+     * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
+     * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
      *
-     * protected void buildQueryRunContent(DataRuntime runtime, XMLRun run)
-     * protected void buildQueryRunContent(DataRuntime runtime, TextRun run)
-     * protected void buildQueryRunContent(DataRuntime runtime, TableRun run)
+     * protected void createQueryContent(DataRuntime runtime, XMLRun run)
+     * protected void createQueryContent(DataRuntime runtime, TextRun run)
+     * protected void createQueryContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
 
@@ -513,7 +513,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return StringBuilder
      */
     @Override
-    public Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
+    public Object createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
         if(compare == Compare.LIKE){
             builder.append(" CONTAINS ?");
         }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH){
@@ -525,7 +525,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     }
 
     @Override
-    public Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) {
         return null;
     }
 
@@ -537,7 +537,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return StringBuilder
      */
     @Override
-    public StringBuilder buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value){
         if(compare== Compare.NOT_IN){
             builder.append(" NOT");
         }
@@ -607,13 +607,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 生成基础查询主体
      * @param run run
      */
-    protected void buildQueryRunContent(DataRuntime runtime, XMLRun run){
+    protected void createQueryContent(DataRuntime runtime, XMLRun run){
     }
     /**
      * 生成基础查询主体
      * @param run run
      */
-    protected void buildQueryRunContent(DataRuntime runtime, TextRun run){
+    protected void createQueryContent(DataRuntime runtime, TextRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -708,7 +708,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 生成基础查询主体
      * @param run run
      */
-    protected void buildQueryRunContent(DataRuntime runtime, TableRun run){
+    protected void createQueryContent(DataRuntime runtime, TableRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare =  run.getPrepare();
         String alias = prepare.getAlias();
@@ -816,9 +816,9 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * -----------------------------------------------------------------------------------------------------------------
      * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
-     * protected Run buildDeleteRunContent(TableRun run)
-     * protected Run createDeleteRunFromTable(String table, String key, Object values)
-     * protected Run createDeleteRunFromEntity(String dest, Object obj, String ... columns)
+     * protected Run createDeleteRunContent(TableRun run)
+     * protected Run buildDeleteRunFromTable(String table, String key, Object values)
+     * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
     public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns){
         TableRun run = new TableRun(runtime, dest);
@@ -1000,7 +1000,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
 
-    protected Run buildDeleteRunContent(TableRun run){
+    protected Run createDeleteRunContent(TableRun run){
         RunPrepare prepare =   run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
@@ -1039,7 +1039,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
     @Override
-    public Run createDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
+    public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
         if(null == table || null == key || null == values){
             return null;
         }
@@ -1078,7 +1078,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
 
-    public Run createDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns){
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
