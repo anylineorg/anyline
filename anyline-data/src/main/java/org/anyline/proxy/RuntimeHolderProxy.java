@@ -14,7 +14,7 @@ public class RuntimeHolderProxy {
     public static void reg(Class calzz, RuntimeHolder holder){
         holders.put(calzz, holder);
     }
-    public static DataRuntime runtime(String key, Object source, DriverAdapter adapter){
+    public static DataRuntime runtime(String key, Object source, DriverAdapter adapter) throws Exception{
         DataRuntime runtime = null;
         if(null != source){
             Class clazz = source.getClass();
