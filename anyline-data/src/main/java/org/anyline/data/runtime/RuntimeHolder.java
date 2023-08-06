@@ -19,8 +19,15 @@ public class RuntimeHolder {
         RuntimeHolder.factory = factory;
     }
 
-    //子类覆盖 生成简单的DataRuntime不注册到spring
-    public DataRuntime runtime(String key, Object source, DriverAdapter adapter){
+    /**
+     * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
+     * @param key key
+     * @param source DataSource
+     * @param adapter
+     * @return
+     * @throws Exception
+     */
+    public DataRuntime runtime(String key, Object source, DriverAdapter adapter) throws Exception{
         return null;
     }
 
