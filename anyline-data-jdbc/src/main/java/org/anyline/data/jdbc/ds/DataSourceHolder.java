@@ -55,16 +55,6 @@ public class DataSourceHolder extends ClientHolder {
 
 
 	/**
-	 * 注册新的数据源,只是把spring context中现有的数据源名称添加到数据源名称列表
-	 * @param ds 数据源名称
-	 */
-	public static void reg(String ds){
-		if(!dataSources.contains(ds)){
-			dataSources.add(ds); 
-		} 
-	}
-
-	/**
 	 * 启动事务
 	 * @param datasource 数据源
 	 * @param definition 事务定义相关参数
@@ -161,14 +151,6 @@ public class DataSourceHolder extends ClientHolder {
 		}
 		dtm.rollback(status);
 		transactionStatus.remove(status);
-	}
-	/**
-	 * 数据源列表中是否已包含指定数据源
-	 * @param ds 数据源名称
-	 * @return boolean
-	 */
-	public static boolean contains(String ds){
-		return dataSources.contains(ds); 
 	}
 
 
@@ -367,6 +349,10 @@ public class DataSourceHolder extends ClientHolder {
 	public static String build(String key, Map params) throws Exception{
 		String ds_id = "anyline.datasource." + key;
 		try {
+			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
+			if(BasicUtil.isEmpty(url)){
+				return null;
+			}
 			String type = (String)params.get("pool");
 			if(BasicUtil.isEmpty(type)){
 				type = (String)params.get("type");
@@ -386,7 +372,6 @@ public class DataSourceHolder extends ClientHolder {
 			}else if(driver instanceof Class){
 				driver = ((Class)driver).newInstance();
 			}
-			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
 			Object user =  BeanUtil.propertyNvl(params,"user","username");
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.putAll(params);
