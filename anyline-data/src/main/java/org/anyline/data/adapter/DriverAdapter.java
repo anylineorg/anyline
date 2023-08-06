@@ -26,6 +26,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -68,10 +69,9 @@ public interface DriverAdapter {
 	String TAB 		= "\t"		;
 	String BR 		= "\n"		;
 	String BR_TAB 	= "\n\t"	;
-		//////////////////////////////////////////////////////////////////////////
 
 
-
+	//执行
 	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
 	long total(DataRuntime runtime, String random, Run run);
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
@@ -81,16 +81,24 @@ public interface DriverAdapter {
 	boolean execute(DataRuntime runtime, String random, Procedure procedure);
 	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
 
+	/**
+	 * 执行 insert
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param data data
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param pks pks
+	 * @return int
+	 * @throws Exception 异常
+	 */
+	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
+	//有些不支持返回自增的单独执行
+	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 
 
 
-	//根据驱动内置接口补充 再根据metadata解析 SELECT * FROM T WHERE 1=0 SqlRowSet set = runtime.getTemplate().queryForRowSet(run.getFinalQuery());
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
 
-	///////////////////////////////////////////////////////////////////////
-
-
-
+	
 	/**
 	 * 界定符(分隔符)
 	 * @return String
@@ -146,7 +154,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建insert RunPrepare
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param dest 表
 	 * @param obj 实体
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
@@ -154,29 +162,32 @@ public interface DriverAdapter {
 	 * @return Run
 	 */
 	Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
-
+	default Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, checkPrimary, columns);
+	}
 	/**
 	 * 根据Collection创建批量插入SQL
-	 * @param runtime runtime
-	 * @param run run
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param list 数据集
 	 * @param columns 插入的列
 	 */
-	void createInserts(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns);
+	void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns);
 
 	/**
 	 * 根据DataSet创建批量插入SQL
-	 * @param runtime runtime
-	 * @param run run
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
 	 * @param columns 需要插入的列
 	 */
-	void createInserts(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns);
+	void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns);
 
 	/**
 	 * 确认需要插入的列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param data  Entity或DataRow
 	 * @param batch  是否批量
 	 * @param columns 提供额外的判断依据<br/>
@@ -205,19 +216,6 @@ public interface DriverAdapter {
 	 */
 	boolean supportInsertPlaceholder ();
 
-	/**
-	 * 执行 insert
-	 * @param runtime runtime
-	 * @param random random
-	 * @param data data
-	 * @param run run
-	 * @param pks pks
-	 * @return int
-	 * @throws Exception 异常
-	 */
-	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
-	//有些不支持返回自增的单独执行
-	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 
 	String generatedKey();
 	/* *****************************************************************************************************************
@@ -226,6 +224,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建更新SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param dest 表
 	 * @param obj Entity或DtaRow
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
@@ -234,6 +233,9 @@ public interface DriverAdapter {
 	 * @return Run
 	 */
 	Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+	default Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, configs, checkPrimary, columns);
+	}
 	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns);
 	Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns);
 
@@ -243,14 +245,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建查询SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param prepare  prepare
 	 * @param configs 查询条件配置
 	 * @param conditions 查询条件
 	 * @return Run
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return buildQueryRun(RuntimeHolder.getRuntime(), prepare, configs, conditions);
+	}
 	/**
 	 * 创建查询序列SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param names names
 	 * @return String
@@ -259,13 +266,14 @@ public interface DriverAdapter {
 
 	/**
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
-	 * @param run run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
-	void buildQueryRunContent(DataRuntime runtime, Run run);
+	void createQueryContent(DataRuntime runtime, Run run);
 
 
 	/**
 	 * 创建最终执行查询SQL 包含分页 ORDER
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param run  run
 	 * @return String
 	 */
@@ -275,34 +283,38 @@ public interface DriverAdapter {
 	/**
 	 * 构造 LIKE 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param compare compare
 	 * @param value value
 	 * @return value 有占位符时返回 占位值，没有占位符返回null
 	 */
-	Object buildConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
+	Object createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * 构造 FIND_IN_SET 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column column
 	 * @param compare compare
 	 * @param value value
 	 * @return value
 	 */
-	Object buildConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value);
+	Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value);
 	/**
 	 * 构造(NOT) IN 查询条件
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param compare compare
 	 * @param value value
 	 * @return builder
 	 */
-	StringBuilder buildConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
+	StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
 	 * JDBC执行完成后的结果处理
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param list JDBC执行结果
 	 * @return  DataSet
 	 */
@@ -315,6 +327,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建统计总数SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param run  Run
 	 * @return String
 	 */
@@ -327,7 +340,8 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建检测是否存在SQL
-	 * @param run run
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
 	String parseExists(DataRuntime runtime, Run run);
@@ -339,6 +353,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建执行SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param prepare prepare
 	 * @param configs configs
 	 * @param conditions conditions
@@ -348,9 +363,10 @@ public interface DriverAdapter {
 
 	/**
 	 * 构造执行主体
-	 * @param run run
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
-	void buildExecuteRunContent(DataRuntime runtime, Run run);
+	void createExecuteRunContent(DataRuntime runtime, Run run);
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
@@ -358,28 +374,37 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建删除SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param dest 表
 	 * @param obj entity
 	 * @param columns 删除条件的列，根据columns取obj值并合成删除条件
 	 * @return Run
 	 */
 	Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns);
+	default Run buildDeleteRun(String dest, Object obj, String ... columns){
+		return buildDeleteRun(RuntimeHolder.getRuntime(), dest, obj, columns);
+	}
 	/**
 	 * 根据key values删除
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param key key
 	 * @param values values
 	 * @return Run
 	 */
 	Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values);
-	Run createDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values);
-	Run createDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns);
+	default Run buildDeleteRun(String table, String key, Object values){
+		return buildDeleteRun(RuntimeHolder.getRuntime(), table, key , values);
+	}
+	Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values);
+	Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns);
 	/**
 	 * 构造删除主体
-	 * @param run run
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return Run
 	 */
-	Run buildDeleteRunContent(DataRuntime runtime, Run run);
+	Run createDeleteRunContent(DataRuntime runtime, Run run);
 
 	List<Run> buildTruncateRun(DataRuntime runtime, String table);
 
@@ -414,13 +439,18 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询所有数据库
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception;
+	default List<Run> buildQueryDatabaseRun() throws Exception{
+		return buildQueryDatabaseRun(RuntimeHolder.getRuntime());
+	}
 
 	/**
 	 *  根据查询结果集构造 Database
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param databases 上一步查询结果
@@ -436,6 +466,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -443,9 +474,13 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
+	default List<Run> buildQueryTableRun(String catalog, String schema, String pattern, String types) throws Exception{
+		return buildQueryTableRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	}
 
 	/**
 	 * 查询表备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -453,9 +488,13 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
+	default List<Run> buildQueryTableCommentRun(String catalog, String schema, String pattern, String types) throws Exception{
+		return buildQueryTableCommentRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	}
 
 	/**
 	 *  根据查询结果集构造Table
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -469,9 +508,9 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 上一步查询结果
-	 * @param runtime runtime
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -484,6 +523,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 表备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -497,13 +537,18 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return List
 	 */
 	List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildQueryDDLRun(Table table) throws Exception{
+		return buildQueryDDLRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 查询表DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
@@ -517,6 +562,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询视图
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -524,9 +570,13 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
+	default List<Run> buildQueryViewRun(String catalog, String schema, String pattern, String types) throws Exception{
+		return buildQueryViewRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	}
 
 	/**
 	 *  根据查询结果集构造View
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -540,9 +590,9 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据JDBC补充
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param views 上一步查询结果
-	 * @param runtime runtime
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -555,12 +605,17 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询viewDDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view view
 	 * @return List
 	 */
 	List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildQueryDDLRun(View view) throws Exception{
+		return buildQueryDDLRun(RuntimeHolder.getRuntime(), view);
+	}
 	/**
 	 * 查询 view DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
@@ -573,6 +628,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -581,8 +637,13 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildQueryMasterTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
 
+	default List<Run> buildQueryMasterTableRun(String catalog, String schema, String pattern, String types) throws Exception{
+		return buildQueryMasterTableRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	}
+
 	/**
 	 *  根据查询结果集构造Table
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -596,11 +657,11 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据JDBC
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param runtime runtime
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -609,12 +670,17 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询 MasterTable DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table MasterTable
 	 * @return List
 	 */
 	List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildQueryDDLRun(MasterTable table) throws Exception{
+		return buildQueryDDLRun(RuntimeHolder.getRuntime(), table);
+	}
 	/**
 	 * 查询 MasterTable DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
@@ -628,6 +694,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询分区表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -635,9 +702,13 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
+	default List<Run> buildQueryPartitionTableRun(String catalog, String schema, String pattern, String types) throws Exception{
+	return 	buildQueryPartitionTableRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	}
 
 	/**
 	 * 根据主表查询分区表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param master 主表
 	 * @param tags 标签名+标签值
 	 * @param name 分区表名
@@ -645,10 +716,17 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception;
+	default List<Run> buildQueryPartitionTableRun(MasterTable master, Map<String,Object> tags, String name) throws Exception{
+		return buildQueryPartitionTableRun(RuntimeHolder.getRuntime(), master, tags, name);
+	}
 	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception;
+	default List<Run> buildQueryPartitionTableRun(MasterTable master, Map<String,Object> tags) throws Exception{
+		return buildQueryPartitionTableRun(RuntimeHolder.getRuntime(), master, tags);
+	}
 
 	/**
 	 *  根据查询结果集构造Table
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -664,12 +742,12 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据JDBC
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param runtime runtime
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -679,12 +757,17 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询 PartitionTable DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table PartitionTable
 	 * @return List
 	 */
 	List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildQueryDDLRun(PartitionTable table) throws Exception{
+		return buildQueryDDLRun(RuntimeHolder.getRuntime(), table);
+	}
 	/**
 	 * 查询 MasterTable DDL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
@@ -698,14 +781,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
 	List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	default List<Run> buildQueryColumnRun(Table table, boolean metadata) throws Exception{
+		return buildQueryColumnRun(RuntimeHolder.getRuntime(), table, metadata);
+	}
 
 	/**
 	 *  根据查询结果集构造Tag
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -718,14 +806,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 解析JDBC get columns结果
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param runtime runtime
 	 * @return columns 上一步查询结果
 	 * @return attern attern
 	 * @throws Exception 异常
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
+
+	//查询过程中需要元数据时调用
+	//根据驱动内置接口补充 再根据metadata解析 SELECT * FROM T WHERE 1=0 SqlRowSet set = runtime.getTemplate().queryForRowSet(run.getFinalQuery());
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
+
 
 	Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index);
 	Column column(DataRuntime runtime, Column column, ResultSet rs);
@@ -737,14 +830,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
 	List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	default List<Run> buildQueryTagRun(Table table, boolean metadata) throws Exception{
+		return buildQueryTagRun(RuntimeHolder.getRuntime(), table, metadata);
+	}
 
 	/**
 	 *  根据查询结果集构造Tag
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -759,10 +857,10 @@ public interface DriverAdapter {
 	/**
 	 *
 	 * 解析JDBC get columns结果
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
-	 * @param runtime runtime
 	 * @param pattern pattern
 	 * @return tags
 	 * @throws Exception 异常
@@ -776,13 +874,18 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的主键
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sqls
 	 */
 	List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildQueryPrimaryRun(Table table) throws Exception{
+		return buildQueryPrimaryRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
@@ -801,13 +904,18 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的外键
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sqls
 	 */
 	List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildQueryForeignsRun(Table table) throws Exception{
+		return buildQueryForeignsRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
@@ -823,14 +931,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的索引
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param name 名称
 	 * @return sqls
 	 */
 	List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name);
+	default List<Run> buildQueryIndexRun(Table table, String name){
+		return buildQueryIndexRun(RuntimeHolder.getRuntime(), table, name);
+	}
 
 	/**
 	 *  根据查询结果集构造Index
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -844,9 +957,10 @@ public interface DriverAdapter {
 
 	/**
 	 * 解析JDBC getIndex结果
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param runtime runtime
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
@@ -859,14 +973,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的约束
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
 	List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	default List<Run> buildQueryConstraintRun(Table table, boolean metadata) throws Exception{
+		return buildQueryConstraintRun(RuntimeHolder.getRuntime(), table, metadata);
+	}
 
 	/**
 	 *  根据查询结果集构造Constraint
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -887,14 +1006,19 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的trigger
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param events INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
 	List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) ;
+	default List<Run> buildQueryTriggerRun(Table table, List<Trigger.EVENT> events) {
+		return buildQueryTriggerRun(RuntimeHolder.getRuntime(), table, events);
+	}
 
 	/**
 	 *  根据查询结果集构造Constraint
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -912,6 +1036,9 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	List<Run> buildQueryProcedureRun(DataRuntime runtime, String catalog, String schema, String name) ;
+	default List<Run> buildQueryProcedureRun(String catalog, String schema, String name) {
+		return buildQueryProcedureRun(RuntimeHolder.getRuntime(), catalog, schema, name);
+	}
 
 	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
 
@@ -921,6 +1048,9 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	List<Run> buildQueryFunctionRun(DataRuntime runtime, String catalog, String schema, String name) ;
+	default List<Run> buildQueryFunctionRun(String catalog, String schema, String name) {
+		return buildQueryFunctionRun(RuntimeHolder.getRuntime(), catalog, schema, name);
+	}
 
 	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 
@@ -952,63 +1082,92 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildCreateRun(Table table) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildAddCommentRun(Table table) throws Exception{
+		return buildAddCommentRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 修改表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildAlterRun(Table table) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), table);
+	}
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @param columns 列
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception;
+	default List<Run> buildAlterRun(Table table, Collection<Column> columns) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), table, columns);
+	}
 
 	/**
 	 * 重命名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildRenameRun(Table table) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 修改备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildChangeCommentRun(Table table) throws Exception{
+		return buildChangeCommentRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 删除表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildDropRun(Table table) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 创建或删除表之前  检测表是否存在
 	 * IF NOT EXISTS
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1018,6 +1177,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建主键在创建表的DDL结尾部分
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param table 表
 	 * @return StringBuilder
@@ -1032,6 +1192,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 表备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param table 表
 	 * @return StringBuilder
@@ -1040,6 +1201,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 构造表名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder
@@ -1054,55 +1216,80 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建视图
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildCreateRun(View view) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), view);
+	}
 
 	/**
 	 * 添加视图备注(视图创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildAddCommentRun(View view) throws Exception{
+		return buildAddCommentRun(RuntimeHolder.getRuntime(), view);
+	}
 
 	/**
 	 * 修改视图
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildAlterRun(View view) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), view);
+	}
 
 	/**
 	 * 重命名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildRenameRun(View view) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), view);
+	}
 
 	/**
 	 * 修改备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildChangeCommentRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildChangeCommentRun(View view) throws Exception{
+		return buildChangeCommentRun(RuntimeHolder.getRuntime(), view);
+	}
 
 	/**
 	 * 删除视图
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildDropRun(View view) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), view);
+	}
 
 	/**
 	 * 创建或删除视图之前  检测视图是否存在
 	 * IF NOT EXISTS
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1111,6 +1298,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 视图备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param view 视图
 	 * @return StringBuilder
@@ -1123,51 +1311,75 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建主有
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildCreateRun(MasterTable table) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildAddCommentRun(MasterTable table) throws Exception{
+		return buildAddCommentRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 修改主表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildAlterRun(MasterTable table) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 主表重命名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildRenameRun(MasterTable table) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 修改主表备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildChangeCommentRun(MasterTable table) throws Exception{
+		return buildChangeCommentRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 删除主表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildDropRun(MasterTable table) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), table);
+	}
 
 
 	/* *****************************************************************************************************************
@@ -1176,50 +1388,75 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建分区表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildCreateRun(PartitionTable table) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAddCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildAddCommentRun(PartitionTable table) throws Exception{
+		return buildAddCommentRun(RuntimeHolder.getRuntime(), table);
+	}
 	/**
 	 * 修改分区表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildAlterRun(PartitionTable table) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 分区表重命名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
+	default List<Run> buildRenameRun(PartitionTable table) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), table);
+	}
+
 	/**
 	 * 修改分区表备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildChangeCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildChangeCommentRun(PartitionTable table) throws Exception{
+		return buildChangeCommentRun(RuntimeHolder.getRuntime(), table);
+	}
 
 	/**
 	 * 删除分区表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildDropRun(PartitionTable table) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), table);
+	}
 
 
 	/* *****************************************************************************************************************
@@ -1228,21 +1465,30 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改表的关键字
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @return String
 	 */
 	String alterColumnKeyword(DataRuntime runtime);
 
 	/**
 	 * 添加列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	default List<Run> buildAddRun(Column column, boolean slice) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), column, slice);
+	}
 	List<Run> buildAddRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildAddRun(Column column) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 添加列引导
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder StringBuilder
 	 * @param column column
 	 * @return String
@@ -1252,23 +1498,38 @@ public interface DriverAdapter {
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	default List<Run> buildAlterRun(Column column, boolean slice) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), column, slice);
+	}
 	List<Run> buildAlterRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildAlterRun(Column column) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 删除列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	default List<Run> buildDropRun(Column column, boolean slice) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), column, slice);
+	}
 	List<Run> buildDropRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildDropRun(Column column) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), column);
+	}
 	/**
 	 * 删除列引导
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder StringBuilder
 	 * @param column column
 	 * @return String
@@ -1278,62 +1539,91 @@ public interface DriverAdapter {
 	/**
 	 * 修改列名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildRenameRun(Column column) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
 	List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildChangeTypeRun(Column column) throws Exception{
+		return buildChangeTypeRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
 	List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildChangeDefaultRun(Column column) throws Exception{
+		return buildChangeDefaultRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 修改非空限制
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
 	List<Run> buildChangeNullableRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildChangeNullableRun(Column column) throws Exception{
+		return buildChangeNullableRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 修改备注
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
 	List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildChangeCommentRun(Column column) throws Exception{
+		return buildChangeCommentRun(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildAddCommentRun(Column column) throws Exception{
+		return buildAddCommentRun(RuntimeHolder.getRuntime(), column);
+	}
 
 
 	/**
 	 * 取消自增
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return sql
 	 * @throws Exception 异常
 	 */
 	List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildDropAutoIncrement(Column column) throws Exception{
+		return buildDropAutoIncrement(RuntimeHolder.getRuntime(), column);
+	}
 
 	/**
 	 * 定义列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1342,6 +1632,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据类型
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1349,6 +1640,7 @@ public interface DriverAdapter {
 	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * 列数据类型定义
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @param type 数据类型(已经过转换)
@@ -1366,6 +1658,7 @@ public interface DriverAdapter {
 	Boolean checkIgnoreScale(DataRuntime runtime, String datatype);
 	/**
 	 * 非空
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1374,6 +1667,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 编码
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1391,6 +1685,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 主键(注意不要跟表定义中的主键重复)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1398,6 +1693,7 @@ public interface DriverAdapter {
 	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * 递增列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1406,6 +1702,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 更新行事件
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1414,6 +1711,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 位置
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1422,6 +1720,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1431,6 +1730,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建或删除列之前  检测表是否存在
 	 * IF NOT EXISTS
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1444,69 +1744,102 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加标签
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildAddRun(Tag tag) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 修改标签
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildAlterRun(Tag tag) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 删除标签
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildDropRun(Tag tag) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 修改标签名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildRenameRun(Tag tag) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildChangeDefaultRun(Tag tag) throws Exception{
+		return buildChangeDefaultRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 修改非空限制
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildChangeNullableRun(Tag tag) throws Exception{
+		return buildChangeNullableRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 修改备注
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildChangeCommentRun(Tag tag) throws Exception{
+		return buildChangeCommentRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
 	List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag) throws Exception;
+	default List<Run> buildChangeTypeRun(Tag tag) throws Exception{
+		return buildChangeTypeRun(RuntimeHolder.getRuntime(), tag);
+	}
 
 	/**
 	 * 创建或删除标签之前  检测表是否存在
 	 * IF NOT EXISTS
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1520,33 +1853,49 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加主键
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param primary 主键
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	default List<Run> buildAddRun(PrimaryKey primary) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), primary);
+	}
 
 	/**
 	 * 修改主键
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param primary 主键
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	default List<Run> buildAlterRun(PrimaryKey primary) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), primary);
+	}
 
 	/**
 	 * 删除主键
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param primary 主键
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	default List<Run> buildDropRun(PrimaryKey primary) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), primary);
+	}
 
 	/**
 	 * 修改主键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param primary 主键
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	default List<Run> buildRenameRun(PrimaryKey primary) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), primary);
+	}
 
 
 
@@ -1556,10 +1905,14 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加外键
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param foreign 外键
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
+	default List<Run> buildAddRun(ForeignKey foreign) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), foreign);
+	}
 
 	/**
 	 * 修改外键
@@ -1567,57 +1920,85 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
+	default List<Run> buildAlterRun(ForeignKey foreign) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), foreign);
+	}
 
 	/**
 	 * 删除外键
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param foreign 外键
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
+	default List<Run> buildDropRun(ForeignKey foreign) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), foreign);
+	}
 
 	/**
 	 * 修改外键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param foreign 外键
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, ForeignKey foreign) throws Exception;
+	default List<Run> buildRenameRun(ForeignKey foreign) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), foreign);
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
 
 	/**
 	 * 添加索引
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 索引
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Index index) throws Exception;
+	default List<Run> buildAddRun(Index index) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), index);
+	}
 
 	/**
 	 * 修改索引
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 索引
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Index index) throws Exception;
+	default List<Run> buildAlterRun(Index index) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), index);
+	}
 
 	/**
 	 * 删除索引
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 索引
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Index index) throws Exception;
+	default List<Run> buildDropRun(Index index) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), index);
+	}
 
 	/**
 	 * 修改索引名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 索引
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Index index) throws Exception;
+	default List<Run> buildRenameRun(Index index) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), index);
+	}
 
 	/**
 	 * 索引备注
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder
 	 * @param index
 	 */
@@ -1628,33 +2009,49 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加约束
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param constraint 约束
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Constraint constraint) throws Exception;
+	default List<Run> buildAddRun(Constraint constraint) throws Exception{
+		return buildAddRun(RuntimeHolder.getRuntime(), constraint);
+	}
 
 	/**
 	 * 修改约束
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param constraint 约束
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Constraint constraint) throws Exception;
+	default List<Run> buildAlterRun(Constraint constraint) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), constraint);
+	}
 
 	/**
 	 * 删除约束
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param constraint 约束
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Constraint constraint) throws Exception;
+	default List<Run> buildDropRun(Constraint constraint) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), constraint);
+	}
 
 	/**
 	 * 修改约束名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param constraint 约束
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Constraint constraint) throws Exception;
+	default List<Run> buildRenameRun(Constraint constraint) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), constraint);
+	}
 
 
 	/* *****************************************************************************************************************
@@ -1663,34 +2060,50 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加触发器
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param trigger 触发器
 	 * @return String
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	default List<Run> buildCreateRun(Trigger trigger) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), trigger);
+	}
 	void each(DataRuntime runtime, StringBuilder builder, Trigger trigger);
 
 	/**
 	 * 修改触发器
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param trigger 触发器
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	default List<Run> buildAlterRun(Trigger trigger) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), trigger);
+	}
 
 	/**
 	 * 删除触发器
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param trigger 触发器
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	default List<Run> buildDropRun(Trigger trigger) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), trigger);
+	}
 
 	/**
 	 * 修改触发器名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param trigger 触发器
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Trigger trigger) throws Exception;
+	default List<Run> buildRenameRun(Trigger trigger) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), trigger);
+	}
 
 
 	/* *****************************************************************************************************************
@@ -1698,13 +2111,18 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param procedure 存储过程
 	 * @return String
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	default List<Run> buildCreateRun(Procedure procedure) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), procedure);
+	}
 
 	/**
 	 * 生在输入输出参数
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param parameter parameter
 	 */
@@ -1712,25 +2130,37 @@ public interface DriverAdapter {
 	/**
 	 * 修改存储过程
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param procedure 存储过程
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	default List<Run> buildAlterRun(Procedure procedure) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), procedure);
+	}
 
 	/**
 	 * 删除存储过程
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param procedure 存储过程
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	default List<Run> buildDropRun(Procedure procedure) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), procedure);
+	}
 
 	/**
 	 * 修改存储过程名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param procedure 存储过程
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	default List<Run> buildRenameRun(Procedure procedure) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), procedure);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													function
@@ -1738,18 +2168,26 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加函数
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param function 函数
 	 * @return String
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, Function function) throws Exception;
+	default List<Run> buildCreateRun(Function function) throws Exception{
+		return buildCreateRun(RuntimeHolder.getRuntime(), function);
+	}
 
 	/**
 	 * 修改函数
 	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param function 函数
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Function function) throws Exception;
+	default List<Run> buildAlterRun(Function function) throws Exception{
+		return buildAlterRun(RuntimeHolder.getRuntime(), function);
+	}
 
 	/**
 	 * 删除函数
@@ -1757,14 +2195,21 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Function function) throws Exception;
+	default List<Run> buildDropRun(Function function) throws Exception{
+		return buildDropRun(RuntimeHolder.getRuntime(), function);
+	}
 
 	/**
 	 * 修改函数名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param function 函数
 	 * @return String
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Function function) throws Exception;
+	default List<Run> buildRenameRun(Function function) throws Exception{
+		return buildRenameRun(RuntimeHolder.getRuntime(), function);
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
@@ -1773,6 +2218,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 获取单主键列名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param obj obj
 	 * @return String
 	 */
@@ -1780,6 +2226,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 获取单主键值
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param obj obj
 	 * @return Object
 	 */
@@ -1788,6 +2235,7 @@ public interface DriverAdapter {
 	*//**
 	 * 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param table 表
@@ -1799,6 +2247,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据类型转换
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param columns 列
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
@@ -1807,6 +2256,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据类型转换,没有提供column的根据value类型
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
@@ -1819,6 +2269,7 @@ public interface DriverAdapter {
 	 * 生成value格式 主要确定是否需要单引号  或  类型转换
 	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
 	 * 如 TO_DATE('')
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param row DataRow 或 Entity
 	 * @param key 列名
@@ -1827,6 +2278,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据数据类型生成SQL(如是否需要'',是否需要格式转换函数)
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param builder builder
 	 * @param value value
 	 */
@@ -1834,6 +2286,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param metadata Column 用来定位数据类型
 	 * @param value value
 	 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
@@ -1843,6 +2296,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param metadata Column 用来定位数据类型
 	 * @param placeholder 是否占位符
 	 * @param value value
@@ -1851,6 +2305,7 @@ public interface DriverAdapter {
 	Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder);
  	/**
 	 * 拼接字符串
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param args args
 	 * @return String
 	 */
@@ -1858,6 +2313,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 是否是数字列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
@@ -1865,6 +2321,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 是否是boolean列
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
@@ -1875,6 +2332,7 @@ public interface DriverAdapter {
 	 * 决定值是否需要加单引号
 	 * number boolean 返回false
 	 * 其他返回true
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
@@ -1883,6 +2341,7 @@ public interface DriverAdapter {
 	/**
 	 * 内置函数
 	 * 如果需要引号,方法应该一块返回
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column 列属性,不同的数据类型解析出来的值可能不一样
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
@@ -1891,6 +2350,7 @@ public interface DriverAdapter {
 	void addRunValue(DataRuntime runtime, Run run, Compare compare, Column column, Object value);
 	/**
 	 * 转换成相应数据库的数据类型包含精度
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param column column
 	 * @return String
 	 */
@@ -1898,6 +2358,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据库类型转换成java类型
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param type type
 	 * @return String
 	 */
@@ -1905,6 +2366,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 对象名称格式化(大小写转换)，在查询系统表时需要
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param name name
 	 * @return String
 	 */
