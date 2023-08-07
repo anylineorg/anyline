@@ -17,8 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component("anyline.listener.jdbc.EnvironmentListener")
-public class EnvironmentListener implements ApplicationContextAware {
-    public static Logger log = LoggerFactory.getLogger(EnvironmentListener.class);
+public class JDBCEnvironmentListener implements ApplicationContextAware {
+    public static Logger log = LoggerFactory.getLogger(JDBCEnvironmentListener.class);
 
     private static ApplicationContext context;
     private static DefaultListableBeanFactory factory;
