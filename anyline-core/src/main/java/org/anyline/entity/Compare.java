@@ -9,59 +9,30 @@ import java.util.List;
 
 public enum Compare {
     //只作为参数值为占位符赋值,不能独立生成新的查询条件
-    NONE{
+    NONE(-1, null, null, null){
         @Override
         public boolean compare(Object value, Object target) {
             return false;
         }
 
         @Override
-        public String getSQL() {
-            return null;
-        }
-
-        @Override
-        public int getCode() {
-            return -1;
-        }
-
-        @Override
-        public String getName() {
-            return null;
-        }
         public boolean isMultipleValue(){
             return false;
         }
     },
     //根据参数格式判断
-    AUTO{
+    AUTO(0, null, null, null){
         @Override
         public boolean compare(Object value, Object target) {
             return false;
         }
 
         @Override
-        public String getSQL() {
-            return null;
-        }
-
-        @Override
-        public int getCode() {
-            return 0;
-        }
-
-        @Override
-        public String getName() {
-            return null;
-        }
         public boolean isMultipleValue(){
             return false;
         }
     },
-    EQUAL			{
-        public int getCode(){return 10;}
-        public String getSQL(){return " = ?";}
-        public String getName(){return "等于";}
+    EQUAL(10, "等于", "eq", " = ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == target){
                 if(null == value){
@@ -76,10 +47,7 @@ public enum Compare {
             return false;
         }
     },
-    GREAT			{
-        public int getCode(){return 20;}
-        public String getSQL(){return " > ?";}
-        public String getName(){return "大于";}
+    GREAT(20, "大于", "gt", " > ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -94,10 +62,7 @@ public enum Compare {
             return false;
         }
     },
-    GREAT_EQUAL		{
-        public int getCode(){return 21;}
-        public String getSQL(){return " >= ?";}
-        public String getName(){return "大于等于";}
+    GREAT_EQUAL(21, "大于等于", "gte", " >= ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -108,10 +73,7 @@ public enum Compare {
             return false;
         }
     },
-    LESS			{
-        public int getCode(){return 30;}
-        public String getSQL(){return " < ?";}
-        public String getName(){return "小于";}
+    LESS(30, "小于", "lt", " < ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -126,10 +88,7 @@ public enum Compare {
             return false;
         }
     },
-    LESS_EQUAL		{
-        public int getCode(){return 31;}
-        public String getSQL(){return " <= ?";}
-        public String getName(){return "小于等于";}
+    LESS_EQUAL(31, "小于等于", "lte", " <= ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -144,10 +103,7 @@ public enum Compare {
             return false;
         }
     },
-    IN				{
-        public int getCode(){return 40;}
-        public String getSQL(){return " IN ";}
-        public String getName(){return "in";}
+    IN(40, "in","in"," IN ")				{
         public boolean compare(Object value, Object targets) {
             if(null != targets && targets instanceof Collection){
                 Collection cols = (Collection) targets;
@@ -163,10 +119,7 @@ public enum Compare {
             return true;
         }
     },
-    LIKE			{
-        public int getCode(){return 50;}
-        public String getSQL(){return " LIKE ";}
-        public String getName(){return "%like%";}
+    LIKE(50, "like %?%", "", " LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -177,10 +130,7 @@ public enum Compare {
             return false;
         }
     },
-    LIKE_PREFIX		{
-        public int getCode(){return 51;}
-        public String getSQL(){return " LIKE ";}
-        public String getName(){return "like A%";}
+    LIKE_PREFIX(51, "like ?%", "", " LIKE ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -191,10 +141,10 @@ public enum Compare {
             return false;
         }
     },
-    START_WITH		{
+    START_WITH(51, "like ?%", "", " LIKE ")		{
         public int getCode(){return 51;}
         public String getSQL(){return " LIKE ";}
-        public String getName(){return "like A%";}
+        public String getName(){return "like ?%";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -205,10 +155,7 @@ public enum Compare {
             return false;
         }
     },
-    LIKE_SUFFIX		{
-        public int getCode(){return 52;}
-        public String getSQL(){return " LIKE ";}
-        public String getName(){return "like %A";}
+    LIKE_SUFFIX(52, "like %?", "", " LIKE ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -219,10 +166,7 @@ public enum Compare {
             return false;
         }
     },
-    END_WITH		{
-        public int getCode(){return 52;}
-        public String getSQL(){return " LIKE ";}
-        public String getName(){return "like %A";}
+    END_WITH(52, "like %?", "", " LIKE ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -233,10 +177,7 @@ public enum Compare {
             return false;
         }
     },
-    FIND_IN_SET{ // = FIND_IN_SET_OR
-        public int getCode(){return 60;}
-        public String getSQL(){return " FIND_IN_SET ";}
-        public String getName(){return "find in set";}
+    FIND_IN_SET(60, "find in set","", " FIND_IN_SET "){ // = FIND_IN_SET_OR
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -248,10 +189,7 @@ public enum Compare {
             return false;
         }
     },
-    FIND_IN_SET_OR{
-        public int getCode(){return 61;}
-        public String getSQL(){return " FIND_IN_SET ";}
-        public String getName(){return "find in set";}
+    FIND_IN_SET_OR(61, "find in set","", " FIND_IN_SET "){
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -263,10 +201,7 @@ public enum Compare {
             return false;
         }
     },
-    FIND_IN_SET_AND{
-        public int getCode(){return 62;}
-        public String getSQL(){return " FIND_IN_SET ";}
-        public String getName(){return "find in set";}
+    FIND_IN_SET_AND(62, "find in set","", " FIND_IN_SET "){
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -278,10 +213,7 @@ public enum Compare {
             return false;
         }
     },
-    BETWEEN			{
-        public int getCode(){return 80;}
-        public String getSQL(){return " BETWEEN ? AND ? ";}
-        public String getName(){return "区间";}
+    BETWEEN(80, "区间", "", " BETWEEN ? AND ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == value){
                 return false;
@@ -312,10 +244,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_EQUAL		{
-        public int getCode(){return 110;}
-        public String getSQL(){return " != ?";}
-        public String getName(){return "不等于";}
+    NOT_EQUAL(110, "不等于","nin"," != ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -326,10 +255,7 @@ public enum Compare {
             return false;
         }
     },
-    NOT_IN			{
-        public int getCode(){return 140;}
-        public String getSQL(){return " NOT IN ";}
-        public String getName(){return "不包含";}
+    NOT_IN(150, "不包含","nin"," NOT IN ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -344,10 +270,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_LIKE			{
-        public int getCode(){return 150;}
-        public String getSQL(){return " NOT LIKE ";}
-        public String getName(){return "not like %A%";}
+    NOT_LIKE(150, "NOT LIKE %?%",""," NOT LIKE ")				{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -362,10 +285,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_LIKE_PREFIX			{
-        public int getCode(){return 151;}
-        public String getSQL(){return " NOT LIKE ";}
-        public String getName(){return "not like A%";}
+    NOT_LIKE_PREFIX(151, "NOT LIKE ?%",""," NOT LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -380,10 +300,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_START_WITH			{
-        public int getCode(){return 151;}
-        public String getSQL(){return " NOT LIKE ";}
-        public String getName(){return "not like A%";}
+    NOT_START_WITH(151, "NOT LIKE ?%",""," NOT LIKE ")				{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -398,10 +315,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_LIKE_SUFFIX			{
-        public int getCode(){return 152;}
-        public String getSQL(){return " NOT LIKE ";}
-        public String getName(){return "not like %A";}
+    NOT_LIKE_SUFFIX(152, "NOT LIKE %?",""," NOT LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -416,10 +330,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_END_WITH			{
-        public int getCode(){return 152;}
-        public String getSQL(){return " NOT LIKE ";}
-        public String getName(){return "not like %A";}
+    NOT_END_WITH(152, "NOT LIKE %?",""," NOT LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -435,10 +346,7 @@ public enum Compare {
         }
     },
     //正则表达式，注意不是每个数据库都支持
-    REGEX			{
-        public int getCode(){return 999;}
-        public String getSQL(){return "";}
-        public String getName(){return "REGEX";}
+    REGEX(999, "正则", "regex", "")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -455,10 +363,35 @@ public enum Compare {
     };
 
     public abstract boolean compare(Object value, Object target);
+
+    private final int code;
+    private final String operator;
+    private final String sql;
+    private final String name;
+    Compare(int code, String name, String operator, String sql){
+        this.code = code;
+        this.name = name;
+        this.sql = sql;
+        this.operator = operator;
+    }
+
+    /**
+     * 是否支持多个值
+     * @return boolean
+     */
     public abstract boolean isMultipleValue();
-    public abstract String getSQL();
-    public abstract int getCode();
-    public abstract String getName();
+    public String getSQL(){
+        return sql;
+    }
+    public String getOperator(){
+        return operator;
+    }
+    public int getCode(){
+        return code;
+    }
+    public String getName(){
+        return name;
+    }
 
     public enum EMPTY_VALUE_SWITCH {
           IGNORE   //忽略当前条件  其他条件继续执行
