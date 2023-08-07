@@ -309,8 +309,14 @@ public class DataSourceHolder extends ClientHolder {
 				type = DATASOURCE_TYPE_DEFAULT;
 			}
 			String url = BeanUtil.value(prefix, env, "url","jdbc-url");
+			if(BasicUtil.isEmpty(url)){
+				return null;
+			}
 			if(!url.startsWith("jdbc:")){
 				//只注册jdbc驱动
+				return null;
+			}
+			if(BasicUtil.isEmpty(url)){
 				return null;
 			}
 			String driverClassName = BeanUtil.value(prefix, env, "driver","driver-class","driver-class-name");
@@ -349,8 +355,11 @@ public class DataSourceHolder extends ClientHolder {
 	public static String build(String key, Map params) throws Exception{
 		String ds_id = "anyline.datasource." + key;
 		try {
-			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
+			String url =  (String)BeanUtil.propertyNvl(params,"url","jdbc-url");
 			if(BasicUtil.isEmpty(url)){
+				return null;
+			}
+			if(url.toLowerCase().contains("jdbc:")){
 				return null;
 			}
 			String type = (String)params.get("pool");
