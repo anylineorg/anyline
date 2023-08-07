@@ -1,5 +1,6 @@
 package org.anyline.boot;
 
+import org.anyline.boot.datasource.DataSourceProperty;
 import org.anyline.entity.Compare;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.util.ConfigTable;
@@ -12,8 +13,37 @@ import java.util.Map;
 @Configuration
 @ConfigurationProperties(prefix = "anyline")
 public class AnylineProperty {
-    //以下属性与ConfigTable一一对应
+    /**
+     * 数据源列表，包括JDBC及非JDBC，逗号分隔<br/>
+     * anyline.datasource-list=crm,erp<br/>
+     * 设置好列表后，为每个数据源设置连接参数<br/>
+     * anyline.datasource.crm.url=...<br/>
+     * anyline.datasource.erp.url=...<br/>
+     */
+    protected String datasourceList;
+    /**
+     * 多数据源配置
+     *  anyline.datasource.{数据源key}.url=...
+     */
+    protected Map<String, DataSourceProperty> datasource;
 
+    public Map<String, DataSourceProperty> getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(Map<String, DataSourceProperty> datasource) {
+        this.datasource = datasource;
+    }
+
+    public String getDatasourceList() {
+        return datasourceList;
+    }
+
+    public void setDatasourceList(String datasourceList) {
+        this.datasourceList = datasourceList;
+    }
+
+    //以下属性与ConfigTable一一对应
     /**
      * debug状态会输出更多日志
      */
@@ -1033,4 +1063,5 @@ public class AnylineProperty {
         this.generatorTables = generatorTables;
         ConfigTable.GENERATOR_TABLES = generatorTables;
     }
+
 }
