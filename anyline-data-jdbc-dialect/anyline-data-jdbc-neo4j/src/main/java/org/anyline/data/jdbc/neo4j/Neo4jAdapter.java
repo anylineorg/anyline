@@ -1,8 +1,8 @@
 package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;

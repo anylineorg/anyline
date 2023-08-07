@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.oracle;
 
-import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.OrderStore;

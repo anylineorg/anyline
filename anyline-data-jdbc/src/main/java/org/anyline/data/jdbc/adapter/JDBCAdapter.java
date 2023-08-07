@@ -17,8 +17,9 @@
  */
 
 
-package org.anyline.data.adapter;
+package org.anyline.data.jdbc.adapter;
 
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.metadata.*;
@@ -30,7 +31,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 
-public interface JDBCAdapter extends DriverAdapter{
+public interface JDBCAdapter extends DriverAdapter {
 	/**
 	 * insert执行后 通过KeyHolder获取主键值赋值给data
 	 * @param random log标记

@@ -1,7 +1,7 @@
 package org.anyline.data.jdbc.tdengine;
 
-import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.init.SQLAdapter;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;

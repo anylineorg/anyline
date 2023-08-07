@@ -1,8 +1,8 @@
  
 package org.anyline.data.jdbc.influxdb;
 
-import org.anyline.data.adapter.JDBCAdapter;
-import org.anyline.data.adapter.init.SQLAdapter;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.SQLAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;

@@ -17,11 +17,11 @@
  */
 
 
-package org.anyline.data.adapter.init;
+package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.EntityAdapter;
-import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
