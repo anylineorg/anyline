@@ -140,4 +140,7 @@ public interface Run {
 
 	void setFilter(Object filter);
 	Object getFilter();
+
+	void setValue(Object value);
+	Object getValue();
 }
