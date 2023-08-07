@@ -58,6 +58,35 @@ public class ServiceProxy {
         return service;
     }
 
+    /**
+     * 临时数据源
+     * @param key 数据源标识,输出日志时标记当前数据源
+     * @param source 数据源,如DruidDataSource,MongoClient
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @return service
+     * @throws Exception 异常 Exception
+     */
+    public static AnylineService temporary(String key, Object source, DriverAdapter adapter) throws Exception{
+        DataRuntime runtime = RuntimeHolderProxy.runtime(key, source, adapter);
+        AnylineDao dao = new FixDao();
+        //dao.setDatasource(key);
+        dao.setRuntime(runtime);
+        AnylineService service = new FixService();
+        //service.setDataSource(key);
+        service.setDao(dao);
+
+        return service;
+    }
+
+    public static AnylineService temporary(Object source) throws Exception{
+        return temporary("temporary", source, null);
+    }
+
+    public static AnylineService temporary(String key, Object source) throws Exception{
+        return temporary(key, source, null);
+    }
+
+
     public static ConfigStore condition(){
         return new DefaultConfigStore();
     }
@@ -1369,32 +1398,5 @@ public class ServiceProxy {
         }
     }
 
-    /**
-     * 临时数据源
-     * @param key 数据源标识,输出日志时标记当前数据源
-     * @param source 数据源,如DruidDataSource,MongoClient
-     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
-     * @return service
-     * @throws Exception 异常 Exception
-     */
-    public static AnylineService temporary(String key, Object source, DriverAdapter adapter) throws Exception{
-        DataRuntime runtime = RuntimeHolderProxy.runtime(key, source, adapter);
-        AnylineDao dao = new FixDao();
-        //dao.setDatasource(key);
-        dao.setRuntime(runtime);
-        AnylineService service = new FixService();
-        //service.setDataSource(key);
-        service.setDao(dao);
-
-        return service;
-    }
-
-    public static AnylineService temporary(Object source) throws Exception{
-        return temporary("temporary", source, null);
-    }
-
-    public static AnylineService temporary(String key, Object source) throws Exception{
-        return temporary(key, source, null);
-    }
 
 }
