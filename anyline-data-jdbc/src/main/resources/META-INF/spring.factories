@@ -1,6 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.data.listener.init.DefaultDDListener,\
-org.anyline.data.jdbc.listener.EnvironmentListener,\
+org.anyline.data.jdbc.listener.JDBCEnvironmentListener,\
 org.anyline.proxy.CacheProxy,\
 org.anyline.proxy.ServiceProxy,\
 org.anyline.proxy.InterceptorProxy,\
