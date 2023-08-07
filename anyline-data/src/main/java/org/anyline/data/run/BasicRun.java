@@ -59,6 +59,7 @@ public abstract class BasicRun implements Run {
 	protected GroupStore groupStore;
 	protected String having;
 	protected List<Variable> variables;
+	protected Object filter;
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE;
 	protected boolean valid = true;
 	protected List<String> insertColumns;
@@ -824,6 +825,16 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void setFilter(Object filter) {
+		this.filter = filter;
+	}
+
+	@Override
+	public Object getFilter() {
+		return filter;
 	}
 }
  
