@@ -28,22 +28,21 @@ public class EnvironmentListener implements ApplicationContextAware {
         factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
         SpringContextUtil.init(context);
         JDBCRuntimeHolder.init(factory);
+        JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
         int qty = load("spring.datasource");
         qty += load("anyline.datasource");
         if(qty > 0) {
-            loadDefault();
+            loadDefault(template);
         }
     }
-    private void loadDefault(){
-
+    private void loadDefault(JdbcTemplate template){
         //默认数据源 有多个数据源的情况下 再注册anyline.service.default
         //如果单个数据源 只通过@serveri注解 注册一个anyline.service
         //anyline.service.default 用来操作主数据源
         //anyline.service.sso 用来操作sso数据源
         //anyline.service.common 用来操作所有数据源
-        JdbcTemplate template = (JdbcTemplate)SpringContextUtil.getBean("jdbcTemplate");
         if(null != template) {
-            //注册一个默认运行环境
+            //注册一个默认运行环境(只操作默认数据源不可)
             JDBCRuntimeHolder.reg("default", template, null);
             if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
                 //注册一个主事务管理器
