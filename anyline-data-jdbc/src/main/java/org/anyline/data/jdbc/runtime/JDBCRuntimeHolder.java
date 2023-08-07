@@ -2,7 +2,7 @@ package org.anyline.data.jdbc.runtime;
 
 import org.anyline.dao.init.springjdbc.FixDao;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.proxy.RuntimeHolderProxy;
