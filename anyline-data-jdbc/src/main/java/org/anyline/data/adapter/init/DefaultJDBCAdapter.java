@@ -484,9 +484,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 		}
-		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(run.getInsertColumns(),values));
-		}
 		return cnt;
 	}
 	//有些不支持返回自增的单独执行
