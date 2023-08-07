@@ -513,6 +513,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run
 	 */
 	protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns)", 37));
+		}
 		return null;
 	}
 
@@ -526,6 +529,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run
 	 */
 	protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)", 37));
+		}
 		return null;
 	}
 
@@ -785,10 +791,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 	}
 	protected void createQueryContent(DataRuntime runtime, XMLRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createQueryContent(DataRuntime runtime, XMLRun run)", 37));
+		}
 	}
 	protected void createQueryContent(DataRuntime runtime, TextRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createQueryContent(DataRuntime runtime, TextRun run)", 37));
+		}
 	}
 	protected void createQueryContent(DataRuntime runtime, TableRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createQueryContent(DataRuntime runtime, TableRun run)", 37));
+		}
 	}
 
 	/**
@@ -824,10 +839,19 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 	}
 	protected void createExecuteRunContent(DataRuntime runtime, XMLRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createExecuteRunContent(DataRuntime runtime, XMLRun run)", 37));
+		}
 	}
 	protected void createExecuteRunContent(DataRuntime runtime, TextRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createExecuteRunContent(DataRuntime runtime, TextRun run)", 37));
+		}
 	}
 	protected void createExecuteRunContent(DataRuntime runtime, TableRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createExecuteRunContent(DataRuntime runtime, TableRun run)", 37));
+		}
 	}
 
 
@@ -838,6 +862,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)", 37));
+		}
 		return list;
 	}
 
@@ -870,6 +897,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	@Override
 	public String parseExists(DataRuntime runtime, Run run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String parseExists(DataRuntime runtime, Run run)", 37));
+		}
 		return null;
 	}
 
@@ -886,6 +916,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public String parseTotalQuery(DataRuntime runtime, Run run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String parseTotalQuery(DataRuntime runtime, Run run)", 37));
+		}
 		return null;
 	}
 
