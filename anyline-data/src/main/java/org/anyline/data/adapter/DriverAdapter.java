@@ -71,34 +71,6 @@ public interface DriverAdapter {
 	String BR_TAB 	= "\n\t"	;
 
 
-	//执行
-	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
-	long total(DataRuntime runtime, String random, Run run);
-	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
-	Map<String,Object> map(DataRuntime runtime, String random, Run run);
-	int update(DataRuntime runtime, String random, String dest, Object data, Run run);
-	int execute(DataRuntime runtime, String random, Run run);
-	boolean execute(DataRuntime runtime, String random, Procedure procedure);
-	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
-
-	/**
-	 * 执行 insert
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
-	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param pks pks
-	 * @return int
-	 * @throws Exception 异常
-	 */
-	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
-	//有些不支持返回自增的单独执行
-	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
-
-
-
-
-	
 	/**
 	 * 界定符(分隔符)
 	 * @return String
@@ -218,6 +190,28 @@ public interface DriverAdapter {
 
 
 	String generatedKey();
+
+	/**
+	 * 执行 insert
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param data data
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param pks pks
+	 * @return 影响行数
+	 */
+	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
+	/**
+	 * 执行 insert 有些不支持返回自增的单独执行
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param data data
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param pks pks
+	 * @param simple 没有实际作用
+	 * @return 影响行数
+	 */
+	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
@@ -239,6 +233,16 @@ public interface DriverAdapter {
 	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns);
 	Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns);
 
+	/**
+	 * 执行更新
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param dest 表
+	 * @param data 数据
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return 影响行数
+	 */
+	int update(DataRuntime runtime, String random, String dest, Object data, Run run);
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/
@@ -274,7 +278,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建最终执行查询SQL 包含分页 ORDER
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param run  run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
 	String parseFinalQuery(DataRuntime runtime, Run run);
@@ -313,13 +317,58 @@ public interface DriverAdapter {
 	StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
+	 * 执行存储过程查询
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param procedure 存储过程
+	 * @param navi 分页
+	 * @return DataSet
+	 */
+	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+
+	/**
+	 * 执行查询
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param system 是否是系统表
+	 * @param table 表
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return DataSet
+	 */
+	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
+
+	/**
+	 * 统计总行数
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return long
+	 */
+	long total(DataRuntime runtime, String random, Run run);
+	/**
+	 * 执行查询
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return maps
+	 */
+	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
+	/**
+	 * 执行查询
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return maps
+	 */
+	Map<String,Object> map(DataRuntime runtime, String random, Run run);
+
+	/**
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param list JDBC执行结果
 	 * @return  DataSet
 	 */
 	List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list);
-
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
@@ -328,7 +377,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建统计总数SQL
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param run  Run
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
 	String parseTotalQuery(DataRuntime runtime, Run run);
@@ -346,6 +395,22 @@ public interface DriverAdapter {
 	 */
 	String parseExists(DataRuntime runtime, Run run);
 
+	/**
+	 * 执行
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param random  random
+	 * @return 影响行数
+	 */
+	int execute(DataRuntime runtime, String random, Run run);
+	/**
+	 * 执行存储过程
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param procedure 存储过程
+	 * @param random  random
+	 * @return 影响行数
+	 */
+	boolean execute(DataRuntime runtime, String random, Procedure procedure);
 
 	/* *****************************************************************************************************************
 	 * 													EXECUTE
