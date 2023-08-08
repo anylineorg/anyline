@@ -444,7 +444,7 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
-        return queryFromDao(clazz, append(configs, entity), conditions);
+        return selectFromDao(clazz, append(configs, entity), conditions);
     }
 
     
@@ -1557,7 +1557,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     procedure.addInput(input);
                 }
             }
-            set = dao.querys(procedure, navi);
+            set = dao.selects(procedure, navi);
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
@@ -1814,7 +1814,7 @@ public class DefaultService<E> implements AnylineService<E> {
         try {
             setPageLazy(src, configs, conditions);
             RunPrepare prepare = createRunPrepare(src);
-            list = dao.querys(prepare, clazz, configs, conditions);
+            list = dao.selects(prepare, clazz, configs, conditions);
         } catch (Exception e) {
             list = new EntitySet<>();
             if (log.isWarnEnabled()) {
@@ -1828,14 +1828,14 @@ public class DefaultService<E> implements AnylineService<E> {
         return list;
     }
 
-    protected <T> EntitySet<T> queryFromDao(Class<T> clazz, ConfigStore configs, String... conditions) {
+    protected <T> EntitySet<T> selectFromDao(Class<T> clazz, ConfigStore configs, String... conditions) {
         EntitySet<T> list = null;
         if (ConfigTable.isSQLDebug()) {
             log.debug("[解析SQL][src:{}]", clazz);
         }
         try {
             setPageLazy(clazz.getName(), configs, conditions);
-            list = dao.querys(clazz, configs, conditions);
+            list = dao.selects(null, clazz, configs, conditions);
         } catch (Exception e) {
             list = new EntitySet<>();
             if (log.isWarnEnabled()) {
