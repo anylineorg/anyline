@@ -22,11 +22,7 @@ package org.anyline.service;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.metadata.*;
 
 import java.math.BigDecimal;
@@ -230,6 +226,13 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet querys(String src, int first, int last, ConfigStore configs, Object obj, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		configs.setPageNavi(navi);
+		return querys(src, configs, obj, conditions);
+	}
 	DataSet querys(String src, Object obj, String ... conditions);
 	DataSet querys(String src, PageNavi navi, Object obj, String ... conditions);
 
@@ -248,6 +251,13 @@ public interface AnylineService<E>{
 
 
 	DataSet querys(String src, ConfigStore configs, String ... conditions);
+	default DataSet querys(String src, int first, int last, ConfigStore configs, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		configs.setPageNavi(navi);
+		return querys(src, configs, conditions);
+	}
 	DataSet querys(String src,  String ... conditions);
 	DataSet querys(String src, PageNavi navi,  String ... conditions);
 
@@ -284,43 +294,6 @@ public interface AnylineService<E>{
 	 */
 	DataRow sequences(boolean next, String ... names);
 	DataRow sequences(String ... names);
-
-	/**
-	 * 根据calzz返回实体集合
-	 * 为了更容易记忆和区分,往后的版本中删除,所有返回实体类的方法换成selects/select
-	 * @param clazz clazz
-	 * @param configs configs
-	 * @param entity entity
-	 * @param conditions conditions
-	 * @return EntitySet
-	 * @param <T>  entity
-	 */
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions);
-	@Deprecated
-	<T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	@Deprecated
-	<T> T query(Class<T> clazz, T entity, String ... conditions);
-
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
-	@Deprecated
-	<T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions);
-	@Deprecated
-	<T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
-	@Deprecated
-	<T> T query(Class<T> clazz, String ... conditions);
-
 
 	/**
 	 * 根据SQL或自定义SQL返回实体
@@ -421,12 +394,26 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet caches(String cache, String src, int first, int last, ConfigStore configs, Object obj, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		configs.setPageNavi(navi);
+		return caches(cache, src, configs, obj, conditions);
+	}
 	DataSet caches(String cache, String src, Object obj, String ... conditions);
 	DataSet caches(String cache, String src, int first, int last, Object obj, String ... conditions);
 	DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
 	DataRow cache(String cache, String src, Object obj, String ... conditions);
 
 	DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions);
+	default DataSet caches(String cache, String src, int first, int last, ConfigStore configs,  String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		configs.setPageNavi(navi);
+		return caches(cache, src, configs, conditions);
+	}
 	DataSet caches(String cache, String src, String ... conditions);
 	DataSet caches(String cache, String src, int first, int last, String ... conditions);
 	DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
@@ -436,6 +423,13 @@ public interface AnylineService<E>{
 
 	/*多表查询,左右连接时使用*/
 	DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet querys(RunPrepare prepare, int first, int last, ConfigStore configs, Object obj, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		configs.setPageNavi(navi);
+		return querys(prepare, configs, obj, conditions);
+	}
 	DataSet querys(RunPrepare prepare, Object obj, String ... conditions);
 	DataSet querys(RunPrepare prepare, int first, int last, Object obj, String ... conditions);
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -458,6 +452,13 @@ public interface AnylineService<E>{
 	DataSet caches(String cache, RunPrepare prepare, String ... conditions);
 	DataSet caches(String cache, RunPrepare prepare, int first, int last, String ... conditions);
 	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default DataRow cache(String cache, RunPrepare prepare, int first, int last, ConfigStore configs, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		configs.setPageNavi(navi);
+		return cache(cache, prepare, configs, conditions);
+	}
 	DataRow cache(String cache, RunPrepare prepare, String ... conditions);
 
 	/**
