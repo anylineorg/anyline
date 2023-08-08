@@ -85,17 +85,17 @@ public class MongoClientHolder extends ClientHolder {
 
 	/**
 	 * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
-	 * @param key 切换数据源依据 默认key=dataSource
- 	 * @param url url
+	 * @param key 切换数据源依据 默认key=datasource
+ 	 * @param uri uri
 	 * @param database 数据库
 	 * @param user 用户名
 	 * @param password 密码
 	 * @return MongoDatabase
 	 * @throws Exception 异常 Exception
 	 */
-	public static String reg(String key, String url, String database, String user, String password) throws Exception{
+	public static String reg(String key, String uri, String database, String user, String password) throws Exception{
 		Map<String,String> param = new HashMap<String,String>();
-		param.put("url", url);
+		param.put("uri", uri);
 		param.put("database", database);
 		param.put("user", user);
 		param.put("password", password);
@@ -120,20 +120,35 @@ public class MongoClientHolder extends ClientHolder {
 	public static MongoDatabase reg(String key, MongoDatabase ds) throws Exception{
 		return addDataSource(key, ds, true);
 	}
+	public static String parseDatabase(String uri){
+		//mongodb://localhost:27017/mydb
+		String database = null;
+		if(null != uri && uri.contains(":")){
+			String[] tmps = uri.split(":");
+			tmps = tmps[tmps.length-1].split("/");
+			if(tmps.length>1){
+				database = tmps[tmps.length-1];
+			}
+		}
+		return database;
+	}
 	public static String reg(String key, String prefix, Environment env) {
 		try {
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
 				prefix += ".";
 			}
-			String url = BeanUtil.value(prefix, env, "url","uri");
-			if(BasicUtil.isEmpty(url)){
+			String uri = BeanUtil.value(prefix, env, "url","uri");
+			if(BasicUtil.isEmpty(uri)){
 				return null;
 			}
-			if(!url.startsWith("mongodb:")){
+			if(!uri.startsWith("mongodb:")){
 				//只注册mongo驱动
 				return null;
 			}
 			String database = BeanUtil.value(prefix, env,"database");
+			if(BasicUtil.isEmpty(database)){
+				database = parseDatabase(uri);
+			}
 			if(BasicUtil.isEmpty(database)){
 				log.warn("缺少Mongo数据库名");
 				return null;
@@ -143,7 +158,7 @@ public class MongoClientHolder extends ClientHolder {
 
 			//DataSource ds =  MongoDatabaseType.newInstance();
 			Map<String,Object> map = new HashMap<String,Object>();
-			map.put("url", url);
+			map.put("uri", uri);
 			map.put("database",database);
 			map.put("user",username);
 			map.put("username",username);
@@ -182,6 +197,10 @@ public class MongoClientHolder extends ClientHolder {
 				return null;
 			}
 			String database =  (String)BeanUtil.propertyNvl(params,"database");
+
+			if(BasicUtil.isEmpty(database)){
+				database = parseDatabase(uri);
+			}
 			if(BasicUtil.isEmpty(database)){
 				log.warn("缺少Mongo数据库名");
 				return null;

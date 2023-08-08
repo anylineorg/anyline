@@ -43,9 +43,10 @@ public class MongoEnvironmentListener implements ApplicationContextAware {
                 //MongoRuntimeHolder.reg("mongo", database, null);
             }
             //注册一个通用运行环境(可切换数据源)
-/*
+            /*
             DataRuntime runtime = new MongoRuntime("mongo.common", database, null);
-            MongoRuntimeHolder.reg("mongo.common", runtime);*/
+            MongoRuntimeHolder.reg("mongo.common", runtime);
+            */
         }else{
             //加载anyline.datasource.url格式定义
         }
