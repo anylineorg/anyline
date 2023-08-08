@@ -323,6 +323,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
+    public List<Map<String, Object>> maps(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String... conditions) {
+        return null;
+    }
+
+    @Override
     public List<Map<String, Object>> maps(DataRuntime runtime, String random, Run run) {
         return null;
     }
@@ -349,6 +354,16 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+        return null;
+    }
+
+    @Override
+    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
+        return null;
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
         return null;
     }
 
