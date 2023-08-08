@@ -37,8 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class DatabaseHolder extends ClientHolder {
-	private static Logger log = LoggerFactory.getLogger(DatabaseHolder.class);
+public class MongoClientHolder extends ClientHolder {
+	private static Logger log = LoggerFactory.getLogger(MongoClientHolder.class);
 
 
 
@@ -63,7 +63,7 @@ public class DatabaseHolder extends ClientHolder {
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
 		reg(key);
-		MongoRuntimeHolder.reg(key, ds);
+		MongoRuntimeHolder.reg(key);
 		return ds;
 	}
 	private static MongoDatabase addDataSource(String key, MongoDatabase ds, boolean over) throws Exception{
@@ -79,7 +79,7 @@ public class DatabaseHolder extends ClientHolder {
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
  		reg(key);
-		MongoRuntimeHolder.reg(key, ds, null);
+		MongoRuntimeHolder.reg(key);
  		return ds;
 	}
 
@@ -135,6 +135,7 @@ public class DatabaseHolder extends ClientHolder {
 			}
 			String database = BeanUtil.value(prefix, env,"database");
 			if(BasicUtil.isEmpty(database)){
+				log.warn("缺少Mongo数据库名");
 				return null;
 			}
 			String username = BeanUtil.value(prefix, env,"user","username","user-name");
@@ -148,12 +149,12 @@ public class DatabaseHolder extends ClientHolder {
 			map.put("username",username);
 			map.put("password",password);
 			//BeanUtil.setFieldsValue(ds, map, false);
-			String ds = build(key, map);
-			if(null == ds){//创建数据源失败
+			String client = build(key, map);
+			if(null == client){//创建数据源失败
 				return null;
 			}
-			addDataSource(key, ds, false);
-			return ds;
+			addDataSource(key, client, false);
+			return client;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -167,8 +168,10 @@ public class DatabaseHolder extends ClientHolder {
 	 * @throws Exception Exception
 	 */
 	public static String build(String key, Map params) throws Exception{
+		MongoClient client = null;
 		MongoDatabase db = null;
-		String ds_id = "anyline.datasource." + key;
+		String datasource_id = "anyline.datasource." + key;
+		String database_id = "anyline.database." + key;
 		try {
  			String uri =  (String)BeanUtil.propertyNvl(params,"url","uri");
 			if(BasicUtil.isEmpty(uri)){
@@ -180,6 +183,7 @@ public class DatabaseHolder extends ClientHolder {
 			}
 			String database =  (String)BeanUtil.propertyNvl(params,"database");
 			if(BasicUtil.isEmpty(database)){
+				log.warn("缺少Mongo数据库名");
 				return null;
 			}
 			Object user =  BeanUtil.propertyNvl(params,"user","username");
@@ -191,14 +195,16 @@ public class DatabaseHolder extends ClientHolder {
 			map.put("username",user);
 
 			DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
-			MongoClient client = MongoClients.create(uri);
+			client = MongoClients.create(uri);
 			db = client.getDatabase(database);
-			factory.registerSingleton(ds_id, db);
+			factory.registerSingleton(datasource_id, client);
+			factory.registerSingleton(database_id, db);
+
 		} catch (Exception e) {
 			log.error("[注册数据源失败][数据源:{}][msg:{}]", key, e.toString());
 			return null;
 		}
-		return ds_id;
+		return datasource_id;
 	}
 
 	/**
