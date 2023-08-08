@@ -1,5 +1,6 @@
 package org.anyline.data.mongo.runtime;
 
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
@@ -23,7 +24,8 @@ public class MongoRuntime implements DataRuntime {
      */
     protected String version;
     protected DriverAdapter adapter;
-    protected MongoDatabase client;
+    protected MongoClient client;
+    protected MongoDatabase database;
     protected AnylineDao dao;
 
     public AnylineDao getDao() {
@@ -56,14 +58,14 @@ public class MongoRuntime implements DataRuntime {
     }
 
     public void setClient(Object client) {
-        this.client = (MongoDatabase) client;
+        this.client = (MongoClient) client;
     }
 
 
     public DriverAdapter getAdapter() {
         if(null == adapter){
             String ds = key;
-            if("mongodb".equals(ds)){
+            if("mongo".equals(ds)){
                 ds = ClientHolder.curDataSource();
             }
             adapter = DriverAdapterHolder.getAdapter(ds, this);
@@ -72,7 +74,7 @@ public class MongoRuntime implements DataRuntime {
     }
     public String datasource(){
         String ds = key;
-        if("mongodb".equals(ds)){
+        if("mongo".equals(ds)){
             ds = ClientHolder.curDataSource();
         }
         return ds;
@@ -81,7 +83,7 @@ public class MongoRuntime implements DataRuntime {
         this.adapter = adapter;
     }
 
-    public MongoRuntime(String key, MongoDatabase database, DriverAdapter adapter){
+    public MongoRuntime(String key, MongoClient client, MongoDatabase database, DriverAdapter adapter){
         setKey(key);
         setClient(database);
         setAdapter(adapter);
@@ -89,17 +91,28 @@ public class MongoRuntime implements DataRuntime {
     public MongoRuntime(){
     }
 
-    public MongoDatabase database(){
+    public MongoClient client(){
         return client;
     }
     public String getFeature() {
         if(null == feature){
-            MongoDatabase database = database();
-            if(null != database){
-                feature = database.getClass().getName();
+            if(null != client){
+                feature = client.getClass().getName();
             }
         }
         return feature;
+    }
+
+    public void setClient(MongoClient client) {
+        this.client = client;
+    }
+
+    public MongoDatabase getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(MongoDatabase database) {
+        this.database = database;
     }
 
     public String getVersion() {
