@@ -53,6 +53,7 @@ public interface JDBCAdapter extends DriverAdapter {
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception;
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception;
+
 	/**
 	 * 解析查询结果metadata(0=1)
 	 * @param create 上一步没有查到的,这一步是否需要新创建
