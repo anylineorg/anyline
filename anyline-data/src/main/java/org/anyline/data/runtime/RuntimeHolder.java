@@ -21,13 +21,14 @@ public class RuntimeHolder {
 
     /**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
-     * @param key key
-     * @param source DataSource
-     * @param adapter
-     * @return
-     * @throws Exception
+     * @param key 数据源标识,切换数据源时根据key,输出日志时标记当前数据源
+     * @param datasource 数据源,如DruidDataSource,MongoClient
+     * @param database 数据库,jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @return DataRuntime
+     * @throws Exception 异常 Exception
      */
-    public DataRuntime runtime(String key, Object source, DriverAdapter adapter) throws Exception{
+    public DataRuntime runtime(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
         return null;
     }
 
