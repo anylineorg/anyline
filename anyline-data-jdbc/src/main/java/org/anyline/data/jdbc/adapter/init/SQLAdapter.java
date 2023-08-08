@@ -25,7 +25,6 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
-import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
@@ -1093,46 +1092,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
 
-    protected Run createDeleteRunContent(TableRun run){
-        AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
-        StringBuilder builder = run.getBuilder();
-        builder.append("DELETE FROM ");
-        if(null != run.getSchema()){
-            SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
-        }
-
-        SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
-        builder.append(BR);
-        if(BasicUtil.isNotEmpty(prepare.getAlias())){
-            // builder.append(" AS ").append(sql.getAlias());
-            builder.append("  ").append(prepare.getAlias());
-        }
-        List<Join> joins = prepare.getJoins();
-        if(null != joins) {
-            for (Join join:joins) {
-                builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-                if(null != join.getSchema()){
-                    SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
-                }
-                SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
-                if(BasicUtil.isNotEmpty(join.getAlias())){
-                    builder.append("  ").append(join.getAlias());
-                }
-                builder.append(" ON ").append(join.getCondition());
-            }
-        }
-
-        builder.append("\nWHERE 1=1\n\t");
-
-        /*添加查询条件*/
-        // appendConfigStore();
-        run.appendCondition();
-        run.appendGroup();
-        run.appendOrderStore();
-        run.checkValid();
-
-        return run;
-    }
     @SuppressWarnings("rawtypes")
     @Override
     public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
