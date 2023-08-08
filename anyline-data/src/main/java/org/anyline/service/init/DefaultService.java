@@ -441,69 +441,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return cache(cache, src, null, null, conditions);
     }
 
-
-    @Deprecated
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
-        return selects(clazz, configs, entity, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String... conditions) {
-        return selects(clazz, navi, entity, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, T entity, String... conditions) {
-        return selects(clazz, entity, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String... conditions) {
-        return selects(clazz, first, last, entity, conditions);
-    }
-
-    @Override 
-    public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
-        return select(clazz, configs, entity, conditions);
-    }
-
-    @Override 
-    public <T> T query(Class<T> clazz, T entity, String... conditions) {
-        return select(clazz, entity, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return selects(clazz, configs, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
-        return selects(clazz, navi, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, String... conditions) {
-        return selects(clazz, conditions);
-    }
-
-    @Override 
-    public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, String... conditions) {
-        return selects(clazz, first, last, conditions);
-    }
-
-    @Override 
-    public <T> T query(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return select(clazz, configs, conditions);
-    }
-
-    @Override 
-    public <T> T query(Class<T> clazz, String... conditions) {
-        return select(clazz, conditions);
-    }
-
-
     
     @Override 
     public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
