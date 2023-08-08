@@ -857,6 +857,17 @@ public interface DriverAdapter {
 	}
 
 	/**
+	 * 查询表结构
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param greedy 查所有库
+	 * @param table 表
+	 * @param primary 是否检测主键
+	 * @return Column
+	 * @param <T>  Column
+	 */
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime,  boolean greedy, Table table, boolean primary);
+
+	/**
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
@@ -882,9 +893,10 @@ public interface DriverAdapter {
 
 	//查询过程中需要元数据时调用
 	//根据驱动内置接口补充 再根据metadata解析 SELECT * FROM T WHERE 1=0 SqlRowSet set = runtime.getTemplate().queryForRowSet(run.getFinalQuery());
+
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
 
-
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs);
 	Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index);
 	Column column(DataRuntime runtime, Column column, ResultSet rs);
 
@@ -937,6 +949,10 @@ public interface DriverAdapter {
 	 * 													primary
 	 ******************************************************************************************************************/
 
+	PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table);
+	default PrimaryKey primary(boolean greedy, Table table){
+		return primary(RuntimeHolder.getRuntime(), greedy, table);
+	}
 	/**
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含适配器数据源或客户端

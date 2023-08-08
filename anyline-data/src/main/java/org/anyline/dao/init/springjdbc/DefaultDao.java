@@ -682,7 +682,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			table.setColumns(columns(runtime, random, false, table));
+			table.setColumns(columns(runtime,false, table));
 		}
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -925,7 +925,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			table.setColumns(columns(runtime, random, false, table));
+			table.setColumns(columns(runtime,  false, table));
 		}
 		if(null == run){
 			return 0;
@@ -2777,119 +2777,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table){
-		return columns(null, null, greedy, table);
+		return columns(null,  greedy, table);
 	}
-	protected  <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table){
-
+	protected  <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean greedy, Table table){
 		if(null == runtime){
 			runtime = runtime();
-		}
-		if(null == random){
-			random = random(runtime);
 		}
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return new LinkedHashMap();
 		}
-
-		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table.getName());
-		if(null != columns && !columns.isEmpty()){
-			return columns;
-		}
-
-		long fr = System.currentTimeMillis();
-		//DataSource ds = null;
-		//Connection con = null;
-		//DatabaseMetaData metadata = null;
-
-		try {
-			DriverAdapter adapter = runtime.getAdapter();
-			if (!greedy) {
-				checkSchema(runtime, table);
-			}
-			String catalog = table.getCatalog();
-			String schema = table.getSchema();
-			try {
-				//ds = runtime.getTemplate().getDataSource();
-				//con = DataSourceUtils.getConnection(ds);
-				//metadata = con.getMetaData();
-			} catch (Exception e) {
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else{
-					log.warn("[metadata][resutl:fail][msg:{}]", e.toString());
-				}
-			}
-			int qty_dialect = 0; //优先根据系统表查询
-			int qty_metadata = 0; //再根据metadata解析
-			int qty_jdbc = 0; //根据驱动内置接口补充
-			// 优先根据系统表查询
-			try {
-				List<Run> runs = adapter.buildQueryColumnRun(runtime, table, false);
-				if (null != runs) {
-					int idx = 0;
-					for (Run run: runs) {
-						DataSet set = select(runtime, random, true, (String) null, run);
-						columns = adapter.columns(runtime, idx, true, table, columns, set);
-						idx++;
-					}
-				}
-			} catch (Exception e) {
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				} if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
-				}
-			}
-			qty_dialect = columns.size();
-			// 根据驱动内置接口补充
-			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
-			if (columns.size() == 0) {
-				try {
-					columns = adapter.columns(runtime, true, table, columns);
-				} catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}
-				}
-				qty_jdbc = columns.size() - qty_metadata - qty_dialect;
-			}
-			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
-			}
-			//检测主键
-			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
-				if (columns.size() > 0) {
-					boolean exists = false;
-					for(Column column:columns.values()){
-						if(column.isPrimaryKey() != -1){
-							exists = true;
-							break;
-						}
-					}
-					if(!exists){
-						PrimaryKey pk = primary(table);
-						if(null != pk){
-							LinkedHashMap<String,Column> pks = pk.getColumns();
-							if(null != pks){
-								for(String k:pks.keySet()){
-									Column column = columns.get(k);
-									if(null != column){
-										column.setPrimaryKey(true);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}catch (Exception e){
-			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
-			}else{
-				log.error("[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
-			}
-		}
-		CacheProxy.columns(runtime.getKey(), table.getName(), columns);
+		LinkedHashMap<String,T> columns = runtime.getAdapter().columns(runtime, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY);
 		return columns;
 	}
 	@Override
