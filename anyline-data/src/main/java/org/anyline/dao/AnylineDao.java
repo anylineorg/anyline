@@ -35,24 +35,18 @@ import java.util.Map;
 
 public interface AnylineDao<E>{
 	void setRuntime(DataRuntime runtime);
-	void setDatasource(String datasource);
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
 	 *
 	 ******************************************************************************************************************/
 	DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	<T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	<T> EntitySet<T> querys(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
-	DataSet querys(RunPrepare prepare, String ... conditions);
-	DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	DataSet selects(RunPrepare prepare, String ... conditions);
+	<T> EntitySet<T> selects(RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
+
 	DataRow sequence(boolean next, String ... names);
 
 
 	List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions);
-	List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions);
-
 	long count(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	long count(RunPrepare prepare, String ... conditions);
 	
@@ -125,7 +119,7 @@ public interface AnylineDao<E>{
 	 * @return DataSet
 	 */
 	// DataSet querys(Procedure procedure);
-	DataSet querys(Procedure procedure, PageNavi navi);
+	DataSet selects(Procedure procedure, PageNavi navi);
 	int delete(String dest, Object obj, String ... columns);
 	int delete(String table, ConfigStore configs, String ... conditions);
 
