@@ -23,9 +23,11 @@ package org.anyline.data.jdbc.adapter.init;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
+import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.DataRow;
@@ -35,6 +37,7 @@ import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
+import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -77,7 +80,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		this.dmListener = listener;
 	}
 
-/////////////////////////////////////////////////
 	protected JdbcTemplate jdbc(DataRuntime runtime){
 		Object client = runtime.getClient();
 		return (JdbcTemplate) client;
@@ -85,11 +87,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public long total(DataRuntime runtime, String random, Run run) {
 		long total = 0;
-		DataSet set = select(runtime, random, true, null, run);
+		DataSet set = select(runtime, random, false, null, run, run.getTotalQuery(), run.getValues());
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
-
 
 	/**
 	 * 封装查询结果
@@ -137,6 +138,108 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return row;
 	}
+	private DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run,  String sql, List<Object> values){
+		if(BasicUtil.isEmpty(sql)){
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+				throw new SQLQueryException("未指定SQL");
+			}else{
+				log.error("未指定SQL");
+				return new DataSet();
+			}
+		}
+		long fr = System.currentTimeMillis();
+		if(null == random){
+			random = random(runtime);
+		}
+		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+		}
+		DataSet set = new DataSet();
+		//根据这一步中的JDBC结果集检测类型不准确,如:实际POINT 返回 GEOMETRY 如果要求准确 需要开启到自动检测
+		//在DataRow中 如果检测到准确类型 JSON XML POINT 等 返回相应的类型,不返回byte[]（所以需要开启自动检测）
+		//Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
+		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
+			columns = columns(runtime,  false, new Table( table), false);
+		}
+		try{
+			final DataRuntime rt = runtime;
+			final long[] mid = {System.currentTimeMillis()};
+			final boolean[] process = {false};
+			final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
+			metadatas.putAll(columns);
+			set.setMetadatas(metadatas);
+			JdbcTemplate jdbc = jdbc(runtime);
+			if(null != values && values.size()>0){
+				jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
+					@Override
+					public void processRow(ResultSet rs) throws SQLException {
+						if(!process[0]){
+							mid[0] = System.currentTimeMillis();
+						}
+						DataRow row = row(system, rt, metadatas, rs);
+						set.add(row);
+						process[0] = true;
+					}
+				});
+			}else {
+				jdbc.query(sql, new RowCallbackHandler() {
+					@Override
+					public void processRow(ResultSet rs) throws SQLException {
+						if(!process[0]){
+							mid[0] = System.currentTimeMillis();
+						}
+						DataRow row = row(system, rt, metadatas, rs);
+						set.add(row);
+						process[0] = true;
+					}
+				});
+			}
+			if(!process[0]){
+				mid[0] = System.currentTimeMillis();
+			}
+			boolean slow = false;
+			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
+			if(SLOW_SQL_MILLIS > 0){
+				slow = true;
+				if(mid[0] - fr > SLOW_SQL_MILLIS){
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, LogUtil.param(values));
+					if(null != dmListener){
+						dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, set,mid[0] - fr);
+					}
+				}
+			}
+			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+				log.info("{}[执行耗时:{}ms]", random, mid[0] - fr);
+			}
+			set.setDatalink(runtime.datasource());
+			if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
+			}
+		}catch(Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
+				ex.setSql(sql);
+				ex.setValues(values);
+				throw ex;
+			}else{
+				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
+					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, LogUtil.param(values));
+				}
+			}
+		}
+		return set;
+	}
+
+	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run) {
+		String sql = run.getFinalQuery();
+		List<Object> values = run.getValues();
+		return select(runtime, random, system, table, run, sql, values);
+	}
+	/*
 	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run){
 		String sql = run.getFinalQuery();
 		List<Object> values = run.getValues();
@@ -234,7 +337,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 		}
 		return set;
-	}
+	}*/
 	public List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run){
 		List<Map<String,Object>> maps = null;
 		String sql = run.getFinalQuery();
@@ -604,8 +707,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
-
-
 	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
 		boolean result = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -869,12 +970,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return set;
 	}
 
-
-
-
-
-
-
 	@Override
 	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
 		DataSource ds = null;
@@ -948,9 +1043,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return indexs;
 	}
-
-
-
 
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
@@ -1058,7 +1150,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return  views;
 	}
 
-//////////////////////////////////////////////////////////
+
 
 
 	@Override
@@ -1264,6 +1356,151 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return column;
 	}
 
+
+	/**
+	 * 查询表上的列
+	 * @param table 表
+	 * @param metadata 是否根据metadata(true:1=0,false:查询系统表,由子类实现)
+	 * @return sql
+	 */
+	@Override
+	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(runtime, builder, table);
+			builder.append(" WHERE 1=0");
+		}
+		return runs;
+	}
+	@Override
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean greedy, Table table , boolean primary){
+		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table.getName());
+		if(null != columns && !columns.isEmpty()){
+			return columns;
+		}
+		long fr = System.currentTimeMillis();
+		String random = random(runtime);
+		try {
+			if (!greedy) {
+				checkSchema(runtime, table);
+			}
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
+
+			int qty_dialect = 0; //优先根据系统表查询
+			int qty_metadata = 0; //再根据metadata解析
+			int qty_jdbc = 0; //根据驱动内置接口补充
+
+			// 1.优先根据系统表查询
+			try {
+				List<Run> runs = buildQueryColumnRun(runtime, table, false);
+				if (null != runs) {
+					int idx = 0;
+					for (Run run: runs) {
+						DataSet set = select(runtime, random, true, (String) null, run);
+						columns = columns(runtime, idx, true, table, columns, set);
+						idx++;
+					}
+				}
+			} catch (Exception e) {
+				if(primary) {
+					e.printStackTrace();
+				} if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
+				}
+			}
+			qty_dialect = columns.size();
+			// 根据驱动内置接口补充
+			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
+			if (columns.size() == 0) {
+				try {
+					List<Run> runs = buildQueryColumnRun(table, true);
+					if (null != runs) {
+						for (Run run  : runs) {
+							SqlRowSet set = ((JDBCRuntime)runtime).jdbc().queryForRowSet(run.getFinalQuery());
+							columns = columns(runtime, true, columns, table, set);
+						}
+					}
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+							log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+						}
+					}
+				}
+				qty_metadata = columns.size() - qty_dialect;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+			}
+
+			// 根据jdbc接口补充
+
+			if (columns.size() == 0) {
+				DataSource ds = null;
+				Connection con = null;
+				DatabaseMetaData metadata = null;
+				try {
+					ds = ((JDBCRuntime)runtime).jdbc().getDataSource();
+					con = DataSourceUtils.getConnection(ds);
+					metadata = con.getMetaData();
+					columns = columns(runtime, true, columns, metadata, table, null);
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}finally {
+					if (!DataSourceUtils.isConnectionTransactional(con, ds)) {
+						DataSourceUtils.releaseConnection(con, ds);
+					}
+				}
+				qty_jdbc = columns.size() - qty_metadata - qty_dialect;
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+			}
+			//检测主键
+			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
+				if (columns.size() > 0) {
+					boolean exists = false;
+					for(Column column:columns.values()){
+						if(column.isPrimaryKey() != -1){
+							exists = true;
+							break;
+						}
+					}
+					if(!exists){
+						PrimaryKey pk = primary(runtime, false, table);
+						if(null != pk){
+							LinkedHashMap<String,Column> pks = pk.getColumns();
+							if(null != pks){
+								for(String k:pks.keySet()){
+									Column column = columns.get(k);
+									if(null != column){
+										column.setPrimaryKey(true);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
+			}
+		}
+		CacheProxy.columns(runtime.getKey(), table.getName(), columns);
+		return columns;
+	}
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
 		if(null == columns){
@@ -1283,53 +1520,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						column.setName(name);
 					}
 					columns.put(column.getName().toUpperCase(), column);
-				}
-			}
-		}
-		return columns;
-	}
-
-	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create,  Table table, LinkedHashMap<String, T> columns) {
-	// 根据系统表查询失败 再根据metadata解析 SELECT * FROM T WHERE 1=0
-		JdbcTemplate jdbc = jdbc(runtime);
-		String random = random(runtime);
-		if (null == columns || columns.size() == 0) {
-			try {
-				List<Run> runs = buildQueryColumnRun(runtime, table, true);
-				if (null != runs) {
-					for (Run run : runs) {
-						SqlRowSet set = jdbc.queryForRowSet(run.getFinalQuery());
-						columns = columns(runtime, true, columns, table, set);
-					}
-				}
-			} catch (Exception e) {
-				if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				} else {
-					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-						log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), table.getCatalog(), table.getSchema(), table.getName(), e.toString());
-					}
-				}
-			}
-		}
-		// 根据jdbc接口补充
-
-		if (columns.size() == 0) {
-			DataSource ds = null;
-			Connection con = null;
-			try {
-				ds = jdbc.getDataSource();
-				con = DataSourceUtils.getConnection(ds);
-				DatabaseMetaData metadata = null;
-				columns = columns(runtime, true, columns, metadata, table, null);
-			} catch (Exception e) {
-				if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}
-			}finally {
-				if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-					DataSourceUtils.releaseConnection(con, ds);
 				}
 			}
 		}
