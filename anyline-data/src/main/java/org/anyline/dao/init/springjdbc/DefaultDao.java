@@ -278,7 +278,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					} else {
 						// 未计数(总数 )
 						if (navi.getTotalRow() == 0) {
-							total = total(runtime, random, run);
+							total = adapter.total(runtime, random, run);
 							navi.setTotalRow(total);
 						} else {
 							total = navi.getTotalRow();
@@ -327,14 +327,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		InterceptorProxy.afterQuery(runtime, random, run, sql_success, set, navi, System.currentTimeMillis() - fr);
 		return set;
-	}
-	private long total(DataRuntime runtime, String random, Run run){
-		long result = 0;
-		DataSet set = select(runtime, random, (String)null, run);
-		if(set.size()>0){
-			result = set.getRow(0).getLong("CNT", 0);
-		}
-		return result;
 	}
 	@Override
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
@@ -414,7 +406,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					} else {
 						// 未计数(总数 )
 						if (navi.getTotalRow() == 0) {
-							total = total(runtime, random, run);
+							total = adapter.total(runtime, random, run);
 							navi.setTotalRow(total);
 						} else {
 							total = navi.getTotalRow();
@@ -519,8 +511,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 		boolean sql_success = false;
 
-		SWITCH swt = SWITCH.CONTINUE;
-		swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
+		SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
 		if(swt == SWITCH.BREAK){
 			return -1;
 		}
@@ -539,7 +530,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 				return -1;
 			}
-			fr = System.currentTimeMillis();
 			if (null != dmListener) {
 				dmListener.beforeCount(runtime, random, run);
 			}
@@ -548,7 +538,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				return -1;
 			}
 			fr = System.currentTimeMillis();
-			count = total(runtime, random, run);
+			count = adapter.total(runtime, random, run);
 			sql_success = true;
 		}finally{
 			// 自动切换回切换前的数据源
