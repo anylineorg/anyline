@@ -1210,9 +1210,9 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		StringBuilder builder = run.getBuilder();
 		Object def = null;
 		if(null != column.getUpdate()){
-			def = column.getUpdate().getdefaultValue();
+			def = column.getUpdate().getDefaultValue();
 		}else {
-			def = column.getdefaultValue();
+			def = column.getDefaultValue();
 		}
 		if(null != def){
 			String str = def.toString();

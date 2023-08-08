@@ -1514,7 +1514,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
 			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
-			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getdefaultValue())+"";
+			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue())+"";
 			if(BasicUtil.isNotEmpty(def)) {
 				while(def.startsWith("(") && def.endsWith(")")){
 					def = def.substring(1, def.length()-1);
@@ -1644,7 +1644,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(null == column.getPosition()){
 				column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
 			}
-			if (BasicUtil.isEmpty(column.getdefaultValue())) {
+			if (BasicUtil.isEmpty(column.getDefaultValue())) {
 				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
 			}
 			ColumnType columnType = type(column.getTypeName());
@@ -2562,8 +2562,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 			}
 			// 修改默认值
-			Object def = column.getdefaultValue();
-			Object udef = update.getdefaultValue();
+			Object def = column.getDefaultValue();
+			Object udef = update.getDefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)){
 				List<Run> defs = buildChangeDefaultRun(runtime, column);
 				if(null != defs){
@@ -3002,7 +3002,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column){
-		Object def = column.getdefaultValue();
+		Object def = column.getDefaultValue();
 		if(null != def) {
 			builder.append(" DEFAULT ");
 			boolean isCharColumn = isCharColumn(runtime, column);
@@ -3014,7 +3014,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}else {
 				def = write(runtime, column, def, false);
 				if(null == def){
-					def = column.getdefaultValue();
+					def = column.getDefaultValue();
 				}
 				//format(builder, def);
 				builder.append(def);
@@ -3187,8 +3187,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 			}
 			// 修改默认值
-			Object def = tag.getdefaultValue();
-			Object udef = update.getdefaultValue();
+			Object def = tag.getDefaultValue();
+			Object udef = update.getDefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)){
 				runs.addAll(buildChangeDefaultRun(runtime, tag));
 			}

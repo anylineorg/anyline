@@ -359,7 +359,7 @@ public class DataSourceHolder extends ClientHolder {
 			if(BasicUtil.isEmpty(url)){
 				return null;
 			}
-			if(url.toLowerCase().contains("jdbc:")){
+			if(!url.toLowerCase().startsWith("jdbc:")){
 				return null;
 			}
 			String type = (String)params.get("pool");

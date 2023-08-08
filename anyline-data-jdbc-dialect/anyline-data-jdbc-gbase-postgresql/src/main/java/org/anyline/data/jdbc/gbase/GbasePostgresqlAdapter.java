@@ -1151,9 +1151,9 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column) throws Exception{
 		Object def = null;
 		if(null != column.getUpdate()){
-			def = column.getUpdate().getdefaultValue();
+			def = column.getUpdate().getDefaultValue();
 		}else {
-			def = column.getdefaultValue();
+			def = column.getDefaultValue();
 		}
 		if(null != def){
 			String str = def.toString();

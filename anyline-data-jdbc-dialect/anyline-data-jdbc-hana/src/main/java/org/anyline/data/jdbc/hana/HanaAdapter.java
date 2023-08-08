@@ -1565,9 +1565,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		StringBuilder builder = run.getBuilder();
 		Object def = null;
 		if(null != column.getUpdate()){
-			def = column.getUpdate().getdefaultValue();
+			def = column.getUpdate().getDefaultValue();
 		}else {
-			def = column.getdefaultValue();
+			def = column.getDefaultValue();
 		}
 		builder.append("ALTER TABLE ");
 		name(runtime, builder, column.getTable(true)).append(" MODIFY ");

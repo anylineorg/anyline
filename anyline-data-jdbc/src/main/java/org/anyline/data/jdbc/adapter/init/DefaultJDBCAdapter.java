@@ -1388,7 +1388,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			column.setPrecision(integer(keys, "COLUMN_SIZE", set, column.getPrecision()));
 			column.setScale(integer(keys, "DECIMAL_DIGITS", set, column.getScale()));
 			column.setNullable(bool(keys, "NULLABLE", set, column.isNullable()));
-			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getdefaultValue()));
+			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 			ColumnType columnType = type(column.getTypeName());
@@ -1473,7 +1473,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				column.setPrecision(integer(keys, "COLUMN_SIZE", set, column.getPrecision()));
 				column.setScale(integer(keys, "DECIMAL_DIGITS", set, column.getScale()));
 				column.setNullable(bool(keys, "NULLABLE", set, column.isNullable()));
-				column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getdefaultValue()));
+				column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
 				column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 				column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 				ColumnType columnType = type(column.getTypeName());

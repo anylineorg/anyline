@@ -1437,9 +1437,9 @@ public class KingbaseOracleAdapter extends SQLAdapter implements JDBCAdapter, In
 		List<Run> runs = new ArrayList<>();
 		Object def = null;
 		if(null != column.getUpdate()){
-			def = column.getUpdate().getdefaultValue();
+			def = column.getUpdate().getDefaultValue();
 		}else {
-			def = column.getdefaultValue();
+			def = column.getDefaultValue();
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");

@@ -1167,9 +1167,9 @@ public class KingbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter
 		StringBuilder builder = run.getBuilder();
 		Object def = null;
 		if(null != column.getUpdate()){
-			def = column.getUpdate().getdefaultValue();
+			def = column.getUpdate().getDefaultValue();
 		}else {
-			def = column.getdefaultValue();
+			def = column.getDefaultValue();
 		}
 		if(null != def){
 			String str = def.toString();
