@@ -47,6 +47,29 @@ public interface ConfigStore {
 	ConfigStore copyPageNavi(PageNavi navi);
 
 	/**
+	 * 起止行 下标从0开始
+	 * @param first 起
+	 * @param last 止
+	 * @return ConfigStore
+	 */
+	ConfigStore scope(long first, long last);
+	/**
+	 * 起止行 下标从0开始
+	 * @param offset offset：指定第一个返回记录行的偏移量（即从哪一行开始返回） 初始行的偏移量为0
+	 * @param rows 返回具体行数
+	 * @return ConfigStore
+	 */
+	ConfigStore limit(long offset, int rows);
+
+	/**
+	 * 设置分页
+	 * @param page 第page页 下标从1开始
+	 * @param rows 每页rows行
+	 * @return ConfigStore
+	 */
+	ConfigStore page(long page, int rows);
+
+	/**
 	 * 在配置了参数(调用and/or)之后，为参数赋值(值经常是来自WebUti.value(request))
 	 * @param values 值
 	 * @return ConfigStore

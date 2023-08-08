@@ -127,17 +127,12 @@ public class DefaultConfigStore implements ConfigStore {
 
 	/**
 	 * 按起止行数查询
-	 * @param fr 起
-	 * @param to 止
+	 * @param first 起
+	 * @param last 止
 	 */
-	public DefaultConfigStore(int fr, int to){
+	public DefaultConfigStore(long first, long last){
 		chain = new DefaultConfigChain();
-		DefaultPageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(fr);
-		navi.setLastRow(to);
-		navi.setCalType(1);
-		navi.setTotalRow(to-fr+1);
-		this.setPageNavi(navi);
+		scope(first, last);
 	}
 	public DefaultConfigStore(List<String> configs){
 		configs = BasicUtil.compress(configs);
@@ -147,6 +142,57 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 	}
 
+	/**
+	 * 起止行 下标从0开始
+	 * @param first 起
+	 * @param last 止
+	 * @return ConfigStore
+	 */
+	public ConfigStore scope(long first, long last){
+		if(null == navi) {
+			navi = new DefaultPageNavi();
+		}
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		navi.setCalType(1);
+		navi.setTotalRow(last-first+1);
+		this.setPageNavi(navi);
+		return this;
+	}
+	/**
+	 * 起止行 下标从0开始
+	 * @param offset offset：指定第一个返回记录行的偏移量（即从哪一行开始返回） 初始行的偏移量为0
+	 * @param rows 返回具体行数
+	 * @return ConfigStore
+	 */
+	public ConfigStore limit(long offset, int rows){
+		if(null == navi) {
+			navi = new DefaultPageNavi();
+		}
+		navi.setFirstRow(offset);
+		navi.setLastRow(offset+rows);
+		navi.setCalType(1);
+		navi.setTotalRow(rows);
+		this.setPageNavi(navi);
+		return this;
+	}
+
+	/**
+	 * 设置分页
+	 * @param page 第page页 下标从1开始
+	 * @param rows 每页rows行
+	 * @return ConfigStore
+	 */
+	public ConfigStore page(long page, int rows){
+		if(null == navi) {
+			navi = new DefaultPageNavi();
+		}
+		navi.setCurPage(page);
+		navi.setPageRows(rows);
+		navi.setCalType(0);
+		this.setPageNavi(navi);
+		return this;
+	}
 
 	@Override
 	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object ... values){
