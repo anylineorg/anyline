@@ -601,7 +601,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return columns;
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
-		LinkedHashMap<String, Column> metadatas = columns(runtime, new Table(table), false);
+		LinkedHashMap<String, Column> metadatas = columns(runtime, false, new Table(table), false);
 		if(metadatas.size() > 0) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {
@@ -762,7 +762,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			run.setConfigStore(configs);
 			run.addCondition(conditions);
 			if(run.checkValid()) {
-				//为变量赋值
+				//为变量赋值 run.condition赋值
 				run.init();
 				//构造最终的查询SQL
 				createQueryContent(runtime, run);
@@ -4379,38 +4379,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public boolean convert(DataRuntime runtime, String catalog, String schema, String table, RunValue value){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = columns(runtime, new Table(catalog, schema, table), false);
+			LinkedHashMap<String, Column> columns = columns(runtime, false, new Table(catalog, schema, table), false);
 			result = convert(runtime, columns, value);
 		}else{
 			result = convert(runtime,(Column)null, value);
 		}
 		return result;
-	}
-	public LinkedHashMap<String, Column> columns(DataRuntime runtime, Table table, boolean metadata){
-		LinkedHashMap<String, Column> columns = CacheProxy.columns(runtime.getKey(), table.getName());
-		if(null == columns || columns.isEmpty()) {
-			String random = random(runtime);
-			try {
-				List<Run> runs = buildQueryColumnRun(runtime, table, metadata);
-				if (null != runs) {
-					int idx = 0;
-					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, run);
-						columns = columns(runtime, idx, true, table, columns, set);
-						idx++;
-					}
-				}
-			} catch (Exception e) {
-				if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}
-				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table.getCatalog(), table.getSchema(), table.getName(), e.toString());
-				}
-			}
-		}
-		CacheProxy.columns(runtime.getKey(), table.getName(), columns);
-		return columns;
 	}
 
 	/**
@@ -4458,11 +4432,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String type = null;
 			if(null != column){
 				type = column.getTypeName();
-			}
-			if(null == type){
-				LinkedHashMap<String,Column> columns = columns(runtime, new Table(run.getTable()), true);
-				column = columns.get(column.getName().toUpperCase());
-				type = column.getTypeName();
+				if(null == type){
+					LinkedHashMap<String,Column> columns = columns(runtime, false, new Table(run.getTable()), false);
+					column = columns.get(column.getName().toUpperCase());
+					if(null != column) {
+						type = column.getTypeName();
+					}
+				}
 			}
 		}
 		RunValue rv = run.addValues(compare, column, value, split);
@@ -4477,7 +4453,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			if(null == columns || columns.isEmpty()) {
-				columns = columns(runtime, table, false);
+				columns = columns(runtime, false, table, false);
 			}
 		}
 		List<RunValue> values = run.getRunValues();
