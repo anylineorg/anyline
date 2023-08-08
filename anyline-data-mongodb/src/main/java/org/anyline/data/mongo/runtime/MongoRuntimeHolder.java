@@ -1,5 +1,6 @@
 package org.anyline.data.mongo.runtime;
 
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.anyline.dao.init.springjdbc.FixDao;
 import org.anyline.data.adapter.DriverAdapter;
@@ -12,27 +13,26 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
-
 
 @Component("anyline.data.runtime.holder.mongo")
 public class MongoRuntimeHolder extends RuntimeHolder {
 
     public MongoRuntimeHolder(){
-        RuntimeHolderProxy.reg(DataSource.class,this);
+        RuntimeHolderProxy.reg(MongoClient.class,this);
     }
     @Override
-    public DataRuntime runtime(String key, Object source, DriverAdapter adapter) throws Exception{
+    public DataRuntime runtime(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
         MongoRuntime runtime = new MongoRuntime();
-        if(source instanceof MongoDatabase){
+        if(datasource instanceof MongoClient){
             runtime.setKey(key);
             runtime.setAdapter(adapter);
-            if(source instanceof DataSource){
-                MongoDatabase ds = (MongoDatabase) source;
-                runtime.setClient(ds);
-            }
+            MongoClient client = (MongoClient) datasource;
+            runtime.setClient(client);
+            MongoDatabase db = client.getDatabase(database);
+            runtime.setDatabase(db);
+            log.warn("[注册数据源][key:{}][type:{}]", key, datasource.getClass().getSimpleName());
         }else{
-            throw new Exception("请提供:com.mongodb.client.MongoDatabase");
+            throw new Exception("请提供:com.mongodb.client.MongoClient");
         }
         return runtime;
     }
@@ -40,14 +40,15 @@ public class MongoRuntimeHolder extends RuntimeHolder {
     /**
      * 注册运行环境
      * @param key 数据源前缀
-     * @param ds 数据源bean id
      */
-    public static void reg(String key, String ds){
+    public static void reg(String key){
         //ClientHolder.reg(key);
-        String ds_key = "anyline.datasource." + key;
+        String datasource_key = "anyline.datasource." + key;
+        String database_key = "anyline.database." + key;
 
-        MongoDatabase db = factory.getBean(ds_key, MongoDatabase.class);
-        reg(key, db, null);
+        MongoClient client = factory.getBean(datasource_key, MongoClient.class);
+        MongoDatabase database = factory.getBean(database_key, MongoDatabase.class);
+        reg(key, client, database, null);
     }
 
 
@@ -61,9 +62,9 @@ public class MongoRuntimeHolder extends RuntimeHolder {
      * @param database MongoDatabase
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-    public static void reg(String datasource, MongoDatabase database, DriverAdapter adapter){
+    public static void reg(String datasource, MongoClient client, MongoDatabase database, DriverAdapter adapter){
         log.info("[create mongo runtime][key:{}]", datasource);
-        DataRuntime runtime = new MongoRuntime(datasource, database, adapter);
+        DataRuntime runtime = new MongoRuntime(datasource, client, database, adapter);
         if(runtimes.containsKey(datasource)){
             destroy(datasource);
         }
@@ -75,6 +76,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
         String service_key = "anyline.service." + datasource;
         log.info("[instance service][data source:{}][instance id:{}]", datasource, service_key);
 
+        //dao
         BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixDao.class);
         //daoBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         daoBuilder.addPropertyValue("runtime", runtime);
@@ -85,7 +87,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
         BeanDefinition daoDefinition = daoBuilder.getBeanDefinition();
         factory.registerBeanDefinition(dao_key, daoDefinition);
 
-
+        //service
         BeanDefinitionBuilder serviceBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixService.class);
         //serviceBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         serviceBuilder.addPropertyValue("datasource", datasource);
@@ -103,7 +105,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
     public static void destroy(String key){
         try {
             runtimes.remove(key);
-            //注销 service dao template
+            //注销 service dao client
             if(factory.containsBeanDefinition("anyline.service." + key)){
                 factory.destroySingleton("anyline.service." + key);
                 factory.removeBeanDefinition("anyline.service." + key);
@@ -120,13 +122,14 @@ public class MongoRuntimeHolder extends RuntimeHolder {
                 factory.destroySingleton("anyline.transaction." + key);
                 factory.removeBeanDefinition("anyline.transaction." + key);
             }
+            */
             if(factory.containsBeanDefinition("anyline.datasource." + key)){
                 factory.destroySingleton("anyline.datasource." + key);
                 factory.removeBeanDefinition("anyline.datasource." + key);
-            }*/
-            if(factory.containsBeanDefinition("anyline.mongo.database." + key)){
-                factory.destroySingleton("anyline.mongo.database." + key);
-                factory.removeBeanDefinition("anyline.mongo.database." + key);
+            }
+            if(factory.containsBeanDefinition("anyline.database." + key)){
+                factory.destroySingleton("anyline.database." + key);
+                factory.removeBeanDefinition("anyline.database." + key);
             }
         }catch (Exception e){
             e.printStackTrace();
