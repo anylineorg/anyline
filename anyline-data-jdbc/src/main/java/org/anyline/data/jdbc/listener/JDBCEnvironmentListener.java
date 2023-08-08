@@ -31,41 +31,48 @@ public class JDBCEnvironmentListener implements ApplicationContextAware {
         JdbcTemplate template = SpringContextUtil.getBean(JdbcTemplate.class);
         int qty = load("spring.datasource");
         qty += load("anyline.datasource");
-        if(qty > 0) {
-            loadDefault(template);
+        if(null != template) {
+            load(template, qty>0);
         }
     }
-    private void loadDefault(JdbcTemplate template){
+    private void load(JdbcTemplate template, boolean multiple){
         //默认数据源 有多个数据源的情况下 再注册anyline.service.default
         //如果单个数据源 只通过@serveri注解 注册一个anyline.service
         //anyline.service.default 用来操作主数据源
         //anyline.service.sso 用来操作sso数据源
         //anyline.service.common 用来操作所有数据源
         if(null != template) {
-            //注册一个默认运行环境(只操作默认数据源不可)
-            JDBCRuntimeHolder.reg("default", template, null);
-            if(ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER){
-                //注册一个主事务管理器
-                DataSourceHolder.regTransactionManager("primary", template.getDataSource(), true);
+            if(multiple) {
+                //多数据源环境中,注册一个默认运行环境(只操作默认数据源不可)
+                JDBCRuntimeHolder.reg("default", template, null);
+                if (ConfigTable.IS_OPEN_PRIMARY_TRANSACTION_MANAGER) {
+                    //注册一个主事务管理器
+                    DataSourceHolder.regTransactionManager("primary", template.getDataSource(), true);
+                }
             }
             //注册一个通用运行环境(可切换数据源)
             DataRuntime runtime = new JDBCRuntime("common", template, null);
             JDBCRuntimeHolder.reg("common", runtime);
         }else{
-            //加载anyline.datasource.url格式定义
+            //加载anyline.datasource.url格式定义的数据源
         }
     }
     //加载配置文件
     private int load(String head){
         int qty = 0;
         Environment env = context.getEnvironment();
-        // 读取配置文件获取更多数据源
+        // 读取配置文件获取更多数据源 anyline.datasource.list
         String prefixs = env.getProperty(head + ".list");
+        if(null == prefixs){
+            //anyline.datasource-list
+            prefixs = env.getProperty(head + "-list");
+        }
         if(null != prefixs){
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 try {
-                    //返回bean id
+                    //返回 datasource的bean id
+                    // sso, anyline.datasource.sso, env
                     String ds = DataSourceHolder.reg(prefix, head + "." + prefix, env);
                     if(null != ds) {
                         qty ++;
