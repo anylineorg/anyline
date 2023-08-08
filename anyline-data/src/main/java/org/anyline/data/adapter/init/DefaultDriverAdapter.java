@@ -29,6 +29,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
@@ -40,6 +41,7 @@ import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.Join;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
@@ -988,6 +990,46 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return run;
 	}
 
+	protected Run createDeleteRunContent(DataRuntime runtime, TableRun run){
+		AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
+		StringBuilder builder = run.getBuilder();
+		builder.append("DELETE FROM ");
+		if(null != run.getSchema()){
+			SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
+		}
+
+		SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
+		builder.append(BR);
+		if(BasicUtil.isNotEmpty(prepare.getAlias())){
+			// builder.append(" AS ").append(sql.getAlias());
+			builder.append("  ").append(prepare.getAlias());
+		}
+		List<Join> joins = prepare.getJoins();
+		if(null != joins) {
+			for (Join join:joins) {
+				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
+				if(null != join.getSchema()){
+					SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
+				}
+				SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
+				if(BasicUtil.isNotEmpty(join.getAlias())){
+					builder.append("  ").append(join.getAlias());
+				}
+				builder.append(" ON ").append(join.getCondition());
+			}
+		}
+
+		builder.append("\nWHERE 1=1\n\t");
+
+		/*添加查询条件*/
+		// appendConfigStore();
+		run.appendCondition();
+		run.appendGroup();
+		run.appendOrderStore();
+		run.checkValid();
+
+		return run;
+	}
 
 	@Override
 	public List<Run> buildTruncateRun(DataRuntime runtime, String table){
