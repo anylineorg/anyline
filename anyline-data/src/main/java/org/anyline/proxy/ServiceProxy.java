@@ -60,14 +60,15 @@ public class ServiceProxy {
 
     /**
      * 临时数据源
-     * @param key 数据源标识,输出日志时标记当前数据源
-     * @param source 数据源,如DruidDataSource,MongoClient
+     * @param key 数据源标识,切换数据源时根据key,输出日志时标记当前数据源
+     * @param datasource 数据源,如DruidDataSource,MongoClient
+     * @param database 数据库,jdbc类型数据源不需要
      * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
      * @return service
      * @throws Exception 异常 Exception
      */
-    public static AnylineService temporary(String key, Object source, DriverAdapter adapter) throws Exception{
-        DataRuntime runtime = RuntimeHolderProxy.runtime(key, source, adapter);
+    public static AnylineService temporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
+        DataRuntime runtime = RuntimeHolderProxy.runtime(key, datasource, database, adapter);
         AnylineDao dao = new FixDao();
         //dao.setDatasource(key);
         dao.setRuntime(runtime);
@@ -78,12 +79,18 @@ public class ServiceProxy {
         return service;
     }
 
-    public static AnylineService temporary(Object source) throws Exception{
-        return temporary("temporary", source, null);
+    public static AnylineService temporary(Object datasource) throws Exception{
+        return temporary("temporary", datasource, null,null);
+    }
+    public static AnylineService temporary(Object datasource, String database) throws Exception{
+        return temporary("temporary", datasource, database,null);
     }
 
-    public static AnylineService temporary(String key, Object source) throws Exception{
-        return temporary(key, source, null);
+    public static AnylineService temporary(String key, Object datasource) throws Exception{
+        return temporary(key, datasource, null, null);
+    }
+    public static AnylineService temporary(String key, Object datasource, String database) throws Exception{
+        return temporary(key, datasource, database, null);
     }
 
 
