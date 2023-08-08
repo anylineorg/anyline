@@ -8,6 +8,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.data.mongo.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
@@ -25,6 +26,7 @@ import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.Column;
+import org.anyline.metadata.PrimaryKey;
 import org.anyline.metadata.Procedure;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
@@ -126,8 +128,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
             return -1;
         }
+        MongoRuntime rt = (MongoRuntime) runtime;
+        MongoDatabase database = rt.getDatabase();
         long fr = System.currentTimeMillis();
-        MongoDatabase database = (MongoDatabase) runtime.getClient();
         try {
             MongoCollection cons = null;
             if(value instanceof List){
@@ -281,7 +284,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             // columns = columns(runtime, false, new Table(null, null, table), null);
         }
         try{
-            MongoDatabase database = (MongoDatabase)runtime.getClient();
+            MongoRuntime rt = (MongoRuntime) runtime;
+            MongoDatabase database = rt.getDatabase();
             Bson bson = (Bson)run.getFilter();
             if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
                 log.info("{}[collection:{}][filter:{}]", random, run.getTable(), bson);
@@ -410,6 +414,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean greedy, Table table, boolean primary) {
+        return null;
+    }
+
+    @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
         return null;
     }
@@ -420,7 +429,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs) {
+        return null;
+    }
+
+    @Override
     public Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index) {
+        return null;
+    }
+
+    @Override
+    public PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table) {
         return null;
     }
 
