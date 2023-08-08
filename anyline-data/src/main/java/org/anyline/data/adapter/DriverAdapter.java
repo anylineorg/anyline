@@ -27,10 +27,7 @@ import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
-import org.anyline.entity.Compare;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.metadata.type.DatabaseType;
@@ -325,16 +322,18 @@ public interface DriverAdapter {
 	 * @return DataSet
 	 */
 	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+	DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions);
+	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) ;
 
-	/**
-	 * 执行查询
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
-	 * @param system 是否是系统表
-	 * @param table 表
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return DataSet
-	 */
+		/**
+         * 执行查询
+         * @param runtime 运行环境主要包含适配器数据源或客户端
+         * @param random random
+         * @param system 是否是系统表
+         * @param table 表
+         * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+         * @return DataSet
+         */
 	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
 
 	/**
@@ -345,6 +344,8 @@ public interface DriverAdapter {
 	 * @return long
 	 */
 	long total(DataRuntime runtime, String random, Run run);
+
+	List<Map<String,Object>> maps(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 执行查询
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
