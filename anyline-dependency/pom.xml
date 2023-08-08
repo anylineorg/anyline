@@ -338,7 +338,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-data-jdbc-mongodb</artifactId>
+				<artifactId>anyline-data-mongodb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
