@@ -21,6 +21,7 @@ package org.anyline.service;
 
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
@@ -253,6 +254,9 @@ public interface AnylineService<E>{
 	DataSet querys(String src, ConfigStore configs, String ... conditions);
 	default DataSet querys(String src, int first, int last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
 		navi.setFirstRow(first);
 		navi.setLastRow(last);
 		configs.setPageNavi(navi);
