@@ -25,10 +25,7 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.PrimaryKey;
-import org.anyline.metadata.Procedure;
-import org.anyline.metadata.Table;
+import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
@@ -63,6 +60,21 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     public DatabaseType type() {
         return DatabaseType.MongoDB;
+    }
+
+    @Override
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
+        return false;
+    }
+
+    @Override
+    public int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
+        return 0;
+    }
+
+    @Override
+    public int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
+        return 0;
     }
 
     /**
@@ -318,12 +330,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
+    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
+        return 0;
+    }
+
+    @Override
     public long count(DataRuntime runtime, String random, Run run) {
         return 0;
     }
 
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String... conditions) {
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
         return null;
     }
 
@@ -335,6 +352,21 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     public Map<String, Object> map(DataRuntime runtime, String random, Run run) {
         return null;
+    }
+
+    @Override
+    public DataRow sequence(DataRuntime runtime, String random, boolean next, String... names) {
+        return null;
+    }
+
+    @Override
+    public int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
+        return 0;
+    }
+
+    @Override
+    public boolean execute(DataRuntime runtime, String random, boolean recover, Procedure procedure) {
+        return false;
     }
 
     @Override
@@ -350,6 +382,26 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return false;
+    }
+
+    @Override
+    public <T> int deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values) {
+        return 0;
+    }
+
+    @Override
+    public int delete(DataRuntime runtime, String random, String dest, Object obj, String... columns) {
+        return 0;
+    }
+
+    @Override
+    public int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
+        return 0;
+    }
+
+    @Override
+    public int truncate(DataRuntime runtime, String random, String table) {
+        return 0;
     }
 
     @Override
@@ -370,6 +422,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
+        return 0;
+    }
+
+    @Override
+    public int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
         return 0;
     }
 
@@ -429,9 +486,60 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean greedy, Table table, boolean primary) {
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random) {
         return null;
     }
+
+    @Override
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types) {
+        return null;
+    }
+
+    @Override
+    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
+        return null;
+    }
+
+    @Override
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types) {
+        return null;
+    }
+
+    @Override
+    public List<String> ddl(DataRuntime runtime, String random, View view) {
+        return null;
+    }
+
+    @Override
+    public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types) {
+        return null;
+    }
+
+    @Override
+    public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
+        return null;
+    }
+
+    @Override
+    public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
+        return null;
+    }
+
+    @Override
+    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
+        return null;
+    }
+
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
+        return null;
+    }
+
+    @Override
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
+        return null;
+    }
+
 
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
@@ -444,7 +552,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs) {
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs) {
         return null;
     }
 
@@ -454,7 +562,42 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
+        return null;
+    }
+
+    @Override
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
+        return null;
+    }
+
+    @Override
     public PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table) {
+        return null;
+    }
+
+    @Override
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
+        return null;
+    }
+
+    @Override
+    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name) {
+        return null;
+    }
+
+    @Override
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
+        return null;
+    }
+
+    @Override
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String name) {
+        return null;
+    }
+
+    @Override
+    public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, boolean recover, String catalog, String schema, String name) {
         return null;
     }
 
