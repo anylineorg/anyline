@@ -1,5 +1,7 @@
 package org.anyline.data.run;
 
+import java.util.ArrayList;
+
 public class SimpleRun extends TextRun implements Run {
     public SimpleRun(){}
     public SimpleRun(StringBuilder builder){
@@ -19,6 +21,9 @@ public class SimpleRun extends TextRun implements Run {
     public SimpleRun addValue(Object value) {
         RunValue runValue = new RunValue();
         runValue.setValue(value);
+        if(null == values){
+            values = new ArrayList<>();
+        }
         values.add(runValue);
         return this;
     }

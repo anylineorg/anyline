@@ -763,6 +763,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	@Override
 	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
+		if(BasicUtil.isEmpty(table.getName())){
+			return runs;
+		}
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();

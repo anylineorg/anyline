@@ -364,10 +364,6 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return 0;
     }
 
-    @Override
-    public boolean execute(DataRuntime runtime, String random, boolean recover, Procedure procedure) {
-        return false;
-    }
 
     @Override
     public int update(DataRuntime runtime, String random, String dest, Object data, Run run) {
@@ -546,10 +542,6 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return null;
     }
 
-    @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns) {
-        return null;
-    }
 
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs) {
@@ -568,11 +560,6 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
-        return null;
-    }
-
-    @Override
-    public PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table) {
         return null;
     }
 
