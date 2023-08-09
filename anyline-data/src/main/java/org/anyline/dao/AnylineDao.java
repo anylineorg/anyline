@@ -571,6 +571,9 @@ public interface AnylineDao<E>{
 	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table){
 		return tags(runtime(),null, false, greedy, new Table(catalog,schema,table));
 	}
+	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table){
+		return tags(runtime(), null, false,greedy, table);
+	}
 	default <T extends Tag> LinkedHashMap<String, T> tags(Table table){
 		return tags(runtime(), null, false,false, table);
 	}
