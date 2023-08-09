@@ -48,6 +48,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected OrderStore orders;		// 排序依据
 	protected GroupStore groups;
 	protected List<String> columns = new ArrayList<>();
+	protected Object values; //保存values后续parse用到
 
 	public DefaultConfigStore init(){
 		return new DefaultConfigStore();
@@ -195,77 +196,15 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object ... values){
-		return and(swt, Compare.IN, var, BeanUtil.array2list(values));
-	}
-	@Override
-	public ConfigStore ands(Compare compare, String col, Object ... values){
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, col, BeanUtil.array2list(values));
-	}
-	@Override
-	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values){
-		return and(swt, compare, col, BeanUtil.array2list(values));
-	}
-	@Override
-	public ConfigStore ands(String var, Object ... values){
-		return ands(EMPTY_VALUE_SWITCH.NONE, var, values);
-	}
-	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
-		return and(swt, (String)null, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore and(String var, Object value, boolean overCondition, boolean overValue){
-		return and(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
-	}
-	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text){
 		Config conf = new DefaultConfig();
 		conf.setText(text);
 		chain.addConfig(conf);
 		return this;
 	}
-	@Override
-	public ConfigStore and(String text){
-		return and(EMPTY_VALUE_SWITCH.NONE, text);
-	}
-	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String prefix, String var, Object value, boolean overCondition, boolean overValue){
-		Compare compare = compare(value);
-		return and(swt, compare, prefix, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore and(String prefix, String var, Object value, boolean overCondition, boolean overValue){
-		return and(EMPTY_VALUE_SWITCH.NONE, prefix, var, value, overCondition, overValue);
-	}
 
-	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
-		return and(swt, compare, var, value, false, false);
-	}
-	@Override
-	public ConfigStore and(Compare compare, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
-	}
-	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
-		return and(swt, compare, id, var, value, false, false);
-	}
-	@Override
-	public ConfigStore and(Compare compare, String id, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
-	}
-	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
-		return and(swt, id, var, value, false, false);
-	}
-	@Override
-	public ConfigStore and(String id, String var, Object value) {
-		return and(EMPTY_VALUE_SWITCH.NONE, id, var, value);
-	}
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-
 		if(null == compare){
 			compare = Compare.AUTO;
 		}
@@ -348,18 +287,8 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return this;
 	}
-	@Override
-	public ConfigStore and(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, compare, null, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
-	}
+
+
 	@Override
 	public ConfigStore and(Config conf) {
 		chain.addConfig(conf);
@@ -372,609 +301,58 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore eq(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore eq(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore eq(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore eq(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore eq(String var, Object value) {
-		return and(var, value);
-	}
-
-	@Override
-	public ConfigStore gt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.GREAT, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore gt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.GREAT, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore gt(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.GREAT, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore gt(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.GREAT, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore gt(String var, Object value) {
-		return and(Compare.GREAT, var, value);
-	}
-
-
-	@Override
-	public ConfigStore ge(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.GREAT_EQUAL, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ge(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.GREAT_EQUAL, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ge(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.GREAT_EQUAL, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ge(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.GREAT_EQUAL, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ge(String var, Object value) {
-		return and(Compare.GREAT_EQUAL, var, value);
-	}
-
-	@Override
-	public ConfigStore lt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.LESS, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore lt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.LESS, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore lt(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.LESS, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore lt(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.LESS, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore lt(String var, Object value) {
-		return and(Compare.LESS, var, value);
-	}
-
-
-	@Override
-	public ConfigStore le(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.LESS_EQUAL, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore le(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.LESS_EQUAL, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore le(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.LESS_EQUAL, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore le(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.LESS_EQUAL, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore le(String var, Object value) {
-		return and(Compare.LESS_EQUAL, var, value);
-	}
-
-	@Override
-	public ConfigStore in(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.IN, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore in(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.IN, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore in(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.IN, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore in(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.IN, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore in(String var, Object value) {
-		return and(Compare.IN, var, value);
-	}
-
-	@Override
-	public ConfigStore like(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.LIKE, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore like(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.LIKE, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore like(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.LIKE, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore like(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.LIKE, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore like(String var, Object value) {
-		return and(Compare.LIKE, var, value);
-	}
-
-	@Override
-	public ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.START_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likePrefix(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.START_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likePrefix(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.START_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likePrefix(String var, Object value) {
-		return and(Compare.START_WITH, var, value);
-	}
-
-	@Override
-	public ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.START_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore startWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.START_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore startWith(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.START_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore startWith(String var, Object value) {
-		return and(Compare.START_WITH, var, value);
-	}
-
-	@Override
-	public ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.END_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.END_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likeSuffix(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.END_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likeSuffix(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.END_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore likeSuffix(String var, Object value) {
-		return and(Compare.END_WITH, var, value);
-	}
-
-	@Override
-	public ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.END_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.END_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore endWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.END_WITH, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore endWith(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.END_WITH, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore endWith(String var, Object value) {
-		return and(Compare.END_WITH, var, value);
-	}
-
-
-	@Override
-	public ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.FIND_IN_SET, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSet(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSet(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.FIND_IN_SET, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore findInSet(String var, Object value) {
-		return and(Compare.FIND_IN_SET, var, value);
-	}
-
-	@Override
-	public ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSetOr(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSetOr(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore findInSetOr(String var, Object value) {
-		return and(Compare.FIND_IN_SET_OR, var, value);
-	}
-
-
-	@Override
-	public ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.FIND_IN_SET_AND, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.FIND_IN_SET_AND, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSetAnd(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.FIND_IN_SET_AND, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore findInSetAnd(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.FIND_IN_SET_AND, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore findInSetAnd(String var, Object value) {
-		return and(Compare.FIND_IN_SET_AND, var, value);
-	}
-
-	@Override
-	public ConfigStore between(EMPTY_VALUE_SWITCH swt, String id, String var, Object min, Object max, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.BETWEEN, id, var, Arrays.asList(min,max), overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore between(EMPTY_VALUE_SWITCH swt, String var, Object min, Object max, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.BETWEEN, var, Arrays.asList(min,max), overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore between(String id, String var, Object min, Object max, boolean overCondition, boolean overValue) {
-		return and(Compare.BETWEEN, id, var, Arrays.asList(min,max), overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore between(String var, Object min, Object max, boolean overCondition, boolean overValue) {
-		return and(Compare.BETWEEN, var, Arrays.asList(min,max), overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore between(String var, Object min, Object max) {
-		return and(Compare.BETWEEN, var, Arrays.asList(min,max));
-	}
-
-	@Override
-	public ConfigStore ne(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_EQUAL, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ne(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_EQUAL, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ne(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_EQUAL, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore ne(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_EQUAL, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore ne(String var, Object value) {
-		return and(Compare.NOT_EQUAL, var, value);
-	}
-
-	@Override
-	public ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_IN, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_IN, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notIn(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_IN, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notIn(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_IN, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore notIn(String var, Object value) {
-		return and(Compare.NOT_IN, var, value);
-	}
-
-	@Override
-	public ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLike(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLike(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore notLike(String var, Object value) {
-		return and(Compare.NOT_LIKE, var, value);
-	}
-
-	@Override
-	public ConfigStore notLikePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLikePrefix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLikePrefix(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLikePrefix(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore notLikePrefix(String var, Object value) {
-		return and(Compare.NOT_LIKE_PREFIX, var, value);
-	}
-
-
-	@Override
-	public ConfigStore notStartWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notStartWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notStartWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notStartWith(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore notStartWith(String var, Object value) {
-		return and(Compare.NOT_LIKE_PREFIX, var, value);
-	}
-
-	@Override
-	public ConfigStore notLikeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLikeSuffix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLikeSuffix(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notLikeSuffix(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore notLikeSuffix(String var, Object value) {
-		return and(Compare.NOT_LIKE_SUFFIX, var, value);
-	}
-
-
-	@Override
-	public ConfigStore notEndWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notEndWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(swt, Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notEndWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
-	}
-
-	@Override
-	public ConfigStore notEndWith(String var, Object value, boolean overCondition, boolean overValue) {
-		return and(Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore notEndWith(String var, Object value) {
-		return and(Compare.NOT_LIKE_SUFFIX, var, value);
-	}
-	@Override
 	public ConfigStore or(ConfigStore configs) {
 		ConfigChain orChain = configs.getConfigChain();
 		orChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 		chain.addConfig(orChain);
 		return this;
 	}
+	@Override
+	public ConfigStore or(Config config) {
+		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		chain.addConfig(config);
+		return this;
+	}
 
 	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value){
-		return and(swt, var, value, false, false);
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String text){
+		Config config = new DefaultConfig();
+		config.setText(text);
+		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		chain.addConfig(config);
+		return this;
 	}
+
 	@Override
-	public ConfigStore and(String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE, var, value);
+	public ConfigStore ors(ConfigStore configs) {
+		ConfigChain newChain = new DefaultConfigChain();
+		newChain.addConfig(chain);
+		ConfigChain orChain = configs.getConfigChain();
+		orChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		newChain.addConfig(orChain);
+		return this;
 	}
+
 	@Override
-	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String var, Object value){
-		return and(swt, Compare.NONE, var, value);
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String text){
+		ConfigChain newChain = new DefaultConfigChain();
+		newChain.addConfig(chain);
+		Config config = new DefaultConfig();
+		config.setText(text);
+		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		newChain.addConfig(config);
+		return this;
 	}
-	//Compare.NONE 只作为参数值为占位符赋值,不能独立生成新的查询条件
+
 	@Override
-	public ConfigStore param(String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE,  Compare.NONE, var, value);
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Config config) {
+		ConfigChain newChain = new DefaultConfigChain();
+		newChain.addConfig(chain);
+		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		newChain.addConfig(config);
+		return this;
 	}
-	@Override
-	public ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
-		return and(swt, Compare.NONE,  id, var, value);
-	}
-	@Override
-	public ConfigStore param(String id, String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE,  id, var, value);
-	}
-	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
-		Compare compare = compare(value);
-		return or(swt, compare, null, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value){
-		Compare compare = compare(value);
-		return or(swt, compare, var, value);
-	}
-	@Override
-	public ConfigStore or(String var, Object value, boolean overCondition, boolean overValue){
-		return or(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore or(String var, Object value){
-		return or(EMPTY_VALUE_SWITCH.NONE, var, value);
-	}
-	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
-		return or(swt, compare, null, var, value);
-	}
-	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value) {
-		return or(swt, compare, prefix, var, value, false, false);
-	}
+
 	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value, boolean overCondition, boolean overValue) {
 		List<Config> configs = chain.getConfigs();
@@ -1062,57 +440,8 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return this;
 	}
-
-	@Override
-	public ConfigStore or(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue){
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore or(Compare compare, String prefix, String var, Object value){
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value);
-	}
-	@Override
-	public ConfigStore or(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore or(Compare compare, String var, Object value){
-		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
-	}
-
-	@Override
-	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
-		Compare compare = compare(value);
-		return ors(swt, compare, null, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value){
-		Compare compare = compare(value);
-		return ors(swt, compare, var, value);
-	}
-	@Override
-	public ConfigStore ors(String var, Object value){
-		return ors(EMPTY_VALUE_SWITCH.NONE, var, value);
-	}
-	@Override
-	public ConfigStore ors(String var, Object value, boolean overCondition, boolean overValue){
-		return ors(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
-	}
-
-
-	@Override
-	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
-		return ors(swt, compare, null, var, value);
-	}
-
-	@Override
-	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value) {
-		return ors(swt, compare, prefix, var, value, false, false);
-	}
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		// TODO boolean overCondition, boolean overValue
-
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
@@ -1137,7 +466,6 @@ public class DefaultConfigStore implements ConfigStore {
 		value = value(value);
 		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
 			List list = (List)value;
-
 			if (overValue) {
 				chain.removeConfig(olds);
 			}
@@ -1190,22 +518,6 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
-	@Override
-	public ConfigStore ors(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore ors(Compare compare, String var, Object value) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
-	}
-	@Override
-	public ConfigStore ors(Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value, overCondition, overValue);
-	}
-	@Override
-	public ConfigStore ors(Compare compare, String prefix, String var, Object value) {
-		return ors(EMPTY_VALUE_SWITCH.NONE, compare, prefix, var, value);
-	}
 
 	private Object value(Object value){
 		if(value instanceof Object[]){
@@ -1220,23 +532,6 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		return value;
-	}
-	private Compare compare(Object value){
-		Compare compare = Compare.EQUAL;
-		if(null != value){
-			if(value instanceof Collection){
-				Collection col = (Collection) value;
-				if(col.size()>1){
-					compare = Compare.IN;
-				}
-			}else if(value instanceof Object[]){
-				Object[] array = (Object[])value;
-				if(array.length > 1){
-					compare = Compare.IN;
-				}
-			}
-		}
-		return compare;
 	}
 	
 	/** 
@@ -1457,6 +752,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override 
 	public ConfigStore setValue(Map<String, Object> values) {
+		this.values = values;
 		if(null == chain || null == values){
 			return this; 
 		} 
@@ -1502,5 +798,17 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore clone(){
 		ConfigStore store = new DefaultConfigStore();
 		return store;
+	}
+
+	public ConfigStore condition(String join, Compare compare, String key, Object ... values){
+		if("or".equalsIgnoreCase(join)){
+			or(compare, key, values);
+		}else{
+			and(compare, key, values);
+		}
+		return this;
+	}
+	public ConfigStore condition(String join, String compare, String key, String value){
+		return this;
 	}
 }
