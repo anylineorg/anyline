@@ -19,13 +19,12 @@
 
 package org.anyline.web.param;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 /**
@@ -34,7 +33,9 @@ import org.anyline.data.param.init.DefaultConfigStore;
  * 
  */ 
 public class WebConfigStore extends DefaultConfigStore implements ConfigStore {
+	private HttpServletRequest request = null;
 	public ConfigStore setValue(HttpServletRequest request){
+		this.request = request;
 		if(null == chain){
 			return this; 
 		} 
