@@ -101,6 +101,11 @@ public interface DriverAdapter {
 	//根据数据库数据类型
 	DataReader reader(ColumnType type);
 
+
+
+	boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+
+	int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -120,7 +125,6 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													INSERT
 	 ******************************************************************************************************************/
-
 	/**
 	 * 创建insert RunPrepare
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -188,13 +192,14 @@ public interface DriverAdapter {
 
 	String generatedKey();
 
+	int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/**
 	 * 执行 insert
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
 	 * @param random random
 	 * @param data data
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param pks pks
+	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
 	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
@@ -205,10 +210,12 @@ public interface DriverAdapter {
 	 * @param data data
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param pks pks
-	 * @param simple 没有实际作用
+	 * @param simple 没有实际作用 用来标识有些不支持返回自增的单独执行
 	 * @return 影响行数
 	 */
 	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
+
+	int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
@@ -336,6 +343,7 @@ public interface DriverAdapter {
          */
 	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
 
+	long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 统计总行数
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -343,9 +351,9 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return long
 	 */
-	long total(DataRuntime runtime, String random, Run run);
+	long count(DataRuntime runtime, String random, Run run);
 
-	List<Map<String,Object>> maps(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 执行查询
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -371,6 +379,7 @@ public interface DriverAdapter {
 	 */
 	List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list);
 
+	DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names);
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 ******************************************************************************************************************/
@@ -395,7 +404,8 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	String parseExists(DataRuntime runtime, Run run);
-
+	int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	boolean execute(DataRuntime runtime, String random, boolean recover, Procedure procedure);
 	/**
 	 * 执行
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -438,6 +448,11 @@ public interface DriverAdapter {
 	 * 													DELETE
 	 ******************************************************************************************************************/
 
+	<T> int deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values);
+	int delete(DataRuntime runtime, String random, String dest, Object obj, String... columns);
+
+	int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions);
+	int truncate(DataRuntime runtime, String random, String table);
 	/**
 	 * 创建删除SQL
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -503,6 +518,7 @@ public interface DriverAdapter {
 	 * 													database
 	 ******************************************************************************************************************/
 
+	LinkedHashMap<String, Database> databases(DataRuntime runtime, String random);
 	/**
 	 * 查询所有数据库
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -529,6 +545,7 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types);
 
 	/**
 	 * 查询表,不是查表中的数据
@@ -601,6 +618,8 @@ public interface DriverAdapter {
 	 */
 	<T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 
+
+	List<String> ddl(DataRuntime runtime, String random, Table table, boolean init);
 	/**
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -626,6 +645,7 @@ public interface DriverAdapter {
 	 * 													view
 	 ******************************************************************************************************************/
 
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types);
 	/**
 	 * 查询视图
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -668,7 +688,7 @@ public interface DriverAdapter {
 	 */
 	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception;
 
-
+	List<String> ddl(DataRuntime runtime, String random, View view);
 	/**
 	 * 查询viewDDL
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -692,6 +712,7 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types);
 	/**
 	 * 查询主表
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -744,6 +765,8 @@ public interface DriverAdapter {
 	default List<Run> buildQueryDDLRun(MasterTable table) throws Exception{
 		return buildQueryDDLRun(RuntimeHolder.getRuntime(), table);
 	}
+
+	List<String> ddl(DataRuntime runtime, String random, MasterTable table);
 	/**
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -758,6 +781,9 @@ public interface DriverAdapter {
 	 * 													partition table
 	 ******************************************************************************************************************/
 
+	<T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
+
+	List<String> ddl(DataRuntime runtime, String random, PartitionTable table);
 	/**
 	 * 查询分区表
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -845,6 +871,18 @@ public interface DriverAdapter {
 	 * 													column
 	 ******************************************************************************************************************/
 
+
+	/**
+	 * 查询表结构
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param greedy 查所有库
+	 * @param table 表
+	 * @param primary 是否检测主键
+	 * @return Column
+	 * @param <T>  Column
+	 */
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
+
 	/**
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -856,17 +894,6 @@ public interface DriverAdapter {
 	default List<Run> buildQueryColumnRun(Table table, boolean metadata) throws Exception{
 		return buildQueryColumnRun(RuntimeHolder.getRuntime(), table, metadata);
 	}
-
-	/**
-	 * 查询表结构
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param greedy 查所有库
-	 * @param table 表
-	 * @param primary 是否检测主键
-	 * @return Column
-	 * @param <T>  Column
-	 */
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime,  boolean greedy, Table table, boolean primary);
 
 	/**
 	 *  根据查询结果集构造Tag
@@ -887,7 +914,7 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
-	 * @return attern attern
+	 * @return pattern attern
 	 * @throws Exception 异常
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
@@ -898,6 +925,7 @@ public interface DriverAdapter {
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
 
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs);
+
 	Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index);
 	Column column(DataRuntime runtime, Column column, ResultSet rs);
 
@@ -905,7 +933,7 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
-
+	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table);
 	/**
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -949,7 +977,7 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
-
+	PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table);
 	PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table);
 	default PrimaryKey primary(boolean greedy, Table table){
 		return primary(RuntimeHolder.getRuntime(), greedy, table);
@@ -983,7 +1011,7 @@ public interface DriverAdapter {
 	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
-
+	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
 	/**
 	 * 查询表上的外键
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -1011,6 +1039,7 @@ public interface DriverAdapter {
 	 * 													index
 	 ******************************************************************************************************************/
 
+	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name);
 	/**
 	 * 查询表上的索引
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -1086,6 +1115,7 @@ public interface DriverAdapter {
 	 * 													trigger
 	 ******************************************************************************************************************/
 
+	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events);
 	/**
 	 * 查询表上的trigger
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -1116,7 +1146,7 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 ******************************************************************************************************************/
-
+	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random,  boolean greedy, String catalog, String schema, String name);
 	List<Run> buildQueryProcedureRun(DataRuntime runtime, String catalog, String schema, String name) ;
 	default List<Run> buildQueryProcedureRun(String catalog, String schema, String name) {
 		return buildQueryProcedureRun(RuntimeHolder.getRuntime(), catalog, schema, name);
@@ -1129,6 +1159,7 @@ public interface DriverAdapter {
 	 * 													function
 	 ******************************************************************************************************************/
 
+	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, boolean recover, String catalog, String schema, String name);
 	List<Run> buildQueryFunctionRun(DataRuntime runtime, String catalog, String schema, String name) ;
 	default List<Run> buildQueryFunctionRun(String catalog, String schema, String name) {
 		return buildQueryFunctionRun(RuntimeHolder.getRuntime(), catalog, schema, name);
