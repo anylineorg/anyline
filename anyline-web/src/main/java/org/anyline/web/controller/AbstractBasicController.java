@@ -24,7 +24,6 @@ import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
@@ -33,6 +32,7 @@ import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.listener.ControllerListener;
+import org.anyline.web.param.WebConfigStore;
 import org.anyline.web.util.Constant;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
@@ -65,6 +65,8 @@ public abstract class AbstractBasicController {
 	@Autowired(required = false)
 	@Qualifier("anyline.service")
 	protected AnylineService service;
+
+
 
 	@Autowired(required = false)
 	@Qualifier("anyline.entity.listener")
@@ -426,12 +428,13 @@ public abstract class AbstractBasicController {
 	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, boolean navi, List<String> fixs, String... configs) {
-		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
+		WebConfigStore store = new WebConfigStore(BeanUtil.merge(fixs, configs));
 		if (navi) {
 			PageNavi pageNavi = parsePageNavi(request);
 			store.setPageNavi(pageNavi);
 		}
 		store.setValue(WebUtil.value(request));
+		store.setRequest(request);
 
 		clistener = getControllerListener();
 		if(null != clistener){
@@ -456,13 +459,14 @@ public abstract class AbstractBasicController {
 	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int vol, List<String> fixs, String... configs) {
-		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
+		WebConfigStore store = new WebConfigStore(BeanUtil.merge(fixs, configs));
 		if(vol >0){
 			PageNavi pageNavi = parsePageNavi(request);
 			pageNavi.setPageRows(vol);
 			store.setPageNavi(pageNavi);
 		}
 		store.setValue(WebUtil.value(request));
+		store.setRequest(request);
 		clistener = getControllerListener();
 		if(null != clistener){
 			clistener.after(request, store);
@@ -486,13 +490,14 @@ public abstract class AbstractBasicController {
 	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int fr, int to, List<String> fixs, String... configs) {
-		ConfigStore store = new DefaultConfigStore(BeanUtil.merge(fixs, configs));
+		WebConfigStore store = new WebConfigStore(BeanUtil.merge(fixs, configs));
 		PageNavi navi = new DefaultPageNavi();
 		navi.setCalType(1);
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
 		store.setPageNavi(navi);
 		store.setValue(WebUtil.value(request));
+		store.setRequest(request);
 		clistener = getControllerListener();
 		if(null != clistener){
 			clistener.after(request, store);
