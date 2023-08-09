@@ -604,7 +604,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return columns;
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
-		LinkedHashMap<String, Column> metadatas = columns(runtime, false, new Table(table), false);
+		LinkedHashMap<String, Column> metadatas = columns(runtime, null,false, new Table(table), false);
 		if(metadatas.size() > 0) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {
