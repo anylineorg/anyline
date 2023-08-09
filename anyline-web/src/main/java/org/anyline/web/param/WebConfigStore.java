@@ -34,6 +34,15 @@ import java.util.List;
  */ 
 public class WebConfigStore extends DefaultConfigStore implements ConfigStore {
 	private HttpServletRequest request = null;
+
+	public WebConfigStore(){
+		super();
+	}
+
+	public WebConfigStore(List<String> configs){
+		super(configs);
+	}
+
 	public ConfigStore setValue(HttpServletRequest request){
 		this.request = request;
 		if(null == chain){
@@ -50,6 +59,13 @@ public class WebConfigStore extends DefaultConfigStore implements ConfigStore {
 		return this; 
 	}
 
-} 
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+}
  
  
