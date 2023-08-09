@@ -405,7 +405,6 @@ public interface DriverAdapter {
 	 */
 	String parseExists(DataRuntime runtime, Run run);
 	int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	boolean execute(DataRuntime runtime, String random, boolean recover, Procedure procedure);
 	/**
 	 * 执行
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -891,9 +890,6 @@ public interface DriverAdapter {
 	 * @return sqls
 	 */
 	List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
-	default List<Run> buildQueryColumnRun(Table table, boolean metadata) throws Exception{
-		return buildQueryColumnRun(RuntimeHolder.getRuntime(), table, metadata);
-	}
 
 	/**
 	 *  根据查询结果集构造Tag
@@ -919,10 +915,6 @@ public interface DriverAdapter {
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
 
-	//查询过程中需要元数据时调用
-	//根据驱动内置接口补充 再根据metadata解析 SELECT * FROM T WHERE 1=0 SqlRowSet set = runtime.getTemplate().queryForRowSet(run.getFinalQuery());
-
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
 
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs);
 
@@ -978,10 +970,7 @@ public interface DriverAdapter {
 	 * 													primary
 	 ******************************************************************************************************************/
 	PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table);
-	PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table);
-	default PrimaryKey primary(boolean greedy, Table table){
-		return primary(RuntimeHolder.getRuntime(), greedy, table);
-	}
+
 	/**
 	 * 查询表上的主键
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
