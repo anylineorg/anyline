@@ -4337,7 +4337,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public boolean convert(DataRuntime runtime, String catalog, String schema, String table, RunValue value){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = columns(runtime, false, new Table(catalog, schema, table), false);
+			LinkedHashMap<String, Column> columns = columns(runtime,null, false, new Table(catalog, schema, table), false);
 			result = convert(runtime, columns, value);
 		}else{
 			result = convert(runtime,(Column)null, value);
@@ -4391,7 +4391,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(null != column){
 				type = column.getTypeName();
 				if(null == type){
-					LinkedHashMap<String,Column> columns = columns(runtime, false, new Table(run.getTable()), false);
+					LinkedHashMap<String,Column> columns = columns(runtime,null, false, new Table(run.getTable()), false);
 					column = columns.get(column.getName().toUpperCase());
 					if(null != column) {
 						type = column.getTypeName();
@@ -4411,7 +4411,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			if(null == columns || columns.isEmpty()) {
-				columns = columns(runtime, false, table, false);
+				columns = columns(runtime, null,false, table, false);
 			}
 		}
 		List<RunValue> values = run.getRunValues();
