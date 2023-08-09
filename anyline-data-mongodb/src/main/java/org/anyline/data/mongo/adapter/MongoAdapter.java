@@ -318,7 +318,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public long total(DataRuntime runtime, String random, Run run) {
+    public long count(DataRuntime runtime, String random, Run run) {
         return 0;
     }
 
