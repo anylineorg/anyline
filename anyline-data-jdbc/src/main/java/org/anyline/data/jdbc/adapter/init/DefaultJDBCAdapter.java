@@ -263,7 +263,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					if(mode == 1) {
 						delete(runtime, null,  join.joinTable, join.joinColumn, pv + "");
 					}
-					insert(runtime, random, join.joinTable, set, false, null);
+					save(runtime, random, join.joinTable, set, false, null);
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -337,7 +337,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 							items.add(item);
 						}
 					}
-					insert(runtime, random, join.dependencyTable, items, false, null);
+					save(runtime, random, join.dependencyTable, items, false, null);
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -3253,6 +3253,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
+		if(BasicUtil.isEmpty(table.getName())){
+			return runs;
+		}
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
@@ -3428,7 +3431,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
 			if (columns.size() == 0) {
 				try {
-					List<Run> runs = buildQueryColumnRun(table, true);
+					List<Run> runs = buildQueryColumnRun(runtime, table, true);
 					if (null != runs) {
 						for (Run run  : runs) {
 							SqlRowSet set = ((JDBCRuntime)runtime).jdbc().queryForRowSet(run.getFinalQuery());
@@ -3486,7 +3489,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						}
 					}
 					if(!exists){
-						PrimaryKey pk = primary(runtime, false, table);
+						PrimaryKey pk = primary(runtime, random, false, table);
 						if(null != pk){
 							LinkedHashMap<String,Column> pks = pk.getColumns();
 							if(null != pks){
@@ -3745,7 +3748,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		table.setPrimaryKey(primary);
 		return primary;
 	}
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean recover, boolean greedy, Table table){
+	@Override
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random,  boolean greedy, Table table){
 		LinkedHashMap<String, T> foreigns = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
