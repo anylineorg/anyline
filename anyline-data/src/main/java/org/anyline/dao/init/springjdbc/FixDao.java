@@ -22,7 +22,7 @@ public class FixDao<E> extends DefaultDao<E>{
     public boolean isFix(){
         return true;
     }
-    protected DataRuntime runtime(){
+    public DataRuntime runtime(){
         if(null != runtime){
             return runtime;
         }else{
