@@ -1716,49 +1716,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return null;
 	}
 
-	/**
-	 * 索引
-	 * @param table 表
-	 * @return map
-	 */
-	@Override
-	public PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table){
-		PrimaryKey primary = null;
-		if(!greedy) {
-			checkSchema(runtime, table);
-		}
-		String tab = table.getName();
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		//DataSource ds = null;
-		String random = random(runtime);
-		DatabaseMetaData metadata = null;
-
-		try{
-			List<Run> runs = buildQueryPrimaryRun(runtime, table);
-			if(null != runs){
-				int idx = 0;
-				for(Run run:runs){
-					DataSet set = select(runtime, random, false, (String)null, run).toUpperKey();
-					primary = primary(runtime, idx, table, set);
-					if(null != primary){
-						primary.setTable(table);
-					}
-
-					idx ++;
-				}
-			}
-		}catch (Exception e){
-			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
-			}
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-				log.warn("{}[primary][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
-			}
-		}
-		table.setPrimaryKey(primary);
-		return primary;
-	}
 
 	/* *****************************************************************************************************************
 	 * 													foreign
