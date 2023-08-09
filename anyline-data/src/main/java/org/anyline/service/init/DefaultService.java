@@ -1431,7 +1431,7 @@ public class DefaultService<E> implements AnylineService<E> {
             }
         }
 
-        return dao.save(dest, data, checkPrimary, BeanUtil.list2array(BeanUtil.merge(fixs, columns)));
+        return dao.save(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
     }
 
     protected int saveObject(String dest, Object data, boolean checkPrimary, String[] fixs, String... columns) {
@@ -1442,8 +1442,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override 
     public int insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
         dest = DataSourceUtil.parseDataSource(dest, data);
-        columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
-        return dao.insert(dest, data, checkPrimary, columns);
+        return dao.insert(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
     }
 
     
