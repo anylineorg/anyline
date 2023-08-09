@@ -40,7 +40,9 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.ClientHolder;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.exception.SQLQueryException;
@@ -53,6 +55,7 @@ import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
+import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +99,360 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		Object client = runtime.getClient();
 		return (JdbcTemplate) client;
 	}
+
 	@Override
-	public long total(DataRuntime runtime, String random, Run run) {
+	public int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+		dest = DataSourceUtil.parseDataSource(dest, data);
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		boolean sql_success = false;
+		if(null == random){
+			random = random(runtime);
+		}
+		swt = InterceptorProxy.prepareUpdate(runtime, random, dest, data, configs, columns);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareUpdate(runtime, random, dest, data, configs, false, columns);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null == data){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+				throw new SQLUpdateException("更新空数据");
+			}else{
+				log.error("更新空数据");
+			}
+		}
+		int result = 0;
+		if(data instanceof DataSet){
+			DataSet set = (DataSet)data;
+			for(int i=0; i<set.size(); i++){
+				result += update(runtime, random, dest, set.getRow(i), configs,  columns);
+			}
+			return result;
+		}
+
+		Run run = buildUpdateRun(runtime, dest, data, configs,false, columns);
+
+		Table table = new Table(dest);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			table.setColumns(columns(runtime, null,false, table, false));
+		}
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+			}
+			return -1;
+		}
+		//String sql = run.getFinalUpdate();
+		/*if(BasicUtil.isEmpty(sql)){
+			log.warn("[不具备更新条件][dest:{}]",dest);
+			return -1;
+		}
+		List<Object> values = run.getValues();*/
+		long fr = System.currentTimeMillis();
+		/*执行SQL*/
+		/*if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+		}*/
+		long millis = -1;
+		try {
+			swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
+			if (swt == ACTION.SWITCH.BREAK) {
+				return -1;
+			}
+			if (null != dmListener) {
+				swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
+			}
+			if (swt == ACTION.SWITCH.BREAK) {
+				return -1;
+			}
+			result = update(runtime, random, dest, data, run);
+			sql_success = true;
+			checkMany2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkOne2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			millis = System.currentTimeMillis() - fr;
+		}catch (Exception e){
+			sql_success = false;
+		}
+		if (null != dmListener) {
+			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, sql_success, result,  millis);
+		}
+		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, sql_success, result, System.currentTimeMillis() - fr);
+		return result;
+	}
+
+	/**
+	 * 检测级联insert/update
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param obj obj
+	 * @param dependency dependency
+	 * @param mode 0:inser 1:update
+	 * @return int
+	 */
+	private int checkMany2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
+		int result = 0;
+		//ManyToMany
+		if(dependency <= 0){
+			return result;
+		}
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
+			return result;
+		}
+		if(obj instanceof EntitySet){
+			EntitySet set = (EntitySet) obj;
+			for(Object entity:set){
+				checkMany2ManyDependencySave(runtime, random, entity, dependency, mode);
+			}
+		}else{
+			Class clazz = obj.getClass();
+			Column pc = EntityAdapterProxy.primaryKey(clazz);
+			String pk = null;
+			if(null != pc){
+				pk = pc.getName();
+			}
+			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+			for(Field field:fields) {
+				try {
+					ManyToMany join = PersistenceAdapter.manyToMany(field);
+					//INSERT INTO HR_DEPLOYEE_DEPARTMENT(EMPLOYEE_ID, DEPARTMENT_ID) VALUES();
+					Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(obj);
+					Object pv = primaryValueMap.get(pk.toUpperCase());
+					Object fv = BeanUtil.getFieldValue(obj, field);
+					if(null == fv){
+						continue;
+					}
+					DataSet set = new DataSet();
+					Collection fvs = new ArrayList();
+					if (null == join.dependencyTable) {
+						//只通过中间表查主键 List<Long> departmentIds
+						if(fv.getClass().isArray()){
+							fvs = BeanUtil.array2collection(fv);
+						}else if(fv instanceof Collection){
+							fvs = (Collection) fv;
+						}
+					} else {
+						//通过子表完整查询 List<Department> departments
+						Column joinpc = EntityAdapterProxy.primaryKey(clazz);
+						String joinpk = null;
+						if(null != joinpc){
+							joinpk = joinpc.getName();
+						}
+						if(fv.getClass().isArray()){
+							Object[] objs = (Object[])fv;
+							for(Object item:objs){
+								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
+							}
+						}else if(fv instanceof Collection){
+							Collection objs = (Collection) fv;
+							for(Object item:objs){
+								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
+							}
+						}
+					}
+
+					for(Object item:fvs){
+						DataRow row = new DataRow();
+						row.put(join.joinColumn, pv);
+						row.put(join.inverseJoinColumn, item);
+						set.add(row);
+					}
+					if(mode == 1) {
+						delete(runtime, null,  join.joinTable, join.joinColumn, pv + "");
+					}
+					insert(runtime, random, join.joinTable, set, false, null);
+
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else{
+						log.error("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
+					}
+				}
+			}
+		}
+		dependency --;
+		return result;
+	}
+
+	private int checkOne2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
+		int result = 0;
+		//OneToMany
+		if(dependency <= 0){
+			return result;
+		}
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
+			return result;
+		}
+		if(obj instanceof EntitySet){
+			EntitySet set = (EntitySet) obj;
+			for(Object entity:set){
+				checkOne2ManyDependencySave(runtime, random, entity, dependency, mode);
+			}
+		}else{
+			Class clazz = obj.getClass();
+			Column pc = EntityAdapterProxy.primaryKey(clazz);
+			String pk = null;
+			if(null != pc){
+				pk = pc.getName();
+			}
+			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+			for(Field field:fields) {
+				try {
+					OneToMany join = PersistenceAdapter.oneToMany(field);
+					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
+					Object fv = BeanUtil.getFieldValue(obj, field);
+					if(null == fv){
+						continue;
+					}
+
+					if(null == join.joinField){
+						throw new RuntimeException(field+"关联属性异常");
+					}
+
+					if(null == join.joinColumn){
+						throw new RuntimeException(field+"关联列异常");
+					}
+
+					if(null == join.dependencyTable){
+						throw new RuntimeException(field+"关联表异常");
+					}
+					if(mode == 1) {
+						delete(runtime, random, join.dependencyTable, join.joinColumn, pv + "");
+					}
+					Collection items = new ArrayList();
+					if(fv.getClass().isArray()){
+						Object[] objs = (Object[])fv;
+						for(Object item:objs){
+							BeanUtil.setFieldValue(item, join.joinField, pv);
+							items.add(item);
+						}
+					}else if(fv instanceof Collection){
+						Collection cols = (Collection) fv;
+						for(Object item:cols){
+							BeanUtil.setFieldValue(item, join.joinField, pv);
+							items.add(item);
+						}
+					}
+					insert(runtime, random, join.dependencyTable, items, false, null);
+
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else{
+						log.error("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
+					}
+				}
+			}
+		}
+		dependency --;
+		return result;
+	}
+	@Override
+	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		boolean result = false;
+		if(null == random){
+			random = random(runtime);
+		}
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		if (null != dmListener) {
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		Run run = buildQueryRun(runtime, prepare, configs, conditions);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return false;
+		}
+		if(null != dmListener){
+			dmListener.beforeExists(runtime, random, run);
+		}
+		long fr = System.currentTimeMillis();
+		Map<String, Object> map = map(runtime, random, run);
+		if (null == map) {
+			result = false;
+		} else {
+			result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+		}
+		Long millis = System.currentTimeMillis() - fr;
+		if(null != dmListener){
+			dmListener.afterExists(runtime, random, run, true, result, millis);
+		}
+		return result;
+	}
+
+	@Override
+	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+		List<Run> runs = buildQuerySequence(runtime, next, names);
+		if (null != runs && runs.size() > 0) {
+			Run run = runs.get(0);
+			if(!run.isValid()){
+				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+					log.warn("[valid:false][不具备执行条件][sequence:"+names);
+				}
+				return new DataRow();
+			}
+			DataSet set = select(runtime, random, true, null, run);
+			if (set.size() > 0) {
+				return set.getRow(0);
+			}
+		}
+		return new DataRow();
+	}
+
+	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		long count = -1;
+		Long fr = System.currentTimeMillis();
+		Run run = null;
+		if(null == random){
+			random = random(runtime);
+		}
+
+		boolean sql_success = false;
+
+		ACTION.SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if (null != dmListener) {
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+			run = buildQueryRun(runtime, prepare, configs, conditions);
+			if(!run.isValid()){
+				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+					log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+				}
+				return -1;
+			}
+			if (null != dmListener) {
+				dmListener.beforeCount(runtime, random, run);
+			}
+			swt = InterceptorProxy.beforeCount(runtime, random, run);
+			if(swt == ACTION.SWITCH.BREAK){
+				return -1;
+			}
+			fr = System.currentTimeMillis();
+			count = count(runtime, random, run);
+			sql_success = true;
+
+		if(null != dmListener){
+			dmListener.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
+		}
+		InterceptorProxy.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
+		return count;
+	}
+	@Override
+	public long count(DataRuntime runtime, String random, Run run) {
 		long total = 0;
 		DataSet set = select(runtime, random, false, null, run, run.getTotalQuery(), run.getValues());
 		total = set.getInt(0,"CNT",0);
@@ -116,7 +471,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	public DataRow row(boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ResultSet rs) {
 		DataRow row = new DataRow();
 		try {
-			DriverAdapter adapter = runtime.getAdapter();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int qty = rsmd.getColumnCount();
 			if (!system && metadatas.isEmpty()) {
@@ -126,7 +480,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						continue;
 					}
 					Column column = metadatas.get(name) ;
-					column = adapter.column(runtime, (Column) column, rsmd, i);
+					column = column(runtime, (Column) column, rsmd, i);
 					metadatas.put(name.toUpperCase(), column);
 				}
 			}
@@ -137,7 +491,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 				Column column = metadatas.get(name.toUpperCase());
 				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-				Object value = adapter.read(runtime, column, rs.getObject(name), null);
+				Object value = read(runtime, column, rs.getObject(name), null);
 				row.put(false, name, value);
 			}
 			row.setMetadatas(metadatas);
@@ -150,7 +504,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return row;
 	}
-	private DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run,  String sql, List<Object> values){
+
+ 	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				throw new SQLQueryException("未指定SQL");
@@ -172,7 +527,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		//Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 		if(!system && ThreadConfig.check(runtime.getKey()).IS_AUTO_CHECK_METADATA() && null != table){
-			columns = columns(runtime,  false, new Table( table), false);
+			columns = columns(runtime,  random, false,  new Table( table), false);
 		}
 		try{
 			final DataRuntime rt = runtime;
@@ -251,6 +606,51 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		String sql = run.getFinalQuery();
 		List<Object> values = run.getValues();
 		return select(runtime, random, system, table, run, sql, values);
+	}
+
+	/**
+	 * 封装查询结果
+	 * @param system 系统表不检测列属性
+	 * @param runtime  runtime
+	 * @param metadatas metadatas
+	 * @param rs jdbc返回结果
+	 * @return DataRow
+	 */
+	protected DataRow row(DataRuntime runtime, boolean system, LinkedHashMap<String, Column> metadatas, ResultSet rs) {
+		DataRow row = new DataRow();
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int qty = rsmd.getColumnCount();
+			if (!system && metadatas.isEmpty()) {
+				for (int i = 1; i <= qty; i++) {
+					String name = rsmd.getColumnName(i);
+					if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
+						continue;
+					}
+					Column column = metadatas.get(name) ;
+					column = column(runtime, column, rsmd, i);
+					metadatas.put(name.toUpperCase(), column);
+				}
+			}
+			for (int i = 1; i <= qty; i++) {
+				String name = rsmd.getColumnLabel(i);
+				if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
+					continue;
+				}
+				Column column = metadatas.get(name.toUpperCase());
+				//Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
+				Object value = read(runtime, column, rs.getObject(name), null);
+				row.put(false, name, value);
+			}
+			row.setMetadatas(metadatas);
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[封装结果集][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return row;
 	}
 	/*
 	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run){
@@ -353,12 +753,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}*/
 
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		List<Map<String,Object>> maps = null;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean sql_success = false;
 		Run run = null;
-		String random = random(runtime);
+		if(null == random){
+			random = random(runtime);
+		}
 		//query拦截
 		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
@@ -372,8 +774,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			return new ArrayList<>();
 		}
 
-		DriverAdapter adapter = runtime.getAdapter();
-		run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
+		run = buildQueryRun(runtime, prepare, configs, conditions);
 		Long fr = System.currentTimeMillis();
 			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 				String tmp = "[valid:false][不具备执行条件]";
@@ -395,9 +796,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					dmListener.beforeQuery(runtime, random, run, -1);
 				}
 				maps = maps(runtime, random, run);
-				if (null != adapter) {
-					maps = adapter.process(runtime, maps);
-				}
 				sql_success = true;
 			} else {
 				maps = new ArrayList<>();
@@ -412,6 +810,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run){
 		List<Map<String,Object>> maps = null;
+		if(null == random){
+			random = random(runtime);
+		}
 		String sql = run.getFinalQuery();
 		List<Object> values = run.getValues();
 		if(BasicUtil.isEmpty(sql)){
@@ -575,6 +976,81 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
+	@Override
+	public int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+		dest = DataSourceUtil.parseDataSource(dest, data);
+		if(null == random){
+			random = random(runtime);
+		}
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		boolean sql_success = false;
+		swt = InterceptorProxy.prepareInsert(runtime,random,  dest, data, checkPrimary, columns);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+
+		if(null != data && data instanceof DataSet){
+			DataSet set = (DataSet)data;
+			Map<String,Object> tags = set.getTags();
+			if(null != tags && tags.size()>0){
+				LinkedHashMap<String, PartitionTable> ptables = ptables(runtime, random, false, new MasterTable(dest), tags, null);
+				if(ptables.size() != 1){
+					String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(ptables.keySet());
+					if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+						throw new SQLUpdateException(msg);
+					}else{
+						log.error(msg);
+						return -1;
+					}
+				}
+				dest = ptables.values().iterator().next().getName();
+			}
+		}
+		Run run = buildInsertRun(runtime, dest, data, checkPrimary, columns);
+		Table table = new Table(dest);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			table.setColumns(columns(runtime, random,  false, table, false));
+		}
+		if(null == run){
+			return 0;
+		}
+
+		int cnt = 0;
+		//final String sql = run.getFinalInsert();
+		//final List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
+		long millis = -1;
+
+			swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+			if(swt == ACTION.SWITCH.BREAK){
+				return -1;
+			}
+			if(null != dmListener){
+				swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+			}
+			if(swt == ACTION.SWITCH.BREAK){
+				return -1;
+			}
+			cnt = insert(runtime, random, data, run, null);
+
+			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
+			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+
+		if (null != dmListener) {
+			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
+		}
+
+		InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
+		return cnt;
+	}
 	/**
 	 * 执行 insert
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -668,7 +1144,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
 		int cnt = 0;
-
+		if(null == random){
+			random = random(runtime);
+		}
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
@@ -736,6 +1214,144 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return cnt;
 	}
+
+	@Override
+	public int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+
+		if(null == random){
+			random = random(runtime);
+		}
+		if(null == data){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+				throw new SQLUpdateException("save空数据");
+			}else {
+				log.error("save空数据");
+				return -1;
+			}
+		}
+		if(data instanceof Collection){
+			Collection<?> items = (Collection<?>)data;
+			int cnt = 0;
+			for(Object item:items){
+				cnt += save(runtime, random, dest, item, checkPrimary, columns);
+			}
+			return cnt;
+		}
+		return saveObject(runtime, random, dest, data, checkPrimary, columns);
+	}
+
+	protected int saveObject(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+		if(null == data){
+			return 0;
+		}
+		boolean isNew = checkIsNew(data);
+		if(isNew){
+			return insert(runtime, random, dest, data, checkPrimary, columns);
+		}else{
+			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
+			Boolean override = checkOverride(data);
+			ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+			if(null != override){
+				RunPrepare prepare = new DefaultTablePrepare(dest);
+				Map<String, Object> pvs = checkPv(data);
+				ConfigStore stores = new DefaultConfigStore();
+				for(String k:pvs.keySet()){
+					stores.and(k, pvs.get(k));
+				}
+				boolean exists = exists(runtime, random, prepare, stores);
+				if(exists){
+					if(override){
+						return update(runtime, random, dest, data, null, columns);
+					}else{
+						log.warn("[跳过更新][数据已存在:{}({})]",dest, BeanUtil.map2json(pvs));
+					}
+				}else{
+					return insert(runtime, random, dest, data, checkPrimary, columns);
+				}
+			}else{
+				return update(runtime, random, dest, data, null, columns);
+			}
+		}
+		return 0;
+	}
+	protected Boolean checkOverride(Object obj){
+		Boolean result = null;
+		if(null != obj && obj instanceof DataRow){
+			result = ((DataRow)obj).getOverride();
+		}
+		return result;
+	}
+	protected Map<String,Object> checkPv(Object obj){
+		Map<String,Object> pvs = new HashMap<>();
+		if(null != obj && obj instanceof DataRow){
+			DataRow row = (DataRow) obj;
+			List<String> ks = row.getPrimaryKeys();
+			for(String k:ks){
+				pvs.put(k, row.get(k));
+			}
+		}
+		return pvs;
+	}
+	protected boolean checkIsNew(Object obj){
+		if(null == obj){
+			return false;
+		}
+		if(obj instanceof DataRow){
+			DataRow row = (DataRow)obj;
+			return row.isNew();
+		}else{
+			Map<String,Object> values = EntityAdapterProxy.primaryValues(obj);
+			for(Map.Entry entry:values.entrySet()){
+				if(BasicUtil.isNotEmpty(entry.getValue())){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	public int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		int result = -1;
+		boolean sql_success = false;
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		if(null == random){
+			random = random(runtime);
+		}
+		swt = InterceptorProxy.prepareExecute(runtime, random, prepare, configs, conditions);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+
+		Run run = buildExecuteRun(runtime, prepare, configs, conditions);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
+		long fr = System.currentTimeMillis();
+
+		long millis = -1;
+		swt = InterceptorProxy.beforeExecute(runtime, random, run);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.beforeExecute(runtime, random, run);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		result = execute(runtime, random, run);
+		sql_success = true;
+		if (null != dmListener) {
+			dmListener.afterExecute(runtime, random, run,  sql_success, result, millis);
+		}
+		InterceptorProxy.afterExecute(runtime, random, run, sql_success, result, System.currentTimeMillis()-fr);
+		return result;
+	}
 	@Override
 	public int execute(DataRuntime runtime, String random, Run run){
 		int result = -1;
@@ -782,7 +1398,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return result;
 	}
-
 	@Override
 	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
 		boolean result = false;
@@ -908,13 +1523,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		final String rdm = random;
 		long millis = -1;
 		try{
-			/*if(null != queryInterceptor){
-				int exe = queryInterceptor.before(procedure);
-				if(exe == -1){
-					return new DataSet();
-				}
-			}*/
-			ACTION.SWITCH swt = InterceptorProxy.beforeQuery(runtime, random, procedure, navi);
+
+			ACTION.SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, procedure, navi);
+			if(swt == ACTION.SWITCH.BREAK){
+				return new DataSet();
+			}
+			swt = InterceptorProxy.beforeQuery(runtime, random, procedure, navi);
 			if(swt == ACTION.SWITCH.BREAK){
 				return new DataSet();
 			}
@@ -1045,6 +1659,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 		}
+ ;
 		return set;
 	}
 	@Override
@@ -1098,7 +1713,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				} else {
 					// 未计数(总数 )
 					if (navi.getTotalRow() == 0) {
-						total = total(runtime, random, run);
+						total = count(runtime, random, run);
 						navi.setTotalRow(total);
 					} else {
 						total = navi.getTotalRow();
@@ -1173,10 +1788,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				prepare.setDataSource(EntityAdapterProxy.table(clazz, true));
 			}
 		}
-		DriverAdapter adapter = runtime.getAdapter();
 
-
-		run = adapter.buildQueryRun(runtime, prepare, configs, conditions);
+		run = buildQueryRun(runtime, prepare, configs, conditions);
 		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
 			String tmp = "[valid:false][不具备执行条件]";
 			tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
@@ -1196,7 +1809,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				} else {
 					// 未计数(总数 )
 					if (navi.getTotalRow() == 0) {
-						total = adapter.total(runtime, random, run);
+						total = count(runtime, random, run);
 						navi.setTotalRow(total);
 					} else {
 						total = navi.getTotalRow();
@@ -1421,80 +2034,436 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 		}
 	}
+
+
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
-		DataSource ds = null;
-		Connection con = null;
-		if(null == indexs){
-			indexs = new LinkedHashMap<>();
+	public <T> int deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values){
+		table = DataSourceUtil.parseDataSource(table, null);
+		if(null == random){
+			random = random(runtime);
 		}
-		JdbcTemplate jdbc = jdbc(runtime);
-		try{
-			ds = jdbc.getDataSource();
-			con = DataSourceUtils.getConnection(ds);
-			DatabaseMetaData dbmd = con.getMetaData();
-			ResultSet set = dbmd.getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), unique, approximate);
-			Map<String, Integer> keys = keys(set);
-			LinkedHashMap<String, Column> columns = null;
-			while (set.next()) {
-				String name = string(keys, "INDEX_NAME", set);
-				if(null == name){
-					continue;
-				}
-				T index = indexs.get(name.toUpperCase());
-				if(null == index){
-					if(create){
-						index = (T)new Index();
-						indexs.put(name.toUpperCase(), index);
-					}else{
-						continue;
-					}
-					index.setName(string(keys, "INDEX_NAME", set));
-					//index.setType(integer(keys, "TYPE", set, null));
-					index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
-					index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), table.getCatalog()));
-					index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), table.getSchema()));
-					index.setTable(string(keys, "TABLE_NAME", set));
-					indexs.put(name.toUpperCase(), index);
-					columns = new LinkedHashMap<>();
-					index.setColumns(columns);
-					if(name.equalsIgnoreCase("PRIMARY")){
-						index.setCluster(true);
-						index.setPrimary(true);
-					}else if(name.equalsIgnoreCase("PK_"+table.getName())){
-						index.setCluster(true);
-						index.setPrimary(true);
-					}
-				}else {
-					columns = index.getColumns();
-				}
-				String columnName = string(keys, "COLUMN_NAME", set);
-				Column col = table.getColumn(columnName.toUpperCase());
-				Column column = null;
-				if(null != col){
-					column = (Column) col.clone();
-				}else{
-					column = new Column();
-					column.setName(columnName);
-				}
-				String order = string(keys, "ASC_OR_DESC", set);
-				if(null != order && order.startsWith("D")){
-					order = "DESC";
-				}else{
-					order = "ASC";
-				}
-				column.setOrder(order);
-				column.setPosition(integer(keys,"ORDINAL_POSITION", set, null));
-				columns.put(column.getName().toUpperCase(), column);
-			}
-		}finally{
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
-			}
+		ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, table, key, values);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
 		}
-		return indexs;
+		if(null != dmListener){
+			swt = dmListener.prepareDelete(runtime, random, table, key, values);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		Run run = buildDeleteRun(runtime, table, key, values);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
+		int result = exeDelete(runtime, random, run);
+		return result;
 	}
 
+	@Override
+	public int delete(DataRuntime runtime, String random, String dest, Object obj, String... columns){
+		dest = DataSourceUtil.parseDataSource(dest,obj);
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		int size = 0;
+		if(null != obj){
+			if(obj instanceof Collection){
+				Collection list = (Collection) obj;
+				for(Object item:list){
+					int qty = delete(runtime, random, dest, item, columns);
+					//如果不执行会返回-1
+					if(qty > 0){
+						size += qty;
+					}
+				}
+				if(log.isInfoEnabled()) {
+					log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
+				}
+			}else{
+				swt = InterceptorProxy.prepareDelete(runtime, random, dest, obj, columns);
+				if(swt == ACTION.SWITCH.BREAK){
+					return -1;
+				}
+				if(null != dmListener){
+					swt = dmListener.prepareDelete(runtime, random, dest, obj, columns);
+				}
+				if(swt == ACTION.SWITCH.BREAK){
+					return -1;
+				}
+				Run run = buildDeleteRun(runtime, dest, obj, columns);
+				if(!run.isValid()){
+					if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+						log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+					}
+					return -1;
+				}
+				size = exeDelete(runtime, random,  run);
+				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
+					if(!(obj instanceof DataRow)){
+						checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+						checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+					}
+				}
+			}
+		}
+		return size;
+	}
+
+	public int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+		table = DataSourceUtil.parseDataSource(table, null);
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareDelete(runtime,random, table, configs, conditions);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+ 		Run run = buildDeleteRun(runtime, table, configs, conditions);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
+		int result = exeDelete(  runtime, random,  run);
+		return result;
+	}
+
+	public int truncate(DataRuntime runtime, String random, String table){
+		table = DataSourceUtil.parseDataSource(table);
+		List<Run> runs = buildTruncateRun(runtime, table);
+		if(null != runs && runs.size()>0) {
+			RunPrepare prepare = new DefaultTextPrepare(runs.get(0).getFinalUpdate());
+			return execute(runtime, random, prepare, null);
+		}
+		return -1;
+	}
+	/**
+	 * 执行删除
+	 * @param recover 执行完成后是否根据设置自动还原数据源
+	 * @param runtime DataRuntime
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return int
+	 */
+	protected int exeDelete(DataRuntime runtime, String random, Run run){
+		int result = -1;
+		boolean sql_success = false;
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		long fr = System.currentTimeMillis();
+		swt = InterceptorProxy.beforeDelete(runtime, random, run);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.beforeDelete(runtime, random, run);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		long millis = -1;
+
+		result = execute(runtime, random, run);
+		sql_success = true;
+		millis = System.currentTimeMillis() - fr;
+
+		if(null != dmListener){
+			dmListener.afterDelete(runtime, random, run, sql_success, result, millis);
+		}
+		InterceptorProxy.afterDelete(runtime, random, run,  sql_success, result, millis);
+		return result;
+	}
+
+	private int checkMany2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
+		int result = 0;
+		//ManyToMany
+		if(dependency <= 0){
+			return result;
+		}
+		dependency --;
+		Class clazz = entity.getClass();
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		for(Field field:fields) {
+			try {
+				ManyToMany join = PersistenceAdapter.manyToMany(field);
+				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+				delete(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.error("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
+				}
+			}
+		}
+		return result;
+	}
+	private int checkOne2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
+		int result = 0;
+		//OneToMany
+		if(dependency <= 0){
+			return result;
+		}
+		dependency --;
+		Class clazz = entity.getClass();
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+		for(Field field:fields) {
+			try {
+				OneToMany join = PersistenceAdapter.oneToMany(field);
+				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+				delete(runtime, random, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.error("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
+				}
+			}
+		}
+		return result;
+	}
+	@Override
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random){
+		if(null == random){
+			random = random(runtime);
+		}
+		LinkedHashMap<String,Database> databases = new LinkedHashMap<>();
+		try{
+			long fr = System.currentTimeMillis();
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryDatabaseRun(runtime);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, null, run).toUpperKey();
+						databases = databases(runtime, idx++, true, databases, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[databases][result:{}][执行耗时:{}ms]", random, databases.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[databases][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return databases;
+	}
+
+	/**
+	 * 缓存表名
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param random random
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	private void tableMap(DataRuntime runtime, String random, String catalog, String schema){
+		Map<String,String> names = CacheProxy.names(catalog, schema);
+		if(null == names || names.isEmpty()){
+			if(null == random){
+				random = random(runtime);
+			}
+			DriverAdapter adapter = runtime.getAdapter();
+			LinkedHashMap<String, Table> tables = new LinkedHashMap<>();
+			boolean sys = false; //根据系统表查询
+			try {
+				List<Run> runs =buildQueryTableRun(runtime, null, null, null, null);
+				if (null != runs && runs.size() > 0) {
+					int idx = 0;
+					for (Run run : runs) {
+						DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
+						tables = tables(runtime, idx++, true, catalog, schema, tables, set);
+						sys = true;
+					}
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			if(!sys){
+				try {
+					tables = tables(runtime, true, null, catalog, schema, null, null);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			if(null != tables){
+				for(Table table:tables.values()){
+					CacheProxy.name(table.getCatalog(),  table.getSchema(), table.getName(), table.getName());
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try{
+			long fr = System.currentTimeMillis();
+			Table search = new Table();
+			if(null == catalog || null == schema){
+				Table tmp = new Table();
+				if(!greedy) {
+					checkSchema(runtime, tmp);
+				}
+				if(null == catalog){
+					catalog = tmp.getCatalog();
+				}
+				if(null == schema){
+					schema = tmp.getSchema();
+				}
+			}
+			String origin = CacheProxy.name(greedy, catalog, schema, pattern);
+			if(null == origin){
+				tableMap(runtime, random, catalog, schema);
+			}
+			origin = CacheProxy.name(greedy, catalog, schema, pattern);
+			if(null == origin){
+				origin = pattern;
+			}
+			search.setName(origin);
+			search.setCatalog(catalog);
+			search.setSchema(schema);
+
+			String[] tps = null;
+			if(null != types){
+				tps = types.toUpperCase().trim().split(",");
+			}
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryTableRun(runtime, catalog, schema, origin, types);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+						tables = tables(runtime, idx++, true, catalog, schema, tables, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+				}
+			}
+
+			// 根据系统表查询失败后根据驱动内置接口补充
+			if(null == tables || tables.size() == 0) {
+				try {
+					LinkedHashMap<String, T> jdbcTables = tables(runtime, true, null, catalog, schema, origin, tps);
+					for (String key : jdbcTables.keySet()) {
+						if (!tables.containsKey(key.toUpperCase())) {
+							T item = jdbcTables.get(key);
+							if (null != item) {
+								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+									tables.put(key.toUpperCase(), item);
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+					}
+				}
+			}
+			boolean comment = false;
+			if(null != tables){
+				for(Table table:tables.values()){
+					if(BasicUtil.isNotEmpty(table.getComment())){
+						comment = true;
+						break;
+					}
+				}
+			}
+			//表备注
+			if(!comment) {
+				try {
+					List<Run> runs = buildQueryTableCommentRun(runtime, catalog, schema, null, types);
+					if (null != runs) {
+						int idx = 0;
+						for (Run run : runs) {
+							DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
+							tables = comments(runtime, idx++, true, catalog, schema, tables, set);
+						}
+					}
+				} catch (Exception e) {
+					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.info("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+					}
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, origin, types, tables.size(), System.currentTimeMillis() - fr);
+			}
+			if(BasicUtil.isNotEmpty(origin)){
+				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
+				List<String> keys = BeanUtil.getMapKeys(tables);
+				for(String key:keys){
+					T item = tables.get(key);
+					String name = item.getName(greedy);
+					if(RegularUtil.match(name, origin)){
+						tmps.put(name.toUpperCase(), item);
+					}
+				}
+				tables = tmps;
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[tables][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return tables;
+	}
+	/**
+	 * 根据 DatabaseMetaData 查询表
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param tables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @return LinkedHashMap
+	 * @param <T> Table
+	 * @throws Exception Exception
+	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		DataSource ds = null;
@@ -1549,6 +2518,186 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
+	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDDLRun(runtime, table);
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
+				int idx = 0;
+				for (Run run : runs) {
+					//不要传table,这里的table用来查询表结构
+					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					list = ddl(runtime, idx++, table, list,  set);
+				}
+				table.setDdls(list);
+			}else{
+				//数据库不支持的 根据metadata拼装
+				LinkedHashMap<String, Column> columns = columns(runtime, random, false, table, true);
+				table.setColumns(columns);
+				table.setTags(tags(runtime, random, false, table));
+				PrimaryKey pk = primary(runtime, random, false, table);
+				if (null != pk) {
+					for (String col : pk.getColumns().keySet()) {
+						Column column = columns.get(col.toUpperCase());
+						if (null != column) {
+							column.setPrimaryKey(true);
+						}
+					}
+				}
+				table.setPrimaryKey(pk);
+				table.setIndexs(indexs(runtime, random, false, table, null));
+				runs = buildCreateRun(runtime, table);
+				for(Run run:runs){
+					list.add(run.getFinalUpdate());
+					table.setDdls(list);
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), table.getName(), e.toString());
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String,T> views = new LinkedHashMap<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try{
+			long fr = System.currentTimeMillis();
+			View search = new View();
+			if(null == catalog || null == schema){
+				View tmp = new View();
+				if(!greedy) {
+					checkSchema(runtime, tmp);
+				}
+				if(null == catalog){
+					catalog = tmp.getCatalog();
+				}
+				if(null == schema){
+					schema = tmp.getSchema();
+				}
+			}
+			search.setName(pattern);
+			search.setCatalog(catalog);
+			search.setSchema(schema);
+
+			String[] tps = null;
+			if(null != types){
+				tps = types.toUpperCase().trim().split(",");
+			}else{
+				tps = new String[]{"VIEW"};
+			}
+
+			DataRow view_map = CacheProxy.getViewMaps(runtime.datasource());
+			if(null != pattern){
+				if(view_map.isEmpty()){
+					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
+					LinkedHashMap<String,View> all = views(runtime, random, greedy, catalog, schema, null, types);
+					if(!greedy) {
+						for (View view : all.values()) {
+							if ((catalog + "_" + schema).equals(view.getCatalog() + "_" + view.getSchema())) {
+								view_map.put(view.getName(greedy).toUpperCase(), view.getName(greedy));
+							}
+						}
+					}
+				}
+				if(view_map.containsKey(search.getName(greedy).toUpperCase())){
+					pattern = view_map.getString(search.getName(greedy).toUpperCase());
+				}else{
+					pattern = search.getName(greedy);
+				}
+			}
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryViewRun(runtime, catalog, schema, pattern, types);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+						views = views(runtime, idx++, true, catalog, schema, views, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+				}
+			}
+			if(null == views || views.size() ==0) {
+				// 根据驱动内置接口补充
+				try {
+					LinkedHashMap<String, T> tmps = views(runtime, true, null, catalog, schema, pattern, tps);
+					for (String key : tmps.keySet()) {
+						if (!views.containsKey(key.toUpperCase())) {
+							T item = tmps.get(key);
+							if (null != item) {
+								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+									views.put(key.toUpperCase(), item);
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						log.warn("{}[views][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, pattern, e.toString());
+					}
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, views.size(), System.currentTimeMillis() - fr);
+			}
+			if(BasicUtil.isNotEmpty(pattern)){
+				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
+				List<String> keys = BeanUtil.getMapKeys(views);
+				for(String key:keys){
+					T item = views.get(key);
+					String name = item.getName(greedy);
+					if(RegularUtil.match(name, pattern)){
+						tmps.put(name.toUpperCase(), item);
+					}
+				}
+				views = tmps;
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[views][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return views;
+	}
+	/**
+	 * 根据DatabaseMetaData
+	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param views 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @return
+	 * @param <T>
+	 * @throws Exception
+	 */
+	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, String catalog, String schema, String pattern, String ... types) throws Exception{
 		DataSource ds = null;
 		Connection con = null;
@@ -1601,8 +2750,156 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return  views;
 	}
 
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, View view){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDDLRun(runtime, view);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					list = ddl(runtime, idx++, view, list,  set);
+				}
+				view.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[view ddl][view:{}][result:{}][执行耗时:{}ms]", random, view.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[view ddl][{}][view:{}][msg:{}]", random, LogUtil.format("查询视图创建DDL失败", 33), view.getName(), e.toString());
+			}
+		}
+		return list;
+	}
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try{
+			long fr = System.currentTimeMillis();
+			if(null == catalog || null == schema){
+				Table tmp = new Table();
+				if(!greedy) {
+					checkSchema(runtime, tmp);
+				}
+				if(null == catalog){
+					catalog = tmp.getCatalog();
+				}
+				if(null == schema){
+					schema = tmp.getSchema();
+				}
+			}
+			String[] tps = null;
+			if(null != types){
+				tps = types.toUpperCase().trim().split(",");
+			}
+			DataRow table_map = CacheProxy.getTableMaps(runtime.datasource());
+			if(null != pattern){
+				if(table_map.isEmpty()){
+					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
+					LinkedHashMap<String, MasterTable> all = mtables(runtime, random, greedy, catalog, schema, null, types);
+					for(Table table:all.values()){
+						table_map.put(table.getName().toUpperCase(), table.getName());
+					}
+				}
+				if(table_map.containsKey(pattern.toUpperCase())){
+					pattern = table_map.getString(pattern.toUpperCase());
+				}
+			}
 
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryMasterTableRun(runtime, catalog, schema, pattern, types);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+						tables = mtables(runtime, idx++, true, catalog, schema, tables, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+				}
+			}
 
+			if(null == tables || tables.size() ==0 ) {
+				// 根据驱动内置接口补充
+				try {
+					LinkedHashMap<String, T> tmps = mtables(runtime, true, null, catalog, schema, pattern, tps);
+					for (String key : tmps.keySet()) {
+						if (!tables.containsKey(key.toUpperCase())) {
+							T item = tmps.get(key);
+							if (null != item) {
+								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
+									tables.put(key.toUpperCase(), item);
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else {
+						log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, pattern, e.toString());
+					}
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[mtables][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return tables;
+	}
+
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDDLRun(runtime, table);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					list = ddl(runtime, idx++, table, list,  set);
+				}
+				table.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[master table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[master table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询主表创建DDL失败", 33), table.getName(), e.toString());
+			}
+		}
+		return list;
+
+	}
 
 	@Override
 	public void checkSchema(DataRuntime runtime, DataSource dataSource, Table table){
@@ -1624,6 +2921,145 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 	}
 
+
+
+	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
+
+		LinkedHashMap<String,T> tables = new LinkedHashMap<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try{
+			long fr = System.currentTimeMillis();
+			//ds = runtime.getTemplate().getDataSource();
+			//con = DataSourceUtils.getConnection(ds);
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryPartitionTableRun(runtime, master, tags, name);
+				if(null != runs) {
+					int idx = 0;
+					int total = runs.size();
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, false, (String)null, run).toUpperKey();
+						tables = ptables(runtime, total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[tables][{}][stable:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.toString());
+				}
+			}
+
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, master.getName(), tables.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[ptables][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return tables;
+	}
+
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDDLRun(runtime, table);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					list = ddl(runtime, idx++, table, list,  set);
+				}
+				table.setDdls(list);
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[partition table ddl][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[partition table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询子表创建DDL失败", 33), table.getName(), e.toString());
+			}
+		}
+		return list;
+	}
+
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
+		if(null == table || BasicUtil.isEmpty(table.getName())){
+			return new LinkedHashMap();
+		}
+		LinkedHashMap<String,T> tags = CacheProxy.tags(runtime.getKey(), table.getName());
+		if(null != tags && !tags.isEmpty()){
+			return tags;
+		}
+
+		long fr = System.currentTimeMillis();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+ 			if (!greedy) {
+				checkSchema(runtime, table);
+			}
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
+
+			// 先根据系统表查询
+			try {
+				List<Run> runs = buildQueryTagRun(runtime, table, false);
+				if (null != runs) {
+					int idx = 0;
+					for (Run run : runs) {
+						DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
+						tags = tags(runtime, idx, true, table, tags, set);
+						idx++;
+					}
+				}
+			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
+				if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
+				}
+			}
+			if (null == tags || tags.size() == 0) {
+				// 根据驱动内置接口补充
+				try {
+					// isAutoIncrement isGenerated remark default
+					// 这一步会查出所有列(包括非tag列)
+					tags = tags(runtime, false, tags, table, null);
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+
+			}
+		}
+		CacheProxy.tags(runtime.getKey(), table.getName(), tags);
+		return tags;
+	}
 	@Override
 	public void checkSchema(DataRuntime runtime, Connection con, Table table){
 		try {
@@ -1948,17 +3384,16 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns) {
-		return null;
-	}
-	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean greedy, Table table , boolean primary){
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table , boolean primary){
+
 		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table.getName());
 		if(null != columns && !columns.isEmpty()){
 			return columns;
 		}
 		long fr = System.currentTimeMillis();
-		String random = random(runtime);
+		if(null == random) {
+			random = random(runtime);
+		}
 		try {
 			if (!greedy) {
 				checkSchema(runtime, table);
@@ -2267,6 +3702,147 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return columns;
 	}
 
+
+	/**
+	 * 索引
+	 * @param table 表
+	 * @return map
+	 */
+	@Override
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+		PrimaryKey primary = null;
+		if(!greedy) {
+			checkSchema(runtime, table);
+		}
+		String tab = table.getName();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		if(null == random) {
+			random = random(runtime);
+		}
+
+		try{
+			List<Run> runs = buildQueryPrimaryRun(runtime, table);
+			if(null != runs){
+				int idx = 0;
+				for(Run run:runs){
+					DataSet set = select(runtime, random, false, (String)null, run).toUpperKey();
+					primary = primary(runtime, idx, table, set);
+					if(null != primary){
+						primary.setTable(table);
+					}
+					idx ++;
+				}
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[primary][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
+			}
+		}
+		table.setPrimaryKey(primary);
+		return primary;
+	}
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean recover, boolean greedy, Table table){
+		LinkedHashMap<String, T> foreigns = new LinkedHashMap<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		if(!greedy) {
+			checkSchema(runtime, table);
+		}
+		try {
+			List<Run> runs = buildQueryForeignsRun(runtime, table);
+			if(null != runs){
+				int idx = 0;
+				for(Run run:runs){
+					DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+					foreigns = foreigns(runtime, idx,  table, foreigns, set);
+					idx++;
+				}
+			}
+		}catch (Exception e){
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+		}
+		return foreigns;
+	}
+
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name){
+
+		LinkedHashMap<String,T> indexs = null;
+		if(null == table){
+			table = new Table();
+		}
+		if(null == random) {
+			random = random(runtime);
+		}
+		if(!greedy) {
+			checkSchema(runtime, table);
+		}
+		if(null != table.getName()) {
+			//DataSource ds = null;
+			//Connection con = null;
+			try {
+				//ds = runtime.getTemplate().getDataSource();
+				//con = DataSourceUtils.getConnection(ds);
+				//dbmd.getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), unique, approximate);
+				indexs = indexs(runtime, true, indexs, table, false, false);
+				table.setIndexs(indexs);
+			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}
+			}
+			if(BasicUtil.isNotEmpty(name)){
+				T index = indexs.get(name.toUpperCase());
+				indexs = new LinkedHashMap<>();
+				indexs.put(name.toUpperCase(), index);
+			}
+		}
+		List<Run> runs = buildQueryIndexRun(runtime, table, name);
+
+		if(null != runs){
+			int idx = 0;
+			for(Run run:runs){
+				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				try {
+					indexs = indexs(runtime, idx, true, table, indexs, set);
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}
+				idx ++;
+			}
+		}
+		Index pk = null;
+		for(Index index:indexs.values()){
+			if(index.isPrimary()){
+				pk = index;
+				break;
+			}
+		}
+		if(null == pk) {
+			//识别主键索引
+			pk = table.getPrimaryKey();
+			if (null == pk) {
+				pk = primary(runtime, random, false, table);
+			}
+			if (null != pk) {
+				Index index = indexs.get(pk.getName().toUpperCase());
+				if (null != index) {
+					index.setPrimary(true);
+				} else {
+					indexs.put(pk.getName().toUpperCase(), (T) pk);
+				}
+			}
+		}
+		return indexs;
+	}
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> tags, SqlRowSet set) throws Exception{
 		if(log.isDebugEnabled()) {
@@ -2276,6 +3852,80 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tags = new LinkedHashMap<>();
 		}
 		return tags;
+	}
+
+	@Override
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
+		DataSource ds = null;
+		Connection con = null;
+		if(null == indexs){
+			indexs = new LinkedHashMap<>();
+		}
+		JdbcTemplate jdbc = jdbc(runtime);
+		try{
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			DatabaseMetaData dbmd = con.getMetaData();
+			ResultSet set = dbmd.getIndexInfo(table.getCatalog(), table.getSchema(), table.getName(), unique, approximate);
+			Map<String, Integer> keys = keys(set);
+			LinkedHashMap<String, Column> columns = null;
+			while (set.next()) {
+				String name = string(keys, "INDEX_NAME", set);
+				if(null == name){
+					continue;
+				}
+				T index = indexs.get(name.toUpperCase());
+				if(null == index){
+					if(create){
+						index = (T)new Index();
+						indexs.put(name.toUpperCase(), index);
+					}else{
+						continue;
+					}
+					index.setName(string(keys, "INDEX_NAME", set));
+					//index.setType(integer(keys, "TYPE", set, null));
+					index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
+					index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), table.getCatalog()));
+					index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), table.getSchema()));
+					index.setTable(string(keys, "TABLE_NAME", set));
+					indexs.put(name.toUpperCase(), index);
+					columns = new LinkedHashMap<>();
+					index.setColumns(columns);
+					if(name.equalsIgnoreCase("PRIMARY")){
+						index.setCluster(true);
+						index.setPrimary(true);
+					}else if(name.equalsIgnoreCase("PK_"+table.getName())){
+						index.setCluster(true);
+						index.setPrimary(true);
+					}
+				}else {
+					columns = index.getColumns();
+				}
+				String columnName = string(keys, "COLUMN_NAME", set);
+				Column col = table.getColumn(columnName.toUpperCase());
+				Column column = null;
+				if(null != col){
+					column = (Column) col.clone();
+				}else{
+					column = new Column();
+					column.setName(columnName);
+				}
+				String order = string(keys, "ASC_OR_DESC", set);
+				if(null != order && order.startsWith("D")){
+					order = "DESC";
+				}else{
+					order = "ASC";
+				}
+				column.setOrder(order);
+				column.setPosition(integer(keys,"ORDINAL_POSITION", set, null));
+				columns.put(column.getName().toUpperCase(), column);
+			}
+		}finally{
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return indexs;
 	}
 
 	@Override
@@ -2300,4 +3950,80 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return constraints;
 	}
 
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+		LinkedHashMap<String,T> triggers = new LinkedHashMap<>();
+		if(null == table){
+			table = new Table();
+		}
+		if(null == random){
+			random = random(runtime);
+		}
+		if(!greedy) {
+			checkSchema(runtime, table);
+		}
+		List<Run> runs = buildQueryTriggerRun(runtime, table, events);
+		if(null != runs){
+			int idx = 0;
+			for(Run run:runs){
+				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				try {
+					triggers = triggers(runtime, idx, true, table, triggers, set);
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}
+				idx ++;
+			}
+		}
+		return triggers;
+	}
+	@Override
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String name){
+
+		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
+		if(null == random){
+			random = random(runtime);
+		}
+		List<Run> runs = buildQueryProcedureRun(runtime, catalog, schema, name);
+		if(null != runs){
+			int idx = 0;
+			for(Run run:runs){
+				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				try {
+					procedures = procedures(runtime, idx, true, procedures, set);
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}
+				idx ++;
+			}
+		}
+		return procedures;
+	}
+
+	@Override
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, boolean recover, String catalog, String schema, String name){
+		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
+ 		if(null == random){
+			 random = random(runtime);
+		}
+		List<Run> runs = buildQueryFunctionRun(runtime, catalog, schema, name);
+		if(null != runs){
+			int idx = 0;
+			for(Run run:runs){
+				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				try {
+					functions = functions(runtime, idx, true, functions, set);
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}
+				idx ++;
+			}
+		}
+		return functions;
+	}
 }
