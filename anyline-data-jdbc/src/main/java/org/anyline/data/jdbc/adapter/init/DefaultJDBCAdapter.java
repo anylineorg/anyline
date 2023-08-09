@@ -1809,7 +1809,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	/**
-	 * 查询表上的列
+	 * 1 构造查询列的QL
 	 * @param table 表
 	 * @param metadata 是否根据metadata(true:1=0,false:查询系统表,由子类实现)
 	 * @return sql
@@ -1826,6 +1826,130 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			builder.append(" WHERE 1=0");
 		}
 		return runs;
+	}
+
+	/**
+	 * 3.1 根据查询结果解析列属性
+	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param table 表
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return columns columns
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("COLUMN_NAME");
+			T column = columns.get(name.toUpperCase());
+			if(null == column){
+				column = (T)new Column();
+			}
+			column.setCatalog(BasicUtil.evl(row.getString("TABLE_CATALOG"), table.getCatalog(), column.getCatalog()));
+			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA"), table.getSchema(), column.getSchema()));
+			column.setTable(table);
+			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName(true)));
+			column.setName(name);
+			if(null == column.getPosition()) {
+				column.setPosition(row.getInt("ORDINAL_POSITION", null));
+			}
+			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
+			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
+			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue())+"";
+			if(BasicUtil.isNotEmpty(def)) {
+				while(def.startsWith("(") && def.endsWith(")")){
+					def = def.substring(1, def.length()-1);
+				}
+				column.setDefaultValue(def);
+			}
+			if(-1 == column.isAutoIncrement()){
+				column.setAutoIncrement(row.getBoolean("IS_IDENTITY", null));
+			}
+			if(-1 == column.isAutoIncrement()){
+				column.setAutoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
+			}
+			if(-1 == column.isAutoIncrement()){
+				if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
+					column.setAutoIncrement(true);
+				}
+			}
+
+			//主键
+			String column_key = row.getString("COLUMN_KEY");
+			if("PRI".equals(column_key)){
+				column.setPrimaryKey(1);
+			}
+
+
+			//非空
+			if(-1 == column.isNullable()) {
+				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE"));
+			}
+			//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
+			Integer len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+			if(null == len){
+				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH");
+			}
+			column.setPrecision(len);
+			if(null == column.getScale()) {
+				column.setScale(row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE"));
+			}
+			if(null == column.getCharset()) {
+				column.setCharset(row.getString("CHARACTER_SET_NAME"));
+			}
+			if(null == column.getCollate()) {
+				column.setCollate(row.getString("COLLATION_NAME"));
+			}
+			if(null == column.getColumnType()) {
+				ColumnType columnType = type(column.getTypeName());
+				column.setColumnType(columnType);
+			}
+			columns.put(name.toUpperCase(), column);
+		}
+		return columns;
+	}
+
+
+	/**
+	 * 2 执行查询列的SQL
+	 * @param runtime
+	 * @param random
+	 * @param create
+	 * @param table
+	 * @param columns
+	 * @param runs
+	 * @return
+	 * @param <T>
+	 */
+	@Override
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs) {
+		try {
+			if (null != runs) {
+				int idx = 0;
+				for (Run run: runs) {
+					DataSet set = select( runtime, random, true, (String) null, run);
+					columns = columns(runtime, idx, true, table, columns, set);
+					idx++;
+				}
+			}
+		} catch (Exception e) {
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), table.getCatalog(), table.getSchema(), table.getName(), e.toString());
+			}
+		}
+		return columns;
+	}
+
+
+	@Override
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns) {
+		return null;
 	}
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean greedy, Table table , boolean primary){
