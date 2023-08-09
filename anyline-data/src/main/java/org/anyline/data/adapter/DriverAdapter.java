@@ -897,7 +897,7 @@ public interface DriverAdapter {
 
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns);
 
-	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs);
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean create, Table table, LinkedHashMap<String, T> columns, List<Run> runs);
 	Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index);
 	Column column(DataRuntime runtime, Column column, ResultSet rs);
 
