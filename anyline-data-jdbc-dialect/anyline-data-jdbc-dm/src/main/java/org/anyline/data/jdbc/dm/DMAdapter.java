@@ -1,4 +1,4 @@
- 
+
 package org.anyline.data.jdbc.dm;
 
 
@@ -649,6 +649,9 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	@Override
 	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
+		if(BasicUtil.isEmpty(table.getName())){
+			return runs;
+		}
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
