@@ -1556,7 +1556,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     procedure.addInput(input);
                 }
             }
-            set = dao.selects(procedure, navi);
+            set = dao.querys(procedure, navi);
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
