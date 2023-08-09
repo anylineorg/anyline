@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
@@ -1526,91 +1527,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 *
-	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
-	 * @param table 表
-	 * @param columns 上一步查询结果
-	 * @param set set
-	 * @return columns columns
-	 * @throws Exception 异常
-	 */
-	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
-		if(null == columns){
-			columns = new LinkedHashMap<>();
-		}
-		for(DataRow row:set){
-			String name = row.getString("COLUMN_NAME");
-			T column = columns.get(name.toUpperCase());
-			if(null == column){
-				column = (T)new Column();
-			}
-			column.setCatalog(BasicUtil.evl(row.getString("TABLE_CATALOG"), table.getCatalog(), column.getCatalog()));
-			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA"), table.getSchema(), column.getSchema()));
-			column.setTable(table);
-			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName(true)));
-			column.setName(name);
-			if(null == column.getPosition()) {
-				column.setPosition(row.getInt("ORDINAL_POSITION", null));
-			}
-			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
-			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
-			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue())+"";
-			if(BasicUtil.isNotEmpty(def)) {
-				while(def.startsWith("(") && def.endsWith(")")){
-					def = def.substring(1, def.length()-1);
-				}
-				column.setDefaultValue(def);
-			}
-			if(-1 == column.isAutoIncrement()){
-				column.setAutoIncrement(row.getBoolean("IS_IDENTITY", null));
-			}
-			if(-1 == column.isAutoIncrement()){
-				column.setAutoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
-			}
-			if(-1 == column.isAutoIncrement()){
-				if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
-					column.setAutoIncrement(true);
-				}
-			}
-
-			//主键
-			String column_key = row.getString("COLUMN_KEY");
-			if("PRI".equals(column_key)){
-				column.setPrimaryKey(1);
-			}
-
-
-			//非空
-			if(-1 == column.isNullable()) {
-				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE"));
-			}
-			//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
-			Integer len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-			if(null == len){
-				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH");
-			}
-			column.setPrecision(len);
-			if(null == column.getScale()) {
-				column.setScale(row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE"));
-			}
-			if(null == column.getCharset()) {
-				column.setCharset(row.getString("CHARACTER_SET_NAME"));
-			}
-			if(null == column.getCollate()) {
-				column.setCollate(row.getString("COLLATION_NAME"));
-			}
-			if(null == column.getColumnType()) {
-				ColumnType columnType = type(column.getTypeName());
-				column.setColumnType(columnType);
-			}
-			columns.put(name.toUpperCase(), column);
-		}
-		return columns;
-	}
-
-	/**
 	 * 构建Column
 	 * @param column 列
 	 * @param rs  ResultSet
@@ -1800,6 +1716,49 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return null;
 	}
 
+	/**
+	 * 索引
+	 * @param table 表
+	 * @return map
+	 */
+	@Override
+	public PrimaryKey primary(DataRuntime runtime, boolean greedy, Table table){
+		PrimaryKey primary = null;
+		if(!greedy) {
+			checkSchema(runtime, table);
+		}
+		String tab = table.getName();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		//DataSource ds = null;
+		String random = random(runtime);
+		DatabaseMetaData metadata = null;
+
+		try{
+			List<Run> runs = buildQueryPrimaryRun(runtime, table);
+			if(null != runs){
+				int idx = 0;
+				for(Run run:runs){
+					DataSet set = select(runtime, random, false, (String)null, run).toUpperKey();
+					primary = primary(runtime, idx, table, set);
+					if(null != primary){
+						primary.setTable(table);
+					}
+
+					idx ++;
+				}
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.warn("{}[primary][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.toString());
+			}
+		}
+		table.setPrimaryKey(primary);
+		return primary;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													foreign
