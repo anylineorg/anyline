@@ -25,6 +25,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.util.BeanUtil;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -68,35 +69,53 @@ public interface AnylineService<E>{
 	/* *****************************************************************************************************************
 	 * 													INSERT
 	 ******************************************************************************************************************/
-
 	/**
 	 * 插入数据
 	 * @param dest 表名
 	 * @param data entity或list或DataRow或DataSet
-	 * @param checkPriamry 是否检测主键
+	 * @param checkPrimary 是否检测主键重复
 	 * @param fixs 需要插入哪些列
 	 * @param columns 需要插入哪些列
 	 * @return 影响行数
 	 */
-	int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	int insert(Object data, List<String> fixs, String ... columns);
-	int insert(String dest, Object data, List<String> fixs, String ... columns);
-
-	int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	int insert(Object data, String[] fixs, String ... columns);
-	int insert(String dest, Object data, String[] fixs, String ... columns);
-
-	int insert(String dest, Object data, boolean checkPriamry, String ... columns);
-	int insert(Object data, boolean checkPriamry, String ... columns);
-	int insert(Object data, String ... columns);
-	int insert(String dest, Object data, String ... columns);
+	int insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	default int insert(Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return insert(null, data, checkPrimary, fixs, columns);
+	}
+	default int insert(Object data, List<String> fixs, String ... columns){
+		return insert(null, data, false, fixs, columns);
+	}
+	default int insert(String dest, Object data, List<String> fixs, String ... columns){
+		return insert(dest, data, false, fixs, columns);
+	}
+	default int insert(String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return insert(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default int insert(Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return insert(null, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default int insert(Object data, String[] fixs, String ... columns){
+		return insert(null, data, false, fixs, columns);
+	}
+	default int insert(String dest, Object data, String[] fixs, String ... columns){
+		return insert(dest, data, false, fixs, columns);
+	}
+	default int insert(String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default int insert(Object data, boolean checkPrimary, String ... columns){
+		return insert(null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default int insert(Object data, String ... columns){
+		return insert(null, data, false, columns);
+	}
+	default int insert(String dest, Object data, String ... columns){
+		return insert(dest, data, false, columns);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
-
 	/**
 	 * 更新记录
 	 * 默认情况下以主键为更新条件,需在更新的数据保存在data中
@@ -104,6 +123,7 @@ public interface AnylineService<E>{
 	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
 	 * 可以提供了ConfigStore以实现更复杂的更新条件
 	 * 需要更新的列通过fixs/columns提供
+	 * @param async	  	是否异步
 	 * @param fixs	  	需要更新的列
 	 * @param columns	需要更新的列
 	 * @param dest	   	表
@@ -111,42 +131,82 @@ public interface AnylineService<E>{
 	 * @param configs 	更新条件
 	 * @return int 影响行数
 	 */
-	int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	int update(String dest, Object data, List<String> fixs, String ... columns);
-	int update(String dest, Object data, String[] fixs, String ... columns);
-	int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
-	int update(String dest, Object data, String ... columns);
-	int update(String dest, Object data, ConfigStore configs, String ... columns);
-
-	int update(Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	int update(Object data, List<String> fixs, String ... columns);
-	int update(Object data, String[] fixs, String ... columns);
-	int update(Object data, ConfigStore configs, String[] fixs, String ... columns);
-	int update(Object data, String ... columns);
-	int update(Object data, ConfigStore configs, String ... columns);
-
-
-
-	int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
 	int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
-	int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns);
-	int update(boolean async, String dest, Object data, String ... columns);
-	int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns);
+	default int update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+		return update(false, dest, data, configs, fixs, columns);
+	}
+	default int update(String dest, Object data, List<String> fixs, String ... columns){
+		return update(false, dest, data, null, fixs, columns);
+	}
+	default int update(String dest, Object data, String[] fixs, String ... columns){
+		return update(false, dest, data, null, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
+		return update(false, dest, data, configs, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(String dest, Object data, String ... columns){
+		return update(false, dest, data, null, BeanUtil.array2list(columns));
+	}
+	default int update(String dest, Object data, ConfigStore configs, String ... columns){
+		return update(false, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default int update(Object data, ConfigStore configs, List<String> fixs, String ... columns){
+		return update(false, null, data, configs, fixs, columns);
+	}
+	default int update(Object data, List<String> fixs, String ... columns){
+		return update(false, null, data, null, fixs, columns);
+	}
+	default int update(Object data, String[] fixs, String ... columns){
+		return update(false, null, data, null, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(Object data, ConfigStore configs, String[] fixs, String ... columns){
+		return update(false, null, data, configs, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(Object data, String ... columns){
+		return update(false, null, data, null, BeanUtil.array2list(columns));
+	}
+	default int update(Object data, ConfigStore configs, String ... columns){
+		return update(false, null, data, configs, BeanUtil.array2list(columns));
+	}
+	default int update(boolean async, String dest, Object data, List<String> fixs, String ... columns){
+		return update(async, dest, data, null, fixs, columns);
+	}
+	default int update(boolean async, String dest, Object data, String[] fixs, String ... columns){
+		return update(async, dest, data, null, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
+		return update(async, dest, data, configs, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(boolean async, String dest, Object data, String ... columns){
+		return update(async, dest, data, null, BeanUtil.array2list(columns));
+	}
+	default int update(boolean async, String dest, Object data, ConfigStore configs, String ... columns){
+		return update(async, dest, data, configs, BeanUtil.array2list(columns));
+	}
 	
-	int update(boolean async, Object data, List<String> fixs, String ... columns);
-	int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns);
-	int update(boolean async, Object data, String[] fixs, String ... columns);
-	int update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns);
-	int update(boolean async, Object data, String ... columns);
-	int update(boolean async, Object data, ConfigStore configs, String ... columns);
+	default int update(boolean async, Object data, List<String> fixs, String ... columns){
+		return update(async, null, data, null, fixs, columns);
+	}
+	default int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+		return update(async, null, data, configs, fixs, columns);
+	}
+	default int update(boolean async, Object data, String[] fixs, String ... columns){
+		return update(async, null, data, null, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns){
+		return update(async, null, data, configs, BeanUtil.array2list(fixs, columns));
+	}
+	default int update(boolean async, Object data, String ... columns){
+		return update(async, null, data, null, BeanUtil.array2list(columns));
+	}
+	default int update(boolean async, Object data, ConfigStore configs, String ... columns){
+		return update(async, null, data, configs, BeanUtil.array2list(columns));
+	}
 
 
 	/* *****************************************************************************************************************
 	 * 													SAVE
 	 ******************************************************************************************************************/
-
-
 	/**
 	 * save insert区别
 	 * 操作单个对象时没有区别
@@ -158,53 +218,95 @@ public interface AnylineService<E>{
 	 *
 	 * 保存(insert|update)根据是否有主键值确定insert或update
 	 * @param data  数据
-	 * @param checkPriamry 是否检测主键
+	 * @param checkPrimary 是否检测主键
 	 * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
 	 * @param columns 指定更新或保存的列
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	int save(Object data, List<String> fixs, String ... columns);
-	int save(String dest, Object data, List<String> fixs, String ... columns);
+	int save(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	default int save(Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return save(null, data, checkPrimary, BeanUtil.merge(fixs, columns));
+	}
+	default int save(Object data, List<String> fixs, String ... columns){
+		return save(null, data, false, fixs, columns);
+	}
+	default int save(String dest, Object data, List<String> fixs, String ... columns){
+		return save(dest, data, false, fixs, columns);
+	}
 
-	int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	int save(Object data, String[] fixs, String ... columns);
-	int save(String dest, Object data, String[] fixs, String ... columns);
-
-
-	int save(String dest, Object data, boolean checkPriamry, String ... columns);
-	int save(Object data, boolean checkPriamry, String ... columns);
-	int save(Object data, String ... columns);
-	int save(String dest, Object data, String ... columns);
+	default int save(String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return save(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default int save(Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return save(null, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default int save(Object data, String[] fixs, String ... columns){
+		return save(null, data, false, fixs, columns);
+	}
+	default int save(String dest, Object data, String[] fixs, String ... columns){
+		return save(dest, data, false, fixs, columns);
+	}
+	default int save(String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default int save(Object data, boolean checkPrimary, String ... columns){
+		return save(null, data, checkPrimary, columns);
+	}
+	default int save(Object data, String ... columns){
+		return save(null, data, false, columns);
+	}
+	default int save(String dest, Object data, String ... columns){
+		return save(dest, data, false, columns);
+	}
 
 
 	/**
 	 * 保存(insert|update)根据是否有主键值确定insert或update
 	 * @param async 是否异步执行
 	 * @param data  数据
-	 * @param checkPriamry 是否检测主键
+	 * @param checkPrimary 是否检测主键
 	 * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
 	 * @param columns 指定更新或保存的列
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	int save(boolean async, Object data, List<String> fixs, String ... columns);
-	int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	int save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	default int save(boolean async, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return save(async, null, data, checkPrimary, fixs, columns);
+	}
+	default int save(boolean async, Object data, List<String> fixs, String ... columns){
+		return save(async, null, data, false, fixs, columns);
+	}
+	default int save(boolean async, String dest, Object data, List<String> fixs, String ... columns){
+		return save(async, dest, data, false, fixs, columns);
+	}
 
-	int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	int save(boolean async, Object data, String[] fixs, String ... columns);
-	int save(boolean async, String dest, Object data, String[] fixs, String ... columns);
+	default int save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return save(async, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default int save(boolean async, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return save(async, null, data, checkPrimary, fixs, columns);
+	}
+	default int save(boolean async, Object data, String[] fixs, String ... columns){
+		return save(async, null, data, false, fixs, columns);
+	}
+	default int save(boolean async, String dest, Object data, String[] fixs, String ... columns){
+		return save(async, dest, data, false, fixs, columns);
+	}
 
-	int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
-	int save(boolean async, Object data, boolean checkPriamry, String ... columns);
-	int save(boolean async, Object data, String ... columns);
-	int save(boolean async, String dest, Object data, String ... columns);
+	default int save(boolean async, String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(async, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default int save(boolean async, Object data, boolean checkPrimary, String ... columns){
+		return save(async, null, data, checkPrimary, columns);
+	}
+	default int save(boolean async, Object data, String ... columns){
+		return save(async, null, data, false, columns);
+	}
+	default int save(boolean async, String dest, Object data, String ... columns){
+		return save(async, dest, data, false, columns);
+	}
 
 
 	/* *****************************************************************************************************************
@@ -504,12 +606,25 @@ public interface AnylineService<E>{
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 ******************************************************************************************************************/
+
+	/**
+	 * count
+	 * @param src 表或视图或自定义SQL
+	 * @param configs 过滤条件
+	 * @param obj 根据obj生成的过滤条件
+	 * @param conditions 简单过滤条件
+	 * @return long
+	 */
 	long count(String src, ConfigStore configs, Object obj, String ... conditions);
-	long count(String src, Object obj, String ... conditions);
-	long count(String src, ConfigStore configs, String ... conditions);
-	long count(String src, String ... conditions);
-
-
+	default long count(String src, Object obj, String ... conditions){
+		return count(src, null, obj, conditions);
+	}
+	default long count(String src, ConfigStore configs, String ... conditions){
+		return count(src, configs, null, conditions);
+	}
+	default long count(String src, String ... conditions){
+		return count(src, null, null, conditions);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													EXECUTE
@@ -561,7 +676,7 @@ public interface AnylineService<E>{
 	 * @param conditions  匹配条件
 	 * @return 影响行数
 	 */
-	int delete(String table, ConfigStore configs, String ... conditions);
+	long delete(String table, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据columns列删除 可设置复合主键<br/>
 	 * 注意:为了避免整表删除,columns必须提供否则会抛出异常 <br/>
@@ -571,9 +686,9 @@ public interface AnylineService<E>{
 	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
-	int delete(String dest, DataSet set, String ... columns);
-	int delete(DataSet set, String ... columns);
-	int delete(String dest, DataRow row, String ... columns);
+	long delete(String dest, DataSet set, String ... columns);
+	long delete(DataSet set, String ... columns);
+	long delete(String dest, DataRow row, String ... columns);
 
 	/**
 	 * 根据columns列删除 <br/>
@@ -585,7 +700,7 @@ public interface AnylineService<E>{
 	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
-	int delete(Object obj, String ... columns);
+	long delete(Object obj, String ... columns);
 
 	/**
 	 * 根据多列条件删除<br/>
@@ -606,7 +721,7 @@ public interface AnylineService<E>{
 	 * @param kvs key-value
 	 * @return 影响行数
 	 */
-	int delete(String table, String ... kvs);
+	long delete(String table, String ... kvs);
 
 	/**
 	 * 根据一列的多个值删除<br/>
@@ -619,7 +734,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public<T> int deletes(String table, String key, Collection<T> values);
+	public<T> long deletes(String table, String key, Collection<T> values);
 
 	/**
 	 * 根据一列的多个值删除<br/>
@@ -632,7 +747,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public<T> int deletes(String table, String key, T ... values);
+	public<T> long deletes(String table, String key, T ... values);
 
 	int truncate(String table);
 

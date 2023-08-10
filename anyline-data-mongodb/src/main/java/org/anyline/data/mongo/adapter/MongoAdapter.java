@@ -392,17 +392,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public <T> int deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values) {
+    public <T> long deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values) {
         return 0;
     }
 
     @Override
-    public int delete(DataRuntime runtime, String random, String dest, Object obj, String... columns) {
+    public long delete(DataRuntime runtime, String random, String dest, Object obj, String... columns) {
         return 0;
     }
 
     @Override
-    public int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
+    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
         return 0;
     }
 

@@ -134,7 +134,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 * @param ids  ids
 	 * @return int
 	 */ 
-	public int delete(String ... ids){
+	public long delete(String ... ids){
 		if(null == ids){
 			return 0; 
 		} 
@@ -144,7 +144,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		} 
 		return delete(list); 
 	} 
-	public int delete(List<String> ids){
+	public long delete(List<String> ids){
 		int cnt = 0; 
 		if(null == ids || ids.size() ==0){
 			return cnt; 

@@ -45,7 +45,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, Run run, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, Run run, boolean success, long result, long millis){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

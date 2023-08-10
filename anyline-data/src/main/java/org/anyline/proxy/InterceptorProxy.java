@@ -320,7 +320,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterDelete(DataRuntime runtime, String random, Run run, boolean success, int result, long millis){
+    public static SWITCH afterDelete(DataRuntime runtime, String random, Run run, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.after(runtime, run, success, result, millis);
@@ -378,7 +378,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, int result, long millis){
+    public static SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
             swt = interceptor.after(runtime, run, success, result, millis);

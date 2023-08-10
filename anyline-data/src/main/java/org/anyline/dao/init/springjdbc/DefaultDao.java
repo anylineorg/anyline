@@ -438,7 +438,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return
 	 * @param <T>
 	 */
-	public  <T> int deletes(DataRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -452,7 +452,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public int delete(DataRuntime runtime, String random, boolean recover, String dest, Object obj, String... columns) {
+	public long delete(DataRuntime runtime, String random, boolean recover, String dest, Object obj, String... columns) {
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -466,7 +466,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	}
 	@Override
-	public int delete(DataRuntime runtime, String random, boolean recover, String table, ConfigStore configs, String... conditions) {
+	public long delete(DataRuntime runtime, String random, boolean recover, String table, ConfigStore configs, String... conditions) {
 		if(null == runtime){
 			runtime = runtime();
 		}

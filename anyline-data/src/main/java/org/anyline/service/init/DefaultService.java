@@ -1027,7 +1027,17 @@ public class DefaultService<E> implements AnylineService<E> {
         return exists(null, row);
     }
 
-    
+    /* *****************************************************************************************************************
+     * 													COUNT
+     ******************************************************************************************************************/
+    /**
+     * count
+     * @param src 表或视图或自定义SQL
+     * @param configs 过滤条件
+     * @param obj 根据obj生成的过滤条件
+     * @param conditions 简单过滤条件
+     * @return long
+     */
     @Override 
     public long count(String src, ConfigStore configs, Object obj, String... conditions) {
         long count = -1;
@@ -1048,25 +1058,27 @@ public class DefaultService<E> implements AnylineService<E> {
         return count;
     }
 
-    
-    @Override 
-    public long count(String src, ConfigStore configs, String... conditions) {
-        return count(src, configs, null, conditions);
+    /* *****************************************************************************************************************
+     * 													INSERT
+     ******************************************************************************************************************/
+    /**
+     * 插入数据
+     * @param dest 表名
+     * @param data entity或list或DataRow或DataSet
+     * @param checkPrimary 是否检测主键重复
+     * @param fixs 需要插入哪些列
+     * @param columns 需要插入哪些列
+     * @return 影响行数
+     */
+    @Override
+    public int insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+        dest = DataSourceUtil.parseDataSource(dest, data);
+        return dao.insert(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
     }
 
-    
-    @Override 
-    public long count(String src, Object obj, String... conditions) {
-        return count(src, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public long count(String src, String... conditions) {
-        return count(src, null, null, conditions);
-    }
-
-
+    /* *****************************************************************************************************************
+     * 													UPDATE
+     ******************************************************************************************************************/
     /**
      * 更新记录
      * 默认情况下以主键为更新条件,需在更新的数据保存在data中
@@ -1082,7 +1094,6 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param configs 更新条件
      * @return int 影响行数
      */
-    
     @Override 
     public int update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
         dest = DataSourceUtil.parseDataSource(dest, dest);
@@ -1104,181 +1115,28 @@ public class DefaultService<E> implements AnylineService<E> {
         }
     }
 
-    
-    @Override 
-    public int update(boolean async, String dest, Object data, List<String> fixs, String... columns) {
-        return update(async, dest, data, null, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(boolean async, String dest, Object data, String[] fixs, String... columns) {
-        return update(async, dest, data, null, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(boolean async, String dest, Object data, String... columns) {
-        return update(async, dest, data, null, BeanUtil.array2list(columns));
-    }
-
-    
-    @Override 
-    public int update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String... columns) {
-        return update(async, dest, data, configs, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(boolean async, String dest, Object data, ConfigStore configs, String... columns) {
-        return update(async, dest, data, configs, BeanUtil.array2list(columns));
-    }
 
 
-    
-    @Override 
-    public int update(boolean async, Object data, ConfigStore configs, List<String> fixs, String... columns) {
-        return update(async, null, data, configs, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(boolean async, Object data, List<String> fixs, String... columns) {
-        return update(async, null, data, null, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(boolean async, Object data, String[] fixs, String... columns) {
-        return update(async, null, data, null, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(boolean async, Object data, String... columns) {
-        return update(async, null, data, null, BeanUtil.array2list(columns));
-    }
-
-    
-    @Override 
-    public int update(boolean async, Object data, ConfigStore configs, String[] fixs, String... columns) {
-        return update(async, null, data, configs, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(boolean async, Object data, ConfigStore configs, String... columns) {
-        return update(async, null, data, configs, BeanUtil.array2list(columns));
-    }
-
-
-    
-    @Override 
-    public int update(String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
-        return update(false, dest, data, configs, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(String dest, Object data, ConfigStore configs, String[] fixs, String... columns) {
-        return update(false, dest, data, configs, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(String dest, Object data, ConfigStore configs, String... columns) {
-        return update(false, dest, data, configs, BeanUtil.array2list(columns));
-    }
-
-    
-    @Override 
-    public int update(String dest, Object data, List<String> fixs, String... columns) {
-        return update(false, dest, data, null, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(String dest, Object data, String[] fixs, String... columns) {
-        return update(false, dest, data, null, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(String dest, Object data, String... columns) {
-        return update(false, dest, data, null, BeanUtil.array2list(columns));
-    }
-
-    
-    @Override 
-    public int update(Object data, ConfigStore configs, List<String> fixs, String... columns) {
-        return update(false, null, data, configs, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(Object data, ConfigStore configs, String[] fixs, String... columns) {
-        return update(false, null, data, configs, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(Object data, ConfigStore configs, String... columns) {
-        return update(false, null, data, configs, BeanUtil.array2list(columns));
-    }
-
-    
-    @Override 
-    public int update(Object data, List<String> fixs, String... columns) {
-        return update(false, null, data, null, fixs, columns);
-    }
-
-    
-    @Override 
-    public int update(Object data, String[] fixs, String... columns) {
-        return update(false, null, data, null, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int update(Object data, String... columns) {
-        return update(false, null, data, null, BeanUtil.array2list(columns));
-    }
-
-
-    @Override 
-    public int save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return save(async, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
-
-    @Override 
-    public int save(boolean async, String dest, Object data, boolean checkPrimary, String... columns) {
-        return save(async, dest, data, checkPrimary, BeanUtil.array2list(columns));
-    }
-
-    
-    @Override 
-    public int save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        if (async) {
-
-            final String _dest = dest;
-            final Object _data = data;
-            final boolean _chk = checkPrimary;
-            final String[] cols = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
-            new Thread(new Runnable() {
-                @Override 
-                public void run() {
-                    save(_dest, _data, _chk, cols);
-                }
-
-            }).start();
-            return 0;
-        } else {
-            return save(dest, data, checkPrimary, columns);
-        }
-
-    }
-
-    @SuppressWarnings("rawtypes")
+    /* *****************************************************************************************************************
+     * 													SAVE
+     ******************************************************************************************************************/
+    /**
+     * save insert区别
+     * 操作单个对象时没有区别
+     * 在操作集合时区别:
+     * save会循环操作数据库每次都会判断insert|update
+     * save 集合中的数据可以是不同的表不同的结构
+     * insert 集合中的数据必须保存到相同的表,结构必须相同
+     * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
+     *
+     * 保存(insert|update)根据是否有主键值确定insert或update
+     * @param data  数据
+     * @param checkPrimary 是否检测主键
+     * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
+     * @param columns 指定更新或保存的列
+     * @param dest 表
+     * @return 影响行数
+     */
     
     @Override 
     public int save(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
@@ -1297,129 +1155,36 @@ public class DefaultService<E> implements AnylineService<E> {
         return saveObject(dest, data, checkPrimary, columns);
     }
 
-    
-    @Override 
-    public int save(String dest, Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return save(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
 
-    
-    @Override 
-    public int save(String dest, Object data, boolean checkPrimary, String... columns) {
-        return save(dest, data, checkPrimary, BeanUtil.array2list(columns));
-    }
+    /**
+     * 保存(insert|update)根据是否有主键值确定insert或update
+     * @param async 是否异步执行
+     * @param data  数据
+     * @param checkPrimary 是否检测主键
+     * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
+     * @param columns 指定更新或保存的列
+     * @param dest 表
+     * @return 影响行数
+     */
+    @Override
+    public int save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+        if (async) {
+            final String _dest = dest;
+            final Object _data = data;
+            final boolean _chk = checkPrimary;
+            final String[] cols = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    save(_dest, _data, _chk, cols);
+                }
 
-    
-    @Override 
-    public int save(Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        return save(null, data, checkPrimary, BeanUtil.merge(fixs, columns));
-    }
+            }).start();
+            return 0;
+        } else {
+            return save(dest, data, checkPrimary, columns);
+        }
 
-    
-    @Override 
-    public int save(Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return save(null, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int save(Object data, boolean checkPrimary, String... columns) {
-        return save(null, data, checkPrimary, columns);
-    }
-
-    
-    @Override 
-    public int save(boolean async, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        return save(async, null, data, checkPrimary, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(boolean async, Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return save(async, null, data, checkPrimary, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(boolean async, Object data, boolean checkPrimary, String... columns) {
-        return save(async, null, data, checkPrimary, columns);
-    }
-
-
-    
-    @Override 
-    public int save(Object data, List<String> fixs, String... columns) {
-        return save(null, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(Object data, String[] fixs, String... columns) {
-        return save(null, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(Object data, String... columns) {
-        return save(null, data, false, columns);
-    }
-
-
-    
-    @Override 
-    public int save(boolean async, Object data, List<String> fixs, String... columns) {
-        return save(async, null, data, false, fixs, columns);
-    }
-
-
-    
-    @Override 
-    public int save(boolean async, Object data, String[] fixs, String... columns) {
-        return save(async, null, data, false, fixs, columns);
-    }
-
-
-    
-    @Override 
-    public int save(boolean async, Object data, String... columns) {
-        return save(async, null, data, false, columns);
-    }
-
-
-    
-    @Override 
-    public int save(String dest, Object data, List<String> fixs, String... columns) {
-        return save(dest, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(String dest, Object data, String[] fixs, String... columns) {
-        return save(dest, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(String dest, Object data, String... columns) {
-        return save(dest, data, false, columns);
-    }
-
-    
-    @Override 
-    public int save(boolean async, String dest, Object data, List<String> fixs, String... columns) {
-        return save(async, dest, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(boolean async, String dest, Object data, String[] fixs, String... columns) {
-        return save(async, dest, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int save(boolean async, String dest, Object data, String... columns) {
-        return save(async, dest, data, false, columns);
     }
 
     protected int saveObject(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
@@ -1438,84 +1203,11 @@ public class DefaultService<E> implements AnylineService<E> {
         return saveObject(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
     }
 
-    
-    @Override 
-    public int insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        dest = DataSourceUtil.parseDataSource(dest, data);
-        return dao.insert(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
-    }
-
-    
-    @Override 
-    public int insert(String dest, Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return insert(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int insert(String dest, Object data, boolean checkPrimary, String... columns) {
-        return insert(dest, data, checkPrimary, BeanUtil.array2list(columns));
-    }
 
 
-    
-    @Override 
-    public int insert(Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        return insert(null, data, checkPrimary, fixs, columns);
-    }
-
-    
-    @Override 
-    public int insert(Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return insert(null, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-    }
-
-    
-    @Override 
-    public int insert(Object data, boolean checkPrimary, String... columns) {
-        return insert(null, data, checkPrimary, BeanUtil.array2list(columns));
-    }
 
 
-    
-    @Override 
-    public int insert(Object data, List<String> fixs, String... columns) {
-        return insert(null, data, false, fixs, columns);
-    }
 
-    
-    @Override 
-    public int insert(Object data, String[] fixs, String... columns) {
-        return insert(null, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int insert(Object data, String... columns) {
-        return insert(null, data, false, columns);
-    }
-
-
-    
-    @Override 
-    public int insert(String dest, Object data, List<String> fixs, String... columns) {
-        return insert(dest, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int insert(String dest, Object data, String[] fixs, String... columns) {
-        return insert(dest, data, false, fixs, columns);
-    }
-
-    
-    @Override 
-    public int insert(String dest, Object data, String... columns) {
-        return insert(dest, data, false, columns);
-    }
-
-
-    
     @Override 
     public boolean executeProcedure(String procedure, String... inputs) {
         Procedure proc = new Procedure();
@@ -1632,7 +1324,7 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public long execute(String src, ConfigStore store, String... conditions) {
-        int result = -1;
+        long result = -1;
         src = BasicUtil.compress(src);
         src = DataSourceUtil.parseDataSource(src);
         conditions = BasicUtil.compress(conditions);
@@ -1654,7 +1346,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @SuppressWarnings("rawtypes")
     
     @Override 
-    public int delete(String dest, DataSet set, String... columns) {
+    public long delete(String dest, DataSet set, String... columns) {
         int cnt = 0;
         int size = set.size();
         for (int i = 0; i < size; i++) {
@@ -1666,21 +1358,21 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public int delete(DataSet set, String... columns) {
+    public long delete(DataSet set, String... columns) {
         String dest = DataSourceUtil.parseDataSource(null, set);
         return delete(dest, set, columns);
     }
 
     
     @Override 
-    public int delete(String dest, DataRow row, String... columns) {
+    public long delete(String dest, DataRow row, String... columns) {
         dest = DataSourceUtil.parseDataSource(dest, row);
         return dao.delete(dest, row, columns);
     }
 
     
     @Override 
-    public int delete(Object obj, String... columns) {
+    public long delete(Object obj, String... columns) {
         if (null == obj) {
             return 0;
         }
@@ -1709,7 +1401,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public int delete(String table, String... kvs) {
+    public long delete(String table, String... kvs) {
         table = DataSourceUtil.parseDataSource(table);
         DataRow row = DataRow.parseArray(kvs);
         row.setPrimaryKey(row.keys());
@@ -1718,21 +1410,21 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public <T> int deletes(String table, String key, Collection<T> values) {
+    public <T> long deletes(String table, String key, Collection<T> values) {
         table = DataSourceUtil.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
     
     @Override 
-    public <T> int deletes(String table, String key, T... values) {
+    public <T> long deletes(String table, String key, T... values) {
         table = DataSourceUtil.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
     
     @Override 
-    public int delete(String table, ConfigStore configs, String... conditions) {
+    public long delete(String table, ConfigStore configs, String... conditions) {
         table = DataSourceUtil.parseDataSource(table);
         return dao.delete(table, configs, conditions);
     }

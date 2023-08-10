@@ -1323,7 +1323,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		int result = -1;
+		long result = -1;
 		boolean sql_success = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		if(null == random){
@@ -2047,7 +2047,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public <T> int deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values){
 		table = DataSourceUtil.parseDataSource(table, null);
 		if(null == random){
 			random = random(runtime);
@@ -2069,20 +2069,20 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return -1;
 		}
-		int result = exeDelete(runtime, random, run);
+		long result = exeDelete(runtime, random, run);
 		return result;
 	}
 
 	@Override
-	public int delete(DataRuntime runtime, String random, String dest, Object obj, String... columns){
+	public long delete(DataRuntime runtime, String random, String dest, Object obj, String... columns){
 		dest = DataSourceUtil.parseDataSource(dest,obj);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		int size = 0;
+		long size = 0;
 		if(null != obj){
 			if(obj instanceof Collection){
 				Collection list = (Collection) obj;
 				for(Object item:list){
-					int qty = delete(runtime, random, dest, item, columns);
+					long qty = delete(runtime, random, dest, item, columns);
 					//如果不执行会返回-1
 					if(qty > 0){
 						size += qty;
@@ -2121,7 +2121,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return size;
 	}
 
-	public int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
 		table = DataSourceUtil.parseDataSource(table, null);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
@@ -2141,7 +2141,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return -1;
 		}
-		int result = exeDelete(  runtime, random,  run);
+		long result = exeDelete(  runtime, random,  run);
 		return result;
 	}
 
@@ -2150,7 +2150,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		List<Run> runs = buildTruncateRun(runtime, table);
 		if(null != runs && runs.size()>0) {
 			RunPrepare prepare = new DefaultTextPrepare(runs.get(0).getFinalUpdate());
-			return execute(runtime, random, prepare, null);
+			return (int)execute(runtime, random, prepare, null);
 		}
 		return -1;
 	}
@@ -2161,8 +2161,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return int
 	 */
-	protected int exeDelete(DataRuntime runtime, String random, Run run){
-		int result = -1;
+	protected long exeDelete(DataRuntime runtime, String random, Run run){
+		long result = -1;
 		boolean sql_success = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		long fr = System.currentTimeMillis();

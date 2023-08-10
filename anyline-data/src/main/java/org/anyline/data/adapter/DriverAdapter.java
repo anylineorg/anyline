@@ -122,7 +122,8 @@ public interface DriverAdapter {
 	 * 													INSERT
 	 ******************************************************************************************************************/
 	/**
-	 * insert [入口]<br/>
+	 * insert [入口]
+	 * <br/>
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -201,7 +202,8 @@ public interface DriverAdapter {
 	String generatedKey();
 
 	/**
-	 * insert [执行]<br/>
+	 * insert [执行]
+	 * <br/>
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -212,7 +214,8 @@ public interface DriverAdapter {
 	 */
 	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
 	/**
-	 * insert [执行]<br/>
+	 * insert [执行]
+	 * <br/>
 	 * 有些不支持返回自增的单独执行<br/>
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -226,7 +229,8 @@ public interface DriverAdapter {
 	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 
 	/**
-	 * save [入口]<br/>
+	 * save [入口]
+	 * <br/>
 	 * 根据是否有主键值确认insert | update<br/>
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -301,7 +305,8 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * select [入口]<br/>
+	 * select [入口]
+	 * <br/>
 	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -334,7 +339,8 @@ public interface DriverAdapter {
 	 */
 	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) ;
 	/**
-	 * select [入口]<br/>
+	 * select [入口]
+	 * <br/>
 	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -561,7 +567,8 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * delete [入口]<br/>
+	 * delete [入口]
+	 * <br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -571,10 +578,11 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 * @param <T> T
 	 */
-	<T> int deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values);
+	<T> long deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values);
 
 	/**
-	 * delete [入口]<br/>
+	 * delete [入口]
+	 * <br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -583,10 +591,11 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return 影响行数
 	 */
-	int delete(DataRuntime runtime, String random, String table, Object obj, String... columns);
+	long delete(DataRuntime runtime, String random, String table, Object obj, String... columns);
 
 	/**
-	 * delete [入口]<br/>
+	 * delete [入口]
+	 * <br/>
 	 * 根据configs和conditions过滤条件
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -595,7 +604,7 @@ public interface DriverAdapter {
 	 * @param conditions  简单过滤条件
 	 * @return 影响行数
 	 */
-	int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions);
+	long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions);
 
 	/**
 	 * truncate [入口]

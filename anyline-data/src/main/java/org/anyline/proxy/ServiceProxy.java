@@ -149,11 +149,11 @@ public class ServiceProxy {
      * 													INSERT
      ******************************************************************************************************************/
 
-    public static int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns){
-        return service.insert(dest, data, checkPriamry, fixs, columns);
+    public static int insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.insert(dest, data, checkPrimary, fixs, columns);
     }
-    public static int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns){
-        return service.insert(data, checkPriamry, fixs, columns);
+    public static int insert(Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.insert(data, checkPrimary, fixs, columns);
     }
     public static int insert(Object data, List<String> fixs, String ... columns){
         return service.insert(data, fixs, columns);
@@ -162,11 +162,11 @@ public class ServiceProxy {
         return service.insert(dest, data, fixs, columns);
     }
 
-    public static int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns){
-        return service.insert(dest, data, checkPriamry, fixs, columns);
+    public static int insert(String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.insert(dest, data, checkPrimary, fixs, columns);
     }
-    public static int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns){
-        return service.insert(data, checkPriamry, fixs, columns);
+    public static int insert(Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.insert(data, checkPrimary, fixs, columns);
     }
     public static int insert(Object data, String[] fixs, String ... columns){
         return service.insert(data, fixs, columns);
@@ -175,11 +175,11 @@ public class ServiceProxy {
         return service.insert(dest, data, fixs, columns);
     }
 
-    public static int insert(String dest, Object data, boolean checkPriamry, String ... columns){
-        return service.insert(dest, data, checkPriamry, columns);
+    public static int insert(String dest, Object data, boolean checkPrimary, String ... columns){
+        return service.insert(dest, data, checkPrimary, columns);
     }
-    public static int insert(Object data, boolean checkPriamry, String ... columns){
-        return service.insert(data, checkPriamry, columns);
+    public static int insert(Object data, boolean checkPrimary, String ... columns){
+        return service.insert(data, checkPrimary, columns);
     }
     public static int insert(Object data, String ... columns){
         return service.insert(data, columns);
@@ -303,17 +303,17 @@ public class ServiceProxy {
      *
      * 保存(insert|update)根据是否有主键值确定insert或update
      * @param data  数据
-     * @param checkPriamry 是否检测主键
+     * @param checkPrimary 是否检测主键
      * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
      * @param columns 指定更新或保存的列
      * @param dest 表
      * @return 影响行数
      */
-    public static int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns){
-        return service.save(dest, data, checkPriamry, fixs, columns);
+    public static int save(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.save(dest, data, checkPrimary, fixs, columns);
     }
-    public static int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns){
-        return service.save(data, checkPriamry, fixs, columns);
+    public static int save(Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.save(data, checkPrimary, fixs, columns);
     }
     public static int save(Object data, List<String> fixs, String ... columns){
         return service.save(data, fixs, columns);
@@ -322,11 +322,11 @@ public class ServiceProxy {
         return service.save(dest, data, fixs, columns);
     }
 
-    public static int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns){
-        return service.save(dest, data, checkPriamry, fixs, columns);
+    public static int save(String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.save(dest, data, checkPrimary, fixs, columns);
     }
-    public static int save(Object data, boolean checkPriamry, String[] fixs, String ... columns){
-        return service.save(data, checkPriamry, fixs, columns);
+    public static int save(Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.save(data, checkPrimary, fixs, columns);
     }
     public static int save(Object data, String[] fixs, String ... columns){
         return service.save(data, fixs, columns);
@@ -335,11 +335,11 @@ public class ServiceProxy {
         return service.save(dest, data, fixs, columns);
     }
 
-    public static int save(String dest, Object data, boolean checkPriamry, String ... columns){
-        return service.save(dest, data, checkPriamry, columns);
+    public static int save(String dest, Object data, boolean checkPrimary, String ... columns){
+        return service.save(dest, data, checkPrimary, columns);
     }
-    public static int save(Object data, boolean checkPriamry, String ... columns){
-        return service.save(data, checkPriamry, columns);
+    public static int save(Object data, boolean checkPrimary, String ... columns){
+        return service.save(data, checkPrimary, columns);
     }
     public static int save(Object data, String ... columns){
         return service.save(data, columns);
@@ -353,17 +353,17 @@ public class ServiceProxy {
      * 保存(insert|update)根据是否有主键值确定insert或update
      * @param async 是否异步执行
      * @param data  数据
-     * @param checkPriamry 是否检测主键
+     * @param checkPrimary 是否检测主键
      * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
      * @param columns 指定更新或保存的列
      * @param dest 表
      * @return 影响行数
      */
-    public static int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns){
-        return service.save(async, dest, data, checkPriamry, fixs, columns);
+    public static int save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.save(async, dest, data, checkPrimary, fixs, columns);
     }
-    public static int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns){
-        return service.save(async, data, checkPriamry, fixs, columns);
+    public static int save(boolean async, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.save(async, data, checkPrimary, fixs, columns);
     }
     public static int save(boolean async, Object data, List<String> fixs, String ... columns){
         return service.save(async, data, fixs, columns);
@@ -372,11 +372,11 @@ public class ServiceProxy {
         return service.save(async, dest, data, fixs, columns);
     }
 
-    public static int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns){
-        return service.save(async, dest, data, checkPriamry, fixs, columns);
+    public static int save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.save(async, dest, data, checkPrimary, fixs, columns);
     }
-    public static int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns){
-        return service.save(async, data, checkPriamry, fixs, columns);
+    public static int save(boolean async, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.save(async, data, checkPrimary, fixs, columns);
     }
     public static int save(boolean async, Object data, String[] fixs, String ... columns){
         return service.save(async, data, fixs, columns);
@@ -385,11 +385,11 @@ public class ServiceProxy {
         return service.save(async, dest, data, fixs, columns);
     }
 
-    public static int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns){
-        return service.save(async, dest, data, checkPriamry, columns);
+    public static int save(boolean async, String dest, Object data, boolean checkPrimary, String ... columns){
+        return service.save(async, dest, data, checkPrimary, columns);
     }
-    public static int save(boolean async, Object data, boolean checkPriamry, String ... columns){
-        return service.save(async, data, checkPriamry, columns);
+    public static int save(boolean async, Object data, boolean checkPrimary, String ... columns){
+        return service.save(async, data, checkPrimary, columns);
     }
     public static int save(boolean async, Object data, String ... columns){
         return service.save(async, data, columns);
@@ -849,7 +849,7 @@ public class ServiceProxy {
     /* *****************************************************************************************************************
      * 													DELETE
      ******************************************************************************************************************/
-    public static int delete(String table, ConfigStore configs, String ... conditions){
+    public static long delete(String table, ConfigStore configs, String ... conditions){
         return service.delete(table, configs, conditions);
     }
     /**
@@ -859,13 +859,13 @@ public class ServiceProxy {
      * @param columns 生成删除条件的列,如果不设置则根据主键删除
      * @return 影响行数
      */
-    public static int delete(String dest, DataSet set, String ... columns){
+    public static long delete(String dest, DataSet set, String ... columns){
         return service.delete(dest, set, columns);
     }
-    public static int delete(DataSet set, String ... columns){
+    public static long delete(DataSet set, String ... columns){
         return service.delete(set, columns);
     }
-    public static int delete(String dest, DataRow row, String ... columns){
+    public static long delete(String dest, DataRow row, String ... columns){
         return service.delete(dest, row, columns);
     }
 
@@ -875,7 +875,7 @@ public class ServiceProxy {
      * @param columns 生成删除条件的列,如果不设置则根据主键删除
      * @return 影响行数
      */
-    public static int delete(Object obj, String ... columns){
+    public static long delete(Object obj, String ... columns){
         return service.delete(obj, columns);
     }
 
@@ -885,7 +885,7 @@ public class ServiceProxy {
      * @param kvs key-value
      * @return 影响行数
      */
-    public static int delete(String table, String ... kvs){
+    public static long delete(String table, String ... kvs){
         return service.delete(table, kvs);
     }
 
@@ -896,7 +896,7 @@ public class ServiceProxy {
      * @param values 值集合
      * @return 影响行数
      */
-    public static int deletes(String table, String key, Collection<Object> values){
+    public static long deletes(String table, String key, Collection<Object> values){
         return service.deletes(table, key, values);
     }
 
@@ -907,7 +907,7 @@ public class ServiceProxy {
      * @param values 值集合
      * @return 影响行数
      */
-    public static <T> int deletes(String table, String key, T ... values){
+    public static <T> long deletes(String table, String key, T ... values){
         return service.deletes(table, key, values);
     }
 

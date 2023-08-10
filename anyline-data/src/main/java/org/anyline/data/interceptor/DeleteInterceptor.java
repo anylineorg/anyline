@@ -39,5 +39,5 @@ public interface DeleteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, Run run, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, Run run, boolean success, long result, long millis){ return SWITCH.CONTINUE;}
 }

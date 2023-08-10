@@ -277,7 +277,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, int qty, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行存储过程之前调用
@@ -381,7 +381,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterDelete(DataRuntime runtime, String random, Run run, boolean success, int qty, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterDelete(DataRuntime runtime, String random, Run run, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL时间超限时触发
