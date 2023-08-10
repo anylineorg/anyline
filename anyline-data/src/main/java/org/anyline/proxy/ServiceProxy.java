@@ -1012,6 +1012,9 @@ public class ServiceProxy {
         public static LinkedHashMap<String, Database> databases(){
             return service.metadata().databases();
         }
+        public static Database database(String name){
+            return service.metadata().database(name);
+        }
 
 
         /* *****************************************************************************************************************

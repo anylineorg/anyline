@@ -1078,11 +1078,26 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 	@Override
+	public List<Run> buildQueryDatabaseRun(DataRuntime runtime, String name) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDatabaseRun(DataRuntime runtime)", 37));
+		}
+		return new ArrayList<>();
+	}
+	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
+	}
+
+	@Override
+	public Database  database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)", 37));
+		}
+		return null;
 	}
 
 	/* *****************************************************************************************************************
@@ -4390,7 +4405,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String type = null;
 			if(null != column){
 				type = column.getTypeName();
-				if(null == type){
+				if(null == type && BasicUtil.isNotEmpty(run.getTable())){
 					LinkedHashMap<String,Column> columns = columns(runtime,null, false, new Table(run.getTable()), false);
 					column = columns.get(column.getName().toUpperCase());
 					if(null != column) {

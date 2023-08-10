@@ -742,6 +742,7 @@ public interface AnylineService<E>{
 		 * @return databases
 		 */
 		LinkedHashMap<String, Database> databases();
+		Database database(String name);
 
 
 		/* *****************************************************************************************************************

@@ -2240,6 +2240,47 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 	@Override
+	public Database database(DataRuntime runtime, String random, String name){
+		if(null == random){
+			random = random(runtime);
+		}
+		Database database = null;
+		try{
+			long fr = System.currentTimeMillis();
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQueryDatabaseRun(runtime, name);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, null, run).toUpperKey();
+						database = database(runtime, idx++, true, set);
+						if(null != database){
+							break;
+						}
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+					log.warn("{}[database][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+				}
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[database][result:{}][执行耗时:{}ms]", random, database, System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[database][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return database;
+	}
+
+	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random){
 		if(null == random){
 			random = random(runtime);
@@ -2276,7 +2317,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return databases;
 	}
-
 	/**
 	 * 缓存表名
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -3404,6 +3444,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			String catalog = table.getCatalog();
 			String schema = table.getSchema();
 
+			int qty_total = 0;
 			int qty_dialect = 0; //优先根据系统表查询
 			int qty_metadata = 0; //再根据metadata解析
 			int qty_jdbc = 0; //根据驱动内置接口补充
@@ -3419,6 +3460,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						idx++;
 					}
 				}
+				if(null != columns) {
+					qty_dialect = columns.size();
+					qty_total=columns.size();
+				}
 			} catch (Exception e) {
 				if(primary) {
 					e.printStackTrace();
@@ -3426,10 +3471,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
 			}
-			qty_dialect = columns.size();
 			// 根据驱动内置接口补充
 			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
-			if (columns.size() == 0) {
+			if (null == columns || columns.size() == 0) {
 				try {
 					List<Run> runs = buildQueryColumnRun(runtime, table, true);
 					if (null != runs) {
@@ -3447,15 +3491,18 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						}
 					}
 				}
-				qty_metadata = columns.size() - qty_dialect;
+				if(null != columns) {
+					qty_metadata = columns.size() - qty_dialect;
+					qty_total = columns.size();
+				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
 			}
 
 			// 根据jdbc接口补充
 
-			if (columns.size() == 0) {
+			if (null == columns || columns.size() == 0) {
 				DataSource ds = null;
 				Connection con = null;
 				DatabaseMetaData metadata = null;
@@ -3473,14 +3520,18 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						DataSourceUtils.releaseConnection(con, ds);
 					}
 				}
-				qty_jdbc = columns.size() - qty_metadata - qty_dialect;
+
+				if(null != columns) {
+					qty_total = columns.size();
+					qty_jdbc = columns.size() - qty_metadata - qty_dialect;
+				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, columns.size(), qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据jdbc接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
 			}
 			//检测主键
 			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
-				if (columns.size() > 0) {
+				if (null != columns || columns.size() > 0) {
 					boolean exists = false;
 					for(Column column:columns.values()){
 						if(column.isPrimaryKey() != -1){
@@ -3511,7 +3562,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				log.error("[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
 			}
 		}
-		CacheProxy.columns(runtime.getKey(), table.getName(), columns);
+		if(null != columns) {
+			CacheProxy.columns(runtime.getKey(), table.getName(), columns);
+		}else{
+			columns = new LinkedHashMap<>();
+		}
 		return columns;
 	}
 	@Override
@@ -3546,6 +3601,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
+		if(BasicUtil.isEmpty(table.getName())){
+			return columns;
+		}
 		ResultSet set = dbmd.getColumns(catalog, schema, table.getName(), pattern);
 		Map<String,Integer> keys = keys(set);
 		while (set.next()){

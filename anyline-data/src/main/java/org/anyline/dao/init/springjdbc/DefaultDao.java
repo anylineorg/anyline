@@ -535,6 +535,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			}
 		}
 	}
+	@Override
+	public Database database(DataRuntime runtime, String random, boolean recover, String name){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		try {
+			return runtime.getAdapter().database(runtime, random, name);
+		}finally {
+			if(recover && !isFix() && ClientHolder.isAutoRecover()){
+				ClientHolder.recoverDataSource();
+			}
+		}
+	}
 
 	/* *****************************************************************************************************************
 	 * 													table

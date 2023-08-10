@@ -326,6 +326,10 @@ public interface AnylineDao<E>{
 	default LinkedHashMap<String, Database> databases(){
 		return databases(runtime(), null, false);
 	}
+	Database database(DataRuntime runtime, String random, boolean recover, String name);
+	default Database database(String name){
+		return database(runtime(), null, false, name);
+	}
 
 
 	/* *****************************************************************************************************************

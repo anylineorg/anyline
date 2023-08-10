@@ -518,6 +518,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	LinkedHashMap<String, Database> databases(DataRuntime runtime, String random);
+	Database database(DataRuntime runtime, String random, String name);
 	/**
 	 * 查询所有数据库
 	 * @param runtime 运行环境主要包含适配器数据源或客户端
@@ -525,6 +526,7 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception;
+	List<Run> buildQueryDatabaseRun(DataRuntime runtime, String name) throws Exception;
 	default List<Run> buildQueryDatabaseRun() throws Exception{
 		return buildQueryDatabaseRun(RuntimeHolder.getRuntime());
 	}
@@ -540,6 +542,7 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
+	Database database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													table
