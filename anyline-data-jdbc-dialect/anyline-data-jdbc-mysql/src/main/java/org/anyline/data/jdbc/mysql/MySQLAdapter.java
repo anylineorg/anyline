@@ -217,6 +217,17 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append("SHOW DATABASES");
 		return runs;
 	}
+	public List<Run> buildQueryDatabaseRun(DataRuntime runtime, String name) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SHOW DATABASES");
+		if(BasicUtil.isNotEmpty(name)){
+			builder.append(" LIKE '").append(name).append("'");
+		}
+		return runs;
+	}
 
 	/**
 	 * 根据查询结果集构造 Database
@@ -237,6 +248,14 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			databases.put(database.getName().toUpperCase(), database);
 		}
 		return databases;
+	}
+	public Database database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
+		for(DataRow row:set){
+			Database database = new Database();
+			database.setName(row.getString("DATABASE"));
+			return database;
+		}
+		return null;
 	}
 
 	/* *****************************************************************************************************************
