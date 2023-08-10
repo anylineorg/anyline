@@ -1,6 +1,5 @@
 package org.anyline.data.listener.init;
 
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.param.ConfigStore;
@@ -39,8 +38,7 @@ public class DefaultDDListener implements DDListener {
      */
     @Override
     public ACTION.SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, Exception exception) {
-        AnylineDao dao = runtime.getDao();
-        if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
+         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
             return ACTION.SWITCH.CONTINUE;
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -50,7 +48,7 @@ public class DefaultDDListener implements DDListener {
             // 根据行数
             RunPrepare prepare = new DefaultTablePrepare();
             prepare.setDataSource(table.getName());
-            long rows = dao.count(runtime, random, false, prepare, null);
+            long rows = runtime.getAdapter().count(runtime, random, prepare, null);
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
                 swt = afterAlterColumnException(runtime, random, table, column, rows, exception);
             }else{
@@ -62,8 +60,7 @@ public class DefaultDDListener implements DDListener {
 
     public ACTION.SWITCH exeAfterException(DataRuntime runtime, Table table, Column column, Exception exception){
         DriverAdapter adapter = runtime.getAdapter();
-        AnylineDao dao = runtime.getDao();
-        Column update = column.getUpdate();
+         Column update = column.getUpdate();
         boolean isNum = adapter.isNumberColumn(runtime, update);
         if(adapter.isCharColumn(runtime, column) && !adapter.isCharColumn(runtime, update)){
             // 原来是String类型 修改成 boolean或number类型 失败
@@ -89,7 +86,7 @@ public class DefaultDDListener implements DDListener {
                 prepare.setDataSource(table.getName());
                 ConfigStore configs = new DefaultConfigStore();
                 configs.setPageNavi(navi);
-                DataSet set = dao.querys(prepare, configs);
+                DataSet set = runtime.getAdapter().querys(runtime, null, prepare, configs);
                 if(set.size() ==0){
                     break;
                 }
@@ -110,7 +107,7 @@ public class DefaultDDListener implements DDListener {
                         convert = run.getValue();
                         row.put(column.getName(), convert);
                         log.warn("[after exception][数据修正][{}>{}]", value, convert);
-                        dao.update(table.getName(), row, column.getName());
+                        runtime.getAdapter().update(runtime, null, table.getName(), row, new DefaultConfigStore(), column.getName());
                     }
                 }
                 if(set.size() <  vol){
