@@ -10,7 +10,7 @@
 低代码平台、数据中台等场景需要生成SQL(只生成不执行)参考  
 [【JDBCAdapter】](http://doc.anyline.org/ss/01_1193)
 或
-[【AnylineDao】](https://gitee.com/anyline/anyline/blob/master/anyline-data-jdbc/src/main/java/org/anyline/dao/init/springjdbc/DefaultDao.java)
+[【AnylineDao】](https://gitee.com/anyline/anyline/blob/master/anyline-data/src/main/java/org/anyline/dao/init/springjdbc/DefaultDao.java)
 
 ***快速开始请参考示例源码(各种各样最简单的hello world):***  
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
@@ -32,16 +32,17 @@ AnyLine的核心是一个基于spring-jdbc生态的兼容各种数据库的(No-O
 其重点是:
 - 以最简单、快速方式操作 ***数据库*** 与 ***结果集***
 - 兼容各种数据库，统一生成或执行DML/DDL，读写表结构、索引等元数据
-- 一切基于动态、基于运行时
+- 一切基于动态、基于运行时(包括数据源、数据结构等)
 
 常用于动态结构的场景中，作为SQL解析引擎或适配器出现 ,    
 就是根据用户提交的参数，翻译成不同数据库的方言(DML/DDL)  
 如:数据中台、可视化、低代码、SAAS、自定义表单、异构数据库迁移同步、物联网车联网数据处理、数据清洗、运行时自定义报表/查询条件/数据结构、爬虫数据解析等。参考【[适用场景](http://doc.anyline.org/ss/ed_14)】
 ### 与ORM最明显的区别是：
 - ***摒弃了各种繁琐呆板的实体类***  
-  让数据库操作更简单，不要一动就是一整套的service/dao/mapping/VOPODTO有用没用的各种O，生成个SQL各种判断遍历。  
+  让数据库操作更简单，不要一动就是一整套的service/dao/mapping/VOPODTO有用没用的各种O，生成个简单的SQL也各种判断遍历。  
 - ***强化了针对结果集的数据二次处理能力***  
-  结果集的数学计算尽量作到一键...一键...而不是像ORM提供的entity,map,list除了提供个get/set/foreach，稍微有点用的又要麻烦程序员各种判断各种遍历  
+  结果集的聚合、过滤、行列转换、格式化及各种数学计算尽量作到一键...一键...  
+  而不是像ORM提供的entity,map,list除了提供个get/set/foreach，稍微有点用的又要麻烦程序员各种判断各种遍历  
 
 也可以这样理解，ORM相当于总成、而anyline相当于散件DIY。  
 如果你的开发出来的产品面向的终端业务用户，如作个CRM/MRP或**管理系统之类的，那你选ORM不会有什么大问题，最多也就是写SQL和配置文件费点代码。  
