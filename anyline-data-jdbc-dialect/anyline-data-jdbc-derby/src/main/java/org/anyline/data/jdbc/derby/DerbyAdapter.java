@@ -47,7 +47,7 @@ public class DerbyAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){

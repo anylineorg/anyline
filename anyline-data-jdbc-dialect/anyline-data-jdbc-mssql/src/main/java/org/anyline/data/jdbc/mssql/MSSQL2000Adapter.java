@@ -36,7 +36,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return String
      */
     @Override
-    public String parseFinalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalQuery(DataRuntime runtime, Run run){
         StringBuilder builder = new StringBuilder();
         String cols = run.getQueryColumns();
         PageNavi navi = run.getPageNavi();
@@ -92,7 +92,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param columns 需插入的列
      */
     @Override
-    public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder){
@@ -151,7 +151,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param columns 需插入的列
      */
     @Override
-    public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -159,7 +159,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInsertContent(runtime, run, dest, set, columns);
+            this.fillInsertContent(runtime, run, dest, set, columns);
             return;
         }
 

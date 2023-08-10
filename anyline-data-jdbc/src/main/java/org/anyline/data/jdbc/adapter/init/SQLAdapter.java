@@ -110,7 +110,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param columns 需插入的列
      */
     @Override
-    public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -164,7 +164,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param columns 需插入的列
      */
     @Override
-    public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -174,7 +174,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInsertContent(runtime, run, dest, set, columns);
+            this.fillInsertContent(runtime, run, dest, set, columns);
             return;
         }
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
@@ -373,7 +373,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null == cols || cols.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        createInsertContent(runtime, run, dest, list, cols);
+        fillInsertContent(runtime, run, dest, list, cols);
 
         return run;
     }
@@ -759,16 +759,16 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      * Object createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      *
-     * protected void createQueryContent(DataRuntime runtime, XMLRun run)
-     * protected void createQueryContent(DataRuntime runtime, TextRun run)
-     * protected void createQueryContent(DataRuntime runtime, TableRun run)
+     * protected void fillQueryContent(DataRuntime runtime, XMLRun run)
+     * protected void fillQueryContent(DataRuntime runtime, TextRun run)
+     * protected void fillQueryContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
     /**
      * 构造 LIKE 查询条件
      * 如果不需要占位符 返回null  否则原样返回value
      * @param builder builder
-     * @param compare compare
+     * @param compare 比较方式 默认 equal 多个值默认 in
      * @param value value
      * @return value
      */
@@ -799,8 +799,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * 构造 FIND_IN_SET 查询条件
      * 如果不需要占位符 返回null  否则原样返回value
      * @param builder builder
-     * @param column column
-     * @param compare compare
+     * @param column 列
+     * @param compare 比较方式 默认 equal 多个值默认 in
      * @param value value
      * @return value
      */
@@ -812,7 +812,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /**
      * 构造(NOT) IN 查询条件
      * @param builder builder
-     * @param compare compare
+     * @param compare 比较方式 默认 equal 多个值默认 in
      * @param value value
      * @return StringBuilder
      */
@@ -839,10 +839,10 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     }
 
     @Override
-    protected void createQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
     }
     @Override
-    protected void createQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run){
         replaceVariable(runtime, run);
         run.appendCondition();
         run.appendGroup();
@@ -948,7 +948,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         builder.append(result);
     }
     @Override
-    protected void createQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run){
         StringBuilder builder = run.getBuilder();
         TablePrepare sql = (TablePrepare)run.getPrepare();
         builder.append("SELECT ");
@@ -1032,11 +1032,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXISTS
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseExists(DataRuntime runtime, Run run)
+     * String mergeFinalExists(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
 
     @Override
-    public String parseExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run){
         String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
         sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
         return sql;
@@ -1045,11 +1045,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													EXECUTE
      * -----------------------------------------------------------------------------------------------------------------
-     * void createExecuteRunContent(DataRuntime runtime, Run run);
+     * void fillExecuteContent(DataRuntime runtime, Run run);
      ******************************************************************************************************************/
 
     @Override
-    protected void createExecuteRunContent(DataRuntime runtime, TextRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run){
         replaceVariable(runtime,run);
         run.appendCondition();
         run.appendGroup();
@@ -1058,7 +1058,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													TOTAL
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseTotalQuery(DataRuntime runtime, Run run)
+     * String mergeFinalTotal(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
 
     /**
@@ -1068,7 +1068,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return String
      */
     @Override
-    public String parseTotalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run){
         //select * from user
         //select (select id from a) as a, id as b from (select * from suer) where a in (select a from b)
         String base = run.getBuilder().toString();
@@ -1088,7 +1088,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     /* *****************************************************************************************************************
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
-     * protected Run createDeleteRunContent(TableRun run)
+     * protected Run fillDeleteRunContent(TableRun run)
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/

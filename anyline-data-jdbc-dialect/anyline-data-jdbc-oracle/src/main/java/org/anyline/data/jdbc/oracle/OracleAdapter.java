@@ -120,7 +120,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		return runs;
 	}
 	@Override 
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		StringBuilder builder = new StringBuilder();
 		PageNavi navi = run.getPageNavi(); 
 		String sql = run.getBaseQuery(); 
@@ -146,7 +146,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 	@Override
-	public String parseExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
@@ -192,7 +192,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @param columns columns
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		if(null == set || set.size() ==0){
 			return;
 		}
@@ -274,7 +274,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		builder.append(") M ");
 	}
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -285,7 +285,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInsertContent(runtime, run, dest, set, columns);
+			this.fillInsertContent(runtime, run, dest, set, columns);
 			return;
 		}
 

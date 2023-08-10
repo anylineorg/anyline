@@ -92,7 +92,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 		return runs;
 	}
 	@Override
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){

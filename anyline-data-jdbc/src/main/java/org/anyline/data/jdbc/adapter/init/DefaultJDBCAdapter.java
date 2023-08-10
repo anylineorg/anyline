@@ -1322,7 +1322,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 
 	@Override
-	public int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
 		boolean sql_success = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -1363,7 +1363,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 	@Override
-	public int execute(DataRuntime runtime, String random, Run run){
+	public long execute(DataRuntime runtime, String random, Run run){
 		int result = -1;
 		String sql = run.getFinalExecute();
 		List<Object> values = run.getValues();

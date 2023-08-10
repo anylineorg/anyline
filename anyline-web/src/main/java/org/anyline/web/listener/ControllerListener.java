@@ -8,7 +8,7 @@ public interface ControllerListener {
     /**
      * 封装完查询条件后调用
      * @param request rquest
-     * @param configs 查询条件
+     * @param configs 过滤条件及相关配置
      * @return ConfigStore
      */
     public ConfigStore after(HttpServletRequest request, ConfigStore configs);

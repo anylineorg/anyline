@@ -107,7 +107,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		return runs;
 	}
 	@Override
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery();
 		String cols = run.getQueryColumns();
 		if(!"*".equals(cols)){
@@ -137,7 +137,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	}
 
 	@Override
-	public String parseExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
@@ -171,12 +171,12 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 * @param columns  需要插入的列
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		//不要参考oracle,参考mysql就可以
-		super.createInsertContent(runtime, run, dest, set, columns);
+		super.fillInsertContent(runtime, run, dest, set, columns);
 	}
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -187,7 +187,7 @@ public class DMAdapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInsertContent(runtime, run, dest, set, columns);
+			this.fillInsertContent(runtime, run, dest, set, columns);
 			return;
 		}
 

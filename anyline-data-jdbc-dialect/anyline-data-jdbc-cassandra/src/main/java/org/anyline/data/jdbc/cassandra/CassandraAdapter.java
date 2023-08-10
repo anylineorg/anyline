@@ -38,7 +38,7 @@ public class CassandraAdapter extends SQLAdapter implements JDBCAdapter, Initial
      *
      * ****************************************************************************************************/
     @Override
-    public String parseFinalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalQuery(DataRuntime runtime, Run run){
         String sql = run.getBaseQuery();
         String cols = run.getQueryColumns();
         if(!"*".equals(cols)){

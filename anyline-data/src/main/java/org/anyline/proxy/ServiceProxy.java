@@ -796,10 +796,10 @@ public class ServiceProxy {
      * @param conditions  conditions
      * @return int
      */
-    public static int execute(String src, ConfigStore configs, String ... conditions){
+    public static long execute(String src, ConfigStore configs, String ... conditions){
         return service.execute(src, configs, conditions);
     }
-    public static int execute(String src, String ... conditions){
+    public static long execute(String src, String ... conditions){
         return service.execute(src, conditions);
     }
     /**

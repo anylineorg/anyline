@@ -49,9 +49,9 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return mpas
 	 */
 	DataSet querys(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -63,9 +63,9 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return mpas
 	 */
 	<T> EntitySet<T> selects(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions);
@@ -78,9 +78,9 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return mpas
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -93,9 +93,9 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return long
 	 */
 	long count(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -121,9 +121,9 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return boolean
 	 */
 	boolean exists(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions);
@@ -237,16 +237,16 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare 包含表或自定义SQL
-	 * @param configs configs
-	 * @param conditions conditions
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return 影响行数
 	 */
-	int execute(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	default int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	long execute(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default long execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return execute(runtime(), null, false, prepare, configs, conditions);
 	}
-	default int execute(RunPrepare prepare,  String ... conditions){
+	default long execute(RunPrepare prepare,  String ... conditions){
 		return execute(prepare, null, conditions);
 	}
  

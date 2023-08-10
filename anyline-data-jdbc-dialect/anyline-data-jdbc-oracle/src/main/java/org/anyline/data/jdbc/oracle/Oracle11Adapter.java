@@ -19,7 +19,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
     }
 
     @Override
-    public String parseFinalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalQuery(DataRuntime runtime, Run run){
         StringBuilder builder = new StringBuilder();
         String cols = run.getQueryColumns();
         PageNavi navi = run.getPageNavi();

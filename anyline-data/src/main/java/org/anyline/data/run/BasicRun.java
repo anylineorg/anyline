@@ -408,7 +408,7 @@ public abstract class BasicRun implements Run {
 	} 
 	@Override 
 	public String getFinalQuery() {
-		String text = runtime.getAdapter().parseFinalQuery(runtime,this);
+		String text = runtime.getAdapter().mergeFinalQuery(runtime,this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -416,7 +416,7 @@ public abstract class BasicRun implements Run {
 	} 
 	@Override 
 	public String getTotalQuery() {
-		String text = runtime.getAdapter().parseTotalQuery(runtime,this);
+		String text = runtime.getAdapter().mergeFinalTotal(runtime,this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -424,7 +424,7 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public String getFinalExists(){
-		String text =  runtime.getAdapter().parseExists(runtime,this);
+		String text =  runtime.getAdapter().mergeFinalExists(runtime,this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -619,7 +619,7 @@ public abstract class BasicRun implements Run {
 
 	/**
 	 * 添加条件
-	 * @param conditions 查询条件 ORDER GROUP 等
+	 * @param conditions  简单过滤条件 ORDER GROUP 等
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override

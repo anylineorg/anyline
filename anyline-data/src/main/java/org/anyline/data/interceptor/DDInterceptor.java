@@ -20,7 +20,7 @@ public interface DDInterceptor  extends JDBCInterceptor{
 
     /**
      * 在创建SQL之前触发，如果需要影响SQL创建可以在这一步修改metadata,类型一般是org.anyline.entity.data.Table/Column等
-     * @param runtime 包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param action 执行命令
      * @param metadata  类型一般是org.anyline.entity.data.Table/Column等

@@ -70,7 +70,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){
@@ -103,8 +103,8 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 构造 FIND_IN_SET 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
 	 * @param builder builder
-	 * @param compare compare
-	 * @param column column
+	 * @param compare 比较方式 默认 equal 多个值默认 in
+	 * @param column 列
 	 * @param value value
 	 * @return value
 	 */

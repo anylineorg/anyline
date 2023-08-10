@@ -55,7 +55,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 构造 LIKE 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
 	 * @param builder builder
-	 * @param compare compare
+	 * @param compare 比较方式 默认 equal 多个值默认 in
 	 * @param value value
 	 * @return value
 	 */
@@ -136,7 +136,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		return cnt;
 	}
 	@Override 
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){

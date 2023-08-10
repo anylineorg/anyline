@@ -12,9 +12,9 @@ public interface UpdateInterceptor extends DMInterceptor{
 
     /**
      * 创建update SQL之前，可以在这一步修改查询条件
-     * @param runtime datasource/adapter/jdbctemplate
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
-     * @param configs 查询条件
+     * @param configs 过滤条件及相关配置
      * @param data  对象
      * @param columns  需要更新的列
      * @return RESULT
@@ -23,14 +23,14 @@ public interface UpdateInterceptor extends DMInterceptor{
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
-     * @param runtime datasource/adapter/jdbctemplate
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @return RESULT
      */
     default SWITCH before(DataRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
-     * @param runtime datasource/adapter/jdbctemplate
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param result 影响行数
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @param millis 耗时

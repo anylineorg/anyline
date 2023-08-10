@@ -48,7 +48,7 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){

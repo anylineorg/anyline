@@ -66,7 +66,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		StringBuilder builder = new StringBuilder();
 		String cols = run.getQueryColumns();
 		PageNavi navi = run.getPageNavi();
@@ -119,8 +119,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param columns 需插入的列
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
-		super.createInsertContent(runtime, run, dest, set, columns);
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+		super.fillInsertContent(runtime, run, dest, set, columns);
 	}
 
 	/**
@@ -133,12 +133,12 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param columns 需插入的列
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
-		super.createInsertContent(runtime, run, dest, list, columns);
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+		super.fillInsertContent(runtime, run, dest, list, columns);
 	}
 
 	@Override 
-	public String parseExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "IF EXISTS(\n" + run.getBuilder().toString() +"\n) SELECT 1 AS IS_EXISTS ELSE SELECT 0 AS IS_EXISTS"; 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 

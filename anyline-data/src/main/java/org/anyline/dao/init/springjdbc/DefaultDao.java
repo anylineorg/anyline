@@ -131,9 +131,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions 简单过滤条件
 	 * @return mpas
 	 */
 	@Override
@@ -153,9 +153,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 查询<br/>
 	 * 注意:如果设置了自动还原,querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载),而select不会
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
 	 * @return DataSet
 	 */
 	@Override
@@ -174,9 +174,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * 查询<br/>
 	 * 注意:如果设置了自动还原,querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载),而select不会
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
 	 * @return DataSet
 	 */
 	@Override
@@ -221,9 +221,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
 	 * @return long
 	 */
 	@Override
@@ -245,9 +245,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare RunPrepare
-	 * @param configs 查询条件
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
 	 * @return boolean
 	 */
 	@Override
@@ -366,13 +366,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare 包含表或自定义SQL
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs configs
 	 * @param conditions conditions
 	 * @return 影响行数
 	 */
 	@Override
-	public int execute(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public long execute(DataRuntime runtime, String random, boolean recover, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -429,7 +429,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 *
-	 * @param runtime
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random
 	 * @param recover
 	 * @param table 表

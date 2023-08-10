@@ -72,7 +72,7 @@ public interface Run {
 
 	/**
 	 * 添加条件
-	 * @param conditions 查询条件、ORDER、GROUP、HAVING 等
+	 * @param conditions  简单过滤条件、ORDER、GROUP、HAVING 等
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run addCondition(String ... conditions);

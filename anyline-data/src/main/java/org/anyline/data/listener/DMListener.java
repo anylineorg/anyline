@@ -37,9 +37,9 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param prepare  prepare
-     * @param configs 查询条件配置
-     * @param conditions 查询条件
+     * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions  简单过滤条件
      * @return SWITCH
      */
     default SWITCH prepareQuery(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){return SWITCH.CONTINUE;}

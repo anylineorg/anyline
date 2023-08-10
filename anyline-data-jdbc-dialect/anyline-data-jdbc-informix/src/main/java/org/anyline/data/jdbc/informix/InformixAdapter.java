@@ -85,7 +85,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		column_types.put(43,"BOOLEAN");
 	}
 	@Override
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){
@@ -152,7 +152,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 
 	@Override
-	public String parseExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
@@ -193,7 +193,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @param columns keys
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		if(null == set || set.size() ==0){
 			return;
 		}
@@ -249,7 +249,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 	}
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -260,7 +260,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
-			createInsertContent(runtime, run, dest, set, columns);
+			this.fillInsertContent(runtime, run, dest, set, columns);
 			return;
 		}
 
@@ -1353,7 +1353,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 * 添加列引导
 	 * @param builder StringBuilder
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column){
@@ -1392,7 +1392,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 * 删除列引导
 	 * @param builder StringBuilder
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column){
@@ -1402,7 +1402,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 * 修改列名
 	 * ALTER TABLE T  RENAME  A  to B ;
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -1420,7 +1420,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 
 	/**
 	 *  alter table simple:informix.a_test  modify  names varchar(20) ;
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -1486,7 +1486,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 修改非空限制
 	 * ALTER TABLE TABLE_NAME ALTER COLUMN_NAME DROP NOT NULL
 	 * ALTER TABLE TABLE_NAME ALTER COLUMN_NAME SET NOT NULL
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -1527,7 +1527,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	/**
 	 * 修改备注
 	 * COMMENT ON COLUMN T.ID IS 'ABC'
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override

@@ -134,7 +134,7 @@ public interface DriverAdapter {
 	 */
 	int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/**
-	 * 创建 insert Run
+	 * 创建 insert 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj 实体
@@ -145,24 +145,24 @@ public interface DriverAdapter {
 	Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
 
 	/**
-	 * 根据集合类型创建批量插入命令
+	 * 填充inset命令内容(根据集合类型)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param list 数据集
 	 * @param columns 插入的列
 	 */
-	void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns);
+	void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns);
 
 	/**
-	 * 根据集合类型创建批量插入命令
+	 * 填充inset命令内容(根据集合类型)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
 	 * @param columns 需要插入的列
 	 */
-	void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns);
+	void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns);
 
 	/**
 	 * 确认需要插入的列
@@ -201,7 +201,7 @@ public interface DriverAdapter {
 	String generatedKey();
 
 	/**
-	 * insert [执行]<br/><br/>
+	 * insert [执行]<br/>
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -253,7 +253,7 @@ public interface DriverAdapter {
 	 */
 	int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
 	/**
-	 * 创建 update run
+	 * 创建 update 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj Entity或DtaRow
@@ -264,7 +264,7 @@ public interface DriverAdapter {
 	 */
 	Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
 	/**
-	 * 根据实体对象创建 update run
+	 * 根据实体对象创建 update 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj Entity
@@ -275,7 +275,7 @@ public interface DriverAdapter {
 	 */
 	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns);
 	/**
-	 * 根据datarow创建 update run
+	 * 根据DataRow创建 update 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param row DtaRow
@@ -301,50 +301,89 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * 创建查询SQL
+	 * select [入口]<br/>
+	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param prepare  prepare
-	 * @param configs 查询条件配置
-	 * @param conditions 查询条件
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
+	DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions);
+	/**
+	 * select procedure [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param procedure 存储过程
+	 * @param navi 分页
+	 * @return DataSet
+	 */
+	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
+
+	/**
+	 * select [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param clazz 类
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return EntitySet
+	 * @param <T> Entity
+	 */
+	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) ;
+	/**
+	 * select [入口]<br/>
+	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return maps 返回map集合
+	 */
+	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	/**
+	 * 创建 select 最终可执行命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	default Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return buildQueryRun(RuntimeHolder.getRuntime(), prepare, configs, conditions);
-	}
 	/**
-	 * 创建查询序列SQL
+	 * 创建 select sequence 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param next  是否生成返回下一个序列 false:cur true:next
-	 * @param names names
-	 * @return String
+	 * @param names 存储过程名称s
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names);
-
 	/**
+	 * 填充 select 命令内容
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
-	void createQueryContent(DataRuntime runtime, Run run);
-
+	void fillQueryContent(DataRuntime runtime, Run run);
 
 	/**
-	 * 创建最终执行查询SQL 包含分页 ORDER
+	 * 合成最终 select 命令 包含分页 排序
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	String parseFinalQuery(DataRuntime runtime, Run run);
-
+	String mergeFinalQuery(DataRuntime runtime, Run run);
 
 	/**
 	 * 构造 LIKE 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param compare compare
+	 * @param compare 比较方式 默认 equal 多个值默认 in
 	 * @param value value
-	 * @return value 有占位符时返回 占位值，没有占位符返回null
+	 * @return value 有占位符时返回占位值，没有占位符返回null
 	 */
 	Object createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
@@ -353,8 +392,8 @@ public interface DriverAdapter {
 	 * 如果不需要占位符 返回null  否则原样返回value
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param column column
-	 * @param compare compare
+	 * @param column 列
+	 * @param compare 比较方式 默认 equal 多个值默认 in
 	 * @param value value
 	 * @return value
 	 */
@@ -363,48 +402,25 @@ public interface DriverAdapter {
 	 * 构造(NOT) IN 查询条件
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param compare compare
+	 * @param compare 比较方式 默认 equal 多个值默认 in
 	 * @param value value
 	 * @return builder
 	 */
 	StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
-	 * 执行存储过程查询
+	 * select [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param procedure 存储过程
-	 * @param navi 分页
+	 * @param system 系统表不检测列属性
+	 * @param table 表
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return DataSet
 	 */
-	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
-	DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions);
-	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) ;
-
-		/**
-         * 执行查询
-         * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-         * @param random 用来标记同一组命令
-         * @param system 是否是系统表
-         * @param table 表
-         * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-         * @return DataSet
-         */
 	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
 
-	long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * 统计总行数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return long
-	 */
-	long count(DataRuntime runtime, String random, Run run);
-
-	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	/**
-	 * 执行查询
+	 * select [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -412,34 +428,61 @@ public interface DriverAdapter {
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
 	/**
-	 * 执行查询
+	 * select [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return maps
+	 * @return map
 	 */
 	Map<String,Object> map(DataRuntime runtime, String random, Run run);
 
 	/**
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param list JDBC执行结果
-	 * @return  DataSet
+	 * @param list JDBC执行返回的结果集
+	 * @return  maps
 	 */
 	List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list);
-
+	/**
+	 * select [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param next 是否查下一个序列值
+	 * @param names 存储过程名称s
+	 * @return DataRow 保存序列查询结果 以存储过程name作为key
+	 */
 	DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names);
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 ******************************************************************************************************************/
 
 	/**
-	 * 创建统计总数SQL
+	 * count [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return long
+	 */
+	long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	/**
+	 * count [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return long
+	 */
+	long count(DataRuntime runtime, String random, Run run);
+
+ 
+	/**
+	 * 合成最终 select count 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	String parseTotalQuery(DataRuntime runtime, Run run);
+	String mergeFinalTotal(DataRuntime runtime, Run run);
 
 
 	/* *****************************************************************************************************************
@@ -447,31 +490,39 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * 数据是否存在
+	 * exists [入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param prepare 包含表或自定义SQL
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 查询条件及相关设置
-	 * @param conditions 查询条件
+	 * @param conditions  简单过滤条件
 	 * @return boolean
 	 */
 	boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+
 	/**
-	 * 创建检测是否存在SQL
+	 * 合成最终 exists 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	String parseExists(DataRuntime runtime, Run run);
-	int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	String mergeFinalExists(DataRuntime runtime, Run run);
+
+	/* *****************************************************************************************************************
+	 * 													EXECUTE
+	 ******************************************************************************************************************/
+
 	/**
-	 * 执行
+	 * execute [入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param random  random
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
 	 * @return 影响行数
 	 */
-	int execute(DataRuntime runtime, String random, Run run);
+	long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+
 	/**
 	 * 执行存储过程
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -480,71 +531,136 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 */
 	boolean execute(DataRuntime runtime, String random, Procedure procedure);
-
-	/* *****************************************************************************************************************
-	 * 													EXECUTE
-	 ******************************************************************************************************************/
-
 	/**
 	 * 创建执行SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param prepare 包含表或自定义SQL
-	 * @param configs configs
-	 * @param conditions conditions
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
-	 * 构造执行主体
+	 * 填充 execute 命令内容
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
-	void createExecuteRunContent(DataRuntime runtime, Run run);
+	void fillExecuteContent(DataRuntime runtime, Run run);
 
+	/**
+	 * execute [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return 影响行数
+	 */
+	long execute(DataRuntime runtime, String random, Run run);
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 ******************************************************************************************************************/
 
-	<T> int deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values);
-	int delete(DataRuntime runtime, String random, String dest, Object obj, String... columns);
+	/**
+	 * delete [入口]<br/>
+	 * 合成 where column in (values)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param column 列
+	 * @param values 列对应的值
+	 * @return 影响行数
+	 * @param <T> T
+	 */
+	<T> int deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values);
 
+	/**
+	 * delete [入口]<br/>
+	 * 合成 where k1 = v1 and k2 = v2
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param obj entity或DataRow
+	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+	 * @return 影响行数
+	 */
+	int delete(DataRuntime runtime, String random, String table, Object obj, String... columns);
+
+	/**
+	 * delete [入口]<br/>
+	 * 根据configs和conditions过滤条件
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
+	 * @return 影响行数
+	 */
 	int delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions);
+
+	/**
+	 * truncate [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @return 1表示成功执行
+	 */
 	int truncate(DataRuntime runtime, String random, String table);
 	/**
-	 * 创建删除SQL
+	 * 构造 delete 命令<br/>
+	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表
-	 * @param obj entity
-	 * @param columns 删除条件的列，根据columns取obj值并合成删除条件
+	 * @param table 表 如果为空 可以根据obj解析
+	 * @param obj entity或DataRow
+	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns);
-	default Run buildDeleteRun(String dest, Object obj, String ... columns){
-		return buildDeleteRun(RuntimeHolder.getRuntime(), dest, obj, columns);
-	}
+	Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns);
+
 	/**
-	 * 根据key values删除
+	 * 构造 delete 命令<br/>
+	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
-	 * @param key key
+	 * @param column 列
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values);
-	default Run buildDeleteRun(String table, String key, Object values){
-		return buildDeleteRun(RuntimeHolder.getRuntime(), table, key , values);
-	}
-	Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values);
-	Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns);
+	Run buildDeleteRun(DataRuntime runtime, String table, String column, Object values);
+
 	/**
-	 * 构造删除主体
+	 * 构造 delete 命令<br/>
+	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param table 表
+	 * @param column 列
+	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run createDeleteRunContent(DataRuntime runtime, Run run);
+	Run buildDeleteRunFromTable(DataRuntime runtime, String table, String column, Object values);
+	/**
+	 * 构造 delete 命令<br/>
+	 * 合成 where k1 = v1 and k2 = v2
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表 如果为空 可以根据obj解析
+	 * @param obj entity或DataRow
+	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
+	Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String ... columns);
 
+	/**
+	 * 填充 delete 命令内容
+	 * 构造查询主体 拼接where group等(不含分页 ORDER)
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 */
+	void fillDeleteRunContent(DataRuntime runtime, Run run);
+
+	/**
+	 * 构造 truncate 命令<
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
 	List<Run> buildTruncateRun(DataRuntime runtime, String table);
 
 
@@ -1654,7 +1770,7 @@ public interface DriverAdapter {
 	 * 添加列引导
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
@@ -1695,7 +1811,7 @@ public interface DriverAdapter {
 	 * 删除列引导
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column);
@@ -2515,7 +2631,7 @@ public interface DriverAdapter {
 	/**
 	 * 转换成相应数据库的数据类型包含精度
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	//String type(Column column);

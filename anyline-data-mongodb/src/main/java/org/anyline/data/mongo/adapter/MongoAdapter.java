@@ -196,9 +196,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
     /**
      * 创建查询SQL
-     * @param prepare  prepare
-     * @param configs 查询条件配置
-     * @param conditions 查询条件
+     * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs 过滤条件及相关配置
+     * @param conditions 简单过滤条件
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
@@ -219,14 +219,14 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 //为变量赋值
                 run.init();
                 //构造最终的查询SQL
-                createQueryContent(runtime, run);
+                fillQueryContent(runtime, run);
             }
         }
         return run;
     }
 
     @Override
-    protected void createQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run){
         Bson bson = Filters.empty();
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
@@ -371,7 +371,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
+    public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
         return 0;
     }
 
@@ -382,7 +382,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public int execute(DataRuntime runtime, String random, Run run) {
+    public long execute(DataRuntime runtime, String random, Run run) {
         return 0;
     }
 
@@ -448,7 +448,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public String parseFinalQuery(DataRuntime runtime, Run run) {
+    public String mergeFinalQuery(DataRuntime runtime, Run run) {
         return null;
     }
 
@@ -494,6 +494,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random) {
+        return null;
+    }
+
+    @Override
+    public Database database(DataRuntime runtime, String random, String name) {
         return null;
     }
 

@@ -522,8 +522,8 @@ public interface AnylineService<E>{
 	 * @param conditions  conditions
 	 * @return int
 	 */ 
-	int execute(String src, ConfigStore configs, String ... conditions); 
-	int execute(String src, String ... conditions); 
+	long execute(String src, ConfigStore configs, String ... conditions); 
+	long execute(String src, String ... conditions); 
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure

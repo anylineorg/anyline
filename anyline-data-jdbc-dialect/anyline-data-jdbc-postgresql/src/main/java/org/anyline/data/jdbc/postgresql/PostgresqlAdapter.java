@@ -64,7 +64,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 		}
 	}
 	@Override
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){
@@ -1157,7 +1157,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	/**
 	 * 修改列名
 	 * ALTER TABLE T  RENAME  A  to B ;
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -1175,7 +1175,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 
 	/**
 	 * alter table T alter column C type varchar(64);
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -1243,7 +1243,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 * 修改非空限制
 	 * ALTER TABLE TABLE_NAME ALTER COLUMN_NAME DROP NOT NULL
 	 * ALTER TABLE TABLE_NAME ALTER COLUMN_NAME SET NOT NULL
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -1283,7 +1283,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	/**
 	 * 修改备注
 	 * COMMENT ON COLUMN T.ID IS 'ABC'
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override

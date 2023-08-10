@@ -45,7 +45,7 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
 		String cols = run.getQueryColumns(); 
 		if(!"*".equals(cols)){

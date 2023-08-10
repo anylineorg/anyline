@@ -695,7 +695,7 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 按条件查询
      *
-     * @param prepare    表｜视图｜函数｜自定义SQL |RunPrepare
+     * @param prepare    构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs    根据http等上下文构造查询条件
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
@@ -1631,7 +1631,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public int execute(String src, ConfigStore store, String... conditions) {
+    public long execute(String src, ConfigStore store, String... conditions) {
         int result = -1;
         src = BasicUtil.compress(src);
         src = DataSourceUtil.parseDataSource(src);
@@ -1647,7 +1647,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public int execute(String src, String... conditions) {
+    public long execute(String src, String... conditions) {
         return execute(src, null, conditions);
     }
 

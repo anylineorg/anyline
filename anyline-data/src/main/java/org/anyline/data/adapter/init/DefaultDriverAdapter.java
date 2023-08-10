@@ -312,7 +312,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需插入的列
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 	}
 
 	/**
@@ -324,7 +324,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需插入的列
 	 */
 	@Override
-	public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 	}
 
 	/**
@@ -735,17 +735,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
 	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 *
-	 * void createQueryContent(DataRuntime runtime, Run run)
-	 * protected void createQueryContent(DataRuntime runtime, XMLRun run)
-	 * protected void createQueryContent(DataRuntime runtime, TextRun run)
-	 * protected void createQueryContent(DataRuntime runtime, TableRun run)
+	 * void fillQueryContent(DataRuntime runtime, Run run)
+	 * protected void fillQueryContent(DataRuntime runtime, XMLRun run)
+	 * protected void fillQueryContent(DataRuntime runtime, TextRun run)
+	 * protected void fillQueryContent(DataRuntime runtime, TableRun run)
 	 ******************************************************************************************************************/
 
 	/**
 	 * 创建查询SQL
-	 * @param prepare  prepare
-	 * @param configs 查询条件配置
-	 * @param conditions 查询条件
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
@@ -768,7 +768,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				//为变量赋值 run.condition赋值
 				run.init();
 				//构造最终的查询SQL
-				createQueryContent(runtime, run);
+				fillQueryContent(runtime, run);
 			}
 		}
 		return run;
@@ -779,33 +779,33 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void createQueryContent(DataRuntime runtime, Run run){
+	public void fillQueryContent(DataRuntime runtime, Run run){
 		if(null != run){
 			if(run instanceof TableRun){
 				TableRun r = (TableRun) run;
-				createQueryContent(runtime, r);
+				fillQueryContent(runtime, r);
 			}else if(run instanceof XMLRun){
 				XMLRun r = (XMLRun) run;
-				createQueryContent(runtime, r);
+				fillQueryContent(runtime, r);
 			}else if(run instanceof TextRun){
 				TextRun r = (TextRun) run;
-				createQueryContent(runtime, r);
+				fillQueryContent(runtime, r);
 			}
 		}
 	}
-	protected void createQueryContent(DataRuntime runtime, XMLRun run){
+	protected void fillQueryContent(DataRuntime runtime, XMLRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createQueryContent(DataRuntime runtime, XMLRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
 		}
 	}
-	protected void createQueryContent(DataRuntime runtime, TextRun run){
+	protected void fillQueryContent(DataRuntime runtime, TextRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createQueryContent(DataRuntime runtime, TextRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 fillQueryContent(DataRuntime runtime, TextRun run)", 37));
 		}
 	}
-	protected void createQueryContent(DataRuntime runtime, TableRun run){
+	protected void fillQueryContent(DataRuntime runtime, TableRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createQueryContent(DataRuntime runtime, TableRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
 		}
 	}
 
@@ -827,40 +827,40 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void createExecuteRunContent(DataRuntime runtime, Run run){
+	public void fillExecuteContent(DataRuntime runtime, Run run){
 		if(null != run){
 			if(run instanceof TableRun){
 				TableRun r = (TableRun) run;
-				createExecuteRunContent(runtime, r);
+				fillExecuteContent(runtime, r);
 			}else if(run instanceof XMLRun){
 				XMLRun r = (XMLRun) run;
-				createExecuteRunContent(runtime, r);
+				fillExecuteContent(runtime, r);
 			}else if(run instanceof TextRun){
 				TextRun r = (TextRun) run;
-				createExecuteRunContent(runtime, r);
+				fillExecuteContent(runtime, r);
 			}
 		}
 	}
-	protected void createExecuteRunContent(DataRuntime runtime, XMLRun run){
+	protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createExecuteRunContent(DataRuntime runtime, XMLRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 fillExecuteContent(DataRuntime runtime, XMLRun run)", 37));
 		}
 	}
-	protected void createExecuteRunContent(DataRuntime runtime, TextRun run){
+	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createExecuteRunContent(DataRuntime runtime, TextRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
 		}
 	}
-	protected void createExecuteRunContent(DataRuntime runtime, TableRun run){
+	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 createExecuteRunContent(DataRuntime runtime, TableRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 fillExecuteContent(DataRuntime runtime, TableRun run)", 37));
 		}
 	}
 
 
 	/**
 	 * JDBC执行完成后的结果处理
-	 * @param list JDBC执行结果
+	 * @param list JDBC执行返回的结果集
 	 * @return  DataSet
 	 */
 	@Override
@@ -886,7 +886,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			run.addCondition(conditions);
 			run.init(); //
 			//构造最终的执行SQL
-			createQueryContent(runtime, run);
+			fillQueryContent(runtime, run);
 		}
 		return run;
 	}
@@ -895,13 +895,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													EXISTS
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String parseExists(DataRuntime runtime, Run run)
+	 * String mergeFinalExists(DataRuntime runtime, Run run)
 	 ******************************************************************************************************************/
 
 	@Override
-	public String parseExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String parseExists(DataRuntime runtime, Run run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String mergeFinalExists(DataRuntime runtime, Run run)", 37));
 		}
 		return null;
 	}
@@ -909,7 +909,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * String parseTotalQuery(DataRuntime runtime, Run run)
+	 * String mergeFinalTotal(DataRuntime runtime, Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * 求总数SQL
@@ -918,9 +918,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String parseTotalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalTotal(DataRuntime runtime, Run run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String parseTotalQuery(DataRuntime runtime, Run run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 String mergeFinalTotal(DataRuntime runtime, Run run)", 37));
 		}
 		return null;
 	}
@@ -932,7 +932,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values)
 	 * Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns)
-	 * Run createDeleteRunContent(DataRuntime runtime, Run run)
+	 * Run fillDeleteRunContent(DataRuntime runtime, Run run)
 	 *
 	 * protected Run buildDeleteRunFromTable(String table, String key, Object values)
 	 * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
@@ -968,7 +968,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			run.setConfigStore((ConfigStore)obj);
 			run.addCondition(columns);
 			run.init();
-			createDeleteRunContent(runtime, run);
+			fillDeleteRunContent(runtime, run);
 		}else{
 			run = buildDeleteRunFromEntity(runtime, dest, obj, columns);
 		}
@@ -981,17 +981,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run createDeleteRunContent(DataRuntime runtime, Run run){
+	public void fillDeleteRunContent(DataRuntime runtime, Run run){
 		if(null != run){
 			if(run instanceof TableRun){
 				TableRun r = (TableRun) run;
-				return createDeleteRunContent(runtime, r);
+				fillDeleteRunContent(runtime, r);
 			}
 		}
-		return run;
 	}
 
-	protected Run createDeleteRunContent(DataRuntime runtime, TableRun run){
+	protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
 		AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
 		StringBuilder builder = run.getBuilder();
 		builder.append("DELETE FROM ");
@@ -1028,8 +1027,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		run.appendGroup();
 		run.appendOrderStore();
 		run.checkValid();
-
-		return run;
 	}
 
 	@Override
@@ -2489,7 +2486,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 添加列引导
 	 * @param builder StringBuilder
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column column){
@@ -2605,7 +2602,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 删除列引导
 	 * @param builder StringBuilder
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column column){
@@ -4363,8 +4360,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 设置参数值,主要根据数据类型格执行式化，如对象,list,map等插入json列
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param compare compare
-	 * @param column column
+	 * @param compare 比较方式 默认 equal 多个值默认 in
+	 * @param column 列
 	 * @param value value
 	 */
 	@Override

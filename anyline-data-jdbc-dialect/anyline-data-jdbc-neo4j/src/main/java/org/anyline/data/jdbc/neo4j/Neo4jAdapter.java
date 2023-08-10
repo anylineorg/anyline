@@ -83,7 +83,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      ******************************************************************************************************************/
 
     /**
-     * 创建 insert Run
+     * 创建 insert 最终可执行命令
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param obj 实体
@@ -106,7 +106,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param columns 需插入的列
      */
     @Override
-    public void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -145,7 +145,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param columns 需插入的列
      */
     @Override
-    public void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -153,7 +153,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
-            createInsertContent(runtime, run, dest, set, columns);
+            this.fillInsertContent(runtime, run, dest, set, columns);
             return;
         }
         builder.append("CREATE ");
@@ -255,7 +255,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             throw new SQLException("未指定表");
         }
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, columns, true);
-        createInsertContent(runtime, run, dest, list, cols);
+        fillInsertContent(runtime, run, dest, list, cols);
 
         return run;
     }
@@ -427,14 +427,14 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													QUERY
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseFinalQuery(DataRuntime runtime, Run run)
+     * String mergeFinalQuery(DataRuntime runtime, Run run)
      * StringBuilder createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare)
      * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
      *
-     * protected void createQueryContent(DataRuntime runtime, XMLRun run)
-     * protected void createQueryContent(DataRuntime runtime, TextRun run)
-     * protected void createQueryContent(DataRuntime runtime, TableRun run)
+     * protected void fillQueryContent(DataRuntime runtime, XMLRun run)
+     * protected void fillQueryContent(DataRuntime runtime, TextRun run)
+     * protected void fillQueryContent(DataRuntime runtime, TableRun run)
      ******************************************************************************************************************/
 
 
@@ -444,7 +444,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return String
      */
     @Override
-    public String parseFinalQuery(DataRuntime runtime, Run run) {
+    public String mergeFinalQuery(DataRuntime runtime, Run run) {
         if(!(run instanceof TableRun)){
             return run.getBaseQuery();
         }
@@ -508,7 +508,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * MATCH (n:Dept) where n.name ENDS WITH  '财' RETURN n
      *
      * @param builder builder
-     * @param compare compare
+     * @param compare 比较方式 默认 equal 多个值默认 in
      * @param value value
      * @return StringBuilder
      */
@@ -532,7 +532,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /**
      * 构造(NOT) IN 查询条件
      * @param builder builder
-     * @param compare compare
+     * @param compare 比较方式 默认 equal 多个值默认 in
      * @param value value
      * @return StringBuilder
      */
@@ -566,7 +566,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * [e:{id:1,name:''},e:{id:2,name:''}]
      * 转换成
      * [,{id:1,name:''},{id:2,name:''}]
-     * @param list JDBC执行结果
+     * @param list JDBC执行返回的结果集
      * @return List
      */
     @Override
@@ -607,13 +607,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 生成基础查询主体
      * @param run run
      */
-    protected void createQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
     }
     /**
      * 生成基础查询主体
      * @param run run
      */
-    protected void createQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
@@ -708,7 +708,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * 生成基础查询主体
      * @param run run
      */
-    protected void createQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run){
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare =  run.getPrepare();
         String alias = prepare.getAlias();
@@ -785,7 +785,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													COUNT
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseTotalQuery(DataRuntime runtime, Run run)
+     * String mergeFinalTotal(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
     /**
      * 求总数SQL
@@ -794,7 +794,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return String
      */
     @Override
-    public String parseTotalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run){
         String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") AS CNT";
         return sql;
     }
@@ -803,10 +803,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /* *****************************************************************************************************************
      * 													EXISTS
      * -----------------------------------------------------------------------------------------------------------------
-     * String parseExists(DataRuntime runtime, Run run)
+     * String mergeFinalExists(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
     @Override
-    public String parseExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run){
         String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") > 0  AS IS_EXISTS";
         return sql;
     }
@@ -816,7 +816,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * -----------------------------------------------------------------------------------------------------------------
      * protected Run buildUpdateRunFromEntity(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns)
      * protected Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, List<String> columns)
-     * protected Run createDeleteRunContent(TableRun run)
+     * protected Run fillDeleteRunContent(TableRun run)
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
@@ -1000,7 +1000,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
 
-    protected Run createDeleteRunContent(TableRun run){
+    protected Run fillDeleteRunContent(TableRun run){
         RunPrepare prepare =   run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
