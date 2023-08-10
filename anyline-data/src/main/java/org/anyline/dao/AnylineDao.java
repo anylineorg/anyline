@@ -271,12 +271,12 @@ public interface AnylineDao<E>{
 	default DataSet querys(Procedure procedure, PageNavi navi){
 		return querys(runtime(), null, false, procedure, navi);
 	}
-	int delete(DataRuntime runtime, String random, boolean recover, String dest, Object obj, String ... columns);
-	default int delete(String dest, Object obj, String ... columns){
+	long delete(DataRuntime runtime, String random, boolean recover, String dest, Object obj, String ... columns);
+	default long delete(String dest, Object obj, String ... columns){
 		return delete(runtime(), null, false, dest, obj, columns);
 	}
-	int delete(DataRuntime runtime, String random, boolean recover, String table, ConfigStore configs, String ... conditions);
-	default int delete(String table, ConfigStore configs, String ... conditions){
+	long delete(DataRuntime runtime, String random, boolean recover, String table, ConfigStore configs, String ... conditions);
+	default long delete(String table, ConfigStore configs, String ... conditions){
 		return delete(runtime(), null, false, table, configs, conditions);
 	}
 	/**
@@ -286,11 +286,11 @@ public interface AnylineDao<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	<T> int deletes(DataRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values);
-	default <T> int deletes(String table, String key, Collection<T> values){
+	<T> long deletes(DataRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values);
+	default <T> long deletes(String table, String key, Collection<T> values){
 		return deletes(runtime(), null, false, table, key, values);
 	}
-	default <T> int deletes(String table, String key, T ... values){
+	default <T> long deletes(String table, String key, T ... values){
 		return deletes(table, key, BeanUtil.array2list(values));
 	}
 	int truncate(DataRuntime runtime, String random, boolean recover, String table);
