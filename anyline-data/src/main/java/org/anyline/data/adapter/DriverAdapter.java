@@ -31,6 +31,7 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.BeanUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -256,6 +257,9 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 */
 	int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
+	default int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, dest, data, configs, BeanUtil.array2list(columns));
+	}
 	/**
 	 * 创建 update 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -530,7 +534,7 @@ public interface DriverAdapter {
 	long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
-	 * 执行存储过程
+	 * procedure [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @param random  random
