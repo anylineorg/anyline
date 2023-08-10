@@ -3638,8 +3638,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             List<String> keys = keys();
             for(String key:keys){
                 Object value = get(key);
-                String vc = value.getClass().getSimpleName();
                 if(null != value){
+                    String vc = value.getClass().getSimpleName();
                     boolean exe = false;
                     if(vc.toUpperCase().contains("DATE")){
                         exe = true;

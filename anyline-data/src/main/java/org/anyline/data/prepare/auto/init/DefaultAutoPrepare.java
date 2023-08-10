@@ -57,7 +57,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 * 设置数据源
 	 * table(c1,c2)[pk1,pk2]
 	 * @param table 表
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public RunPrepare setDataSource(String table){
 		if(null == table){
@@ -78,7 +78,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 * @param column  列名
 	 * @param value 值
 	 * @param compare  比较方式
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public RunPrepare addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value){
 		if(null == chain){

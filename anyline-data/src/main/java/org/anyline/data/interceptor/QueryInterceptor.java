@@ -13,7 +13,7 @@ public interface QueryInterceptor extends DMInterceptor{
     /**
      * 创建查询SQL之前，可以在这一步修改查询条件
      * @param runtime datasource/adapter/jdbctemplate
-     * @param prepare 有或SQL或SQL.id
+     * @param prepare 包含表或自定义SQL
      * @param configs 查询条件
      * @param conditions  查询条件
      * @return RESULT

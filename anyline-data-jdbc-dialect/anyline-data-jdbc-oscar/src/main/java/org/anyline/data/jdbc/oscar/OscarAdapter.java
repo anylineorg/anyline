@@ -155,7 +155,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 		UNION ALL SELECT    'A2' FROM DUAL
 	 * 		UNION ALL SELECT    'A3' FROM DUAL
 	 * ) M
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest dest
 	 * @param columns keys
@@ -353,8 +353,8 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 
 	/**
 	 * 执行 insert
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param data entity|DataRow|DataSet
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return int 影响行数
@@ -604,7 +604,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return List
 	 */
 	@Override
@@ -686,7 +686,7 @@ public class OscarAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return tables
 	 * @throws Exception 异常
 	 */

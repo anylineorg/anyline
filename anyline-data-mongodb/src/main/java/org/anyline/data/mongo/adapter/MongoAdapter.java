@@ -72,6 +72,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return 0;
     }
 
+    /**
+     * insert [入口]<br/>
+     * 执行完成后会补齐自增主键值
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表
+     * @param data 数据
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
+     * @param columns 列
+     * @return 影响行数
+     */
     @Override
     public int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
         return 0;
@@ -79,12 +90,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param obj 数据
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
@@ -122,8 +133,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     /**
      * 执行 insert
-     * @param runtime 运行环境主要包含适配器数据源或客户端
-     * @param random random
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
      * @param data entity|DataRow|DataSet
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @param pks pks
@@ -188,7 +199,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param prepare  prepare
      * @param configs 查询条件配置
      * @param conditions 查询条件
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){

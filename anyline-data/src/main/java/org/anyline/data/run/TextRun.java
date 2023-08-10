@@ -323,7 +323,7 @@ public class TextRun extends BasicRun implements Run {
 	 * @param condition condition
 	 * @param variable variable
 	 * @param value value
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public Run addCondition(String condition, String variable, Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)){
@@ -356,7 +356,7 @@ public class TextRun extends BasicRun implements Run {
 	 * @param var  列名
 	 * @param value  值
 	 * @param compare  比较方式
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
 		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);

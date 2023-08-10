@@ -30,7 +30,7 @@ public interface AutoPrepare extends RunPrepare {
 	/** 
 	 * 设置数据源 
 	 * @param table 表
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public RunPrepare setDataSource(String table);
 	 
@@ -45,14 +45,14 @@ public interface AutoPrepare extends RunPrepare {
 	 * @param column  列名 
 	 * @param value  值 
 	 * @param compare  比较方式 
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public RunPrepare addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value);
  
 	/** 
 	 * 添加静态文本查询条件 
 	 * @param condition codition
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public RunPrepare addCondition(String condition) ;
 	 /* ****************************************************************************************** 

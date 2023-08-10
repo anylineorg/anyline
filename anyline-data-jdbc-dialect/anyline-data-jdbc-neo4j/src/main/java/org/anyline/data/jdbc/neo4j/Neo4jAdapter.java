@@ -83,13 +83,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      ******************************************************************************************************************/
 
     /**
-     * 创建INSERT RunPrepare
-     * @param runtime runtime
+     * 创建 insert Run
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param obj 实体
-     * @param checkPrimary 是否检测主键
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
@@ -99,7 +99,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /**
      * 根据DataSet创建批量INSERT RunPrepare
      * CREATE (:Dept{name:1}),(:Dept{name:2}),(:Dept{name:3})
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
@@ -138,7 +138,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     /**
      * 根据Collection创建批量INSERT
      * create(:Dept{name:1}),(:Dept{name:2}),(:Dept{name:3})
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
@@ -177,12 +177,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest dest
      * @param obj obj
      * @param checkPrimary 是否检测主键
      * @param columns 列
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
@@ -222,12 +222,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 根据collection创建 INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否检测主键
      * @param columns 需要插入的列,如果不指定则全部插入
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
@@ -323,8 +323,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
     /**
      * 执行 insert
-     * @param runtime runtime
-     * @param random random
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
      * @param data data
      * @param run run
      * @return int

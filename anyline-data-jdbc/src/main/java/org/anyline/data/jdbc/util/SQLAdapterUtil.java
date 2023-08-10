@@ -52,7 +52,7 @@ public class SQLAdapterUtil {
 	/**
 	 * 定准适配器
 	 * @param datasource 数据源名称(配置文件中的key)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return JDBCAdapter
 	 */
 	public static JDBCAdapter getAdapter(String datasource, JdbcTemplate template){

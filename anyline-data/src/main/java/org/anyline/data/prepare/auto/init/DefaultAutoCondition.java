@@ -92,7 +92,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	/** 
 	 * 运行时文本
 	 * @param prefix 前缀
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	@Override

@@ -78,7 +78,7 @@ public interface RunPrepare extends Cloneable {
 	 *  S_POWER : 自定义SQL的id 
 	 * </p>
 	 * @param ds  数据源 : 表|视图|自定义SQL.id
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	RunPrepare setDataSource(String ds);
 	String getDataSource();
@@ -87,7 +87,7 @@ public interface RunPrepare extends Cloneable {
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	RunPrepare order(String order);
 	RunPrepare order(String col, Order.TYPE type);
@@ -96,7 +96,7 @@ public interface RunPrepare extends Cloneable {
 	/** 
 	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
 	 * @param group  group
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	RunPrepare group(String group);
  
@@ -112,7 +112,7 @@ public interface RunPrepare extends Cloneable {
 	 * @param column  列名 
 	 * @param value   值 
 	 * @param compare 比较方式 
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	RunPrepare addCondition(Compare compare, String column, Object value);
 	RunPrepare addCondition(String column, Object value);
@@ -126,7 +126,7 @@ public interface RunPrepare extends Cloneable {
 	/**
 	 * 设置SQL文本, 从XML中text标签中取出
 	 * @param text  text
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	RunPrepare setText(String text);
 	 
@@ -135,7 +135,7 @@ public interface RunPrepare extends Cloneable {
 	 * @param condition	 条件ID 
 	 * @param variable 变量 
 	 * @param value  值 
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	RunPrepare setConditionValue(String condition, String variable, Object value);
 	OrderStore getOrders();

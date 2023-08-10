@@ -102,10 +102,6 @@ public interface DriverAdapter {
 	DataReader reader(ColumnType type);
 
 
-
-	boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
-
-	int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -126,21 +122,31 @@ public interface DriverAdapter {
 	 * 													INSERT
 	 ******************************************************************************************************************/
 	/**
-	 * 创建insert RunPrepare
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * insert [入口]<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 列
+	 * @return 影响行数
+	 */
+	int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+	/**
+	 * 创建 insert Run
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj 实体
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
-	default Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, checkPrimary, columns);
-	}
+
 	/**
-	 * 根据Collection创建批量插入SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * 根据集合类型创建批量插入命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param list 数据集
@@ -149,8 +155,8 @@ public interface DriverAdapter {
 	void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns);
 
 	/**
-	 * 根据DataSet创建批量插入SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * 根据集合类型创建批量插入命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param dest 表 如果不指定则根据DataSet解析
 	 * @param set 数据集
@@ -160,7 +166,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 确认需要插入的列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param data  Entity或DataRow
 	 * @param batch  是否批量
 	 * @param columns 提供额外的判断依据<br/>
@@ -188,15 +194,17 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	boolean supportInsertPlaceholder ();
-
-
+	/**
+	 * 自增主键返回标识
+	 * @return String
+	 */
 	String generatedKey();
 
-	int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/**
-	 * 执行 insert
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * insert [执行]<br/><br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param data data
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param pks 需要返回的主键
@@ -204,9 +212,11 @@ public interface DriverAdapter {
 	 */
 	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
 	/**
-	 * 执行 insert 有些不支持返回自增的单独执行
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * insert [执行]<br/>
+	 * 有些不支持返回自增的单独执行<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param data data
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param pks pks
@@ -215,32 +225,71 @@ public interface DriverAdapter {
 	 */
 	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 
+	/**
+	 * save [入口]<br/>
+	 * 根据是否有主键值确认insert | update<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 列
+	 * @return 影响行数
+	 */
 	int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
-
 	/**
-	 * 创建更新SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * UPDATE [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param configs 条件
+	 * @param columns 列
+	 * @return 影响行数
+	 */
+	int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
+	/**
+	 * 创建 update run
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj Entity或DtaRow
 	 * @param checkPrimary 是否需要检查重复主键,默认不检查
 	 * @param columns 需要更新的列
 	 * @param configs 更新条件
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
-	default Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
-		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, configs, checkPrimary, columns);
-	}
+	/**
+	 * 根据实体对象创建 update run
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表
+	 * @param obj Entity
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 需要更新的列
+	 * @param configs 更新条件
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
 	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns);
+	/**
+	 * 根据datarow创建 update run
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表
+	 * @param row DtaRow
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 需要更新的列
+	 * @param configs 更新条件
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
 	Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns);
 
 	/**
-	 * 执行更新
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * update [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param dest 表
 	 * @param data 数据
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -253,11 +302,11 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建查询SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare  prepare
 	 * @param configs 查询条件配置
 	 * @param conditions 查询条件
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	default Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
@@ -265,7 +314,7 @@ public interface DriverAdapter {
 	}
 	/**
 	 * 创建查询序列SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param names names
 	 * @return String
@@ -281,7 +330,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建最终执行查询SQL 包含分页 ORDER
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
@@ -291,7 +340,7 @@ public interface DriverAdapter {
 	/**
 	 * 构造 LIKE 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param compare compare
 	 * @param value value
@@ -302,7 +351,7 @@ public interface DriverAdapter {
 	/**
 	 * 构造 FIND_IN_SET 查询条件
 	 * 如果不需要占位符 返回null  否则原样返回value
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column column
 	 * @param compare compare
@@ -312,7 +361,7 @@ public interface DriverAdapter {
 	Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value);
 	/**
 	 * 构造(NOT) IN 查询条件
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param compare compare
 	 * @param value value
@@ -322,8 +371,8 @@ public interface DriverAdapter {
 
 	/**
 	 * 执行存储过程查询
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param procedure 存储过程
 	 * @param navi 分页
 	 * @return DataSet
@@ -334,8 +383,8 @@ public interface DriverAdapter {
 
 		/**
          * 执行查询
-         * @param runtime 运行环境主要包含适配器数据源或客户端
-         * @param random random
+         * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+         * @param random 用来标记同一组命令
          * @param system 是否是系统表
          * @param table 表
          * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -346,8 +395,8 @@ public interface DriverAdapter {
 	long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 统计总行数
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return long
 	 */
@@ -356,16 +405,16 @@ public interface DriverAdapter {
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 执行查询
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return maps
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
 	/**
 	 * 执行查询
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return maps
 	 */
@@ -373,7 +422,7 @@ public interface DriverAdapter {
 
 	/**
 	 * JDBC执行完成后的结果处理
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param list JDBC执行结果
 	 * @return  DataSet
 	 */
@@ -386,7 +435,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建统计总数SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
@@ -398,8 +447,18 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
+	 * 数据是否存在
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 包含表或自定义SQL
+	 * @param configs 查询条件及相关设置
+	 * @param conditions 查询条件
+	 * @return boolean
+	 */
+	boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	/**
 	 * 创建检测是否存在SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
@@ -407,7 +466,7 @@ public interface DriverAdapter {
 	int execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * 执行
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param random  random
 	 * @return 影响行数
@@ -415,7 +474,7 @@ public interface DriverAdapter {
 	int execute(DataRuntime runtime, String random, Run run);
 	/**
 	 * 执行存储过程
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @param random  random
 	 * @return 影响行数
@@ -428,17 +487,17 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建执行SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param prepare prepare
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param prepare 包含表或自定义SQL
 	 * @param configs configs
 	 * @param conditions conditions
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 构造执行主体
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	void createExecuteRunContent(DataRuntime runtime, Run run);
@@ -454,11 +513,11 @@ public interface DriverAdapter {
 	int truncate(DataRuntime runtime, String random, String table);
 	/**
 	 * 创建删除SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj entity
 	 * @param columns 删除条件的列，根据columns取obj值并合成删除条件
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns);
 	default Run buildDeleteRun(String dest, Object obj, String ... columns){
@@ -466,11 +525,11 @@ public interface DriverAdapter {
 	}
 	/**
 	 * 根据key values删除
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param key key
 	 * @param values values
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values);
 	default Run buildDeleteRun(String table, String key, Object values){
@@ -480,9 +539,9 @@ public interface DriverAdapter {
 	Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns);
 	/**
 	 * 构造删除主体
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run createDeleteRunContent(DataRuntime runtime, Run run);
 
@@ -521,7 +580,7 @@ public interface DriverAdapter {
 	Database database(DataRuntime runtime, String random, String name);
 	/**
 	 * 查询所有数据库
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
@@ -533,7 +592,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造 Database
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param databases 上一步查询结果
@@ -551,7 +610,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表,不是查表中的数据
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -565,7 +624,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -579,7 +638,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Table
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -593,7 +652,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据驱动内置方法补充
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 上一步查询结果
 	 * @param catalog catalog
@@ -608,7 +667,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 表备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -624,7 +683,7 @@ public interface DriverAdapter {
 	List<String> ddl(DataRuntime runtime, String random, Table table, boolean init);
 	/**
 	 * 查询表DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return List
 	 */
@@ -635,7 +694,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
@@ -650,7 +709,7 @@ public interface DriverAdapter {
 	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types);
 	/**
 	 * 查询视图
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -664,7 +723,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造View
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -678,7 +737,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据JDBC补充
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param views 上一步查询结果
 	 * @param catalog catalog
@@ -693,7 +752,7 @@ public interface DriverAdapter {
 	List<String> ddl(DataRuntime runtime, String random, View view);
 	/**
 	 * 查询viewDDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view view
 	 * @return List
 	 */
@@ -703,7 +762,7 @@ public interface DriverAdapter {
 	}
 	/**
 	 * 查询 view DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
@@ -717,7 +776,7 @@ public interface DriverAdapter {
 	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types);
 	/**
 	 * 查询主表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -732,7 +791,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Table
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
@@ -746,7 +805,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据JDBC
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -759,7 +818,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询 MasterTable DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table MasterTable
 	 * @return List
 	 */
@@ -771,7 +830,7 @@ public interface DriverAdapter {
 	List<String> ddl(DataRuntime runtime, String random, MasterTable table);
 	/**
 	 * 查询 MasterTable DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
@@ -788,7 +847,7 @@ public interface DriverAdapter {
 	List<String> ddl(DataRuntime runtime, String random, PartitionTable table);
 	/**
 	 * 查询分区表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -802,7 +861,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据主表查询分区表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param master 主表
 	 * @param tags 标签名+标签值
 	 * @param name 分区表名
@@ -820,7 +879,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Table
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -836,7 +895,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据JDBC
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -851,7 +910,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询 PartitionTable DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table PartitionTable
 	 * @return List
 	 */
@@ -861,7 +920,7 @@ public interface DriverAdapter {
 	}
 	/**
 	 * 查询 MasterTable DDL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
@@ -876,7 +935,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表结构
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 查所有库
 	 * @param table 表
 	 * @param primary 是否检测主键
@@ -887,7 +946,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
@@ -896,7 +955,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Tag
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -909,7 +968,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 解析JDBC get columns结果
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
@@ -931,7 +990,7 @@ public interface DriverAdapter {
 	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table);
 	/**
 	 * 查询表上的列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
@@ -943,7 +1002,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Tag
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -958,7 +1017,7 @@ public interface DriverAdapter {
 	/**
 	 *
 	 * 解析JDBC get columns结果
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -976,7 +1035,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的主键
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sqls
 	 */
@@ -987,7 +1046,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
@@ -1006,7 +1065,7 @@ public interface DriverAdapter {
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
 	/**
 	 * 查询表上的外键
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sqls
 	 */
@@ -1017,7 +1076,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造PrimaryKey
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
@@ -1034,7 +1093,7 @@ public interface DriverAdapter {
 	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name);
 	/**
 	 * 查询表上的索引
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param name 名称
 	 * @return sqls
@@ -1046,7 +1105,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Index
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -1060,10 +1119,10 @@ public interface DriverAdapter {
 
 	/**
 	 * 解析JDBC getIndex结果
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return indexs indexs
 	 * @throws Exception 异常
 	 */
@@ -1076,7 +1135,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 查询表上的约束
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
@@ -1088,7 +1147,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -1110,7 +1169,7 @@ public interface DriverAdapter {
 	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events);
 	/**
 	 * 查询表上的trigger
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param events INSERT|UPDATE|DELETE
 	 * @return sqls
@@ -1122,7 +1181,7 @@ public interface DriverAdapter {
 
 	/**
 	 *  根据查询结果集构造Constraint
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
@@ -1187,7 +1246,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1199,7 +1258,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1211,7 +1270,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1223,7 +1282,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param columns 列
 	 * @return List
@@ -1235,7 +1294,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 重命名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1247,7 +1306,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1259,7 +1318,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1272,7 +1331,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建或删除表之前  检测表是否存在
 	 * IF NOT EXISTS
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1282,7 +1341,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建主键在创建表的DDL结尾部分
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param table 表
 	 * @return StringBuilder
@@ -1297,7 +1356,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 表备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param table 表
 	 * @return StringBuilder
@@ -1306,7 +1365,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 构造表名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param table 表
 	 * @return builder
@@ -1321,7 +1380,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建视图
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
@@ -1333,7 +1392,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加视图备注(视图创建完成后调用,创建过程能添加备注的不需要实现)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
@@ -1345,7 +1404,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改视图
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
@@ -1357,7 +1416,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 重命名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
@@ -1369,7 +1428,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
@@ -1381,7 +1440,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除视图
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return sql
 	 * @throws Exception 异常
@@ -1394,7 +1453,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建或删除视图之前  检测视图是否存在
 	 * IF NOT EXISTS
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1403,7 +1462,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 视图备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param view 视图
 	 * @return StringBuilder
@@ -1416,7 +1475,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建主有
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1428,7 +1487,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1440,7 +1499,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改主表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1452,7 +1511,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 主表重命名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1464,7 +1523,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改主表备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1476,7 +1535,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除主表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1493,7 +1552,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 创建分区表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1505,7 +1564,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1516,7 +1575,7 @@ public interface DriverAdapter {
 	}
 	/**
 	 * 修改分区表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1528,7 +1587,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 分区表重命名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table
 	 * @return sql
 	 * @throws Exception 异常
@@ -1541,7 +1600,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改分区表备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1553,7 +1612,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除分区表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
 	 * @throws Exception 异常
@@ -1570,14 +1629,14 @@ public interface DriverAdapter {
 
 	/**
 	 * 修改表的关键字
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	String alterColumnKeyword(DataRuntime runtime);
 
 	/**
 	 * 添加列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
@@ -1593,7 +1652,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加列引导
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
 	 * @param column column
 	 * @return String
@@ -1603,7 +1662,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return List
@@ -1619,7 +1678,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
@@ -1634,7 +1693,7 @@ public interface DriverAdapter {
 	}
 	/**
 	 * 删除列引导
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
 	 * @param column column
 	 * @return String
@@ -1644,7 +1703,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改列名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
@@ -1656,7 +1715,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
@@ -1668,7 +1727,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
@@ -1680,7 +1739,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改非空限制
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
@@ -1692,7 +1751,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改备注
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return String
 	 */
@@ -1703,7 +1762,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return sql
 	 * @throws Exception 异常
@@ -1716,7 +1775,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 取消自增
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return sql
 	 * @throws Exception 异常
@@ -1728,7 +1787,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 定义列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1737,7 +1796,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据类型
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1745,7 +1804,7 @@ public interface DriverAdapter {
 	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * 列数据类型定义
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @param type 数据类型(已经过转换)
@@ -1763,7 +1822,7 @@ public interface DriverAdapter {
 	Boolean checkIgnoreScale(DataRuntime runtime, String datatype);
 	/**
 	 * 非空
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1772,7 +1831,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 编码
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1790,7 +1849,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 主键(注意不要跟表定义中的主键重复)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1798,7 +1857,7 @@ public interface DriverAdapter {
 	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * 递增列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1807,7 +1866,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 更新行事件
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1816,7 +1875,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 位置
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1825,7 +1884,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder
@@ -1835,7 +1894,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建或删除列之前  检测表是否存在
 	 * IF NOT EXISTS
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1849,7 +1908,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加标签
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1861,7 +1920,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改标签
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return List
 	 */
@@ -1872,7 +1931,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除标签
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1884,7 +1943,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改标签名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1896,7 +1955,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1908,7 +1967,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改非空限制
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1920,7 +1979,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改备注
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1932,7 +1991,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param tag 标签
 	 * @return String
 	 */
@@ -1944,7 +2003,7 @@ public interface DriverAdapter {
 	/**
 	 * 创建或删除标签之前  检测表是否存在
 	 * IF NOT EXISTS
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param exists exists
 	 * @return StringBuilder
@@ -1958,7 +2017,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加主键
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
 	 * @return String
 	 */
@@ -1970,7 +2029,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改主键
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
 	 * @return List
 	 */
@@ -1981,7 +2040,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除主键
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
 	 * @return String
 	 */
@@ -1993,7 +2052,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改主键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
 	 * @return String
 	 */
@@ -2010,7 +2069,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加外键
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param foreign 外键
 	 * @return String
 	 */
@@ -2031,7 +2090,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除外键
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param foreign 外键
 	 * @return String
 	 */
@@ -2043,7 +2102,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改外键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param foreign 外键
 	 * @return String
 	 */
@@ -2057,7 +2116,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加索引
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 索引
 	 * @return String
 	 */
@@ -2069,7 +2128,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改索引
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 索引
 	 * @return List
 	 */
@@ -2080,7 +2139,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除索引
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 索引
 	 * @return String
 	 */
@@ -2092,7 +2151,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改索引名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 索引
 	 * @return String
 	 */
@@ -2103,7 +2162,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 索引备注
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder
 	 * @param index
 	 */
@@ -2114,7 +2173,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加约束
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param constraint 约束
 	 * @return String
 	 */
@@ -2126,7 +2185,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改约束
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param constraint 约束
 	 * @return List
 	 */
@@ -2137,7 +2196,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除约束
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param constraint 约束
 	 * @return String
 	 */
@@ -2149,7 +2208,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改约束名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param constraint 约束
 	 * @return String
 	 */
@@ -2165,7 +2224,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加触发器
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param trigger 触发器
 	 * @return String
 	 */
@@ -2178,7 +2237,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改触发器
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param trigger 触发器
 	 * @return List
 	 */
@@ -2189,7 +2248,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除触发器
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param trigger 触发器
 	 * @return String
 	 */
@@ -2201,7 +2260,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改触发器名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param trigger 触发器
 	 * @return String
 	 */
@@ -2216,7 +2275,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 添加存储过程
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @return String
 	 */
@@ -2227,7 +2286,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 生在输入输出参数
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param parameter parameter
 	 */
@@ -2235,7 +2294,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改存储过程
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @return List
 	 */
@@ -2246,7 +2305,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 删除存储过程
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @return String
 	 */
@@ -2258,7 +2317,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改存储过程名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @return String
 	 */
@@ -2273,7 +2332,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 添加函数
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param function 函数
 	 * @return String
 	 */
@@ -2285,7 +2344,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改函数
 	 * 有可能生成多条SQL
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param function 函数
 	 * @return List
 	 */
@@ -2307,7 +2366,7 @@ public interface DriverAdapter {
 	/**
 	 * 修改函数名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param function 函数
 	 * @return String
 	 */
@@ -2323,7 +2382,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 获取单主键列名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param obj obj
 	 * @return String
 	 */
@@ -2331,7 +2390,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 获取单主键值
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param obj obj
 	 * @return Object
 	 */
@@ -2340,7 +2399,7 @@ public interface DriverAdapter {
 	*//**
 	 * 数据类型转换
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param table 表
@@ -2352,7 +2411,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据类型转换
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param columns 列
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
@@ -2361,7 +2420,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据类型转换,没有提供column的根据value类型
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @param run 值
 	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
@@ -2374,7 +2433,7 @@ public interface DriverAdapter {
 	 * 生成value格式 主要确定是否需要单引号  或  类型转换
 	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
 	 * 如 TO_DATE('')
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param row DataRow 或 Entity
 	 * @param key 列名
@@ -2383,7 +2442,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据数据类型生成SQL(如是否需要'',是否需要格式转换函数)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param value value
 	 */
@@ -2391,7 +2450,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param metadata Column 用来定位数据类型
 	 * @param value value
 	 * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
@@ -2401,7 +2460,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 通过占位符写入数据库前转换成数据库可接受的Java数据类型<br/>
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param metadata Column 用来定位数据类型
 	 * @param placeholder 是否占位符
 	 * @param value value
@@ -2410,7 +2469,7 @@ public interface DriverAdapter {
 	Object write(DataRuntime runtime, Column metadata, Object value, boolean placeholder);
  	/**
 	 * 拼接字符串
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param args args
 	 * @return String
 	 */
@@ -2418,7 +2477,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 是否是数字列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
@@ -2426,7 +2485,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 是否是boolean列
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
@@ -2437,7 +2496,7 @@ public interface DriverAdapter {
 	 * 决定值是否需要加单引号
 	 * number boolean 返回false
 	 * 其他返回true
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
@@ -2446,7 +2505,7 @@ public interface DriverAdapter {
 	/**
 	 * 内置函数
 	 * 如果需要引号,方法应该一块返回
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列属性,不同的数据类型解析出来的值可能不一样
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
@@ -2455,7 +2514,7 @@ public interface DriverAdapter {
 	void addRunValue(DataRuntime runtime, Run run, Compare compare, Column column, Object value);
 	/**
 	 * 转换成相应数据库的数据类型包含精度
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column column
 	 * @return String
 	 */
@@ -2463,7 +2522,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 数据库类型转换成java类型
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type type
 	 * @return String
 	 */
@@ -2471,7 +2530,7 @@ public interface DriverAdapter {
 
 	/**
 	 * 对象名称格式化(大小写转换)，在查询系统表时需要
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name name
 	 * @return String
 	 */

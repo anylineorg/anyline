@@ -128,8 +128,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 查询map列表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param prepare RunPrepare
 	 * @param configs 查询条件
@@ -196,8 +196,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 查询序列值
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param next  是否生成返回下一个序列 false:cur true:next
 	 * @param names 可以是多个序列
@@ -218,8 +218,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 统计总行数
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param prepare RunPrepare
 	 * @param configs 查询条件
@@ -242,8 +242,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 检测是否存在
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param prepare RunPrepare
 	 * @param configs 查询条件
@@ -266,8 +266,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 更新
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param dest		需要更新的表,如果没有提供则根据data解析
 	 * @param data		需要更新的数据
@@ -290,8 +290,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	/**
 	 * 保存(insert|upate)
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param dest  表
 	 * @param data  data
@@ -315,8 +315,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 添加
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param dest 表
 	 * @param data 需要插入的数据
@@ -341,8 +341,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 查询
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param table 查询表结构时使用
 	 * @param system 系统表不查询表结构
@@ -363,10 +363,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 执行
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
-	 * @param prepare prepare
+	 * @param prepare 包含表或自定义SQL
 	 * @param configs configs
 	 * @param conditions conditions
 	 * @return 影响行数
@@ -387,8 +387,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 执行存储过程
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param recover 执行完后是否还原回执行前数据源
 	 * @param procedure  存储过程
 	 * @return 是否成功

@@ -86,14 +86,15 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)
      * protected void insertValue(Run run, Object obj, boolean placeholder, LinkedHashMap<String,Column> columns)
      ******************************************************************************************************************/
+
     /**
-     * 创建INSERT RunPrepare
-     * @param runtime runtime
+     * 创建 insert Run
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param obj 实体
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
@@ -102,7 +103,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据DataSet创建批量INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param set 集合
@@ -156,7 +157,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据Collection创建批量INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run run
      * @param dest 表 如果不指定则根据set解析
      * @param list 集合
@@ -221,12 +222,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据entity创建 INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param obj 数据
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
@@ -335,12 +336,12 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     /**
      * 根据collection创建 INSERT RunPrepare
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表
      * @param list 对象集合
      * @param checkPrimary 是否需要检查重复主键,默认不检查
      * @param columns 需要插入的列,如果不指定则全部插入
-     * @return Run
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
@@ -380,7 +381,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * 生成insert sql的value部分,每个Entity(每行数据)调用一次
      * (1,2,3)
      * (?,?,?)
-     * @param runtime runtime
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run           run
      * @param obj           Entity或DataRow
      * @param placeholder   是否使用占位符(批量操作时不要超出数量)

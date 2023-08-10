@@ -213,7 +213,7 @@ public abstract class BasicRun implements Run {
 	 * @param obj  obj
 	 * @param column  column
 	 * @param split  遇到集合/数组类型是否拆分处理
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	@Override
@@ -327,7 +327,7 @@ public abstract class BasicRun implements Run {
 	/**
 	 * 添加参数值
 	 * @param run  run
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public Run addValues(RunValue run){
@@ -620,7 +620,7 @@ public abstract class BasicRun implements Run {
 	/**
 	 * 添加条件
 	 * @param conditions 查询条件 ORDER GROUP 等
-	 * @return Run
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
 	public Run addCondition(String ... conditions) {

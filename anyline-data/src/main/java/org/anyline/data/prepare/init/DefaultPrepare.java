@@ -73,7 +73,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public RunPrepare order(Order order){
 		if(null == orders){
@@ -107,7 +107,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	/** 
 	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
 	 * @param group  group
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public RunPrepare group(String group){
 		/*避免添加空条件*/ 
@@ -126,7 +126,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	/** 
 	 * 添加运行时参数值 
 	 * @param runValue  runValue
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	@SuppressWarnings({"unchecked", "rawtypes" })
 	protected RunPrepare addRunValue(Object runValue){
@@ -155,7 +155,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	} 
 	/** 
 	 * 添加标准查询条件
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public RunPrepare addCondition(Condition condition) {
 		chain.addCondition(condition); 
@@ -168,7 +168,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @param condition	 条件ID 
 	 * @param variable 变量key 
 	 * @param value  值 
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	public RunPrepare setConditionValue(String condition, String variable, Object value) {
 		return this; 
@@ -178,7 +178,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @param column  列名
 	 * @param value  值
 	 * @param compare  比较方式
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public RunPrepare addCondition(Compare compare, String column, Object value) {
 		Condition condition = new DefaultAutoCondition(Compare.EMPTY_VALUE_SWITCH.IGNORE, compare, null, column, value) ;
@@ -274,7 +274,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * 设置主键 先清空之前设置过和主键
 	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
 	 * @param primaryKeys primaryKeys
-	 * @return RunPrepare
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public RunPrepare setPrimaryKey(String ... primaryKeys){
 		if(null != primaryKeys){

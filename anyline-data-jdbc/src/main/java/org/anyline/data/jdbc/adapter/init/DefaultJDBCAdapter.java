@@ -99,7 +99,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		Object client = runtime.getClient();
 		return (JdbcTemplate) client;
 	}
-
 	@Override
 	public int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
@@ -187,7 +186,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 	/**
 	 * 检测级联insert/update
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param obj obj
 	 * @param dependency dependency
 	 * @param mode 0:inser 1:update
@@ -976,6 +975,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
+	/**
+	 * insert [入口]<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 列
+	 * @return 影响行数
+	 */
 	@Override
 	public int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
@@ -1053,8 +1063,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 	/**
 	 * 执行 insert
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param data entity|DataRow|DataSet
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @param pks pks
@@ -1858,7 +1868,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 	/**
 	 * 查询
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param clazz entity class
 	 * @param table table
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -2319,8 +2329,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 	/**
 	 * 缓存表名
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
-	 * @param random random
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
@@ -2493,7 +2503,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 	/**
 	 * 根据 DatabaseMetaData 查询表
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param tables 上一步查询结果
 	 * @param catalog catalog
@@ -2726,7 +2736,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 	/**
 	 * 根据DatabaseMetaData
-	 * @param runtime 运行环境主要包含适配器数据源或客户端
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param views 上一步查询结果
 	 * @param catalog catalog
