@@ -78,13 +78,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public DataRuntime runtime(){
 		if(null != runtime){
 			//固定数据源
-			runtime.setDao(this);
+			//runtime.setDao(this);
 			return runtime;
 		}
 		//可切换数据源
 		DataRuntime r = RuntimeHolder.getRuntime();
 		if(null != r){
-			r.setDao(this);
+			//r.setDao(this);
 		}
 		return r;
 	}
@@ -185,7 +185,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try {
-			return runtime.getAdapter().selects(runtime, null, prepare, clazz, configs, conditions);
+			EntitySet set = runtime.getAdapter().selects(runtime, null, prepare, clazz, configs, conditions);
+			int dependency = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY();
+			if(dependency > 0) {
+				checkMany2ManyDependencyQuery(runtime, random, set, dependency);
+				checkOne2ManyDependencyQuery(runtime, random, set, dependency);
+			}
+			return set;
 		}finally {
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
@@ -281,13 +287,398 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try {
-			return runtime.getAdapter().update(runtime, random, dest, data, configs, columns);
+			int result = runtime.getAdapter().update(runtime, random, dest, data, configs, columns);
+			checkMany2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkOne2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			return result;
 		}finally{
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
 			}
 		}
 	}
+
+	/**
+	 * 检测级联insert/update
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param obj obj
+	 * @param dependency dependency
+	 * @param mode 0:inser 1:update
+	 * @return int
+	 */
+	private int checkMany2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
+		int result = 0;
+		//ManyToMany
+		if(dependency <= 0){
+			return result;
+		}
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
+			return result;
+		}
+		if(obj instanceof EntitySet){
+			EntitySet set = (EntitySet) obj;
+			for(Object entity:set){
+				checkMany2ManyDependencySave(runtime, random, entity, dependency, mode);
+			}
+		}else{
+			Class clazz = obj.getClass();
+			Column pc = EntityAdapterProxy.primaryKey(clazz);
+			String pk = null;
+			if(null != pc){
+				pk = pc.getName();
+			}
+			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+			for(Field field:fields) {
+				try {
+					ManyToMany join = PersistenceAdapter.manyToMany(field);
+					//INSERT INTO HR_DEPLOYEE_DEPARTMENT(EMPLOYEE_ID, DEPARTMENT_ID) VALUES();
+					Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(obj);
+					Object pv = primaryValueMap.get(pk.toUpperCase());
+					Object fv = BeanUtil.getFieldValue(obj, field);
+					if(null == fv){
+						continue;
+					}
+					DataSet set = new DataSet();
+					Collection fvs = new ArrayList();
+					if (null == join.dependencyTable) {
+						//只通过中间表查主键 List<Long> departmentIds
+						if(fv.getClass().isArray()){
+							fvs = BeanUtil.array2collection(fv);
+						}else if(fv instanceof Collection){
+							fvs = (Collection) fv;
+						}
+					} else {
+						//通过子表完整查询 List<Department> departments
+						Column joinpc = EntityAdapterProxy.primaryKey(clazz);
+						String joinpk = null;
+						if(null != joinpc){
+							joinpk = joinpc.getName();
+						}
+						if(fv.getClass().isArray()){
+							Object[] objs = (Object[])fv;
+							for(Object item:objs){
+								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
+							}
+						}else if(fv instanceof Collection){
+							Collection objs = (Collection) fv;
+							for(Object item:objs){
+								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
+							}
+						}
+					}
+
+					for(Object item:fvs){
+						DataRow row = new DataRow();
+						row.put(join.joinColumn, pv);
+						row.put(join.inverseJoinColumn, item);
+						set.add(row);
+					}
+					if(mode == 1) {
+						long qty = runtime.getAdapter().delete(runtime, null,  join.joinTable, join.joinColumn, pv + "");
+						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
+							if(!(obj instanceof DataRow)){
+								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+							}
+						}
+					}
+					runtime.getAdapter().save(runtime, random, join.joinTable, set, false, null);
+
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else{
+						log.error("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
+					}
+				}
+			}
+		}
+		dependency --;
+		return result;
+	}
+
+	private int checkOne2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
+		int result = 0;
+		//OneToMany
+		if(dependency <= 0){
+			return result;
+		}
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
+			return result;
+		}
+		if(obj instanceof EntitySet){
+			EntitySet set = (EntitySet) obj;
+			for(Object entity:set){
+				checkOne2ManyDependencySave(runtime, random, entity, dependency, mode);
+			}
+		}else{
+			Class clazz = obj.getClass();
+			Column pc = EntityAdapterProxy.primaryKey(clazz);
+			String pk = null;
+			if(null != pc){
+				pk = pc.getName();
+			}
+			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+			for(Field field:fields) {
+				try {
+					OneToMany join = PersistenceAdapter.oneToMany(field);
+					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
+					Object fv = BeanUtil.getFieldValue(obj, field);
+					if(null == fv){
+						continue;
+					}
+
+					if(null == join.joinField){
+						throw new RuntimeException(field+"关联属性异常");
+					}
+
+					if(null == join.joinColumn){
+						throw new RuntimeException(field+"关联列异常");
+					}
+
+					if(null == join.dependencyTable){
+						throw new RuntimeException(field+"关联表异常");
+					}
+					if(mode == 1) {
+						long qty = runtime.getAdapter().delete(runtime, random, join.dependencyTable, join.joinColumn, pv + "");
+						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
+							if(!(obj instanceof DataRow)){
+								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+							}
+						}
+					}
+					Collection items = new ArrayList();
+					if(fv.getClass().isArray()){
+						Object[] objs = (Object[])fv;
+						for(Object item:objs){
+							BeanUtil.setFieldValue(item, join.joinField, pv);
+							items.add(item);
+						}
+					}else if(fv instanceof Collection){
+						Collection cols = (Collection) fv;
+						for(Object item:cols){
+							BeanUtil.setFieldValue(item, join.joinField, pv);
+							items.add(item);
+						}
+					}
+					runtime.getAdapter().save(runtime, random, join.dependencyTable, items, false, null);
+
+				}catch (Exception e){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}else{
+						log.error("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
+					}
+				}
+			}
+		}
+		dependency --;
+		return result;
+	}
+
+	protected <T> void checkMany2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
+		//ManyToMany
+		if(set.size()==0 || dependency <= 0){
+			return;
+		}
+		dependency --;
+		Class clazz = set.get(0).getClass();
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		Compare compare = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
+		for(Field field:fields){
+			try {
+				ManyToMany join = PersistenceAdapter.manyToMany(field);
+				if(Compare.EQUAL == compare || set.size() == 1) {
+					//逐行查询
+					for (T entity : set) {
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						if (null == join.dependencyTable) {
+							//只通过中间表查主键 List<Long> departmentIds
+							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+							DataSet items = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
+							List<String> ids = items.getStrings(join.inverseJoinColumn);
+							BeanUtil.setFieldValue(entity, field, ids);
+						} else {
+							//通过子表完整查询 List<Department> departments
+							//SELECT * FROM HR_DEPARTMENT WHERE ID IN(SELECT DEPARTMENT_ID FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?)
+							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "= #{JOIN_VALUE}" + ")";
+							ConfigStore configs = new DefaultConfigStore();
+							configs.param("JOIN_VALUE", primaryValueMap.get(pk.toUpperCase()));
+							EntitySet<T> dependencys = runtime.getAdapter().selects(runtime, random, new DefaultTextPrepare(sql), join.itemClass, configs);
+							BeanUtil.setFieldValue(entity, field, dependencys);
+						}
+					}
+				}else if(Compare.IN == compare){
+					//查出所有相关 再逐行分配
+					List pvs = new ArrayList();
+					Map<T,Object> idmap = new HashMap<>();
+					for(T entity:set){
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						Object pv = primaryValueMap.get(pk.toUpperCase());
+						pvs.add(pv);
+						idmap.put(entity, pv);
+					}
+					if (null == join.dependencyTable) {
+						//只通过中间表查主键 List<Long> departmentIds
+						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?,?,?)
+						ConfigStore conditions = new DefaultConfigStore();
+						conditions.and(join.joinColumn, pvs);
+						DataSet allItems = runtime.getAdapter().querys(runtime, random,   new DefaultTablePrepare(join.joinTable), conditions);
+						for(T entity:set){
+							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
+							List<String> ids = items.getStrings(join.inverseJoinColumn);
+							BeanUtil.setFieldValue(entity, field, ids);
+						}
+					} else {
+						//通过子表完整查询 List<Department> departments
+						//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
+						ConfigStore conditions = new DefaultConfigStore();
+						conditions.param("JOIN_PVS", pvs);
+						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
+						DataSet alls = runtime.getAdapter().querys(runtime, random,   new DefaultTextPrepare(sql), conditions);
+						for(T entity:set){
+							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
+							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
+						}
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.error("[check Many2ManyDependency query][result:fail][msg:{}]", e.toString());
+				}
+			}
+		}
+	}
+
+	private int checkMany2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
+		int result = 0;
+		//ManyToMany
+		if(dependency <= 0){
+			return result;
+		}
+		dependency --;
+		Class clazz = entity.getClass();
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
+		for(Field field:fields) {
+			try {
+				ManyToMany join = PersistenceAdapter.manyToMany(field);
+				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+				runtime.getAdapter().delete(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.error("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
+				}
+			}
+		}
+		return result;
+	}
+	private int checkOne2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
+		int result = 0;
+		//OneToMany
+		if(dependency <= 0){
+			return result;
+		}
+		dependency --;
+		Class clazz = entity.getClass();
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+		for(Field field:fields) {
+			try {
+				OneToMany join = PersistenceAdapter.oneToMany(field);
+				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
+				runtime.getAdapter().delete(runtime, random, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.error("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
+				}
+			}
+		}
+		return result;
+	}
+	protected <T> void checkOne2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
+		//OneToMany
+		if(set.size()==0 || dependency <= 0){
+			return;
+		}
+		dependency --;
+		Class clazz = set.get(0).getClass();
+		Column pc = EntityAdapterProxy.primaryKey(clazz);
+		String pk = null;
+		if(null != pc){
+			pk = pc.getName();
+		}
+		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
+		Compare compare = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
+		for(Field field:fields){
+			try {
+				OneToMany join = PersistenceAdapter.oneToMany(field);
+				if(Compare.EQUAL == compare || set.size() == 1) {
+					//逐行查询
+					for (T entity : set) {
+						Object pv = EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase());
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						//通过子表完整查询 List<AttendanceRecord> records
+						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
+						List<Object> params = new ArrayList<>();
+						params.add(primaryValueMap.get(pk.toUpperCase()));
+						EntitySet<T> dependencys = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
+						BeanUtil.setFieldValue(entity, field, dependencys);
+					}
+				}else if(Compare.IN == compare){
+					//查出所有相关 再逐行分配
+					List pvs = new ArrayList();
+					Map<T,Object> idmap = new HashMap<>();
+					for(T entity:set){
+						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
+						Object pv = primaryValueMap.get(pk.toUpperCase());
+						pvs.add(pv);
+						idmap.put(entity, pv);
+					}
+					//通过子表完整查询 List<Department> departments
+					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
+					ConfigStore conditions = new DefaultConfigStore();
+					conditions.and(join.joinColumn, pvs);
+					EntitySet<T> alls = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, conditions);
+					for(T entity:set){
+						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
+						BeanUtil.setFieldValue(entity, field, items);
+					}
+
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else{
+					log.error("[check One2ManyDependency query][result:fail][msg:{}]", e.toString());
+				}
+			}
+
+		}
+	}
+
 	/**
 	 * 保存(insert|upate)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -330,7 +721,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try{
-			return runtime.getAdapter().insert(runtime, random, dest,data, checkPrimary, columns);
+			int result =  runtime.getAdapter().insert(runtime, random, dest,data, checkPrimary, columns);
+			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
+			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			return result;
 		}finally{
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
@@ -457,7 +852,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try {
-			return runtime.getAdapter().delete(runtime, random, dest, obj, columns);
+			long qty = runtime.getAdapter().delete(runtime, random, dest, obj, columns);
+
+			if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
+				if(!(obj instanceof DataRow)){
+					checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+					checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+				}
+			}
+			return qty;
 		}finally {
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
