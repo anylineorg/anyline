@@ -1,12 +1,9 @@
 package org.anyline.data.runtime;
 
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 
 public interface DataRuntime {
-    AnylineDao getDao() ;
 
-     void setDao(AnylineDao dao) ;
     String getFeature() ;
 
     void setFeature(String feature) ;
