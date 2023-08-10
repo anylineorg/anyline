@@ -8,9 +8,10 @@ public class MultiPolygon extends Geometry{
     private List<Polygon> polygons = new ArrayList<>();
 
     public MultiPolygon(){
-
+        type = 6;
     }
     public MultiPolygon(List<Polygon> polygons){
+        this();
         this.polygons = polygons;
     }
     public MultiPolygon add(Polygon polygon){

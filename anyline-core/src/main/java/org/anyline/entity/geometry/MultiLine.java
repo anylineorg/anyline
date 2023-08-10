@@ -7,9 +7,10 @@ public class MultiLine extends Geometry{
     private List<LineString> lines = new ArrayList<>();
 
     public MultiLine(){
-
+        type = 5;
     }
     public MultiLine(List<LineString> lines){
+        this();
         this.lines = lines;
     }
     public MultiLine add(LineString line){

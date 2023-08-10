@@ -6,9 +6,10 @@ import java.util.List;
 public class MultiPoint extends Geometry{
     private List<Point> points = new ArrayList<>();
     public MultiPoint(){
-
+        type = 4;
     }
     public MultiPoint(List<Point> points){
+        this();
         this.points = points;
     }
     public MultiPoint add(Point point){

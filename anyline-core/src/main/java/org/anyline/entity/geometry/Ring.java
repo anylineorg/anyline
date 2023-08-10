@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Ring extends Geometry{
-    private Boolean clockwise = null; //是否顺时针
+    private Boolean clockwise = false; //是否顺时针
     private List<Point> points = new ArrayList<>();
     public Ring add(Point point){
         points.add(point);

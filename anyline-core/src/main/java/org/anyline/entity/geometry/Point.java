@@ -6,8 +6,10 @@ public class Point extends Geometry{
     private Double x;
     private Double y;
     public Point(){
+        type = 1;
     }
     public Point(Double x, Double y){
+        this();
         this.x = x ;
         this.y = y;
     }

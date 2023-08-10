@@ -12,8 +12,11 @@ public class Polygon extends Geometry{
     public List<Ring> rings(){
         return rings;
     }
-    public Polygon(){}
+    public Polygon(){
+        type = 3;
+    }
     public Polygon(List<Ring> rings) {
+        this();
         this.rings = rings;
     }
 

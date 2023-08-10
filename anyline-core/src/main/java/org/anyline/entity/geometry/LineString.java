@@ -18,8 +18,11 @@ public class LineString extends Geometry {
     public List<Point> points(){
         return points;
     }
-    public LineString(){}
+    public LineString(){
+        type = 2;
+    }
     public LineString(List<Point> points) {
+        this();
         this.points = points;
     }
 

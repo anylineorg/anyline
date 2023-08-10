@@ -5,6 +5,9 @@ import java.util.List;
 
 public class GeometryCollection extends Geometry{
     private List<Geometry> collection = new ArrayList<>();
+    public GeometryCollection(){
+        type = 7;
+    }
     public List<Geometry> collection(){
         return collection;
     }

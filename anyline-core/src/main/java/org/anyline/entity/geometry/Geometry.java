@@ -21,8 +21,8 @@ public abstract class Geometry {
     }
     protected String tag;
     protected Integer srid = 0;
-    protected Integer type;
-    protected Byte endian;
+    protected Integer type = 0;
+    protected Byte endian = 1;
     protected Object origin;
     public Integer srid() {
         return srid;
