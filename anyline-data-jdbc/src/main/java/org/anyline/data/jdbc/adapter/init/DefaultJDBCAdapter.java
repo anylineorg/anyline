@@ -99,6 +99,16 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		Object client = runtime.getClient();
 		return (JdbcTemplate) client;
 	}
+	/**
+	 * UPDATE [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param configs 条件
+	 * @param columns 列
+	 * @return 影响行数
+	 */
 	@Override
 	public int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
@@ -158,25 +168,19 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}*/
 		long millis = -1;
-		try {
-			swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
-			if (swt == ACTION.SWITCH.BREAK) {
-				return -1;
-			}
-			if (null != dmListener) {
-				swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
-			}
-			if (swt == ACTION.SWITCH.BREAK) {
-				return -1;
-			}
-			result = update(runtime, random, dest, data, run);
-			sql_success = true;
-			checkMany2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
-			checkOne2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
-			millis = System.currentTimeMillis() - fr;
-		}catch (Exception e){
-			sql_success = false;
+		swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
+		if (swt == ACTION.SWITCH.BREAK) {
+			return -1;
 		}
+		if (null != dmListener) {
+			swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
+		}
+		if (swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+		result = update(runtime, random, dest, data, run);
+		sql_success = true;
+		millis = System.currentTimeMillis() - fr;
 		if (null != dmListener) {
 			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, sql_success, result,  millis);
 		}
@@ -185,171 +189,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	/**
-	 * 检测级联insert/update
+	 * exists [入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param obj obj
-	 * @param dependency dependency
-	 * @param mode 0:inser 1:update
-	 * @return int
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
+	 * @return boolean
 	 */
-	private int checkMany2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
-		int result = 0;
-		//ManyToMany
-		if(dependency <= 0){
-			return result;
-		}
-		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
-			return result;
-		}
-		if(obj instanceof EntitySet){
-			EntitySet set = (EntitySet) obj;
-			for(Object entity:set){
-				checkMany2ManyDependencySave(runtime, random, entity, dependency, mode);
-			}
-		}else{
-			Class clazz = obj.getClass();
-			Column pc = EntityAdapterProxy.primaryKey(clazz);
-			String pk = null;
-			if(null != pc){
-				pk = pc.getName();
-			}
-			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
-			for(Field field:fields) {
-				try {
-					ManyToMany join = PersistenceAdapter.manyToMany(field);
-					//INSERT INTO HR_DEPLOYEE_DEPARTMENT(EMPLOYEE_ID, DEPARTMENT_ID) VALUES();
-					Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(obj);
-					Object pv = primaryValueMap.get(pk.toUpperCase());
-					Object fv = BeanUtil.getFieldValue(obj, field);
-					if(null == fv){
-						continue;
-					}
-					DataSet set = new DataSet();
-					Collection fvs = new ArrayList();
-					if (null == join.dependencyTable) {
-						//只通过中间表查主键 List<Long> departmentIds
-						if(fv.getClass().isArray()){
-							fvs = BeanUtil.array2collection(fv);
-						}else if(fv instanceof Collection){
-							fvs = (Collection) fv;
-						}
-					} else {
-						//通过子表完整查询 List<Department> departments
-						Column joinpc = EntityAdapterProxy.primaryKey(clazz);
-						String joinpk = null;
-						if(null != joinpc){
-							joinpk = joinpc.getName();
-						}
-						if(fv.getClass().isArray()){
-							Object[] objs = (Object[])fv;
-							for(Object item:objs){
-								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
-							}
-						}else if(fv instanceof Collection){
-							Collection objs = (Collection) fv;
-							for(Object item:objs){
-								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
-							}
-						}
-					}
-
-					for(Object item:fvs){
-						DataRow row = new DataRow();
-						row.put(join.joinColumn, pv);
-						row.put(join.inverseJoinColumn, item);
-						set.add(row);
-					}
-					if(mode == 1) {
-						delete(runtime, null,  join.joinTable, join.joinColumn, pv + "");
-					}
-					save(runtime, random, join.joinTable, set, false, null);
-
-				}catch (Exception e){
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}else{
-						log.error("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
-					}
-				}
-			}
-		}
-		dependency --;
-		return result;
-	}
-
-	private int checkOne2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
-		int result = 0;
-		//OneToMany
-		if(dependency <= 0){
-			return result;
-		}
-		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
-			return result;
-		}
-		if(obj instanceof EntitySet){
-			EntitySet set = (EntitySet) obj;
-			for(Object entity:set){
-				checkOne2ManyDependencySave(runtime, random, entity, dependency, mode);
-			}
-		}else{
-			Class clazz = obj.getClass();
-			Column pc = EntityAdapterProxy.primaryKey(clazz);
-			String pk = null;
-			if(null != pc){
-				pk = pc.getName();
-			}
-			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
-			for(Field field:fields) {
-				try {
-					OneToMany join = PersistenceAdapter.oneToMany(field);
-					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
-					Object fv = BeanUtil.getFieldValue(obj, field);
-					if(null == fv){
-						continue;
-					}
-
-					if(null == join.joinField){
-						throw new RuntimeException(field+"关联属性异常");
-					}
-
-					if(null == join.joinColumn){
-						throw new RuntimeException(field+"关联列异常");
-					}
-
-					if(null == join.dependencyTable){
-						throw new RuntimeException(field+"关联表异常");
-					}
-					if(mode == 1) {
-						delete(runtime, random, join.dependencyTable, join.joinColumn, pv + "");
-					}
-					Collection items = new ArrayList();
-					if(fv.getClass().isArray()){
-						Object[] objs = (Object[])fv;
-						for(Object item:objs){
-							BeanUtil.setFieldValue(item, join.joinField, pv);
-							items.add(item);
-						}
-					}else if(fv instanceof Collection){
-						Collection cols = (Collection) fv;
-						for(Object item:cols){
-							BeanUtil.setFieldValue(item, join.joinField, pv);
-							items.add(item);
-						}
-					}
-					save(runtime, random, join.dependencyTable, items, false, null);
-
-				}catch (Exception e){
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}else{
-						log.error("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
-					}
-				}
-			}
-		}
-		dependency --;
-		return result;
-	}
 	@Override
 	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		boolean result = false;
@@ -386,7 +233,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return result;
 	}
-
+	/**
+	 * select [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param next 是否查下一个序列值
+	 * @param names 存储过程名称s
+	 * @return DataRow 保存序列查询结果 以存储过程name作为key
+	 */
 	@Override
 	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
 		List<Run> runs = buildQuerySequence(runtime, next, names);
@@ -405,7 +259,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return new DataRow();
 	}
-
+	/**
+	 * count [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return long
+	 */
 	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		long count = -1;
 		Long fr = System.currentTimeMillis();
@@ -426,23 +288,23 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
-			run = buildQueryRun(runtime, prepare, configs, conditions);
-			if(!run.isValid()){
-				if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-					log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-				}
-				return -1;
+		run = buildQueryRun(runtime, prepare, configs, conditions);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
 			}
-			if (null != dmListener) {
-				dmListener.beforeCount(runtime, random, run);
-			}
-			swt = InterceptorProxy.beforeCount(runtime, random, run);
-			if(swt == ACTION.SWITCH.BREAK){
-				return -1;
-			}
-			fr = System.currentTimeMillis();
-			count = count(runtime, random, run);
-			sql_success = true;
+			return -1;
+		}
+		if (null != dmListener) {
+			dmListener.beforeCount(runtime, random, run);
+		}
+		swt = InterceptorProxy.beforeCount(runtime, random, run);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		fr = System.currentTimeMillis();
+		count = count(runtime, random, run);
+		sql_success = true;
 
 		if(null != dmListener){
 			dmListener.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
@@ -450,6 +312,13 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		InterceptorProxy.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
 		return count;
 	}
+	/**
+	 * count [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return long
+	 */
 	@Override
 	public long count(DataRuntime runtime, String random, Run run) {
 		long total = 0;
@@ -504,7 +373,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return row;
 	}
 
- 	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run, String sql, List<Object> values){
+ 	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				throw new SQLQueryException("未指定SQL");
@@ -599,7 +468,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return set;
 	}
-
+	/**
+	 * select [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param system 系统表不检测列属性
+	 * @param table 表
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return DataSet
+	 */
 	@Override
 	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run) {
 		String sql = run.getFinalQuery();
@@ -750,7 +627,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return set;
 	}*/
-
+	/**
+	 * select [入口]
+	 * <br/>
+	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return maps 返回map集合
+	 */
 	@Override
 	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		List<Map<String,Object>> maps = null;
@@ -775,30 +662,30 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 		run = buildQueryRun(runtime, prepare, configs, conditions);
 		Long fr = System.currentTimeMillis();
-			if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
-				String tmp = "[valid:false][不具备执行条件]";
-				String src = "";
-				if (prepare instanceof TablePrepare) {
-					src = prepare.getTable();
-				} else {
-					src = prepare.getText();
-				}
-				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
-				log.warn(tmp);
-			}
-			if (run.isValid()) {
-				swt = InterceptorProxy.beforeQuery(runtime, random,  run, null);
-				if(swt == ACTION.SWITCH.BREAK){
-					return new ArrayList<>();
-				}
-				if (null != dmListener) {
-					dmListener.beforeQuery(runtime, random, run, -1);
-				}
-				maps = maps(runtime, random, run);
-				sql_success = true;
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
+			String tmp = "[valid:false][不具备执行条件]";
+			String src = "";
+			if (prepare instanceof TablePrepare) {
+				src = prepare.getTable();
 			} else {
-				maps = new ArrayList<>();
+				src = prepare.getText();
 			}
+			tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
+			log.warn(tmp);
+		}
+		if (run.isValid()) {
+			swt = InterceptorProxy.beforeQuery(runtime, random,  run, null);
+			if(swt == ACTION.SWITCH.BREAK){
+				return new ArrayList<>();
+			}
+			if (null != dmListener) {
+				dmListener.beforeQuery(runtime, random, run, -1);
+			}
+			maps = maps(runtime, random, run);
+			sql_success = true;
+		} else {
+			maps = new ArrayList<>();
+		}
 
 		if (null != dmListener) {
 			dmListener.afterQuery(runtime, random, run, sql_success, maps, System.currentTimeMillis() - fr);
@@ -806,6 +693,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		InterceptorProxy.afterQuery(runtime, random, run, sql_success, maps, null,System.currentTimeMillis() - fr);
 		return maps;
 	}
+
+	/**
+	 * select [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return maps
+	 */
 	@Override
 	public List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run){
 		List<Map<String,Object>> maps = null;
@@ -869,6 +764,13 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return maps;
 	}
+	/**
+	 * select [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return map
+	 */
 	@Override
 	public Map<String,Object> map(DataRuntime runtime, String random, Run run){
 		Map<String, Object> map = null;
@@ -917,6 +819,16 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return map;
 	}
+
+	/**
+	 * update [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return 影响行数
+	 */
 	@Override
 	public int update(DataRuntime runtime, String random, String dest, Object data, Run run){
 		int result = 0;
@@ -1038,38 +950,34 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		long fr = System.currentTimeMillis();
 		long millis = -1;
 
-			swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
-			if(swt == ACTION.SWITCH.BREAK){
-				return -1;
-			}
-			if(null != dmListener){
-				swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
-			}
-			if(swt == ACTION.SWITCH.BREAK){
-				return -1;
-			}
-			cnt = insert(runtime, random, data, run, null);
-
-			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
-			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-
+		swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		cnt = insert(runtime, random, data, run, null);
 		if (null != dmListener) {
 			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
 		}
-
 		InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
 		return cnt;
 	}
+
 	/**
-	 * 执行 insert
+	 * insert [执行]
+	 * <br/>
+	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param data entity|DataRow|DataSet
+	 * @param data data
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param pks pks
-	 * @return int 影响行数
-	 * @throws Exception 异常
+	 * @param pks 需要返回的主键
+	 * @return 影响行数
 	 */
 	@Override
 	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
@@ -1150,7 +1058,19 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return cnt;
 	}
-	//有些不支持返回自增的单独执行
+	/**
+	 * insert [执行]
+	 * <br/>
+	 * 有些不支持返回自增的单独执行<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param data data
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param pks pks
+	 * @param simple 没有实际作用 用来标识有些不支持返回自增的单独执行
+	 * @return 影响行数
+	 */
 	@Override
 	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
 		int cnt = 0;
@@ -1225,6 +1145,19 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return cnt;
 	}
 
+	/**
+	 * save [入口]
+	 * <br/>
+	 * 根据是否有主键值确认insert | update<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 列
+	 * @return 影响行数
+	 */
 	@Override
 	public int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 
@@ -1321,6 +1254,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 
+	/**
+	 * execute [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
+	 * @return 影响行数
+	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		long result = -1;
@@ -1362,6 +1304,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		InterceptorProxy.afterExecute(runtime, random, run, sql_success, result, System.currentTimeMillis()-fr);
 		return result;
 	}
+
+	/**
+	 * execute [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return 影响行数
+	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, Run run){
 		int result = -1;
@@ -1408,6 +1358,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return result;
 	}
+
+	/**
+	 * procedure [执行]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param procedure 存储过程
+	 * @param random  random
+	 * @return 影响行数
+	 */
 	@Override
 	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
 		boolean result = false;
@@ -1522,6 +1480,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return result;
 	}
+	/**
+	 * select procedure [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param procedure 存储过程
+	 * @param navi 分页
+	 * @return DataSet
+	 */
 	@Override
 	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
 		DataSet set = null;
@@ -1672,6 +1638,18 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
  ;
 		return set;
 	}
+
+	/**
+	 * select [入口]
+	 * <br/>
+	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
 	@Override
 	public DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions){
 		DataSet set = null;
@@ -1768,6 +1746,18 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		InterceptorProxy.afterQuery(runtime, random, run, sql_success, set, navi, System.currentTimeMillis() - fr);
 		return set;
 	}
+
+	/**
+	 * select [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param clazz 类
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return EntitySet
+	 * @param <T> Entity
+	 */
 	@Override
 	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
 		if(null == prepare){
@@ -1846,7 +1836,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 
 				fr = System.currentTimeMillis();
-				list = select(runtime, random, clazz, run.getTable(), run, ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY());
+				list = select(runtime, random, clazz, run.getTable(), run);
 				sql_success = false;
 			}else{
 				list = new EntitySet<>();
@@ -1872,12 +1862,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param clazz entity class
 	 * @param table table
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dependency 是否加载依赖 >0时加载
 	 * @return EntitySet
 	 * @param <T> entity.class
-	protected <T> EntitySet<T> select(DataRuntime runtime, String random,  Class<T> clazz, String table,  String sql, List<Object> values, int dependency){
+	 *
 	 */
-	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, Run run, int dependency){
+	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, Run run){
 		EntitySet<T> set = new EntitySet<>();
 
 		if(null == random){
@@ -1896,156 +1885,22 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			set.add(entity);
 		}
 
-		if(dependency > 0) {
-			checkMany2ManyDependencyQuery(runtime, random, set, dependency);
-			checkOne2ManyDependencyQuery(runtime, random, set, dependency);
-		}
 		return set;
 	}
 
-	protected <T> void checkMany2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
-		//ManyToMany
-		if(set.size()==0 || dependency <= 0){
-			return;
-		}
-		dependency --;
-		Class clazz = set.get(0).getClass();
-		Column pc = EntityAdapterProxy.primaryKey(clazz);
-		String pk = null;
-		if(null != pc){
-			pk = pc.getName();
-		}
-		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
-		Compare compare = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
-		for(Field field:fields){
-			try {
-				ManyToMany join = PersistenceAdapter.manyToMany(field);
-				if(Compare.EQUAL == compare || set.size() == 1) {
-					//逐行查询
-					for (T entity : set) {
-						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
-						if (null == join.dependencyTable) {
-							//只通过中间表查主键 List<Long> departmentIds
-							//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-							DataSet items = querys(runtime, random, new DefaultTablePrepare(join.joinTable), new DefaultConfigStore(), "++" + join.joinColumn + ":" + primaryValueMap.get(pk.toUpperCase()));
-							List<String> ids = items.getStrings(join.inverseJoinColumn);
-							BeanUtil.setFieldValue(entity, field, ids);
-						} else {
-							//通过子表完整查询 List<Department> departments
-							//SELECT * FROM HR_DEPARTMENT WHERE ID IN(SELECT DEPARTMENT_ID FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?)
-							String sql = "SELECT * FROM " + join.dependencyTable + " WHERE " + join.dependencyPk + " IN (SELECT " + join.inverseJoinColumn + " FROM " + join.joinTable + " WHERE " + join.joinColumn + "=?" + ")";
-							SimpleRun run = new SimpleRun(sql);
-							run.addValue(primaryValueMap.get(pk.toUpperCase()));
-							EntitySet<T> dependencys = select(runtime, random, join.itemClass, null, run, dependency);
-							BeanUtil.setFieldValue(entity, field, dependencys);
-						}
-					}
-				}else if(Compare.IN == compare){
-					//查出所有相关 再逐行分配
-					List pvs = new ArrayList();
-					Map<T,Object> idmap = new HashMap<>();
-					for(T entity:set){
-						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
-						Object pv = primaryValueMap.get(pk.toUpperCase());
-						pvs.add(pv);
-						idmap.put(entity, pv);
-					}
-					if (null == join.dependencyTable) {
-						//只通过中间表查主键 List<Long> departmentIds
-						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?,?,?)
-						ConfigStore conditions = new DefaultConfigStore();
-						conditions.and(join.joinColumn, pvs);
-						DataSet allItems = querys(runtime, random,   new DefaultTablePrepare(join.joinTable), conditions);
-						for(T entity:set){
-							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
-							List<String> ids = items.getStrings(join.inverseJoinColumn);
-							BeanUtil.setFieldValue(entity, field, ids);
-						}
-					} else {
-						//通过子表完整查询 List<Department> departments
-						//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
-						ConfigStore conditions = new DefaultConfigStore();
-						conditions.param("JOIN_PVS", pvs);
-						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet alls = querys(runtime, random,   new DefaultTextPrepare(sql), conditions);
-						for(T entity:set){
-							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
-							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
-						}
-					}
-				}
-			}catch (Exception e){
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else{
-					log.error("[check Many2ManyDependency query][result:fail][msg:{}]", e.toString());
-				}
-			}
-		}
-	}
 
-	protected <T> void checkOne2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
-		//OneToMany
-		if(set.size()==0 || dependency <= 0){
-			return;
-		}
-		dependency --;
-		Class clazz = set.get(0).getClass();
-		Column pc = EntityAdapterProxy.primaryKey(clazz);
-		String pk = null;
-		if(null != pc){
-			pk = pc.getName();
-		}
-		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
-		Compare compare = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE();
-		for(Field field:fields){
-			try {
-				OneToMany join = PersistenceAdapter.oneToMany(field);
-				if(Compare.EQUAL == compare || set.size() == 1) {
-					//逐行查询
-					for (T entity : set) {
-						Object pv = EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase());
-						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
-						//通过子表完整查询 List<AttendanceRecord> records
-						//SELECT * FROM HR_ATTENDANCE_RECORD WHERE EMPLOYEE_ID = ?)
-						List<Object> params = new ArrayList<>();
-						params.add(primaryValueMap.get(pk.toUpperCase()));
-						EntitySet<T> dependencys = selects(runtime, random, null, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
-						BeanUtil.setFieldValue(entity, field, dependencys);
-					}
-				}else if(Compare.IN == compare){
-					//查出所有相关 再逐行分配
-					List pvs = new ArrayList();
-					Map<T,Object> idmap = new HashMap<>();
-					for(T entity:set){
-						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
-						Object pv = primaryValueMap.get(pk.toUpperCase());
-						pvs.add(pv);
-						idmap.put(entity, pv);
-					}
-					//通过子表完整查询 List<Department> departments
-					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
-					ConfigStore conditions = new DefaultConfigStore();
-					conditions.and(join.joinColumn, pvs);
-					EntitySet<T> alls = selects(runtime, random, null, join.dependencyClass, conditions);
-					for(T entity:set){
-						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
-						BeanUtil.setFieldValue(entity, field, items);
-					}
-
-				}
-			}catch (Exception e){
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else{
-					log.error("[check One2ManyDependency query][result:fail][msg:{}]", e.toString());
-				}
-			}
-
-		}
-	}
-
-
+	/**
+	 * delete [入口]
+	 * <br/>
+	 * 合成 where column in (values)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param column 列
+	 * @param values 列对应的值
+	 * @return 影响行数
+	 * @param <T> T
+	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values){
 		table = DataSourceUtil.parseDataSource(table, null);
@@ -2073,6 +1928,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
+	/**
+	 * delete [入口]
+	 * <br/>
+	 * 合成 where k1 = v1 and k2 = v2
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param obj entity或DataRow
+	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+	 * @return 影响行数
+	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, Object obj, String... columns){
 		dest = DataSourceUtil.parseDataSource(dest,obj);
@@ -2110,17 +1976,23 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					return -1;
 				}
 				size = exeDelete(runtime, random,  run);
-				if(size > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
-					if(!(obj instanceof DataRow)){
-						checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
-						checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
-					}
-				}
 			}
 		}
 		return size;
 	}
 
+	/**
+	 * delete [入口]
+	 * <br/>
+	 * 根据configs和conditions过滤条件
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
+	 * @return 影响行数
+	 */
+	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
 		table = DataSourceUtil.parseDataSource(table, null);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -2145,6 +2017,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
+	/**
+	 * truncate [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @return 1表示成功执行
+	 */
+	@Override
 	public int truncate(DataRuntime runtime, String random, String table){
 		table = DataSourceUtil.parseDataSource(table);
 		List<Run> runs = buildTruncateRun(runtime, table);
@@ -2189,66 +2069,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return result;
 	}
 
-	private int checkMany2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
-		int result = 0;
-		//ManyToMany
-		if(dependency <= 0){
-			return result;
-		}
-		dependency --;
-		Class clazz = entity.getClass();
-		Column pc = EntityAdapterProxy.primaryKey(clazz);
-		String pk = null;
-		if(null != pc){
-			pk = pc.getName();
-		}
-		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
-		for(Field field:fields) {
-			try {
-				ManyToMany join = PersistenceAdapter.manyToMany(field);
-				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				delete(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
-
-			}catch (Exception e){
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else{
-					log.error("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
-				}
-			}
-		}
-		return result;
-	}
-	private int checkOne2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
-		int result = 0;
-		//OneToMany
-		if(dependency <= 0){
-			return result;
-		}
-		dependency --;
-		Class clazz = entity.getClass();
-		Column pc = EntityAdapterProxy.primaryKey(clazz);
-		String pk = null;
-		if(null != pc){
-			pk = pc.getName();
-		}
-		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
-		for(Field field:fields) {
-			try {
-				OneToMany join = PersistenceAdapter.oneToMany(field);
-				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				delete(runtime, random, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
-
-			}catch (Exception e){
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}else{
-					log.error("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
-				}
-			}
-		}
-		return result;
-	}
 	@Override
 	public Database database(DataRuntime runtime, String random, String name){
 		if(null == random){
