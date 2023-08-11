@@ -364,13 +364,13 @@ public class AnylineController extends AbstractBasicController {
 	 * @param configs 查询条件参考doc.anyline.org查询参数约定格式 http://doc.anyline.org/s?id=1059
 	 * @return ConfigStore
 	 */
-	protected ConfigStore condition(int fr, int to, String... configs) {
+	protected ConfigStore condition(long fr, long to, String... configs) {
 		return condition(getRequest(), fr, to, configs);
 	}
-	protected ConfigStore condition(int fr, int to, String[] fixs, String... configs) {
+	protected ConfigStore condition(long fr, long to, String[] fixs, String... configs) {
 		return condition(getRequest(), fr, to, fixs, configs);
 	}
-	protected ConfigStore condition(int fr, int to, List<String> fixs, String... configs) {
+	protected ConfigStore condition(long fr, long to, List<String> fixs, String... configs) {
 		return condition(getRequest(), fr, to, fixs, configs);
 	}
 
@@ -408,13 +408,13 @@ public class AnylineController extends AbstractBasicController {
 		return condition(getRequest(), vol, fixs, configs);
 	}
 
-	protected ConfigStore where(int fr, int to, String... configs) {
+	protected ConfigStore where(long fr, long to, String... configs) {
 		return condition(getRequest(), fr, to, configs);
 	}
-	protected ConfigStore where(int fr, int to, String[] fixs, String... configs) {
+	protected ConfigStore where(long fr, long to, String[] fixs, String... configs) {
 		return condition(getRequest(), fr, to, fixs, configs);
 	}
-	protected ConfigStore where(int fr, int to, List<String> fixs, String... configs) {
+	protected ConfigStore where(long fr, long to, List<String> fixs, String... configs) {
 		return condition(getRequest(), fr, to, fixs, configs);
 	}
 

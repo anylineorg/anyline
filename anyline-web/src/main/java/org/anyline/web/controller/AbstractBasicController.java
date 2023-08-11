@@ -489,7 +489,7 @@ public abstract class AbstractBasicController {
 	 * @param configs     参数
 	 * @return ConfigStore
 	 */
-	protected ConfigStore condition(HttpServletRequest request, int fr, int to, List<String> fixs, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, long fr, long to, List<String> fixs, String... configs) {
 		WebConfigStore store = new WebConfigStore(BeanUtil.merge(fixs, configs));
 		PageNavi navi = new DefaultPageNavi();
 		navi.setCalType(1);
@@ -505,10 +505,10 @@ public abstract class AbstractBasicController {
 		return store;
 	}
 
-	protected ConfigStore condition(HttpServletRequest request, int fr, int to, String[] fixs, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, long fr, long to, String[] fixs, String... configs) {
 		return  condition(request, fr, to, BeanUtil.array2list(fixs, configs));
 	}
-	protected ConfigStore condition(HttpServletRequest request, int fr, int to, String... configs) {
+	protected ConfigStore condition(HttpServletRequest request, long fr, long to, String... configs) {
 		return  condition(request, fr, to, BeanUtil.array2list(configs));
 	}
 	protected ConfigStore condition(HttpServletRequest request, String... configs) {

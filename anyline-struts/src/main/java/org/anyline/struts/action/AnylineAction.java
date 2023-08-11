@@ -156,10 +156,10 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return condition(request, vol, BeanUtil.merge(fixs, configs));
 	}
 
-	protected ConfigStore condition(int fr, int to, String... configs) {
+	protected ConfigStore condition(long fr, long to, String... configs) {
 		return condition(request, fr, to, configs);
 	}
-	protected ConfigStore condition(int fr, int to, String[] fixs, String... configs) {
+	protected ConfigStore condition(long fr, long to, String[] fixs, String... configs) {
 		return condition(request, fr, to, BeanUtil.merge(fixs, configs));
 	}
 
