@@ -80,7 +80,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
      * void createInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String,Column> columns)
      * void createInsertContent(DataRuntime runtime, Run run, String dest, Collection list,  LinkedHashMap<String,Column> columns)
-     * int insert(DataRuntime runtime, String random, Object data, Run run) throws Exception
+     * long insert(DataRuntime runtime, String random, Object data, Run run) throws Exception
      *
      * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns)
      * protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)

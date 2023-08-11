@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  
 public class IDCardUtil {
  
-	private static Map<String,String> CODE_NM =  new HashMap<String,String>(); 
+	private static Map<String, String> CODE_NM =  new HashMap<String, String>(); 
 	private static String CITY_CODE[] = {"11", "12", "13", "14", "15", "21", "22",
 			"23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", 
 			"44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", 

@@ -113,7 +113,7 @@ public class Radio extends BaseBodyTag{
 					if((null != headValue && headValue.equals(value))){
 						html.append(" checked = \"checked\"");
 					}
-					Map<String,String> map = new HashMap<String,String>();
+					Map<String, String> map = new HashMap<String, String>();
 					map.put(valueKey, headValue);
 					attribute(html);
 					crateExtraData(html, map);

@@ -45,7 +45,7 @@ public class TableRun extends BasicRun implements Run {
 		}
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
 		if(table.contains(".")){
-			this.schema = table.substring(0,table.indexOf("."));
+			this.schema = table.substring(0, table.indexOf("."));
 			this.table = table.substring(table.indexOf(".") + 1); 
 		} else{
 			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())){

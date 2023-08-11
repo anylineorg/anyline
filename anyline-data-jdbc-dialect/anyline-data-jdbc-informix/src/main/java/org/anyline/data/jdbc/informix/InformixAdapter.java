@@ -30,7 +30,7 @@ import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.informix")
 public class InformixAdapter extends SQLAdapter implements JDBCAdapter, InitializingBean {
-	public static Map<Integer,String> column_types = new HashMap<>();
+	public static Map<Integer, String> column_types = new HashMap<>();
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
 	public DatabaseType type(){
@@ -199,7 +199,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		StringBuilder builder = run.getBuilder();
 		DataRow first = set.getRow(0);
-		Map<String,String> seqs = new HashMap<>();
+		Map<String, String> seqs = new HashMap<>();
 		for(Column column:columns.values()){
 			String key = column.getName();
 			Object value = first.getStringNvl(key);
@@ -265,7 +265,7 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 
 		Object first = list.iterator().next();
-		Map<String,String> seqs = new HashMap<>();
+		Map<String, String> seqs = new HashMap<>();
 		for(Column column:columns.values()){
 			String key = column.getName();
 			Object value = BeanUtil.getFieldValue(first, key);
@@ -366,8 +366,8 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception 异常
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
-		int cnt = 0;
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+		long cnt = 0;
 		if(data instanceof Collection) {
 			cnt = insert(runtime, random, data, run, pks, true);
 		}else{

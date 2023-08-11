@@ -459,7 +459,7 @@ public class Downloader {
 	 * @param extras extras
 	 * @return Downloader
 	 */
-	public Downloader add(String url, File local, Map<String,String> headers, Map<String, Object> params,Map<String, Object> extras){
+	public Downloader add(String url, File local, Map<String, String> headers, Map<String, Object> params,Map<String, Object> extras){
 		DownloadTask task = getTask(url); 
 		if(null == task){
 			task = new DownloadTask(url, local, headers, params,extras); 
@@ -467,7 +467,7 @@ public class Downloader {
 		} 
 		return add(task); 
 	} 
-	public Downloader add(String url, File local, Map<String,String> headers, Map<String, Object> params){
+	public Downloader add(String url, File local, Map<String, String> headers, Map<String, Object> params){
 		return add(url, local, null, null, null); 
 	} 
 	public Downloader add(String url, File local){

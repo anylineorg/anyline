@@ -259,7 +259,7 @@ public class MinioUtil {
      * @return String
      * @throws Exception 异常 Exception
      */
-    public String putObject(String bucket,String obj, File file) throws Exception{
+    public String putObject(String bucket, String obj, File file) throws Exception{
         this.putObject(bucket, obj, new FileInputStream(file), file.length());
         return obj;
     }
@@ -314,7 +314,7 @@ public class MinioUtil {
      * @return String
      * @throws Exception 异常 Exception
      */
-    public String presignedUrl(String bucket,String obj) throws Exception{
+    public String presignedUrl(String bucket, String obj) throws Exception{
         GetPresignedObjectUrlArgs getPresignedObjectUrlArgs = GetPresignedObjectUrlArgs.builder()
                 .method(Method.PUT)
                 .bucket(bucket)

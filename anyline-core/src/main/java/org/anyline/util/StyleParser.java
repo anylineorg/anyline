@@ -151,7 +151,7 @@ public class StyleParser {
         }
         return styles;
     }
-    public static Map<String,String> inherit(Map<String, String> src, Map<String, String> parent){
+    public static Map<String, String> inherit(Map<String, String> src, Map<String, String> parent){
         if(null == src){
             src = new HashMap<>();
         }
@@ -251,11 +251,11 @@ public class StyleParser {
         return src;
     }
 
-    public static Map<String,String> parse(Map<String,String> src, String txt, boolean over){
-        Map<String,String> copy = StyleParser.parse(txt);
+    public static Map<String, String> parse(Map<String, String> src, String txt, boolean over){
+        Map<String, String> copy = StyleParser.parse(txt);
         return join(src, copy, over);
     }
-    public static Map<String,String> parse(Map<String,String> src, String txt){
+    public static Map<String, String> parse(Map<String, String> src, String txt){
         return parse(src, txt, false);
     }
 }

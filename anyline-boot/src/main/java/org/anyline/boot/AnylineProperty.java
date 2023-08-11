@@ -243,9 +243,9 @@ public class AnylineProperty {
      */
     protected String entityColumnAnnotation					    = null			;	// 列名注解
     /**
-     * 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+     * 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
      */
-    protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+    protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
 
     /**
      * 实体类属性依赖层级 > 0:查询属性关联表

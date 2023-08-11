@@ -186,7 +186,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	public void parseTable(){
 		if(null != table){
 			if(table.startsWith("<")){
-				datasoruce = table.substring(1,table.indexOf(">"));
+				datasoruce = table.substring(1, table.indexOf(">"));
 				table = table.substring(table.indexOf(">")+1);
 			}
 
@@ -208,7 +208,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 					colStr = colStr.substring(9).trim();
 				}
 				parseColumn(colStr);
-				table = table.substring(0,table.indexOf("("));
+				table = table.substring(0, table.indexOf("("));
 			}
 			if(null != table && table.contains(".")){
 				String[] tbs = table.split("\\.");

@@ -163,7 +163,7 @@ public class Checkbox extends BaseBodyTag {
 						}
 					}
 					
-					Map<String,String> map = new HashMap<String,String>();
+					Map<String, String> map = new HashMap<String, String>();
 					map.put(valueKey, headValue);
 					attribute(html);
 					crateExtraData(html,map);

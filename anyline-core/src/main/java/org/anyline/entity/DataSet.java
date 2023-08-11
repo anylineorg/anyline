@@ -780,7 +780,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet distinct(String... keys) {
         DataSet result = new DataSet();
-        Map<String,String> chks = new HashMap<>();
+        Map<String, String> chks = new HashMap<>();
         String ks = "";
         for(String key:keys){
             ks += "${"+key+"}";
@@ -976,7 +976,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return getRows(compare, begin, qty, kvs(params));
     }
     public DataSet getRows(Compare compare, int begin, int qty, DataRow kvs) {
-        Map<String,String> map = new HashMap<String,String>();
+        Map<String, String> map = new HashMap<String, String>();
         for(String k:kvs.keySet()){
             map.put(k, kvs.getString(k));
         }

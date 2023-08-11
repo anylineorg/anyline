@@ -36,5 +36,5 @@ public interface UpdateInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis){ return SWITCH.CONTINUE;}
 }

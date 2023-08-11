@@ -277,8 +277,8 @@ public class SMSUtil {
 		return config; 
 	}
 
-	private Map<String,String> object2map(Object entity, List<String> keys){
-		Map<String,String> params = new HashMap<>();
+	private Map<String, String> object2map(Object entity, List<String> keys){
+		Map<String, String> params = new HashMap<>();
 		if(null != keys){
 			for(String key:keys){
 				String field = key;
@@ -295,7 +295,7 @@ public class SMSUtil {
 		}
 		return params;
 	}
-	private Map<String,String> object2map(Object entity, String ... keys){
+	private Map<String, String> object2map(Object entity, String ... keys){
 		return object2map(entity, BeanUtil.array2list(keys));
 	}
 	public class Sign{

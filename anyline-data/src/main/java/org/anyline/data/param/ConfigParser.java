@@ -1041,7 +1041,7 @@ public class ConfigParser {
 	 *            参数值是否加密过,是则解密
 	 * @return Object
 	 */
-	public static Object getRuntimeValue(Map<String,Object> values,String key, boolean keyEncrypt, boolean valueEncrypt) {
+	public static Object getRuntimeValue(Map<String,Object> values, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
 		List<Object> list = getRuntimeValues(values, key, keyEncrypt, valueEncrypt);
 		if(null != list && list.size()>0){

@@ -549,7 +549,7 @@ public class RegularUtil {
 	}
 	/**
 	 * 提取双标签&lt;div&gt;content&lt;div&gt;
-	 * 依次取出p,table,div中的内容 有嵌套时只取外层
+	 * 依次取出p, table,div中的内容 有嵌套时只取外层
 	 * 只能提取同时有 开始结束标签的内容,不能提取单标签内容如&lt;img&gt; &lt;br/&gt;
 	 * 支持不同标签嵌套,但不支持相同标签嵌套
 	 * 不区分大小写
@@ -559,7 +559,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> fetchPairedTag(String txt,String ... tags) throws Exception{
+	public static List<List<String>> fetchPairedTag(String txt, String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
 			String tagNames = "";
@@ -588,7 +588,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> fetchSingleTag(String txt,String ... tags) throws Exception{
+	public static List<List<String>> fetchSingleTag(String txt, String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
 			String tagNames = "";
@@ -614,7 +614,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> fetchAllTag(String txt,String ... tags) throws Exception{
+	public static List<List<String>> fetchAllTag(String txt, String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
 		List<List<String>> items = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){

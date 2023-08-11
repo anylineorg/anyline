@@ -686,7 +686,7 @@ public class BeanUtil {
 		if(list instanceof DataSet){
 			return ((DataSet)list).getRows(params);
 		}
-		Map<String,String> kvs = new HashMap<String,String>();
+		Map<String, String> kvs = new HashMap<String, String>();
 		int len = params.length;
 		int i = 0;
 		while(i<len){
@@ -750,7 +750,7 @@ public class BeanUtil {
 	 *               "NM:zh%","AGE:&gt;20","NM","%zh%"
 	 * @return Map
 	 */
-	public static Map<String,String> array2map(String ... params){
+	public static Map<String, String> array2map(String ... params){
 		Map<String, String> map = new HashMap<>();
 		int len = params.length;
 		int i = 0;
@@ -2142,8 +2142,8 @@ public class BeanUtil {
 	 * @param str name:zhang,age:20
 	 * @return Map
 	 */
-	public static Map<String,String> string2map(String str){
-		Map<String,String> map = new HashMap<String,String>();
+	public static Map<String, String> string2map(String str){
+		Map<String, String> map = new HashMap<String, String>();
 		if(BasicUtil.isNotEmpty(str)){
 			if(str.startsWith("${") && str.endsWith("}")){
 				str = str.substring(2, str.length()-1);

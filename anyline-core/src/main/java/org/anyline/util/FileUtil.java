@@ -851,7 +851,7 @@ public class FileUtil {
         String hex = NumberUtil.byte2hex(b);
         Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
         while (entryiterator.hasNext()) {
-            Entry<String,String> entry =  entryiterator.next();
+            Entry<String, String> entry =  entryiterator.next();
             String fileTypeHexValue = entry.getValue();
             if (hex.toUpperCase().startsWith(fileTypeHexValue)) {
                 return entry.getKey();

@@ -99,8 +99,8 @@ public class Column implements Serializable {
     protected String action = null                ; //ddl命令 add drop alter
     protected Column origin                       ;
     protected Column update                       ;
-    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
-    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog, schema,name,drop,action)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog, schema,name,drop,action)
 
 
 
@@ -285,7 +285,7 @@ public class Column implements Serializable {
 
     /**
      * 相关表
-     * @param update 是否检测upate
+     * @param update 是否检测update
      * @return table
      */
     public Table getTable(boolean update) {

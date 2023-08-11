@@ -67,7 +67,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/create"; 
 		Map<String,Object> params = new HashMap<>();
 		params.put("key", config.KEY);
-		params.put("tableid", config.TABLE);
+		params.put("tableId", config.TABLE);
 		params.put("loctype", loctype+""); 
 		Map<String,Object> data = new HashMap<>();
 		if(null != extras){
@@ -145,7 +145,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		return delete(list); 
 	} 
 	public long delete(List<String> ids){
-		int cnt = 0; 
+		long cnt = 0;
 		if(null == ids || ids.size() ==0){
 			return cnt; 
 		} 
@@ -175,7 +175,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		} 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("ids", param); 
 		params.put("sig", sign(params)); 
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/delete"; 
@@ -211,12 +211,12 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 * @param extras  extras
 	 * @return int 0:更新失败,没有对应的id  1:更新完成  -1:异常
 	 */ 
-	public int update(String id, String name, int loctype, String lng, String lat, String address, Map<String,Object> extras){
-		int cnt = 0; 
+	public long update(String id, String name, int loctype, String lng, String lat, String address, Map<String,Object> extras){
+		long cnt = 0;
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/update"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("loctype", loctype+""); 
  
 		Map<String,Object> data = new HashMap<>(); 
@@ -260,25 +260,25 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		} 
 		return cnt; 
 	} 
-	public int update(String id, String name, String lng, String lat, String address, Map<String,Object> extras){
+	public long update(String id, String name, String lng, String lat, String address, Map<String,Object> extras){
 		return update(id, name, 1, lng, lat, address, extras); 
 	} 
-	public int update(String id, String name, String lng, String lat, Map<String,Object> extras){
+	public long update(String id, String name, String lng, String lat, Map<String,Object> extras){
 		return update(id, name, 1, lng, lat, null, extras); 
 	} 
-	public int update(String id, String name, int loctype, String lng, String lat, String address){
+	public long update(String id, String name, int loctype, String lng, String lat, String address){
 		return update(id, name, loctype, lng, lat, address, null); 
 	} 
-	public int update(String id, String name, String lng, String lat, String address){
+	public long update(String id, String name, String lng, String lat, String address){
 		return update(id, name, lng, lat, address, null); 
 	} 
-	public int update(String id, String name, String lng, String lat){
+	public long update(String id, String name, String lng, String lat){
 		return update(id, name, lng, lat, null, null); 
 	} 
-	public int update(String id, String name, String address){
+	public long update(String id, String name, String address){
 		return update(id, name, null, null, address); 
 	} 
-	public int update(String id, String name){
+	public long update(String id, String name){
 		return update(id, name, null); 
 	} 
 	 
@@ -297,16 +297,16 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		DataRow json = DataRow.parseJson(txt); 
-		if(json.containsKey("tableid")){
-			tableId = json.getString("tableid"); 
-			log.info("[创建地图完成][tableid:{}]",tableId);
+		if(json.containsKey("tableId")){
+			tableId = json.getString("tableId"); 
+			log.info("[创建地图完成][tableId:{}]", tableId);
 		}else{
 			log.info("[创建地图失败][info:{}][param:{}]",txt,BeanUtil.map2string(params));
 		} 
 		return tableId; 
 	} 
 	/** 
-	 * 本地检索 检索指定云图tableid里,对应城市（全国/省/市/区县）范围的POI信息 
+	 * 本地检索 检索指定云图tableId里,对应城市（全国/省/市/区县）范围的POI信息 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t1 
 	 * @param keywords  keywords
 	 * @param city  city
@@ -321,7 +321,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/local"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("keywords", keywords); 
 		if(BasicUtil.isEmpty(city)){
 			city = "全国"; 
@@ -362,7 +362,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		return set; 
 	} 
 	/** 
-	 * 周边搜索 在指定tableid的数据表内,搜索指定中心点和半径范围内,符合筛选条件的位置数据 
+	 * 周边搜索 在指定tableId的数据表内,搜索指定中心点和半径范围内,符合筛选条件的位置数据 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t2 
 	 * @param center  center
 	 * @param radius 查询半径 
@@ -373,12 +373,12 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	 * @param page 第几页 
 	 * @return DataSet
 	 */ 
-	public DataSet around(String center, int radius, String keywords, Map<String,String> filters, String sortrule, int limit, int page){
+	public DataSet around(String center, int radius, String keywords, Map<String, String> filters, String sortrule, int limit, int page){
 		DataSet set = null; 
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/around"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("center", center); 
 		params.put("radius", radius+""); 
 		if(BasicUtil.isNotEmpty(keywords)){
@@ -441,17 +441,17 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		return set; 
 	} 
  
-	public DataSet around(String center, int radius, Map<String,String> filters, String sortrule, int limit, int page){
+	public DataSet around(String center, int radius, Map<String, String> filters, String sortrule, int limit, int page){
 		return around(center, radius, null, filters, sortrule, limit, page); 
 	} 
-	public DataSet around(String center, int radius, Map<String,String> filters, int limit, int page){
+	public DataSet around(String center, int radius, Map<String, String> filters, int limit, int page){
 		return around(center, radius, null, filters, null, limit, page); 
 	} 
-	public DataSet around(String center, int radius, Map<String,String> filters, int limit){
+	public DataSet around(String center, int radius, Map<String, String> filters, int limit){
 		return around(center, radius, null, filters, null, limit, 1); 
 	} 
 	public DataSet around(String center, int radius, String keywords, String sortrule, int limit, int page){
-		Map<String,String> filter = new HashMap<String,String>(); 
+		Map<String, String> filter = new HashMap<String, String>(); 
 		return around(center, radius, keywords, filter, sortrule, limit, page); 
 	} 
 	 
@@ -471,7 +471,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		return around(center, ConfigTable.getInt("AMAP_MAX_RADIUS")); 
 	} 
 	/** 
-	 * 按条件检索数据（可遍历整表数据） 根据筛选条件检索指定tableid数据表中的数据 
+	 * 按条件检索数据（可遍历整表数据） 根据筛选条件检索指定tableId数据表中的数据 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t5
 	 * AmapClient.getInstance(TABLE_TENANT).list("tenant_id:1","shop_id:1", 10, 1);
 	 * @param filter 查询条件 
@@ -489,7 +489,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datamanage/data/list"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("filter", filter); 
 		if(BasicUtil.isNotEmpty(sortrule)){
 			params.put("sortrule", sortrule); 
@@ -530,9 +530,9 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		return set; 
 	} 
 	/** 
-	 * ID检索 在指定tableid的数据表内,查询对应数据id的数据详情 
+	 * ID检索 在指定tableId的数据表内,查询对应数据id的数据详情 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t4 
-	 * API:在指定tableid的数据表内,查询对应数据id的数据详情 
+	 * API:在指定tableId的数据表内,查询对应数据id的数据详情 
 	 * @param id  id
 	 * @return DataRow
 	 */ 
@@ -541,7 +541,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/id"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("_id", id); 
 		String sign = sign(params); 
 		params.put("sig", sign); 
@@ -564,7 +564,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		return row; 
 	} 
 	/** 
-	 * 省数据分布检索 检索指定云图tableid里,全表数据或按照一定查询或筛选过滤而返回的数据中,含有数据的省名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
+	 * 省数据分布检索 检索指定云图tableId里,全表数据或按照一定查询或筛选过滤而返回的数据中,含有数据的省名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t6 
 	 * @param keywords 关键字 必须 
 	 * @param country ""或null时 默认:中国 
@@ -576,7 +576,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("filter", filter); 
 		params.put("keywords", keywords); 
 		country = BasicUtil.evl(country, "中国")+""; 
@@ -603,7 +603,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	} 
  
 	/** 
-	 * 市数据分布检索 检索指定云图tableid里,全表数据或按照一定查询或筛选过滤而返回的数据中,含有数据的市名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
+	 * 市数据分布检索 检索指定云图tableId里,全表数据或按照一定查询或筛选过滤而返回的数据中,含有数据的市名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t6 
 	 * @param keywords 关键字 必须 
 	 * @param province ""或null时 默认:全国 
@@ -615,7 +615,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/city"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("filter", filter); 
 		params.put("keywords", keywords); 
 		province = BasicUtil.evl(province, "全国")+""; 
@@ -642,7 +642,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 	} 
  
 	/** 
-	 * 区数据分布检索 检索指定云图tableid里,在指定的省,市下面全表数据或按照一定查询或筛选过滤而返回的数据中,所有区县名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
+	 * 区数据分布检索 检索指定云图tableId里,在指定的省,市下面全表数据或按照一定查询或筛选过滤而返回的数据中,所有区县名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t6 
 	 * @param keywords 关键字 必须 
 	 * @param province   province
@@ -655,7 +655,7 @@ public class AmapClient extends AbstractMapClient implements MapClient {
 		String url = AmapConfig.DEFAULT_YUNTU_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("tableid", config.TABLE); 
+		params.put("tableId", config.TABLE); 
 		params.put("filter", filter); 
 		params.put("keywords", keywords); 
 		params.put("province", province); 

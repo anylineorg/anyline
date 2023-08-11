@@ -244,7 +244,7 @@ public class DataSourceHolder extends ClientHolder {
 	 * @throws Exception 异常 Exception
 	 */
 	public static String reg(String key, String pool, String driver, String url, String user, String password) throws Exception{
-		Map<String,String> param = new HashMap<String,String>();
+		Map<String, String> param = new HashMap<String, String>();
 		param.put("type", pool);
 		param.put("driver", driver);
 		param.put("url", url);

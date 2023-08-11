@@ -351,10 +351,10 @@ public class OSSUtil {
 		result = HttpUtil.mergePath(result, path);
 		return result;
 	}
-	public Map<String,String> signature(String dir) {
+	public Map<String, String> signature(String dir) {
 		return signature(dir, config.EXPIRE_SECOND);
 	}
-	public Map<String,String> signature(String dir, int second) {
+	public Map<String, String> signature(String dir, int second) {
 		if(second == 0){
 			second = config.EXPIRE_SECOND;
 		}
@@ -364,7 +364,7 @@ public class OSSUtil {
 		}else{
 			host = "https://" + config.BUCKET + "." + config.ENDPOINT;
 		}
-		Map<String,String> result = new HashMap<String,String>();
+		Map<String, String> result = new HashMap<String, String>();
 		try {
 	        String postPolicy = policy(dir,second);
 	        byte[] binaryData = postPolicy.getBytes("utf-8");

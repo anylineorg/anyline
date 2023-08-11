@@ -150,7 +150,7 @@ public class DomUtil {
      * @param value 属性值
      * @return Element
      */
-    public static Element element(Element root,String attribute, String value){
+    public static Element element(Element root, String attribute, String value){
         Element result = null;
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result){

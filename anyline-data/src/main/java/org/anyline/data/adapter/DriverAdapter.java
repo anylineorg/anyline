@@ -134,7 +134,7 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return 影响行数
 	 */
-	int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+	long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/**
 	 * 创建 insert 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -213,7 +213,7 @@ public interface DriverAdapter {
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
-	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
+	long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
 	/**
 	 * insert [执行]
 	 * <br/>
@@ -227,7 +227,7 @@ public interface DriverAdapter {
 	 * @param simple 没有实际作用 用来标识有些不支持返回自增的单独执行
 	 * @return 影响行数
 	 */
-	int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
+	long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
 
 	/**
 	 * save [入口]
@@ -242,7 +242,7 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return 影响行数
 	 */
-	int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+	long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
@@ -256,8 +256,8 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return 影响行数
 	 */
-	int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
-	default int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, String ... columns){
+	long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, String ... columns){
 		return update(runtime, random, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	/**
@@ -303,7 +303,7 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
-	int update(DataRuntime runtime, String random, String dest, Object data, Run run);
+	long update(DataRuntime runtime, String random, String dest, Object data, Run run);
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/

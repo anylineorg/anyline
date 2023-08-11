@@ -250,7 +250,7 @@ public class WechatMPUtil extends WechatUtil {
 	public DataRow createQrCode(String code){
 		String token = getAccessToken();
 		String url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token;
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String, String> params = new HashMap<String, String>();
 		String param = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \""+code+"\"}}}";
 		String result = HttpUtil.post(url,"UTF-8", new StringEntity(param,"UTF-8")).getText();
 		return DataRow.parseJson(result);
@@ -265,7 +265,7 @@ public class WechatMPUtil extends WechatUtil {
 	public DataRow createQrCode(String code, int sec){
 		String token = getAccessToken();
 		String url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token;
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String, String> params = new HashMap<String, String>();
 		String param = "{\"expire_seconds\":"+sec+", \"action_name\": \"QR_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \""+code+"\"}}}";
 		String result = HttpUtil.post(url,"UTF-8", new StringEntity(param,"UTF-8")).getText();
 		return DataRow.parseJson(result);

@@ -171,7 +171,7 @@ public interface EntityAdapter {
      * @param clazz 类
      * @param field 属性
      * @param annotations 根据指定的注解 ,以第一个成功取值的注解为准<br/>
-     *                    不指定则按默认规则 column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value
+     *                    不指定则按默认规则 column.name,column.value, TableField.name, TableField.value, tableId.name, tableId.value,Id.name,Id.value
      *
      * @return String
      */
@@ -189,7 +189,7 @@ public interface EntityAdapter {
             if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
                 annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
             }else {
-                annotations = "column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value".split(",");
+                annotations = "column.name,column.value, TableField.name, TableField.value, tableId.name, tableId.value,Id.name,Id.value".split(",");
             }
         }
         name = ClassUtil.parseAnnotationFieldValue(field, annotations);
@@ -330,7 +330,7 @@ public interface EntityAdapter {
      * 检测主键(是主键名不是值)<br/>
      * 根据注解检测主键名s(注解名不区分大小写,支持模糊匹配如Table*)<br/>
      * 先根据配置文件中的ENTITY_PRIMARY_KEY_ANNOTATION,如果出现多种主键标识方式可以逗号分隔以先取到的为准<br/>
-     * 如果没有检测到再检测注解中带TableId或Id的属性名<br/>
+     * 如果没有检测到再检测注解中带tableId或Id的属性名<br/>
      * 如果没有检测到按默认主键DataRow.DEFAULT_PRIMARY_KEY<br/>
      * @param clazz 类
      * @return List
@@ -343,7 +343,7 @@ public interface EntityAdapter {
             String annotations = ConfigTable.ENTITY_PRIMARY_KEY_ANNOTATION;
             if(BasicUtil.isEmpty(annotations)){
                 //如果配置文件中没有指定
-                annotations = "TableId,Id";
+                annotations = "tableId,Id";
             }
             //根据注解提取属性s
             List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(","));
@@ -447,7 +447,7 @@ public interface EntityAdapter {
 
     default <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map metadatas) {
         List<Field> fields = ClassUtil.getFields(clazz, false, false);
-        Map<Field,String> fk = new HashMap<>();
+        Map<Field, String> fk = new HashMap<>();
         //entity = BeanUtil.map2object(entity, map, clazz, metadatas, false, true, true);
         if (null == entity) {
             try {

@@ -204,7 +204,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, int count, String dest, Object obj, List<String> columns, boolean success, int qty, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count, String dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
 
     /**
@@ -252,7 +252,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterInsert(DataRuntime runtime, String random, Run run, int count, String dest, Object obj, boolean checkPrimary, List<String> columns, boolean success, int qty, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterInsert(DataRuntime runtime, String random, Run run, long count, String dest, Object obj, boolean checkPrimary, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL之前调用

@@ -84,7 +84,7 @@ public class AmapConfig extends AnylineConfig{
 		DataRow row = new DataRow();
 		row.put("KEY", key);
 		row.put("SECRET",secret);
-		row.put("TABLE",table);
+		row.put("TABLE", table);
 		return register(instance, row);
 	}
 	public static AmapConfig register(String key, String secret, String table) {

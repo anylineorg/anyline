@@ -43,7 +43,7 @@ public class DefaultDDListener implements DDListener {
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == 1){
-            exeAfterException(runtime,table, column, exception);
+            exeAfterException(runtime, table, column, exception);
         }else{
             // 根据行数
             RunPrepare prepare = new DefaultTablePrepare();
@@ -52,7 +52,7 @@ public class DefaultDDListener implements DDListener {
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
                 swt = afterAlterColumnException(runtime, random, table, column, rows, exception);
             }else{
-                swt = exeAfterException(runtime,table, column, exception);
+                swt = exeAfterException(runtime, table, column, exception);
             }
         }
         return swt;

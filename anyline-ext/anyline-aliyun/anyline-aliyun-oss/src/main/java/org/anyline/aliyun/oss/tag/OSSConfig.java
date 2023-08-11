@@ -55,7 +55,7 @@ public class OSSConfig extends BaseBodyTag {
 				dir = dir.replace("{m}", mm);
 				dir = dir.replace("{d}", dd);
 			}
-			Map<String,String> map = util.signature(dir, expire);
+			Map<String, String> map = util.signature(dir, expire);
 			if(BasicUtil.isEmpty(var)){
 				var = "al.config.oss.aliyun";
 			}

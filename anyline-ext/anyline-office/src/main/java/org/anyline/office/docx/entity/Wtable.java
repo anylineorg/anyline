@@ -64,7 +64,7 @@ public class Wtable {
         for(int i=0; i<tds.size(); i++){
             Wtc wtc = tr.getTc(i);
             Element td = tds.get(i);
-            Map<String,String> styles = StyleParser.parse(td.attributeValue("style"));
+            Map<String, String> styles = StyleParser.parse(td.attributeValue("style"));
             wtc.setHtml(td);
             // this.doc.block(tc, null, td, null);
             /*Element t = DomUtil.element(tc,"t");
@@ -427,7 +427,7 @@ public class Wtable {
      * @param styles css样式
      * @return wtable
      */
-    public Wtable setText(int row, int col, String text, Map<String,String> styles){
+    public Wtable setText(int row, int col, String text, Map<String, String> styles){
         Wtc tc = getTc(row, col);
         if(null != tc){
             if(doc.IS_HTML_ESCAPE) {

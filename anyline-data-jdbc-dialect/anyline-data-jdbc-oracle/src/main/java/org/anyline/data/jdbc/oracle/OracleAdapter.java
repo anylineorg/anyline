@@ -198,7 +198,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 		StringBuilder builder = run.getBuilder();
 		DataRow first = set.getRow(0);
-		Map<String,String> seqs = new HashMap<>();
+		Map<String, String> seqs = new HashMap<>();
 		for(Column column:columns.values()){
 			String key = column.getName();
 			Object value = first.getStringNvl(key);
@@ -290,7 +290,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		}
 
 		Object first = list.iterator().next();
-		Map<String,String> seqs = new HashMap<>();
+		Map<String, String> seqs = new HashMap<>();
 		for(Column column:columns.values()){
 			String key = column.getName();
 			Object value = BeanUtil.getFieldValue(first, key);
@@ -390,8 +390,8 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
-		int cnt = 0;
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+		long cnt = 0;
 		if(data instanceof Collection) {
 			cnt = insert(runtime, random, data, run, pks, true);
 		}else{

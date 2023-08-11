@@ -70,9 +70,9 @@ public class JPushUtil {
 	 * @param tags 接收人 
 	 * @return boolean
 	 */ 
-	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
+	public boolean pushByTag(String type, String title, String msg, Map<String, String> extras, String ... tags){
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		boolean result = true; 
 		int size = tags.length; 
@@ -92,9 +92,9 @@ public class JPushUtil {
 		return result; 
 	} 
 	 
-	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){
+	public boolean pushByTag(String type, String title, String msg, Map<String, String> extras, List<String> tags){
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		boolean result = true; 
 		int size = tags.size(); 
@@ -122,7 +122,7 @@ public class JPushUtil {
 	 * @param alias 接收人 
 	 * @return boolean
 	 */ 
-	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
+	public boolean pushByAlias(String type, String title, String msg, Map<String, String> extras, String ... alias){
 		boolean result = true; 
 		int size = alias.length; 
 		int cnt = (size-1) / 1000+1; 
@@ -141,7 +141,7 @@ public class JPushUtil {
 		return result; 
 	} 
  
-	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){
+	public boolean pushByAlias(String type, String title, String msg, Map<String, String> extras, List<String> alias){
 		boolean result = true; 
 		int size = alias.size(); 
 		int cnt = (size-1) / 1000+1; 
@@ -159,7 +159,7 @@ public class JPushUtil {
 		} 
 		return result; 
 	} 
-	private boolean sendByAlias(String type, String title, String msg, Map<String,String> extras, String[] alias){
+	private boolean sendByAlias(String type, String title, String msg, Map<String, String> extras, String[] alias){
 		boolean result = false; 
 		try {
 			PushPayload pl = buildPushObject_Alias(type, title, msg, extras, alias); 
@@ -177,7 +177,7 @@ public class JPushUtil {
 		return result; 
 	} 
  
-	private boolean sendByTag(String type, String title, String msg, Map<String,String> extras, String[] tags){
+	private boolean sendByTag(String type, String title, String msg, Map<String, String> extras, String[] tags){
 		boolean result = false; 
 		try {
 			extras.put("MESSAGE", msg); 
@@ -197,9 +197,9 @@ public class JPushUtil {
 		return result; 
 	} 
 	@SuppressWarnings({"unused", "static-access" })
-	private PushPayload buildPushObjectByTag(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+	private PushPayload buildPushObjectByTag(String type, String title, String msg, Map<String, String> extras, String[] tags) {
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		return PushPayload.newBuilder() 
 				.setPlatform(Platform.all()) 
@@ -217,9 +217,9 @@ public class JPushUtil {
 	} 
  
 	@SuppressWarnings("static-access")
-	private PushPayload buildPushObject_Alias(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+	private PushPayload buildPushObject_Alias(String type, String title, String msg, Map<String, String> extras, String[] alias) {
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		return PushPayload.newBuilder() 
 				.setPlatform(Platform.all()) 
@@ -236,9 +236,9 @@ public class JPushUtil {
 								.build(); 
 	} 
 	 
-	private PushPayload buildPushObjec_Tag_Android(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+	private PushPayload buildPushObjec_Tag_Android(String type, String title, String msg, Map<String, String> extras, String[] tags) {
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		return PushPayload.newBuilder() 
 				.setPlatform(Platform.all()) 
@@ -255,9 +255,9 @@ public class JPushUtil {
 								.build(); 
 	} 
 	@SuppressWarnings("unused")
-	private PushPayload buildPushObject_Alias_Android(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+	private PushPayload buildPushObject_Alias_Android(String type, String title, String msg, Map<String, String> extras, String[] alias) {
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		return PushPayload.newBuilder() 
 				.setPlatform(Platform.all()) 
@@ -274,9 +274,9 @@ public class JPushUtil {
 								.build(); 
 	} 
 	@SuppressWarnings("unused")
-	private PushPayload buildPushObjec_Tag_IOS(String type, String title,Map<String, String> extras,String[] tags) {
+	private PushPayload buildPushObjec_Tag_IOS(String type, String title,Map<String, String> extras, String[] tags) {
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		return PushPayload.newBuilder() 
 				.setPlatform(Platform.all()) 
@@ -293,9 +293,9 @@ public class JPushUtil {
 								.build(); 
 	} 
 	@SuppressWarnings("unused")
-	private PushPayload buildPushObject_Alias_IOS(String type, String title,Map<String, String> extras,String[] alias) {
+	private PushPayload buildPushObject_Alias_IOS(String type, String title,Map<String, String> extras, String[] alias) {
 		if(null == extras){
-			extras = new HashMap<String,String>(); 
+			extras = new HashMap<String, String>(); 
 		} 
 		return PushPayload.newBuilder() 
 				.setPlatform(Platform.all()) 

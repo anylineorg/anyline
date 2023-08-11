@@ -19,7 +19,7 @@ public class MapProxy {
     private static AmapClient amap;
     private static QQMapClient qmap;
     private static BaiduMapClient bmap;
-    public static Map<String,String> over_limits = new HashMap<>();
+    public static Map<String, String> over_limits = new HashMap<>();
     public MapProxy(){}
     private static boolean enable(String api, String platform){
         String ymd = over_limits.get(api+"_"+platform);

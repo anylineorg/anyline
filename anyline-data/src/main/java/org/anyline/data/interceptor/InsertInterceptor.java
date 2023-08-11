@@ -33,5 +33,5 @@ public interface InsertInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return SWITCH
      */
-    default SWITCH after(DataRuntime runtime, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, int result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, long result, long millis){ return SWITCH.CONTINUE;}
 }

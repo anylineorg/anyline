@@ -69,7 +69,7 @@ public class ThreadConfig extends ConfigTable {
     public String ENTITY_CLASS_TABLE_MAP						= "Camel_"  	;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
     public String ENTITY_TABLE_ANNOTATION						= null			;   // 表名注解
     public String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解
-    public String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
+    public String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
     public int ENTITY_FIELD_SELECT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:查询属性关联表
     public int ENTITY_FIELD_INSERT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:插入属性关联表
     public int ENTITY_FIELD_UPDATE_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:更新属性关联表

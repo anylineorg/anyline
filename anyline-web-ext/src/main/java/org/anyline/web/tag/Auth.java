@@ -104,7 +104,7 @@ public class Auth extends BaseBodyTag {
 					if(BasicUtil.isEmpty(appid)){
 						appid = qqconfig.APP_ID;
 					}
-					Map<String,String> map = new HashMap<String,String>();
+					Map<String, String> map = new HashMap<String, String>();
 					if(null != params){
 						String[] items = params.split(",");
 						for(String item:items){

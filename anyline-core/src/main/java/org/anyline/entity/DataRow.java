@@ -1385,7 +1385,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow put(KEY_CASE keyCase, String key, Object value){
         return put(true, keyCase, key, value);
     }
-    public DataRow put(boolean checkUpdate,String key, Object value){
+    public DataRow put(boolean checkUpdate, String key, Object value){
         return put(checkUpdate, null, key, value);
     }
 

@@ -228,7 +228,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, int result, long millis){
+    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.after(runtime, run, dest, data, configs, columns, success, result, millis);
@@ -263,7 +263,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, int result, long millis){
+    public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.after(runtime, run, dest, data,checkPrimary,  columns, success, result, millis);
@@ -278,7 +278,7 @@ public class InterceptorProxy {
     public static SWITCH prepareDelete(DataRuntime runtime, String random, String table, String key, Collection values){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.prepare(runtime,table, key, values);
+            swt = interceptor.prepare(runtime, table, key, values);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -289,7 +289,7 @@ public class InterceptorProxy {
     public static SWITCH prepareDelete(DataRuntime runtime, String random, String table, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.prepare(runtime,table, configs, conditions);
+            swt = interceptor.prepare(runtime, table, configs, conditions);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;

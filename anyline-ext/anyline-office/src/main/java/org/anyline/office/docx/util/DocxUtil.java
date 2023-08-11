@@ -428,7 +428,7 @@ public class DocxUtil {
         return list;
     }
 
-    public static void border(Element border, Map<String,String> styles){
+    public static void border(Element border, Map<String, String> styles){
         border(border,"top", styles);
         border(border,"right", styles);
         border(border,"bottom", styles);
@@ -438,7 +438,7 @@ public class DocxUtil {
         border(border,"tl2br", styles);
         border(border,"tr2bl", styles);
     }
-    public static void border(Element border, String side, Map<String,String> styles){
+    public static void border(Element border, String side, Map<String, String> styles){
         Element item = null;
         String width = styles.get("border-"+side+"-width");
         String style = styles.get("border-"+side+"-style");
@@ -452,14 +452,14 @@ public class DocxUtil {
             item.addAttribute("w:color", color);
         }
     }
-    public static void padding(Element margin, Map<String,String> styles){
+    public static void padding(Element margin, Map<String, String> styles){
         padding(margin,"top", styles);
         padding(margin,"start", styles);
         padding(margin,"bottom", styles);
         padding(margin,"end", styles);
 
     }
-    public static void padding(Element margin, String side, Map<String,String> styles){
+    public static void padding(Element margin, String side, Map<String, String> styles){
         String width = styles.get("padding-"+side);
         int dxa = DocxUtil.dxa(width);
         if(BasicUtil.isNotEmpty(width)){
@@ -482,7 +482,7 @@ public class DocxUtil {
         }
         return pt;
     }
-    public static void font(Element pr, Map<String,String> styles){
+    public static void font(Element pr, Map<String, String> styles){
         String fontSize = styles.get("font-size");
         if(null != fontSize){
             int pt = 0;
@@ -599,7 +599,7 @@ public class DocxUtil {
         // <w:rFonts w:ascii="Adobe Gothic Std B" w:eastAsia="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
     }
 
-    public static void background(Element pr,Map<String,String> styles){
+    public static void background(Element pr,Map<String, String> styles){
         String color = styles.get("background-color");
         if(null != color){
             // <w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
@@ -735,9 +735,9 @@ public class DocxUtil {
     public static Element pr(Element element, String styles){
         return pr(element, StyleParser.parse(styles));
     }
-    public static Element pr(Element element, Map<String,String> styles){
+    public static Element pr(Element element, Map<String, String> styles){
         if(null == styles){
-            styles = new HashMap<String,String>();
+            styles = new HashMap<String, String>();
         }
         String name = element.getName();
         String prName = name+"Pr";
@@ -942,7 +942,7 @@ public class DocxUtil {
     }
 
     // 插入排版方向
-    public static void setOrient(Element pr, String orient, Map<String,String> styles){
+    public static void setOrient(Element pr, String orient, Map<String, String> styles){
         String w = styles.get("page-size-w");
         String h = styles.get("page-size-h");
         String top = styles.get("page-margin-top");

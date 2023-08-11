@@ -79,7 +79,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      *
      * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
      * protected Run createInsertRunFromCollection(JdbcTemplate template, String dest, Collection list, boolean checkPrimary, List<String> columns)
-     *  public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) throws Exception
+     *  public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) throws Exception
      ******************************************************************************************************************/
 
     /**
@@ -330,8 +330,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return int
      */
     @Override
-    public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
-        int cnt = 0;
+    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+        long cnt = 0;
         DataSource ds = null;
         Connection con = null;
 

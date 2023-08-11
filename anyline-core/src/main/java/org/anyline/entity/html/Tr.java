@@ -12,7 +12,7 @@ public class Tr {
     private Table table;
     private String clazz;
     private List<Td> tds = new ArrayList<>();
-    private Map<String,String> styles = new HashMap();
+    private Map<String, String> styles = new HashMap();
     private Element src;
     private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
 

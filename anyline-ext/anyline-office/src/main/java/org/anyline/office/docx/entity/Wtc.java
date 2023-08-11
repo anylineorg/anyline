@@ -800,7 +800,7 @@ public class Wtc {
         setText(text, null);
         return this;
     }
-    public Wtc setText(String text, Map<String,String> styles){
+    public Wtc setText(String text, Map<String, String> styles){
         DocxUtil.removeContent(src);
         Element p = DocxUtil.addElement(src, "p");
         Element r = DocxUtil.addElement(p, "r");

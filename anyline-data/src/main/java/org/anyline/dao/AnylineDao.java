@@ -142,26 +142,26 @@ public interface AnylineDao<E>{
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @return int 影响行数
 	 */
-	int update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns);
-	default int update(String dest, Object data, ConfigStore configs, List<String> columns){
+	long update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(String dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime(), null, false, dest, data, configs, columns);
 	}
-	default int update(String dest, Object data, ConfigStore configs, String ... columns){
+	default long update(String dest, Object data, ConfigStore configs, String ... columns){
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default int update(Object data, ConfigStore configs, String ... columns){
+	default long update(Object data, ConfigStore configs, String ... columns){
 		return update(null, data, configs, BeanUtil.array2list(columns));
 	}
-	default int update(Object data, ConfigStore configs, List<String> columns){
+	default long update(Object data, ConfigStore configs, List<String> columns){
 		return update(null, data, configs, columns);
 	}
-	default int update(String dest, Object data, String ... columns){
+	default long update(String dest, Object data, String ... columns){
 		return update(dest, data, null, BeanUtil.array2list(columns));
 	}
-	default int update(String dest, Object data, List<String> columns){
+	default long update(String dest, Object data, List<String> columns){
 		return update(dest, data, null, columns);
 	}
-	default int update(Object data, List<String> columns){
+	default long update(Object data, List<String> columns){
 		return update(null, data, null, columns);
 	}
 
@@ -176,29 +176,29 @@ public interface AnylineDao<E>{
 	 * @param dest 表 
 	 * @return int
 	 */
-	int insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns);
-	default int insert(String dest, Object data, boolean checkPrimary, List<String> columns){
+	long insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns);
+	default long insert(String dest, Object data, boolean checkPrimary, List<String> columns){
 		return insert(runtime(), null, false, dest, data, checkPrimary, columns);
 	}
-	default int insert(String dest, Object data, boolean checkPrimary, String ... columns){
+	default long insert(String dest, Object data, boolean checkPrimary, String ... columns){
 		return insert(dest, data, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default int insert(Object data, boolean checkPrimary, String ... columns){
+	default long insert(Object data, boolean checkPrimary, String ... columns){
 		return insert(null, data, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default int insert(String dest, Object data, String ... columns){
+	default long insert(String dest, Object data, String ... columns){
 		return insert(dest, data, false, BeanUtil.array2list(columns));
 	}
-	default int insert(Object data, String ... columns){
+	default long insert(Object data, String ... columns){
 		return insert(null, data, false, BeanUtil.array2list(columns));
 	}
-	default int insert(Object data, boolean checkPrimary, List<String> columns){
+	default long insert(Object data, boolean checkPrimary, List<String> columns){
 		return insert(null, data, checkPrimary, columns);
 	}
-	default int insert(String dest, Object data, List<String> columns){
+	default long insert(String dest, Object data, List<String> columns){
 		return insert(dest, data, false, columns);
 	}
-	default int insert(Object data, List<String> columns){
+	default long insert(Object data, List<String> columns){
 		return insert(null, data, false, columns);
 	}
 
@@ -214,20 +214,20 @@ public interface AnylineDao<E>{
 	 * @param columns  columns
 	 * @return int
 	 */
-	int save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns);
-	default int save(String dest, Object data, boolean checkPrimary, List<String>  columns){
+	long save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns);
+	default long save(String dest, Object data, boolean checkPrimary, List<String>  columns){
 		return save(runtime(), null, false, dest, data, checkPrimary, columns);
 	}
-	default int save(String dest, Object data, boolean checkPrimary, String ... columns){
+	default long save(String dest, Object data, boolean checkPrimary, String ... columns){
 		return save(dest, data, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default int save(Object data, boolean checkPrimary, String ... columns){
+	default long save(Object data, boolean checkPrimary, String ... columns){
 		return save(null, data, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default int save(String dest, Object data, String ... columns){
+	default long save(String dest, Object data, String ... columns){
 		return save(dest, data, false, BeanUtil.array2list(columns));
 	}
-	default int save(Object data, String ... columns){
+	default long save(Object data, String ... columns){
 		return save(null, data, false, BeanUtil.array2list(columns));
 	}
 
@@ -481,8 +481,7 @@ public interface AnylineDao<E>{
 	<T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean recover, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
 
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String catalog, String schema, String master, String name){
-		MasterTable mtable = new MasterTable(catalog, schema, master);
-		return ptables(greedy,mtable, null, name);
+		return ptables(greedy, new MasterTable(catalog, schema, master), null, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String schema, String master, String name){
 		return ptables(greedy,null, schema, master, name);
@@ -494,10 +493,10 @@ public interface AnylineDao<E>{
 		return ptables(greedy,null, null, master, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master){
-		return ptables(greedy,master, null);
+		return ptables(greedy, master, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name){
-		return ptables(greedy, master, tags, name);
+		return ptables(runtime(), null, false, greedy, master, tags, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags){
 		return ptables(runtime(), null, false, greedy,master, tags, null);
@@ -573,7 +572,7 @@ public interface AnylineDao<E>{
 		return tags(runtime(), null, false, greedy, new Table(table));
 	}
 	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String catalog, String schema, String table){
-		return tags(runtime(),null, false, greedy, new Table(catalog,schema,table));
+		return tags(runtime(),null, false, greedy, new Table(catalog, schema, table));
 	}
 	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table){
 		return tags(runtime(), null, false,greedy, table);

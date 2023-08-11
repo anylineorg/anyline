@@ -17,8 +17,8 @@ public class Constraint  implements Serializable {
     protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
     protected Constraint update;
-    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog,schema,name,drop,action)
-    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog,schema,name,drop,action)
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog, schema,name,drop,action)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog, schema,name,drop,action)
     public Constraint(){
     }
 

@@ -68,7 +68,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
         return 0;
     }
 
@@ -84,7 +84,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @return 影响行数
      */
     @Override
-    public int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
+    public long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
         return 0;
     }
 
@@ -142,8 +142,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @throws Exception 异常
      */
     @Override
-    public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
-        int cnt = 0;
+    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+        long cnt = 0;
         Object value = run.getValue();
         if(null == value || !run.isValid()){
             if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -377,7 +377,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public int update(DataRuntime runtime, String random, String dest, Object data, Run run) {
+    public long update(DataRuntime runtime, String random, String dest, Object data, Run run) {
         return 0;
     }
 
@@ -428,12 +428,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
+    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
         return 0;
     }
 
     @Override
-    public int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
+    public long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
         return 0;
     }
 

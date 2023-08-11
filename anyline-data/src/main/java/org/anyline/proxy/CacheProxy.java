@@ -29,18 +29,19 @@ public class CacheProxy {
 
 
     private static Map<String,DataRow> cache_columns = new HashMap<>();
-    private static Map<String,Map<String,String>>  cache_names = new HashMap<>();
+    private static Map<String,Map<String, String>>  cache_names = new HashMap<>();
     private static Map<String,DataRow> cache_table_maps = new HashMap<>();
     private static Map<String,DataRow> cache_view_maps = new HashMap<>();
     public static void name(String catalog, String schema, String name, String origin){
         String group_key = catalog + "_" + schema;
         group_key = group_key.toUpperCase();
-        Map<String,String> maps = cache_names.get(group_key);
+        Map<String, String> maps = cache_names.get(group_key);
         if(null == maps){
             maps = new HashMap<>();
             cache_names.put(group_key, maps);
         }
-        maps.put(name.toUpperCase(), origin);
+        String name_key = group_key + ":" + name.toUpperCase();
+        maps.put(name_key, origin);
     }
     public static Map<String, String> names(String catalog, String schema){
         String key = catalog + "_" + schema;
@@ -52,18 +53,20 @@ public class CacheProxy {
         }
         String group_key = catalog + "_" + schema;
         group_key = group_key.toUpperCase();
-        Map<String,String> maps = cache_names.get(group_key);
+        Map<String, String> maps = cache_names.get(group_key);
         if(null != maps){
-            String origin = maps.get(name.toUpperCase());
+            String name_key = group_key + ":" + name.toUpperCase();
+            String origin = maps.get(name_key);
             if(null != origin){
                 return origin;
             }
         }
         if(greedy) {
             for (Map<String, String> names : cache_names.values()) {
-                String origin = names.get(name.toUpperCase());
-                if(null != origin){
-                    return origin;
+                for(String item:names.keySet()){
+                    if(item.endsWith(":"+name.toUpperCase())){
+                        return names.get(item);
+                    }
                 }
             }
         }

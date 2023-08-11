@@ -25,7 +25,7 @@ public class DownloadTask {
 	private long finish ; // 本次已下载长度
 	private long start	; // 开始时间
 	private long end	; // 结束时间
-	private Map<String,String> headers; 
+	private Map<String, String> headers; 
 	private Map<String,Object> params; 
 	private Map<String,Object> extras = new HashMap<String,Object>();	// 扩展属性(回调时原样返回) 
 	private int index		; // 任务下标从0开始
@@ -137,14 +137,14 @@ public class DownloadTask {
 		this.url = url; 
 		this.local = local; 
 	} 
-	public DownloadTask(String url, File local, Map<String,String> headers, Map<String,Object> params, Map<String,Object> extras){
+	public DownloadTask(String url, File local, Map<String, String> headers, Map<String,Object> params, Map<String,Object> extras){
 		this.url = url; 
 		this.local = local; 
 		this.headers = headers; 
 		this.params = params; 
 		this.extras = extras; 
 	} 
-	public DownloadTask(String url, File local, Map<String,String> headers, Map<String,Object> params){
+	public DownloadTask(String url, File local, Map<String, String> headers, Map<String,Object> params){
 		this.url = url; 
 		this.local = local; 
 		this.headers = headers; 

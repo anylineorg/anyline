@@ -43,8 +43,8 @@ public class Procedure  implements Serializable {
 
 
 	protected Procedure update;
-	protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog,schema,name)
-	protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了catalog,schema,name)
+	protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog, schema,name)
+	protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了catalog, schema,name)
 
 
 	public Procedure(String name){

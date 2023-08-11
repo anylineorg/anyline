@@ -230,7 +230,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * oracle,mssql
      */
-    ,NCHAR("NCHAR", new DatabaseType[]{ORACLE, MSSQL, Informix},String.class, false, true){
+    ,NCHAR("NCHAR", new DatabaseType[]{ORACLE, MSSQL, Informix}, String.class, false, true){
         public Object write(Object value, Object def, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -999,7 +999,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql
      */
-    ,SET("SET",  new DatabaseType[]{MYSQL},String.class, true, true)
+    ,SET("SET",  new DatabaseType[]{MYSQL}, String.class, true, true)
     /**
      * pg
      */

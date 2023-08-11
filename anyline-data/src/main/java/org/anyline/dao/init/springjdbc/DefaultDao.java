@@ -282,12 +282,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public int update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == runtime){
 			runtime = runtime();
 		}
 		try {
-			int result = runtime.getAdapter().update(runtime, random, dest, data, configs, columns);
+			long result = runtime.getAdapter().update(runtime, random, dest, data, configs, columns);
 			checkMany2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 			checkOne2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 			return result;
@@ -691,7 +691,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public int save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns){
+	public long save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -716,12 +716,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return int 影响行数
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns) {
+	public long insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns) {
 		if(null == runtime){
 			runtime = runtime();
 		}
 		try{
-			int result =  runtime.getAdapter().insert(runtime, random, dest,data, checkPrimary, columns);
+			long result =  runtime.getAdapter().insert(runtime, random, dest,data, checkPrimary, columns);
 			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
 			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
@@ -2340,7 +2340,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Column column) throws Exception{
 		Table table = column.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + column.getTableName(true));
@@ -2568,7 +2568,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Tag tag) throws Exception{
 		Table table = tag.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + tag.getTableName(true));
@@ -2780,7 +2780,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(PrimaryKey primary) throws Exception {
 		Table table = primary.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + primary.getTableName(true));
@@ -2973,7 +2973,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(ForeignKey meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() == 0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -3165,7 +3165,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Index meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -3357,7 +3357,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Constraint meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));

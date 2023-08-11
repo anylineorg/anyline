@@ -78,7 +78,7 @@ public class HttpUtil {
 	public static HttpResponse post(String url, HttpEntity entity) {
 		return post(null, url, null, entity);
 	}
-	public static HttpResponse post(Map<String, String> headers,String url, HttpEntity entity) {
+	public static HttpResponse post(Map<String, String> headers, String url, HttpEntity entity) {
 		return post(headers, url, null, entity);
 	}
 	public static HttpResponse post(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
@@ -249,18 +249,18 @@ public class HttpUtil {
 	public static DownloadTask download(String url, File dst){
 		return download(url, dst, null, null, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers,Map<String,Object> params){
 		File file = new File(dest);
 		return download(url, file, headers, params, false);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params){
+	public static DownloadTask download(String url, File dst, Map<String, String> headers,Map<String,Object> params){
 		return download(url, dst, headers, params, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers,Map<String,Object> params, boolean override){
 		File file = new File(dest);
 		return download(url, file, headers, params, override);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(String url, File dst, Map<String, String> headers,Map<String,Object> params, boolean override){
 		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){
@@ -269,11 +269,11 @@ public class HttpUtil {
 	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){
 		return download(progress, url, dst, null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String, String> headers,Map<String,Object> params, boolean override){
 		return download(progress, url, new File(dest), headers, params, override);
 	}
 
-	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String, String> headers,Map<String,Object> params, boolean override){
 		DownloadTask task = new DownloadTask(); 
 		task.setProgress(progress); 
 		task.setLocal(dst); 
@@ -285,7 +285,7 @@ public class HttpUtil {
 		return task; 
 	} 
 
-	public static HttpResponse upload(String url, Map<String, Object> files, Map<String,String> headers, Map<String,Object> params){
+	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, String> headers, Map<String,Object> params){
 		return upload(url, files, "UTF-8", headers, params); 
 	} 
 	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, Object> params) {
@@ -304,7 +304,7 @@ public class HttpUtil {
 	 * @param params
 	 * @return HttpResponse
 	 */
-	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String,String> headers, Map<String,Object> params){
+	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String,Object> params){
 		return HttpBuilder.init()
 				.setUrl(url)
 				.setCharset(charset)

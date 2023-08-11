@@ -87,7 +87,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	//单数据源 或 固定数据源(不可切换)时赋
 	//protected AnylineDao dao;
 
-	protected Map<String,String> versions = new Hashtable<>();
+	protected Map<String, String> versions = new Hashtable<>();
 
 	//@Override
 	//public AnylineDao getDao() {

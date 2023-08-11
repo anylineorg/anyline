@@ -47,7 +47,7 @@ public class Param extends BaseBodyTag implements Cloneable{
 			if(null != parent){
 				value = BasicUtil.nvl(value,body);
 				if(BasicUtil.isEmpty(property)){
-					Method method = parent.getClass().getMethod("addParam",String.class, Object.class); 
+					Method method = parent.getClass().getMethod("addParam", String.class, Object.class); 
 					if(null != method){
 						method.invoke(parent, key, value);
 						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){

@@ -110,7 +110,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public int update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean sql_success = false;
@@ -134,7 +134,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				log.error("更新空数据");
 			}
 		}
-		int result = 0;
+		long result = 0;
 		if(data instanceof DataSet){
 			DataSet set = (DataSet)data;
 			for(int i=0; i<set.size(); i++){
@@ -830,7 +830,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public int update(DataRuntime runtime, String random, String dest, Object data, Run run){
+	public long update(DataRuntime runtime, String random, String dest, Object data, Run run){
 		int result = 0;
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -899,7 +899,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+	public long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
 		if(null == random){
 			random = random(runtime);
@@ -944,7 +944,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			return 0;
 		}
 
-		int cnt = 0;
+		long cnt = 0;
 		//final String sql = run.getFinalInsert();
 		//final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
@@ -980,9 +980,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
-		int cnt = 0;
-
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+		long cnt = 0;
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
@@ -1072,8 +1071,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
-		int cnt = 0;
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
+		long cnt = 0;
 		if(null == random){
 			random = random(runtime);
 		}
@@ -1159,7 +1158,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public int save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+	public long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 
 		if(null == random){
 			random = random(runtime);
@@ -1174,7 +1173,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		if(data instanceof Collection){
 			Collection<?> items = (Collection<?>)data;
-			int cnt = 0;
+			long cnt = 0;
 			for(Object item:items){
 				cnt += save(runtime, random, dest, item, checkPrimary, columns);
 			}
@@ -1183,7 +1182,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return saveObject(runtime, random, dest, data, checkPrimary, columns);
 	}
 
-	protected int saveObject(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 		if(null == data){
 			return 0;
 		}
@@ -2155,7 +2154,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param schema schema
 	 */
 	private void tableMap(DataRuntime runtime, String random, String catalog, String schema){
-		Map<String,String> names = CacheProxy.names(catalog, schema);
+		Map<String, String> names = CacheProxy.names(catalog, schema);
 		if(null == names || names.isEmpty()){
 			if(null == random){
 				random = random(runtime);

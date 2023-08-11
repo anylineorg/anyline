@@ -1032,7 +1032,7 @@ public class ExcelUtil {
 							}
 						}
 					}
-					Map<String,String> styles = td.getStyles();
+					Map<String, String> styles = td.getStyles();
 					if(null != styles || !styles.isEmpty()){
 						if(null == style){
 							style = sheet.getWorkbook().createCellStyle();
@@ -1091,7 +1091,7 @@ public class ExcelUtil {
 		}
 	}
 
-	private static BorderStyle parseBorderStyle(Map<String,String> styles, String side){
+	private static BorderStyle parseBorderStyle(Map<String, String> styles, String side){
 		BorderStyle result = BorderStyle.NONE;
 		String style = styles.get("border-"+side+"-style");
 		if(BasicUtil.isEmpty(style)){
@@ -1120,7 +1120,7 @@ public class ExcelUtil {
 	 * @param styles css样式
 	 * @return CellStyle
 	 */
-	private static CellStyle parseStyle(CellStyle style, Map<String,String> styles){
+	private static CellStyle parseStyle(CellStyle style, Map<String, String> styles){
 		if(null != styles) {
 			// 边框
 			style.setBorderTop(parseBorderStyle(styles, "top"));
@@ -1154,7 +1154,7 @@ public class ExcelUtil {
 		}
 		return style;
 	}
-	private static Font parseFont(Font font, Map<String,String> styles){
+	private static Font parseFont(Font font, Map<String, String> styles){
 		if(null != styles) {
 			String fontSize = styles.get("font-size");
 			if(null != fontSize){

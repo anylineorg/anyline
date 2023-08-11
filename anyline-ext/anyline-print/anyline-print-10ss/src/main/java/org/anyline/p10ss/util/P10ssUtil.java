@@ -64,7 +64,7 @@ public class P10ssUtil {
         params.put("timestamp",time);
         params.put("sign", sign(time));
         params.put("id",UUID.randomUUID().toString());
-        Map<String,String> header = new HashMap<String,String>();
+        Map<String, String> header = new HashMap<String, String>();
         header.put("Content-Type","application/x-www-form-urlencoded");
         String txt = HttpUtil.post(header,url.getCode(), "UTF-8",params).getText();
         log.info("[invoice api][result:{}]", txt);

@@ -79,11 +79,11 @@ public class EasemobUtil {
 	public DataRow reg(String user, String password, String nickname){
 		DataRow result = null; 
 		String url = baseUrl + "/users"; 
-		Map<String,String> map = new HashMap<String,String>(); 
+		Map<String, String> map = new HashMap<String, String>(); 
 		map.put("username", user); 
 		map.put("password", password); 
 		map.put("nickname", nickname); 
-		Map<String,String> headers = defaultHeader(); 
+		Map<String, String> headers = defaultHeader(); 
 		headers.put("Content-Type", "application/json"); 
 		try {
 			HttpEntity entity = new StringEntity(BeanUtil.map2json(map), "UTF-8"); 
@@ -111,14 +111,14 @@ public class EasemobUtil {
 	 * @param list  list
 	 * @return DataSet
 	 */ 
-	public DataSet regs(List<Map<String,String>> list){
+	public DataSet regs(List<Map<String, String>> list){
 		DataSet result = new DataSet(); 
 		StringBuilder json = new StringBuilder(); 
 		json.append("["); 
 		if(null != list){
 			int size = list.size(); 
 			for(int i=0; i<size; i++){
-				Map<String,String> map = list.get(i); 
+				Map<String, String> map = list.get(i); 
 				if(i > 0){
 					json.append(","); 
 				} 
@@ -133,7 +133,7 @@ public class EasemobUtil {
 		} 
 		json.append("]"); 
 		String url = baseUrl + "/users"; 
-		Map<String,String> headers = defaultHeader(); 
+		Map<String, String> headers = defaultHeader(); 
 		headers.put("Content-Type", "application/json"); 
 		try{
 			String txt = HttpUtil.post(headers, url,"UTF-8", new StringEntity(json.toString(), "UTF-8")).getText(); 
@@ -158,12 +158,12 @@ public class EasemobUtil {
 	public boolean resetPassword(String user, String password){
 		boolean result = false; 
 		String url = baseUrl + "/users/"+user+"/password"; 
-		Map<String,String> map = new HashMap<String,String>(); 
+		Map<String, String> map = new HashMap<String, String>(); 
 		map.put("newpassword", password); 
 		String json = BeanUtil.map2json(map); 
 		try {
  
-			Map<String,String> headers = new HashMap<String,String>(); 
+			Map<String, String> headers = new HashMap<String, String>(); 
 			headers.put("Authorization", "Bearer " + getAccessToken()); 
 			String txt = HttpUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText(); 
 			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
@@ -184,7 +184,7 @@ public class EasemobUtil {
 	public DataRow resetNickname(String user, String nickname){
 		DataRow result = null; 
 		String url = baseUrl + "/users/"+user; 
-		Map<String,String> map = new HashMap<String,String>(); 
+		Map<String, String> map = new HashMap<String, String>(); 
 		map.put("nickname", nickname); 
 		try {
 			String txt = HttpUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText(); 
@@ -254,7 +254,7 @@ public class EasemobUtil {
 	public DataSet getUsers(int limit, String cursor){
 		DataSet set = new DataSet(); 
 		String url = baseUrl +  "/users/"; 
-		Map<String,String> params = new HashMap<String,String>(); 
+		Map<String, String> params = new HashMap<String, String>(); 
 		params.put("limit", limit+""); 
 		if(BasicUtil.isNotEmpty(cursor)){
 			params.put("cursor", cursor); 
@@ -671,8 +671,8 @@ public class EasemobUtil {
 	 
 	 
 	 
-	private  Map<String,String> defaultHeader(){
-		Map<String,String> headers = new HashMap<String,String>(); 
+	private  Map<String, String> defaultHeader(){
+		Map<String, String> headers = new HashMap<String, String>(); 
 		headers.put("Authorization", "Bearer " + getAccessToken()); 
 		headers.put("Content-Type", "application/json"); 
 		return headers; 
@@ -692,9 +692,9 @@ public class EasemobUtil {
 	 * @return String
 	 */ 
 	private String createNewAccessToken(){
-		Map<String,String> headers = new HashMap<String,String>(); 
+		Map<String, String> headers = new HashMap<String, String>(); 
 		headers.put("Content-Type", "application/json"); 
-		Map<String,String> map = new HashMap<String,String>(); 
+		Map<String, String> map = new HashMap<String, String>(); 
 		map.put("grant_type", "client_credentials"); 
 		map.put("client_id", config.CLIENT_ID); 
 		map.put("client_secret", config.CLIENT_SECRET); 

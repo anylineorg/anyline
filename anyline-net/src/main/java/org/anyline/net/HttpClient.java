@@ -253,7 +253,7 @@ public class HttpClient {
 		}
 		HttpGet get = new HttpGet(finalUrl);
 		get.setConfig(requestConfig);
-		Map<String,String> headers = task.getHeaders();
+		Map<String, String> headers = task.getHeaders();
 		if(null != headers){
 			for(String key:headers.keySet()){
 				get.setHeader(key, headers.get(key));

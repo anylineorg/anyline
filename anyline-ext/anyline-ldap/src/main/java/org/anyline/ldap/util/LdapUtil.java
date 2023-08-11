@@ -109,7 +109,7 @@ public class LdapUtil {
 	 * @param attributes 其他属性
 	 * @return boolean
 	 */
-	public boolean addUser(String uid, String ou, String password, Map<String,String> attributes) {
+	public boolean addUser(String uid, String ou, String password, Map<String, String> attributes) {
 		try {
 			BasicAttributes attrs = new BasicAttributes();
 			BasicAttribute objclassSet = new BasicAttribute("objectClass");
@@ -210,7 +210,7 @@ public class LdapUtil {
 	 * @param params 属性
 	 * @return boolean
 	 */
-	public boolean update(String dn, Map<String,String> params) {
+	public boolean update(String dn, Map<String, String> params) {
 		try {
 			ModificationItem[] mods = new ModificationItem[1];
 			List<String> keys = BeanUtil.getMapKeys(params);

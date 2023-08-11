@@ -56,7 +56,7 @@ public class BingSeoClient {
      */
     public PushResponse push(List<String> urls) {
         String api = "https://www.bing.com/webmaster/api.svc/json/SubmitUrlbatch?apikey="+config.KEY;
-        Map<String,String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json; charset=utf-8");
         headers.put("Host","ssl.bing.com");
         StringBuilder builder = new StringBuilder();

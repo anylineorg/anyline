@@ -235,7 +235,7 @@ public class AnylineController extends AbstractBasicController {
 		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, params);
 	}
 
-	public DataRow entity(boolean keyEncrypt,String[] fixs, String... params) {
+	public DataRow entity(boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
 	}
 

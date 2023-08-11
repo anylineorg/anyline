@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 
 public class MasterTable extends Table  implements Serializable {
     protected String keyword = "STABLE"             ;
-    private LinkedHashMap<String,Table> partitions  ; // 分区表
+    private LinkedHashMap<String, Table> partitions  ; // 分区表
     protected MasterTable update;
     private Partition partition                     ; // 分区方式
 

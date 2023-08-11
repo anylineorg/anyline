@@ -41,11 +41,11 @@ public class HttpResponse {
 	private long lastModified		; // 最后修改时间毫秒
 	private String parser			; // 解析器CD
 	private String host				;
-	private Map<String,String> headers = new HashMap<String,String>();
+	private Map<String, String> headers = new HashMap<String, String>();
 	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>();
 	private InputStream inputStream;
  
-	private Map<String,String> seed; 
+	private Map<String, String> seed; 
 	 
 	public String getContentType() {
 		return contentType; 
@@ -155,10 +155,10 @@ public class HttpResponse {
 		this.backFileCd = backFileCd; 
 	} 
  
-	public Map<String,String> getSeed() {
+	public Map<String, String> getSeed() {
 		return seed; 
 	} 
-	public void setSeed(Map<String,String> seed) {
+	public void setSeed(Map<String, String> seed) {
 		this.seed = seed; 
 	} 
 	public String getParser() {

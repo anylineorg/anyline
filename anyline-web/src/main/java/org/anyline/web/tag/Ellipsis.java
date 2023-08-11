@@ -43,8 +43,8 @@ public class Ellipsis extends BaseBodyTag {
 		try {
 			writer = pageContext.getOut(); 
 			int size = length * 2; 
-			String chrs[] = src.split(""); 
-			int cnt = 0; 
+			String chrs[] = src.split("");
+			long cnt = 0;
 			for(String chr:chrs){
 				if(cnt >= size){
 					break; 

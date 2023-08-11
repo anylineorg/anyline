@@ -103,8 +103,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @throws Exception 异常
 	 */
 	@Override
-	public int insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
-		int cnt = 0;
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+		long cnt = 0;
 		JdbcTemplate jdbc = jdbc(runtime);
 		String sql = run.getFinalInsert();
 		List<Object> values = run.getValues();

@@ -35,7 +35,7 @@ import java.util.Map;
 public class I18NUtil {
 	static final Logger log = LoggerFactory.getLogger(I18NUtil.class); 
 	public static final String defaultLang = "cn"; 
-	private static Map<String,Map<String,String>> messages; 
+	private static Map<String,Map<String, String>> messages; 
 	 
 	static{
 		init(); 
@@ -46,7 +46,7 @@ public class I18NUtil {
 			return;
 		}
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),dir), "xml");
-		messages = new Hashtable<String,Map<String,String>>(); 
+		messages = new Hashtable<String,Map<String, String>>(); 
 		SAXReader reader = new SAXReader(); 
 		for(File file:files){
 			try {
@@ -59,9 +59,9 @@ public class I18NUtil {
 						Element itemElement = itrItem.next(); 
 						String lang = itemElement.attributeValue("lang"); 
 						String value = itemElement.getTextTrim(); 
-						Map<String,String> map = messages.get(lang); 
+						Map<String, String> map = messages.get(lang); 
 						if(null == map){
-							map = new Hashtable<String,String>(); 
+							map = new Hashtable<String, String>(); 
 							messages.put(lang, map); 
 						} 
 						map.put(key, value); 
@@ -81,7 +81,7 @@ public class I18NUtil {
 	 * @return String
 	 */ 
 	public static String get(String lang, String key){
-		Map<String,String> map = messages.get(lang); 
+		Map<String, String> map = messages.get(lang); 
 		String value = null;
 		if(null != map){
 			value = map.get(key);

@@ -8,7 +8,7 @@ public class WechatTemplateMessage {
 	private String template_id; 
 	private String url; 
 	private String topcolor; 
-	Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>(); 
+	Map<String,Map<String, String>> data = new HashMap<String,Map<String, String>>(); 
 	public WechatTemplateMessage setUser(String user){
 		this.touser = user; 
 		return this; 
@@ -26,9 +26,9 @@ public class WechatTemplateMessage {
 		return this; 
 	} 
 	public WechatTemplateMessage addData(String key, String value, String color){
-		Map<String,String> dt = data.get(key); 
+		Map<String, String> dt = data.get(key); 
 		if(dt == null){
-			dt = new HashMap<String,String>(); 
+			dt = new HashMap<String, String>(); 
 		} 
 		dt.put("value", value); 
 		dt.put("color", color); 

@@ -30,8 +30,8 @@ public class WDocument {
     private String relsXml = null;
     private org.dom4j.Document relsDoc;
 
-    private Map<String, Map<String,String>> styles = new HashMap<String, Map<String,String>>();
-    private Map<String,String> replaces = new HashMap<String,String>();
+    private Map<String, Map<String, String>> styles = new HashMap<String, Map<String, String>>();
+    private Map<String, String> replaces = new HashMap<String, String>();
     private int listNum = 0;
 
     public Element getBody() {
@@ -81,7 +81,7 @@ public class WDocument {
         }
     }
     public void loadStyle(String html){
-        Map<String,Map<String,String>> map = StyleParser.load(html);
+        Map<String,Map<String, String>> map = StyleParser.load(html);
         for(String key:map.keySet()){
             this.styles.put(key, map.get(key));
         }
@@ -260,7 +260,7 @@ public class WDocument {
         return tables;
     }
     // 插入排版方向
-    public void setOrient(Element prev, String orient, Map<String,String> styles){
+    public void setOrient(Element prev, String orient, Map<String, String> styles){
         int index = index(body, prev);
         Element p = body.addElement("w:p");
         Element pr = p.addElement("pPr");
@@ -341,7 +341,7 @@ public class WDocument {
         }
     }
 
-    public  Element pr(Element element, Map<String,String> styles){
+    public  Element pr(Element element, Map<String, String> styles){
         return DocxUtil.pr(element, styles);
     }
 
@@ -469,7 +469,7 @@ public class WDocument {
         Element tblPr = tbl.addElement("w:tblPr");
 
         Table table = new Table();
-        Map<String,String> styles = style(src);
+        Map<String, String> styles = style(src);
         pr(tbl, styles);
         table.setStyles(styles);
         List<Element> html_rows = src.elements("tr");
@@ -517,7 +517,7 @@ public class WDocument {
                     text = HtmlUtil.display(text);
                 }
                 tc.setText(text);
-                Map<String,String> tdStyles = StyleParser.join(tc.getStyles(),style(html_col));
+                Map<String, String> tdStyles = StyleParser.join(tc.getStyles(),style(html_col));
                 tdStyles = StyleParser.parse(tdStyles, html_col.attributeValue("style"), true);
                 tc.setStyles(tdStyles);
                 tc.setClazz(html_col.attributeValue("class"));
@@ -567,7 +567,7 @@ public class WDocument {
 
     public Element tr(Element parent, Tr tr){
         Element etr = parent.addElement("w:tr");
-        Map<String,String> styles = StyleParser.inherit(tr.getStyles(), tr.getTable().getStyles());
+        Map<String, String> styles = StyleParser.inherit(tr.getStyles(), tr.getTable().getStyles());
         tr.setStyles(styles);
         pr(etr, tr.getStyles());
         for (Td td:tr.getTds()) {
@@ -668,7 +668,7 @@ public class WDocument {
         }
         return prevStyle;
     }
-    public Element block(Element parent, Element prev, Element element, Map<String,String> styles){
+    public Element block(Element parent, Element prev, Element element, Map<String, String> styles){
         Element box = null;
         String pname = parent.getName();
         Element newPrev = null;
@@ -717,7 +717,7 @@ public class WDocument {
         }
         return newPrev;
     }
-    private Element ol(Element parent, Element prev, Element element, Map<String,String> styles){
+    private Element ol(Element parent, Element prev, Element element, Map<String, String> styles){
         styles = StyleParser.parse(styles, element.attributeValue("style"), true);
         if(!DocxUtil.hasParent(element, "ol")){
             listNum ++;//新一组编号
@@ -733,8 +733,8 @@ public class WDocument {
         }
         return prev;
     }
-    private List<Map<String,String>> lis(Element parent){
-        List<Map<String,String>> lis = new ArrayList<Map<String,String>>();
+    private List<Map<String, String>> lis(Element parent){
+        List<Map<String, String>> lis = new ArrayList<Map<String, String>>();
         Iterator<Node> nodes = parent.nodeIterator();
         while(nodes.hasNext()){
             Node node = nodes.next();
@@ -745,7 +745,7 @@ public class WDocument {
                 Element element = (Element)node;
                 String tag = element.getName();
                 if(tag.equalsIgnoreCase("li")){
-                    Map<String,String> li = new HashMap<String,String>();
+                    Map<String, String> li = new HashMap<String, String>();
                     li.put("tag",tag);
                     lis.add(li);
                 }
@@ -753,7 +753,7 @@ public class WDocument {
         }
         return lis;
     }
-    private Element li(Element parent, Element prev, Element element, Map<String,String> styles){
+    private Element li(Element parent, Element prev, Element element, Map<String, String> styles){
         Element box = parent.addElement("w:p");
         int lvl = lvl(element);
         styles.put("list-lvl",lvl+"");
@@ -1070,7 +1070,7 @@ public class WDocument {
      * @param copyPrevStyle 是否复制前一个标签的样式,在替换书签时需要用到,但在div中嵌套的span需要避免复制闰一个标签的样式
      * @return prev
      */
-    public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles, boolean copyPrevStyle){
+    public Element parseHtml(Element parent, Element prev, Element html, Map<String, String> styles, boolean copyPrevStyle){
         String pname = parent.getName();
         String txt = html.getTextTrim();
         if(html.elements().size()==0){
@@ -1094,7 +1094,7 @@ public class WDocument {
             }else if(type == 1 ) {//element
                 empty = false;
                 Element element = (Element) node;
-                Map<String,String> itemStyles = StyleParser.inherit(style(element),styles);
+                Map<String, String> itemStyles = StyleParser.inherit(style(element),styles);
                 String display = itemStyles.get("display");
                 if("none".equalsIgnoreCase(display)){
                     continue;
@@ -1175,10 +1175,10 @@ public class WDocument {
         reload();
         return this;
     }
-    public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles){
+    public Element parseHtml(Element parent, Element prev, Element html, Map<String, String> styles){
         return parseHtml(parent, prev, html, styles, false);
     }
-    public Element p(Element parent, String text, Map<String,String> styles){
+    public Element p(Element parent, String text, Map<String, String> styles){
         while(parent.getName().equalsIgnoreCase("p")){
             parent = parent.getParent();
         }
@@ -1189,7 +1189,7 @@ public class WDocument {
         }
         return p;
     }
-    public Element r(Element parent, String text, Map<String,String> styles){
+    public Element r(Element parent, String text, Map<String, String> styles){
         Element r= null;
         if(null != text && text.trim().length()>0) {
             r = parent.addElement("w:r");
@@ -1202,13 +1202,13 @@ public class WDocument {
         }
         return r;
     }
-    public Map<String,String> style(Element element){
+    public Map<String, String> style(Element element){
         int index = element.getParent().elements(element.getName()).indexOf(element);
         String nth = ":nth-child(even)";
         if((index+1)%2 ==0){
             nth = ":nth-child(odd)";
         }
-        Map<String,String> result = new HashMap<String,String>();
+        Map<String, String> result = new HashMap<String, String>();
         if(null == element){
             return result;
         }

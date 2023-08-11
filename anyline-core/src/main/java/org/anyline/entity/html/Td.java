@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Td {
 
-    private Map<String,String> styles = new HashMap();
+    private Map<String, String> styles = new HashMap();
     private Element src;
     private String text = null;
     private int colspan = 1;

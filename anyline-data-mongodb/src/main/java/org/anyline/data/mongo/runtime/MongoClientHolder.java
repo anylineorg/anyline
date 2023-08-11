@@ -94,7 +94,7 @@ public class MongoClientHolder extends ClientHolder {
 	 * @throws Exception 异常 Exception
 	 */
 	public static String reg(String key, String uri, String database, String user, String password) throws Exception{
-		Map<String,String> param = new HashMap<String,String>();
+		Map<String, String> param = new HashMap<String, String>();
 		param.put("uri", uri);
 		param.put("database", database);
 		param.put("user", user);

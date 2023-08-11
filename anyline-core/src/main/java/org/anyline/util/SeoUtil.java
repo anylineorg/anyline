@@ -42,7 +42,7 @@ public class SeoUtil {
 	 */ 
 	public static String insertKeyword(String src, List<String> keys){
 		List<Integer> idxList = new ArrayList<Integer> ();				// 关键词插入位置
-		Map<Integer,String> idxKeyMap = new HashMap<Integer,String>();	// 关键词插入位置对应(位置:关键词)
+		Map<Integer, String> idxKeyMap = new HashMap<Integer, String>();	// 关键词插入位置对应(位置:关键词)
  
 		int srcLen = src.length(); 
 		if(srcLen < MIN_BODY_LEN){
