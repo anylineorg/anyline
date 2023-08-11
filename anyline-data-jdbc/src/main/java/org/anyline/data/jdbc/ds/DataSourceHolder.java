@@ -194,19 +194,18 @@ public class DataSourceHolder extends ClientHolder {
 	 * 注册数据源
 	 * @param key 数据源名称
 	 * @param ds 数据源bean id
-	 * @param over 是否允许覆盖已有的数据源
-	 * @return DataSource
+ 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	private static String addDataSource(String key, String ds, boolean over) throws Exception{
-		if(dataSources.contains(key)){
+	private static String addDataSource(String key, String ds) throws Exception{
+		/*if(dataSources.contains(key)){
 			if(!over){
 				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 			}else{
 				//清空
 				JDBCRuntimeHolder.destroy(key);
 			}
-		}
+		}*/
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 			log.info("[创建数据源][thread:{}][key:{}]", Thread.currentThread().getId(), key);
 		}
@@ -268,15 +267,15 @@ public class DataSourceHolder extends ClientHolder {
 	}
 
 	public static String reg(String key, Map param, boolean over) throws Exception{
-		return addDataSource(key, reg(key, param), over);
+		return addDataSource(key, reg(key, param, over));
 	}
 
 	public static String reg(String key, Map param) throws Exception{
-		String ds = build(key, param);
+		String ds = build(key, param, true);
 		if(null == ds) {//创建数据源失败
 			return null;
 		}
-		return addDataSource(key, ds, true);
+		return addDataSource(key, ds);
 	}
 
 
@@ -334,17 +333,21 @@ public class DataSourceHolder extends ClientHolder {
 			map.put("username",username);
 			map.put("password",password);
 			//BeanUtil.setFieldsValue(ds, map, false);
-			String ds = build(key, map);
+			String ds = build(key, map, true);
 			if(null == ds){//创建数据源失败
 				return null;
 			}
-			addDataSource(key, ds, false);
+			addDataSource(key, ds);
 			return ds;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+
+	/*public static String build(String key, Map params) throws Exception{
+		return build(key, params, true);
+	}*/
 	/**
 	 * 创建数据源
 	 * @param key key
@@ -352,7 +355,15 @@ public class DataSourceHolder extends ClientHolder {
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-	public static String build(String key, Map params) throws Exception{
+	public static String build(String key, Map params, boolean over) throws Exception{
+		if(dataSources.contains(key)){
+			if(!over){
+				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+			}else{
+				//清空
+				JDBCRuntimeHolder.destroy(key);
+			}
+		}
 		String ds_id = "anyline.datasource." + key;
 		try {
 			String url =  (String)BeanUtil.propertyNvl(params,"url","jdbc-url");
@@ -373,22 +384,29 @@ public class DataSourceHolder extends ClientHolder {
 			Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
 
 			Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
-			if(null == driver){
-				return null;
-			}
+
 			if(driver instanceof String) {
-				Class.forName(driver.toString());
-			}else if(driver instanceof Class){
+				Class calzz = Class.forName(driver.toString());
+				if(type.contains("druid")){
+					driver = calzz.newInstance();
+				}
+			}/*else if(driver instanceof Class){
 				driver = ((Class)driver).newInstance();
-			}
+			}*/
 			Object user =  BeanUtil.propertyNvl(params,"user","username");
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.putAll(params);
 			map.put("url", url);
-			map.put("jdbcUrl", url);
+			if(type.contains("druid")){
+				//jdbcUrl url分不清
+			}else {
+				map.put("jdbcUrl", url);
+			}
 			map.put("driver",driver);
-			map.put("driverClass",driver);
-			map.put("driverClassName",driver);
+			if(driver instanceof String) {
+				map.put("driverClass", driver);
+				map.put("driverClassName", driver);
+			}
 			map.put("user",user);
 			map.put("username",user);
 
@@ -404,6 +422,9 @@ public class DataSourceHolder extends ClientHolder {
 				if(null != value) {
 					ds_builder.addPropertyValue(name, value);
 				}
+			}
+			if(type.contains("druid")){
+				ds_builder.addPropertyValue("url", url);
 			}
 
 			BeanDefinition ds_definition = ds_builder.getBeanDefinition();
