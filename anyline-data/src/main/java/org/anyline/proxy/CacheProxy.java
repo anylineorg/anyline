@@ -33,35 +33,37 @@ public class CacheProxy {
     private static Map<String,DataRow> cache_table_maps = new HashMap<>();
     private static Map<String,DataRow> cache_view_maps = new HashMap<>();
     public static void name(String catalog, String schema, String name, String origin){
-        String key = catalog + "_" + schema;
-        Map<String,String> maps = cache_names.get(key.toUpperCase());
+        String group_key = catalog + "_" + schema;
+        group_key = group_key.toUpperCase();
+        Map<String,String> maps = cache_names.get(group_key);
         if(null == maps){
             maps = new HashMap<>();
-            cache_names.put(key.toUpperCase(), maps);
+            cache_names.put(group_key, maps);
         }
-        key = catalog + "_" + schema + "_" + name;
-        maps.put(key.toUpperCase(), origin);
+        maps.put(name.toUpperCase(), origin);
     }
     public static Map<String, String> names(String catalog, String schema){
         String key = catalog + "_" + schema;
         return cache_names.get(key.toUpperCase());
     }
     public static String name(boolean greedy, String catalog, String schema, String name){
-        String key = catalog + "_" + schema;
-        Map<String,String> maps = cache_names.get(key.toUpperCase());
+        if(null == name){
+            return null;
+        }
+        String group_key = catalog + "_" + schema;
+        group_key = group_key.toUpperCase();
+        Map<String,String> maps = cache_names.get(group_key);
         if(null != maps){
-            key = catalog + "_" + schema + "_" + name;
-            String origin = maps.get(key.toUpperCase());
+            String origin = maps.get(name.toUpperCase());
             if(null != origin){
                 return origin;
             }
         }
         if(greedy) {
-            for (Map<String, String> item : cache_names.values()) {
-                for(String itemName:item.keySet()){
-                    if(name.equalsIgnoreCase(itemName)){
-                        return itemName;
-                    }
+            for (Map<String, String> names : cache_names.values()) {
+                String origin = names.get(name.toUpperCase());
+                if(null != origin){
+                    return origin;
                 }
             }
         }

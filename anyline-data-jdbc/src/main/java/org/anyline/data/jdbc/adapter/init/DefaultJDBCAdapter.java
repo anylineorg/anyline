@@ -2216,8 +2216,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			String origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			if(null == origin){
 				tableMap(runtime, random, catalog, schema);
+				origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			}
-			origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			if(null == origin){
 				origin = pattern;
 			}
