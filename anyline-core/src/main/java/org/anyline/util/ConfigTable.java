@@ -53,7 +53,7 @@ public class ConfigTable {
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
 	protected static final String version 				= "8.6.5-SNAPSHOT"	;	// 版本号
-	protected static final String minVersion 			= "2023080410"		;	// 版本号
+	protected static final String minVersion 			= "000"		;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
 
@@ -113,8 +113,8 @@ public class ConfigTable {
 	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  	;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
 	public static String ENTITY_CLASS_TABLE_MAP							= "Camel_"  	;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
 	public static String ENTITY_TABLE_ANNOTATION						= null			;   // 表名注解(逗号分隔,不区分大小写,支持正则匹配)
-	public static String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解(逗号分隔,不区分大小写,支持正则匹配)column.name,column.value,TableField.name,TableField.value,TableId.name,TableId.value,Id.name,Id.value
-	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) TableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
+	public static String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解(逗号分隔,不区分大小写,支持正则匹配)column.name,column.value, TableField.name, TableField.value, tableId.name, tableId.value,Id.name,Id.value
+	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
 	public static int ENTITY_FIELD_SELECT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:查询属性关联表
 	public static int ENTITY_FIELD_INSERT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:插入属性关联表
 	public static int ENTITY_FIELD_UPDATE_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:更新属性关联表
