@@ -93,20 +93,21 @@ public class TextRun extends BasicRun implements Run {
 				String varKey = conf.getVariable();
 				//SQL主体变量
 				List<Variable> vars = this.getVariables(varKey);
-				//查询条件
-				List<Condition> cons = getConditions(varKey);
-				//是否已用来赋值
 				boolean isUse = false;
-				for (Condition con : cons) {
-					if (null != con) {
-						//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
-
-						//当前条件相就的变量是否赋值过
-						boolean isConVarSetValue = con.isSetValue() || con.isSetValue(varKey);
-						if(!isConVarSetValue || overValue) {
-							isUse = true;
-							con.setVariableSlave(true);
-							setConditionValue(conf.getSwitch(), conf.getCompare(), varKey, varKey, values);
+				//相同key的查询条件
+				if(overCondition) {
+					List<Condition> cons = getConditions(varKey);
+					//是否已用来赋值
+					for (Condition con : cons) {
+						if (null != con) {
+							//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
+							//当前条件相就的变量是否赋值过
+							boolean isConVarSetValue = con.isSetValue() || con.isSetValue(varKey);
+							if (!isConVarSetValue || overValue) {
+								isUse = true;
+								con.setVariableSlave(true);
+								setConditionValue(conf.getSwitch(), conf.getCompare(), varKey, varKey, values);
+							}
 						}
 					}
 				}
@@ -119,8 +120,9 @@ public class TextRun extends BasicRun implements Run {
 				}
 				if(compare != Compare.NONE) {
 					//如果没有对应的查询条件和SQL体变量，新加一个条件
-					//不覆盖条件 则添加新条件
-					if(!overCondition && !isUse){
+					//没有用过给其他参数赋值 则添加新条件
+					//if(!overCondition && !isUse){
+					if(!isUse){
 						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
 					}
 				}
