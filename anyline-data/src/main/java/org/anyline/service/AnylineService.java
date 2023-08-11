@@ -23,6 +23,7 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.util.BeanUtil;
@@ -329,15 +330,21 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet querys(String src, int first, int last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet querys(String src, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		navi.setFirstRow(first);
 		navi.setLastRow(last);
 		configs.setPageNavi(navi);
 		return querys(src, configs, obj, conditions);
 	}
-	DataSet querys(String src, Object obj, String ... conditions);
-	DataSet querys(String src, PageNavi navi, Object obj, String ... conditions);
+	default DataSet querys(String src, Object obj, String ... conditions){
+		return querys(src, (ConfigStore) null, obj, conditions);
+	}
+	default DataSet querys(String src, PageNavi navi, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.setPageNavi(navi);
+		return querys(src, configs, obj, conditions);
+	}
 
 	/**
 	 * 按条件查询
@@ -348,13 +355,16 @@ public interface AnylineService<E>{
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	DataSet querys(String src, int first, int last, Object obj, String ... conditions);
-	DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
-	DataRow query(String src, Object obj, String ... conditions);
+	default DataSet querys(String src, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return querys(src, configs, obj, conditions);
+	}
 
 
-	DataSet querys(String src, ConfigStore configs, String ... conditions);
-	default DataSet querys(String src, int first, int last, ConfigStore configs, String ... conditions){
+	default DataSet querys(String src, ConfigStore configs, String ... conditions){
+		return querys(src, configs, null, conditions);
+	}
+	default DataSet querys(String src, long first, long last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){
 			configs = new DefaultConfigStore();
@@ -364,20 +374,33 @@ public interface AnylineService<E>{
 		configs.setPageNavi(navi);
 		return querys(src, configs, conditions);
 	}
-	DataSet querys(String src,  String ... conditions);
-	DataSet querys(String src, PageNavi navi,  String ... conditions);
+	default DataSet querys(String src,  String ... conditions){
+		return querys(src, (Object) null, conditions);
+	}
+	default DataSet querys(String src, PageNavi navi,  String ... conditions){
+		return querys(src, navi, null, conditions);
+	}
+	default DataSet querys(String src, long first, long last,  String ... conditions){
+		return querys(src, first, last, null, conditions);
+	}
 
-	/**
-	 * 按条件查询
-	 * @param src 			数据源(表或自定义SQL或SELECT语句)
-	 * @param first 		起 下标从0开始
-	 * @param last 			止
-	 * @param conditions	固定查询条件
-	 * @return DataSet
-	 */
-	DataSet querys(String src, int first, int last,  String ... conditions);
-	DataRow query(String src, ConfigStore configs,  String ... conditions);
-	DataRow query(String src, String ... conditions);
+	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow query(String src, Object obj, String ... conditions){
+		return query(src,  null, obj, conditions);
+	}
+	default DataRow query(String src, ConfigStore configs,  String ... conditions){
+		return query(src, configs, null, conditions);
+	}
+	default DataRow query(String src, String ... conditions){
+		return query(src, (ConfigStore) null, conditions);
+	}
+	default DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions){
+		return query(prepare, configs, null, conditions);
+	}
+	default DataRow query(RunPrepare prepare, String ... conditions){
+		return query(prepare, null, null, conditions);
+	}
 
 	/**
 	 * 查询序列cur 或 next value
@@ -391,7 +414,9 @@ public interface AnylineService<E>{
 	 * @param name 序列名
 	 * @return long 查询失败返回null
 	 */
-	BigDecimal sequence(String name);
+	default BigDecimal sequence(String name){
+		return sequence(true, name);
+	}
 	/**
 	 * 查询序列cur 或 next value
 	 * @param names 序列名
@@ -399,7 +424,9 @@ public interface AnylineService<E>{
 	 * @return DataRow 查询结果按序列名保存到DataRow中，查询失败返回null
 	 */
 	DataRow sequences(boolean next, String ... names);
-	DataRow sequences(String ... names);
+	default DataRow sequences(String ... names){
+		return sequences(true, names);
+	}
 
 	/**
 	 * 根据SQL或自定义SQL返回实体
@@ -412,18 +439,43 @@ public interface AnylineService<E>{
 	 * @param <T> T
 	 */
 	<T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	<T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions);
-	<T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions);
-	<T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, T entity, String ... conditions);
-	<T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	<T> T select(String src, Class<T> clazz, T entity, String ... conditions);
 
-	<T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
-	<T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions);
-	<T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions);
-	<T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, String ... conditions);
-	<T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions);
-	<T> T select(String src, Class<T> clazz, String ... conditions);
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.setPageNavi(navi);
+		return selects(src, clazz, configs, entity, conditions);
+	}
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
+		return selects(src, clazz, (ConfigStore) null, entity, conditions);
+	}
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return selects(src, clazz, configs, entity, conditions);
+	}
+
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return selects(src, clazz, configs, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions){
+		return selects(src, clazz, navi, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions){
+		return selects(src, clazz, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, String ... conditions){
+		return selects(src, clazz, first, last, (T) null, conditions);
+	}
+
+	<T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	default <T> T select(String src, Class<T> clazz, T entity, String ... conditions){
+		return select(src, clazz, (ConfigStore) null, entity, conditions);
+	}
+	default <T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return select(src, clazz, configs, (T) null, conditions);
+	}
+	default <T> T select(String src, Class<T> clazz, String ... conditions){
+		return select(src, clazz, (T) null, conditions);
+	}
 
 
 
@@ -437,31 +489,62 @@ public interface AnylineService<E>{
 	 * @param <T> T
 	 */
 	<T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	<T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
-	<T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions);
-	<T> EntitySet<T> selects(Class<T> clazz, int first, int last, T entity, String ... conditions);
+	default <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.setPageNavi(navi);
+		return selects(clazz, configs, entity, conditions);
+	}
+	default <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions){
+		return selects(clazz, (ConfigStore) null, entity, conditions);
+	}
+	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return selects(clazz, configs, entity, conditions);
+	}
 	<T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	<T> T select(Class<T> clazz, T entity, String ... conditions);
+	default <T> T select(Class<T> clazz, T entity, String ... conditions){
+		return select(clazz, (ConfigStore) null, entity, conditions);
+	}
 
-	<T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions);
-	<T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions);
-	<T> EntitySet<T> selects(Class<T> clazz, String ... conditions);
-	<T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions);
-	<T> T select(Class<T> clazz, ConfigStore configs, String ... conditions);
-	<T> T select(Class<T> clazz, String ... conditions);
+	default <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions){
+		return selects(clazz, configs, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions){
+		return selects(clazz, navi, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(Class<T> clazz, String ... conditions){
+		return selects(clazz, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
+		return selects(clazz, first, last, (T) null, conditions);
+	}
+	default <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions){
+		return select(clazz, configs, (T) null, conditions);
+	}
+	default <T> T select(Class<T> clazz, String ... conditions){
+		return select(clazz, (T) null, conditions);
+	}
 
 
 
 
 	/*根据service构造泛型查询*/
 	EntitySet<E> gets(ConfigStore configs, String ... conditions);
-	EntitySet<E> gets(PageNavi navi, String ... conditions);
+	default EntitySet<E> gets(PageNavi navi, String ... conditions){
+		return gets(new DefaultConfigStore().setPageNavi(navi), conditions);
+	}
 
 	// 与DataSet querys(String src, String ... conditions);  签名冲突
-	EntitySet<E> gets(String ... conditions);
-	EntitySet<E> gets(int first, int last, String ... conditions);
+	default EntitySet<E> gets(String ... conditions){
+		return gets((ConfigStore) null, conditions);
+	}
+	default EntitySet<E> gets(long first, long last, String ... conditions){
+		return gets(new DefaultConfigStore(first, last), conditions);
+	}
 	E get(ConfigStore configs, String ... conditions);
-	E get(String ... conditions);
+	default E get(String ... conditions){
+		return get(null, conditions);
+	}
 
 	/**
 	 * 直接返回Map集合不封装,不分页
@@ -472,12 +555,24 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
-	List<Map<String,Object>> maps(String src, Object obj, String ... conditions);
-	List<Map<String,Object>> maps(String src, int first, int last, Object obj, String ... conditions);
-	List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
-	List<Map<String,Object>> maps(String src, String ... conditions);
-	List<Map<String,Object>> maps(String src, PageNavi nvi, String ... conditions);
-	List<Map<String,Object>> maps(String src, int first, int last, String ... conditions);
+	default List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
+		return maps(src, null, obj, conditions);
+	}
+	default List<Map<String,Object>> maps(String src, long first, long last, Object obj, String ... conditions){
+		return maps(src, new DefaultConfigStore(first, last), obj, conditions);
+	}
+	default List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions){
+		return maps(src, configs, null, conditions);
+	}
+	default List<Map<String,Object>> maps(String src, String ... conditions){
+		return maps(src, null,null, conditions);
+	}
+	default List<Map<String,Object>> maps(String src, PageNavi navi, String ... conditions){
+		return maps(src,new DefaultConfigStore().setPageNavi(navi), null, conditions);
+	}
+	default List<Map<String,Object>> maps(String src, long first, long last, String ... conditions){
+		return maps(src, first, last, null, conditions);
+	}
 
 
 
@@ -500,72 +595,136 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet caches(String cache, String src, int first, int last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		navi.setFirstRow(first);
 		navi.setLastRow(last);
 		configs.setPageNavi(navi);
 		return caches(cache, src, configs, obj, conditions);
 	}
-	DataSet caches(String cache, String src, Object obj, String ... conditions);
-	DataSet caches(String cache, String src, int first, int last, Object obj, String ... conditions);
+	default DataSet caches(String cache, String src, Object obj, String ... conditions){
+		return caches(cache, src, null, obj, conditions);
+	}
+	default DataSet caches(String cache, String src, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return caches(cache, src, configs, obj, conditions);
+	}
 	DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
-	DataRow cache(String cache, String src, Object obj, String ... conditions);
-
-	DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions);
-	default DataSet caches(String cache, String src, int first, int last, ConfigStore configs,  String ... conditions){
+	default DataRow cache(String cache, String src, Object obj, String ... conditions){
+		return cache(cache, src, null, obj, conditions);
+	}
+	default DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions){
+		return caches(cache, src, configs, (Object) null, conditions);
+	}
+	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs,  String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		navi.setFirstRow(first);
 		navi.setLastRow(last);
 		configs.setPageNavi(navi);
 		return caches(cache, src, configs, conditions);
 	}
-	DataSet caches(String cache, String src, String ... conditions);
-	DataSet caches(String cache, String src, int first, int last, String ... conditions);
-	DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
-	DataRow cache(String cache, String src, String ... conditions);
-
+	default DataSet caches(String cache, String src, String ... conditions){
+		return caches(cache, src, null, null, conditions);
+	}
+	default DataSet caches(String cache, String src, long first, long last, String ... conditions){
+		return caches(cache, src, first, last, null, conditions);
+	}
+	default DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
+		return cache(cache, src, configs, null, conditions);
+	}
+	default DataRow cache(String cache, String src, String ... conditions){
+		return cache(cache, src, null, null, conditions);
+	}
 
 
 	/*多表查询,左右连接时使用*/
+
+	/**
+	 *
+	 * @param @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
 	DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet querys(RunPrepare prepare, int first, int last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet querys(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		navi.setFirstRow(first);
 		navi.setLastRow(last);
 		configs.setPageNavi(navi);
 		return querys(prepare, configs, obj, conditions);
 	}
-	DataSet querys(RunPrepare prepare, Object obj, String ... conditions);
-	DataSet querys(RunPrepare prepare, int first, int last, Object obj, String ... conditions);
-	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	DataRow query(RunPrepare prepare, Object obj, String ... conditions);
+	default DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
+		return querys(prepare, null, obj, conditions);
+	}
+	default DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return querys(prepare, configs, obj, conditions);
+	}
 
-	DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions);
-	DataSet querys(RunPrepare prepare,  String ... conditions);
-	DataSet querys(RunPrepare prepare, int first, int last,  String ... conditions);
-	DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions);
-	DataRow query(RunPrepare prepare, String ... conditions);
-
-
+	default DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions){
+		return querys(prepare, configs, null, conditions);
+	}
+	default DataSet querys(RunPrepare prepare,  String ... conditions){
+		return querys(prepare, null, null, conditions);
+	}
+	default DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
+		return querys(prepare, first, last, null, conditions);
+	}
+	/**
+	 *
+	 * @param cache 缓存 channel
+	 * @param @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
 	DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions);
-	DataSet caches(String cache, RunPrepare prepare, int first, int last, Object obj, String ... conditions);
-	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions);
+	default DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions){
+		return caches(cache, prepare, null, obj, conditions);
+	}
+	default DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return caches(cache, prepare, configs, obj, conditions);
+	}
 
-	DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	DataSet caches(String cache, RunPrepare prepare, String ... conditions);
-	DataSet caches(String cache, RunPrepare prepare, int first, int last, String ... conditions);
-	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	default DataRow cache(String cache, RunPrepare prepare, int first, int last, ConfigStore configs, String ... conditions){
+	/**
+	 *
+	 * @param cache 缓存 channel
+	 * @param @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
+	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions){
+		return cache(cache, prepare, null, obj, conditions);
+	}
+	default DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return caches(cache, prepare, configs, null, conditions);
+	}
+	default DataSet caches(String cache, RunPrepare prepare, String ... conditions){
+		return caches(cache, prepare, null, null, conditions);
+	}
+	default DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions){
+		return caches(cache, prepare, first, last, null, conditions);
+	}
+	default DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return cache(cache, prepare, configs, null, conditions);
+	}
+	default DataRow cache(String cache, RunPrepare prepare, long first, long last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		navi.setFirstRow(first);
 		navi.setLastRow(last);
 		configs.setPageNavi(navi);
 		return cache(cache, prepare, configs, conditions);
 	}
-	DataRow cache(String cache, RunPrepare prepare, String ... conditions);
+	default DataRow cache(String cache, RunPrepare prepare, String ... conditions){
+		return cache(cache, prepare, null, null, conditions);
+	}
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致
@@ -577,7 +736,7 @@ public interface AnylineService<E>{
 	 */
 	boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
 	boolean removeCache(String channel, String src, String ... conditions);
-	boolean removeCache(String channel, String src, int first, int last, String ... conditions);
+	boolean removeCache(String channel, String src, long first, long last, String ... conditions);
 	/**
 	 * 清空缓存
 	 * @param channel channel
@@ -589,19 +748,32 @@ public interface AnylineService<E>{
 	 * 													EXISTS
 	 ******************************************************************************************************************/
 
-	/** 
-	 * 是否存在 
-	 * @param src  			数据源(表或自定义SQL或SELECT语句)
-	 * @param configs  		根据http等上下文构造查询条件
-	 * @param conditions 	固定查询条件
+
+
+	/**
+	 * 是否存在
+	 *
+	 * @param src        src
+	 * @param configs    根据http等上下文构造查询条件
+	 * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions 固定查询条件
 	 * @return boolean
 	 */
+
 	boolean exists(String src, ConfigStore configs, Object obj, String ... conditions);
-	boolean exists(String src, Object obj, String ... conditions);
-	boolean exists(String src, ConfigStore configs, String ... conditions);
-	boolean exists(String src, String ... conditions);
+	default boolean exists(String src, Object obj, String ... conditions){
+		return exists(src, null, obj, conditions);
+	}
+	default boolean exists(String src, ConfigStore configs, String ... conditions){
+		return exists(src, configs, null, conditions);
+	}
+	default boolean exists(String src, String ... conditions){
+		return exists(src, null, null, conditions);
+	}
 	boolean exists(String src, DataRow row);
-	boolean exists(DataRow row);
+	default boolean exists(DataRow row){
+		return exists(null, row);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
@@ -630,6 +802,13 @@ public interface AnylineService<E>{
 	 * 													EXECUTE
 	 ******************************************************************************************************************/
 
+	/**
+	 * 执行存储过程
+	 * @param procedure 存储过程
+	 * @param inputs 输入参数
+	 * @return 执行是否成功
+	 */
+	boolean execute(Procedure procedure, String... inputs);
 	/** 
 	 * 执行 
 	 * @param src  src
@@ -638,15 +817,32 @@ public interface AnylineService<E>{
 	 * @return int
 	 */ 
 	long execute(String src, ConfigStore configs, String ... conditions); 
-	long execute(String src, String ... conditions); 
+	default long execute(String src, String ... conditions){
+		return execute(src, null, conditions);
+	}
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure
 	 * @param inputs  inputs
 	 * @return boolean
 	 */ 
-	boolean executeProcedure(String procedure, String... inputs); 
-	boolean execute(Procedure procedure, String... inputs);
+	default boolean executeProcedure(String procedure, String... inputs){
+		Procedure proc = new Procedure();
+		proc.setName(procedure);
+		for (String input : inputs) {
+			proc.addInput(input);
+		}
+		return execute(proc);
+	}
+
+	/**
+	 * 查询存储过程
+	 * @param procedure 存储过程
+	 * @param navi 分页
+	 * @param inputs 输入参数
+	 * @return DataSet
+	 */
+	DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
@@ -655,14 +851,40 @@ public interface AnylineService<E>{
 	 * @param inputs  inputs
 	 * @return DataSet
 	 */
-	DataSet querysProcedure(String procedure, int first, int last , String ... inputs);
-	DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs);
-	DataSet querysProcedure(String procedure, String ... inputs);
-	DataSet querys(Procedure procedure, String ... inputs);
-	DataSet querys(Procedure procedure, int first, int last,  String ... inputs);
-	DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
+	default DataSet querysProcedure(String procedure, long first, long last , String ... inputs){
+		PageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		return querysProcedure(procedure, navi, inputs);
+	}
+	default DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs){
+		Procedure proc = new Procedure();
+		proc.setName(procedure);
+		if (null != inputs) {
+			for (String input : inputs) {
+				proc.addInput(input);
+			}
+		}
+		return querys(proc, navi);
+	}
+	default DataSet querysProcedure(String procedure, String ... inputs){
+		return querysProcedure(procedure, null, inputs);
+	}
+	default DataSet querys(Procedure procedure, String ... inputs){
+		return querys(procedure, null, inputs);
+	}
+	default DataSet querys(Procedure procedure, long first, long last,  String ... inputs){
+		PageNavi navi = new DefaultPageNavi();
+		navi.setFirstRow(first);
+		navi.setLastRow(last);
+		return querys(procedure, navi, inputs);
+	}
 
-	DataRow queryProcedure(String procedure, String ... inputs);
+	default DataRow queryProcedure(String procedure, String ... inputs){
+		Procedure proc = new Procedure();
+		proc.setName(procedure);
+		return query(procedure, inputs);
+	}
 	DataRow query(Procedure procedure, String ... inputs);
 
 	/* *****************************************************************************************************************
@@ -687,7 +909,10 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	long delete(String dest, DataSet set, String ... columns);
-	long delete(DataSet set, String ... columns);
+	default long delete(DataSet set, String ... columns){
+		String dest = DataSourceUtil.parseDataSource(null, set);
+		return delete(dest, set, columns);
+	}
 	long delete(String dest, DataRow row, String ... columns);
 
 	/**
