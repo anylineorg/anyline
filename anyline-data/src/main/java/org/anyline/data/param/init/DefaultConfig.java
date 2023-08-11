@@ -38,13 +38,13 @@ import java.util.*;
 
 public class DefaultConfig implements Config {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultConfig.class);
-	protected String text				; // 静态条件(如原生SQL) 没有参数
-	protected List<Object> values		; // VALUE
-	protected List<Object> orValues		; // OR VALUE
-	protected boolean empty				; // 是否值为空
-	protected ParseResult parser;
-	protected boolean overCondition  = true;
-	protected boolean overValue		 = true;
+	protected String text					 ; // 静态条件(如原生SQL) 没有参数
+	protected List<Object> values			 ; // VALUE
+	protected List<Object> orValues			 ; // OR VALUE
+	protected boolean empty					 ; // 是否值为空
+	protected ParseResult parser			 ; //
+	protected boolean overCondition  = false ; // 覆盖相同KEY的查询条件
+	protected boolean overValue		 = true  ; // 相同查询条件第二次赋值是否覆盖上一次的值，如果不覆盖则生成集合值
 	@Override
 	public Object clone(){
 		DefaultConfig config = new DefaultConfig();
