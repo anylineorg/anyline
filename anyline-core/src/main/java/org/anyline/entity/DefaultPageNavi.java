@@ -163,7 +163,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * @return int
 	 */ 
 	public long getLastRow(){
-		if(calType == 0){
+		if(calType == 0){ //0-按页数 1-按开始结束数
 			if(curPage == 0) {
 				return pageRows -1; 
 			} 

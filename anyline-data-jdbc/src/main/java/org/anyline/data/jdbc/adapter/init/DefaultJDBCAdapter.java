@@ -1694,8 +1694,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					dmListener.beforeTotal(runtime, random, run);
 				}
 				fr = System.currentTimeMillis();
-				if (navi.getLastRow() == 0) {
-					// 第一条
+				if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+					// 第一条 query中设置的标识(只查一行)
 					total = 1;
 				} else {
 					// 未计数(总数 )
@@ -1802,10 +1802,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					dmListener.beforeTotal(runtime, random, run);
 				}
 				fr = System.currentTimeMillis();
-				if (navi.getLastRow() == 0) {
-					// 第一条
+				if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+					// 第一条 query中设置的标识(只查一行)
 					total = 1;
-				} else {
+				}  else {
 					// 未计数(总数 )
 					if (navi.getTotalRow() == 0) {
 						total = count(runtime, random, run);
