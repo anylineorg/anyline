@@ -524,18 +524,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return true;
     }
 
-    
-    @Override 
-    public boolean removeCache(String channel, String src, String... conditions) {
-        return removeCache(channel, src, null, conditions);
-    }
-
-    
-    @Override 
-    public boolean removeCache(String channel, String src, long fr, long to, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return removeCache(channel, src, configs, conditions);
-    }
 
     /**
      * 清空缓存

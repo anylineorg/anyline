@@ -398,6 +398,9 @@ public interface AnylineService<E>{
 	default DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions){
 		return query(prepare, configs, null, conditions);
 	}
+	default DataRow query(RunPrepare prepare, Object obj,  String ... conditions){
+		return query(prepare, null, obj, conditions);
+	}
 	default DataRow query(RunPrepare prepare, String ... conditions){
 		return query(prepare, null, null, conditions);
 	}
@@ -574,17 +577,12 @@ public interface AnylineService<E>{
 		return maps(src, first, last, null, conditions);
 	}
 
-
-
 	/**
 	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
 	 * @param table 表
 	 * @return List
 	 */
 	List<String> column2param(String table);
-
-
-
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param cache			对应ehcache缓存配置文件 中的cache.name
@@ -609,6 +607,15 @@ public interface AnylineService<E>{
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return caches(cache, src, configs, obj, conditions);
 	}
+
+	/**
+	 * @param cache			对应ehcache缓存配置文件 中的cache.name
+	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions 	固定查询条件
+	 * @return DataSet
+	 */
 	DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
 	default DataRow cache(String cache, String src, Object obj, String ... conditions){
 		return cache(cache, src, null, obj, conditions);
@@ -735,8 +742,12 @@ public interface AnylineService<E>{
 	 * @return boolean
 	 */
 	boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
-	boolean removeCache(String channel, String src, String ... conditions);
-	boolean removeCache(String channel, String src, long first, long last, String ... conditions);
+	default boolean removeCache(String channel, String src, String ... conditions){
+		return removeCache(channel, src, null, conditions);
+	}
+	default boolean removeCache(String channel, String src, long first, long last, String ... conditions){
+		return removeCache(channel, src, new DefaultConfigStore(first, last), conditions);
+	}
 	/**
 	 * 清空缓存
 	 * @param channel channel
@@ -959,7 +970,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public<T> long deletes(String table, String key, Collection<T> values);
+	<T> long deletes(String table, String key, Collection<T> values);
 
 	/**
 	 * 根据一列的多个值删除<br/>
@@ -972,7 +983,7 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	public<T> long deletes(String table, String key, T ... values);
+	<T> long deletes(String table, String key, T ... values);
 
 	int truncate(String table);
 
