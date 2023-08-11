@@ -437,7 +437,7 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String src, int first, int last, Object obj, String ... conditions){
+    public static DataSet querys(String src, long first, long last, Object obj, String ... conditions){
         return service.querys(src, first, last, obj, conditions);
     }
     public static DataRow query(String src, ConfigStore configs, Object obj, String ... conditions){
@@ -465,7 +465,7 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String src, int first, int last,  String ... conditions){
+    public static DataSet querys(String src, long first, long last,  String ... conditions){
         return service.querys(src, first, last, conditions);
     }
     public static DataRow query(String src, ConfigStore configs,  String ... conditions){
@@ -485,7 +485,7 @@ public class ServiceProxy {
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
         return service.selects(src, clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, T entity, String ... conditions){
         return service.selects(src, clazz, first, last, entity, conditions);
     }
     public static <T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
@@ -504,7 +504,7 @@ public class ServiceProxy {
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions){
         return service.selects(src, clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(String src, Class<T> clazz, int first, int last, String ... conditions){
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, String ... conditions){
         return service.selects(src, clazz, first, last, conditions);
     }
     public static <T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
@@ -532,7 +532,7 @@ public class ServiceProxy {
     public static <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions){
         return service.selects(clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, int first, int last, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions){
         return service.selects(clazz, first, last, entity, conditions);
     }
     public static <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
@@ -551,7 +551,7 @@ public class ServiceProxy {
     public static <T> EntitySet<T> selects(Class<T> clazz, String ... conditions){
         return service.selects(clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, int first, int last, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
         return service.selects(clazz, first, last, conditions);
     }
     public static <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions){
@@ -578,7 +578,7 @@ public class ServiceProxy {
     public static List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
         return service.maps(src, obj, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, int first, int last, Object obj, String ... conditions){
+    public static List<Map<String,Object>> maps(String src, long first, long last, Object obj, String ... conditions){
         return service.maps(src, first, last, obj, conditions);
     }
     public static List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions){
@@ -587,7 +587,7 @@ public class ServiceProxy {
     public static List<Map<String,Object>> maps(String src, String ... conditions){
         return service.maps(src, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, int first, int last, String ... conditions){
+    public static List<Map<String,Object>> maps(String src, long first, long last, String ... conditions){
         return service.maps(src, first, last, conditions);
     }
 
@@ -619,7 +619,7 @@ public class ServiceProxy {
     public static DataSet caches(String cache, String src, Object obj, String ... conditions){
         return service.caches(cache, src, obj, conditions);
     }
-    public static DataSet caches(String cache, String src, int first, int last, Object obj, String ... conditions){
+    public static DataSet caches(String cache, String src, long first, long last, Object obj, String ... conditions){
         return service.caches(cache, src, first, last, obj, conditions);
     }
     public static DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
@@ -635,7 +635,7 @@ public class ServiceProxy {
     public static DataSet caches(String cache, String src, String ... conditions){
         return service.caches(cache, src, conditions);
     }
-    public static DataSet caches(String cache, String src, int first, int last, String ... conditions){
+    public static DataSet caches(String cache, String src, long first, long last, String ... conditions){
         return service.caches(cache, src, first, last, conditions);
     }
     public static DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
@@ -652,7 +652,7 @@ public class ServiceProxy {
     public static DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
         return service.querys(prepare, obj, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, int first, int last, Object obj, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
         return service.querys(prepare, first, last, obj, conditions);
     }
     public static DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
@@ -668,7 +668,7 @@ public class ServiceProxy {
     public static DataSet querys(RunPrepare prepare,  String ... conditions){
         return service.querys(prepare, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, int first, int last,  String ... conditions){
+    public static DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
         return service.querys(prepare, first, last, conditions);
     }
     public static DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions){
@@ -685,7 +685,7 @@ public class ServiceProxy {
     public static DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions){
         return service.caches(cache, prepare, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, int first, int last, Object obj, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions){
         return service.caches(cache, prepare, first, last, obj, conditions);
     }
     public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
@@ -700,7 +700,7 @@ public class ServiceProxy {
     public static DataSet caches(String cache, RunPrepare prepare, String ... conditions){
         return service.caches(cache, prepare, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, int first, int last, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions){
         return service.caches(cache, prepare, first, last, conditions);
     }
     public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
@@ -725,7 +725,7 @@ public class ServiceProxy {
         return service.removeCache(channel, src, conditions);
     }
 
-    public static boolean removeCache(String channel, String src, int first, int last, String ... conditions){
+    public static boolean removeCache(String channel, String src, long first, long last, String ... conditions){
         return service.removeCache(channel, src, first, last, conditions);
     }
     /**
@@ -822,7 +822,7 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return DataSet
      */
-    public static DataSet querysProcedure(String procedure, int first, int last , String ... inputs){
+    public static DataSet querysProcedure(String procedure, long first, long last , String ... inputs){
         return service.querysProcedure(procedure, first, last, inputs);
     }
     public static DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs){
@@ -831,7 +831,7 @@ public class ServiceProxy {
     public static DataSet querysProcedure(String procedure, String ... inputs){
         return service.querysProcedure(procedure, inputs);
     }
-    public static DataSet querys(Procedure procedure, int first, int last, String ... inputs){
+    public static DataSet querys(Procedure procedure, long first, long last, String ... inputs){
         return service.querys(procedure, first, last, inputs);
     }
     public static DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs){
