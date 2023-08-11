@@ -140,51 +140,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return queryFromDao(src, configs, conditions);
     }
 
-    
-    @Override 
-    public DataSet querys(String src, PageNavi navi, Object obj, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore();
-        configs.setPageNavi(navi);
-        return querys(src, configs, obj, conditions);
-    }
 
-    
-    @Override 
-    public DataSet querys(String src, Object obj, String... conditions) {
-        return querys(src, (ConfigStore) null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(String src, int fr, int to, Object obj, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return querys(src, configs, obj, conditions);
-    }
-
-
-    
-    @Override 
-    public DataSet querys(String src, ConfigStore configs, String... conditions) {
-        return querys(src, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(String src, PageNavi navi, String... conditions) {
-        return querys(src, navi, null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(String src, String... conditions) {
-        return querys(src, (Object) null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(String src, int fr, int to, String... conditions) {
-        return querys(src, fr, to, null, conditions);
-    }
 
     
     @Override 
@@ -218,41 +174,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return maps;
     }
-
-    
-    @Override 
-    public List<Map<String, Object>> maps(String src, Object obj, String... conditions) {
-        return maps(src, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public List<Map<String, Object>> maps(String src, int fr, int to, Object obj, String... conditions) {
-        return maps(src, new DefaultConfigStore(fr, to), obj, conditions);
-    }
-
-    
-    @Override 
-    public List<Map<String, Object>> maps(String src, ConfigStore configs, String... conditions) {
-        return maps(src, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public List<Map<String, Object>> maps(String src, String... conditions) {
-        return maps(src, null,null, conditions);
-    }
-
-
-    @Override
-    public List<Map<String, Object>> maps(String src, int fr, int to, String... conditions) {
-        return maps(src, fr, to, null, conditions);
-    }
-    @Override
-    public List<Map<String, Object>> maps(String src, PageNavi navi, String... conditions) {
-        return maps(src,new DefaultConfigStore().setPageNavi(navi), null, conditions);
-    }
-
     
     @Override 
     public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String... conditions) {
@@ -271,39 +192,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return set;
     }
 
-    
-    @Override 
-    public DataSet caches(String cache, String src, Object obj, String... conditions) {
-        return caches(cache, src, null, obj, conditions);
-    }
 
-    
-    @Override 
-    public DataSet caches(String cache, String src, int fr, int to, Object obj, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return caches(cache, src, configs, obj, conditions);
-    }
-
-
-    
-    @Override 
-    public DataSet caches(String cache, String src, ConfigStore configs, String... conditions) {
-        return caches(cache, src, configs, (Object) null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, String src, String... conditions) {
-        return caches(cache, src, null, null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, String src, int fr, int to, String... conditions) {
-        return caches(cache, src, fr, to, null, conditions);
-    }
-
-    
     @Override 
     public DataRow query(String src, ConfigStore store, Object obj, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
@@ -325,27 +214,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-
-    
-    @Override 
-    public DataRow query(String src, Object obj, String... conditions) {
-        return query(src, (ConfigStore) null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataRow query(String src, ConfigStore store, String... conditions) {
-        return query(src, store, null, conditions);
-    }
-
-
-    
-    @Override 
-    public DataRow query(String src, String... conditions) {
-        return query(src, (ConfigStore) null, conditions);
-    }
-
-    
     @Override 
     public BigDecimal sequence(boolean next, String name) {
         DataRow row = sequences(next, name);
@@ -357,22 +225,10 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public BigDecimal sequence(String name) {
-        return sequence(true, name);
-    }
-
-    
-    @Override 
     public DataRow sequences(boolean next, String... names) {
         return dao.sequence(next, names);
     }
-
-    
-    @Override 
-    public DataRow sequences(String... names) {
-        return sequences(true, names);
-    }
-
+ 
     
     @Override 
     public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String... conditions) {
@@ -425,50 +281,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public DataRow cache(String cache, String src, Object obj, String... conditions) {
-        return cache(cache, src, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataRow cache(String cache, String src, ConfigStore configs, String... conditions) {
-        return cache(cache, src, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public DataRow cache(String cache, String src, String... conditions) {
-        return cache(cache, src, null, null, conditions);
-    }
-
-    
-    @Override 
     public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         return selectFromDao(clazz, append(configs, entity), conditions);
     }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore();
-        configs.setPageNavi(navi);
-        return selects(clazz, configs, entity, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, T entity, String... conditions) {
-        return selects(clazz, (ConfigStore) null, entity, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, int fr, int to, T entity, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return selects(clazz, configs, entity, conditions);
-    }
-
-    
     @Override 
     public <T> T select(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
@@ -493,73 +308,10 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-    
-    @Override 
-    public <T> T select(Class<T> clazz, T entity, String... conditions) {
-        return select(clazz, (ConfigStore) null, entity, conditions);
-    }
 
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return selects(clazz, configs, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String... conditions) {
-        return selects(clazz, navi, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, String... conditions) {
-        return selects(clazz, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(Class<T> clazz, int fr, int to, String... conditions) {
-        return selects(clazz, fr, to, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> T select(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return select(clazz, configs, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> T select(Class<T> clazz, String... conditions) {
-        return select(clazz, (T) null, conditions);
-    }
-
-    
     @Override 
     public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         return queryFromDao(src, clazz, append(configs, entity), conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore();
-        configs.setPageNavi(navi);
-        return selects(src, clazz, configs, entity, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String... conditions) {
-        return selects(src, clazz, (ConfigStore) null, entity, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, int fr, int to, T entity, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return selects(src, clazz, configs, entity, conditions);
     }
 
     
@@ -587,47 +339,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-    
-    @Override 
-    public <T> T select(String src, Class<T> clazz, T entity, String... conditions) {
-        return select(src, clazz, (ConfigStore) null, entity, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String... conditions) {
-        return selects(src, clazz, configs, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String... conditions) {
-        return selects(src, clazz, navi, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, String... conditions) {
-        return selects(src, clazz, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, int fr, int to, String... conditions) {
-        return selects(src, clazz, fr, to, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> T select(String src, Class<T> clazz, ConfigStore configs, String... conditions) {
-        return select(src, clazz, configs, (T) null, conditions);
-    }
-
-    
-    @Override 
-    public <T> T select(String src, Class<T> clazz, String... conditions) {
-        return select(src, clazz, (T) null, conditions);
-    }
 
     /**
      * 解析泛型class
@@ -658,37 +369,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public EntitySet<E> gets(PageNavi navi, String... conditions) {
-        Class<E> clazz = parseGenericClass();
-        return selects(clazz, navi, conditions);
-    }
-
-    
-    @Override 
-    public EntitySet<E> gets(String... conditions) {
-        Class<E> clazz = parseGenericClass();
-        return selects(clazz, conditions);
-    }
-
-    
-    @Override 
-    public EntitySet<E> gets(int fr, int to, String... conditions) {
-        Class<E> clazz = parseGenericClass();
-        return selects(clazz, fr, to, conditions);
-    }
-
-    
-    @Override 
     public E get(ConfigStore configs, String... conditions) {
         Class<E> clazz = parseGenericClass();
         return select(clazz, configs, conditions);
-    }
-
-    
-    @Override 
-    public E get(String... conditions) {
-        Class<E> clazz = parseGenericClass();
-        return select(clazz, conditions);
     }
 
 
@@ -709,39 +392,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return set;
 
     }
-
-    
-    @Override 
-    public DataSet querys(RunPrepare prepare, ConfigStore configs, String... conditions) {
-        return querys(prepare, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(RunPrepare prepare, Object obj, String... conditions) {
-        return querys(prepare, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(RunPrepare prepare, String... conditions) {
-        return querys(prepare, null, null, conditions);
-    }
-
-
-    
-    @Override 
-    public DataSet querys(RunPrepare prepare, int fr, int to, Object obj, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return querys(prepare, configs, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataSet querys(RunPrepare prepare, int fr, int to, String... conditions) {
-        return querys(prepare, fr, to, null, conditions);
-    }
-
     
     @Override 
     public DataSet caches(String cache, RunPrepare table, ConfigStore configs, Object obj, String... conditions) {
@@ -751,43 +401,13 @@ public class DefaultService<E> implements AnylineService<E> {
             set = querys(table, configs, obj, conditions);
         } else {
             if (null != cacheProvider) {
-                // set = queryFromCache(cache, table, configs, conditions);
+                //TODO
+                //set = queryFromCache(cache, table, configs, conditions);
             } else {
                 set = querys(table, configs, obj, conditions);
             }
         }
         return set;
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, RunPrepare table, ConfigStore configs, String... conditions) {
-        return caches(cache, table, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, RunPrepare table, Object obj, String... conditions) {
-        return caches(cache, table, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, RunPrepare table, String... conditions) {
-        return caches(cache, table, null, null, conditions);
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, RunPrepare table, int fr, int to, Object obj, String... conditions) {
-        ConfigStore configs = new DefaultConfigStore(fr, to);
-        return caches(cache, table, configs, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataSet caches(String cache, RunPrepare table, int fr, int to, String... conditions) {
-        return caches(cache, table, fr, to, null, conditions);
     }
 
     
@@ -812,25 +432,16 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-    
-    @Override 
-    public DataRow query(RunPrepare table, ConfigStore store, String... conditions) {
-        return query(table, store, null, conditions);
-    }
 
-    
-    @Override 
-    public DataRow query(RunPrepare table, Object obj, String... conditions) {
-        return query(table, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataRow query(RunPrepare table, String... conditions) {
-        return query(table, null, null, conditions);
-    }
-
-    
+    /**
+     *
+     * @param cache 缓存 channel
+     * @param table
+     * @param configs 过滤条件及相关配置
+     * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param conditions  简单过滤条件
+     * @return DataRow
+     */
     @Override 
     public DataRow cache(String cache, RunPrepare table, ConfigStore configs, Object obj, String... conditions) {
         // 是否启动缓存
@@ -879,23 +490,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return row;
     }
 
-    
-    @Override 
-    public DataRow cache(String cache, RunPrepare table, ConfigStore configs, String... conditions) {
-        return cache(cache, table, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public DataRow cache(String cache, RunPrepare table, Object obj, String... conditions) {
-        return cache(cache, table, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public DataRow cache(String cache, RunPrepare table, String... conditions) {
-        return cache(cache, table, null, null, conditions);
-    }
 
     /**
      * 删除缓存 参数保持与查询参数完全一致
@@ -938,7 +532,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public boolean removeCache(String channel, String src, int fr, int to, String... conditions) {
+    public boolean removeCache(String channel, String src, long fr, long to, String... conditions) {
         ConfigStore configs = new DefaultConfigStore(fr, to);
         return removeCache(channel, src, configs, conditions);
     }
@@ -961,7 +555,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     /**
-     * 检查唯一性
+     * 是否存在
      *
      * @param src        src
      * @param configs    根据http等上下文构造查询条件
@@ -970,7 +564,6 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return boolean
      */
 
-    
     @Override 
     public boolean exists(String src, ConfigStore configs, Object obj, String... conditions) {
         boolean result = false;
@@ -979,24 +572,6 @@ public class DefaultService<E> implements AnylineService<E> {
         RunPrepare prepare = createRunPrepare(src);
         result = dao.exists(prepare, append(configs, obj), conditions);
         return result;
-    }
-
-    
-    @Override 
-    public boolean exists(String src, ConfigStore configs, String... conditions) {
-        return exists(src, configs, null, conditions);
-    }
-
-    
-    @Override 
-    public boolean exists(String src, Object obj, String... conditions) {
-        return exists(src, null, obj, conditions);
-    }
-
-    
-    @Override 
-    public boolean exists(String src, String... conditions) {
-        return exists(src, null, null, conditions);
     }
 
     /**
@@ -1021,11 +596,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
     }
 
-    
-    @Override 
-    public boolean exists(DataRow row) {
-        return exists(null, row);
-    }
 
     /* *****************************************************************************************************************
      * 													COUNT
@@ -1202,21 +772,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return saveObject(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
     }
 
-
-
-
-
-
-    @Override 
-    public boolean executeProcedure(String procedure, String... inputs) {
-        Procedure proc = new Procedure();
-        proc.setName(procedure);
-        for (String input : inputs) {
-            proc.addInput(input);
-        }
-        return execute(proc);
-    }
-
     
     @Override 
     public boolean execute(Procedure procedure, String... inputs) {
@@ -1263,52 +818,6 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override 
-    public DataSet querys(Procedure procedure, String... inputs) {
-        return querys(procedure, null, inputs);
-    }
-
-    @Override 
-    public DataSet querys(Procedure procedure, int fr, int to, String... inputs) {
-        PageNavi navi = new DefaultPageNavi();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        return querys(procedure, navi, inputs);
-    }
-
-    
-    @Override 
-    public DataSet querysProcedure(String procedure, PageNavi navi, String... inputs) {
-        Procedure proc = new Procedure();
-        proc.setName(procedure);
-        if (null != inputs) {
-            for (String input : inputs) {
-                proc.addInput(input);
-            }
-        }
-        return querys(proc, navi);
-    }
-
-    @Override 
-    public DataSet querysProcedure(String procedure, int fr, int to, String... inputs) {
-        PageNavi navi = new DefaultPageNavi();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        return querysProcedure(procedure, navi, inputs);
-    }
-
-    @Override 
-    public DataSet querysProcedure(String procedure, String... inputs) {
-        return querysProcedure(procedure, null, inputs);
-    }
-
-    @Override 
-    public DataRow queryProcedure(String procedure, String... inputs) {
-        Procedure proc = new Procedure();
-        proc.setName(procedure);
-        return query(procedure, inputs);
-    }
-
-    @Override 
     public DataRow query(Procedure procedure, String... inputs) {
         DataSet set = querys(procedure, 0, 0, inputs);
         if (set.size() > 0) {
@@ -1336,12 +845,6 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
 
-    
-    @Override 
-    public long execute(String src, String... conditions) {
-        return execute(src, null, conditions);
-    }
-
     @SuppressWarnings("rawtypes")
     
     @Override 
@@ -1353,13 +856,6 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         log.info("[delete DataSet][影响行数:{}]", LogUtil.format(cnt, 34));
         return cnt;
-    }
-
-    
-    @Override 
-    public long delete(DataSet set, String... columns) {
-        String dest = DataSourceUtil.parseDataSource(null, set);
-        return delete(dest, set, columns);
     }
 
     
