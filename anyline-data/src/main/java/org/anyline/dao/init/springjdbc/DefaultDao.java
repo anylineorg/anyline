@@ -382,7 +382,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							}
 						}
 					}
-					runtime.getAdapter().save(runtime, random, join.joinTable, set, false, null);
+					runtime.getAdapter().save(runtime, random, join.joinTable, set, false);
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -462,7 +462,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							items.add(item);
 						}
 					}
-					runtime.getAdapter().save(runtime, random, join.dependencyTable, items, false, null);
+					runtime.getAdapter().save(runtime, random, join.dependencyTable, items, false);
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
