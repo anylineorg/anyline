@@ -906,7 +906,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean sql_success = false;
-		swt = InterceptorProxy.prepareInsert(runtime,random,  dest, data, checkPrimary, columns);
+		swt = InterceptorProxy.prepareInsert(runtime, random,  dest, data, checkPrimary, columns);
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
@@ -916,7 +916,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
-
 		if(null != data && data instanceof DataSet){
 			DataSet set = (DataSet)data;
 			Map<String,Object> tags = set.getTags();
@@ -2800,8 +2799,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		try{
 			long fr = System.currentTimeMillis();
-			//ds = runtime.getTemplate().getDataSource();
-			//con = DataSourceUtils.getConnection(ds);
 			// 根据系统表查询
 			try{
 				List<Run> runs = buildQueryPartitionTableRun(runtime, master, tags, name);
