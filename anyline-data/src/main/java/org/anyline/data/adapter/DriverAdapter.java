@@ -135,8 +135,38 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 */
 	long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+	default long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(runtime, random, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, Object data, boolean checkPrimary, String ... columns){
+		return insert(runtime, random, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
+		return insert(runtime, random, dest, data, false, columns);
+	}
+	default long insert(DataRuntime runtime, String random, String dest, Object data, String ... columns){
+		return insert(runtime, random, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, Object data, String ... columns){
+		return insert(runtime, random, null, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(Object data, boolean checkPrimary, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null,  null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(String dest, Object data, List<String> columns){
+		return insert(RuntimeHolder.getRuntime(), null, dest, data, false, columns);
+	}
+	default long insert(String dest, Object data, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(Object data, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, null, data, false, BeanUtil.array2list(columns));
+	}
 	/**
-	 * 创建 insert 最终可执行命令
+	 * insert [build]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj 实体
@@ -145,7 +175,39 @@ public interface DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
-
+	default Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(runtime, dest, obj, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(runtime, null, obj, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, String dest, Object obj, List<String> columns){
+		return buildInsertRun(runtime, dest, obj, false, columns);
+	}
+	default Run buildInsertRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+		return buildInsertRun(runtime, dest, obj, false, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, Object obj, String ... columns){
+		return buildInsertRun(runtime, null, obj, false, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, checkPrimary, columns);
+	}
+	default Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), null, obj, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(String dest, Object obj, List<String> columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, false, columns);
+	}
+	default Run buildInsertRun(String dest, Object obj, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, false, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(Object obj, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), null, obj, false, BeanUtil.array2list(columns));
+	}
 	/**
 	 * 填充inset命令内容(根据集合类型)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -243,6 +305,52 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 */
 	long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+	default long save(DataRuntime runtime, String random, Object data, boolean checkPrimary, List<String> columns){
+		return save(runtime, random, null, data, checkPrimary, columns);
+	}
+	default long save(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
+		return save(runtime, random, dest, data, false, columns);
+	}
+	default long save(DataRuntime runtime, String random, Object data, List<String> columns){
+		return save(runtime, random, null, data, false, columns);
+	}
+	default long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(runtime, random, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, Object data, boolean checkPrimary, String ... columns){
+		return save(runtime, random, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, String dest, Object data, String ... columns){
+		return save(runtime, random, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, Object data, String ... columns){
+		return save(runtime, random, null, data, false, BeanUtil.array2list(columns));
+	}
+
+	default long save(String dest, Object data, boolean checkPrimary, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null, dest, data, checkPrimary, columns);
+	}
+	default long save(Object data, boolean checkPrimary, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null, null, data, checkPrimary, columns);
+	}
+	default long save(String dest, Object data, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null, dest, data, false, columns);
+	}
+	default long save(Object data, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null, null, data, false, columns);
+	}
+	default long save(String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(Object data, boolean checkPrimary, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(String dest, Object data, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long save(Object data, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null, null, data, false, BeanUtil.array2list(columns));
+	}
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
@@ -257,11 +365,59 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 */
 	long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, null, data, configs, columns);
+	}
+	default long update(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
+		return update(runtime, random, dest, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, Object data, List<String> columns){
+		return update(runtime, random, null, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs){
+		return update(runtime, random, null, data, configs);
+	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, String ... columns){
 		return update(runtime, random, dest, data, configs, BeanUtil.array2list(columns));
 	}
+	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, String dest, Object data, String ... columns){
+		return update(runtime, random, dest, data, BeanUtil.array2string(columns));
+	}
+	default long update(DataRuntime runtime, String random, Object data, String ... columns){
+		return update(runtime, random, null, data, BeanUtil.array2string(columns));
+	}
+	default long update(String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, dest, data, configs, columns);
+	}
+	default long update(Object data, ConfigStore configs, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, null, data, configs, columns);
+	}
+	default long update(String dest, Object data, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, dest, data, null, columns);
+	}
+	default long update(Object data, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, null, data, null, columns);
+	}
+	default long update(Object data, ConfigStore configs){
+		return update(RuntimeHolder.getRuntime(), null, null, data, configs);
+	}
+	default long update(String dest, Object data, ConfigStore configs, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(Object data, ConfigStore configs, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(String dest, Object data, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, dest, data, BeanUtil.array2string(columns));
+	}
+	default long update(Object data, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, null, data, BeanUtil.array2string(columns));
+	}
 	/**
-	 * 创建 update 最终可执行命令
+	 * update [build]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表
 	 * @param obj Entity或DtaRow
@@ -271,6 +427,99 @@ public interface DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(runtime, null, obj, configs, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(runtime, dest, obj, null, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(runtime, null, obj, null, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return buildUpdateRun(runtime, dest, obj, configs, false, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, List<String> columns){
+		return buildUpdateRun(runtime, null, obj, configs, false, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, List<String> columns){
+		return buildUpdateRun(runtime, dest, obj, null, false, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, List<String> columns){
+		return buildUpdateRun(runtime, null, obj, null, false, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(runtime, dest, obj, configs, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(runtime, null, obj, configs, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(runtime, dest, obj, null, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(runtime, null, obj, null, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, String ... columns){
+		return buildUpdateRun(runtime, dest, obj, configs, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, String ... columns){
+		return buildUpdateRun(runtime, null, obj, configs, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+		return buildUpdateRun(runtime, dest, obj, null, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns){
+		return buildUpdateRun(runtime, null, obj, null, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, configs, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, configs, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, null, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(Object obj, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, null, checkPrimary, columns);
+	}
+	default Run buildUpdateRun(String dest, Object obj, ConfigStore configs, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, configs, false, columns);
+	}
+	default Run buildUpdateRun(Object obj, ConfigStore configs, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, configs, false, columns);
+	}
+	default Run buildUpdateRun(String dest, Object obj, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, null, false, columns);
+	}
+	default Run buildUpdateRun(Object obj, List<String> columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, null, false, columns);
+	}
+	default Run buildUpdateRun(String dest, Object obj, ConfigStore configs, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, configs, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(Object obj, ConfigStore configs, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, configs, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(String dest, Object obj, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, null, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(Object obj, boolean checkPrimary, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, null, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(String dest, Object obj, ConfigStore configs, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, configs, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(Object obj, ConfigStore configs, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, configs, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(String dest, Object obj, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), dest, obj, null, false, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(Object obj, String ... columns){
+		return buildUpdateRun(RuntimeHolder.getRuntime(), null, obj, null, false, BeanUtil.array2list(columns));
+	}
 	/**
 	 * 根据实体对象创建 update 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
