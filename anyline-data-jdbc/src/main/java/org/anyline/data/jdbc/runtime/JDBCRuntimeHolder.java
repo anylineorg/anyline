@@ -7,6 +7,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.proxy.RuntimeHolderProxy;
 import org.anyline.service.init.FixService;
+import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 
 
 @Component("anyline.data.runtime.holder.jdbc")
@@ -62,8 +64,10 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
 
     public static void reg(String key, DataSource ds){
         //ClientHolder.reg(key);
-        String template_key = "anyline.jdbc.template." + key;
+        String datasource_key = "anyline.datasource." + key;
+        factory.registerSingleton(datasource_key, ds);
 
+        String template_key = "anyline.jdbc.template." + key;
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(JdbcTemplate.class);
         builder.addPropertyValue("dataSource", ds);
         BeanDefinition definition = builder.getBeanDefinition();
@@ -121,29 +125,32 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
     public static void destroy(String key){
         try {
             runtimes.remove(key);
-            //注销 service dao template
-            if(factory.containsBeanDefinition("anyline.service." + key)){
-                factory.destroySingleton("anyline.service." + key);
-                factory.removeBeanDefinition("anyline.service." + key);
-            }
-            if(factory.containsBeanDefinition("anyline.dao." + key)){
-                factory.destroySingleton("anyline.dao." + key);
-                factory.removeBeanDefinition("anyline.dao." + key);
-            }
-            if(factory.containsBeanDefinition("anyline.jdbc.template." + key)){
-                factory.destroySingleton("anyline.jdbc.template." + key);
-                factory.removeBeanDefinition("anyline.jdbc.template." + key);
-            }
-            if(factory.containsBeanDefinition("anyline.transaction." + key)){
-                factory.destroySingleton("anyline.transaction." + key);
-                factory.removeBeanDefinition("anyline.transaction." + key);
-            }
-            if(factory.containsBeanDefinition("anyline.datasource." + key)){
-                factory.destroySingleton("anyline.datasource." + key);
-                factory.removeBeanDefinition("anyline.datasource." + key);
-            }
+            destroyBean("anyline.service." + key);
+            destroyBean("anyline.dao." + key);
+            destroyBean("anyline.template." + key);
+            destroyBean("anyline.transaction." + key);
+
+            close("anyline.datasource." + key);
+            destroyBean("anyline.datasource." + key);
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+    public static void close(String ds){
+        Object datasource = null;
+        if(factory.containsSingleton(ds)){
+            datasource = factory.getSingleton(ds);
+            try {
+                closeConnection(datasource);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void closeConnection(Object ds) throws Exception{
+        Method method = ClassUtil.getMethod(ds.getClass(), "close");
+        if(null != method){
+            method.invoke(ds);
         }
     }
 

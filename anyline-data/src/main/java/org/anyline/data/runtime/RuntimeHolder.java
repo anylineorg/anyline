@@ -54,4 +54,13 @@ public class RuntimeHolder {
         }
         return runtime;
     }
+
+    public static void destroyBean(String bean){
+        if(factory.containsSingleton(bean)){
+            factory.destroySingleton(bean);
+        }
+        if(factory.containsBeanDefinition(bean)){
+            factory.removeBeanDefinition(bean);
+        }
+    }
 }
