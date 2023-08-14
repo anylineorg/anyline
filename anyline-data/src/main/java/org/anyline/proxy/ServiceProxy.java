@@ -68,7 +68,7 @@ public class ServiceProxy {
      * @throws Exception 异常 Exception
      */
     public static AnylineService temporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
-        DataRuntime runtime = RuntimeHolderProxy.runtime(key, datasource, database, adapter);
+        DataRuntime runtime = RuntimeHolderProxy.temporary(key, datasource, database, adapter);
         AnylineDao dao = new FixDao();
         //dao.setDatasource(key);
         dao.setRuntime(runtime);
