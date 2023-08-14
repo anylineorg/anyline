@@ -1,8 +1,8 @@
 package org.anyline.data.jdbc.runtime;
 
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.DriverAdapterHolder;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,6 +29,8 @@ public class JDBCRuntime implements DataRuntime {
     protected String version;
     protected DriverAdapter adapter;
     protected JdbcTemplate client;
+    protected RuntimeHolder holder;
+    /*
     protected AnylineDao dao;
 
     public AnylineDao getDao() {
@@ -37,7 +39,7 @@ public class JDBCRuntime implements DataRuntime {
 
     public void setDao(AnylineDao dao) {
         this.dao = dao;
-    }
+    }*/
 
     public void setFeature(String feature) {
         this.feature = feature;
@@ -84,6 +86,16 @@ public class JDBCRuntime implements DataRuntime {
     }
     public void setAdapter(DriverAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    @Override
+    public void setHolder(RuntimeHolder holder) {
+        this.holder = holder;
+    }
+
+    @Override
+    public RuntimeHolder getHolder() {
+        return holder;
     }
 
     public JDBCRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter){
