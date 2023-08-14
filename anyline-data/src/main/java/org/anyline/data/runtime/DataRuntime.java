@@ -20,4 +20,7 @@ public interface DataRuntime {
     DriverAdapter getAdapter() ;
     String datasource();
     void setAdapter(DriverAdapter adapter);
+
+    void setHolder(RuntimeHolder holder);
+    RuntimeHolder getHolder();
 }
