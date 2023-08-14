@@ -16,28 +16,53 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component("anyline.data.runtime.holder.jdbc")
 public class JDBCRuntimeHolder extends RuntimeHolder {
+    private static Map<String, DataSource> temporary = new HashMap<>();
 
     public JDBCRuntimeHolder(){
         RuntimeHolderProxy.reg(DataSource.class,this);
+        RuntimeHolderProxy.reg(JdbcTemplate.class,this);
     }
+
+    /**
+     * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
+     * @param key 数据源标识,切换数据源时根据key,输出日志时标记当前数据源
+     * @param datasource 数据源,如DruidDataSource,MongoClient
+     * @param database 数据库,jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @return DataRuntime
+     * @throws Exception 异常 Exception
+     */
     @Override
-    public DataRuntime runtime(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public DataRuntime temporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
         JDBCRuntime runtime = new JDBCRuntime();
         if(datasource instanceof DataSource){
+            //关闭上一个
+            close(key);
+            temporary.remove(key);
+            //创建新数据源
             runtime.setKey(key);
             runtime.setAdapter(adapter);
             DataSource ds = (DataSource) datasource;
             JdbcTemplate template = new JdbcTemplate(ds);
             runtime.setClient(template);
-            log.warn("[注册数据源][key:{}][type:{}]", key, datasource.getClass().getSimpleName());
+            temporary.put(key, ds);
+            log.warn("[创建临时数据源][key:{}][type:{}]", key, datasource.getClass().getSimpleName());
         }else{
-            throw new Exception("请提供javax.sql.DataSource");
+            throw new Exception("请提供javax.sql.DataSource兼容类型");
         }
+        runtime.setHolder(this);
         return runtime;
+    }
+
+    @Override
+    public DataRuntime regTemporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception {
+        return temporary(key, datasource, database, adapter);
     }
 
     /**
@@ -136,6 +161,10 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
             e.printStackTrace();
         }
     }
+    @Override
+    public void exeDestroy(String key){
+        destroy(key);
+    }
     public static void close(String ds){
         Object datasource = null;
         if(factory.containsSingleton(ds)){
@@ -143,6 +172,14 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
             try {
                 closeConnection(datasource);
             }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        //临时数据源
+        if(temporary.containsKey(ds)) {
+            try {
+                closeConnection(temporary.get(ds));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
