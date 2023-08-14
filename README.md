@@ -25,7 +25,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="http://cdn.anyline.org/img/user/alvg.png" width="150">  
 &nbsp;&nbsp;&nbsp;QQ群(86020680)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 或&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-微信群
+微信群  
+为了更准确的提供技术支持，请备注一下使用场景或用到哪一部分功能  
 
 ## 简介
 AnyLine的核心是一个基于spring-jdbc生态的兼容各种数据库的(No-ORM)DBUtil。
