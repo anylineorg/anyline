@@ -2,9 +2,9 @@ package org.anyline.data.mongo.runtime;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.DriverAdapterHolder;
 
@@ -26,6 +26,8 @@ public class MongoRuntime implements DataRuntime {
     protected DriverAdapter adapter;
     protected MongoClient client;
     protected MongoDatabase database;
+    protected RuntimeHolder holder;
+    /*
     protected AnylineDao dao;
 
     public AnylineDao getDao() {
@@ -35,7 +37,7 @@ public class MongoRuntime implements DataRuntime {
     public void setDao(AnylineDao dao) {
         this.dao = dao;
     }
-
+*/
     public void setFeature(String feature) {
         this.feature = feature;
     }
@@ -117,5 +119,15 @@ public class MongoRuntime implements DataRuntime {
 
     public String getVersion() {
         return version;
+    }
+
+    @Override
+    public RuntimeHolder getHolder() {
+        return holder;
+    }
+
+    @Override
+    public void setHolder(RuntimeHolder holder) {
+        this.holder = holder;
     }
 }
