@@ -317,6 +317,20 @@ public class ConfigParser {
 		}
 		return null;
 	}
+	public static String parseVar(Map<String, Object> values, ParseResult parser){
+		String var = parser.getVar().trim();
+		if(var.startsWith("${") && var.endsWith("}")){
+			var = var.substring(2, var.length()-1);
+			Object varv = values.get(var);
+			if(null == varv){
+				log.warn("[动态key解析失败][key:{}]", var);
+				return null;
+			}
+			var = (String)varv;
+			parser.setVar(var);
+		}
+		return var;
+	}
 	@SuppressWarnings({"rawtypes", "unchecked" })
 	public static List<Object> getValues(Map<String,Object> values, ParseResult parser){
 		List<Object> list = new ArrayList<Object>();

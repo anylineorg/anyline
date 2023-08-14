@@ -91,6 +91,8 @@ public class DefaultConfig implements Config {
 	}
 	public void setValue(Map<String,Object> values){
 		try{
+			//解析动态column ${column}
+			ConfigParser.parseVar(values, parser);
 			this.values = ConfigParser.getValues(values, parser);
 			empty = BasicUtil.isEmpty(true, this.values); 
 			setOrValue(values);
