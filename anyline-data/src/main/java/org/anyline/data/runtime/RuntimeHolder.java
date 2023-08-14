@@ -2,6 +2,7 @@ package org.anyline.data.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.util.ClientHolder;
+import org.anyline.proxy.RuntimeHolderProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -10,7 +11,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 
-public class RuntimeHolder {
+public abstract class RuntimeHolder {
 
     protected static Logger log = LoggerFactory.getLogger(RuntimeHolder.class);
     protected static Map<String, DataRuntime> runtimes = new Hashtable();
@@ -28,10 +29,14 @@ public class RuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-    public DataRuntime runtime(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
-        return null;
+    public DataRuntime temporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
+        return RuntimeHolderProxy.temporary(key, datasource, database, adapter);
     }
-
+    public abstract DataRuntime regTemporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception;
+    public static void destroy(String key){
+        RuntimeHolderProxy.destroy(key);
+    }
+    public abstract void exeDestroy(String key);
     public static void reg(String key, DataRuntime runtime){
         runtimes.put(key, runtime);
     }
