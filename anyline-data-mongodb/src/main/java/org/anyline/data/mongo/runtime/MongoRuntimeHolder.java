@@ -20,8 +20,18 @@ public class MongoRuntimeHolder extends RuntimeHolder {
     public MongoRuntimeHolder(){
         RuntimeHolderProxy.reg(MongoClient.class,this);
     }
+
+    /**
+     * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
+     * @param key 数据源标识,切换数据源时根据key,输出日志时标记当前数据源
+     * @param datasource 数据源,如DruidDataSource,MongoClient
+     * @param database 数据库,jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @return DataRuntime
+     * @throws Exception 异常 Exception
+     */
     @Override
-    public DataRuntime runtime(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public DataRuntime temporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception{
         MongoRuntime runtime = new MongoRuntime();
         if(datasource instanceof MongoClient){
             runtime.setKey(key);
@@ -35,6 +45,11 @@ public class MongoRuntimeHolder extends RuntimeHolder {
             throw new Exception("请提供:com.mongodb.client.MongoClient");
         }
         return runtime;
+    }
+
+    @Override
+    public DataRuntime regTemporary(String key, Object datasource, String database, DriverAdapter adapter) throws Exception {
+        return temporary(key, datasource, database, adapter);
     }
 
     /**
@@ -134,6 +149,11 @@ public class MongoRuntimeHolder extends RuntimeHolder {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void exeDestroy(String key) {
+        destroy(key);
     }
 
     public static MongoDatabase getDatabase(String key){
