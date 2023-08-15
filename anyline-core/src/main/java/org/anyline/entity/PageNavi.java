@@ -200,4 +200,7 @@ public interface PageNavi extends Serializable{
 	public String getMethod();
 	public String getHtml();
 	public String getForm();
+
+	public PageNavi scope(long first, long last);
+	public PageNavi limit(long offset, int rows);
 }
