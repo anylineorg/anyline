@@ -332,8 +332,7 @@ public interface AnylineService<E>{
 	DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
 	default DataSet querys(String src, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(src, configs, obj, conditions);
 	}
@@ -369,8 +368,7 @@ public interface AnylineService<E>{
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(src, configs, conditions);
 	}
@@ -595,8 +593,7 @@ public interface AnylineService<E>{
 	DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
 	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return caches(cache, src, configs, obj, conditions);
 	}
@@ -625,8 +622,7 @@ public interface AnylineService<E>{
 	}
 	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs,  String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return caches(cache, src, configs, conditions);
 	}
@@ -657,8 +653,7 @@ public interface AnylineService<E>{
 	DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	default DataSet querys(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(prepare, configs, obj, conditions);
 	}
@@ -724,8 +719,7 @@ public interface AnylineService<E>{
 	}
 	default DataRow cache(String cache, RunPrepare prepare, long first, long last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return cache(cache, prepare, configs, conditions);
 	}
@@ -864,8 +858,7 @@ public interface AnylineService<E>{
 	 */
 	default DataSet querysProcedure(String procedure, long first, long last , String ... inputs){
 		PageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		return querysProcedure(procedure, navi, inputs);
 	}
 	default DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs){
@@ -886,8 +879,7 @@ public interface AnylineService<E>{
 	}
 	default DataSet querys(Procedure procedure, long first, long last,  String ... inputs){
 		PageNavi navi = new DefaultPageNavi();
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
+		navi.scope(first, last);
 		return querys(procedure, navi, inputs);
 	}
 
