@@ -162,7 +162,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	/**
 	 * 起止行 下标从0开始
-	 * @param offset offset：指定第一个返回记录行的偏移量（即从哪一行开始返回） 初始行的偏移量为0
+	 * @param offset 指定第一个返回记录行的偏移量（即从哪一行开始返回） 初始行的偏移量为0
 	 * @param rows 返回具体行数
 	 * @return ConfigStore
 	 */
