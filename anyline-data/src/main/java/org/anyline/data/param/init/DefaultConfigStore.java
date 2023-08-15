@@ -153,9 +153,7 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null == navi) {
 			navi = new DefaultPageNavi();
 		}
-		navi.setFirstRow(first);
-		navi.setLastRow(last);
-		navi.setCalType(1);
+		navi.scope(first, last);
 		navi.setTotalRow(last-first+1);
 		this.setPageNavi(navi);
 		return this;
