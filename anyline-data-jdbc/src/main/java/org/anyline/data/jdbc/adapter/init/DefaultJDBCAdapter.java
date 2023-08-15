@@ -480,6 +480,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run) {
 		String sql = run.getFinalQuery();
+		if(BasicUtil.isEmpty(sql)){
+			return new DataSet();
+		}
 		List<Object> values = run.getValues();
 		return select(runtime, random, system, table, run, sql, values);
 	}
