@@ -79,17 +79,17 @@ public class DefaultPageNavi implements PageNavi{
 	 * @param page 当前第几页
 	 * @param vol 每页多少行
 	 */
-	public DefaultPageNavi(int page, int vol){
+	public DefaultPageNavi(long page, int vol){
 		this.curPage = page;
 		this.pageRows = vol;
 	}
-	public DefaultPageNavi(int totalRow, int curPage, int pageRows, String baseLink) {
+	public DefaultPageNavi(long totalRow, long curPage, int pageRows, String baseLink) {
 		this.totalRow = totalRow; 
 		this.curPage = curPage; 
 		setPageRows(pageRows); 
 		this.baseLink = baseLink; 
 	} 
-	public DefaultPageNavi(int curPage, int pageRows, String baseLink){
+	public DefaultPageNavi(long curPage, int pageRows, String baseLink){
 		this.curPage = curPage; 
 		setPageRows(pageRows); 
 		this.baseLink = baseLink; 
@@ -97,7 +97,7 @@ public class DefaultPageNavi implements PageNavi{
 	public DefaultPageNavi(String baseLink){
 		this.curPage = 1; 
 		this.baseLink = baseLink; 
-	} 
+	}
 	public static PageNavi parse(DataRow row){
 		if(null == row){
 			return null; 
@@ -105,7 +105,21 @@ public class DefaultPageNavi implements PageNavi{
 		PageNavi navi = row.entity(DefaultPageNavi.class);
 		return navi; 
 	}
- 
+
+	public PageNavi scope(long first, long last){
+		setFirstRow(first);
+		setLastRow(last);
+		setCalType(1);
+		setTotalRow(last-first+1);
+		return this;
+	}
+	public PageNavi limit(long offset, int rows){
+		setFirstRow(offset);
+		setLastRow(offset+rows);
+		setCalType(1);
+		setTotalRow(rows);
+		return this;
+	}
 	/** 
 	 * 分页计算方式 
 	 * @param type	0-按页数 1-按开始结束记录数 
@@ -390,7 +404,7 @@ public class DefaultPageNavi implements PageNavi{
 	} 
 	@Override 
 	public PageNavi setLastRow(long lastRow) {
-		this.lastRow = lastRow; 
+		this.lastRow = lastRow;
 		return this; 
 	} 
 	 
