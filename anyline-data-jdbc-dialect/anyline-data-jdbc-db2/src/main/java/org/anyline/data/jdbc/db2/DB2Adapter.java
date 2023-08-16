@@ -338,7 +338,31 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 */
 	@Override
 	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
-		return super.buildQueryColumnRun(runtime, table, metadata);
+		List<Run> runs = new ArrayList<>();
+		if(BasicUtil.isEmpty(table.getName())){
+			return runs;
+		}
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(runtime, builder, table);
+			builder.append(" WHERE 1=0");
+		}else{
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
+			builder.append("SELECT * FROM SYSCAT.COLUMNS WHERE 1=1 ");
+			/*if(BasicUtil.isNotEmpty(catalog)){
+				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
+			}*/
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND TABSCHEMA = '").append(schema).append("'");
+			}
+			builder.append(" AND TABNAME = '").append(objectName(runtime, table.getName())).append("'");
+			builder.append(" ORDER BY COLNO");
+		}
+		return runs;
 	}
 
 	/**
@@ -559,7 +583,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, Table table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns);
 	 * List<Run> buildRenameRun(DataRuntime runtime, Table table);
@@ -589,8 +613,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildAddCommentRun(runtime, table);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
+		return super.buildAppendCommentRun(runtime, table);
 	}
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception{
@@ -620,7 +644,16 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 
 	@Override
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildChangeCommentRun(runtime, table);
+		List<Run> runs = new ArrayList<>();
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
+			builder.append("COMMENT ON TABLE ");
+			name(runtime, builder, table).append(" IS '").append(comment).append("'");
+		}
+		return runs;
 	}
 	/**
 	 * 删除表
@@ -694,7 +727,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, View view);
 	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
 	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
@@ -712,8 +745,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	}
 
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
-		return super.buildAddCommentRun(runtime, view);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildAppendCommentRun(runtime, view);
 	}
 
 
@@ -773,7 +806,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable master);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable master);
 	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable master);
 	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable master);
@@ -856,7 +889,7 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
@@ -976,19 +1009,30 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception {
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception {
 		return buildChangeCommentRun(runtime, column);
 	}
 	/**
 	 * 修改备注
-	 *
+	 * comment on column  test1.id is '主键'
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param column 列
 	 * @return String
 	 */
 	@Override
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception{
-		return super.buildChangeCommentRun(runtime, column);
+		List<Run> runs = new ArrayList<>();
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun();
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
+			builder.append("COMMENT ON COLUMN ");
+			name(runtime, builder, column.getTable(true));
+			builder.append(".");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" IS '").append(comment).append("'");
+		}
+		return runs;
 	}
 
 
