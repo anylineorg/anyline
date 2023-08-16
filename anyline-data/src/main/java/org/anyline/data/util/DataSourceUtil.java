@@ -20,13 +20,32 @@ public class DataSourceUtil {
             int fr = src.indexOf("<");
             int to = src.indexOf(">");
             if(fr != -1){
-                String ds = src.substring(fr+1,to);
+                //String ds = src.substring(fr+1,to);
                 src = src.substring(to+1);
-                ClientHolder.setDataSource(ds, true);
+                //不要切换,在service中切换到另一个service
+                //ClientHolder.setDataSource(ds, true);
             }
         }
         return src;
     }
+
+    public static String[] parseRuntime(String src){
+        String result[] = new String[2];
+        result[1] = src;
+        String runtime = null;
+        if(null != src && src.startsWith("<")){
+            int fr = src.indexOf("<");
+            int to = src.indexOf(">");
+            if(fr != -1){
+                runtime = src.substring(fr+1,to);
+                src = src.substring(to+1);
+                result[0] = runtime;
+                result[1] = src;
+            }
+        }
+        return result;
+    }
+
     public static String parseDataSource(String dest, Object obj){
         if(BasicUtil.isNotEmpty(dest) || null == obj){
             return parseDataSource(dest);
