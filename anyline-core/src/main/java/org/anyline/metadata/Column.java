@@ -613,6 +613,7 @@ public class Column implements Serializable {
         if(null != autoIncrement) {
             if(autoIncrement){
                 this.isAutoIncrement = 1;
+                this.isPrimaryKey = 1;
                 setNullable(false);
             }else{
                 this.isAutoIncrement = 0;
