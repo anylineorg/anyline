@@ -49,7 +49,8 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected boolean valid 		   = true				;
 	protected String alias									;
 	protected boolean multiple		   = false				;
-	protected boolean strict		   = false				; //严格格式 不能追加条件
+	protected boolean strict		   = false				; // 严格格式 不能追加条件
+	protected String runtime		   = null				; //
 	protected EMPTY_VALUE_SWITCH swt   = EMPTY_VALUE_SWITCH.IGNORE;
 
 
@@ -437,6 +438,17 @@ public abstract class DefaultPrepare implements RunPrepare{
 	@Override
 	public RunPrepare setId(String id) {
 		this.id = id;
+		return this;
+	}
+
+	@Override
+	public String getRuntime() {
+		return runtime;
+	}
+
+	@Override
+	public RunPrepare setRuntime(String runtime) {
+		this.runtime = runtime;
 		return this;
 	}
 
