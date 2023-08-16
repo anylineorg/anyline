@@ -70,7 +70,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * Page
 	 * @param page 当前第几页
 	 */
-	public DefaultPageNavi(int page){
+	public DefaultPageNavi(long page){
 		this.curPage = page;
 	}
 
@@ -84,16 +84,16 @@ public class DefaultPageNavi implements PageNavi{
 		this.pageRows = vol;
 	}
 	public DefaultPageNavi(long totalRow, long curPage, int pageRows, String baseLink) {
-		this.totalRow = totalRow; 
-		this.curPage = curPage; 
-		setPageRows(pageRows); 
-		this.baseLink = baseLink; 
-	} 
+		this.totalRow = totalRow;
+		this.curPage = curPage;
+		setPageRows(pageRows);
+		this.baseLink = baseLink;
+	}
 	public DefaultPageNavi(long curPage, int pageRows, String baseLink){
-		this.curPage = curPage; 
-		setPageRows(pageRows); 
-		this.baseLink = baseLink; 
-	} 
+		this.curPage = curPage;
+		setPageRows(pageRows);
+		this.baseLink = baseLink;
+	}
 	public DefaultPageNavi(String baseLink){
 		this.curPage = 1; 
 		this.baseLink = baseLink; 
