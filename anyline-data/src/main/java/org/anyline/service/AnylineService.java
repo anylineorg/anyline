@@ -47,6 +47,7 @@ public interface AnylineService<E>{
 	AnylineService recoverDataSource();
 	String getDataSource();
 	AnylineService setDao(AnylineDao dao);
+	AnylineDao getDao();
 
 
 	/* *****************************************************************************************************************
