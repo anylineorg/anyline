@@ -1439,7 +1439,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				if(BasicUtil.isNotEmpty(table.getComment())) {
 					runs.addAll(adapter.buildChangeCommentRun(runtime, update));
 				}else{
-					runs.addAll(adapter.buildAddCommentRun(runtime, update));
+					runs.addAll(adapter.buildAppendCommentRun(runtime, update));
 				}
 				swt = InterceptorProxy.before(runtime, random, DDL.TABLE_COMMENT, table, runs);
 				if(swt != SWITCH.BREAK) {

@@ -1639,9 +1639,9 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception;
-	default List<Run> buildAddCommentRun(Table table) throws Exception{
-		return buildAddCommentRun(RuntimeHolder.getRuntime(), table);
+	List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception;
+	default List<Run> buildAppendCommentRun(Table table) throws Exception{
+		return buildAppendCommentRun(RuntimeHolder.getRuntime(), table);
 	}
 
 	/**
@@ -1773,9 +1773,9 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception;
-	default List<Run> buildAddCommentRun(View view) throws Exception{
-		return buildAddCommentRun(RuntimeHolder.getRuntime(), view);
+	List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception;
+	default List<Run> buildAppendCommentRun(View view) throws Exception{
+		return buildAppendCommentRun(RuntimeHolder.getRuntime(), view);
 	}
 
 	/**
@@ -1868,9 +1868,9 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception;
-	default List<Run> buildAddCommentRun(MasterTable table) throws Exception{
-		return buildAddCommentRun(RuntimeHolder.getRuntime(), table);
+	List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table) throws Exception;
+	default List<Run> buildAppendCommentRun(MasterTable table) throws Exception{
+		return buildAppendCommentRun(RuntimeHolder.getRuntime(), table);
 	}
 
 	/**
@@ -1945,9 +1945,9 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
-	default List<Run> buildAddCommentRun(PartitionTable table) throws Exception{
-		return buildAddCommentRun(RuntimeHolder.getRuntime(), table);
+	List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	default List<Run> buildAppendCommentRun(PartitionTable table) throws Exception{
+		return buildAppendCommentRun(RuntimeHolder.getRuntime(), table);
 	}
 	/**
 	 * 修改分区表
@@ -2143,9 +2143,9 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception;
-	default List<Run> buildAddCommentRun(Column column) throws Exception{
-		return buildAddCommentRun(RuntimeHolder.getRuntime(), column);
+	List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception;
+	default List<Run> buildAppendCommentRun(Column column) throws Exception{
+		return buildAppendCommentRun(RuntimeHolder.getRuntime(), column);
 	}
 
 

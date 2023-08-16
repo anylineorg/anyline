@@ -963,7 +963,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, Table table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns);
 	 * List<Run> buildRenameRun(DataRuntime runtime, Table table);
@@ -986,8 +986,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildAddCommentRun(runtime, table);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
+		return super.buildAppendCommentRun(runtime, table);
 	}
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception{
@@ -1087,7 +1087,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, View view);
 	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
 	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
@@ -1105,8 +1105,8 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	}
 
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
-		return super.buildAddCommentRun(runtime, view);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildAppendCommentRun(runtime, view);
 	}
 
 
@@ -1166,7 +1166,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table)
@@ -1312,7 +1312,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
@@ -1432,7 +1432,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception {
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception {
 		return buildChangeCommentRun(runtime, column);
 	}
 	/**

@@ -3150,22 +3150,22 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			columns = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("COLUMN_NAME");
+			String name = row.getString("COLUMN_NAME", "COLNAME");
 			T column = columns.get(name.toUpperCase());
 			if(null == column){
 				column = (T)new Column();
 			}
 			column.setCatalog(BasicUtil.evl(row.getString("TABLE_CATALOG"), table.getCatalog(), column.getCatalog()));
-			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA"), table.getSchema(), column.getSchema()));
+			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA", "TABSCHEMA"), table.getSchema(), column.getSchema()));
 			column.setTable(table);
-			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME"), table.getName(), column.getTableName(true)));
+			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME", "TABNAME"), table.getName(), column.getTableName(true)));
 			column.setName(name);
 			if(null == column.getPosition()) {
-				column.setPosition(row.getInt("ORDINAL_POSITION", null));
+				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO"));
 			}
-			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS"), column.getComment()));
-			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE"), column.getTypeName()));
-			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT"), column.getDefaultValue())+"";
+			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT", "COMMENTS", "REMARKS"), column.getComment()));
+			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE", "TYPENAME"), column.getTypeName()));
+			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT"), column.getDefaultValue())+"";
 			if(BasicUtil.isNotEmpty(def)) {
 				while(def.startsWith("(") && def.endsWith(")")){
 					def = def.substring(1, def.length()-1);
@@ -3177,6 +3177,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			if(-1 == column.isAutoIncrement()){
 				column.setAutoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
+			}
+			if(-1 == column.isAutoIncrement()){
+				column.setAutoIncrement(row.getBoolean("IDENTITY", null));
 			}
 			if(-1 == column.isAutoIncrement()){
 				if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
@@ -3193,12 +3196,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 			//非空
 			if(-1 == column.isNullable()) {
-				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE"));
+				column.setNullable(row.getBoolean("IS_NULLABLE", "NULLABLE", "NULLS"));
 			}
 			//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
 			Integer len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
 			if(null == len){
-				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH");
+				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
 			}
 			column.setPrecision(len);
 			if(null == column.getScale()) {
@@ -3253,6 +3256,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 
+	/**
+	 * 查询表结构
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 查所有库
+	 * @param table 表
+	 * @param primary 是否检测主键
+	 * @return Column
+	 * @param <T>  Column
+	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table , boolean primary){
 

@@ -697,7 +697,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, Table table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns);
 	 * List<Run> buildRenameRun(DataRuntime runtime, Table table);
@@ -765,7 +765,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -878,7 +878,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, View view);
 	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
 	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
@@ -896,8 +896,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
-		return super.buildAddCommentRun(runtime, view);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildAppendCommentRun(runtime, view);
 	}
 
 
@@ -962,7 +962,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table);
 	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table);
 	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table);
@@ -1055,7 +1055,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
@@ -1097,7 +1097,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		builder.append(" ADD ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(runtime, builder, column);
-		runs.addAll(buildAddCommentRun(runtime, column));
+		runs.addAll(buildAppendCommentRun(runtime, column));
 		return runs;
 	}
 
@@ -1218,7 +1218,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception {
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);

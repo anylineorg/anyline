@@ -1191,8 +1191,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	@Override
 	public List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception{
 		//有支持直接查询DDL的在子类中实现
-		List<Run> runs = buildCreateRun(runtime, table);
-		return runs;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1961,7 +1960,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, Table table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns);
      * List<Run> buildRenameRun(DataRuntime runtime, Table table);
@@ -2008,13 +2007,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		comment(runtime, builder, table);
-		List<Run> tableComment = buildAddCommentRun(runtime, table);
+		List<Run> tableComment = buildAppendCommentRun(runtime, table);
 		if(null != tableComment) {
 			runs.addAll(tableComment);
 		}
 		if(null != columns){
 			for(Column column:columns){
-				List<Run> columnComment = buildAddCommentRun(runtime, column);
+				List<Run> columnComment = buildAppendCommentRun(runtime, column);
 				if(null != columnComment){
 					runs.addAll(columnComment);
 				}
@@ -2035,7 +2034,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	 public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception{
+	 public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception{
 		return new ArrayList<>();
 	 }
 
@@ -2191,7 +2190,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, View view);
 	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
 	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
@@ -2213,12 +2212,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		name(runtime, builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
 
-		runs.addAll(buildAddCommentRun(runtime, view));
+		runs.addAll(buildAppendCommentRun(runtime, view));
 		return runs;
 	}
 
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception{
 		return new ArrayList<>();
 	}
 
@@ -2304,7 +2303,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table);
 	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table);
 	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table);
@@ -2323,7 +2322,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception{
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table) throws Exception{
 		return new ArrayList<>();
 	}
 	@Override
@@ -2360,7 +2359,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table) throws Exception
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table) throws Exception
 	 * List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table);
 	 * List<Run> buildDropRun(DataRuntime runtime, PartitionTable table);
 	 * List<Run> buildRenameRun(DataRuntime runtime, PartitionTable table);
@@ -2380,7 +2379,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, PartitionTable table) throws Exception{
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable table) throws Exception{
 		return new ArrayList<>();
 	}
 	@Override
@@ -2427,7 +2426,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
@@ -2473,7 +2472,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(runtime, builder, column);
 		// }
-		runs.addAll(buildAddCommentRun(runtime, column));
+		runs.addAll(buildAppendCommentRun(runtime, column));
 		return runs;
 	}
 	@Override
@@ -2696,7 +2695,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception{
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception{
 		return new ArrayList<>();
 	}
 

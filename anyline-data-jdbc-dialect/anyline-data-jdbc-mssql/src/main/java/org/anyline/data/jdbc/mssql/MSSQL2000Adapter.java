@@ -233,7 +233,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun();
         runs.add(run);
@@ -278,7 +278,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @return sql
      * @throws Exception 异常
      */
-    public List<Run> buildAddCommentRun(DataRuntime runtime, Column column) throws Exception {
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun();
         runs.add(run);

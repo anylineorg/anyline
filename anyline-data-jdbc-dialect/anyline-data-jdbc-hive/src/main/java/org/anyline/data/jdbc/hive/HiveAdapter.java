@@ -1207,7 +1207,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, Table table)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Table table);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table);
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns)
 	 * List<Run> buildRenameRun(DataRuntime runtime, Table table)
@@ -1231,7 +1231,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception {
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		String comment = table.getComment();
 		if(BasicUtil.isEmpty(comment)){
@@ -1401,7 +1401,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, View view);
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, View view);
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, View view);
 	 * List<Run> buildAlterRun(DataRuntime runtime, View view);
 	 * List<Run> buildRenameRun(DataRuntime runtime, View view);
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, View view);
@@ -1422,13 +1422,13 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		builder.append("CREATE OR REPLACE VIEW ");
 		name(runtime, builder, view);
 		builder.append(" AS \n").append(view.getDefinition());
- 		runs.addAll(buildAddCommentRun(runtime, view));
+ 		runs.addAll(buildAppendCommentRun(runtime, view));
 		return runs;
 	}
 
 	@Override
-	public List<Run> buildAddCommentRun(DataRuntime runtime, View view) throws Exception{
-		return super.buildAddCommentRun(runtime, view);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildAppendCommentRun(runtime, view);
 	}
 
 
@@ -1488,7 +1488,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildRenameRun(DataRuntime runtime, MasterTable table)
@@ -1571,7 +1571,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Column column)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
-	 * List<Run> buildAddCommentRun(DataRuntime runtime, Column column)
+	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * boolean isIgnorePrecision(DataRuntime runtime, Column column);
@@ -1636,7 +1636,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			position(runtime, builder, column);
 		}
 
-		runs.addAll(buildAddCommentRun(runtime, column));
+		runs.addAll(buildAppendCommentRun(runtime, column));
 		return runs;
 	}
 
