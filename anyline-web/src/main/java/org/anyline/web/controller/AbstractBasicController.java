@@ -702,7 +702,7 @@ public abstract class AbstractBasicController {
 		if(null == config){
 			config = new PageNaviConfig();
 		}
-		int pageNo = 1; // 当前页数 默认1
+		long pageNo = 1; // 当前页数 默认1
 		int pageVol = config.VAR_PAGE_DEFAULT_VOL; // 每页多少条 默认10
 		// 提取request中请求参数
 		pageVol = BasicUtil.parseInt(request.getAttribute(config.KEY_PAGE_ROWS),pageVol);
@@ -717,7 +717,7 @@ public abstract class AbstractBasicController {
 			}
 		}
 
-		pageNo = BasicUtil.parseInt(getParam(request,config.KEY_PAGE_NO),pageNo);
+		pageNo = BasicUtil.parseLong(getParam(request,config.KEY_PAGE_NO),pageNo);
 		String uri = null;
 		if (null == uri) {
 			uri = request.getRequestURI();
