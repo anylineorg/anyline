@@ -38,6 +38,7 @@ import org.anyline.exception.AnylineException;
 import org.anyline.metadata.*;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -134,6 +135,10 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public DataSet querys(String src, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
+        }
         src = BasicUtil.compress(src);
         conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
@@ -152,16 +157,21 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public List<Map<String, Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).maps(ps[1], configs, obj, conditions);
+        }
         List<Map<String, Object>> maps = null;
         src = BasicUtil.compress(src);
         conditions = BasicUtil.compress(conditions);
-        if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][src:{}]", src);
-        }
         try {
             RunPrepare prepare = createRunPrepare(src);
             configs = append(configs, obj);
-            maps = dao.maps(prepare, configs, conditions);
+            if(null != prepare.getRuntime()){
+                maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
+            }else {
+                maps = dao.maps(prepare, configs, conditions);
+            }
         } catch (Exception e) {
             maps = new ArrayList<Map<String, Object>>();
             if (log.isWarnEnabled()) {
@@ -177,6 +187,10 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
+        }
         DataSet set = null;
         src = BasicUtil.compress(src);
         conditions = BasicUtil.compress(conditions);
@@ -311,6 +325,10 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override 
     public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).selects(ps[1], clazz, configs, entity, conditions);
+        }
         return queryFromDao(src, clazz, append(configs, entity), conditions);
     }
 
@@ -554,11 +572,19 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override 
     public boolean exists(String src, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).exists(ps[1], configs, obj, conditions);
+        }
         boolean result = false;
         src = BasicUtil.compress(src);
         conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(src);
-        result = dao.exists(prepare, append(configs, obj), conditions);
+        if(null != prepare.getRuntime()) {
+            result = ServiceProxy.service(prepare.getRuntime()).getDao().exists(prepare, append(configs, obj), conditions);
+        }else {
+            result = dao.exists(prepare, append(configs, obj), conditions);
+        }
         return result;
     }
 
@@ -598,13 +624,21 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override 
     public long count(String src, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).count(ps[1], configs, obj, conditions);
+        }
         long count = -1;
         try {
             // conditions = parseConditions(conditions);
             src = BasicUtil.compress(src);
             conditions = BasicUtil.compress(conditions);
             RunPrepare prepare = createRunPrepare(src);
-            count = dao.count(prepare, append(configs, obj), conditions);
+            if(null != prepare.getRuntime()){
+                count = ServiceProxy.service(prepare.getRuntime()).getDao().count(prepare, append(configs, obj), conditions);
+            }else {
+                count = dao.count(prepare, append(configs, obj), conditions);
+            }
         } catch (Exception e) {
             log.error("COUNT ERROR:" + e);
             if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
@@ -630,7 +664,10 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override
     public long insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        dest = DataSourceUtil.parseDataSource(dest, data);
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).insert(ps[1], checkPrimary, fixs, columns);
+        }
         return dao.insert(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
     }
 
@@ -654,6 +691,10 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override 
     public long update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).update(async, ps[1], data, configs, fixs, columns);
+        }
         dest = DataSourceUtil.parseDataSource(dest, dest);
         fixs = BeanUtil.merge(fixs, columns);
         final List<String> cols = BeanUtil.merge(fixs, columns);
@@ -700,6 +741,11 @@ public class DefaultService<E> implements AnylineService<E> {
     public long save(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
         if (null == data) {
             return 0;
+        }
+
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).save(ps[1], data, checkPrimary, fixs, columns);
         }
         columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
         if (data instanceof Collection) {
@@ -820,6 +866,10 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public long execute(String src, ConfigStore store, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(src);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).execute(ps[1], store, conditions);
+        }
         long result = -1;
         src = BasicUtil.compress(src);
         src = DataSourceUtil.parseDataSource(src);
@@ -849,7 +899,10 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public long delete(String dest, DataRow row, String... columns) {
-        dest = DataSourceUtil.parseDataSource(dest, row);
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).delete(ps[1], row, columns);
+        }
         return dao.delete(dest, row, columns);
     }
 
@@ -885,7 +938,11 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public long delete(String table, String... kvs) {
-        table = DataSourceUtil.parseDataSource(table);
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).delete(ps[1], kvs);
+        }
+        //table = DataSourceUtil.parseDataSource(table);
         DataRow row = DataRow.parseArray(kvs);
         row.setPrimaryKey(row.keys());
         return dao.delete(table, row);
@@ -894,27 +951,43 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public <T> long deletes(String table, String key, Collection<T> values) {
-        table = DataSourceUtil.parseDataSource(table);
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).deletes(ps[1], key, values);
+        }
+       // table = DataSourceUtil.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
     
     @Override 
     public <T> long deletes(String table, String key, T... values) {
-        table = DataSourceUtil.parseDataSource(table);
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).deletes(ps[1], key, values);
+        }
+        //table = DataSourceUtil.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
     
     @Override 
     public long delete(String table, ConfigStore configs, String... conditions) {
-        table = DataSourceUtil.parseDataSource(table);
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).delete(ps[1], configs, conditions);
+        }
+        //table = DataSourceUtil.parseDataSource(table);
         return dao.delete(table, configs, conditions);
     }
 
     
     @Override 
     public int truncate(String table) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).truncate(ps[1]);
+        }
         return dao.truncate(table);
     }
 
@@ -1054,7 +1127,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return src;
     }
 
-    protected synchronized RunPrepare createRunPrepare(String src) {
+    protected RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
         src = src.trim();
         List<String> pks = new ArrayList<>();
