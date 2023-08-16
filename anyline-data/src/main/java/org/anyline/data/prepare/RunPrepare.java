@@ -64,7 +64,7 @@ public interface RunPrepare extends Cloneable {
 	String getId();
 	RunPrepare setId(String id);
 	/** 
-	 * 设置数据源 
+	 * 设置数据源(这里的数据源是指表)
 	 * <p> 
 	 * 查询全部列 : setDataSource("V_ADMIN")<br> 
 	 * 查询指定列 : setDataSource(ADMIN(CD,ACCOUNT,NAME,REG_TIME))<br> 
@@ -84,6 +84,15 @@ public interface RunPrepare extends Cloneable {
 	String getDataSource();
 	String getSchema();
 	String getTable();
+
+	/**
+	 * 用来标记运行环境key(其中关联了数据源与适配器)<br/>
+	 * 经常在service方法参数前加数据源前缀缀时会用到
+	 * @param runtime runtime.key
+	 * @return RunPrepare
+	 */
+	RunPrepare setRuntime(String runtime);
+	String getRuntime();
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
