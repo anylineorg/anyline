@@ -136,7 +136,7 @@ public class JDBCRuntime implements DataRuntime {
                     ds = jdbc.getDataSource();
                     con = DataSourceUtils.getConnection(ds);
                     DatabaseMetaData meta = con.getMetaData();
-                    feature = meta.getDatabaseProductName().toLowerCase().replace(" ", "");
+                    feature = meta.getDatabaseProductName().toLowerCase().replace(" ", "") + "_" + meta.getURL();
                     if(null == version) {
                         version = meta.getDatabaseProductVersion();
                     }
