@@ -3886,6 +3886,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null == random){
 			random = random(runtime);
 		}
+
+		if(null == catalog || null == schema){
+			Table tmp = new Table();
+			checkSchema(runtime, tmp);
+			if(null == catalog){
+				catalog = tmp.getCatalog();
+			}
+			if(null == schema){
+				schema = tmp.getSchema();
+			}
+		}
 		List<Run> runs = buildQueryProcedureRun(runtime, catalog, schema, name);
 		if(null != runs){
 			int idx = 0;
@@ -3909,6 +3920,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
  		if(null == random){
 			 random = random(runtime);
+		}
+
+		if(null == catalog || null == schema){
+			Table tmp = new Table();
+			checkSchema(runtime, tmp);
+			if(null == catalog){
+				catalog = tmp.getCatalog();
+			}
+			if(null == schema){
+				schema = tmp.getSchema();
+			}
 		}
 		List<Run> runs = buildQueryFunctionRun(runtime, catalog, schema, name);
 		if(null != runs){
