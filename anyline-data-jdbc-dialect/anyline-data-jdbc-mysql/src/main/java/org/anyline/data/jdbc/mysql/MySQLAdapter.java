@@ -1203,6 +1203,71 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 	/* *****************************************************************************************************************
+	 * 													procedure
+	 ******************************************************************************************************************/
+
+	public List<Run> buildQueryProcedureRun(DataRuntime runtime, String catalog, String schema, String name) {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND ROUTINE_SCHEMA = '").append(schema).append("'");
+		}
+		if(BasicUtil.isNotEmpty(name)){
+			builder.append(" AND ROUTINE_NAME = '").append(name).append("'");
+		}
+		return runs;
+	}
+
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception{
+		if(null == procedures){
+			procedures = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			T procedure = (T)new Procedure();
+			procedure.setSchema(row.getString("ROUTINE_SCHEMA"));
+			procedure.setName(row.getString("ROUTINE_NAME"));
+			procedure.setDefinition(row.getString("ROUTINE_DEFINITION"));
+			procedures.put(procedure.getName().toUpperCase(), procedure);
+		}
+		return procedures;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													function
+	 ******************************************************************************************************************/
+
+	public List<Run> buildQueryFunctionRun(DataRuntime runtime, String catalog, String schema, String name) {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND ROUTINE_SCHEMA = '").append(schema).append("'");
+		}
+		if(BasicUtil.isNotEmpty(name)){
+			builder.append(" AND ROUTINE_NAME = '").append(name).append("'");
+		}
+		return runs;
+	}
+
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception{
+		if(null == functions){
+			functions = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			T function = (T)new Function();
+			function.setSchema(row.getString("ROUTINE_SCHEMA"));
+			function.setName(row.getString("ROUTINE_NAME"));
+			function.setDefinition(row.getString("ROUTINE_DEFINITION"));
+			functions.put(function.getName().toUpperCase(), function);
+		}
+		return functions;
+	}
+	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
