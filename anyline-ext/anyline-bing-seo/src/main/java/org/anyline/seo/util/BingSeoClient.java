@@ -97,13 +97,24 @@ public class BingSeoClient {
         return push(urls);
     }
 
+    /*
+    {
+    "ErrorCode": 2,
+    "Message": "ERROR!!! You have exceeded your daily url submission quota : 100"
+     }
+    * */
     private PushResponse response(HttpResponse response){
         PushResponse result = new PushResponse();
-        result.setStatus(response.getStatus());
+        result.setResult(true);
         if(response.getStatus() == 200){
             result.setResult(true);
             String txt = response.getText();
             result.setMessage(txt);
+            if(txt.contains("ErrorCode")){
+                result.setResult(false);
+            }else{
+                result.setResult(true);
+            }
         }
         return result;
     }
