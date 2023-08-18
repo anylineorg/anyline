@@ -1582,6 +1582,27 @@ public interface DriverAdapter {
 	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
 
 
+	List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
+	/**
+	 * 查询存储DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param procedure 存储过程
+	 * @return List
+	 */
+	List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	default List<Run> buildQueryDDLRun(Procedure procedure) throws Exception{
+		return buildQueryDDLRun(RuntimeHolder.getRuntime(), procedure);
+	}
+	/**
+	 * 查询 Procedure DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param procedure Procedure
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -1594,6 +1615,27 @@ public interface DriverAdapter {
 
 	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 
+	List<String> ddl(DataRuntime runtime, String random, Function function);
+	/**
+	 * 查询函数DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param function 函数
+	 * @return List
+	 */
+	List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception;
+	default List<Run> buildQueryDDLRun(Function function) throws Exception{
+		return buildQueryDDLRun(RuntimeHolder.getRuntime(), function);
+	}
+	/**
+	 * 查询 Function DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param function Function
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
@@ -2702,6 +2744,7 @@ public interface DriverAdapter {
 		return buildRenameRun(RuntimeHolder.getRuntime(), procedure);
 	}
 
+	StringBuilder name(DataRuntime runtime, StringBuilder builder, Procedure procedure);
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -2750,6 +2793,7 @@ public interface DriverAdapter {
 	default List<Run> buildRenameRun(Function function) throws Exception{
 		return buildRenameRun(RuntimeHolder.getRuntime(), function);
 	}
+	StringBuilder name(DataRuntime runtime, StringBuilder builder, Function function);
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
