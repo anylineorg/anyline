@@ -1235,6 +1235,41 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return procedures;
 	}
 
+	/**
+	 * 查询 procedure DDL
+	 * @param procedure procedure
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("show create procedure ");
+		name(runtime, builder, procedure);
+		return runs;
+	}
+
+	/**
+	 * 查询 procedure DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param procedure Procedure
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			ddls.add(row.getString("Create Procedure"));
+		}
+
+		return ddls;
+	}
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -1266,6 +1301,42 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 			functions.put(function.getName().toUpperCase(), function);
 		}
 		return functions;
+	}
+
+	/**
+	 * 查询 function DDL
+	 * @param function function
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("show create function ");
+		name(runtime, builder, function);
+		return runs;
+	}
+
+	/**
+	 * 查询 Function DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param function Function
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			ddls.add(row.getString("Create Function"));
+		}
+
+		return ddls;
 	}
 	/* *****************************************************************************************************************
 	 *
@@ -2440,6 +2511,10 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	}
 
 
+	@Override
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Procedure procedure){
+		return super.name(runtime, builder, procedure);
+	}
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -2488,6 +2563,10 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		return new ArrayList<>();
 	}
 
+	@Override
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Function function){
+		return super.name(runtime, builder, function);
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
