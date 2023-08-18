@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -740,4 +741,49 @@ public class HttpUtil {
 		return default_ssl_client;
 	}
 
+	/**
+	 * url参数编码
+	 * @param src 原文
+	 * @param cn 是否编译中文
+	 * @return String
+	 */
+	public static String encode(String src, boolean cn){
+		if(cn){
+			try {
+				return URLEncoder.encode(src, "UTF-8");
+			}catch (Exception e){
+				return src;
+			}
+		}else{
+			String result = src;
+			result = result
+					.replace("~", "%7E")
+					.replace("!", "%21")
+					.replace("@", "%40")
+					.replace("#", "%23")
+					.replace("$", "%24")
+					.replace("%", "%25")
+					.replace("^", "%5E")
+					.replace("&", "%26")
+					.replace("(", "%28")
+					.replace(")", "%29")
+					.replace("=", "%3D")
+					.replace("`", "%60")
+					.replace("+", "%2B")
+					.replace("{", "%7B")
+					.replace("}", "%7D")
+					.replace("[", "%5B")
+					.replace("]", "%5D")
+					.replace("<", "%3C")
+					.replace(">", "%3E")
+					.replace(",", "%2C")
+					.replace("/", "%2F")
+					.replace("?", "%3F")
+					.replace(";", "%3B")
+					.replace("'", "%27")
+					.replace(":", "%3A")
+					.replace("\"", "%22");
+			return result;
+		}
+	}
 }
