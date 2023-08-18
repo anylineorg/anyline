@@ -1143,7 +1143,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				ClientHolder.recoverDataSource();
 			}
 		}
-
 	}
 	/* *****************************************************************************************************************
 	 * 													column
@@ -1310,6 +1309,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 
+	/**
+	 * 查询 Procedure 创建SQL
+	 * @param procedure Procedure
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, boolean recover, Procedure procedure){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		try {
+			return runtime.getAdapter().ddl(runtime, random, procedure);
+		}finally {
+			if(recover && !isFix() && ClientHolder.isAutoRecover()){
+				ClientHolder.recoverDataSource();
+			}
+		}
+	}
 
 	/* *****************************************************************************************************************
 	 * 													function
@@ -1321,6 +1338,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		try{
 			return runtime.getAdapter().functions(runtime, random, greedy, catalog, schema, name);
+		}finally {
+			if(recover && !isFix() && ClientHolder.isAutoRecover()){
+				ClientHolder.recoverDataSource();
+			}
+		}
+	}
+
+	/**
+	 * 查询 Function 创建SQL
+	 * @param function Function
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, boolean recover, Function function){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		try {
+			return runtime.getAdapter().ddl(runtime, random, function);
 		}finally {
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
