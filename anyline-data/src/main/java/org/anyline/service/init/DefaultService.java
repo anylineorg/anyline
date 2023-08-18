@@ -1911,6 +1911,10 @@ public class DefaultService<E> implements AnylineService<E> {
             return null;
         }
 
+        @Override
+        public List<String> ddl(Procedure procedure) {
+            return dao.ddl(procedure);
+        }
 
         /* *****************************************************************************************************************
          * 													function
@@ -1926,6 +1930,10 @@ public class DefaultService<E> implements AnylineService<E> {
                 return functions.get(name.toUpperCase());
             }
             return null;
+        }
+        @Override
+        public List<String> ddl(Function function) {
+            return dao.ddl(function);
         }
     };
     /* *****************************************************************************************************************
