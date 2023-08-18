@@ -1846,6 +1846,7 @@ public interface AnylineService<E>{
 		default Procedure procedure(String name){
 			return procedure(false, name);
 		}
+		List<String> ddl(Procedure procedure);
 
 		/* *****************************************************************************************************************
 		 * 													function
@@ -1891,6 +1892,7 @@ public interface AnylineService<E>{
 		default Function function(String name){
 			return function(false, name);
 		}
+		List<String> ddl(Function function);
 	}
 
 
