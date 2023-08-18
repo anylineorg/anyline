@@ -1922,6 +1922,46 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return new LinkedHashMap<>();
 	}
 
+	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+		List<String> list = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, String random, Procedure procedure)", 37));
+		}
+		return list;
+	}
+	/**
+	 * 查询 procedure DDL
+	 * @param procedure procedure
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure)", 37));
+		}
+		return runs;
+	}
+
+	/**
+	 * 查询 function DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param procedure procedure
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
+
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -1934,6 +1974,45 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return new LinkedHashMap<>();
 	}
 
+	public List<String> ddl(DataRuntime runtime, String random, Function function){
+		List<String> list = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, String random, Function function)", 37));
+		}
+		return list;
+	}
+	/**
+	 * 查询 Function DDL
+	 * @param function Function
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryDDLRun(DataRuntime runtime, Function function)", 37));
+		}
+		return runs;
+	}
+
+	/**
+	 * 查询 function DDL
+	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param table PartitionTable
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
 
 	/* *****************************************************************************************************************
 	 *
@@ -2186,6 +2265,34 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+	@Override
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Procedure procedure){
+		String catalog = procedure.getCatalog();
+		String schema = procedure.getSchema();
+		String name = procedure.getName();
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+		return builder;
+	}
+	@Override
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Function function){
+		String catalog = function.getCatalog();
+		String schema = function.getSchema();
+		String name = function.getName();
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+		return builder;
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
