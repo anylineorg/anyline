@@ -29,6 +29,7 @@ public class Function  implements Serializable {
     private String name;
     private List<Parameter> parameters = new ArrayList<>();
     private String definition;
+    private List<String> ddls;
     protected Function update;
     protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了catalog, schema,name,drop,action)
     protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了catalog, schema,name,drop,action)
@@ -82,6 +83,41 @@ public class Function  implements Serializable {
     }
 
 
+    public List<String> getDdls() {
+        return ddls;
+    }
+
+    public void setDdls(List<String> ddl) {
+        this.ddls = ddl;
+    }
+    public List<String> ddls() {
+        return ddls;
+    }
+    public List<String> ddls(boolean init) {
+        return ddls;
+    }
+    public List<String> getDdls(boolean init) {
+        return ddls;
+    }
+
+    public String ddl() {
+        if(null != ddls && ddls.size()>0){
+            return ddls.get(0);
+        }
+        return null;
+    }
+    public String ddl(boolean init) {
+        if(null != ddls && ddls.size()>0){
+            return ddls.get(0);
+        }
+        return null;
+    }
+    public String getDdl(boolean init) {
+        if(null != ddls && ddls.size()>0){
+            return ddls.get(0);
+        }
+        return null;
+    }
 
     public List<Parameter> getParameters() {
         if(getmap && null != update){

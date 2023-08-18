@@ -708,7 +708,10 @@ public interface AnylineDao<E>{
 	default <T extends Procedure> LinkedHashMap<String, T> procedures(boolean greedy, String catalog, String schema, String name){
 		return procedures(runtime(), null, false, greedy, catalog, schema, name);
 	}
-
+	List<String> ddl(DataRuntime runtime, String random, boolean recover, Procedure procedure);
+	default List<String> ddl(Procedure procedure){
+		return ddl(runtime(), null, false, procedure);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													function
@@ -719,6 +722,11 @@ public interface AnylineDao<E>{
 		return functions(runtime(), null, false, greedy, catalog, schema, name);
 	}
 
+
+	List<String> ddl(DataRuntime runtime, String random, boolean recover, Function function);
+	default List<String> ddl(Function function){
+		return ddl(runtime(), null, false, function);
+	}
 
 	/* *****************************************************************************************************************
 	 *
