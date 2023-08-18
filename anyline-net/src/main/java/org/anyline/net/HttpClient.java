@@ -453,13 +453,11 @@ public class HttpClient {
 				int code = response.getStatusLine().getStatusCode();
 				result.setHeaders(headers);
 				result.setStatus(code);
-				if(code ==200){
-					HttpEntity entity = response.getEntity();
-					if (null != entity) {
-						result.setInputStream(entity.getContent());
-						String text = EntityUtils.toString(entity, encode);
-						result.setText(text);
-					}
+				HttpEntity entity = response.getEntity();
+				if (null != entity) {
+					result.setInputStream(entity.getContent());
+					String text = EntityUtils.toString(entity, encode);
+					result.setText(text);
 				}
 			}
 		} catch (Exception e) {
