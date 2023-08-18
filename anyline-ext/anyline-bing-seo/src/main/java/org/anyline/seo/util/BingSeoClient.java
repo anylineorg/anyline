@@ -105,10 +105,10 @@ public class BingSeoClient {
     * */
     private PushResponse response(HttpResponse response){
         PushResponse result = new PushResponse();
-        result.setResult(true);
+        result.setResult(false);
+        String txt = response.getText();
         if(response.getStatus() == 200){
             result.setResult(true);
-            String txt = response.getText();
             result.setMessage(txt);
             if(txt.contains("ErrorCode")){
                 result.setResult(false);
