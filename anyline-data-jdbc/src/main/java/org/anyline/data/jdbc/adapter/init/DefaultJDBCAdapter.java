@@ -3916,6 +3916,42 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
+	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDDLRun(runtime, procedure);
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
+				int idx = 0;
+				for (Run run : runs) {
+					//不要传table,这里的table用来查询表结构
+					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					list = ddl(runtime, idx++, procedure, list,  set);
+				}
+				if(list.size()>0) {
+					procedure.setDdls(list);
+				}
+			}else{
+				//数据库不支持的 根据definition拼装
+
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[procedure ddl][procedure:{}][result:{}][执行耗时:{}ms]", random, procedure.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[procedure ddl][{}][procedure:{}][msg:{}]", random, LogUtil.format("查询存储过程的创建DDL失败", 33), procedure.getName(), e.toString());
+			}
+		}
+		return list;
+	}
+	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, boolean recover, String catalog, String schema, String name){
 		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
  		if(null == random){
@@ -3948,5 +3984,42 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 		}
 		return functions;
+	}
+
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, Function function){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDDLRun(runtime, function);
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
+				int idx = 0;
+				for (Run run : runs) {
+					//不要传table,这里的table用来查询表结构
+					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					list = ddl(runtime, idx++, function, list,  set);
+				}
+				if(list.size()>0) {
+					function.setDdls(list);
+				}
+			}else{
+				//数据库不支持的 根据definition拼装
+
+			}
+			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+				log.info("{}[function ddl][function:{}][result:{}][执行耗时:{}ms]", random, function.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+				log.info("{}[function ddl][{}][function:{}][msg:{}]", random, LogUtil.format("查询函数的创建DDL失败", 33), function.getName(), e.toString());
+			}
+		}
+		return list;
 	}
 }
