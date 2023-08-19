@@ -29,7 +29,7 @@
 ***为了更准确的提供技术支持，请备注一下使用场景或用到哪一部分功能***  
 
 ## 简介
-AnyLine的核心是一个基于spring-jdbc生态的兼容各种数据库的(No-ORM)DBUtil。
+AnyLine的核心是一个基于spring生态的D-ORM(Dynamic Object Relation Mapping)其重点是:
 其重点是:
 - 以最简单、快速方式操作 ***数据库*** 与 ***结果集***
 - 兼容各种数据库，统一生成或执行DML/DDL，读写表结构、索引等元数据
