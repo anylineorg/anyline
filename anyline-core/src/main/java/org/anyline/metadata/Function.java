@@ -93,12 +93,7 @@ public class Function  implements Serializable {
     public List<String> ddls() {
         return ddls;
     }
-    public List<String> ddls(boolean init) {
-        return ddls;
-    }
-    public List<String> getDdls(boolean init) {
-        return ddls;
-    }
+
 
     public String ddl() {
         if(null != ddls && ddls.size()>0){
@@ -106,13 +101,8 @@ public class Function  implements Serializable {
         }
         return null;
     }
-    public String ddl(boolean init) {
-        if(null != ddls && ddls.size()>0){
-            return ddls.get(0);
-        }
-        return null;
-    }
-    public String getDdl(boolean init) {
+
+    public String getDdl() {
         if(null != ddls && ddls.size()>0){
             return ddls.get(0);
         }
