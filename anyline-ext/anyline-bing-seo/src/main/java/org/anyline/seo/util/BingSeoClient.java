@@ -88,8 +88,13 @@ public class BingSeoClient {
             builder.append("\"").append(url).append("\"");
         }
         builder.append("]}");
-        HttpResponse response = HttpUtil.post(headers, api, "UTF-8" ,new StringEntity(builder.toString(),"utf-8"));
-        return response(response);
+        String body = builder.toString();
+        HttpResponse response = HttpUtil.post(headers, api, "UTF-8" ,new StringEntity(body,"utf-8"));
+        PushResponse result = response(response);
+        if(!result.isResult()){
+            log.warn("[push bing fail]\n[msg:{}]\n[content:{}]", result.getMessage(), body);
+        }
+        return result;
     }
     public PushResponse push(String url){
         List<String> urls = new ArrayList<>();
@@ -102,6 +107,7 @@ public class BingSeoClient {
     "ErrorCode": 2,
     "Message": "ERROR!!! You have exceeded your daily url submission quota : 100"
      }
+     {"ErrorCode":2,"Message":"ERROR!!! Quota remaining for today: 89, Submitted: 100"}
     * */
     private PushResponse response(HttpResponse response){
         PushResponse result = new PushResponse();
