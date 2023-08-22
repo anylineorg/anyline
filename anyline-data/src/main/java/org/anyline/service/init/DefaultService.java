@@ -1438,6 +1438,26 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
 
+        private void struct(Table table){
+            ddl(table);
+            LinkedHashMap<String, Column> columns = table.getColumns();
+            if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
+                columns = columns(table);
+                table.setColumns(columns);
+                table.setTags(tags(table));
+                PrimaryKey pk = primary(table);
+                if (null != pk) {
+                    for (String col : pk.getColumns().keySet()) {
+                        Column column = columns.get(col.toUpperCase());
+                        if (null != column) {
+                            column.setPrimaryKey(true);
+                        }
+                    }
+                }
+                table.setPrimaryKey(pk);
+                table.setIndexs(indexs(table));
+            }
+        }
         @Override
         public Table table(boolean greedy, String catalog, String schema, String name, boolean struct) {
             Table table = null;
@@ -1448,21 +1468,20 @@ public class DefaultService<E> implements AnylineService<E> {
                     ddl(table);
                     LinkedHashMap<String, Column> columns = table.getColumns();
                     if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
-                        columns = columns(table);
-                        table.setColumns(columns);
-                        table.setTags(tags(table));
-                        PrimaryKey pk = primary(table);
-                        if (null != pk) {
-                            for (String col : pk.getColumns().keySet()) {
-                                Column column = columns.get(col.toUpperCase());
-                                if (null != column) {
-                                    column.setPrimaryKey(true);
-                                }
-                            }
-                        }
-                        table.setPrimaryKey(pk);
-                        table.setIndexs(indexs(table));
+                        struct(table);
                     }
+                }
+            }
+            return table;
+        }
+        @Override
+        public Table table(String catalog, String schema, String name, boolean struct) {
+            Table table = null;
+            LinkedHashMap<String, Table> tables = tables(catalog, schema, name, null);
+            if (tables.size() > 0) {
+                table = tables.values().iterator().next();
+                if(null != table && struct) {
+                   struct(table);
                 }
             }
             return table;
