@@ -95,6 +95,7 @@ public class Column implements Serializable {
     protected String collate                      ; // 排序编码
     protected String reference                    ; // 外键依赖列
     protected int srid                            ; // SRID
+    protected boolean array                       ; // 是否数组
 
     protected Boolean index                       ; // 是否需要创建索引
     protected Boolean store                       ; // 是否需要存储
@@ -171,6 +172,14 @@ public class Column implements Serializable {
             update.origin = this;
         }
         return this;
+    }
+
+    public boolean isArray() {
+        return array;
+    }
+
+    public void setArray(boolean array) {
+        this.array = array;
     }
 
     public String getDateScale() {
