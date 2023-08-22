@@ -2168,7 +2168,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
-						tables = tables(runtime, idx++, true, catalog, schema, null, set);
+						tables = tables(runtime, idx++, true, catalog, schema, (LinkedHashMap<String, Table>) null, set);
 						CacheProxy.name(tables);
 						sys = true;
 					}
@@ -2178,7 +2178,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			if(!sys){
 				try {
-					tables = tables(runtime, true, null, catalog, schema, null, null);
+					tables = tables(runtime, true,  (LinkedHashMap<String, Table>) null, catalog, schema, null, null);
 					CacheProxy.name(tables);
 				}catch (Exception e){
 					e.printStackTrace();
@@ -2232,8 +2232,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
-						LinkedHashMap<String, T> tables = tables(runtime, idx++, true, catalog, schema, null, set);
-						merge(list, tables);
+						list = tables(runtime, idx++, true, catalog, schema, list, set);
+						//merge(list, tables);
 					}
 				}
 			}catch (Exception e){
@@ -2247,8 +2247,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			// 根据系统表查询失败后根据驱动内置接口补充
 			if(list.size() == 0) {
 				try {
-					LinkedHashMap<String, T> maps = tables(runtime, true, null, catalog, schema, origin, tps);
-					merge(list, maps);/*
+					list = tables(runtime, true, list, catalog, schema, origin, tps);
+					//merge(list, maps);
+					/*
 					for (String key : jdbcTables.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = jdbcTables.get(key);
