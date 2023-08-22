@@ -2348,6 +2348,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return tables;
 	}
+
+
 	/**
 	 * 根据 DatabaseMetaData 查询表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2463,6 +2465,65 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return tables;
+	}
+
+
+	/**
+	 * 根据查询结构解析表属性
+	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set DataSet
+	 * @return tables
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			T table = tables.get(name.toUpperCase());
+			if(null == table){
+				table = (T)new Table();
+			}
+			//MYSQL不支付TABLE_CATALOG
+			//table.setCatalog(row.getString("TABLE_CATALOG"));
+			table.setSchema(row.getString("TABLE_SCHEMA"));
+			table.setName(name);
+			table.setEngine(row.getString("ENGINE"));
+			table.setComment(row.getString("TABLE_COMMENT"));
+			tables.put(name.toUpperCase(), table);
+		}
+		return tables;
+	}
+
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			T table = table(tables, catalog, row.getString("TABLE_SCHEMA"), name);
+			boolean contains = true;
+			if(null == table){
+				table = (T)new Table();
+				contains = false;
+			}
+			//MYSQL不支付TABLE_CATALOG
+			//table.setCatalog(row.getString("TABLE_CATALOG"));
+			table.setSchema(row.getString("TABLE_SCHEMA"));
+			table.setName(name);
+			table.setEngine(row.getString("ENGINE"));
+			table.setComment(row.getString("TABLE_COMMENT"));
+			if(!contains){
+				tables.add(table);
 			}
 		}
 		return tables;
