@@ -192,7 +192,20 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRun(runtime, catalog, schema, pattern, types);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT M.*, M.schemaname AS TABLE_SCHEMA, M.tablename AS TABLE_NAME,  obj_description(f.relfilenode,'pg_class')  AS TABLE_COMMENT  FROM PG_TABLES AS M \n");
+		builder.append("LEFT JOIN pg_class AS F ON M.tablename = F.relname\n");
+		builder.append("WHERE 1=1 ");
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND M.schemaname = '").append(schema).append("'");
+		}
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND M.tablename = '").append(pattern).append("'");
+		}
+		return runs;
 	}
 
 	/**
