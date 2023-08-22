@@ -655,9 +655,6 @@ public class Table   implements Serializable {
         return keyword;
     }
 
-    public String toString(){
-        return this.keyword+":"+name;
-    }
 
     public boolean isAutoDropColumn() {
         return autoDropColumn;
@@ -701,5 +698,17 @@ public class Table   implements Serializable {
             return ddls.get(0);
         }
         return null;
+    }
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append(keyword).append(":");
+        if(BasicUtil.isEmpty(catalog)){
+            builder.append(catalog).append(".");
+        }
+        if(BasicUtil.isEmpty(schema)){
+            builder.append(schema).append(".");
+        }
+        builder.append(name);
+        return builder.toString();
     }
 }
