@@ -327,7 +327,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return super.buildQueryTableCommentRun(runtime, catalog, schema, pattern, types);
 	}
 	/**
-	 *
+	 * 根据查询结构解析表属性
 	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
 	 * @param catalog catalog
 	 * @param schema schema
