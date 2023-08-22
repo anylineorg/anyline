@@ -702,10 +702,10 @@ public class Table   implements Serializable {
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append(keyword).append(":");
-        if(BasicUtil.isEmpty(catalog)){
+        if(BasicUtil.isNotEmpty(catalog)){
             builder.append(catalog).append(".");
         }
-        if(BasicUtil.isEmpty(schema)){
+        if(BasicUtil.isNotEmpty(schema)){
             builder.append(schema).append(".");
         }
         builder.append(name);
