@@ -160,13 +160,14 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public  static  <T extends Column> LinkedHashMap<String, T> columns(String datasource, String table){
+    public  static  <T extends Column> LinkedHashMap<String, T> columns(String datasource, Table table){
         if(null == table){
             return null;
         }
         LinkedHashMap<String, T> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_COLUMNS_" + table.toUpperCase();
+        String key = datasource(datasource)+"_COLUMNS_" + table.getCatalog() + "_" + table.getSchema() + table.getName();
+        key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
@@ -190,12 +191,13 @@ public class CacheProxy {
      * @param table 表
      * @param columns 列
      */
-    public static  <T extends Column> void columns(String datasource, String table, LinkedHashMap<String, T> columns){
+    public static  <T extends Column> void columns(String datasource, Table table, LinkedHashMap<String, T> columns){
         if(null == table){
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource) + "_COLUMNS_" + table.toUpperCase();
+        String key = datasource(datasource)+"_COLUMNS_" + table.getCatalog() + "_" + table.getSchema() + table.getName();
+        key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, columns);
         }else{
