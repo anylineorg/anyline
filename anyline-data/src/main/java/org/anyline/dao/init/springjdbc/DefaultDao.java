@@ -4080,16 +4080,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		String sql = run.getFinalUpdate();
 		if(BasicUtil.isNotEmpty(sql)) {
 			Long fr = System.currentTimeMillis();
-			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			/*if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				random = random(runtime);
 				log.info("{}[action:{}][ds:{}][sql:\n{}\n]", random, action, runtime.datasource(), sql);
-			}
+			}*/
 			//runtime.getTemplate().update(sql);
 			runtime.getAdapter().update(runtime, random, null, null, run);
 			result = true;
-			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			/*if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 				log.info("{}[action:{}][ds:{}][result:{}][执行耗时:{}ms]", random, action, runtime.datasource(), result, System.currentTimeMillis() - fr);
-			}
+			}*/
 		}
 		return result;
 	}
