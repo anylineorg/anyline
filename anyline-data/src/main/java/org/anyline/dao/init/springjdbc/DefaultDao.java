@@ -4097,7 +4097,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		boolean result = true;
 		int idx = 0;
 		for(Run run:runs){
-			result = execute(runtime, random + "-" + idx++, action, run) && result;
+			result = execute(runtime, random + "[index:" + idx+++"]", action, run) && result;
 		}
 		return result;
 	}
