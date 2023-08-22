@@ -308,8 +308,64 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 		}
 		return tables;
 	}
+
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		if(index == 0){
+			// SHOW TABLES 只返回一列stable_name
+			for(DataRow row:set){
+				String name = row.getString("stable_name");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				T table = table(tables, catalog, schema, name);
+				if(null == table){
+					if(create) {
+						table = (T)new MasterTable(name);
+						tables.add(table);
+					}
+				}
+			}
+		}else if(index == 1){
+			// SELECT * FROM INFORMATION_SCHEMA.INS_TABLES
+			// table_name   | db_name|create_time            |columns |stable_name    |uid                |vgroup_id        |     ttl     |         table_comment          |         type          |
+			// a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
+
+			for(DataRow row:set){
+				String name = row.getString("stable_name");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				boolean contains = true;
+				T table = table(tables, catalog, schema, name);
+				if(null == table){
+					if(create) {
+						table = (T)new MasterTable(name);
+						contains = false;
+					}else{
+						continue;
+					}
+				}
+				table.setCatalog(row.getString("db_name"));
+				table.setType(row.getString("type"));
+				table.setComment(row.getString("table_comment"));
+				if(!contains){
+					tables.add(table);
+				}
+			}
+		}
+		return tables;
+	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
+	}
+
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
 	}
 

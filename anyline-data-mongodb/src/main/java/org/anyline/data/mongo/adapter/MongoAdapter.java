@@ -520,7 +520,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types) {
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types) {
+        return null;
+    }
+
+    @Override
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, String catalog, String schema, String pattern, String types) {
         return null;
     }
 

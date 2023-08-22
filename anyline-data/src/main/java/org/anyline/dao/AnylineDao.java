@@ -333,36 +333,38 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean recover, boolean greedy, String catalog, String schema, String name, String types);
-	default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types){
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean recover, boolean greedy, String catalog, String schema, String name, String types);
+	default <T extends Table> List<T> tables(boolean greedy, String catalog, String schema, String name, String types){
 		return tables(runtime(), null, false, greedy, catalog, schema, name, types);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String schema, String name, String types){
+	default <T extends Table> List<T> tables(boolean greedy, String schema, String name, String types){
 		return tables(greedy, null, schema, name, types);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String name, String types){
+	default <T extends Table> List<T> tables(boolean greedy, String name, String types){
 		return tables(greedy, null, null, name, types);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String types){
+	default <T extends Table> List<T> tables(boolean greedy, String types){
 		return tables(greedy, null, null, types);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy){
+	default <T extends Table> List<T> tables(boolean greedy){
 		return tables(greedy, null, null, null, "TABLE");
 	}
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean recover, String catalog, String schema, String name, String types);
 	default <T extends Table> LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types){
-		return tables(false, catalog, schema, name, types);
+		return tables(runtime(), null, false, catalog, schema, name, types);
 	}
+
 	default <T extends Table> LinkedHashMap<String, T> tables(String schema, String name, String types){
-		return tables(false, null, schema, name, types);
+		return tables( null, schema, name, types);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(String name, String types){
-		return tables(false, null, null, name, types);
+		return tables( null, null, name, types);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(String types){
-		return tables(false, null, null, types);
+		return tables( null, null, types);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(){
-		return tables(false, null, null, null, "TABLE");
+		return tables( null, null, null, "TABLE");
 	}
 
 	/**

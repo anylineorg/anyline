@@ -1268,8 +1268,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public List<String> tables(boolean greedy, String catalog, String schema, String name, String types) {
-        LinkedHashMap<String, Table> tables = metadata.tables(greedy, catalog, schema, name, types);
+    public List<String> tables(String catalog, String schema, String name, String types) {
+        LinkedHashMap<String, Table> tables = metadata.tables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
         for (Table table : tables.values()) {
             list.add(table.getName());
@@ -1429,20 +1429,23 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Table>  LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types) {
+        public <T extends Table>  List<T> tables(boolean greedy, String catalog, String schema, String name, String types) {
             return dao.tables(greedy, catalog, schema, name, types);
+        }
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types) {
+            return dao.tables(catalog, schema, name, types);
         }
 
 
         @Override
         public Table table(boolean greedy, String catalog, String schema, String name, boolean struct) {
             Table table = null;
-            LinkedHashMap<String, Table> tables = tables(greedy, catalog, schema, name, null);
+            List<Table> tables = tables(greedy, catalog, schema, name, null);
             if (tables.size() > 0) {
-                table = tables.values().iterator().next();
-                if(struct) {
+                table = tables.get(0);
+                if(null != table && struct) {
                     ddl(table);
-
                     LinkedHashMap<String, Column> columns = table.getColumns();
                     if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                         columns = columns(table);

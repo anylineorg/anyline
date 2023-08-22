@@ -983,33 +983,18 @@ public interface AnylineService<E>{
 	 * 													METADATA
 	 ******************************************************************************************************************/
 
-	List<String> tables(boolean greedy, String catalog, String schema, String name, String types);
-	default List<String> tables(boolean greedy, String schema, String name, String types){
-		return tables(greedy, null, schema, name, types);
-	}
-	default List<String> tables(boolean greedy, String name, String types){
-		return tables(greedy, null, null, name, types);
-	}
-	default List<String> tables(boolean greedy, String types){
-		return tables(greedy, null, null, null, types);
-	}
-	default List<String> tables(boolean greedy){
-		return tables(greedy, null);
-	}
-	default List<String> tables(String catalog, String schema, String name, String types){
-		return tables(false, catalog, schema, name, types);
-	}
+	List<String> tables(String catalog, String schema, String name, String types);
 	default List<String> tables(String schema, String name, String types){
-		return tables(false, null, schema, name, types);
+		return tables(null, schema, name, types);
 	}
 	default List<String> tables(String name, String types){
-		return tables(false, null, null, name, types);
+		return tables(null, null, name, types);
 	}
 	default List<String> tables(String types){
-		return tables(false, null, null, null, types);
+		return tables(null, null, null, types);
 	}
 	default List<String> tables(){
-		return tables(false, null);
+		return tables(null);
 	}
 
 
@@ -1179,34 +1164,33 @@ public interface AnylineService<E>{
 		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 		 * @return tables
 		 */
-		<T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String catalog, String schema, String name, String types);
-		default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String schema, String name, String types){
+		<T extends Table> List<T> tables(boolean greedy, String catalog, String schema, String name, String types);
+		default <T extends Table> List<T> tables(boolean greedy, String schema, String name, String types){
 			return tables(greedy, null, schema, name, types);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String name, String types){
+		default <T extends Table> List<T> tables(boolean greedy, String name, String types){
 			return tables(greedy, null, null, name, types);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy, String types){
+		default <T extends Table> List<T> tables(boolean greedy, String types){
 			return tables(greedy, null, types);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(boolean greedy){
+		default <T extends Table> List<T> tables(boolean greedy){
 			return tables(greedy, null);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types){
-			return tables(false, catalog, schema, name, types);
-		}
+		<T extends Table> LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types);
+
 		default <T extends Table> LinkedHashMap<String, T> tables(String schema, String name, String types){
-			return tables(false, null, schema, name, types);
+			return tables( null, schema, name, types);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String name, String types){
-			return tables(false, null, null, name, types);
+			return tables( null, null, name, types);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String types){
-			return tables(false, null, types);
+			return tables( null, types);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(){
-			return tables(false, null);
+			return tables( null);
 		}
 
 

@@ -2168,7 +2168,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
-						tables = tables(runtime, idx++, true, catalog, schema, tables, set);
+						tables = tables(runtime, idx++, true, catalog, schema, null, set);
+						CacheProxy.name(tables);
 						sys = true;
 					}
 				}
@@ -2178,13 +2179,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(!sys){
 				try {
 					tables = tables(runtime, true, null, catalog, schema, null, null);
+					CacheProxy.name(tables);
 				}catch (Exception e){
 					e.printStackTrace();
-				}
-			}
-			if(null != tables){
-				for(Table table:tables.values()){
-					CacheProxy.name(table.getCatalog(),  table.getSchema(), table.getName(), table.getName());
 				}
 			}
 		}
@@ -2192,8 +2189,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types){
-		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, String catalog, String schema, String pattern, String types){
+		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -2235,7 +2232,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
-						tables = tables(runtime, idx++, true, catalog, schema, tables, set);
+						LinkedHashMap<String, T> tables = tables(runtime, idx++, true, catalog, schema, null, set);
+						merge(list, tables);
 					}
 				}
 			}catch (Exception e){
@@ -2247,9 +2245,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 
 			// 根据系统表查询失败后根据驱动内置接口补充
-			if(null == tables || tables.size() == 0) {
+			if(list.size() == 0) {
 				try {
-					LinkedHashMap<String, T> jdbcTables = tables(runtime, true, null, catalog, schema, origin, tps);
+					LinkedHashMap<String, T> maps = tables(runtime, true, null, catalog, schema, origin, tps);
+					merge(list, maps);/*
 					for (String key : jdbcTables.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = jdbcTables.get(key);
@@ -2259,7 +2258,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 								}
 							}
 						}
-					}
+					}*/
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -2269,12 +2268,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			boolean comment = false;
-			if(null != tables){
-				for(Table table:tables.values()){
-					if(BasicUtil.isNotEmpty(table.getComment())){
-						comment = true;
-						break;
-					}
+			for(Table table:list){
+				if(BasicUtil.isNotEmpty(table.getComment())){
+					comment = true;
+					break;
 				}
 			}
 			//表备注
@@ -2285,7 +2282,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						int idx = 0;
 						for (Run run : runs) {
 							DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
-							tables = comments(runtime, idx++, true, catalog, schema, tables, set);
+							LinkedHashMap<String, T> maps = comments(runtime, idx++, true, catalog, schema, null, set);
+							merge(list, maps);
 						}
 					}
 				} catch (Exception e) {
@@ -2297,26 +2295,53 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, origin, types, tables.size(), System.currentTimeMillis() - fr);
+				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, origin, types, list.size(), System.currentTimeMillis() - fr);
 			}
 			if(BasicUtil.isNotEmpty(origin)){
-				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
-				List<String> keys = BeanUtil.getMapKeys(tables);
-				for(String key:keys){
-					T item = tables.get(key);
+				List<T> tmp = new ArrayList<>();
+ 				for(T item:list){
 					String name = item.getName(greedy);
 					if(RegularUtil.match(name, origin)){
-						tmps.put(name.toUpperCase(), item);
+						tmp.add(item);
 					}
 				}
-				tables = tmps;
-			}
+ 			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
 				log.error("[tables][result:fail][msg:{}]", e.toString());
 			}
+		}
+		return list;
+	}
+	private <T extends Table> boolean contains(List<T> tables, T table){
+		boolean contains = false;
+		if(null != table && null != tables){
+			for(Table tab:tables){
+				if(tab.getCatalog() == table.getCatalog() && tab.getSchema() == table.getSchema() && table.getName().equalsIgnoreCase(tab.getName())){
+					return true;
+				}
+			}
+		}
+		return contains;
+	}
+	private <T extends Table> List<T> merge(List<T> tables, LinkedHashMap<String, T> maps){
+		boolean contains = false;
+		for(T table:maps.values()){
+			if(!contains(tables, table)){
+				tables.add(table);
+			}
+		}
+		return tables;
+	}
+
+	@Override
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, String catalog, String schema, String pattern, String types){
+		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
+		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types);
+		for(T table:list){
+			tables.put(table.getName().toUpperCase(), table);
 		}
 		return tables;
 	}

@@ -347,7 +347,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			if(null == table){
 				table = (T)new Table();
 			}
-			//Hive不支付TABLE_CATALOG
+			//MYSQL不支付TABLE_CATALOG
 			//table.setCatalog(row.getString("TABLE_CATALOG"));
 			table.setSchema(row.getString("TABLE_SCHEMA"));
 			table.setName(name);
@@ -358,6 +358,31 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		return tables;
 	}
 
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			T table = table(tables, catalog, row.getString("TABLE_SCHEMA"), name);
+			boolean contains = true;
+			if(null == table){
+				table = (T)new Table();
+				contains = false;
+			}
+			//MYSQL不支付TABLE_CATALOG
+			//table.setCatalog(row.getString("TABLE_CATALOG"));
+			table.setSchema(row.getString("TABLE_SCHEMA"));
+			table.setName(name);
+			table.setEngine(row.getString("ENGINE"));
+			table.setComment(row.getString("TABLE_COMMENT"));
+			if(!contains){
+				tables.add(table);
+			}
+		}
+		return tables;
+	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		//参考 checkSchema()
@@ -405,6 +430,67 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
 				table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
 				tables.put(tableName.toUpperCase(), table);
+
+				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			}
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return tables;
+	}
+
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		//参考 checkSchema()
+		DataSource ds = null;
+		Connection con = null;
+		try {
+			JdbcTemplate jdbc = jdbc(runtime);
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			DatabaseMetaData dbmd = con.getMetaData();
+
+			ResultSet set = dbmd.getTables( catalog, schema, pattern, types);
+
+			if(null == tables){
+				tables = new ArrayList<>();
+			}
+			Map<String,Integer> keys = keys(set);
+			while(set.next()) {
+				String tableName = string(keys, "TABLE_NAME", set);
+
+				if (BasicUtil.isEmpty(tableName)) {
+					tableName = string(keys, "NAME", set);
+				}
+				if (BasicUtil.isEmpty(tableName)) {
+					continue;
+				}
+				boolean contains = true;
+				T table = table(tables, catalog, schema, tableName);
+				if (null == table) {
+					if (create) {
+						table = (T) new Table();
+						contains = false;
+					} else {
+						continue;
+					}
+				}
+				//参考 checkSchema()
+				table.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+				table.setCatalog(null);
+
+				table.setName(tableName);
+				table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+				table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+				table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+				table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+				table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+				table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+				if(!contains){
+					tables.add(table);
+				}
 
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}

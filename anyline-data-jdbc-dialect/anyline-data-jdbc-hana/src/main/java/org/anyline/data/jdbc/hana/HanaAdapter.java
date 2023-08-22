@@ -577,8 +577,40 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		}
 		return tables;
 	}
+
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			T table = table(tables, catalog, schema, name);
+			boolean conains = true;
+			if(null == table){
+				conains = false;
+				if("VIEW".equals(row.getString("TABLE_TYPE"))){
+					table = (T)new View();
+				}else {
+					table = (T) new Table();
+				}
+			}
+			table.setCatalog(catalog);
+			table.setSchema(schema);
+			table.setName(name);
+			table.setComment(row.getString("COMMENTS"));
+			if(!conains) {
+				tables.add(table);
+			}
+		}
+		return tables;
+	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
+	}
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
 	}
 

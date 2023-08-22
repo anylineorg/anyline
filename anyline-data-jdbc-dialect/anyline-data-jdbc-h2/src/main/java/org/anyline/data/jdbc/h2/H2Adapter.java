@@ -152,14 +152,24 @@ public class H2Adapter extends SQLAdapter implements JDBCAdapter, InitializingBe
 	public List<Run> buildQueryTableCommentRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
 		return super.buildQueryTableCommentRun(runtime, catalog, schema, pattern, types);
 	}
+
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+		return super.tables(runtime, index, create, catalog, schema, tables, set);
+	}
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
 		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
 	}
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
+	}
+
 
 	/* *****************************************************************************************************************
 	 * 													master table

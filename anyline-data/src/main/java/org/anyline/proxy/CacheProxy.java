@@ -22,6 +22,7 @@ import org.anyline.cache.CacheProvider;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.entity.DataRow;
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.metadata.Tag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -49,6 +50,13 @@ public class CacheProxy {
     private static Map<String,Map<String, String>>  cache_names = new HashMap<>();
     private static Map<String,DataRow> cache_table_maps = new HashMap<>();
     private static Map<String,DataRow> cache_view_maps = new HashMap<>();
+    public static void name(LinkedHashMap<String, Table> tables){
+        if(null != tables) {
+            for (Table table : tables.values()) {
+                name(table.getCatalog(), table.getSchema(), table.getName(), table.getName());
+            }
+        }
+    }
     public static void name(String catalog, String schema, String name, String origin){
         String group_key = catalog + "_" + schema;
         group_key = group_key.toUpperCase();

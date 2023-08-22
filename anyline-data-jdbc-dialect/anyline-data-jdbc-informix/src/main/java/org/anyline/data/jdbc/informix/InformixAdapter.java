@@ -496,6 +496,10 @@ public class InformixAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
 	}
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													master table

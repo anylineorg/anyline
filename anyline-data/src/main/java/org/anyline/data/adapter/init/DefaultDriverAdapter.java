@@ -1147,6 +1147,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set)", 37));
+		}
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		return tables;
+	}
+
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		if(log.isDebugEnabled()) {
@@ -1158,6 +1170,26 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return tables;
 	}
 
+	@Override
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types)", 37));
+		}
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		return tables;
+	}
+	public <T extends Table> T table(List<T> tables, String catalog, String schema, String name){
+		if(null != tables){
+			for(T table:tables){
+				if(catalog == table.getCatalog() && schema == table.getSchema() && table.getName().equalsIgnoreCase(name)){
+					return table;
+				}
+			}
+		}
+		return null;
+	}
 	/**
 	 * 表备注
 	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序

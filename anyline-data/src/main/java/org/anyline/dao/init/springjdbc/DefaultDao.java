@@ -971,12 +971,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean recover, boolean greedy, String catalog, String schema, String pattern, String types){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean recover, boolean greedy, String catalog, String schema, String pattern, String types){
 		if(null == runtime){
 			runtime = runtime();
 		}
 		try {
 			return runtime.getAdapter().tables(runtime, random, greedy, catalog, schema, pattern, types);
+		}finally {
+			if(recover && !isFix() && ClientHolder.isAutoRecover()){
+				ClientHolder.recoverDataSource();
+			}
+		}
+	}
+
+	@Override
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, boolean recover, String catalog, String schema, String pattern, String types){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		try {
+			return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types);
 		}finally {
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
@@ -2603,7 +2617,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Tag tag) throws Exception{
 		Table table = tag.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(true), "TABLE");
+			List<Table> tables = tables(false, tag.getCatalog(), tag.getSchema(), tag.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + tag.getTableName(true));
@@ -2611,7 +2625,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.error("表不存在:" + tag.getTableName(true));
 				}
 			}else {
-				table = tables.values().iterator().next();
+				table = tables.get(0);
 			}
 		}
 		return alter(table, tag, true);
@@ -2815,7 +2829,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(PrimaryKey primary) throws Exception {
 		Table table = primary.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(true), "TABLE");
+			List<Table> tables = tables(false, primary.getCatalog(), primary.getSchema(), primary.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + primary.getTableName(true));
@@ -2823,7 +2837,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.error("表不存在:" + primary.getTableName(true));
 				}
 			}else {
-				table = tables.values().iterator().next();
+				table = tables.get(0);
 			}
 		}
 		return alter(table, primary);
@@ -3008,7 +3022,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(ForeignKey meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() == 0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -3016,7 +3030,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.error("表不存在:" + meta.getTableName(true));
 				}
 			}else {
-				table = tables.values().iterator().next();
+				table = tables.get(0);
 			}
 		}
 		return alter(table, meta);
@@ -3200,7 +3214,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Index meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -3208,7 +3222,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.error("表不存在:" + meta.getTableName(true));
 				}
 			}else {
-				table = tables.values().iterator().next();
+				table = tables.get(0);
 			}
 		}
 		return alter(table, meta);
@@ -3392,7 +3406,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	public boolean alter(Constraint meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() ==0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -3400,7 +3414,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					log.error("表不存在:" + meta.getTableName(true));
 				}
 			}else {
-				table = tables.values().iterator().next();
+				table = tables.get(0);
 			}
 		}
 		return alter(table, meta);
