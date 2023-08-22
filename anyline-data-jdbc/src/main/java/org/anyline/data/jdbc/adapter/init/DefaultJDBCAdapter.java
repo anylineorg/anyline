@@ -2329,9 +2329,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 	private <T extends Table> List<T> merge(List<T> tables, LinkedHashMap<String, T> maps){
 		boolean contains = false;
-		for(T table:maps.values()){
-			if(!contains(tables, table)){
-				tables.add(table);
+		if(null != tables && null != maps) {
+			for (T table : maps.values()) {
+				if (!contains(tables, table)) {
+					tables.add(table);
+				}
 			}
 		}
 		return tables;
@@ -2403,6 +2405,60 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				tables.put(tableName.toUpperCase(), table);
 
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			}
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return tables;
+	}
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
+		DataSource ds = null;
+		Connection con = null;
+		try{
+			JdbcTemplate jdbc = jdbc(runtime);
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			DatabaseMetaData dbmd = con.getMetaData();
+			ResultSet set = dbmd.getTables( catalog, schema, pattern, types);
+			if(null == tables){
+				tables = new ArrayList<>();
+			}
+			Map<String,Integer> keys = keys(set);
+			while(set.next()) {
+				String tableName = string(keys, "TABLE_NAME", set);
+
+				if(BasicUtil.isEmpty(tableName)){
+					tableName = string(keys, "NAME", set);
+				}
+				if(BasicUtil.isEmpty(tableName)){
+					continue;
+				}
+				catalog = BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog);
+				schema = BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema);
+				T table = table(tables, catalog, schema, tableName);
+				boolean contains = true;
+				if(null == table){
+					if(create){
+						table = (T)new Table();
+						contains = false;
+					}else{
+						continue;
+					}
+				}
+				table.setCatalog(catalog);
+				table.setSchema(schema);
+				table.setName(tableName);
+				table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+				table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+				table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+				table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+				table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+				table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+				if(!contains) {
+					tables.add(table);
+				}
 			}
 		}finally {
 			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
@@ -3294,7 +3350,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table , boolean primary){
 
-		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table.getName());
+		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table);
 		if(null != columns && !columns.isEmpty()){
 			return columns;
 		}
@@ -3428,7 +3484,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 		}
 		if(null != columns) {
-			CacheProxy.columns(runtime.getKey(), table.getName(), columns);
+			CacheProxy.columns(runtime.getKey(), table, columns);
 		}else{
 			columns = new LinkedHashMap<>();
 		}
