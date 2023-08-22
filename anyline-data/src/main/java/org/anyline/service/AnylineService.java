@@ -1210,9 +1210,7 @@ public interface AnylineService<E>{
 			return table(greedy, null, null, name, struct);
 		}
 
-		default Table table(String catalog, String schema, String name, boolean struct){
-			return table(false, catalog, schema, name, struct);
-		}
+		Table table(String catalog, String schema, String name, boolean struct);
 		default Table table(String schema, String name, boolean struct){
 			return table(false, null, schema, name, struct);
 		}
@@ -1232,13 +1230,13 @@ public interface AnylineService<E>{
 		}
 
 		default Table table(String catalog, String schema, String name){
-			return table(false, catalog, schema, name, true);
+			return table( catalog, schema, name, true);
 		}
 		default Table table(String schema, String name){
-			return table(false, null, schema, name, true);
+			return table( null, schema, name, true);
 		}
 		default Table table(String name){
-			return table(false, null, null, name, true);
+			return table( null, null, name, true);
 		}
 
 		/**
