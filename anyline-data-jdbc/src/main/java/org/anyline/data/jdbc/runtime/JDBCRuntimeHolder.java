@@ -22,6 +22,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.data.util.DriverAdapterHolder;
 import org.anyline.proxy.RuntimeHolderProxy;
 import org.anyline.service.init.FixService;
 import org.anyline.util.ClassUtil;
@@ -62,6 +63,7 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
             //关闭上一个
             close(key);
             temporary.remove(key);
+            DriverAdapterHolder.remove(key);
             //创建新数据源
             runtime.setKey(key);
             runtime.setAdapter(adapter);
