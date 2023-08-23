@@ -17,6 +17,7 @@
 
 package org.anyline.data.param;
 
+import org.anyline.data.handler.StreamHandler;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
@@ -38,6 +39,8 @@ import java.util.Map;
  * 
  */
 public interface ConfigStore {
+	ConfigStore stream(StreamHandler hanlder);
+	StreamHandler stream();
 	/**
 	 * 解析查询配置参数 
 	 * @param config "COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]" 
