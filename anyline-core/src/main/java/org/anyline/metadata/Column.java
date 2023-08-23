@@ -178,8 +178,9 @@ public class Column implements Serializable {
         return array;
     }
 
-    public void setArray(boolean array) {
+    public Column setArray(boolean array) {
         this.array = array;
+        return this;
     }
 
     public String getDateScale() {
