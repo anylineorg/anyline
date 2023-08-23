@@ -19,6 +19,7 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.adapter.DataReader;
 import org.postgresql.geometric.*;
+import org.postgresql.jdbc.PgArray;
 
 public enum PostgresqlReader {
     PointReader(new Object[]{PGpoint.class}, new DataReader() {
@@ -82,6 +83,21 @@ public enum PostgresqlReader {
         public Object read(Object value) {
             if(value instanceof PGbox) {
                 value = PostgresqlGeometryAdapter.parseBox((PGbox) value);
+            }
+            return value;
+        }
+    }),
+    //数组
+    ArrayReader(new Object[]{PgArray.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof PgArray) {
+                PgArray array = (PgArray) value;
+                try {
+                    value = array.getArray();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             return value;
         }
