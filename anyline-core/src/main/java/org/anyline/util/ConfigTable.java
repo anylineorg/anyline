@@ -83,8 +83,8 @@ public class ConfigTable {
 	public static boolean IS_THROW_SQL_UPDATE_EXCEPTION 				= true			;	// SQL执行异常时是否抛出
 	public static boolean IS_UPDATE_NULL_COLUMN							= false			;	// DataRow是否更新nul值的列(针对DataRow)
 	public static boolean IS_UPDATE_EMPTY_COLUMN						= false			;	// DataRow是否更新空值的列
-	public static boolean IS_INSERT_NULL_COLUMN							= false			;	// DataRow是否更新nul值的列
-	public static boolean IS_INSERT_EMPTY_COLUMN						= false			;	// DataRow是否更新空值的列
+	public static boolean IS_INSERT_NULL_COLUMN							= false			;	// DataRow是否插入nul值的列
+	public static boolean IS_INSERT_EMPTY_COLUMN						= false			;	// DataRow是否插入空值的列
 	public static boolean IS_UPDATE_NULL_FIELD							= false			;	// Entity是否更新nul值的属性(针对Entity)
 	public static boolean IS_UPDATE_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
 	public static boolean IS_INSERT_NULL_FIELD							= false			;	// Entity是否更新nul值的属性
