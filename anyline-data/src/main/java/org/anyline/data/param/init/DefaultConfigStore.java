@@ -17,6 +17,7 @@
 
 package org.anyline.data.param.init;
 
+import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
@@ -41,6 +42,7 @@ import java.util.*;
  */ 
 public class DefaultConfigStore implements ConfigStore {
 	private static final long serialVersionUID = -2098827041540802313L;
+	protected StreamHandler handler;
 	protected ConfigChain chain;
 	protected PageNavi navi;
 	protected OrderStore orders;		// 排序依据
@@ -139,6 +141,17 @@ public class DefaultConfigStore implements ConfigStore {
 		for(String config:configs){
 			chain.addConfig(parseConfig(config));
 		}
+	}
+
+	@Override
+	public StreamHandler stream() {
+		return handler;
+	}
+
+	@Override
+	public ConfigStore stream(StreamHandler handler) {
+		this.handler = handler;
+		return this;
 	}
 
 	/**
