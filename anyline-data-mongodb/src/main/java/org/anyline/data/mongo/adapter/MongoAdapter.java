@@ -309,7 +309,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return bson;
     }
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run) {
+    public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
         long fr = System.currentTimeMillis();
         if(null == random){
             random = random(runtime);
@@ -373,7 +373,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, Run run) {
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return null;
     }
 
@@ -483,6 +483,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
         return null;
     }
+
 
     @Override
     public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values) {
