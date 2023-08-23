@@ -945,6 +945,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return !isNull(key);
     }
 
+    public boolean isEmpty(boolean recursion, String key) {
+        Object obj = get(key);
+        return BasicUtil.isEmpty(recursion, obj);
+    }
+
     public boolean isEmpty(String key) {
         Object obj = get(key);
         return BasicUtil.isEmpty(obj);
@@ -2057,16 +2062,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow removeEmpty(String... keys) {
+        return removeEmpty(false, keys);
+    }
+    public DataRow removeEmpty(boolean recursion, String... keys) {
         if (null != keys && keys.length > 0) {
             for (String key : keys) {
-                if (this.isEmpty(key)) {
+                if (this.isEmpty(recursion, key)) {
                     this.remove(key);
                 }
             }
         } else {
             List<String> cols = keys();
             for (String key : cols) {
-                if (this.isEmpty(key)) {
+                if (this.isEmpty(recursion, key)) {
                     this.remove(key);
                 }
             }
