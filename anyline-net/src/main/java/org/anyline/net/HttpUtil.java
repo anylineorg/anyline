@@ -757,6 +757,10 @@ public class HttpUtil {
 		}else{
 			String result = src;
 			result = result
+					.replace(" ","")
+					.replace("\n","")
+					.replace("\r","")
+					.replace("\t","")
 					.replace("~", "%7E")
 					.replace("!", "%21")
 					.replace("@", "%40")
@@ -778,6 +782,7 @@ public class HttpUtil {
 					.replace(">", "%3E")
 					.replace(",", "%2C")
 					.replace("/", "%2F")
+					.replace("\\", "%5C")
 					.replace("?", "%3F")
 					.replace(";", "%3B")
 					.replace("'", "%27")
