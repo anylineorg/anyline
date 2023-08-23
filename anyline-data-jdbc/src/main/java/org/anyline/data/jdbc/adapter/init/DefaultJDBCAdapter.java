@@ -361,7 +361,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				Object value = read(runtime, column, rs.getObject(name), null);
 				row.put(false, name, value);
 			}
-			row.setMetadatas(metadatas);
+			row.setMetadata(metadatas);
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -580,7 +580,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				Object value = read(runtime, column, rs.getObject(name), null);
 				row.put(false, name, value);
 			}
-			row.setMetadatas(metadatas);
+			row.setMetadata(metadatas);
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
