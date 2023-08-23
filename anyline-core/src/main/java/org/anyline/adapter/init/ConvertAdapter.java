@@ -57,6 +57,13 @@ public class ConvertAdapter {
             type.convert(convert);
         }
     }
+
+    /**
+     *
+     * @param origin 原类
+     * @param target 目标类
+     * @return Convert
+     */
     public static Convert getConvert(Class origin, Class target){
         Map<Class, Convert> map = converts.get(origin);
         if(null != map){
