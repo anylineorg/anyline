@@ -210,7 +210,7 @@ public abstract class BasicRun implements Run {
 	 * @param compare  compare
 	 * @param obj  obj
 	 * @param column  column
-	 * @param split  遇到集合/数组类型是否拆分处理
+	 * @param split  遇到集合/数组类型是否拆分处理(DataRow 并且Column不是数组类型)
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
@@ -218,8 +218,9 @@ public abstract class BasicRun implements Run {
 	public RunValue addValues(Compare compare, Column column, Object obj, boolean split){
 		RunValue rv = null;
 		if(null != obj){
+
 			// from:1-DataRow 2-Entity
-			if(split && getFrom() != 2){
+			if(split && !column.isArray() && getFrom() != 2){
 				/**/
 				boolean json = false;
 				if(null != column){
