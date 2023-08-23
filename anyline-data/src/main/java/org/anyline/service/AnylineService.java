@@ -18,9 +18,8 @@
 package org.anyline.service;
 
 import org.anyline.dao.AnylineDao;
-import org.anyline.data.handler.DataRowHandler;
 import org.anyline.data.handler.EntityHandler;
-import org.anyline.data.handler.MapHandler;
+import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -341,7 +340,7 @@ public interface AnylineService<E>{
 	default DataSet querys(String src, Object obj, String ... conditions){
 		return querys(src, (ConfigStore) null, obj, conditions);
 	}
-	default DataSet querys(String src, DataRowHandler handler, Object obj, String ... conditions){
+	default DataSet querys(String src, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return querys(src, configs, obj, conditions);
@@ -381,7 +380,7 @@ public interface AnylineService<E>{
 	default DataSet querys(String src, String ... conditions){
 		return querys(src, (Object) null, conditions);
 	}
-	default DataSet querys(String src, DataRowHandler handler, String ... conditions){
+	default DataSet querys(String src, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return querys(src, configs, conditions);
@@ -592,7 +591,7 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
-	default List<Map<String,Object>> maps(String src, MapHandler handler, Object obj, String ... conditions){
+	default List<Map<String,Object>> maps(String src, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return maps(src, configs, obj, conditions);
@@ -609,7 +608,7 @@ public interface AnylineService<E>{
 	default List<Map<String,Object>> maps(String src, String ... conditions){
 		return maps(src, (ConfigStore) null,null, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, MapHandler handler, String ... conditions){
+	default List<Map<String,Object>> maps(String src, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return maps(src, configs,null, conditions);
