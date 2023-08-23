@@ -683,7 +683,7 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return maps
 	 */
-	List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run);
+	List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run);
 	/**
 	 * select [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

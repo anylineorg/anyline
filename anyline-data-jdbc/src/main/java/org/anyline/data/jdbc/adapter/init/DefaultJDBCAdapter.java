@@ -21,6 +21,9 @@ package org.anyline.data.jdbc.adapter.init;
 import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
+import org.anyline.data.handler.MapHandler;
+import org.anyline.data.handler.ResultSetHandler;
+import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
@@ -682,7 +685,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if (null != dmListener) {
 				dmListener.beforeQuery(runtime, random, run, -1);
 			}
-			maps = maps(runtime, random, run);
+			maps = maps(runtime, random, configs, run);
 			sql_success = true;
 		} else {
 			maps = new ArrayList<>();
@@ -703,7 +706,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, Run run){
+	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		List<Map<String,Object>> maps = null;
 		if(null == random){
 			random = random(runtime);
@@ -724,10 +727,54 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
-			if(null != values && values.size()>0){
-				maps = jdbc.queryForList(sql, values.toArray());
-			}else{
-				maps = jdbc.queryForList(sql);
+			StreamHandler _handler = null;
+			if(null != configs){
+				_handler = configs.stream();
+			}
+			int[] count = new int[]{0};
+			final StreamHandler handler = _handler;
+			if(null != handler){
+				jdbc.query(con -> {
+					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+					ps.setFetchSize(handler.size());
+					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+					if (null != values && values.size() > 0) {
+						int idx = 0;
+						for (Object value : values) {
+							ps.setObject(++idx, value);
+						}
+					}
+					return ps;
+				}, rs -> {
+					if(handler instanceof ResultSetHandler){
+						((ResultSetHandler) handler).read(rs);
+					}else {
+						if(handler instanceof MapHandler){
+							MapHandler mh = (MapHandler) handler;
+							ResultSetMetaData rsmd = rs.getMetaData();
+							int cols = rsmd.getColumnCount();
+							while (rs.next()) {
+								Map<String,Object> map = new HashMap<>();
+								for(int i=1; i<=cols; i++){
+									map.put(rsmd.getColumnLabel(i), rs.getObject(i));
+								}
+								if(!mh.read(map)){
+									break;
+								}
+								count[0] ++;
+							}
+						}
+					}
+				});
+				maps = new ArrayList<>();
+				//end stream handler
+			}else {
+				if (null != values && values.size() > 0) {
+					maps = jdbc.queryForList(sql, values.toArray());
+				} else {
+					maps = jdbc.queryForList(sql);
+				}
+				count[0] = maps.size();
 			}
 			long mid = System.currentTimeMillis();
 			boolean slow = false;
@@ -746,7 +793,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			maps = process(runtime, maps);
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, maps.size());
+				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, count);
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1650,7 +1697,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		Long fr = System.currentTimeMillis();
 		boolean sql_success = false;
