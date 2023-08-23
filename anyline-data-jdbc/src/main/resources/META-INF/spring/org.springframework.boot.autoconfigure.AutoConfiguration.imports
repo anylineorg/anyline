@@ -1,3 +1,2 @@
 org.anyline.data.jdbc.listener.JDBCEnvironmentListener
-org.anyline.data.jdbc.util.SQLAdapterUtil
 org.anyline.data.jdbc.runtime.JDBCRuntimeHolder
