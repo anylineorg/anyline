@@ -43,6 +43,16 @@ public class DriverAdapterHolder {
 	private static Map<String, Boolean> supports = new HashMap<>();
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
+
+	/**
+	 * 临时数据源时相同的key会出现不同的adapter
+	 * 注册临时数据源时先清空缓存adapter
+	 * @param datasource 数据源key
+	 */
+	public static void remove(String datasource){
+		adapters.remove("al-ds:"+datasource);
+	}
+
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
 		for (DriverAdapter adapter:map.values()){
