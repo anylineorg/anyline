@@ -375,6 +375,9 @@ public class Column implements Serializable {
             return this;
         }
         if(null != typeName){
+            if(typeName.contains("[]")){
+                setArray(true);
+            }
             typeName = typeName.trim().replace("'","");
 
             if(typeName.toUpperCase().contains("IDENTITY")){
