@@ -143,7 +143,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public DataRow(LinkedHashMap columns, Map<String, Object> map) {
         this();
-        setMetadatas(columns);
+        setMetadata(columns);
         Set<Map.Entry<String, Object>> set = map.entrySet();
         for (Map.Entry<String, Object> entity : set) {
             Object value = entity.getValue();
@@ -594,10 +594,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         this.override = override;
     }
 
-    public DataRow setMetadatas(LinkedHashMap<String, Column> metadatas){
+    public DataRow setMetadata(LinkedHashMap<String, Column> metadatas){
         this.metadatas = metadatas;
         return this;
     }
+
+    public DataRow setMetadata(String name, Column column){
+        if(null == metadatas){
+            metadatas = new LinkedHashMap<>();
+        }
+        metadatas.put(name.toUpperCase(), column);
+        return this;
+    }
+    public DataRow setMetadata(Column column){
+        if(null != column){
+            return setMetadata(column.getName(), column);
+        }
+        return this;
+    }
+
     public LinkedHashMap<String, Column> getMetadatas(){
         return getMetadatas(false);
     }
