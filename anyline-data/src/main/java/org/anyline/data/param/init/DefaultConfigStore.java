@@ -43,6 +43,7 @@ import java.util.*;
 public class DefaultConfigStore implements ConfigStore {
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected StreamHandler handler;
+	protected Class clazz;
 	protected ConfigChain chain;
 	protected PageNavi navi;
 	protected OrderStore orders;		// 排序依据
@@ -152,6 +153,17 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore stream(StreamHandler handler) {
 		this.handler = handler;
 		return this;
+	}
+
+	@Override
+	public ConfigStore entityClass(Class clazz) {
+		this.clazz = clazz;
+		return this;
+	}
+
+	@Override
+	public Class entityClass() {
+		return clazz;
 	}
 
 	/**

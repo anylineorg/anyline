@@ -18,14 +18,11 @@
 package org.anyline.data.jdbc.adapter.init;
 
 
-import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.cache.PageLazyStore;
-import org.anyline.data.handler.MapHandler;
-import org.anyline.data.handler.ResultSetHandler;
-import org.anyline.data.handler.StreamHandler;
-import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
+import org.anyline.data.cache.PageLazyStore;
+import org.anyline.data.handler.*;
+import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -41,21 +38,23 @@ import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.runtime.RuntimeHolder;
-import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
-import org.anyline.entity.*;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
+import org.anyline.entity.PageNavi;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.persistence.ManyToMany;
-import org.anyline.metadata.persistence.OneToMany;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +68,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.Date;
 import java.util.*;
@@ -253,7 +251,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 				return new DataRow();
 			}
-			DataSet set = select(runtime, random, true, null, run);
+			DataSet set = select(runtime, random, true, null, null, run);
 			if (set.size() > 0) {
 				return set.getRow(0);
 			}
@@ -323,7 +321,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public long count(DataRuntime runtime, String random, Run run) {
 		long total = 0;
-		DataSet set = select(runtime, random, false, null, run, run.getTotalQuery(), run.getValues());
+		DataSet set = select(runtime, random, false, null, null, run, run.getTotalQuery(), run.getValues());
 		total = set.getInt(0,"CNT",0);
 		return total;
 	}
@@ -374,7 +372,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		return row;
 	}
 
- 	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run, String sql, List<Object> values){
+ 	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				throw new SQLQueryException("未指定SQL");
@@ -406,30 +404,90 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			metadatas.putAll(columns);
 			set.setMetadatas(metadatas);
 			JdbcTemplate jdbc = jdbc(runtime);
-			if(null != values && values.size()>0){
-				jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
-					@Override
-					public void processRow(ResultSet rs) throws SQLException {
-						if(!process[0]){
-							mid[0] = System.currentTimeMillis();
+			StreamHandler _handler = null;
+			if(null != configs){
+				_handler = configs.stream();
+			}
+			int[] count = new int[]{0};
+			final StreamHandler handler = _handler;
+			if(null != handler){
+				jdbc.query(con -> {
+					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+					ps.setFetchSize(handler.size());
+					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+					if (null != values && values.size() > 0) {
+						int idx = 0;
+						for (Object value : values) {
+							ps.setObject(++idx, value);
 						}
-						DataRow row = row(system, rt, metadatas, rs);
-						set.add(row);
-						process[0] = true;
+					}
+					return ps;
+				}, rs -> {
+					if(handler instanceof ResultSetHandler){
+						((ResultSetHandler) handler).read(rs);
+					}else {
+						if(handler instanceof DataRowHandler){
+							DataRowHandler dataRowHandler = (DataRowHandler) handler;
+							ResultSetMetaData rsmd = rs.getMetaData();
+							int cols = rsmd.getColumnCount();
+							while (rs.next()) {
+								if(!process[0]){
+									mid[0] = System.currentTimeMillis();
+								}
+								DataRow row = row(system, rt, metadatas, rs);
+								if(!dataRowHandler.read(row)){
+									break;
+								}
+								count[0] ++;
+							}
+						}else if(handler instanceof EntityHandler){
+							Class clazz = configs.entityClass();
+							if(null != clazz) {
+								EntityHandler entityHandler = (EntityHandler) handler;
+								ResultSetMetaData rsmd = rs.getMetaData();
+								int cols = rsmd.getColumnCount();
+								while (rs.next()) {
+									if (!process[0]) {
+										mid[0] = System.currentTimeMillis();
+									}
+									DataRow row = row(system, rt, metadatas, rs);
+									if (!entityHandler.read(row.entity(clazz))) {
+										break;
+									}
+									count[0]++;
+								}
+							}
+						}
 					}
 				});
+				//end stream handler
 			}else {
-				jdbc.query(sql, new RowCallbackHandler() {
-					@Override
-					public void processRow(ResultSet rs) throws SQLException {
-						if(!process[0]){
-							mid[0] = System.currentTimeMillis();
+				if(null != values && values.size()>0){
+					jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
+						@Override
+						public void processRow(ResultSet rs) throws SQLException {
+							if(!process[0]){
+								mid[0] = System.currentTimeMillis();
+							}
+							DataRow row = row(system, rt, metadatas, rs);
+							set.add(row);
+							process[0] = true;
 						}
-						DataRow row = row(system, rt, metadatas, rs);
-						set.add(row);
-						process[0] = true;
-					}
-				});
+					});
+				}else {
+					jdbc.query(sql, new RowCallbackHandler() {
+						@Override
+						public void processRow(ResultSet rs) throws SQLException {
+							if(!process[0]){
+								mid[0] = System.currentTimeMillis();
+							}
+							DataRow row = row(system, rt, metadatas, rs);
+							set.add(row);
+							process[0] = true;
+						}
+					});
+				}
+				count[0] = set.size();
 			}
 			if(!process[0]){
 				mid[0] = System.currentTimeMillis();
@@ -450,7 +508,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			set.setDatalink(runtime.datasource());
 			if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], set.size());
+				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count[0]);
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -479,13 +537,13 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
 		String sql = run.getFinalQuery();
 		if(BasicUtil.isEmpty(sql)){
 			return new DataSet();
 		}
 		List<Object> values = run.getValues();
-		return select(runtime, random, system, table, run, sql, values);
+		return select(runtime, random, system, table, configs, run, sql, values);
 	}
 
 	/**
@@ -1771,7 +1829,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(swt == ACTION.SWITCH.BREAK){
 					return new DataSet();
 				}
-				set = select(runtime, random, false, prepare.getTable(), run);
+				set = select(runtime, random, false, prepare.getTable(), configs, run);
 				sql_success = true;
 			}else{
 				set = new DataSet();
@@ -1882,7 +1940,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 
 				fr = System.currentTimeMillis();
-				list = select(runtime, random, clazz, run.getTable(), run);
+				list = select(runtime, random, clazz, run.getTable(), configs, run);
 				sql_success = false;
 			}else{
 				list = new EntitySet<>();
@@ -1912,14 +1970,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param <T> entity.class
 	 *
 	 */
-	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, Run run){
+	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
 		EntitySet<T> set = new EntitySet<>();
-
 		if(null == random){
 			random = random(runtime);
 		}
-
-		DataSet rows = select(runtime, random, false, table, run);
+		if(null != configs){
+			configs.entityClass(clazz);
+		}
+		DataSet rows = select(runtime, random, false, table, configs, run);
 		for(DataRow row:rows){
 			T entity = null;
 			if(EntityAdapterProxy.hasAdapter(clazz)){
@@ -2129,7 +2188,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 						database = database(runtime, idx++, true, set);
 						if(null != database){
 							break;
@@ -2170,7 +2229,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 						databases = databases(runtime, idx++, true, databases, set);
 					}
 				}
@@ -2214,7 +2273,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if (null != runs && runs.size() > 0) {
 					int idx = 0;
 					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, (String) null, null, run).toUpperKey();
 						tables = tables(runtime, idx++, true, catalog, schema, (LinkedHashMap<String, Table>) null, set);
 						CacheProxy.name(tables);
 						sys = true;
@@ -2278,7 +2337,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 						list = tables(runtime, idx++, true, catalog, schema, list, set);
 						//merge(list, tables);
 					}
@@ -2329,7 +2388,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
-							DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
+							DataSet set = select(runtime, random, true, (String) null, null, run).toUpperKey();
 							LinkedHashMap<String, T> maps = comments(runtime, idx++, true, catalog, schema, null, set);
 							merge(list, maps);
 						}
@@ -2590,7 +2649,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 					list = ddl(runtime, idx++, table, list,  set);
 				}
 				table.setDdls(list);
@@ -2686,7 +2745,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 						views = views(runtime, idx++, true, catalog, schema, views, set);
 					}
 				}
@@ -2821,7 +2880,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 					list = ddl(runtime, idx++, view, list,  set);
 				}
 				view.setDdls(list);
@@ -2882,7 +2941,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 						tables = mtables(runtime, idx++, true, catalog, schema, tables, set);
 					}
 				}
@@ -2941,7 +3000,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 					list = ddl(runtime, idx++, table, list,  set);
 				}
 				table.setDdls(list);
@@ -2997,7 +3056,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					int idx = 0;
 					int total = runs.size();
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, false, (String)null, run).toUpperKey();
+						DataSet set = select(runtime, random, false, (String)null, null, run).toUpperKey();
 						tables = ptables(runtime, total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 					}
 				}
@@ -3034,7 +3093,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 					list = ddl(runtime, idx++, table, list,  set);
 				}
 				table.setDdls(list);
@@ -3078,7 +3137,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if (null != runs) {
 					int idx = 0;
 					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, run).toUpperKey();
+						DataSet set = select(runtime, random, true, (String) null, null, run).toUpperKey();
 						tags = tags(runtime, idx, true, table, tags, set);
 						idx++;
 					}
@@ -3430,7 +3489,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if (null != runs) {
 				int idx = 0;
 				for (Run run: runs) {
-					DataSet set = select( runtime, random, true, (String) null, run);
+					DataSet set = select( runtime, random, true, (String) null, null, run);
 					columns = columns(runtime, idx, true, table, columns, set);
 					idx++;
 				}
@@ -3484,7 +3543,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if (null != runs) {
 					int idx = 0;
 					for (Run run: runs) {
-						DataSet set = select(runtime, random, true, (String) null, run);
+						DataSet set = select(runtime, random, true, (String) null, null, run);
 						columns = columns(runtime, idx, true, table, columns, set);
 						idx++;
 					}
@@ -3816,7 +3875,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(null != runs){
 				int idx = 0;
 				for(Run run:runs){
-					DataSet set = select(runtime, random, false, (String)null, run).toUpperKey();
+					DataSet set = select(runtime, random, false, (String)null, null, run).toUpperKey();
 					primary = primary(runtime, idx, table, set);
 					if(null != primary){
 						primary.setTable(table);
@@ -3849,7 +3908,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(null != runs){
 				int idx = 0;
 				for(Run run:runs){
-					DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 					foreigns = foreigns(runtime, idx,  table, foreigns, set);
 					idx++;
 				}
@@ -3899,7 +3958,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 				try {
 					indexs = indexs(runtime, idx, true, table, indexs, set);
 				}catch (Exception e){
@@ -4056,7 +4115,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, true, (String)null,  null, run).toUpperKey();
 				try {
 					triggers = triggers(runtime, idx, true, table, triggers, set);
 				}catch (Exception e){
@@ -4091,7 +4150,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 				try {
 					procedures = procedures(runtime, idx, true, procedures, set);
 				}catch (Exception e){
@@ -4119,7 +4178,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 					list = ddl(runtime, idx++, procedure, list,  set);
 				}
 				if(list.size()>0) {
@@ -4162,7 +4221,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
-				DataSet set = select(runtime, random, true, (String)null, run).toUpperKey();
+				DataSet set = select(runtime, random, true, (String)null, null, run).toUpperKey();
 				try {
 					functions = functions(runtime, idx, true, functions, set);
 				}catch (Exception e){
@@ -4190,7 +4249,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, null, run).toUpperKey();
+					DataSet set = select(runtime, random, true, null, null, run).toUpperKey();
 					list = ddl(runtime, idx++, function, list,  set);
 				}
 				if(list.size()>0) {

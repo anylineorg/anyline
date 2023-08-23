@@ -674,7 +674,7 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return DataSet
 	 */
-	DataSet select(DataRuntime runtime, String random, boolean system, String table, Run run);
+	DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run);
 
 	/**
 	 * select [执行]

@@ -23,6 +23,7 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -743,11 +744,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return DataSet
 	 */
-	protected DataSet select(DataRuntime runtime, String random, boolean recover, boolean system, String table, Run run){
+	protected DataSet select(DataRuntime runtime, String random, boolean recover, boolean system, String table, ConfigStore configs, Run run){
 		if(null == runtime){
 			runtime = runtime();
 		}try{
-			return runtime.getAdapter().select(runtime, random, system, table, run);
+			return runtime.getAdapter().select(runtime, random, system, table, configs, run);
 		}finally{
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();

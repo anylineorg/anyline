@@ -459,7 +459,7 @@ public interface AnylineService<E>{
 	default <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
 		return selects(src, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, EntityHandler<T> handler, Class<T> clazz, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String src,  Class<T> clazz,EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return selects(src, clazz, configs, entity, conditions);
@@ -478,7 +478,7 @@ public interface AnylineService<E>{
 	default <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions){
 		return selects(src, clazz, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, EntityHandler<T> handler, Class<T> clazz, String ... conditions){
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return selects(src, clazz, configs, conditions);
