@@ -1434,7 +1434,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     if(isInsertNullColumn() || isUpdateNullColumn()){
                         addUpdateColumns(key);
                     }
-                }else if("".equals(value)){
+                }else if(BasicUtil.isEmpty(true, value)){
                     if(isInsertEmptyColumn() || isUpdateEmptyColumn()){
                         addUpdateColumns(key);
                     }

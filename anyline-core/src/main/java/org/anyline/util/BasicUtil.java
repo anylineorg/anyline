@@ -52,6 +52,39 @@ public class BasicUtil {
 					return false; 
 				} 
 			} 
+		}else if(obj.getClass().isArray()){
+			if(obj instanceof int[]){
+				if(((int[])obj).length > 0){
+					return false;
+				}
+			}else if(obj instanceof double[]){
+				if(((double[])obj).length > 0){
+					return false;
+				}
+			}else if(obj instanceof float[]){
+				if(((float[])obj).length > 0){
+					return false;
+				}
+			}else if(obj instanceof short[]){
+				if(((short[])obj).length > 0){
+					return false;
+				}
+			}else if(obj instanceof byte[]){
+				if(((byte[])obj).length > 0){
+					return false;
+				}
+			}else if(obj instanceof boolean[]){
+				if(((boolean[])obj).length > 0){
+					return false;
+				}
+			}else{
+				Object[] array = (Object[]) obj;
+				for (Object item : array) {
+					if (!isEmpty(recursion, item)) {
+						return false;
+					}
+				}
+			}
 		} else if (obj instanceof Map) {
 			Map map = (Map) obj;
 			if(map.isEmpty()){
