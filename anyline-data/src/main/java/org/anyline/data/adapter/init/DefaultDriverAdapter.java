@@ -449,7 +449,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 						cols.remove(key);
 						continue;
 					}
-				}else if("".equals(value.toString().trim())){
+				}else if(BasicUtil.isEmpty(true, value)){
 					if(factKeys.contains(key)){
 						cols.remove(key);
 						continue;
