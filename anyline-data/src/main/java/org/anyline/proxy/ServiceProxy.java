@@ -20,6 +20,8 @@ package org.anyline.proxy;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.springjdbc.FixDao;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.handler.EntityHandler;
+import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -441,6 +443,9 @@ public class ServiceProxy {
     public static DataSet querys(String src, Object obj, String ... conditions){
         return service.querys(src, obj, conditions);
     }
+    public static DataSet querys(String src, StreamHandler handler,  Object obj, String ... conditions){
+        return service.querys(src, handler, obj, conditions);
+    }
     public static DataSet querys(String src, PageNavi navi, Object obj, String ... conditions){
         return service.querys(src, navi, obj, conditions);
     }
@@ -467,8 +472,11 @@ public class ServiceProxy {
     public static DataSet querys(String src, ConfigStore configs, String ... conditions){
         return service.querys(src, configs, conditions);
     }
-    public static DataSet querys(String src,  String ... conditions){
+    public static DataSet querys(String src, String ... conditions){
         return service.querys(src, conditions);
+    }
+    public static DataSet querys(String src, StreamHandler handler, String ... conditions){
+        return service.querys(src, handler, conditions);
     }
     public static DataSet querys(String src, PageNavi navi,  String ... conditions){
         return service.querys(src, navi, conditions);
@@ -502,6 +510,9 @@ public class ServiceProxy {
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
         return service.selects(src, clazz, entity, conditions);
     }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+        return service.selects(src, clazz, handler, entity, conditions);
+    }
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, T entity, String ... conditions){
         return service.selects(src, clazz, first, last, entity, conditions);
     }
@@ -510,6 +521,9 @@ public class ServiceProxy {
     }
     public static <T> T select(String src, Class<T> clazz, T entity, String ... conditions){
         return (T)service.selects(src, clazz, entity, conditions);
+    }
+    public static <T> T select(String src, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+        return (T)service.selects(src, clazz, handler, entity, conditions);
     }
 
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
@@ -520,6 +534,9 @@ public class ServiceProxy {
     }
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions){
         return service.selects(src, clazz, conditions);
+    }
+    public static <T> EntitySet<T> selects(String src, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+        return service.selects(src, clazz, handler, conditions);
     }
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, String ... conditions){
         return service.selects(src, clazz, first, last, conditions);
@@ -549,6 +566,9 @@ public class ServiceProxy {
     public static <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions){
         return service.selects(clazz, entity, conditions);
     }
+    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+        return service.selects(clazz, handler, entity, conditions);
+    }
     public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions){
         return service.selects(clazz, first, last, entity, conditions);
     }
@@ -567,6 +587,9 @@ public class ServiceProxy {
     }
     public static <T> EntitySet<T> selects(Class<T> clazz, String ... conditions){
         return service.selects(clazz, conditions);
+    }
+    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+        return service.selects(clazz, handler, conditions);
     }
     public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
         return service.selects(clazz, first, last, conditions);
@@ -595,6 +618,9 @@ public class ServiceProxy {
     public static List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
         return service.maps(src, obj, conditions);
     }
+    public static List<Map<String,Object>> maps(String src, StreamHandler handler,  Object obj, String ... conditions){
+        return service.maps(src, handler, obj, conditions);
+    }
     public static List<Map<String,Object>> maps(String src, long first, long last, Object obj, String ... conditions){
         return service.maps(src, first, last, obj, conditions);
     }
@@ -603,6 +629,9 @@ public class ServiceProxy {
     }
     public static List<Map<String,Object>> maps(String src, String ... conditions){
         return service.maps(src, conditions);
+    }
+    public static List<Map<String,Object>> maps(String src, StreamHandler handler,  String ... conditions){
+        return service.maps(src, handler, conditions);
     }
     public static List<Map<String,Object>> maps(String src, long first, long last, String ... conditions){
         return service.maps(src, first, last, conditions);
@@ -669,6 +698,9 @@ public class ServiceProxy {
     public static DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
         return service.querys(prepare, obj, conditions);
     }
+    public static DataSet querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+        return service.querys(prepare, handler, obj, conditions);
+    }
     public static DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
         return service.querys(prepare, first, last, obj, conditions);
     }
@@ -682,8 +714,11 @@ public class ServiceProxy {
     public static DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions){
         return service.querys(prepare, configs, conditions);
     }
-    public static DataSet querys(RunPrepare prepare,  String ... conditions){
+    public static DataSet querys(RunPrepare prepare, String ... conditions){
         return service.querys(prepare, conditions);
+    }
+    public static DataSet querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
+        return service.querys(prepare, handler, conditions);
     }
     public static DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
         return service.querys(prepare, first, last, conditions);
@@ -693,6 +728,9 @@ public class ServiceProxy {
     }
     public static DataRow query(RunPrepare prepare, String ... conditions){
         return service.query(prepare, conditions);
+    }
+    public static DataRow query(RunPrepare prepare, StreamHandler handler, String ... conditions){
+        return service.query(prepare, handler, conditions);
     }
 
 
