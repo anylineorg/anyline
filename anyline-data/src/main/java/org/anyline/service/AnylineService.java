@@ -459,7 +459,7 @@ public interface AnylineService<E>{
 	default <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
 		return selects(src, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String src,  Class<T> clazz,EntityHandler<T> handler, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String src,  Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return selects(src, clazz, configs, entity, conditions);
@@ -703,7 +703,12 @@ public interface AnylineService<E>{
 		return querys(prepare, configs, obj, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
-		return querys(prepare, null, obj, conditions);
+		return querys(prepare, (ConfigStore) null, obj, conditions);
+	}
+	default DataSet querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		return querys(prepare, configs, obj, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
@@ -714,7 +719,12 @@ public interface AnylineService<E>{
 		return querys(prepare, configs, null, conditions);
 	}
 	default DataSet querys(RunPrepare prepare,  String ... conditions){
-		return querys(prepare, null, null, conditions);
+		return querys(prepare, (ConfigStore) null, null, conditions);
+	}
+	default DataSet querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		return querys(prepare, configs, null, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
 		return querys(prepare, first, last, null, conditions);
