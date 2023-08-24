@@ -26,6 +26,7 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -66,6 +67,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
+import sun.plugin2.main.server.ResultHandler;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -340,7 +342,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		try {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int qty = rsmd.getColumnCount();
-			if (!system && metadatas.isEmpty()) {
+			if (!system && (null == metadatas || metadatas.isEmpty())) {
 				for (int i = 1; i <= qty; i++) {
 					String name = rsmd.getColumnName(i);
 					if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
@@ -371,7 +373,54 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return row;
 	}
-
+    protected long stream(StreamHandler handler, ResultSet rs, ConfigStore configs, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas) throws Exception{
+        long count = 0;
+        if(handler instanceof ResultSetHandler){
+            count = ((ResultSetHandler) handler).read(rs);
+        }else {
+            if(handler instanceof DataRowHandler){
+                DataRowHandler dataRowHandler = (DataRowHandler) handler;
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int cols = rsmd.getColumnCount();
+                while (rs.next()) {
+                    DataRow row = row(system, runtime, metadatas, rs);
+                    if(!dataRowHandler.read(row)){
+                        break;
+                    }
+                    count ++;
+                }
+            }else if(handler instanceof EntityHandler){
+                Class clazz = configs.entityClass();
+                if(null != clazz) {
+                    EntityHandler entityHandler = (EntityHandler) handler;
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int cols = rsmd.getColumnCount();
+                    while (rs.next()) {
+                        DataRow row = row(system, runtime, metadatas, rs);
+                        if (!entityHandler.read(row.entity(clazz))) {
+                            break;
+                        }
+                        count++;
+                    }
+                }
+            }else if(handler instanceof MapHandler){
+                MapHandler mh = (MapHandler) handler;
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int cols = rsmd.getColumnCount();
+                while (rs.next()) {
+                    Map<String,Object> map = new HashMap<>();
+                    for(int i=1; i<=cols; i++){
+                        map.put(rsmd.getColumnLabel(i), rs.getObject(i));
+                    }
+                    if(!mh.read(map)){
+                        break;
+                    }
+                    count ++;
+                }
+            }
+        }
+        return count;
+    }
  	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
@@ -408,7 +457,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(null != configs){
 				_handler = configs.stream();
 			}
-			int[] count = new int[]{0};
+			long[] count = new long[]{0};
 			final StreamHandler handler = _handler;
 			if(null != handler){
 				jdbc.query(con -> {
@@ -423,41 +472,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					}
 					return ps;
 				}, rs -> {
+                    mid[0] = System.currentTimeMillis();
 					if(handler instanceof ResultSetHandler){
-						((ResultSetHandler) handler).read(rs);
+                        count[0] = ((ResultSetHandler) handler).read(rs);
 					}else {
-						if(handler instanceof DataRowHandler){
-							DataRowHandler dataRowHandler = (DataRowHandler) handler;
-							ResultSetMetaData rsmd = rs.getMetaData();
-							int cols = rsmd.getColumnCount();
-							while (rs.next()) {
-								if(!process[0]){
-									mid[0] = System.currentTimeMillis();
-								}
-								DataRow row = row(system, rt, metadatas, rs);
-								if(!dataRowHandler.read(row)){
-									break;
-								}
-								count[0] ++;
-							}
-						}else if(handler instanceof EntityHandler){
-							Class clazz = configs.entityClass();
-							if(null != clazz) {
-								EntityHandler entityHandler = (EntityHandler) handler;
-								ResultSetMetaData rsmd = rs.getMetaData();
-								int cols = rsmd.getColumnCount();
-								while (rs.next()) {
-									if (!process[0]) {
-										mid[0] = System.currentTimeMillis();
-									}
-									DataRow row = row(system, rt, metadatas, rs);
-									if (!entityHandler.read(row.entity(clazz))) {
-										break;
-									}
-									count[0]++;
-								}
-							}
-						}
+                        try {
+                            count[0] = stream(handler, rs, configs, system, runtime, metadatas);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
 					}
 				});
 				//end stream handler
@@ -789,8 +812,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(null != configs){
 				_handler = configs.stream();
 			}
-			int[] count = new int[]{0};
+			long[] count = new long[]{0};
 			final StreamHandler handler = _handler;
+            final long[] mid = {System.currentTimeMillis()};
 			if(null != handler){
 				jdbc.query(con -> {
 					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -804,24 +828,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					}
 					return ps;
 				}, rs -> {
+                    mid[0] = System.currentTimeMillis();
 					if(handler instanceof ResultSetHandler){
-						((ResultSetHandler) handler).read(rs);
+                        count[0] = ((ResultSetHandler) handler).read(rs);
 					}else {
-						if(handler instanceof MapHandler){
-							MapHandler mh = (MapHandler) handler;
-							ResultSetMetaData rsmd = rs.getMetaData();
-							int cols = rsmd.getColumnCount();
-							while (rs.next()) {
-								Map<String,Object> map = new HashMap<>();
-								for(int i=1; i<=cols; i++){
-									map.put(rsmd.getColumnLabel(i), rs.getObject(i));
-								}
-								if(!mh.read(map)){
-									break;
-								}
-								count[0] ++;
-							}
-						}
+                        try {
+                            count[0] = stream(handler, rs, configs, false, runtime, null);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
 					}
 				});
 				maps = new ArrayList<>();
@@ -832,26 +847,26 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				} else {
 					maps = jdbc.queryForList(sql);
 				}
-				count[0] = maps.size();
+                mid[0] = System.currentTimeMillis();
+                count[0] = maps.size();
 			}
-			long mid = System.currentTimeMillis();
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
-				if(mid-fr > SLOW_SQL_MILLIS){
+				if(mid[0]-fr > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid-fr, sql, LogUtil.param(values));
+					log.warn("{}[SLOW SQL][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0]-fr, sql, LogUtil.param(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, random, ACTION.DML.SELECT,null, sql, values, null, true, maps, mid);
+						dmListener.slow(runtime, random, ACTION.DML.SELECT,null, sql, values, null, true, maps, mid[0]-fr);
 					}
 				}
 			}
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[执行耗时:{}ms]", random, mid - fr);
+				log.info("{}[执行耗时:{}ms]", random, mid[0] - fr);
 			}
 			maps = process(runtime, maps);
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid, count);
+				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count);
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
