@@ -372,53 +372,43 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return row;
 	}
-    protected long stream(StreamHandler handler, ResultSet rs, ConfigStore configs, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas) throws Exception{
-        long count = 0;
-        if(handler instanceof ResultSetHandler){
-            count = ((ResultSetHandler) handler).read(rs);
-        }else {
-            if(handler instanceof DataRowHandler){
-                DataRowHandler dataRowHandler = (DataRowHandler) handler;
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int cols = rsmd.getColumnCount();
-                while (rs.next()) {
-                    DataRow row = row(system, runtime, metadatas, rs);
-                    if(!dataRowHandler.read(row)){
-                        break;
-                    }
-                    count ++;
-                }
-            }else if(handler instanceof EntityHandler){
-                Class clazz = configs.entityClass();
-                if(null != clazz) {
-                    EntityHandler entityHandler = (EntityHandler) handler;
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    int cols = rsmd.getColumnCount();
-                    while (rs.next()) {
-                        DataRow row = row(system, runtime, metadatas, rs);
-                        if (!entityHandler.read(row.entity(clazz))) {
-                            break;
-                        }
-                        count++;
-                    }
-                }
-            }else if(handler instanceof MapHandler){
-                MapHandler mh = (MapHandler) handler;
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int cols = rsmd.getColumnCount();
-                while (rs.next()) {
-                    Map<String,Object> map = new HashMap<>();
-                    for(int i=1; i<=cols; i++){
-                        map.put(rsmd.getColumnLabel(i), rs.getObject(i));
-                    }
-                    if(!mh.read(map)){
-                        break;
-                    }
-                    count ++;
-                }
-            }
-        }
-        return count;
+    protected boolean stream(StreamHandler handler, ResultSet rs, ConfigStore configs, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas) {
+		try {
+			if (handler instanceof ResultSetHandler) {
+				return ((ResultSetHandler) handler).read(rs);
+			} else {
+				if (handler instanceof DataRowHandler) {
+					DataRowHandler dataRowHandler = (DataRowHandler) handler;
+					DataRow row = row(system, runtime, metadatas, rs);
+					if (!dataRowHandler.read(row)) {
+						return false;
+					}
+				} else if (handler instanceof EntityHandler) {
+					Class clazz = configs.entityClass();
+					if (null != clazz) {
+						EntityHandler entityHandler = (EntityHandler) handler;
+						DataRow row = row(system, runtime, metadatas, rs);
+						if (!entityHandler.read(row.entity(clazz))) {
+							return false;
+						}
+					}
+				} else if (handler instanceof MapHandler) {
+					MapHandler mh = (MapHandler) handler;
+					ResultSetMetaData rsmd = rs.getMetaData();
+					int cols = rsmd.getColumnCount();
+					Map<String, Object> map = new HashMap<>();
+					for (int i = 1; i <= cols; i++) {
+						map.put(rsmd.getColumnLabel(i), rs.getObject(i));
+					}
+					if (!mh.read(map)) {
+						return false;
+					}
+				}
+			}
+		}catch (Exception e){
+			return false;
+		}
+        return true;
     }
  	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
@@ -459,6 +449,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			long[] count = new long[]{0};
 			final StreamHandler handler = _handler;
 			if(null != handler){
+
 				jdbc.query(con -> {
 					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
@@ -471,16 +462,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					}
 					return ps;
 				}, rs -> {
-                    mid[0] = System.currentTimeMillis();
-					if(handler instanceof ResultSetHandler){
-                        count[0] = ((ResultSetHandler) handler).read(rs);
-					}else {
-                        try {
-                            count[0] = stream(handler, rs, configs, system, runtime, metadatas);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
+					if(!process[0]){
+						mid[0] = System.currentTimeMillis();
+						process[0] = true;
 					}
+					stream(handler, rs, configs, system, runtime, metadatas);
+					count[0] ++;
 				});
 				//end stream handler
 			}else {
@@ -490,10 +477,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						public void processRow(ResultSet rs) throws SQLException {
 							if(!process[0]){
 								mid[0] = System.currentTimeMillis();
+								process[0] = true;
 							}
 							DataRow row = row(system, rt, metadatas, rs);
 							set.add(row);
-							process[0] = true;
 						}
 					});
 				}else {
@@ -502,10 +489,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						public void processRow(ResultSet rs) throws SQLException {
 							if(!process[0]){
 								mid[0] = System.currentTimeMillis();
+								process[0] = true;
 							}
 							DataRow row = row(system, rt, metadatas, rs);
 							set.add(row);
-							process[0] = true;
 						}
 					});
 				}
@@ -812,6 +799,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				_handler = configs.stream();
 			}
 			long[] count = new long[]{0};
+			final boolean[] process = {false};
 			final StreamHandler handler = _handler;
             final long[] mid = {System.currentTimeMillis()};
 			if(null != handler){
@@ -827,16 +815,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					}
 					return ps;
 				}, rs -> {
-                    mid[0] = System.currentTimeMillis();
-					if(handler instanceof ResultSetHandler){
-                        count[0] = ((ResultSetHandler) handler).read(rs);
-					}else {
-                        try {
-                            count[0] = stream(handler, rs, configs, false, runtime, null);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
+					if(!process[0]){
+						mid[0] = System.currentTimeMillis();
+						process[0] = true;
 					}
+					stream(handler, rs, configs, true, runtime, null);
+					count[0] ++;
 				});
 				maps = new ArrayList<>();
 				//end stream handler
@@ -2607,7 +2591,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME");
+			String name = row.getString("TABLE_NAME", "NAME");
 			T table = tables.get(name.toUpperCase());
 			if(null == table){
 				table = (T)new Table();
@@ -2629,7 +2613,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tables = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME");
+			String name = row.getString("TABLE_NAME", "NAME");
 			T table = table(tables, catalog, row.getString("TABLE_SCHEMA"), name);
 			boolean contains = true;
 			if(null == table){

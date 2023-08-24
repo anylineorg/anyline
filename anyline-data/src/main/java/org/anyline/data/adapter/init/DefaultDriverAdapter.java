@@ -1246,7 +1246,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			T table = table(tables, catalog, schema, name);
 			if (null == table) {
 				if (create) {
-					table = (T) new Table();
+					table = (T) new Table(catalog, schema, name);
 					contains = false;
 				} else {
 					continue;

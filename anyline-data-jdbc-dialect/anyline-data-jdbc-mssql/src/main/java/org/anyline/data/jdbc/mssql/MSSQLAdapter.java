@@ -224,8 +224,21 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun();
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA,F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
+				.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0\n")
+				.append("WHERE 1=1 ");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND M.NAME = '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema).append("'");
+		}
+		return runs;
+		//
 	}
 
 	/**

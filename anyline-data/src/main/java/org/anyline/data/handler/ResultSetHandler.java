@@ -6,7 +6,7 @@ public interface ResultSetHandler extends StreamHandler{
     /**
      *
      * @param result ResultSet
-     * @return 总行数
+     * @return boolean
      */
-    long read(ResultSet result);
+    boolean read(ResultSet result);
 }
