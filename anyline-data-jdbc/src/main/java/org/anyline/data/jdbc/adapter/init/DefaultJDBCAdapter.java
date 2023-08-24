@@ -2403,6 +2403,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, origin, types, list.size(), System.currentTimeMillis() - fr);
 			}
 			if(BasicUtil.isNotEmpty(origin)){
+				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
  				for(T item:list){
 					String name = item.getName(greedy);
@@ -2410,6 +2411,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						tmp.add(item);
 					}
 				}
+				 list = tmp;
  			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {

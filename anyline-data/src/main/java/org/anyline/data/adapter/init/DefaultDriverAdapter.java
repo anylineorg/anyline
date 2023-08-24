@@ -1194,7 +1194,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public <T extends Table> T table(List<T> tables, String catalog, String schema, String name){
 		if(null != tables){
 			for(T table:tables){
-				if(catalog == table.getCatalog() && schema == table.getSchema() && table.getName().equalsIgnoreCase(name)){
+				if((null == catalog || catalog == table.getCatalog())
+						&& (null == schema || schema == table.getSchema())
+						&& table.getName().equalsIgnoreCase(name)
+				){
 					return table;
 				}
 			}
