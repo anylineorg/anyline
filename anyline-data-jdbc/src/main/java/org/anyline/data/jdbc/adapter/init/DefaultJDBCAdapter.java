@@ -2403,8 +2403,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						int idx = 0;
 						for (Run run : runs) {
 							DataSet set = select(runtime, random, true, (String) null, null, run).toUpperKey();
-							LinkedHashMap<String, T> maps = comments(runtime, idx++, true, catalog, schema, null, set);
-							merge(list, maps);
+							list = comments(runtime, idx++, true, catalog, schema, list, set);
+							//merge(list, maps);
 						}
 					}
 				} catch (Exception e) {

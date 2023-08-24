@@ -1213,6 +1213,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
 		for(DataRow row:set){
 			String name = row.getString("TABLE_NAME");
 			String comment = row.getString("TABLE_COMMENT");
@@ -1225,7 +1228,37 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("TABLE_NAME");
+			String comment = row.getString("TABLE_COMMENT");
+			if(null == catalog){
+				catalog = row.getString("TABLE_CATALOG");
+			}
+			if(null == schema){
+				schema = row.getString("TABLE_SCHEMA");
+			}
 
+			boolean contains = true;
+			T table = table(tables, catalog, schema, name);
+			if (null == table) {
+				if (create) {
+					table = (T) new Table();
+					contains = false;
+				} else {
+					continue;
+				}
+			}
+			table.setComment(comment);
+			if (!contains) {
+				tables.add(table);
+			}
+		}
+		return tables;
+	}
 	/**
 	 * 查询表DDL
 	 * @param table 表
