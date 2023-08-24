@@ -340,10 +340,10 @@ public interface AnylineService<E>{
 	default DataSet querys(String src, Object obj, String ... conditions){
 		return querys(src, (ConfigStore) null, obj, conditions);
 	}
-	default DataSet querys(String src, StreamHandler handler, Object obj, String ... conditions){
+	default void querys(String src, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return querys(src, configs, obj, conditions);
+		querys(src, configs, obj, conditions);
 	}
 	default DataSet querys(String src, PageNavi navi, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
@@ -380,10 +380,10 @@ public interface AnylineService<E>{
 	default DataSet querys(String src, String ... conditions){
 		return querys(src, (Object) null, conditions);
 	}
-	default DataSet querys(String src, StreamHandler handler, String ... conditions){
+	default void querys(String src, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return querys(src, configs, conditions);
+		querys(src, configs, conditions);
 	}
 	default DataSet querys(String src, PageNavi navi,  String ... conditions){
 		return querys(src, navi, null, conditions);
@@ -591,10 +591,10 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
-	default List<Map<String,Object>> maps(String src, StreamHandler handler, Object obj, String ... conditions){
+	default void maps(String src, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return maps(src, configs, obj, conditions);
+		maps(src, configs, obj, conditions);
 	}
 	default List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
 		return maps(src, (ConfigStore) null, obj, conditions);
@@ -608,10 +608,10 @@ public interface AnylineService<E>{
 	default List<Map<String,Object>> maps(String src, String ... conditions){
 		return maps(src, (ConfigStore) null,null, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, StreamHandler handler, String ... conditions){
+	default void maps(String src, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return maps(src, configs,null, conditions);
+		maps(src, configs,null, conditions);
 	}
 	default List<Map<String,Object>> maps(String src, PageNavi navi, String ... conditions){
 		return maps(src,new DefaultConfigStore().setPageNavi(navi), null, conditions);
@@ -705,10 +705,10 @@ public interface AnylineService<E>{
 	default DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
 		return querys(prepare, (ConfigStore) null, obj, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return querys(prepare, configs, obj, conditions);
+		querys(prepare, configs, obj, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
@@ -721,10 +721,10 @@ public interface AnylineService<E>{
 	default DataSet querys(RunPrepare prepare,  String ... conditions){
 		return querys(prepare, (ConfigStore) null, null, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
+	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return querys(prepare, configs, null, conditions);
+		querys(prepare, configs, null, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
 		return querys(prepare, first, last, null, conditions);

@@ -443,8 +443,8 @@ public class ServiceProxy {
     public static DataSet querys(String src, Object obj, String ... conditions){
         return service.querys(src, obj, conditions);
     }
-    public static DataSet querys(String src, StreamHandler handler,  Object obj, String ... conditions){
-        return service.querys(src, handler, obj, conditions);
+    public static void querys(String src, StreamHandler handler,  Object obj, String ... conditions){
+        service.querys(src, handler, obj, conditions);
     }
     public static DataSet querys(String src, PageNavi navi, Object obj, String ... conditions){
         return service.querys(src, navi, obj, conditions);
@@ -475,8 +475,8 @@ public class ServiceProxy {
     public static DataSet querys(String src, String ... conditions){
         return service.querys(src, conditions);
     }
-    public static DataSet querys(String src, StreamHandler handler, String ... conditions){
-        return service.querys(src, handler, conditions);
+    public static void querys(String src, StreamHandler handler, String ... conditions){
+        service.querys(src, handler, conditions);
     }
     public static DataSet querys(String src, PageNavi navi,  String ... conditions){
         return service.querys(src, navi, conditions);
@@ -618,8 +618,8 @@ public class ServiceProxy {
     public static List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
         return service.maps(src, obj, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, StreamHandler handler,  Object obj, String ... conditions){
-        return service.maps(src, handler, obj, conditions);
+    public static void maps(String src, StreamHandler handler,  Object obj, String ... conditions){
+        service.maps(src, handler, obj, conditions);
     }
     public static List<Map<String,Object>> maps(String src, long first, long last, Object obj, String ... conditions){
         return service.maps(src, first, last, obj, conditions);
@@ -630,8 +630,8 @@ public class ServiceProxy {
     public static List<Map<String,Object>> maps(String src, String ... conditions){
         return service.maps(src, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, StreamHandler handler,  String ... conditions){
-        return service.maps(src, handler, conditions);
+    public static void maps(String src, StreamHandler handler,  String ... conditions){
+        service.maps(src, handler, conditions);
     }
     public static List<Map<String,Object>> maps(String src, long first, long last, String ... conditions){
         return service.maps(src, first, last, conditions);
@@ -698,8 +698,8 @@ public class ServiceProxy {
     public static DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
         return service.querys(prepare, obj, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
-        return service.querys(prepare, handler, obj, conditions);
+    public static void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+        service.querys(prepare, handler, obj, conditions);
     }
     public static DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
         return service.querys(prepare, first, last, obj, conditions);
@@ -717,8 +717,8 @@ public class ServiceProxy {
     public static DataSet querys(RunPrepare prepare, String ... conditions){
         return service.querys(prepare, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
-        return service.querys(prepare, handler, conditions);
+    public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
+        service.querys(prepare, handler, conditions);
     }
     public static DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
         return service.querys(prepare, first, last, conditions);
@@ -729,8 +729,8 @@ public class ServiceProxy {
     public static DataRow query(RunPrepare prepare, String ... conditions){
         return service.query(prepare, conditions);
     }
-    public static DataRow query(RunPrepare prepare, StreamHandler handler, String ... conditions){
-        return service.query(prepare, handler, conditions);
+    public static void query(RunPrepare prepare, StreamHandler handler, String ... conditions){
+        service.query(prepare, handler, conditions);
     }
 
 

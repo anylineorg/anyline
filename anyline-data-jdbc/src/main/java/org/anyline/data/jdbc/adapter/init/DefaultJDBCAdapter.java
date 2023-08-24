@@ -67,7 +67,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
-import sun.plugin2.main.server.ResultHandler;
 
 import javax.sql.DataSource;
 import java.sql.*;
