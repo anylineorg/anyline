@@ -1123,7 +1123,7 @@ public class WebUtil {
 	public static String readRequestContent(HttpServletRequest request){
 		StringBuilder sb = new StringBuilder();
 		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream)request.getInputStream()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 			String line = null;
 			while((line = br.readLine())!=null){
 				sb.append(line);
