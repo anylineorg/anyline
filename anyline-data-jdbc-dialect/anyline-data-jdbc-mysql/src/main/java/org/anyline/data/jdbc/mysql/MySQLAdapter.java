@@ -410,7 +410,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 					}
 				}
 				//参考 checkSchema()
-				table.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+				table.setSchema(BasicUtil.evl(string(keys, "TABLE_CATALOG", set),string(keys, "TABLE_CAT", set), catalog));
 				table.setCatalog(null);
 
 				table.setName(tableName);
