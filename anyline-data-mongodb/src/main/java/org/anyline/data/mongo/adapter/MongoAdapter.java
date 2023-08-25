@@ -38,14 +38,11 @@ import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
-import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
+import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.bson.conversions.Bson;
@@ -102,7 +99,53 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      */
     @Override
     public long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
-        return 0;
+        if(null == random){
+            random = random(runtime);
+        }
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        boolean sql_success = false;
+        swt = InterceptorProxy.prepareInsert(runtime, random,  dest, data, checkPrimary, columns);
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        if(null != dmListener){
+            swt = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
+        }
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        Run run = buildInsertRun(runtime, dest, data, checkPrimary, columns);
+        Table table = new Table(dest);
+        //提前设置好columns,到了adapter中需要手动检测缓存
+        if(ConfigTable.IS_AUTO_CHECK_METADATA){
+            table.setColumns(columns(runtime, random,  false, table, false));
+        }
+        if(null == run){
+            return 0;
+        }
+
+        long cnt = 0;
+        //final String sql = run.getFinalInsert();
+        //final List<Object> values = run.getValues();
+        long fr = System.currentTimeMillis();
+        long millis = -1;
+
+        swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        if(null != dmListener){
+            swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+        }
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        cnt = insert(runtime, random, data, run, null);
+        if (null != dmListener) {
+            dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
+        }
+        InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
+        return cnt;
     }
 
     /**
@@ -117,37 +160,25 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(runtime, dest);
-        if(BasicUtil.isEmpty(dest)){
-            throw new SQLException("未指定表");
-        }
-
-        PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
-
-        int from = 1;
-        DataRow row = null;
-        if(obj instanceof Map){
-            obj = new DataRow((Map)obj);
-        }
-        if(obj instanceof DataRow){
-            row = (DataRow)obj;
-            if(row.hasPrimaryKeys() && null != generator){
-                generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-            }
-        }else{
-            from = 2;
-            boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
-            LinkedHashMap<String,Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
-            if(!create && null != generator){
-                generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-            }
-        }
-        run.setFrom(from);
-
         run.setValue(obj);
-
         return run;
     }
 
+    /**
+     * 根据collection创建 INSERT RunPrepare
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param dest 表
+     * @param list 对象集合
+     * @param checkPrimary 是否需要检查重复主键,默认不检查
+     * @param columns 需要插入的列,如果不指定则全部插入
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     */
+    @Override
+    protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
+        Run run = new TableRun(runtime, dest);
+        run.setValue(list);
+        return run;
+    }
     /**
      * 执行 insert
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -162,7 +193,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
         long cnt = 0;
         Object value = run.getValue();
-        if(null == value || !run.isValid()){
+        String collection = run.getTable();
+        if(null == value){
             if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
                 log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
             }
@@ -176,25 +208,47 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(value instanceof List){
                 List list = (List) value;
                 cons = database.getCollection(run.getTable(), list.get(0).getClass());
+                cnt = list.size();
                 cons.insertMany(list);
             }else if(value instanceof DataSet){
+                DataSet set = (DataSet)value;
                 cons = database.getCollection(run.getTable(), DataRow.class);
-                cons.insertMany(((DataSet)value).getRows());
+                cons.insertMany(set.getRows());
+                cnt = set.size();
             }else if(value instanceof EntitySet){
                 List<Object> datas = ((EntitySet)value).getDatas();
                 cons = database.getCollection(run.getTable(),datas.get(0).getClass());
                 cons.insertMany(datas);
+                cnt = datas.size();
             }else if(value instanceof Collection){
                 Collection items = (Collection) value;
                 List<Object> list = new ArrayList<>();
                 for(Object item:items){
                     list.add(item);
+                    cnt ++;
                 }
                 cons = database.getCollection(run.getTable(), list.get(0).getClass());
                 cons.insertMany(list);
             }else{
                 cons = database.getCollection(run.getTable(), value.getClass());
                 cons.insertOne(value);
+                cnt = 1;
+            }
+
+            long millis = System.currentTimeMillis() - fr;
+            boolean slow = false;
+            long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
+            if(SLOW_SQL_MILLIS > 0){
+                if(millis > SLOW_SQL_MILLIS){
+                    slow = true;
+                    log.warn("{}[SLOW CMD][action:insert][millis:{}ms][collection:{}]", random, millis, collection);
+                    if(null != dmListener){
+                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
+                    }
+                }
+            }
+            if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+                log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
