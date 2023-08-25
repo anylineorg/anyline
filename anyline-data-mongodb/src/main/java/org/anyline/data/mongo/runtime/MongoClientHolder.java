@@ -181,7 +181,7 @@ public class MongoClientHolder extends ClientHolder {
 			map.put("username",username);
 			map.put("password",password);
 			//BeanUtil.setFieldsValue(ds, map, false);
-			String client = build(key, map);
+			String client = build(key, map); //database.id
 			if(null == client){//创建数据源失败
 				return null;
 			}

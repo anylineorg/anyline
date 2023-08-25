@@ -112,7 +112,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
         BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixDao.class);
         //daoBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         daoBuilder.addPropertyValue("runtime", runtime);
-        daoBuilder.addPropertyValue("datasource", datasource);
+        //daoBuilder.addPropertyValue("datasource", datasource);
         //daoBuilder.addPropertyValue("listener", SpringContextUtil.getBean(DMListener.class));
         //daoBuilder.addAutowiredProperty("listener");
         daoBuilder.setLazyInit(true);
@@ -122,7 +122,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
         //service
         BeanDefinitionBuilder serviceBuilder = BeanDefinitionBuilder.genericBeanDefinition(FixService.class);
         //serviceBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-        serviceBuilder.addPropertyValue("datasource", datasource);
+        //serviceBuilder.addPropertyValue("datasource", datasource);
         serviceBuilder.addPropertyReference("dao", dao_key);
         //serviceBuilder.addAutowiredProperty("cacheProvider");
         serviceBuilder.setLazyInit(true);
