@@ -43,6 +43,14 @@ public class AnylineProperty {
      *  anyline.datasource.{数据源key}.url=...
      */
     protected Map<String, DataSourceProperty> datasource;
+    /**
+     * 用来配置默认的 mongodb 数据源，如果还有其他数据源(包括JDBC)可以合并到datasource
+     */
+    protected DataSourceProperty mongodb;
+    /**
+     * 用来配置默认的 elasticsearch 数据源，如果还有其他数据源(包括JDBC)可以合并到datasource
+     */
+    protected DataSourceProperty elasticsearch;
 
     public Map<String, DataSourceProperty> getDatasource() {
         return datasource;
@@ -1081,4 +1089,19 @@ public class AnylineProperty {
         ConfigTable.GENERATOR_TABLES = generatorTables;
     }
 
+    public DataSourceProperty getMongodb() {
+        return mongodb;
+    }
+
+    public void setMongodb(DataSourceProperty mongodb) {
+        this.mongodb = mongodb;
+    }
+
+    public DataSourceProperty getElasticsearch() {
+        return elasticsearch;
+    }
+
+    public void setElasticsearch(DataSourceProperty elasticsearch) {
+        this.elasticsearch = elasticsearch;
+    }
 }
