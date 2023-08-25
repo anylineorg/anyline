@@ -224,7 +224,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();

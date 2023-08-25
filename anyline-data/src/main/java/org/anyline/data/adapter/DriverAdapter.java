@@ -994,9 +994,9 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
-	default List<Run> buildQueryTableRun(String catalog, String schema, String pattern, String types) throws Exception{
-		return buildQueryTableRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception;
+	default List<Run> buildQueryTableRun(boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
+		return buildQueryTableRun(RuntimeHolder.getRuntime(), greedy, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -1094,9 +1094,9 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception;
-	default List<Run> buildQueryViewRun(String catalog, String schema, String pattern, String types) throws Exception{
-		return buildQueryViewRun(RuntimeHolder.getRuntime(), catalog, schema, pattern, types);
+	List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception;
+	default List<Run> buildQueryViewRun(boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
+		return buildQueryViewRun(RuntimeHolder.getRuntime(), greedy, catalog, schema, pattern, types);
 	}
 
 	/**

@@ -514,7 +514,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -569,6 +569,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 					table = (T) new Table();
 				}
 			}
+			if(null == schema){
+				schema = row.getString("SCHEMA_NAME");
+			}
 			table.setCatalog(catalog);
 			table.setSchema(schema);
 			table.setName(name);
@@ -594,6 +597,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				}else {
 					table = (T) new Table();
 				}
+			}
+			if(null == schema){
+				schema = row.getString("SCHEMA_NAME");
 			}
 			table.setCatalog(catalog);
 			table.setSchema(schema);
@@ -630,7 +636,7 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -666,6 +672,9 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 			T view = views.get(name.toUpperCase());
 			if(null == view){
 				view = (T)new View();
+			}
+			if(null == schema){
+				schema = row.getString("SCHEMA_NAME");
 			}
 			view.setCatalog(catalog);
 			view.setSchema(schema);

@@ -282,7 +282,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -340,48 +340,20 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
-		if(null == tables){
-			tables = new LinkedHashMap<>();
-		}
-		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME");
-			T table = tables.get(name.toUpperCase());
-			if(null == table){
-				table = (T)new Table();
-			}
-			//MYSQL不支付TABLE_CATALOG
-			//table.setCatalog(row.getString("TABLE_CATALOG"));
-			table.setSchema(row.getString("TABLE_SCHEMA"));
-			table.setName(name);
-			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT"));
-			tables.put(name.toUpperCase(), table);
+		tables = super.tables(runtime, index, create, catalog, schema, tables, set);
+		//MYSQL不支持TABLE_CATALOG
+		for(Table table:tables.values()){
+			table.setCatalog(null);
 		}
 		return tables;
 	}
 
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
-		if(null == tables){
-			tables = new ArrayList<>();
-		}
-		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME");
-			T table = table(tables, catalog, row.getString("TABLE_SCHEMA"), name);
-			boolean contains = true;
-			if(null == table){
-				table = (T)new Table();
-				contains = false;
-			}
-			//MYSQL不支付TABLE_CATALOG
-			//table.setCatalog(row.getString("TABLE_CATALOG"));
-			table.setSchema(row.getString("TABLE_SCHEMA"));
-			table.setName(name);
-			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT"));
-			if(!contains){
-				tables.add(table);
-			}
+		tables = super.tables(runtime, index, create, catalog, schema, tables, set);
+		//MYSQL不支持TABLE_CATALOG
+		for(Table table:tables){
+			table.setCatalog(null);
 		}
 		return tables;
 	}
@@ -556,7 +528,7 @@ public class MariaAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);

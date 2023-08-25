@@ -178,8 +178,8 @@ public class GbasePostgresqlAdapter extends SQLAdapter implements JDBCAdapter, I
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryTableRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 	/**

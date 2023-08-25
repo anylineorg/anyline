@@ -1115,7 +1115,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}
@@ -1307,7 +1307,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types)", 37));
 		}

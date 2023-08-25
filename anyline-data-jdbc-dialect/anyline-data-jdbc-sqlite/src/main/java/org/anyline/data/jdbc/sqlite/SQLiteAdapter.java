@@ -132,8 +132,8 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryTableRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -165,7 +165,6 @@ public class SQLiteAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
 		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													master table

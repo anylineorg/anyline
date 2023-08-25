@@ -176,8 +176,8 @@ public class DB2Adapter extends SQLAdapter implements JDBCAdapter, InitializingB
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
+		return super.buildQueryTableRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 	/**
 	 * 查询表

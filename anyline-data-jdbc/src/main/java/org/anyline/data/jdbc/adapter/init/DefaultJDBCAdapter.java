@@ -2257,7 +2257,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
-	private void tableMap(DataRuntime runtime, String random, String catalog, String schema){
+	private void tableMap(DataRuntime runtime, boolean greedy, String random, String catalog, String schema){
 		Map<String, String> names = CacheProxy.names(catalog, schema);
 		if(null == names || names.isEmpty()){
 			if(null == random){
@@ -2267,7 +2267,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			LinkedHashMap<String, Table> tables = new LinkedHashMap<>();
 			boolean sys = false; //根据系统表查询
 			try {
-				List<Run> runs =buildQueryTableRun(runtime, null, null, null, null);
+				List<Run> runs =buildQueryTableRun(runtime, greedy, null, null, null, null);
 				if (null != runs && runs.size() > 0) {
 					int idx = 0;
 					for (Run run : runs) {
@@ -2315,7 +2315,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			String origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			if(null == origin){
-				tableMap(runtime, random, catalog, schema);
+				tableMap(runtime, greedy, random, catalog, schema);
 				origin = CacheProxy.name(greedy, catalog, schema, pattern);
 			}
 			if(null == origin){
@@ -2331,7 +2331,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryTableRun(runtime, catalog, schema, origin, types);
+				List<Run> runs = buildQueryTableRun(runtime, greedy, catalog, schema, origin, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -2593,17 +2593,22 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME", "NAME");
+			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
 			T table = tables.get(name.toUpperCase());
 			if(null == table){
 				table = (T)new Table();
 			}
-			//MYSQL不支付TABLE_CATALOG
-			//table.setCatalog(row.getString("TABLE_CATALOG"));
-			table.setSchema(row.getString("TABLE_SCHEMA"));
+			if(null == catalog){
+				catalog = row.getString("TABLE_CATALOG");
+			}
+			if(null == schema){
+				schema = row.getString("TABLE_SCHEMA");
+			}
+			table.setCatalog(catalog);
+			table.setSchema(schema);
 			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT"));
+			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS"));
 			tables.put(name.toUpperCase(), table);
 		}
 		return tables;
@@ -2615,22 +2620,23 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tables = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME", "NAME");
-			T table = table(tables, catalog, row.getString("TABLE_SCHEMA"), name);
-			boolean contains = true;
+			if(null == catalog){
+				catalog = row.getString("TABLE_CATALOG");
+			}
+			if(null == schema){
+				schema = row.getString("TABLE_SCHEMA");
+			}
+			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
+			T table = table(tables, catalog, schema, name);
 			if(null == table){
 				table = (T)new Table();
-				contains = false;
 			}
-			//MYSQL不支付TABLE_CATALOG
-			//table.setCatalog(row.getString("TABLE_CATALOG"));
-			table.setSchema(row.getString("TABLE_SCHEMA"));
+			table.setCatalog(catalog);
+			table.setSchema(schema);
 			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT"));
-			if(!contains){
-				tables.add(table);
-			}
+			tables.add(table);
 		}
 		return tables;
 	}
@@ -2741,7 +2747,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryViewRun(runtime, catalog, schema, pattern, types);
+				List<Run> runs = buildQueryViewRun(runtime, greedy, catalog, schema, pattern, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {

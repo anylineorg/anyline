@@ -477,7 +477,12 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
+		/*
+		ALL_TABLES：当前登录用户可见的所有表
+		DBA_TABLES：数据库中所有表
+		USER_TABLES：当前登录用户拥有的所有表
+		*/
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
@@ -497,6 +502,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 //		return runs;
 		// jack 2023年5月2日 19点55分 由于之前查询表名的方式会意外失效，特进行调整,兼容table和view
 		//增加types列用于后期扩展
+/*
 		builder.append(" SELECT * FROM (" );
 		builder.append(" SELECT A.TABLE_NAME, B.COMMENTS, 'TABLE' TABLE_TYPE FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME");
 		builder.append(" UNION ALL ");
@@ -506,9 +512,17 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
 		}
+*/
+		//需要跨schema查询
+		builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, F.COMMENTS FROM ALL_OBJECTS   M LEFT JOIN ALL_TAB_COMMENTS   F \n");
+		builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
+		builder.append("WHERE M.OWNER NOT IN('SYS','PUBLIC','SYSTEM') AND M.OBJECT_TYPE IN('TABLE','VIEW')");
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND M.OWNER = '").append(schema).append("'");
+		}
 		if(BasicUtil.isNotEmpty(types)){
 			String[] tmps = types.split(",");
-			builder.append(" AND TABLE_TYPE IN(");
+			builder.append(" AND M.OBJECT_TYPE IN(");
 			int idx = 0;
 			for(String tmp:tmps){
 				if(idx > 0){
@@ -536,54 +550,23 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM USER_TAB_COMMENTS\n");
+		builder.append("SELECT * FROM ALL_TAB_COMMENTS WHERE 1=1\n");
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND OWNER = '").append(schema).append("'");
+		}
 		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append("WHERE TABLE_NAME = '").append(pattern).append("'");
+			builder.append(" AND TABLE_NAME = '").append(pattern).append("'");
 		}
 		return runs;
 	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
-		if(null == tables){
-			tables = new LinkedHashMap<>();
-		}
-		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME");
-			T table = tables.get(name.toUpperCase());
-			if(null == table){
-				table = (T)new Table();
-			}
-			table.setCatalog(catalog);
-			table.setSchema(schema);
-			table.setName(name);
-			table.setComment(row.getString("COMMENTS"));
-			tables.put(name.toUpperCase(), table);
-		}
-		return tables;
+		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
 
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, String catalog, String schema, List<T> tables, DataSet set) throws Exception{
-		if(null == tables){
-			tables = new ArrayList<>();
-		}
-		for(DataRow row:set){
-			String name = row.getString("TABLE_NAME");
-			T table = table(tables, catalog, schema, name);
-			boolean contains = true;
-			if(null == table){
-				table = (T)new Table();
-				contains = false;
-			}
-			table.setCatalog(catalog);
-			table.setSchema(schema);
-			table.setName(name);
-			table.setComment(row.getString("COMMENTS"));
-			if(!contains){
-				tables.add(table);
-			}
-		}
-		return tables;
+		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, String catalog, String schema, String pattern, String ... types) throws Exception{
@@ -610,7 +593,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryViewRun(DataRuntime runtime, String catalog, String schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun();
 		runs.add(run);
