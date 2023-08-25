@@ -2543,7 +2543,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				if(BasicUtil.isEmpty(tableName)){
 					continue;
 				}
-				catalog = BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog);
+				catalog = BasicUtil.evl(string(keys, "TABLE_CATALOG", set), string(keys, "TABLE_CAT", set), catalog);
 				schema = BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema);
 				T table = table(tables, catalog, schema, tableName);
 				boolean contains = true;
@@ -2593,6 +2593,14 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
+			String _catalog = row.getString("TABLE_CATALOG");
+			String _schema = row.getString("TABLE_SCHEMA");
+			if(null == _catalog){
+				_catalog = catalog;
+			}
+			if(null == _schema){
+				_schema = schema;
+			}
 			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
 			T table = tables.get(name.toUpperCase());
 			if(null == table){
@@ -2604,8 +2612,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(null == schema){
 				schema = row.getString("TABLE_SCHEMA");
 			}
-			table.setCatalog(catalog);
-			table.setSchema(schema);
+			table.setCatalog(_catalog);
+			table.setSchema(_schema);
 			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS"));
@@ -2620,22 +2628,24 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			tables = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			if(null == catalog){
-				catalog = row.getString("TABLE_CATALOG");
+			String _catalog = row.getString("TABLE_CATALOG");
+			String _schema = row.getString("TABLE_SCHEMA");
+			if(null == _catalog){
+				_catalog = catalog;
 			}
-			if(null == schema){
-				schema = row.getString("TABLE_SCHEMA");
+			if(null == _schema){
+				_schema = schema;
 			}
 			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
 			T table = table(tables, catalog, schema, name);
 			if(null == table){
 				table = (T)new Table();
 			}
-			table.setCatalog(catalog);
-			table.setSchema(schema);
+			table.setCatalog(_catalog);
+			table.setSchema(_schema);
 			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT"));
+			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS"));
 			tables.add(table);
 		}
 		return tables;
