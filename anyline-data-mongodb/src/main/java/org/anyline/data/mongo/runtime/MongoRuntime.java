@@ -77,11 +77,7 @@ public class MongoRuntime implements DataRuntime {
     }
 
     public void setClient(Object client) {
-        if(client instanceof MongoClient) {
-            this.client = (MongoClient) client;
-        }else if(client instanceof MongoDatabase){
-            database = (MongoDatabase)client;
-        }
+        this.client = (MongoClient) client;
     }
 
 
