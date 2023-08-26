@@ -15,18 +15,19 @@
  */
 
 
-package org.anyline.data.mongo.adapter;
+package org.anyline.data.mongodb.adapter;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.mongo.runtime.MongoRuntime;
+import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
@@ -35,7 +36,6 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.run.Run;
-import org.anyline.data.run.RunValue;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.ThreadConfig;
@@ -45,6 +45,7 @@ import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.InterceptorProxy;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.bson.conversions.Bson;
@@ -304,6 +305,28 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
+
+        List<String> excludeColumns = run.getPrepare().getExcludeColumns();
+        if(null == excludeColumns || excludeColumns.size() ==0){
+            ConfigStore configs = run.getConfigStore();
+            if(null != configs) {
+                excludeColumns = configs.columns();
+            }
+        }
+        if(null != excludeColumns && excludeColumns.size()>0){
+            run.setExcludeColumns(excludeColumns);
+        }
+
+        List<String> queryColumns = run.getPrepare().getQueryColumns();
+        if(null == queryColumns || queryColumns.size() ==0){
+            ConfigStore configs = run.getConfigStore();
+            if(null != configs) {
+                queryColumns = configs.columns();
+            }
+        }
+        if(null != queryColumns && queryColumns.size()>0){
+            run.setQueryColumns(queryColumns);
+        }
     }
     private Bson parseCondition(Bson bson, Condition condition){
         if(condition instanceof ConditionChain){
@@ -312,7 +335,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }else{
             if(condition instanceof AutoCondition){
                 AutoCondition auto = (AutoCondition)condition;
-                List<RunValue> values = condition.getRunValues();
+                //List<RunValue> values = condition.getRunValues();
+                List<Object> values = auto.getValues();
                 String column = condition.getId();
                 String join = condition.getJoin();
                 Bson create = bson(auto.getCompare(), column, values);
@@ -342,25 +366,53 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         return bson;
     }
-    private Bson bson(Compare compare, String column, List<RunValue> values){
+    private Bson bson(Compare compare, String column, List<Object> values){
         Bson bson = null;
         if(null != values && !values.isEmpty()) {
             Object value = null;
             boolean multiple = compare.isMultipleValue();
             if (multiple) {
                 List<Object> list = new ArrayList<>();
-                for (RunValue rv : values) {
+                /*for (RunValue rv : values) {
                     list.add(rv.getValue());
-                }
+                }*/
+                list.addAll(values);
                 value = list;
             } else {
-                value = values.get(0).getValue();
+                value = values.get(0);
             }
-            if(compare == Compare.EQUAL){
+            int cc = compare.getCode();
+            if(cc == 10){                                           //  EQUAL
                 bson = Filters.eq(column, value);
-            }else if(compare == Compare.GREAT){
+            }else if(cc == 50 || cc == 999){                        //  LIKE Compare.REGEX
+                bson = Filters.regex(column, value.toString());
+            }else if(cc == 51){                                     //  START_WITH
+                bson = Filters.regex(column, "^"+value);
+            }else if(cc == 52){                                     //  END_WITH
+                bson = Filters.regex(column, value+"$");
+            }else if(cc == 20){                                     //  GREAT
                 bson = Filters.gt(column, value);
+            }else if(cc == 21){                                     //  GREAT_EQUAL
+                bson = Filters.gte(column, value);
+            }else if(cc == 30){                                     //  LESS
+                bson = Filters.lt(column, value);
+            }else if(cc == 31){                                     //  LESS_EQUAL
+                bson = Filters.lte(column, value);
+            }else if(cc == 40){                                     //  IN
+                bson = Filters.in(column, BeanUtil.list2array(values));
+            }else if(cc == 80){                                     //  BETWEEN
+                if(values.size() > 1){
+                    bson = Filters.and(Filters.gte(column, values.get(0)), Filters.lte(column, values.get(1)));
+                }
+            }else if(cc == 110){                                    //  NOT EQUAL
+                bson = Filters.ne(column, value);
+            }else if(cc == 140){                                    //  NOT IN
+                bson = Filters.nin(column, BeanUtil.list2array(values));
+            }else if(cc == 150){                                    //  NOT LIKE
+            }else if(cc == 151){                                     //  NOT START_WITH
+            }else if(cc == 152){                                     //  NOT END_WITH
             }
+
         }
         return bson;
     }
@@ -386,7 +438,21 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
                 log.info("{}[collection:{}][filter:{}]", random, run.getTable(), bson);
             }
-            FindIterable<DataRow> rows = database.getCollection(run.getTable(), DataRow.class).find(bson);
+            FindIterable<OriginalDataRow> rows = database.getCollection(run.getTable(), OriginalDataRow.class).find(bson);
+            List<Bson> fields = new ArrayList<>();
+            List<String> queryColumns = run.getQueryColumns();
+            //查询的列
+            if(null != queryColumns && queryColumns.size()>0){
+                fields.add(Projections.include(queryColumns));
+            }
+            //不查询的列
+            List<String> excludeColumn = run.getExcludeColumns();
+            if(null != excludeColumn && excludeColumn.size()>0){
+                fields.add(Projections.exclude(excludeColumn));
+            }
+            if(fields.size() > 0){
+                rows.projection(Projections.fields(fields));
+            }
             PageNavi navi = run.getPageNavi();
             if(null != navi){
                 rows.skip((int)navi.getFirstRow()).limit(navi.getPageRows());

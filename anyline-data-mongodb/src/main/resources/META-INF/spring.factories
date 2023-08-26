@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.anyline.data.mongo.adapter.MongoAdapter,\
-org.anyline.data.mongo.listener.MongoEnvironmentListener,\
-org.anyline.data.mongo.runtime.MongoRuntimeHolder
+org.anyline.data.mongodb.adapter.MongoAdapter,\
+org.anyline.data.mongodb.listener.MongoEnvironmentListener,\
+org.anyline.data.mongodb.runtime.MongoRuntimeHolder
