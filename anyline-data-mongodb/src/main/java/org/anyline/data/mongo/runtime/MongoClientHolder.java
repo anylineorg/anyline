@@ -255,7 +255,7 @@ public class MongoClientHolder extends ClientHolder {
 		return validate(MongoRuntimeHolder.getRuntime());
 	}
 	public static boolean validate(DataRuntime runtime){
-		MongoDatabase database = (MongoDatabase) runtime.getClient();
+		MongoDatabase database = (MongoDatabase) runtime.getProcessor();
 		return validate(database);
 	}
 	public static boolean validate(MongoDatabase database){

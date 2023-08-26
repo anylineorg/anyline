@@ -72,12 +72,16 @@ public class MongoRuntime implements DataRuntime {
         this.key = key;
     }
 
-    public Object getClient() {
-        return client;
+    public Object getProcessor() {
+        return database;
     }
 
-    public void setClient(Object client) {
-        this.client = (MongoClient) client;
+    public void setProcessor(Object processor) {
+        if(processor instanceof MongoClient) {
+            this.client = (MongoClient) processor;
+        }else if(processor instanceof MongoDatabase){
+            this.database = (MongoDatabase)processor;
+        }
     }
 
 
@@ -104,7 +108,7 @@ public class MongoRuntime implements DataRuntime {
 
     public MongoRuntime(String key, MongoClient client, MongoDatabase database, DriverAdapter adapter){
         setKey(key);
-        setClient(database);
+        setProcessor(database);
         setAdapter(adapter);
     }
     public MongoRuntime(){

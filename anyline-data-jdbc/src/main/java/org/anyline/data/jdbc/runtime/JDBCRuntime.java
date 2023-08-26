@@ -45,7 +45,7 @@ public class JDBCRuntime implements DataRuntime {
      */
     protected String version;
     protected DriverAdapter adapter;
-    protected JdbcTemplate client;
+    protected JdbcTemplate processor;
     protected RuntimeHolder holder;
     /*
     protected AnylineDao dao;
@@ -75,12 +75,12 @@ public class JDBCRuntime implements DataRuntime {
         this.key = key;
     }
 
-    public Object getClient() {
-        return client;
+    public Object getProcessor() {
+        return processor;
     }
 
-    public void setClient(Object client) {
-        this.client = (JdbcTemplate) client;
+    public void setProcessor(Object processor) {
+        this.processor = (JdbcTemplate) processor;
     }
 
 
@@ -117,14 +117,14 @@ public class JDBCRuntime implements DataRuntime {
 
     public JDBCRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter){
         setKey(key);
-        setClient(jdbc);
+        setProcessor(jdbc);
         setAdapter(adapter);
     }
     public JDBCRuntime(){
     }
 
     public JdbcTemplate jdbc(){
-        return client;
+        return processor;
     }
     public String getFeature() {
         if(null == feature){

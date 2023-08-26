@@ -69,7 +69,7 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
             runtime.setAdapter(adapter);
             DataSource ds = (DataSource) datasource;
             JdbcTemplate template = new JdbcTemplate(ds);
-            runtime.setClient(template);
+            runtime.setProcessor(template);
             temporary.put(key, ds);
             log.warn("[创建临时数据源][key:{}][type:{}]", key, datasource.getClass().getSimpleName());
         }else{
@@ -213,14 +213,14 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
     public static JdbcTemplate getJdbcTemplate(){
         DataRuntime runtime = getRuntime();
         if(null != runtime){
-            return (JdbcTemplate) runtime.getClient();
+            return (JdbcTemplate) runtime.getProcessor();
         }
         return null;
     }
     public static DataSource getDataSource(){
         DataRuntime runtime = getRuntime();
         if(null != runtime){
-            JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();
+            JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
             return jdbc.getDataSource();
         }
         return null;
@@ -228,14 +228,14 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
     public static JdbcTemplate getJdbcTemplate(String key){
         DataRuntime runtime = getRuntime(key);
         if(null != runtime){
-            return (JdbcTemplate) runtime.getClient();
+            return (JdbcTemplate) runtime.getProcessor();
         }
         return null;
     }
     public static DataSource getDataSource(String key){
         DataRuntime runtime = getRuntime(key);
         if(null != runtime){
-            JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();
+            JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
             return jdbc.getDataSource();
         }
         return null;

@@ -26,7 +26,6 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -96,8 +95,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	}
 
 	protected JdbcTemplate jdbc(DataRuntime runtime){
-		Object client = runtime.getClient();
-		return (JdbcTemplate) client;
+		Object processor = runtime.getProcessor();
+		return (JdbcTemplate) processor;
 	}
 	/**
 	 * UPDATE [入口]

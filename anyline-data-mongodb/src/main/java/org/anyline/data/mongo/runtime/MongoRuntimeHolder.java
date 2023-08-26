@@ -176,7 +176,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
     public static MongoDatabase getDatabase(String key){
         DataRuntime runtime = getRuntime(key);
         if(null != runtime){
-            return (MongoDatabase) runtime.getClient();
+            return (MongoDatabase) runtime.getProcessor();
         }
         return null;
     }

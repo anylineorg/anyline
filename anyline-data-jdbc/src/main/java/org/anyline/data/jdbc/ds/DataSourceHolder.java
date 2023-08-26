@@ -448,7 +448,7 @@ public class DataSourceHolder extends ClientHolder {
 		return validate(JDBCRuntimeHolder.getRuntime());
 	}
 	public static boolean validate(DataRuntime runtime){
-		JdbcTemplate jdbc = (JdbcTemplate) runtime.getClient();
+		JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
 		return validate(jdbc);
 	}
 	public static boolean validate(JdbcTemplate jdbc){

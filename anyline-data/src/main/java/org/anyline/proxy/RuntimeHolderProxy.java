@@ -61,8 +61,8 @@ public class RuntimeHolderProxy {
             log.warn("[注销运行环境][{}不存在在]", key);
             return;
         }
-        Object client = runtime.getClient();
-        Class clazz = client.getClass();
+        Object processor = runtime.getProcessor();
+        Class clazz = processor.getClass();
         RuntimeHolder holder = holder(clazz);
         if(null != holder){
             holder.exeDestroy(key);

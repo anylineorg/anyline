@@ -30,9 +30,8 @@ public interface DataRuntime {
     void setVersion(String version) ;
     String getKey() ;
     void setKey(String key) ;
-    Object getClient() ;
-
-    void setClient(Object client);
+    Object getProcessor() ;
+    void setProcessor(Object processor);
 
     DriverAdapter getAdapter() ;
     String datasource();
