@@ -25,6 +25,14 @@ public class OriginalDataRow extends DataRow {
     private static final Logger log = LoggerFactory.getLogger(OriginalDataRow.class);
     protected KEY_CASE keyCase 				        = KEY_CASE.SRC      ; // 列名格式
 
+    public OriginalDataRow(){
+        String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
+        if (null != pk) {
+            primaryKeys.add(DEFAULT_PRIMARY_KEY);
+        }
+        createTime = System.currentTimeMillis();
+        nanoTime = System.currentTimeMillis();
+    }
     @Override
     public Object put(String key, Object value) {
         put(keyCase, key, value, false, true);
