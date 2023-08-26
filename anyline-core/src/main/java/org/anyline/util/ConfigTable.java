@@ -19,6 +19,7 @@
 package org.anyline.util;
 
 import org.anyline.entity.Compare;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -59,6 +60,9 @@ public class ConfigTable {
 	public static String CONFIG_NAME = "anyline-config.xml";
 
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
+	public static Class DEFAULT_JDBC_ENTITY_CLASS						= DataRow.class;
+	public static Class DEFAULT_MONGO_ENTITY_CLASS						= DataRow.class;
+	public static Class DEFAULT_NEO4J_ENTITY_CLASS						= DataRow.class;
 	public static boolean IS_DEBUG 										= true			;	// DEBUG状态会输出更多日志
 	public static int  DEBUG_LVL										= 0				;   //
 	public static boolean IS_SHOW_SQL									= true			;	// 执行SQL时是否输出日志
