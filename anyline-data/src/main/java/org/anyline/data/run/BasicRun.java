@@ -65,6 +65,7 @@ public abstract class BasicRun implements Run {
 	protected boolean valid = true;
 	protected List<String> insertColumns;
 	protected List<String> updateColumns;
+	protected List<String> columns;	//查询列
 	protected int from = 1;
 
 
@@ -847,6 +848,33 @@ public abstract class BasicRun implements Run {
 	@Override
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+
+	@Override
+	public void setColumn(String... columns) {
+		if(null == this.columns){
+			this.columns = new ArrayList<>();
+		}
+		if(null != columns) {
+			for (String column : columns) {
+				this.columns.add(column);
+			}
+		}
+	}
+
+	@Override
+	public void setColumn(List<String> columns) {
+		if(null != columns) {
+			for (String column : columns) {
+				this.columns.add(column);
+			}
+		}
+	}
+
+	@Override
+	public List<String> getColumns() {
+		return columns;
 	}
 }
  

@@ -138,6 +138,9 @@ public interface Run {
 
 	void setFilter(Object filter);
 	Object getFilter();
+	void setColumn(String ... columns);
+	void setColumn(List<String> columns);
+	List<String> getColumns();
 
 	void setValue(Object value);
 	Object getValue();
