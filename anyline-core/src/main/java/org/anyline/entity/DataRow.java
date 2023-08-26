@@ -46,55 +46,55 @@ import java.util.*;
 
 public class DataRow extends LinkedHashMap<String, Object> implements Serializable {
     private static final long serialVersionUID = -2098827041540802313L;
-    protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
+    private static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
     //public static String KEY_PARENT             = "PARENT"              ; // 上级
     //public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级
     public static String KEY_CHILDREN           = "CHILDREN"            ; // 子级
     public static String KEY_ALL_CHILDREN       = "ALL_CHILDREN"        ; // 所有子级
     public static String KEY_ITEMS              = "ITEMS"               ; // items
-    public static KEY_CASE DEFAULT_KEY_KASE     = KEY_CASE.CONFIG       ; // key case
+    public static KEY_CASE DEFAULT_KEY_CASE     = KEY_CASE.CONFIG       ; // key case
     public static String DEFAULT_PRIMARY_KEY    = ConfigTable.DEFAULT_PRIMARY_KEY;
 
-    private Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
+    protected Boolean override                    = null                  ; //如果数据库中存在相同数据(根据主键判断)是否覆盖 true或false会检测数据库null不检测
 
-    private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
-    private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
-    private boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
-    private boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
-    private boolean replaceEmptyNull            = ConfigTable.IS_REPLACE_EMPTY_NULL;
+    protected boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
+    protected boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
+    protected boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
+    protected boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
+    protected boolean replaceEmptyNull            = ConfigTable.IS_REPLACE_EMPTY_NULL;
 
     /*
      * 相当于Class Name 如User/Department
      * 在关系型数据库场景中 也相当于表名
      * 主要应用在在非关系型数据库场景中 如Neo4j中的Node名 MongonDB中的Document名
      */
-    private String category                         = null                  ; // 分类
-    private LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
-    private transient DataSet container             = null                  ; // 包含当前对象的容器
-    private transient Map<String,DataSet> containers= new HashMap()         ; // 包含当前对象的容器s
-    private transient Map<String,DataRow> parents   = new Hashtable()       ; // 上级
-    private List<String> primaryKeys                = new ArrayList()       ; // 主键
-    private List<String> updateColumns              = new ArrayList()       ; // 需要参与update insert操作
-    private List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
-    private String datalink                         = null                  ; // 超链接
-    private String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
-    private String schema                           = null                  ; // schema
-    private String table                            = null                  ; // table
-    private DataRow attributes                      = null                  ; // 属性
-    private DataRow tags                            = null                  ; // 标签
-    private DataRow relations                       = null                  ; // 对外关系
-    private long createTime                         = 0                     ; // 创建时间(毫秒)
-    private long nanoTime                           = 0                     ; // 创建时间(纳秒)
-    private long expires                            = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    protected String category                         = null                  ; // 分类
+    protected LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
+    protected transient DataSet container             = null                  ; // 包含当前对象的容器
+    protected transient Map<String,DataSet> containers= new HashMap()         ; // 包含当前对象的容器s
+    protected transient Map<String,DataRow> parents   = new Hashtable()       ; // 上级
+    protected List<String> primaryKeys                = new ArrayList()       ; // 主键
+    protected List<String> updateColumns              = new ArrayList()       ; // 需要参与update insert操作
+    protected List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
+    protected String datalink                         = null                  ; // 超链接
+    protected String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
+    protected String schema                           = null                  ; // schema
+    protected String table                            = null                  ; // table
+    protected DataRow attributes                      = null                  ; // 属性
+    protected DataRow tags                            = null                  ; // 标签
+    protected DataRow relations                       = null                  ; // 对外关系
+    protected long createTime                         = 0                     ; // 创建时间(毫秒)
+    protected long nanoTime                           = 0                     ; // 创建时间(纳秒)
+    protected long expires                            = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     protected Boolean isNew                         = false                 ; // 强制新建(否则根据主键值判断insert | update)
     protected boolean isFromCache                   = false                 ; // 是否来自缓存
-    private Map<String, String> keymap              = new HashMap<>()       ; // keymap
-    private boolean isUpperKey                      = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
-    private Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
+    protected Map<String, String> keymap              = new HashMap<>()       ; // keymap
+    protected boolean isUpperKey                      = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
+    protected Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
     public boolean skip                             = false                 ; // 遍历计算时标记
-    private KeyAdapter keyAdapter                   = null                  ; // key格式转换
-    private KEY_CASE keyCase 				        = DEFAULT_KEY_KASE      ; // 列名格式
+    protected KeyAdapter keyAdapter                   = null                  ; // key格式转换
+    protected KEY_CASE keyCase 				        = DEFAULT_KEY_CASE      ; // 列名格式
 
     public DataRow() {
         parseKeycase(null);
@@ -106,7 +106,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         nanoTime = System.currentTimeMillis();
     }
 
-    private void parseKeycase(KEY_CASE keyCase) {
+    protected void parseKeycase(KEY_CASE keyCase) {
         if(null == keyCase){
             keyCase = this.keyCase;
         }else{
@@ -2592,7 +2592,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param key key
      * @return String
      */
-    private static String getKeyCase(KEY_CASE keyCase, String key) {
+    protected static String getKeyCase(KEY_CASE keyCase, String key) {
         if (null == key || keyCase == KEY_CASE.SRC) {
             return key;
         }
@@ -2627,10 +2627,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String getKeyCase(String key) {
         return getKeyCase(KEY_CASE.CONFIG, key);
     }
-/*	private String getKey(String key){
+/*	protected String getKey(String key){
 		return getKeyCase(this.keyCase, key);
 	}
-	private String getKey(KEY_CASE keyCase, String key){
+	protected String getKey(KEY_CASE keyCase, String key){
 		return getKeyCase(keyCase, key);
 	}
 	 */
@@ -2641,7 +2641,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param key key
      * @return String
      */
-    private static String putKeyCase(KEY_CASE keyCase, String key) {
+    protected static String putKeyCase(KEY_CASE keyCase, String key) {
         if (null == key || keyCase == KEY_CASE.SRC) {
             return key;
         }
@@ -2675,10 +2675,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String putKeyCase(String key) {
         return putKeyCase(KEY_CASE.CONFIG, key);
     }
-	/*private String putKey(String key){
+	/*protected String putKey(String key){
 		return putKeyCase(this.keyCase, key);
 	}
-	private String putKey(KEY_CASE keyCase, String key){
+	protected String putKey(KEY_CASE keyCase, String key){
 		return putKeyCase(keyCase, key);
 	}
 */
@@ -3496,7 +3496,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return toJSON();
     }
 
-    private DataRow numberFormat(String src, String tar, String format, String def) {
+    protected DataRow numberFormat(String src, String tar, String format, String def) {
         if (null == tar || null == src || isEmpty(src) || null == format) {
             return this;
         }
@@ -3508,14 +3508,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    private DataRow dateFormat(String src, String tar, String format, Date def) {
+    protected DataRow dateFormat(String src, String tar, String format, Date def) {
         if (null == tar || null == src || isEmpty(src) || null == format) {
             return this;
         }
         put(tar, DateUtil.format(getDate(src, def), format));
         return this;
     }
-    private DataRow dateFormat(String src, String tar, String format, String def) {
+    protected DataRow dateFormat(String src, String tar, String format, String def) {
         if (null == tar || null == src || isEmpty(src) || null == format) {
             return this;
         }
@@ -3536,7 +3536,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      * @throws Exception
      */
-    private DataRow dateParse(String src, String tar, String format, Date def)  {
+    protected DataRow dateParse(String src, String tar, String format, Date def)  {
         if (null == tar || null == src || isEmpty(src) || null == format) {
             return this;
         }
@@ -3560,7 +3560,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      * @throws Exception
      */
-    private DataRow numberParse(String src, String tar, String def) {
+    protected DataRow numberParse(String src, String tar, String def) {
         if (null == tar || null == src || isEmpty(src) ) {
             return this;
         }
