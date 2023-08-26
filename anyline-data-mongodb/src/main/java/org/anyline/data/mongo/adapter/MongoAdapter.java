@@ -23,9 +23,11 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
+import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.mongo.runtime.MongoRuntime;
+import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
@@ -489,8 +491,99 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
-        return null;
-    }
+        DataSet set = null;
+        Long fr = System.currentTimeMillis();
+        boolean sql_success = false;
+        Run run = null;
+        PageNavi navi = null;
+
+        if(null == random){
+            random = random(runtime);
+        }
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        if (null != dmListener) {
+            swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK){
+            return new DataSet();
+        }
+        //query拦截
+        swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK){
+            return new DataSet();
+        }
+
+        run = buildQueryRun(runtime, prepare, configs, conditions);
+
+        if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
+            String tmp = "[valid:false][不具备执行条件]";
+            String src = "";
+            if (prepare instanceof TablePrepare) {
+                src = prepare.getTable();
+            } else {
+                src = prepare.getText();
+            }
+            tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
+            log.warn(tmp);
+        }
+        navi = run.getPageNavi();
+        long total = 0;
+        if (run.isValid()) {
+            if (null != navi) {
+                if (null != dmListener) {
+                    dmListener.beforeTotal(runtime, random, run);
+                }
+                fr = System.currentTimeMillis();
+                if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+                    // 第一条 query中设置的标识(只查一行)
+                    total = 1;
+                } else {
+                    // 未计数(总数 )
+                    if (navi.getTotalRow() == 0) {
+                        total = count(runtime, random, run);
+                        navi.setTotalRow(total);
+                    } else {
+                        total = navi.getTotalRow();
+                    }
+                }
+                if (null != dmListener) {
+                    dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+                }
+                if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+                    log.info("[查询记录总数][行数:{}]", total);
+                }
+            }
+        }
+        fr = System.currentTimeMillis();
+        if (run.isValid()) {
+            if(null == navi || total > 0){
+                if(null != dmListener){
+                    dmListener.beforeQuery(runtime, random, run, total);
+                }
+                swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+                if(swt == ACTION.SWITCH.BREAK){
+                    return new DataSet();
+                }
+                set = select(runtime, random, false, prepare.getTable(), configs, run);
+                sql_success = true;
+            }else{
+                set = new DataSet();
+            }
+        } else {
+            set = new DataSet();
+        }
+
+        set.setDataSource(prepare.getDataSource());
+        set.setNavi(navi);
+        if (null != navi && navi.isLazy()) {
+            PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+        }
+
+        if(null != dmListener){
+            dmListener.afterQuery(runtime, random, run, sql_success, set, System.currentTimeMillis() - fr);
+        }
+        InterceptorProxy.afterQuery(runtime, random, run, sql_success, set, navi, System.currentTimeMillis() - fr);
+        return set;    }
 
     @Override
     public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {

@@ -18,10 +18,10 @@
 package org.anyline.data.param;
 
 import org.anyline.data.handler.StreamHandler;
-import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.entity.Compare;
+import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
- 
- 
+
+
 /** 
  * 查询参数 
  * @author zh 
@@ -1168,6 +1168,14 @@ public interface ConfigStore {
 	List<String> columns();
 
 
+
+	/**
+	 * 设置不城要查询的列
+	 * @param columns 需要查询的列
+	 * @return ConfigStore
+	 */
+	ConfigStore excludes(String ... columns);
+	List<String> excludes();
 } 
  
  

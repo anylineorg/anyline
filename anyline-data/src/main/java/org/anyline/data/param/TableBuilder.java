@@ -30,7 +30,7 @@ public class TableBuilder {
     private String table;
     private String datasource;
     private String alias;
-    private List<String> columns = new ArrayList<>();
+    private List<String> queryColumns = new ArrayList<>();
     private List<Join> joins = new ArrayList<Join>();//关联表
 
     public static TableBuilder init(){
@@ -62,8 +62,8 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addColumn(String column){
-        if(!columns.contains(column)){
-            columns.add(column);
+        if(!queryColumns.contains(column)){
+            queryColumns.add(column);
         }
         return this;
     }
@@ -85,7 +85,7 @@ public class TableBuilder {
         for(Join join:joins){
             sql.join(join);
         }
-        for(String col:columns) {
+        for(String col:queryColumns) {
             sql.addColumn(col);
         }
         return sql;

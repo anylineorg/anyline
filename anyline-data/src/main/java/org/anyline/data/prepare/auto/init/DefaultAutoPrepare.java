@@ -40,7 +40,6 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	protected String table;
 	protected String distinct = "";
 	protected String alias;
-	protected List<String> columns = new ArrayList<>();
 	protected List<Join> joins = new ArrayList<Join>();//关联表
 
 
@@ -122,27 +121,57 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 * CD,NM
 	 * @param columns  columns
 	 */
-	public void addColumn(String columns){
+	@Override
+	public RunPrepare addColumn(String columns){
 		if(BasicUtil.isEmpty(columns)){
-			return;
+			return this;
 		}
-		if(null == this.columns){
-			this.columns = new ArrayList<>();
+		if(null == this.queryColumns){
+			this.queryColumns = new ArrayList<>();
 		}
 		if(columns.contains(",")){
 			// 多列
-			parseMultColumns(columns);
+			parseMultColumns(false, columns);
 		}else{
 			// 单列
-			this.columns.add(columns);
+			if(columns.startsWith("!")){
+				excludeColumn(columns.substring(1));
+			}else {
+				if (!queryColumns.contains(columns)) {
+					queryColumns.add(columns);
+				}
+			}
 		}
+		return this;
 	}
+
+	@Override
+	public RunPrepare excludeColumn(String columns) {
+		if(BasicUtil.isEmpty(columns)){
+			return this;
+		}
+		if(null == this.excludeColumns){
+			this.excludeColumns = new ArrayList<>();
+		}
+		if(columns.contains(",")){
+			// 多列
+			parseMultColumns(true, columns);
+		}else{
+			// 单列
+			if(!excludeColumns.contains(columns)) {
+				this.excludeColumns.add(columns);
+			}
+		}
+
+		return this;
+	}
+
 
 	/**
 	 * 解析多列
 	 * @param src src
 	 */
-	protected void parseMultColumns(String src){
+	protected void parseMultColumns(boolean exclude, String src){
 		List<String> cols = new ArrayList<>();
 		// 拆分转义字段(${}) CD, ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 		while(src.contains("${")){
@@ -162,13 +191,17 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		// 二次拆分
 		for(String c:cols){
 			if(c.contains("${")){
-				columns.add(c);
+				if(exclude) {
+					excludeColumn(c);
+				}else{
+					addColumn(c);
+				}
 			}else{
 				String[] cs = c.split(",");
 				for(String item:cs){
 					item = item.trim();
 					if(item.length()>0)
-						columns.add(item);
+						addColumn(item);
 				}
 			}
 		}
@@ -237,26 +270,20 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 					String[] pres = pre.split(",");
 					for (String item : pres) {
 						item = item.trim();
-						if (BasicUtil.isNotEmpty(item) && !columns.contains(item)) {
-							columns.add(item);
-						}
+						addColumn(item);
 					}
 				}
 				int fr = sql.indexOf("${");
 				int to = sql.indexOf("}");
 				String col = sql.substring(fr + 2, to).trim();
-				if (!columns.contains(col)) {
-					columns.add(col);
-				}
+				addColumn(col);
 				sql = sql.substring(sql.indexOf("}") + 1).trim();
 			}
 		}else{
 			String[] cols = sql.split(",");
 			for (String item : cols) {
 				item = item.trim();
-				if (BasicUtil.isNotEmpty(item) && !columns.contains(item)) {
-					columns.add(item);
-				}
+				addColumn(item);
 			}
 		}
 	}
@@ -299,10 +326,6 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	@Override
 	public String getDistinct() {
 		return this.distinct;
-	}
-	@Override
-	public List<String> getColumns() {
-		return this.columns;
 	}
 	@Override
 	public String getText() {

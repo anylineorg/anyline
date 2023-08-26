@@ -26,6 +26,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.Join;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,24 +37,27 @@ import java.util.Vector;
  
 public abstract class DefaultPrepare implements RunPrepare{
 
-	protected static final Logger log = LoggerFactory.getLogger(DefaultPrepare.class);
+	protected static final Logger log     = LoggerFactory.getLogger(DefaultPrepare.class);
 	protected String id 									;
 	protected ConditionChain chain							; // 查询条件
 	protected OrderStore orders								; // 排序
 	protected GroupStore groups								; // 分组条件
 	protected PageNavi navi									; // 分页
-	protected List<String> primaryKeys = new ArrayList<>()	; // 主键
-	protected List<String> fetchKeys   = new ArrayList<>()	; // 最终需要封装的列
-	protected boolean valid 		   = true				;
+	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
+	protected List<String> fetchKeys       = new ArrayList<>()	; // 最终需要封装的列
+	protected boolean valid 		       = true				;
 	protected String alias									;
-	protected boolean multiple		   = false				;
-	protected boolean strict		   = false				; // 严格格式 不能追加条件
-	protected String runtime		   = null				; //
-	protected EMPTY_VALUE_SWITCH swt   = EMPTY_VALUE_SWITCH.IGNORE;
+	protected boolean multiple		       = false				;
+	protected boolean strict		       = false				; // 严格格式 不能追加条件
+	protected String runtime		       = null				; //
+	protected EMPTY_VALUE_SWITCH swt       = EMPTY_VALUE_SWITCH.IGNORE;
+	protected List<String> queryColumns    = new ArrayList<>();	//查询列
+	protected List<String> excludeColumns  = new ArrayList<>();  //不查询列
 
 
 	// 运行时参数值 
-	protected Vector<Object> runValues; 
+	protected Vector<Object> runValues;
+
 	public int getVersion(){
 		return 0; 
 	} 
@@ -456,4 +460,44 @@ public abstract class DefaultPrepare implements RunPrepare{
 	public void setStrict(boolean strict) {
 		this.strict = strict;
 	}
+
+
+	@Override
+	public RunPrepare setQueryColumns(String... columns) {
+		if(null != columns) {
+			this.queryColumns = BeanUtil.array2list(columns);
+		}
+		return this;
+	}
+
+	@Override
+	public RunPrepare setQueryColumns(List<String> columns) {
+		this.queryColumns = columns;
+		return this;
+	}
+
+	@Override
+	public List<String> getQueryColumns() {
+		return this.queryColumns;
+	}
+
+	@Override
+	public List<String> getExcludeColumns() {
+		return excludeColumns;
+	}
+
+	@Override
+	public RunPrepare setExcludeColumns(List<String> excludeColumn) {
+		this.excludeColumns = excludeColumn;
+		return this;
+	}
+
+	@Override
+	public RunPrepare setExcludeColumns(String... columns) {
+		if(null != columns) {
+			this.queryColumns = BeanUtil.array2list(columns);
+		}
+		return this;
+	}
+
 }

@@ -30,6 +30,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.Column;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -65,7 +66,8 @@ public abstract class BasicRun implements Run {
 	protected boolean valid = true;
 	protected List<String> insertColumns;
 	protected List<String> updateColumns;
-	protected List<String> columns;	//查询列
+	protected List<String> queryColumns;	//查询列
+	protected List<String> excludeColumn;  //不查询列
 	protected int from = 1;
 
 
@@ -763,29 +765,6 @@ public abstract class BasicRun implements Run {
 		}
 	}
 
-	/**
-	 * 需要查询的列
-	 * @return String
-	 */
-	@Override
-	public String getQueryColumns(){
-		String result = "*";
-		if(null != prepare){
-			List<String> cols = prepare.getFetchKeys();
-			if(null != cols && cols.size()>0){
-				result = null;
-				for(String col:cols){
-					if(null == result){
-
-						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
-					}else{
-						result += "," + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
-					}
-				}
-			}
-		}
-		return result;
-	}
 
 	public List<Variable> getVariables() {
 		return variables;
@@ -852,29 +831,64 @@ public abstract class BasicRun implements Run {
 
 
 	@Override
-	public void setColumn(String... columns) {
-		if(null == this.columns){
-			this.columns = new ArrayList<>();
-		}
+	public Run setQueryColumns(String... columns) {
 		if(null != columns) {
-			for (String column : columns) {
-				this.columns.add(column);
-			}
+			this.queryColumns = BeanUtil.array2list(columns);
 		}
+		return this;
 	}
 
 	@Override
-	public void setColumn(List<String> columns) {
-		if(null != columns) {
-			for (String column : columns) {
-				this.columns.add(column);
-			}
-		}
+	public Run setQueryColumns(List<String> columns) {
+		this.queryColumns = columns;
+		return this;
 	}
 
 	@Override
-	public List<String> getColumns() {
-		return columns;
+	public List<String> getQueryColumns() {
+		return this.queryColumns;
+	}
+
+	@Override
+	public List<String> getExcludeColumns() {
+		return excludeColumn;
+	}
+
+	@Override
+	public Run setExcludeColumns(List<String> excludeColumn) {
+		this.excludeColumn = excludeColumn;
+		return this;
+	}
+
+	@Override
+	public Run setExcludeColumns(String... columns) {
+		if(null != columns) {
+			this.queryColumns = BeanUtil.array2list(columns);
+		}
+		return this;
+	}
+	/**
+	 * 需要查询的列
+	 * @return String
+	 */
+	@Override
+	public String getQueryColumn(){
+		String result = "*";
+		if(null != prepare){
+			List<String> cols = prepare.getFetchKeys();
+			if(null != cols && cols.size()>0){
+				result = null;
+				for(String col:cols){
+					if(null == result){
+
+						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
+					}else{
+						result += "," + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
+					}
+				}
+			}
+		}
+		return result;
 	}
 }
  

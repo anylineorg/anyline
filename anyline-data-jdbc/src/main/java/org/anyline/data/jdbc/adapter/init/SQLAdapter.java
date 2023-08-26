@@ -956,7 +956,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             builder.append(sql.getDistinct());
         }
         builder.append(BR_TAB);
-        List<String> columns = sql.getColumns();
+        List<String> columns = sql.getQueryColumns();
         if(null == columns || columns.size() ==0){
             ConfigStore configs = run.getConfigStore();
             if(null != configs) {

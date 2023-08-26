@@ -169,7 +169,21 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare setFetchKey(String ... fetchKeys);
 	RunPrepare setFetchKey(Collection<String> fetchKeys);
 	List<String> getFetchKeys();
-	List<String> getColumns();
+	RunPrepare setQueryColumns(String ... columns);
+	RunPrepare setQueryColumns(List<String> columns);
+	List<String> getQueryColumns();
+	List<String> getExcludeColumns();
+	RunPrepare setExcludeColumns(List<String> excludeColumn);
+	RunPrepare setExcludeColumns(String... columns);
+	/**
+	 * 添加列
+	 * CD
+	 * CD,NM
+	 * @param columns  columns
+	 */
+	RunPrepare addColumn(String columns);
+	RunPrepare excludeColumn(String columns);
+
 	RunPrepare join(Join join);
 	RunPrepare join(Join.TYPE type, String table, String condition);
 	RunPrepare inner(String table, String condition);

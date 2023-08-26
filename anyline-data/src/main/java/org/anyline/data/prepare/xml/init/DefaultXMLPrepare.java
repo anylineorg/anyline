@@ -359,12 +359,19 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 	public List<Variable> getSQLVariables() {
 		return this.variables; 
 	}
+
 	@Override
-	public String getTable() {
+	public RunPrepare addColumn(String columns) {
 		return null;
 	}
+
 	@Override
-	public List<String> getColumns() {
+	public RunPrepare excludeColumn(String columns) {
+		return null;
+	}
+
+	@Override
+	public String getTable() {
 		return null;
 	}
 	

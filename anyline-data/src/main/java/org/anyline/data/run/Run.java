@@ -119,7 +119,7 @@ public interface Run {
 	List<Object> getValues() ;
 	PageNavi getPageNavi() ; 
 	void setPageNavi(PageNavi pageNavi) ;
-	String getQueryColumns();
+	String getQueryColumn();
 
 	EMPTY_VALUE_SWITCH getStrict();
 
@@ -138,9 +138,13 @@ public interface Run {
 
 	void setFilter(Object filter);
 	Object getFilter();
-	void setColumn(String ... columns);
-	void setColumn(List<String> columns);
-	List<String> getColumns();
+	Run setQueryColumns(String ... columns);
+	Run setQueryColumns(List<String> columns);
+	List<String> getQueryColumns();
+
+	List<String> getExcludeColumns();
+	Run setExcludeColumns(List<String> excludeColumn);
+	Run setExcludeColumns(String... columns);
 
 	void setValue(Object value);
 	Object getValue();

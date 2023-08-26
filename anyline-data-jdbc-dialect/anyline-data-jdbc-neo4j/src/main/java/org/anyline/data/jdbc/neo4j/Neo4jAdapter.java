@@ -468,14 +468,14 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         StringBuilder builder = new StringBuilder();
         RunPrepare prepare = run.getPrepare();
         builder.append(run.getBaseQuery());
-        String cols = run.getQueryColumns();
+        String cols = run.getQueryColumn();
         String alias = run.getPrepare().getAlias();
         OrderStore orders = run.getOrderStore();
         if(null != orders){
             builder.append(orders.getRunText(getDelimiterFr()+getDelimiterTo()));
         }
         builder.append(" RETURN ");
-        List<String> columns = prepare.getColumns();
+        List<String> columns = prepare.getQueryColumns();
         if(null != columns && columns.size()>0){
             // 指定查询列
             int size = columns.size();

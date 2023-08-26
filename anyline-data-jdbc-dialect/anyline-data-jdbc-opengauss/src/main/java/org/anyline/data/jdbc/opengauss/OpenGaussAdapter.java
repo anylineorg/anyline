@@ -70,7 +70,7 @@ public class OpenGaussAdapter extends SQLAdapter implements JDBCAdapter, Initial
 	@Override
 	public String mergeFinalQuery(DataRuntime runtime, Run run){
 		String sql = run.getBaseQuery(); 
-		String cols = run.getQueryColumns(); 
+		String cols = run.getQueryColumn(); 
 		if(!"*".equals(cols)){
 			String reg = "(?i)^select[\\s\\S]+from"; 
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM "); 

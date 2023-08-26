@@ -21,8 +21,6 @@ package org.anyline.data.prepare.auto.init;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.entity.Join;
-
-import java.util.List;
  
 public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrepare {
 
@@ -48,11 +46,6 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 	public String getDistinct() {
 		return this.distinct; 
 	} 
- 
-	@Override 
-	public List<String> getColumns() {
-		return super.getColumns();
-	}
 
 
 

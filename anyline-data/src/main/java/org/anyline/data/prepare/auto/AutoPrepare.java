@@ -68,13 +68,6 @@ public interface AutoPrepare extends RunPrepare {
 	 
 	public void createRunText(StringBuilder builder); 
 /* ******************************************* END RunPrepare *********************************************************** */
-	/** 
-	 * 添加列  
-	 * CD 
-	 * CD,NM 
-	 * @param columns  columns
-	 */ 
-	public void addColumn(String columns); 
 	public String getDataSource(); 
 	public void setSchema(String schema) ; 
 	public void setTable(String table) ; 

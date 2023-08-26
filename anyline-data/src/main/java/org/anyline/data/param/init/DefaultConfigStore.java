@@ -22,6 +22,7 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
@@ -48,7 +49,8 @@ public class DefaultConfigStore implements ConfigStore {
 	protected PageNavi navi;
 	protected OrderStore orders;		// 排序依据
 	protected GroupStore groups;
-	protected List<String> columns = new ArrayList<>();
+	protected List<String> queryColumns = new ArrayList<>();
+	protected List<String> excludeColumns = new ArrayList<>();
 	protected Object values; //保存values后续parse用到
 
 	public DefaultConfigStore init(){
@@ -796,14 +798,26 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore columns(String ... columns){
 		if(null != columns){
 			for(String column:columns){
-				this.columns.add(column);
+				this.queryColumns.add(column);
 			}
 		}
 		return this;
 	}
 	public List<String> columns(){
-		return columns;
+		return queryColumns;
 	}
+	public ConfigStore excludes(String ... columns){
+		if(null != columns){
+			for(String column:columns){
+				this.queryColumns.add(column);
+			}
+		}
+		return this;
+	}
+	public List<String> excludes(){
+		return queryColumns;
+	}
+
 	@Override
 	public boolean isValid() {
 		if(null != chain){

@@ -55,7 +55,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     @Override
     public String mergeFinalQuery(DataRuntime runtime, Run run){
         StringBuilder builder = new StringBuilder();
-        String cols = run.getQueryColumns();
+        String cols = run.getQueryColumn();
         PageNavi navi = run.getPageNavi();
         String sql = run.getBaseQuery();
         OrderStore orders = run.getOrderStore();
