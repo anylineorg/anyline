@@ -65,6 +65,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Autowired(required = false)
     protected DDListener ddListener;
 
+
     public DMListener getListener() {
         return dmListener;
     }
@@ -215,7 +216,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 cons.insertMany(list);
             }else if(value instanceof DataSet){
                 DataSet set = (DataSet)value;
-                cons = database.getCollection(run.getTable(), DataRow.class);
+                cons = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
                 cons.insertMany(set.getRows());
                 cnt = set.size();
             }else if(value instanceof EntitySet){
@@ -438,7 +439,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
                 log.info("{}[collection:{}][filter:{}]", random, run.getTable(), bson);
             }
-            FindIterable<OriginalDataRow> rows = database.getCollection(run.getTable(), OriginalDataRow.class).find(bson);
+            FindIterable<DataRow> rows = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列

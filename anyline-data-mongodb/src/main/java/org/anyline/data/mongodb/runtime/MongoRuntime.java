@@ -20,10 +20,12 @@ package org.anyline.data.mongodb.runtime;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.mongodb.entity.MongoDataRow;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.ClientHolder;
 import org.anyline.data.util.DriverAdapterHolder;
+import org.anyline.util.ConfigTable;
 
 public class MongoRuntime implements DataRuntime {
 
@@ -44,17 +46,10 @@ public class MongoRuntime implements DataRuntime {
     protected MongoClient client;
     protected MongoDatabase database;
     protected RuntimeHolder holder;
-    /*
-    protected AnylineDao dao;
 
-    public AnylineDao getDao() {
-        return dao;
+    public MongoRuntime(){
+        ConfigTable.DEFAULT_MONGO_ENTITY_CLASS = MongoDataRow.class;
     }
-
-    public void setDao(AnylineDao dao) {
-        this.dao = dao;
-    }
-*/
     public void setFeature(String feature) {
         this.feature = feature;
     }
@@ -110,8 +105,6 @@ public class MongoRuntime implements DataRuntime {
         setKey(key);
         setProcessor(database);
         setAdapter(adapter);
-    }
-    public MongoRuntime(){
     }
 
     public MongoClient client(){
