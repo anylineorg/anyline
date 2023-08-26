@@ -20,6 +20,7 @@ package org.anyline.data.jdbc.neo4j;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.neo4j.entity.Neo4jDataRow;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
@@ -31,12 +32,11 @@ import org.anyline.data.run.XMLRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.type.DatabaseType;
-import org.anyline.entity.Join;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
+import org.anyline.metadata.Column;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
@@ -853,7 +853,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             primaryKeys.putAll(EntityAdapterProxy.primaryKeys(obj.getClass()));
         }else{
             primaryKeys = new LinkedHashMap<>();
-            primaryKeys.put(DataRow.DEFAULT_PRIMARY_KEY, new Column(DataRow.DEFAULT_PRIMARY_KEY));
+            primaryKeys.put(Neo4jDataRow.DEFAULT_PRIMARY_KEY, new Column(Neo4jDataRow.DEFAULT_PRIMARY_KEY));
         }
         // 不更新主键 除非显示指定
         for(String pk:primaryKeys.keySet()){
@@ -862,8 +862,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.containsKey(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
-            keys.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        if(!columns.containsKey(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            keys.remove(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
 
@@ -961,8 +961,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.containsKey(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
-            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        if(!columns.containsKey(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            cols.remove(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
 
