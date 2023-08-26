@@ -272,7 +272,7 @@ public enum Compare {
             return false;
         }
     },
-    NOT_IN(150, "不包含","nin"," NOT IN ")			{
+    NOT_IN(140, "不包含","nin"," NOT IN ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
