@@ -87,14 +87,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected long createTime                         = 0                     ; // 创建时间(毫秒)
     protected long nanoTime                           = 0                     ; // 创建时间(纳秒)
     protected long expires                            = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    protected Boolean isNew                         = false                 ; // 强制新建(否则根据主键值判断insert | update)
-    protected boolean isFromCache                   = false                 ; // 是否来自缓存
+    protected Boolean isNew                           = false                 ; // 强制新建(否则根据主键值判断insert | update)
+    protected boolean isFromCache                     = false                 ; // 是否来自缓存
     protected Map<String, String> keymap              = new HashMap<>()       ; // keymap
     protected boolean isUpperKey                      = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
     protected Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
-    public boolean skip                             = false                 ; // 遍历计算时标记
+    public boolean skip                               =  false                ; // 遍历计算时标记
     protected KeyAdapter keyAdapter                   = null                  ; // key格式转换
-    protected KEY_CASE keyCase 				        = DEFAULT_KEY_CASE      ; // 列名格式
+    protected KEY_CASE keyCase 				          = DEFAULT_KEY_CASE      ; // 列名格式
 
     public DataRow() {
         parseKeycase(null);
