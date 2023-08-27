@@ -35,19 +35,24 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.Run;
+import org.anyline.data.run.SimpleRun;
 import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
+import org.anyline.util.SQLUtil;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -707,6 +712,70 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String... columns) {
         return null;
+    }
+
+    /* *****************************************************************************************************************
+     * 													DELETE
+     * -----------------------------------------------------------------------------------------------------------------
+     * Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values)
+     * Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns)
+     * Run fillDeleteRunContent(DataRuntime runtime, Run run)
+     *
+     * protected Run buildDeleteRunFromTable(String table, String key, Object values)
+     * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
+     ******************************************************************************************************************/
+    @Override
+    public Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values){
+        return buildDeleteRunFromTable(runtime, table, key, values);
+    }
+    @Override
+    public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+        if(null == obj){
+            return null;
+        }
+        Run run = null;
+        if(null == dest){
+            dest = DataSourceUtil.parseDataSource(dest,obj);
+        }
+        if(null == dest){
+            Object entity = obj;
+            if(obj instanceof Collection){
+                entity = ((Collection)obj).iterator().next();
+            }
+            Table table = EntityAdapterProxy.table(entity.getClass());
+            if(null != table){
+                dest = table.getName();
+            }
+        }
+        if(obj instanceof ConfigStore){
+            run = new TableRun(runtime,dest);
+            RunPrepare prepare = new DefaultTablePrepare();
+            prepare.setDataSource(dest);
+            run.setPrepare(prepare);
+            run.setConfigStore((ConfigStore)obj);
+            run.addCondition(columns);
+            run.init();
+            fillDeleteRunContent(runtime, run);
+        }else{
+            run = buildDeleteRunFromEntity(runtime, dest, obj, columns);
+        }
+        return run;
+    }
+
+
+    @Override
+    public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun();
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("TRUNCATE TABLE ");
+        SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
+        return runs;
+    }
+    @Override
+    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+
     }
 
     @Override
