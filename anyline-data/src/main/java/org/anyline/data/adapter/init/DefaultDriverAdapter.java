@@ -973,59 +973,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return run;
 	}
 
-	/**
-	 * 构造删除主体
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-	 */
-	@Override
-	public void fillDeleteRunContent(DataRuntime runtime, Run run){
-		if(null != run){
-			if(run instanceof TableRun){
-				TableRun r = (TableRun) run;
-				fillDeleteRunContent(runtime, r);
-			}
-		}
-	}
-
-	protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
-		AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
-		StringBuilder builder = run.getBuilder();
-		builder.append("DELETE FROM ");
-		if(null != run.getSchema()){
-			SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
-		}
-
-		SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
-		builder.append(BR);
-		if(BasicUtil.isNotEmpty(prepare.getAlias())){
-			// builder.append(" AS ").append(sql.getAlias());
-			builder.append("  ").append(prepare.getAlias());
-		}
-		List<Join> joins = prepare.getJoins();
-		if(null != joins) {
-			for (Join join:joins) {
-				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-				if(null != join.getSchema()){
-					SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
-				}
-				SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
-				if(BasicUtil.isNotEmpty(join.getAlias())){
-					builder.append("  ").append(join.getAlias());
-				}
-				builder.append(" ON ").append(join.getCondition());
-			}
-		}
-
-		builder.append("\nWHERE 1=1\n\t");
-
-		/*添加查询条件*/
-		// appendConfigStore();
-		run.appendCondition();
-		run.appendGroup();
-		run.appendOrderStore();
-		run.checkValid();
-	}
 
 	@Override
 	public List<Run> buildTruncateRun(DataRuntime runtime, String table){
