@@ -30,6 +30,7 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
@@ -37,13 +38,11 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.SimpleRun;
+import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
@@ -51,10 +50,7 @@ import org.anyline.metadata.type.ColumnType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2135,6 +2131,60 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			return (int)execute(runtime, random, prepare, null);
 		}
 		return -1;
+	}
+
+	/**
+	 * 构造删除主体
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
+	@Override
+	public void fillDeleteRunContent(DataRuntime runtime, Run run){
+		if(null != run){
+			if(run instanceof TableRun){
+				TableRun r = (TableRun) run;
+				fillDeleteRunContent(runtime, r);
+			}
+		}
+	}
+
+	protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
+		AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
+		StringBuilder builder = run.getBuilder();
+		builder.append("DELETE FROM ");
+		if(null != run.getSchema()){
+			SQLUtil.delimiter(builder, run.getSchema(), delimiterFr, delimiterTo).append(".");
+		}
+
+		SQLUtil.delimiter(builder, run.getTable(), delimiterFr, delimiterTo);
+		builder.append(BR);
+		if(BasicUtil.isNotEmpty(prepare.getAlias())){
+			// builder.append(" AS ").append(sql.getAlias());
+			builder.append("  ").append(prepare.getAlias());
+		}
+		List<Join> joins = prepare.getJoins();
+		if(null != joins) {
+			for (Join join:joins) {
+				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
+				if(null != join.getSchema()){
+					SQLUtil.delimiter(builder, join.getSchema(), delimiterFr, delimiterTo).append(".");
+				}
+				SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
+				if(BasicUtil.isNotEmpty(join.getAlias())){
+					builder.append("  ").append(join.getAlias());
+				}
+				builder.append(" ON ").append(join.getCondition());
+			}
+		}
+
+		builder.append("\nWHERE 1=1\n\t");
+
+		/*添加查询条件*/
+		// appendConfigStore();
+		run.appendCondition();
+		run.appendGroup();
+		run.appendOrderStore();
+		run.checkValid();
 	}
 	/**
 	 * 执行删除
