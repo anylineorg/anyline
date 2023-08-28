@@ -108,7 +108,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		if(null == random){
 			random = random(runtime);
 		}
@@ -174,12 +174,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			return -1;
 		}
 		result = update(runtime, random, dest, data, run);
-		sql_success = true;
+		cmd_success = true;
 		millis = System.currentTimeMillis() - fr;
 		if (null != dmListener) {
-			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, sql_success, result,  millis);
+			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, cmd_success, result,  millis);
 		}
-		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, sql_success, result, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, cmd_success, result, System.currentTimeMillis() - fr);
 		return result;
 	}
 
@@ -271,7 +271,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			random = random(runtime);
 		}
 
-		boolean sql_success = false;
+		boolean cmd_success = false;
 
 		ACTION.SWITCH swt = InterceptorProxy.prepareCount(runtime, random, prepare, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
@@ -299,12 +299,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		fr = System.currentTimeMillis();
 		count = count(runtime, random, run);
-		sql_success = true;
+		cmd_success = true;
 
 		if(null != dmListener){
-			dmListener.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
+			dmListener.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterCount(runtime, random, run, sql_success, count, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
 		return count;
 	}
 	/**
@@ -419,7 +419,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			random = random(runtime);
 		}
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:select][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		DataSet set = new DataSet();
 		//根据这一步中的JDBC结果集检测类型不准确,如:实际POINT 返回 GEOMETRY 如果要求准确 需要开启到自动检测
@@ -508,11 +508,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[执行耗时:{}ms]", random, mid[0] - fr);
+				log.info("{}[action:select][执行耗时:{}ms]", random, mid[0] - fr);
 			}
 			set.setDatalink(runtime.datasource());
 			if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count[0]);
+				log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count[0]);
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -525,7 +525,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, LogUtil.param(values));
+					log.error("{}[{}][action:select][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, LogUtil.param(values));
 				}
 			}
 		}
@@ -708,7 +708,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		List<Map<String,Object>> maps = null;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		Run run = null;
 		if(null == random){
 			random = random(runtime);
@@ -748,15 +748,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				dmListener.beforeQuery(runtime, random, run, -1);
 			}
 			maps = maps(runtime, random, configs, run);
-			sql_success = true;
+			cmd_success = true;
 		} else {
 			maps = new ArrayList<>();
 		}
 
 		if (null != dmListener) {
-			dmListener.afterQuery(runtime, random, run, sql_success, maps, System.currentTimeMillis() - fr);
+			dmListener.afterQuery(runtime, random, run, cmd_success, maps, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, random, run, sql_success, maps, null,System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null,System.currentTimeMillis() - fr);
 		return maps;
 	}
 
@@ -785,7 +785,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		long fr = System.currentTimeMillis();
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:select][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
@@ -840,11 +840,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[执行耗时:{}ms]", random, mid[0] - fr);
+				log.info("{}[action:select][执行耗时:{}ms]", random, mid[0] - fr);
 			}
 			maps = process(runtime, maps);
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count);
+				log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count);
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -857,7 +857,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, LogUtil.param(values));
+					log.error("{}[{}][action:select][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), sql, LogUtil.param(values));
 				}
 			}
 		}
@@ -878,7 +878,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 		long fr = System.currentTimeMillis();
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:select][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		/*if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)){
 			//>0:有占位 isEmpty:值为空
@@ -897,7 +897,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				throw e;
 			}else if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
-				log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
+				log.error("{}[{}][action:select][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
 			}
 		}
 		//}
@@ -914,7 +914,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 		}
 		if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[执行耗时:{}ms][封装行数:{}]", random, millis, LogUtil.format(map == null ?0:1, 34));
+			log.info("{}[action:select][执行耗时:{}ms][封装行数:{}]", random, millis, LogUtil.format(map == null ?0:1, 34));
 		}
 		return map;
 	}
@@ -946,7 +946,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:update][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		long millis = -1;
 		try{
@@ -965,7 +965,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
+				log.info("{}[action:update][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
 			}
 
 		}catch(Exception e) {
@@ -979,7 +979,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			} else {
 				if (ConfigTable.IS_SHOW_SQL_WHEN_ERROR) {
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常:", 33) + e.toString(), sql, LogUtil.param(run.getUpdateColumns(), values));
+					log.error("{}[{}][action:update][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("更新异常:", 33) + e.toString(), sql, LogUtil.param(run.getUpdateColumns(), values));
 				}
 			}
 		}
@@ -1004,7 +1004,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			random = random(runtime);
 		}
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		swt = InterceptorProxy.prepareInsert(runtime, random,  dest, data, checkPrimary, columns);
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
@@ -1060,9 +1060,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		cnt = insert(runtime, random, data, run, null);
 		if (null != dmListener) {
-			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
+			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
 		}
-		InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
 		return cnt;
 	}
 
@@ -1095,7 +1095,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:insert][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		long millis = -1;
 
@@ -1135,7 +1135,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+				log.info("{}[action:insert][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
 			}
 			identity(runtime, random, data, keyholder);
 		}catch(Exception e){
@@ -1149,7 +1149,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
+					log.error("{}[{}][action:insert][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
 				}
 			}
 		}
@@ -1189,7 +1189,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:insert][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		long millis = -1;
 
@@ -1219,7 +1219,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+				log.info("{}[action:insert][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1232,12 +1232,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
+					log.error("{}[{}][action:insert][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
 				}
 			}
 		}
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(run.getInsertColumns(),values));
+			log.info("{}[action:insert][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(run.getInsertColumns(),values));
 		}
 		return cnt;
 	}
@@ -1363,7 +1363,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		long result = -1;
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		if(null == random){
 			random = random(runtime);
@@ -1394,11 +1394,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			return -1;
 		}
 		result = execute(runtime, random, run);
-		sql_success = true;
+		cmd_success = true;
 		if (null != dmListener) {
-			dmListener.afterExecute(runtime, random, run,  sql_success, result, millis);
+			dmListener.afterExecute(runtime, random, run,  cmd_success, result, millis);
 		}
-		InterceptorProxy.afterExecute(runtime, random, run, sql_success, result, System.currentTimeMillis()-fr);
+		InterceptorProxy.afterExecute(runtime, random, run, cmd_success, result, System.currentTimeMillis()-fr);
 		return result;
 	}
 
@@ -1416,7 +1416,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[action:execute][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}
 		long millis = -1;
 		try{
@@ -1439,7 +1439,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
+				log.info("{}[action:execute][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1449,7 +1449,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw e;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[param:{}]" , random, LogUtil.format("SQL执行异常:", 33)+e, sql, LogUtil.param(values));
+					log.error("{}[{}][action:execute][sql:\n{}\n]\n[param:{}]" , random, LogUtil.format("SQL执行异常:", 33)+e, sql, LogUtil.param(values));
 				}
 			}
 		}
@@ -1467,7 +1467,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
 		boolean result = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		List<Object> list = new ArrayList<Object>();
 		final List<Parameter> inputs = procedure.getInputs();
 		final List<Parameter> outputs = procedure.getOutputs();
@@ -1493,7 +1493,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		sql += ")}";
 
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, LogUtil.param(inputs), LogUtil.param(outputs));
+			log.info("{}[action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, LogUtil.param(inputs), LogUtil.param(outputs));
 		}
 		long millis= -1;
 		try{
@@ -1538,7 +1538,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			});
 
-			sql_success = true;
+			cmd_success = true;
 			procedure.setResult(list);
 			result = true;
 			millis = System.currentTimeMillis() - fr;
@@ -1557,7 +1557,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				dmListener.afterExecute(runtime, random, procedure, result, millis);
 			}
 			if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-				log.info("{}[执行耗时:{}ms]\n[output param:{}]", random, millis, list);
+				log.info("{}[action:procedure][执行耗时:{}ms]\n[output param:{}]", random, millis, list);
 			}
 
 		}catch(Exception e){
@@ -1571,7 +1571,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, LogUtil.param(inputs), LogUtil.param(outputs));
+					log.error("{}[{}][action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, LogUtil.param(inputs), LogUtil.param(outputs));
 				}
 			}
 		}
@@ -1591,7 +1591,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		final List<Parameter> inputs = procedure.getInputs();
 		final List<Parameter> outputs = procedure.getOutputs();
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[sql:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), LogUtil.param(inputs), LogUtil.param(outputs));
+			log.info("{}[action:procedure][sql:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), LogUtil.param(inputs), LogUtil.param(outputs));
 		}
 		final String rdm = random;
 		long millis = -1;
@@ -1712,7 +1712,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				queryInterceptor.after(procedure, set, millis);
 			}*/
 			if(!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-				log.info("{}[执行耗时:{}ms]", random, millis);
+				log.info("{}[action:procedure][执行耗时:{}ms]", random, millis);
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1723,7 +1723,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				throw ex;
 			}else{
 				if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-					log.error("{}[{}][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
+					log.error("{}[{}][action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
 							, random
 							, LogUtil.format("存储过程查询异常:", 33)+e.toString()
 							, procedure.getName()
@@ -1751,7 +1751,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		Long fr = System.currentTimeMillis();
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		Run run = null;
 		PageNavi navi = null;
 
@@ -1823,7 +1823,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					return new DataSet();
 				}
 				set = select(runtime, random, false, prepare.getTable(), configs, run);
-				sql_success = true;
+				cmd_success = true;
 			}else{
 				set = new DataSet();
 			}
@@ -1838,9 +1838,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 
 		if(null != dmListener){
-			dmListener.afterQuery(runtime, random, run, sql_success, set, System.currentTimeMillis() - fr);
+			dmListener.afterQuery(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, random, run, sql_success, set, navi, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
 		return set;
 	}
 
@@ -1863,7 +1863,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		EntitySet<T> list = null;
 		Long fr = System.currentTimeMillis();
 		Run run = null;
- 		boolean sql_success = false;
+ 		boolean cmd_success = false;
 		PageNavi navi = null;
 
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -1934,7 +1934,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 				fr = System.currentTimeMillis();
 				list = select(runtime, random, clazz, run.getTable(), configs, run);
-				sql_success = false;
+				cmd_success = false;
 			}else{
 				list = new EntitySet<>();
 			}
@@ -1947,9 +1947,9 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 
 		if (null != dmListener) {
-			dmListener.afterQuery(runtime, random, run, sql_success, list, System.currentTimeMillis() - fr);
+			dmListener.afterQuery(runtime, random, run, cmd_success, list, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, random, run, sql_success, list, navi, System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, list, navi, System.currentTimeMillis() - fr);
 		return list;
 	}
 
@@ -2195,7 +2195,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 */
 	protected long exeDelete(DataRuntime runtime, String random, Run run){
 		long result = -1;
-		boolean sql_success = false;
+		boolean cmd_success = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		long fr = System.currentTimeMillis();
 		swt = InterceptorProxy.beforeDelete(runtime, random, run);
@@ -2211,13 +2211,13 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		long millis = -1;
 
 		result = execute(runtime, random, run);
-		sql_success = true;
+		cmd_success = true;
 		millis = System.currentTimeMillis() - fr;
 
 		if(null != dmListener){
-			dmListener.afterDelete(runtime, random, run, sql_success, result, millis);
+			dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
 		}
-		InterceptorProxy.afterDelete(runtime, random, run,  sql_success, result, millis);
+		InterceptorProxy.afterDelete(runtime, random, run,  cmd_success, result, millis);
 		return result;
 	}
 
