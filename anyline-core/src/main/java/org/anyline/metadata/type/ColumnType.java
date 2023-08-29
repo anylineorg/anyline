@@ -37,9 +37,15 @@ public interface ColumnType {
         public boolean ignoreScale() {
             return false;
         }
+
         @Override
         public boolean support() {
             return false;
+        }
+
+        @Override
+        public void setArray(boolean array) {
+
         }
 
         @Override
@@ -59,65 +65,99 @@ public interface ColumnType {
 
         @Override
         public Object convert(Object value, Object def) {
-            return value;
+            return null;
         }
 
         @Override
         public Object convert(Object value, Class target) {
-            return value;
+            return null;
         }
 
         @Override
         public Object convert(Object value, Class target, Object def) {
-            return value;
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Class target, boolean array) {
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Class target, boolean array, Object def) {
+            return null;
         }
 
         @Override
         public Object convert(Object value, Object obj, Field field) {
-            return value;
+            return null;
         }
 
         @Override
         public Object read(Object value, Object def, Class clazz) {
-            return value;
+            return null;
+        }
+
+        @Override
+        public Object read(Object value, Object def, Class clazz, boolean array) {
+            return null;
         }
 
         @Override
         public Object write(Object value, Object def, boolean placeholder) {
-            return value;
+            return null;
         }
 
+        @Override
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            return null;
+        }
     };
-    public abstract String getName();
-    public abstract boolean ignorePrecision();
-    public abstract boolean ignoreScale();
-    public abstract boolean support();
-
+    String getName();
+    boolean ignorePrecision();
+    boolean ignoreScale();
+    boolean support();
+    default boolean isArray(){
+        return false;
+    }
+    void setArray(boolean array);
     /**
      * 写入数据库或查询条件时的类型
      * @return Class
      */
-    public abstract Class compatible();
+    Class compatible();
 
     /**
      * 中间转换类型
      * 如 value(double[]) > transfer(Point) > byte[](compatible)
      * @return Class
      */
-    public abstract Class transfer();
+    Class transfer();
 
 
     /**
      * 支持的数据库
      * @return DatabaseType
      */
-    public abstract DatabaseType[] dbs();
+    DatabaseType[] dbs();
 
-    public abstract Object convert(Object value, Object def);
-    public abstract Object convert(Object value, Class target);
-    public abstract Object convert(Object value, Class target, Object def);
-    public abstract Object convert(Object value, Object obj, Field field);
+    Object convert(Object value, Object def);
+    default Object convert(Object value, Class target){
+        return convert(value, target, false);
+    }
+    Object convert(Object value, Class target, boolean array);
+    default Object convert(Object value, Class target, Object def){
+        return convert(value, target, false, def);
+    }
+    Object convert(Object value, Class target, boolean array, Object def);
+    Object convert(Object value, Object obj, Field field);
 
-    public Object read(Object value, Object def, Class clazz);
-    public Object write(Object value, Object def, boolean placeholder);
+    default Object read(Object value, Object def, Class clazz){
+        return read(value, def, clazz, false);
+    }
+    Object read(Object value, Object def, Class clazz, boolean array);
+    default Object write(Object value, Object def, boolean placeholder){
+        return write(value, def, false, placeholder);
+    }
+    Object write(Object value, Object def, boolean array, boolean placeholder);
 }
