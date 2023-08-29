@@ -222,12 +222,12 @@ public class BeanUtil {
 		if(v.getClass().isArray()){
 			Object[] list = (Object[])v;
 			for(Object item:list){
-				result.add(ConvertAdapter.convert(item, component));
+				result.add(ConvertAdapter.convert(item, component, false));
 			}
 		}else if(v instanceof Collection){
 			Collection list = (Collection) v;
 			for(Object item:list){
-				result.add(ConvertAdapter.convert(item, component));
+				result.add(ConvertAdapter.convert(item, component, false));
 			}
 		}
 		return result;
@@ -303,7 +303,7 @@ public class BeanUtil {
 								}
 							}
 						}else{
-							result = ConvertAdapter.convert(value, targetClass);
+							result = ConvertAdapter.convert(value, targetClass, false);
 						}
 
 					}catch (Exception e){
@@ -2055,7 +2055,7 @@ public class BeanUtil {
 			T[] array = (T[]) Array.newInstance(clazz, list.size());
 			int index = 0;
 			for (Object item : list) {
-				array[index++] = (T) ConvertAdapter.convert(item, clazz);
+				array[index++] = (T) ConvertAdapter.convert(item, clazz, false);
 			}
 			result = array;
 		}
@@ -2073,6 +2073,71 @@ public class BeanUtil {
 		return "[" + concat(array) + "]";
 	}
 
+	/**
+	 * 数组转list
+	 * @param value 数组或集合
+	 * @return List
+	 * @param <T>
+	 */
+	public static <T> List<T> list(Object value){
+		List<T> list = new ArrayList<>();
+		if(null != value){
+			if(value instanceof Collection){
+				Collection<T> collection = (Collection<T>) value;
+				for(T item:collection){
+					list.add(item);
+				}
+			}else if(value.getClass().isArray()){
+				if(value instanceof int[]){
+					int[] array = (int[])value;
+					for(Integer item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof long[]){
+					long[] array = (long[])value;
+					for(Long item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof double[]){
+					double[] array = (double[])value;
+					for(Double item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof float[]){
+					float[] array = (float[])value;
+					for(Float item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof short[]){
+					short[] array = (short[])value;
+					for(Short item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof byte[]){
+					byte[] array = (byte[])value;
+					for(Byte item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof char[]){
+					char[] array = (char[])value;
+					for(Character item:array){
+						list.add((T)item);
+					}
+				}else if(value instanceof boolean[]){
+					boolean[] array = (boolean[])value;
+					for(Boolean item:array){
+						list.add((T)item);
+					}
+				}else{
+					Object[] array = (Object[]) value;
+					for(Object item:array){
+						list.add((T)item);
+					}
+				}
+			}
+		}
+		return list;
+	}
 	/**
 	 * 截取数组
 	 * @param array 原数组
