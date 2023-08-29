@@ -2024,7 +2024,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 查询 function DDL
 	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
-	 * @param table PartitionTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
@@ -4344,7 +4344,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					result = ctype.write(value, null, false);
 				}else{
 					Class writeClass = ctype.compatible();
-					result = ConvertAdapter.convert(value, writeClass);
+					result = ConvertAdapter.convert(value, writeClass, metadata.isArray());
 				}
 			}
 		}else{
@@ -4618,6 +4618,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		try {
 			if(null != metadata) {
 				ColumnType columnType = metadata.getColumnType();
+				if(null == columnType){
+					columnType = type(metadata.getTypeName());
+					columnType.setArray(metadata.isArray());
+					metadata.setColumnType(columnType);
+				}
 				value = convert(runtime, columnType, value);
 			}
 		}catch (Exception e){
@@ -4651,12 +4656,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}else {
 					Class transfer = columnType.transfer();
 					Class compatible = columnType.compatible();
-
 					if (null != transfer) {
-						value = ConvertAdapter.convert(value, transfer);
+						value = ConvertAdapter.convert(value, transfer, columnType.isArray());
 					}
 					if (null != compatible) {
-						value = ConvertAdapter.convert(value, compatible);
+						value = ConvertAdapter.convert(value, compatible, columnType.isArray());
 					}
 				}
 			}
