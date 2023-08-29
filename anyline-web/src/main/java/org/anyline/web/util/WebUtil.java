@@ -1120,10 +1120,15 @@ public class WebUtil {
 			}
 		}
 	}
-	public static String readRequestContent(HttpServletRequest request){
+	public static String readRequestContent(HttpServletRequest request, String charset){
 		StringBuilder sb = new StringBuilder();
 		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			BufferedReader br = null;
+			if(null != charset) {
+				br = new BufferedReader(new InputStreamReader(request.getInputStream(), charset));
+			}else{
+				br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			}
 			String line = null;
 			while((line = br.readLine())!=null){
 				sb.append(line);
@@ -1132,6 +1137,9 @@ public class WebUtil {
 			e.printStackTrace();
 		}
 		return sb.toString();
+	}
+	public static String readRequestContent(HttpServletRequest request){
+		return readRequestContent(request, "UTF-8");
 	}
 
 	public static Map<String, Object> packParam(HttpServletRequest request, String... keys) {
