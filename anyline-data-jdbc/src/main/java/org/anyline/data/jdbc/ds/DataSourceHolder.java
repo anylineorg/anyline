@@ -416,7 +416,7 @@ public class DataSourceHolder extends ClientHolder {
 			for(Field field:fields){
 				String name = field.getName();
 				Object value = map.get(name);
-				value = ConvertAdapter.convert(value, field.getType());
+				value = ConvertAdapter.convert(value, field.getType(), false);
 				if(null != value) {
 					ds_builder.addPropertyValue(name, value);
 				}
