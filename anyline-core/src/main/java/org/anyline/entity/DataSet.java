@@ -163,8 +163,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
     }
 
-    public DataSet setMetadatas(LinkedHashMap metadatas){
+    public DataSet setMetadata(LinkedHashMap<String, Column> metadatas){
         this.metadatas = metadatas;
+        return this;
+    }
+
+
+    public DataSet setMetadata(String name, Column column){
+        if(null == metadatas){
+            metadatas = new LinkedHashMap<>();
+        }
+        metadatas.put(name.toUpperCase(), column);
+        return this;
+    }
+    public DataSet setMetadata(Column column){
+        if(null != column){
+            return setMetadata(column.getName(), column);
+        }
         return this;
     }
     public LinkedHashMap<String, Column> getMetadatas(){

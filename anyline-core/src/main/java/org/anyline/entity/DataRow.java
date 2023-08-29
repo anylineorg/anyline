@@ -644,7 +644,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(null == metadatas){
             return null;
         }
-        return metadatas.get(column.toUpperCase());
+        Column metadata = metadatas.get(column.toUpperCase());
+        if(null == metadata && null != container){
+            metadata = container.getMetadata(column);
+        }
+        return metadata;
     }
     public String getMetadataTypeName(String column){
         Column col = getMetadata(column);
