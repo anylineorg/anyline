@@ -29,6 +29,7 @@ import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Month;
@@ -72,28 +73,51 @@ public class ConvertAdapter {
         return null;
     }
 
-    public static  Object convert(Object value, Class target){
-        return convert(value, target, null);
+    public static Object convert(Object value, Class target, boolean array){
+        return convert(value, target, array, null);
     }
 
-    public static  Object convert(Object value, Class target, Object def){
-        return convert(value, target, def, true);
+    public static Object convert(Object value, Class target, boolean array, Object def){
+        return convert(value, target, array, def, true);
     }
-    public static  Object convert(Object value, Class target, Object def, boolean warn){
+
+    /**
+     *
+     * @param value 值
+     * @param target 目标类型
+     * @param target 目标类型是否是数组
+     * @param def 默认值
+     * @param warn 是否异常提示
+     * @return Object
+     */
+    public static <T> Object convert(Object value, Class<T> target, boolean array, Object def, boolean warn){
         Object result = value;
-        if(null != value && null != target){
-            Class clazz = value.getClass();
+        if(null != result && null != target){
+            Class clazz = result.getClass();
             if(clazz == target){
-                return value;
+                return result;
             }
             //Map转换成Entity
-            if(value instanceof Map && ClassUtil.isWrapClass(target) && target != String.class){
-                if(value instanceof DataRow){
-                    value = ((DataRow)value).entity(target);
+            if(result instanceof Map && ClassUtil.isWrapClass(target) && target != String.class){
+                if(result instanceof DataRow){
+                    result = ((DataRow)result).entity(target);
                 }else {
-                    value = BeanUtil.map2object((Map) value, target);
+                    result = BeanUtil.map2object((Map) result, target);
                 }
-                return value;
+                return result;
+            }
+            //数组
+            if(array){
+                if(value instanceof Collection || value.getClass().isArray()){
+                    List<Object> list = BeanUtil.list(value);
+                    int size = list.size();
+                    T[] arrays = (T[])Array.newInstance(target, size);
+                    int idx = 0;
+                    for(Object item:list){
+                        arrays[idx++] = (T)convert(item, target, false, def, warn);
+                    }
+                    return arrays;
+                }
             }
             //转换成String类型
             if(target == String.class){
