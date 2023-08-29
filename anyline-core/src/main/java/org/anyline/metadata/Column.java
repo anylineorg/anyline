@@ -1024,6 +1024,9 @@ public class Column implements Serializable {
         if(getmap && null != update){
             return update.columnType;
         }
+        if(array && null != columnType){
+            columnType.setArray(array);
+        }
         return columnType;
     }
 
