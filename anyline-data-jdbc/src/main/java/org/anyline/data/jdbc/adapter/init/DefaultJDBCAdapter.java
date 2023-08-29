@@ -435,7 +435,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			final boolean[] process = {false};
 			final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
 			metadatas.putAll(columns);
-			set.setMetadatas(metadatas);
+			set.setMetadata(metadatas);
 			JdbcTemplate jdbc = jdbc(runtime);
 			StreamHandler _handler = null;
 			if(null != configs){
