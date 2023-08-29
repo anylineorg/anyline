@@ -211,6 +211,7 @@ public interface EntityAdapter {
         }
         name = ClassUtil.parseAnnotationFieldValue(field, annotations);
 
+
         // 3.属性名转成列名
         if(BasicUtil.isEmpty(name)){
             if("camel_".equals(ConfigTable.ENTITY_FIELD_COLUMN_MAP)){
@@ -231,6 +232,15 @@ public interface EntityAdapter {
             column = new Column(name);
             EntityAdapterProxy.field2column.put(key.toUpperCase(), column);
             EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);
+            //类型
+            String type = ClassUtil.parseAnnotationFieldValue(field, "column.columnDefinition");
+            if(BasicUtil.isNotEmpty(type)){
+                if(type.contains("[]")){
+                    type = type.replace("[]","");
+                    column.setArray(true);
+                }
+                column.setType(type);
+            }
             return column;
         }
         return null;
