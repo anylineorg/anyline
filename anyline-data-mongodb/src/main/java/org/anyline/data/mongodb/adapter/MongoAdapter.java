@@ -112,7 +112,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             random = random(runtime);
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        boolean sql_success = false;
+        boolean cmd_success = false;
         swt = InterceptorProxy.prepareInsert(runtime, random,  dest, data, checkPrimary, columns);
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
@@ -151,9 +151,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         cnt = insert(runtime, random, data, run, null);
         if (null != dmListener) {
-            dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, sql_success, cnt, millis);
+            dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
         }
-        InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, sql_success, cnt, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
         return cnt;
     }
 
@@ -548,7 +548,27 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
-        return 0;
+        table = DataSourceUtil.parseDataSource(table, null);
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        if(null != dmListener){
+            swt = dmListener.prepareDelete(runtime,random, table, configs, conditions);
+        }
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        Run run = buildDeleteRun(runtime, table, configs, conditions);
+        if(!run.isValid()){
+            if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+                log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+            }
+            return -1;
+        }
+        long result = exeDelete(  runtime, random,  run);
+        return result;
     }
 
     @Override
@@ -565,7 +585,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
         DataSet set = null;
         Long fr = System.currentTimeMillis();
-        boolean sql_success = false;
+        boolean cmd_success = false;
         Run run = null;
         PageNavi navi = null;
 
@@ -637,7 +657,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                     return new DataSet();
                 }
                 set = select(runtime, random, false, prepare.getTable(), configs, run);
-                sql_success = true;
+                cmd_success = true;
             }else{
                 set = new DataSet();
             }
@@ -652,9 +672,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
 
         if(null != dmListener){
-            dmListener.afterQuery(runtime, random, run, sql_success, set, System.currentTimeMillis() - fr);
+            dmListener.afterQuery(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
         }
-        InterceptorProxy.afterQuery(runtime, random, run, sql_success, set, navi, System.currentTimeMillis() - fr);
+        InterceptorProxy.afterQuery(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
         return set;    }
 
     @Override
@@ -773,9 +793,47 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
         return runs;
     }
+    /**
+     * 构造删除主体
+     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+     */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+    public void fillDeleteRunContent(DataRuntime runtime, Run run){
+    }
 
+    /**
+     * 执行删除
+     * @param runtime DataRuntime
+     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @return int
+     */
+    protected long exeDelete(DataRuntime runtime, String random, Run run){
+        long result = -1;
+        boolean cmd_success = false;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        long fr = System.currentTimeMillis();
+        swt = InterceptorProxy.beforeDelete(runtime, random, run);
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        if(null != dmListener){
+            swt = dmListener.beforeDelete(runtime, random, run);
+        }
+        if(swt == ACTION.SWITCH.BREAK){
+            return -1;
+        }
+        long millis = -1;
+
+        result = execute(runtime, random, run);
+        cmd_success = true;
+        millis = System.currentTimeMillis() - fr;
+
+        if(null != dmListener){
+            dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
+        }
+        InterceptorProxy.afterDelete(runtime, random, run,  cmd_success, result, millis);
+        return result;
     }
 
     @Override
