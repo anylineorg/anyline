@@ -1339,6 +1339,15 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
 			return row.isNew();
+		}else if(obj instanceof Map){
+			Map map = (Map)obj;
+			if(BasicUtil.isNotEmpty(map.get(ConfigTable.DEFAULT_PRIMARY_KEY))
+					|| BasicUtil.isNotEmpty(map.get(ConfigTable.DEFAULT_PRIMARY_KEY.toLowerCase()))
+					|| BasicUtil.isNotEmpty(map.get(ConfigTable.DEFAULT_PRIMARY_KEY.toUpperCase()))
+			){
+				return false;
+			}
+			return true;
 		}else{
 			Map<String,Object> values = EntityAdapterProxy.primaryValues(obj);
 			for(Map.Entry entry:values.entrySet()){
