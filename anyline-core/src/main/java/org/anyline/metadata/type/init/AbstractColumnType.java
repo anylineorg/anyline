@@ -24,7 +24,7 @@ import org.anyline.metadata.type.ColumnType;
 import java.lang.reflect.Field;
 
 public class AbstractColumnType implements ColumnType {
-
+    private boolean array;
     private DatabaseType[] dbs;
     private String name;
     private Class transfer                  ; //中间转换类型 转换成其他格式前先转换成transfer类型
@@ -58,7 +58,13 @@ public class AbstractColumnType implements ColumnType {
     }
 
     @Override
-    public Object convert(Object value, Class target, Object def) {
+    public Object convert(Object value, Class target, boolean array){
+        Object def = null;
+        return convert(value, target, array, def);
+    }
+
+    @Override
+    public Object convert(Object value, Class target, boolean array, Object def) {
         if(null == target){
             target = compatible;
         }
@@ -67,9 +73,9 @@ public class AbstractColumnType implements ColumnType {
                 return value;
             }
             if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, def);
+                value = ConvertAdapter.convert(value, transfer, array, def);
             }
-            value = ConvertAdapter.convert(value, target, def);
+            value = ConvertAdapter.convert(value, target, array, def);
         }
         return value;
     }
@@ -81,33 +87,48 @@ public class AbstractColumnType implements ColumnType {
 
     @Override
     public Object read(Object value, Object def, Class clazz) {
+        return read(value, def, clazz, false);
+    }
+    @Override
+    public Object read(Object value, Object def, Class clazz, boolean array) {
         if(null == clazz){
             clazz = transfer;
         }
         if(null == clazz){
             clazz = compatible;
         }
-        value = ConvertAdapter.convert(value, clazz, def);
+        value = ConvertAdapter.convert(value, clazz, array, def);
         return value;
     }
 
     @Override
     public Object write(Object value, Object def, boolean placeholder) {
+        return write(value, def, false, placeholder);
+    }
+    @Override
+    public Object write(Object value, Object def, boolean array, boolean placeholder) {
         if(null != value){
             if(value.getClass() == compatible){
                 return value;
             }
             if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, def);
+                value = ConvertAdapter.convert(value, transfer, array, def);
             }
-            value = ConvertAdapter.convert(value, compatible, def);
+            value = ConvertAdapter.convert(value, compatible, array, def);
         }
         return value;
     }
 
 
+    @Override
+    public boolean isArray() {
+        return array;
+    }
 
-
+    @Override
+    public void setArray(boolean array) {
+        this.array = array;
+    }
 
     @Override
     public String getName() {
