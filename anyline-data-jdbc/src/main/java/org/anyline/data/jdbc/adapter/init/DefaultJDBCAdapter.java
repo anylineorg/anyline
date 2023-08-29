@@ -1993,8 +1993,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表
-	 * @param column 列
+	 * @param table 表 
 	 * @param values 列对应的值
 	 * @return 影响行数
 	 * @param <T> T
@@ -2031,8 +2030,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * <br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param table 表
+	 * @param random 用来标记同一组命令 
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return 影响行数
@@ -2187,8 +2185,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		run.checkValid();
 	}
 	/**
-	 * 执行删除
-	 * @param recover 执行完成后是否根据设置自动还原数据源
+	 * 执行删除 
 	 * @param runtime DataRuntime
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return int
@@ -2564,7 +2561,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -2618,7 +2615,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				}
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -2686,7 +2683,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				_schema = schema;
 			}
 			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
-			T table = table(tables, catalog, schema, name);
+			T table = table(tables, _catalog, _schema, name);
 			if(null == table){
 				table = (T)new Table();
 			}
@@ -2926,7 +2923,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				views.put(viewName.toUpperCase(), view);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -3180,7 +3177,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return new LinkedHashMap();
 		}
-		LinkedHashMap<String,T> tags = CacheProxy.tags(runtime.getKey(), table.getName());
+		LinkedHashMap<String,T> tags = CacheProxy.tags(runtime.getKey(), table);
 		if(null != tags && !tags.isEmpty()){
 			return tags;
 		}
@@ -3238,7 +3235,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 
 			}
 		}
-		CacheProxy.tags(runtime.getKey(), table.getName(), tags);
+		CacheProxy.tags(runtime.getKey(), table, tags);
 		return tags;
 	}
 	@Override
@@ -3581,6 +3578,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table , boolean primary){
+		if (!greedy) {
+			checkSchema(runtime, table);
+		}
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
 
 		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table);
 		if(null != columns && !columns.isEmpty()){
@@ -3591,11 +3593,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			random = random(runtime);
 		}
 		try {
-			if (!greedy) {
-				checkSchema(runtime, table);
-			}
-			String catalog = table.getCatalog();
-			String schema = table.getSchema();
 
 			int qty_total = 0;
 			int qty_dialect = 0; //优先根据系统表查询
@@ -3909,7 +3906,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}catch (Exception e){
 
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -4136,7 +4133,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				columns.put(column.getName().toUpperCase(), column);
 			}
 		}finally{
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}

@@ -396,7 +396,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -430,6 +430,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 					continue;
 				}
 				boolean contains = true;
+				catalog = BasicUtil.evl(string(keys, "TABLE_CATALOG", set),string(keys, "TABLE_CAT", set), catalog);
 				T table = table(tables, catalog, schema, tableName);
 				if (null == table) {
 					if (create) {
@@ -440,7 +441,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 					}
 				}
 				//参考 checkSchema()
-				table.setSchema(BasicUtil.evl(string(keys, "TABLE_CATALOG", set),string(keys, "TABLE_CAT", set), catalog));
+				table.setSchema(catalog);
 				table.setCatalog(null);
 
 				table.setName(tableName);
@@ -457,7 +458,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -615,7 +616,7 @@ public class HiveAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 				// view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}

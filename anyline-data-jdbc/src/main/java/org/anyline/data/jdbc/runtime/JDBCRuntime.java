@@ -143,7 +143,7 @@ public class JDBCRuntime implements DataRuntime {
                 }catch (Exception e){
                     e.printStackTrace();
                 }finally {
-                    if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+                    if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
                         DataSourceUtils.releaseConnection(con, ds);
                     }
                 }
@@ -166,7 +166,7 @@ public class JDBCRuntime implements DataRuntime {
                 }catch (Exception e){
                     e.printStackTrace();
                 }finally {
-                    if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+                    if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
                         DataSourceUtils.releaseConnection(con, ds);
                     }
                 }

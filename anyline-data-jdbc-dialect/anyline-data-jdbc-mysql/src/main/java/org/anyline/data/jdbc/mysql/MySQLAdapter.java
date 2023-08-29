@@ -425,7 +425,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -486,7 +486,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
@@ -644,7 +644,7 @@ public class MySQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				// view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
 			}
 		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}

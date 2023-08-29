@@ -420,7 +420,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
 
         finally {
-            if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
