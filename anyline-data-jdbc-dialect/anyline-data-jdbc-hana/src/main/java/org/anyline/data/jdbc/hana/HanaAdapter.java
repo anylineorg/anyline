@@ -561,19 +561,24 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		}
 		for(DataRow row:set){
 			String name = row.getString("TABLE_NAME");
+			String _catalog = row.getString("CATALOG_NAME");
+			String _schema = row.getString("SCHEMA_NAME");
+			if(null == _catalog){
+				_catalog = catalog;
+			}
+			if(null == _schema){
+				_schema = schema;
+			}
 			T table = tables.get(name.toUpperCase());
 			if(null == table){
 				if("VIEW".equals(row.getString("TABLE_TYPE"))){
-					table = (T)new View();
+					table = (T) new View();
 				}else {
 					table = (T) new Table();
 				}
 			}
-			if(null == schema){
-				schema = row.getString("SCHEMA_NAME");
-			}
-			table.setCatalog(catalog);
-			table.setSchema(schema);
+			table.setCatalog(_catalog);
+			table.setSchema(_schema);
 			table.setName(name);
 			table.setComment(row.getString("COMMENTS"));
 			tables.put(name.toUpperCase(), table);
@@ -588,7 +593,15 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 		}
 		for(DataRow row:set){
 			String name = row.getString("TABLE_NAME");
-			T table = table(tables, catalog, schema, name);
+			String _catalog = row.getString("CATALOG_NAME");
+			String _schema = row.getString("SCHEMA_NAME");
+			if(null == _catalog){
+				_catalog = catalog;
+			}
+			if(null == _schema){
+				_schema = schema;
+			}
+			T table = table(tables, _catalog, _schema, name);
 			boolean conains = true;
 			if(null == table){
 				conains = false;
@@ -598,11 +611,8 @@ public class HanaAdapter extends SQLAdapter implements JDBCAdapter, Initializing
 					table = (T) new Table();
 				}
 			}
-			if(null == schema){
-				schema = row.getString("SCHEMA_NAME");
-			}
-			table.setCatalog(catalog);
-			table.setSchema(schema);
+			table.setCatalog(_catalog);
+			table.setSchema(_schema);
 			table.setName(name);
 			table.setComment(row.getString("COMMENTS"));
 			if(!conains) {
