@@ -3484,7 +3484,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO"));
 			}
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT", "COMMENTS", "REMARKS"), column.getComment()));
-			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE", "TYPENAME"), column.getTypeName()));
+			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE", "TYPENAME", "DATA_TYPE_NAME"), column.getTypeName()));
 			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT"), column.getDefaultValue())+"";
 			if(BasicUtil.isNotEmpty(def)) {
 				while(def.startsWith("(") && def.endsWith(")")){
