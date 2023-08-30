@@ -17,14 +17,11 @@
 
 
 package org.anyline.dao.init.springjdbc;
-
 import org.anyline.adapter.PersistenceAdapter;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.param.Config;
-import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -35,11 +32,9 @@ import org.anyline.data.run.SimpleRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.ClientHolder;
-import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
-import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.ACTION.DDL;
 import org.anyline.metadata.ACTION.SWITCH;
@@ -49,7 +44,6 @@ import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
-import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +51,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.*;
 
 @Primary
@@ -282,7 +274,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -691,7 +683,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns){
+	public long save(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, boolean checkPrimary, List<String>  columns){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -716,7 +708,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return int 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns) {
+	public long insert(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -833,7 +825,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return
 	 * @param <T>
 	 */
-	public <T> long deletes(DataRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values){
+	@Override
+	public <T> long deletes(DataRuntime runtime, String random, boolean recover, int batch, String table, String key, Collection<T> values){
 		if(null == runtime){
 			runtime = runtime();
 		}
