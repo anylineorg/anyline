@@ -195,8 +195,8 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 				table.setCatalog(con.getCatalog());
 			}
 			if (null == table.getSchema()) {
-				//table.setSchema(con.getSchema());
-				table.setSchema("dbo");
+				//table.setSchema("dbo");
+				table.setSchema(con.getSchema());
 			}
 		}catch (Exception e){
 		}
