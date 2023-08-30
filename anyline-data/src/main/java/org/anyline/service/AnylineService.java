@@ -73,6 +73,7 @@ public interface AnylineService<E>{
 	 ******************************************************************************************************************/
 	/**
 	 * 插入数据
+	 * @param batch 批量执行每批最多数量
 	 * @param dest 表名
 	 * @param data entity或list或DataRow或DataSet
 	 * @param checkPrimary 是否检测主键重复
@@ -80,7 +81,44 @@ public interface AnylineService<E>{
 	 * @param columns 需要插入哪些列
 	 * @return 影响行数
 	 */
-	long insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	long insert(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	default long insert(int batch, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return insert(batch, null, data, checkPrimary, fixs, columns);
+	}
+	default long insert(int batch, Object data, List<String> fixs, String ... columns){
+		return insert(batch, null, data, false, fixs, columns);
+	}
+	default long insert(int batch, String dest, Object data, List<String> fixs, String ... columns){
+		return insert(batch, dest, data, false, fixs, columns);
+	}
+	default long insert(int batch, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return insert(batch, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default long insert(int batch, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return insert(batch, null, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default long insert(int batch, Object data, String[] fixs, String ... columns){
+		return insert(batch, null, data, false, fixs, columns);
+	}
+	default long insert(int batch, String dest, Object data, String[] fixs, String ... columns){
+		return insert(batch, dest, data, false, fixs, columns);
+	}
+	default long insert(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, boolean checkPrimary, String ... columns){
+		return insert(batch, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, String ... columns){
+		return insert(batch, null, data, false, columns);
+	}
+	default long insert(int batch, String dest, Object data, String ... columns){
+		return insert(batch, dest, data, false, columns);
+	}
+
+	default long insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return insert(0, dest, data, checkPrimary, fixs, columns);
+	}
 	default long insert(Object data, boolean checkPrimary, List<String> fixs, String ... columns){
 		return insert(null, data, checkPrimary, fixs, columns);
 	}
@@ -125,7 +163,7 @@ public interface AnylineService<E>{
 	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
 	 * 可以提供了ConfigStore以实现更复杂的更新条件
 	 * 需要更新的列通过fixs/columns提供
-	 * @param async	  	是否异步
+	 * @param batch 批量执行每批最多数量
 	 * @param fixs	  	需要更新的列
 	 * @param columns	需要更新的列
 	 * @param dest	   	表
@@ -133,79 +171,78 @@ public interface AnylineService<E>{
 	 * @param configs 	更新条件
 	 * @return int 影响行数
 	 */
-	long update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+
+	long update(int batch, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns);
+	default long update(int batch, String dest, Object data, List<String> fixs, String ... columns){
+		return update(batch, dest, data, null, fixs, columns);
+	}
+	default long update(int batch, String dest, Object data, String[] fixs, String ... columns){
+		return update(batch, dest, data, null, BeanUtil.array2list(fixs, columns));
+	}
+	default long update(int batch, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
+		return update(batch, dest, data, configs, BeanUtil.array2list(fixs, columns));
+	}
+	default long update(int batch, String dest, Object data, String ... columns){
+		return update(batch, dest, data, null, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+		return update(batch, null, data, configs, fixs, columns);
+	}
+	default long update(int batch, Object data, List<String> fixs, String ... columns){
+		return update(batch, null, data, null, fixs, columns);
+	}
+	default long update(int batch, Object data, String[] fixs, String ... columns){
+		return update(batch, null, data, null, BeanUtil.array2list(fixs, columns));
+	}
+	default long update(int batch, Object data, ConfigStore configs, String[] fixs, String ... columns){
+		return update(batch, null, data, configs, BeanUtil.array2list(fixs, columns));
+	}
+	default long update(int batch, Object data, String ... columns){
+		return update(batch, null, data, null, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Object data, ConfigStore configs, String ... columns){
+		return update(batch, null, data, configs, BeanUtil.array2list(columns));
+	}
+
 	default long update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
-		return update(false, dest, data, configs, fixs, columns);
+		return update(0, dest, data, configs, fixs, columns);
 	}
 	default long update(String dest, Object data, List<String> fixs, String ... columns){
-		return update(false, dest, data, null, fixs, columns);
+		return update(dest, data, null, fixs, columns);
 	}
 	default long update(String dest, Object data, String[] fixs, String ... columns){
-		return update(false, dest, data, null, BeanUtil.array2list(fixs, columns));
+		return update(dest, data, null, BeanUtil.array2list(fixs, columns));
 	}
 	default long update(String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
-		return update(false, dest, data, configs, BeanUtil.array2list(fixs, columns));
+		return update(dest, data, configs, BeanUtil.array2list(fixs, columns));
 	}
 	default long update(String dest, Object data, String ... columns){
-		return update(false, dest, data, null, BeanUtil.array2list(columns));
+		return update(dest, data, null, BeanUtil.array2list(columns));
 	}
 	default long update(String dest, Object data, ConfigStore configs, String ... columns){
-		return update(false, dest, data, configs, BeanUtil.array2list(columns));
+		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(Object data, ConfigStore configs, List<String> fixs, String ... columns){
-		return update(false, null, data, configs, fixs, columns);
+		return update(null, data, configs, fixs, columns);
 	}
 	default long update(Object data, List<String> fixs, String ... columns){
-		return update(false, null, data, null, fixs, columns);
+		return update(null, data, null, fixs, columns);
 	}
 	default long update(Object data, String[] fixs, String ... columns){
-		return update(false, null, data, null, BeanUtil.array2list(fixs, columns));
+		return update(null, data, null, BeanUtil.array2list(fixs, columns));
 	}
 	default long update(Object data, ConfigStore configs, String[] fixs, String ... columns){
-		return update(false, null, data, configs, BeanUtil.array2list(fixs, columns));
+		return update(null, data, configs, BeanUtil.array2list(fixs, columns));
 	}
 	default long update(Object data, String ... columns){
-		return update(false, null, data, null, BeanUtil.array2list(columns));
+		return update(null, data, null, BeanUtil.array2list(columns));
 	}
 	default long update(Object data, ConfigStore configs, String ... columns){
-		return update(false, null, data, configs, BeanUtil.array2list(columns));
+		return update(null, data, configs, BeanUtil.array2list(columns));
 	}
-	default long update(boolean async, String dest, Object data, List<String> fixs, String ... columns){
-		return update(async, dest, data, null, fixs, columns);
-	}
-	default long update(boolean async, String dest, Object data, String[] fixs, String ... columns){
-		return update(async, dest, data, null, BeanUtil.array2list(fixs, columns));
-	}
-	default long update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
-		return update(async, dest, data, configs, BeanUtil.array2list(fixs, columns));
-	}
-	default long update(boolean async, String dest, Object data, String ... columns){
-		return update(async, dest, data, null, BeanUtil.array2list(columns));
-	}
-	default long update(boolean async, String dest, Object data, ConfigStore configs, String ... columns){
-		return update(async, dest, data, configs, BeanUtil.array2list(columns));
-	}
-	
-	default long update(boolean async, Object data, List<String> fixs, String ... columns){
-		return update(async, null, data, null, fixs, columns);
-	}
-	default long update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns){
-		return update(async, null, data, configs, fixs, columns);
-	}
-	default long update(boolean async, Object data, String[] fixs, String ... columns){
-		return update(async, null, data, null, BeanUtil.array2list(fixs, columns));
-	}
-	default long update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns){
-		return update(async, null, data, configs, BeanUtil.array2list(fixs, columns));
-	}
-	default long update(boolean async, Object data, String ... columns){
-		return update(async, null, data, null, BeanUtil.array2list(columns));
-	}
-	default long update(boolean async, Object data, ConfigStore configs, String ... columns){
-		return update(async, null, data, configs, BeanUtil.array2list(columns));
-	}
-
-
 	/* *****************************************************************************************************************
 	 * 													SAVE
 	 ******************************************************************************************************************/
@@ -219,6 +256,7 @@ public interface AnylineService<E>{
 	 * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
 	 *
 	 * 保存(insert|update)根据是否有主键值确定insert或update
+	 * @param batch 批量执行每批最多数量
 	 * @param data  数据
 	 * @param checkPrimary 是否检测主键
 	 * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
@@ -226,9 +264,48 @@ public interface AnylineService<E>{
 	 * @param dest 表
 	 * @return 影响行数
 	 */
-	long save(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	long save(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
+	default long save(int batch, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return save(batch, null, data, checkPrimary, fixs, columns);
+	}
+	default long save(int batch, Object data, List<String> fixs, String ... columns){
+		return save(batch, null, data, false, fixs, columns);
+	}
+	default long save(int batch, String dest, Object data, List<String> fixs, String ... columns){
+		return save(batch, dest, data, false, fixs, columns);
+	}
+
+	default long save(int batch, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return save(batch, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+	}
+	default long save(int batch, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+		return save(batch, null, data, checkPrimary, fixs, columns);
+	}
+	default long save(int batch, Object data, String[] fixs, String ... columns){
+		return save(batch, null, data, false, fixs, columns);
+	}
+	default long save(int batch, String dest, Object data, String[] fixs, String ... columns){
+		return save(batch, dest, data, false, fixs, columns);
+	}
+
+	default long save(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Object data, boolean checkPrimary, String ... columns){
+		return save(batch, null, data, checkPrimary, columns);
+	}
+	default long save(int batch, Object data, String ... columns){
+		return save(batch, null, data, false, columns);
+	}
+	default long save(int batch, String dest, Object data, String ... columns){
+		return save(batch, dest, data, false, columns);
+	}
+
+	default long save(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+		return save(0, dest, data, checkPrimary, fixs, columns);
+	}
 	default long save(Object data, boolean checkPrimary, List<String> fixs, String ... columns){
-		return save(null, data, checkPrimary, BeanUtil.merge(fixs, columns));
+		return save(null, data, checkPrimary, fixs, columns);
 	}
 	default long save(Object data, List<String> fixs, String ... columns){
 		return save(null, data, false, fixs, columns);
@@ -241,7 +318,7 @@ public interface AnylineService<E>{
 		return save(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
 	}
 	default long save(Object data, boolean checkPrimary, String[] fixs, String ... columns){
-		return save(null, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+		return save(null, data, checkPrimary, fixs, columns);
 	}
 	default long save(Object data, String[] fixs, String ... columns){
 		return save(null, data, false, fixs, columns);
@@ -249,6 +326,7 @@ public interface AnylineService<E>{
 	default long save(String dest, Object data, String[] fixs, String ... columns){
 		return save(dest, data, false, fixs, columns);
 	}
+
 	default long save(String dest, Object data, boolean checkPrimary, String ... columns){
 		return save(dest, data, checkPrimary, BeanUtil.array2list(columns));
 	}
@@ -261,56 +339,6 @@ public interface AnylineService<E>{
 	default long save(String dest, Object data, String ... columns){
 		return save(dest, data, false, columns);
 	}
-
-
-	/**
-	 * 保存(insert|update)根据是否有主键值确定insert或update
-	 * @param async 是否异步执行
-	 * @param data  数据
-	 * @param checkPrimary 是否检测主键
-	 * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
-	 * @param columns 指定更新或保存的列
-	 * @param dest 表
-	 * @return 影响行数
-	 */
-	long save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns);
-	default long save(boolean async, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
-		return save(async, null, data, checkPrimary, fixs, columns);
-	}
-	default long save(boolean async, Object data, List<String> fixs, String ... columns){
-		return save(async, null, data, false, fixs, columns);
-	}
-	default long save(boolean async, String dest, Object data, List<String> fixs, String ... columns){
-		return save(async, dest, data, false, fixs, columns);
-	}
-
-	default long save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
-		return save(async, dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
-	}
-	default long save(boolean async, Object data, boolean checkPrimary, String[] fixs, String ... columns){
-		return save(async, null, data, checkPrimary, fixs, columns);
-	}
-	default long save(boolean async, Object data, String[] fixs, String ... columns){
-		return save(async, null, data, false, fixs, columns);
-	}
-	default long save(boolean async, String dest, Object data, String[] fixs, String ... columns){
-		return save(async, dest, data, false, fixs, columns);
-	}
-
-	default long save(boolean async, String dest, Object data, boolean checkPrimary, String ... columns){
-		return save(async, dest, data, checkPrimary, BeanUtil.array2list(columns));
-	}
-	default long save(boolean async, Object data, boolean checkPrimary, String ... columns){
-		return save(async, null, data, checkPrimary, columns);
-	}
-	default long save(boolean async, Object data, String ... columns){
-		return save(async, null, data, false, columns);
-	}
-	default long save(boolean async, String dest, Object data, String ... columns){
-		return save(async, dest, data, false, columns);
-	}
-
-
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/
@@ -1017,7 +1045,10 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	<T> long deletes(String table, String key, Collection<T> values);
+	<T> long deletes(int batch, String table, String key, Collection<T> values);
+	default <T> long deletes(String table, String key, Collection<T> values){
+		return deletes(0, table, key, values);
+	}
 
 	/**
 	 * 根据一列的多个值删除<br/>
@@ -1030,7 +1061,10 @@ public interface AnylineService<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	<T> long deletes(String table, String key, T ... values);
+	<T> long deletes(int batch, String table, String key, T ... values);
+	default <T> long deletes(String table, String key, T ... values){
+		return deletes(0, table, key, values);
+	}
 
 	int truncate(String table);
 
