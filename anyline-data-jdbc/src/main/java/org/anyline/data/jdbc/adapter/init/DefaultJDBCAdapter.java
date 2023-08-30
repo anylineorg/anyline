@@ -2008,7 +2008,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values){
 		table = DataSourceUtil.parseDataSource(table, null);
 		if(null == random){
 			random = random(runtime);
