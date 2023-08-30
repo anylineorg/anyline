@@ -140,7 +140,32 @@ public interface AnylineDao<E>{
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @return int 影响行数
 	 */
-	long update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns);
+
+	long update(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime(), null, false,batch, dest, data, configs, columns);
+	}
+	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+		return update(batch,dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Object data, ConfigStore configs, String ... columns){
+		return update(batch,null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Object data, ConfigStore configs, List<String> columns){
+		return update(batch,null, data, configs, columns);
+	}
+	default long update(int batch, String dest, Object data, String ... columns){
+		return update(batch, dest, data, null, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, String dest, Object data, List<String> columns){
+		return update(batch, dest, data, null, columns);
+	}
+	default long update(int batch, Object data, List<String> columns){
+		return update(batch, null, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, boolean recover, String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, recover, 0, dest, data, configs, columns);
+	}
 	default long update(String dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime(), null, false, dest, data, configs, columns);
 	}
@@ -174,30 +199,58 @@ public interface AnylineDao<E>{
 	 * @param dest 表 
 	 * @return int
 	 */
-	long insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns);
+	long insert(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, boolean checkPrimary, List<String> columns);
+	default long insert(int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
+		return insert(runtime(), null, false, batch, dest, data, checkPrimary, columns);
+	}
+	default long insert(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, boolean checkPrimary, String ... columns){
+		return insert(batch, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, String dest, Object data, String ... columns){
+		return insert(batch, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, String ... columns){
+		return insert(batch, null, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, boolean checkPrimary, List<String> columns){
+		return insert(batch, null, data, checkPrimary, columns);
+	}
+	default long insert(int batch, String dest, Object data, List<String> columns){
+		return insert(batch, dest, data, false, columns);
+	}
+	default long insert(int batch, Object data, List<String> columns){
+		return insert(batch, null, data, false, columns);
+	}
+
+	default long insert(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String> columns){
+		return insert(runtime, random, recover, 0, dest, data, checkPrimary, columns);
+	}
 	default long insert(String dest, Object data, boolean checkPrimary, List<String> columns){
-		return insert(runtime(), null, false, dest, data, checkPrimary, columns);
+		return insert(runtime(), null, false, 0, dest, data, checkPrimary, columns);
 	}
 	default long insert(String dest, Object data, boolean checkPrimary, String ... columns){
-		return insert(dest, data, checkPrimary, BeanUtil.array2list(columns));
+		return insert(0, dest, data, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default long insert(Object data, boolean checkPrimary, String ... columns){
-		return insert(null, data, checkPrimary, BeanUtil.array2list(columns));
+	default long insert( Object data, boolean checkPrimary, String ... columns){
+		return insert(0, null, data, checkPrimary, BeanUtil.array2list(columns));
 	}
 	default long insert(String dest, Object data, String ... columns){
-		return insert(dest, data, false, BeanUtil.array2list(columns));
+		return insert(0, dest, data, false, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, String ... columns){
-		return insert(null, data, false, BeanUtil.array2list(columns));
+		return insert(0, null, data, false, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, boolean checkPrimary, List<String> columns){
-		return insert(null, data, checkPrimary, columns);
+		return insert(0, null, data, checkPrimary, columns);
 	}
 	default long insert(String dest, Object data, List<String> columns){
-		return insert(dest, data, false, columns);
+		return insert(0, dest, data, false, columns);
 	}
 	default long insert(Object data, List<String> columns){
-		return insert(null, data, false, columns);
+		return insert(0, null, data, false, columns);
 	}
 
 
@@ -212,21 +265,40 @@ public interface AnylineDao<E>{
 	 * @param columns  columns
 	 * @return int
 	 */
-	long save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns);
+	long save(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, boolean checkPrimary, List<String>  columns);
+	default long save(int batch, String dest, Object data, boolean checkPrimary, List<String>  columns){
+		return save(runtime(), null, false, batch, dest, data, checkPrimary, columns);
+	}
+	default long save(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Object data, boolean checkPrimary, String ... columns){
+		return save(batch, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, String dest, Object data, String ... columns){
+		return save(batch, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Object data, String ... columns){
+		return save(batch, null, data, false, BeanUtil.array2list(columns));
+	}
+
+	default long save(DataRuntime runtime, String random, boolean recover, String dest, Object data, boolean checkPrimary, List<String>  columns){
+		return save(runtime, random, recover, 0, dest, data, checkPrimary, columns);
+	}
 	default long save(String dest, Object data, boolean checkPrimary, List<String>  columns){
-		return save(runtime(), null, false, dest, data, checkPrimary, columns);
+		return save(runtime(), null, false, 0, dest, data, checkPrimary, columns);
 	}
 	default long save(String dest, Object data, boolean checkPrimary, String ... columns){
-		return save(dest, data, checkPrimary, BeanUtil.array2list(columns));
+		return save(0, dest, data, checkPrimary, BeanUtil.array2list(columns));
 	}
 	default long save(Object data, boolean checkPrimary, String ... columns){
-		return save(null, data, checkPrimary, BeanUtil.array2list(columns));
+		return save(0, null, data, checkPrimary, BeanUtil.array2list(columns));
 	}
 	default long save(String dest, Object data, String ... columns){
-		return save(dest, data, false, BeanUtil.array2list(columns));
+		return save(0, dest, data, false, BeanUtil.array2list(columns));
 	}
 	default long save(Object data, String ... columns){
-		return save(null, data, false, BeanUtil.array2list(columns));
+		return save(0, null, data, false, BeanUtil.array2list(columns));
 	}
 
 
@@ -284,12 +356,12 @@ public interface AnylineDao<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	<T> long deletes(DataRuntime runtime, String random, boolean recover, String table, String key, Collection<T> values);
-	default <T> long deletes(String table, String key, Collection<T> values){
-		return deletes(runtime(), null, false, table, key, values);
+	<T> long deletes(DataRuntime runtime, String random, boolean recover, int batch, String table, String key, Collection<T> values);
+	default <T> long deletes(int batch, String table, String key, Collection<T> values){
+		return deletes(runtime(), null, false, batch, table, key, values);
 	}
-	default <T> long deletes(String table, String key, T ... values){
-		return deletes(table, key, BeanUtil.array2list(values));
+	default <T> long deletes(int batch, String table, String key, T ... values){
+		return deletes(batch, table, key, BeanUtil.array2list(values));
 	}
 	int truncate(DataRuntime runtime, String random, boolean recover, String table);
 	default int truncate(String table){
