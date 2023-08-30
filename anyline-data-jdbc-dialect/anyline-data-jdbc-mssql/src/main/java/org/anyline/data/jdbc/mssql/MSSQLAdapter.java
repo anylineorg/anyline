@@ -228,7 +228,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		Run run = new SimpleRun();
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA,F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
+/*		builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA,F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
 				.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0\n")
 				.append("WHERE 1=1 ");
 		if(BasicUtil.isNotEmpty(pattern)){
@@ -236,9 +236,37 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		}
 		if(BasicUtil.isNotEmpty(schema)){
 			builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema).append("'");
+		}*/
+		builder.append("SELECT O.NAME , S.NAME AS SCHEMA_NAME, O.TYPE, O.TYPE_DESC,EP.VALUE AS COMMENT \n");
+		builder.append("FROM SYS.OBJECTS O \n");
+		builder.append("LEFT JOIN SYS.SCHEMAS S ON O.SCHEMA_ID = S.SCHEMA_ID \n");
+		builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES EP ON O.OBJECT_ID = EP.MAJOR_ID AND EP.CLASS = 1 AND EP.MINOR_ID = 0 AND EP.NAME = 'MS_Description'   \n");
+		builder.append("WHERE O.TYPE = 'U'  OR O.TYPE='V' \n");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND M.NAME = '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			builder.append(" AND S.NAME ='").append(schema).append("'");
+		}
+		if(null != types){
+			String[] tps = types.toUpperCase().trim().split(",");
+			if(tps.length > 0){
+				builder.append(" AND O.TYPE_DESC IN(");
+			}
+			boolean first = true;
+			for(String tp:tps){
+				if("TABLE".equalsIgnoreCase(tp)){
+					tp = "USER_TABLE";
+				}
+				if(!first){
+					builder.append(",");
+				}
+				builder.append("'").append(tp).append("'");
+				first = false;
+			}
+			builder.append(")");
 		}
 		return runs;
-		//
 	}
 
 	/**

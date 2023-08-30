@@ -228,6 +228,30 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     }
 
     /**
+     * 查询表
+     * @param catalog catalog
+     * @param schema schema
+     * @param pattern pattern
+     * @param types types
+     * @return String
+     */
+    @Override
+    public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, String catalog, String schema, String pattern, String types) throws Exception{List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun();
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+		builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA,F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
+				.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0\n")
+				.append("WHERE 1=1 ");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND M.NAME = '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema).append("'");
+		}
+        return runs;
+    }
+    /**
      * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
      * @param table 表
      * @return sql
