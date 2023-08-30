@@ -1430,10 +1430,16 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public <T extends Table>  List<T> tables(boolean greedy, String catalog, String schema, String name, String types) {
+            if(null == types){
+                types = "TABLE";
+            }
             return dao.tables(greedy, catalog, schema, name, types);
         }
         @Override
         public <T extends Table>  LinkedHashMap<String, T> tables(String catalog, String schema, String name, String types) {
+            if(null == types){
+                types = "TABLE";
+            }
             return dao.tables(catalog, schema, name, types);
         }
 
