@@ -653,6 +653,7 @@ public class DefaultService<E> implements AnylineService<E> {
      ******************************************************************************************************************/
     /**
      * 插入数据
+     * @param batch 批量执行每批最多数量
      * @param dest 表名
      * @param data entity或list或DataRow或DataSet
      * @param checkPrimary 是否检测主键重复
@@ -661,12 +662,12 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return 影响行数
      */
     @Override
-    public long insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public long insert(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).insert(ps[1], checkPrimary, fixs, columns);
+            return ServiceProxy.service(ps[0]).insert(batch, ps[1], checkPrimary, fixs, columns);
         }
-        return dao.insert(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
+        return dao.insert(batch, dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
     }
 
     /* *****************************************************************************************************************
@@ -687,29 +688,15 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param configs 更新条件
      * @return int 影响行数
      */
-    @Override 
-    public long update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
+    @Override
+    public long update(int batch, String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).update(async, ps[1], data, configs, fixs, columns);
+            return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, fixs, columns);
         }
         dest = DataSourceUtil.parseDataSource(dest, dest);
         fixs = BeanUtil.merge(fixs, columns);
-        final List<String> cols = BeanUtil.merge(fixs, columns);
-        final String _dest = BasicUtil.compress(dest);
-        final Object _data = data;
-        final ConfigStore _configs = configs;
-        if (async) {
-            new Thread(new Runnable() {
-            @Override 
-            public void run() {
-                        dao.update(_dest, _data, _configs, cols);
-                }
-            }).start();
-            return 0;
-        } else {
-            return dao.update(dest, data, configs, cols);
-        }
+        return dao.update(dest, data, configs, columns);
     }
 
 
@@ -727,16 +714,16 @@ public class DefaultService<E> implements AnylineService<E> {
      * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
      *
      * 保存(insert|update)根据是否有主键值确定insert或update
+     * @param batch 批量执行每批最多数量
+     * @param dest 表
      * @param data  数据
      * @param checkPrimary 是否检测主键
      * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
      * @param columns 指定更新或保存的列
-     * @param dest 表
      * @return 影响行数
      */
-    
     @Override 
-    public long save(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public long save(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
         if (null == data) {
             return 0;
         }
@@ -757,37 +744,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return saveObject(dest, data, checkPrimary, columns);
     }
 
-
-    /**
-     * 保存(insert|update)根据是否有主键值确定insert或update
-     * @param async 是否异步执行
-     * @param data  数据
-     * @param checkPrimary 是否检测主键
-     * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
-     * @param columns 指定更新或保存的列
-     * @param dest 表
-     * @return 影响行数
-     */
-    @Override
-    public long save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
-        if (async) {
-            final String _dest = dest;
-            final Object _data = data;
-            final boolean _chk = checkPrimary;
-            final String[] cols = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    save(_dest, _data, _chk, cols);
-                }
-
-            }).start();
-            return 0;
-        } else {
-            return save(dest, data, checkPrimary, columns);
-        }
-
-    }
 
     protected long saveObject(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
         if (BasicUtil.isEmpty(dest)) {
@@ -948,24 +904,24 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public <T> long deletes(String table, String key, Collection<T> values) {
+    public <T> long deletes(int batch, String table, String key, Collection<T> values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).deletes(ps[1], key, values);
+            return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
        // table = DataSourceUtil.parseDataSource(table);
-        return dao.deletes(table, key, values);
+        return dao.deletes(batch, table, key, values);
     }
 
     
     @Override 
-    public <T> long deletes(String table, String key, T... values) {
+    public <T> long deletes(int batch, String table, String key, T... values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).deletes(ps[1], key, values);
+            return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
         //table = DataSourceUtil.parseDataSource(table);
-        return dao.deletes(table, key, values);
+        return dao.deletes(batch , table, key, values);
     }
 
     
