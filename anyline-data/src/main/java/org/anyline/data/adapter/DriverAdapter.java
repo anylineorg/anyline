@@ -829,7 +829,10 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 * @param <T> T
 	 */
-	<T> long deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values);
+	<T> long deletes(DataRuntime runtime, String random, int batch, String table, String column, Collection<T> values);
+	default <T> long deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values){
+		return deletes(runtime, random, 0, table, column, values);
+	}
 
 	/**
 	 * delete [入口]
