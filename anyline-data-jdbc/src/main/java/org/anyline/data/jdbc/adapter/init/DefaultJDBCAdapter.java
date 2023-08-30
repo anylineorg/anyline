@@ -2671,7 +2671,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			table.setSchema(_schema);
 			table.setName(name);
 			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS"));
+			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
 			tables.put(name.toUpperCase(), table);
 		}
 		return tables;
