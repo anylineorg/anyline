@@ -168,6 +168,44 @@ public class ServiceProxy {
      * 													INSERT
      ******************************************************************************************************************/
 
+    public static long insert(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.insert(batch, dest, data, checkPrimary, fixs, columns);
+    }
+    public static long insert(int batch, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.insert(batch, data, checkPrimary, fixs, columns);
+    }
+    public static long insert(int batch, Object data, List<String> fixs, String ... columns){
+        return service.insert(batch, data, fixs, columns);
+    }
+    public static long insert(int batch, String dest, Object data, List<String> fixs, String ... columns){
+        return service.insert(batch, dest, data, fixs, columns);
+    }
+
+    public static long insert(int batch, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.insert(batch, dest, data, checkPrimary, fixs, columns);
+    }
+    public static long insert(int batch, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.insert(batch, data, checkPrimary, fixs, columns);
+    }
+    public static long insert(int batch, Object data, String[] fixs, String ... columns){
+        return service.insert(batch, data, fixs, columns);
+    }
+    public static long insert(int batch, String dest, Object data, String[] fixs, String ... columns){
+        return service.insert(batch, dest, data, fixs, columns);
+    }
+
+    public static long insert(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+        return service.insert(batch, dest, data, checkPrimary, columns);
+    }
+    public static long insert(int batch, Object data, boolean checkPrimary, String ... columns){
+        return service.insert(batch, data, checkPrimary, columns);
+    }
+    public static long insert(int batch, Object data, String ... columns){
+        return service.insert(batch, data, columns);
+    }
+    public static long insert(int batch, String dest, Object data, String ... columns){
+        return service.insert(batch, dest, data, columns);
+    }
     public static long insert(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
         return service.insert(dest, data, checkPrimary, fixs, columns);
     }
@@ -226,6 +264,45 @@ public class ServiceProxy {
      * @param configs 	更新条件
      * @return int 影响行数
      */
+
+    public static long update(int batch, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+        return service.update(batch, dest, data, configs, fixs, columns);
+    }
+    public static long update(int batch, String dest, Object data, List<String> fixs, String ... columns){
+        return service.update(batch, dest, data, fixs, columns);
+    }
+    public static long update(int batch, String dest, Object data, String[] fixs, String ... columns){
+        return service.update(batch, dest, data, fixs, columns);
+    }
+    public static long update(int batch, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
+        return service.update(batch, dest, data, configs, fixs, columns);
+    }
+    public static long update(int batch, String dest, Object data, String ... columns){
+        return service.update(batch, dest, data, columns);
+    }
+    public static long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+        return service.update(batch, dest, data, configs, columns);
+    }
+
+    public static long update(int batch, Object data, ConfigStore configs, List<String> fixs, String ... columns){
+        return service.update(batch, data, configs, fixs, columns);
+    }
+    public static long update(int batch, Object data, List<String> fixs, String ... columns){
+        return service.update(batch, data, fixs, columns);
+    }
+    public static long update(int batch, Object data, String[] fixs, String ... columns){
+        return update(batch, data, fixs, columns);
+    }
+    public static long update(int batch, Object data, ConfigStore configs, String[] fixs, String ... columns){
+        return service.update(batch, data, configs, fixs, columns);
+    }
+    public static long update(int batch, Object data, String ... columns){
+        return service.update(batch, data, columns);
+    }
+    public static long update(int batch, Object data, ConfigStore configs, String ... columns){
+        return service.update(batch, data, configs, columns);
+    }
+
     public static long update(String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
         return service.update(dest, data, configs, fixs, columns);
     }
@@ -265,47 +342,6 @@ public class ServiceProxy {
     }
 
 
-
-    public static long update(boolean async, String dest, Object data, List<String> fixs, String ... columns){
-        return service.update(async, dest, data, fixs, columns);
-    }
-    public static long update(boolean async, String dest, Object data, ConfigStore configs, List<String> fixs, String ... columns){
-        return service.update(async, dest, data, configs, fixs, columns);
-    }
-    public static long update(boolean async, String dest, Object data, String[] fixs, String ... columns){
-        return service.update(async, dest, data, fixs, columns);
-    }
-    public static long update(boolean async, String dest, Object data, ConfigStore configs, String[] fixs, String ... columns){
-        return service.update(async, dest, data, configs, fixs, columns);
-    }
-    public static long update(boolean async, String dest, Object data, String ... columns){
-        return service.update(async, dest, data, columns);
-    }
-
-    public static long update(boolean async, String dest, Object data, ConfigStore configs, String ... columns){
-        return service.update(async, dest, data, configs, columns);
-    }
-
-    public static long update(boolean async, Object data, List<String> fixs, String ... columns){
-        return service.update(async, data, fixs, columns);
-    }
-    public static long update(boolean async, Object data, ConfigStore configs, List<String> fixs, String ... columns){
-        return service.update(async, data, configs, fixs, columns);
-    }
-    public static long update(boolean async, Object data, String[] fixs, String ... columns){
-        return service.update(async, data, fixs, columns);
-    }
-    public static long update(boolean async, Object data, ConfigStore configs, String[] fixs, String ... columns){
-        return service.update(async, data, configs, fixs, columns);
-    }
-    public static long update(boolean async, Object data, String ... columns){
-        return service.update(async, data, columns);
-    }
-    public static long update(boolean async, Object data, ConfigStore configs, String ... columns){
-        return service.update(async, data, configs, columns);
-    }
-
-
     /* *****************************************************************************************************************
      * 													SAVE
      ******************************************************************************************************************/
@@ -328,6 +364,45 @@ public class ServiceProxy {
      * @param dest 表
      * @return 影响行数
      */
+    public static long save(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.save(batch, dest, data, checkPrimary, fixs, columns);
+    }
+    public static long save(int batch, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
+        return service.save(batch, data, checkPrimary, fixs, columns);
+    }
+    public static long save(int batch, Object data, List<String> fixs, String ... columns){
+        return service.save(batch, data, fixs, columns);
+    }
+    public static long save(int batch, String dest, Object data, List<String> fixs, String ... columns){
+        return service.save(batch, dest, data, fixs, columns);
+    }
+
+    public static long save(int batch, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.save(batch, dest, data, checkPrimary, fixs, columns);
+    }
+    public static long save(int batch, Object data, boolean checkPrimary, String[] fixs, String ... columns){
+        return service.save(batch, data, checkPrimary, fixs, columns);
+    }
+    public static long save(int batch, Object data, String[] fixs, String ... columns){
+        return service.save(batch, data, fixs, columns);
+    }
+    public static long save(int batch, String dest, Object data, String[] fixs, String ... columns){
+        return service.save(batch, dest, data, fixs, columns);
+    }
+
+    public static long save(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+        return service.save(batch, dest, data, checkPrimary, columns);
+    }
+    public static long save(int batch, Object data, boolean checkPrimary, String ... columns){
+        return service.save(batch, data, checkPrimary, columns);
+    }
+    public static long save(int batch, Object data, String ... columns){
+        return service.save(batch, data, columns);
+    }
+    public static long save(int batch, String dest, Object data, String ... columns){
+        return service.save(batch, dest, data, columns);
+    }
+
     public static long save(String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
         return service.save(dest, data, checkPrimary, fixs, columns);
     }
@@ -365,56 +440,6 @@ public class ServiceProxy {
     }
     public static long save(String dest, Object data, String ... columns){
         return service.save(dest, data, columns);
-    }
-
-
-    /**
-     * 保存(insert|update)根据是否有主键值确定insert或update
-     * @param async 是否异步执行
-     * @param data  数据
-     * @param checkPrimary 是否检测主键
-     * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
-     * @param columns 指定更新或保存的列
-     * @param dest 表
-     * @return 影响行数
-     */
-    public static long save(boolean async, String dest, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
-        return service.save(async, dest, data, checkPrimary, fixs, columns);
-    }
-    public static long save(boolean async, Object data, boolean checkPrimary, List<String> fixs, String ... columns){
-        return service.save(async, data, checkPrimary, fixs, columns);
-    }
-    public static long save(boolean async, Object data, List<String> fixs, String ... columns){
-        return service.save(async, data, fixs, columns);
-    }
-    public static long save(boolean async, String dest, Object data, List<String> fixs, String ... columns){
-        return service.save(async, dest, data, fixs, columns);
-    }
-
-    public static long save(boolean async, String dest, Object data, boolean checkPrimary, String[] fixs, String ... columns){
-        return service.save(async, dest, data, checkPrimary, fixs, columns);
-    }
-    public static long save(boolean async, Object data, boolean checkPrimary, String[] fixs, String ... columns){
-        return service.save(async, data, checkPrimary, fixs, columns);
-    }
-    public static long save(boolean async, Object data, String[] fixs, String ... columns){
-        return service.save(async, data, fixs, columns);
-    }
-    public static long save(boolean async, String dest, Object data, String[] fixs, String ... columns){
-        return service.save(async, dest, data, fixs, columns);
-    }
-
-    public static long save(boolean async, String dest, Object data, boolean checkPrimary, String ... columns){
-        return service.save(async, dest, data, checkPrimary, columns);
-    }
-    public static long save(boolean async, Object data, boolean checkPrimary, String ... columns){
-        return service.save(async, data, checkPrimary, columns);
-    }
-    public static long save(boolean async, Object data, String ... columns){
-        return service.save(async, data, columns);
-    }
-    public static long save(boolean async, String dest, Object data, String ... columns){
-        return service.save(async, dest, data, columns);
     }
 
 
@@ -955,6 +980,10 @@ public class ServiceProxy {
         return service.deletes(table, key, values);
     }
 
+    public static long deletes(int batch, String table, String key, Collection<Object> values){
+        return service.deletes(batch, table, key, values);
+    }
+
     /**
      * 根据一列的多个值删除多行
      * @param table 表
@@ -964,6 +993,10 @@ public class ServiceProxy {
      */
     public static <T> long deletes(String table, String key, T ... values){
         return service.deletes(table, key, values);
+    }
+
+    public static <T> long deletes(int batch, String table, String key, T ... values){
+        return service.deletes(batch, table, key, values);
     }
 
 

@@ -105,7 +105,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
@@ -998,7 +998,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
 		dest = DataSourceUtil.parseDataSource(dest, data);
 		if(null == random){
 			random = random(runtime);
@@ -1058,7 +1058,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
-		cnt = insert(runtime, random, data, run, null);
+		cnt = insert(runtime, random, batch, data, run, null);
 		if (null != dmListener) {
 			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
 		}
@@ -1078,7 +1078,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+	public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks) {
 		long cnt = 0;
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -1169,7 +1169,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
+	public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks, boolean simple) {
 		long cnt = 0;
 		if(null == random){
 			random = random(runtime);
@@ -1256,7 +1256,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+	public long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
 
 		if(null == random){
 			random = random(runtime);
@@ -1277,10 +1277,10 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return cnt;
 		}
-		return saveObject(runtime, random, dest, data, checkPrimary, columns);
+		return saveObject(runtime, random, batch, dest, data, checkPrimary, columns);
 	}
 
-	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
 		if(null == data){
 			return 0;
 		}
@@ -1306,7 +1306,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						log.warn("[跳过更新][数据已存在:{}({})]",dest, BeanUtil.map2json(pvs));
 					}
 				}else{
-					return insert(runtime, random, dest, data, checkPrimary, columns);
+					return insert(runtime, random, batch, dest, data, checkPrimary, columns);
 				}
 			}else{
 				return update(runtime, random, dest, data, null, columns);

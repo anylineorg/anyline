@@ -132,7 +132,42 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return 影响行数
 	 */
-	long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+
+	long insert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns);
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(runtime, random, batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, int batch, Object data, boolean checkPrimary, String ... columns){
+		return insert(runtime, random, batch,null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
+		return insert(runtime, random, batch, dest, data, false, columns);
+	}
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, String ... columns){
+		return insert(runtime, random, batch, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, int batch, Object data, String ... columns){
+		return insert(runtime, random, batch, null, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, boolean checkPrimary, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, batch,  null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, String dest, Object data, List<String> columns){
+		return insert(RuntimeHolder.getRuntime(), null, batch, dest, data, false, columns);
+	}
+	default long insert(int batch, String dest, Object data, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, batch, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Object data, String ... columns){
+		return insert(RuntimeHolder.getRuntime(), null, batch, null, data, false, BeanUtil.array2list(columns));
+	}
+
+	default long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+		return insert(runtime, random, 0, dest, data, checkPrimary, columns);
+	}
 	default long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, String ... columns){
 		return insert(runtime, random, dest, data, checkPrimary, BeanUtil.array2list(columns));
 	}
@@ -273,7 +308,10 @@ public interface DriverAdapter {
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
-	long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
+	long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks);
+	default long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks){
+		return insert(runtime, random, 0, data, run, pks);
+	}
 	/**
 	 * insert [执行]
 	 * <br/>
@@ -287,7 +325,10 @@ public interface DriverAdapter {
 	 * @param simple 没有实际作用 用来标识有些不支持返回自增的单独执行
 	 * @return 影响行数
 	 */
-	long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple);
+	long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks, boolean simple);
+	default long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple){
+		return insert(runtime, random, 0, data, run, pks, simple);
+	}
 
 	/**
 	 * save [入口]
@@ -302,7 +343,58 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return 影响行数
 	 */
-	long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
+
+	long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns);
+	default long save(DataRuntime runtime, String random, int batch, Object data, boolean checkPrimary, List<String> columns){
+		return save(runtime, random,  batch, null, data, checkPrimary, columns);
+	}
+	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
+		return save(runtime, random,  batch, dest, data, false, columns);
+	}
+	default long save(DataRuntime runtime, String random, int batch, Object data, List<String> columns){
+		return save(runtime, random,  batch, null, data, false, columns);
+	}
+	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(runtime, random,  batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, int batch, Object data, boolean checkPrimary, String ... columns){
+		return save(runtime, random,  batch, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, String ... columns){
+		return save(runtime, random,  batch, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, int batch, Object data, String ... columns){
+		return save(runtime, random,  batch, null, data, false, BeanUtil.array2list(columns));
+	}
+
+	default long save(int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, checkPrimary, columns);
+	}
+	default long save(int batch, Object data, boolean checkPrimary, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, checkPrimary, columns);
+	}
+	default long save(int batch, String dest, Object data, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, false, columns);
+	}
+	default long save(int batch, Object data, List<String> columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, false, columns);
+	}
+	default long save(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Object data, boolean checkPrimary, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, checkPrimary, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, String dest, Object data, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, false, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Object data, String ... columns){
+		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, false, BeanUtil.array2list(columns));
+	}
+
+	default long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+		return save(runtime, random, 0, dest, data, checkPrimary, columns);
+	}
 	default long save(DataRuntime runtime, String random, Object data, boolean checkPrimary, List<String> columns){
 		return save(runtime, random, null, data, checkPrimary, columns);
 	}
@@ -362,57 +454,111 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return 影响行数
 	 */
-	long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
+	long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, batch, null, data, configs, columns);
+	}
+	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
+		return update(runtime, random, batch, dest, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, int batch, Object data, List<String> columns){
+		return update(runtime, random, batch, null, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs){
+		return update(runtime, random, batch, null, data, configs);
+	}
+	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, batch, null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, String ... columns){
+		return update(runtime, random, batch, dest, data, BeanUtil.array2string(columns));
+	}
+	default long update(DataRuntime runtime, String random, int batch, Object data, String ... columns){
+		return update(runtime, random, batch, null, data, BeanUtil.array2string(columns));
+	}
+	default long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, batch, dest, data, configs, columns);
+	}
+	default long update(int batch, Object data, ConfigStore configs, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, batch, null, data, configs, columns);
+	}
+	default long update(int batch, String dest, Object data, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, batch, dest, data, null, columns);
+	}
+	default long update(int batch, Object data, List<String> columns){
+		return update(RuntimeHolder.getRuntime(), null, batch,null,  data, null, columns);
+	}
+	default long update(int batch, Object data, ConfigStore configs){
+		return update(RuntimeHolder.getRuntime(), null, batch,null,  data, configs);
+	}
+	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Object data, ConfigStore configs, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, batch,null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, String dest, Object data, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, batch, dest, data, BeanUtil.array2string(columns));
+	}
+	default long update(int batch, Object data, String ... columns){
+		return update(RuntimeHolder.getRuntime(), null, batch, null, data, BeanUtil.array2string(columns));
+	}
+	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, 0, dest, data, configs, columns);
+	}
 	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, null, data, configs, columns);
+		return update(runtime, random, 0, null, data, configs, columns);
 	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
-		return update(runtime, random, dest, data, null, columns);
+		return update(runtime, random, 0, dest, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, Object data, List<String> columns){
-		return update(runtime, random, null, data, null, columns);
+		return update(runtime, random, 0, null, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs){
-		return update(runtime, random, null, data, configs);
+		return update(runtime, random, 0, null, data, configs);
 	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, String ... columns){
-		return update(runtime, random, dest, data, configs, BeanUtil.array2list(columns));
+		return update(runtime, random, 0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, String ... columns){
-		return update(runtime, random, null, data, configs, BeanUtil.array2list(columns));
+		return update(runtime, random, 0, null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, String ... columns){
-		return update(runtime, random, dest, data, BeanUtil.array2string(columns));
+		return update(runtime, random, 0, dest, data, BeanUtil.array2string(columns));
 	}
 	default long update(DataRuntime runtime, String random, Object data, String ... columns){
-		return update(runtime, random, null, data, BeanUtil.array2string(columns));
+		return update(runtime, random, 0, null, data, BeanUtil.array2string(columns));
 	}
 	default long update(String dest, Object data, ConfigStore configs, List<String> columns){
-		return update(RuntimeHolder.getRuntime(), null, dest, data, configs, columns);
+		return update(RuntimeHolder.getRuntime(), null, 0, dest, data, configs, columns);
 	}
 	default long update(Object data, ConfigStore configs, List<String> columns){
-		return update(RuntimeHolder.getRuntime(), null, null, data, configs, columns);
+		return update(RuntimeHolder.getRuntime(), null, 0, null, data, configs, columns);
 	}
 	default long update(String dest, Object data, List<String> columns){
-		return update(RuntimeHolder.getRuntime(), null, dest, data, null, columns);
+		return update(RuntimeHolder.getRuntime(), null, 0, dest, data, null, columns);
 	}
 	default long update(Object data, List<String> columns){
-		return update(RuntimeHolder.getRuntime(), null, null, data, null, columns);
+		return update(RuntimeHolder.getRuntime(), null, 0,null,  data, null, columns);
 	}
 	default long update(Object data, ConfigStore configs){
-		return update(RuntimeHolder.getRuntime(), null, null, data, configs);
+		return update(RuntimeHolder.getRuntime(), null, 0,null,  data, configs);
 	}
 	default long update(String dest, Object data, ConfigStore configs, String ... columns){
-		return update(RuntimeHolder.getRuntime(), null, dest, data, configs, BeanUtil.array2list(columns));
+		return update(RuntimeHolder.getRuntime(), null, 0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(Object data, ConfigStore configs, String ... columns){
-		return update(RuntimeHolder.getRuntime(), null, null, data, configs, BeanUtil.array2list(columns));
+		return update(RuntimeHolder.getRuntime(), null, 0,null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(String dest, Object data, String ... columns){
-		return update(RuntimeHolder.getRuntime(), null, dest, data, BeanUtil.array2string(columns));
+		return update(RuntimeHolder.getRuntime(), null, 0, dest, data, BeanUtil.array2string(columns));
 	}
 	default long update(Object data, String ... columns){
-		return update(RuntimeHolder.getRuntime(), null, null, data, BeanUtil.array2string(columns));
+		return update(RuntimeHolder.getRuntime(), null, 0, null, data, BeanUtil.array2string(columns));
 	}
 	/**
 	 * update [build]

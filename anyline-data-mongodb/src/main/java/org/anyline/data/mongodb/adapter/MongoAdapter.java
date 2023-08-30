@@ -91,7 +91,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return 0;
     }
 
@@ -107,7 +107,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
+    public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
         if(null == random){
             random = random(runtime);
         }
@@ -149,7 +149,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
-        cnt = insert(runtime, random, data, run, null);
+        cnt = insert(runtime, random, batch, data, run, null);
         if (null != dmListener) {
             dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
         }
@@ -199,7 +199,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @throws Exception 异常
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
+    public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks) {
         long cnt = 0;
         Object value = run.getValue();
         String collection = run.getTable();
@@ -537,7 +537,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public <T> long deletes(DataRuntime runtime, String random, String table, String key, Collection<T> values) {
+    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values) {
         return 0;
     }
 
@@ -684,12 +684,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
+    public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks, boolean simple) {
         return 0;
     }
 
     @Override
-    public long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
+    public long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
         return 0;
     }
 
