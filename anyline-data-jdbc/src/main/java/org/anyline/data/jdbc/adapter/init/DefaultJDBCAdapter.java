@@ -3476,16 +3476,16 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				column = (T)new Column();
 			}
 			column.setCatalog(BasicUtil.evl(row.getString("TABLE_CATALOG"), table.getCatalog(), column.getCatalog()));
-			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA", "TABSCHEMA"), table.getSchema(), column.getSchema()));
+			column.setSchema(BasicUtil.evl(row.getString("TABLE_SCHEMA", "TABSCHEMA", "SCHEMA_NAME"), table.getSchema(), column.getSchema()));
 			column.setTable(table);
 			column.setTable(BasicUtil.evl(row.getString("TABLE_NAME", "TABNAME"), table.getName(), column.getTableName(true)));
 			column.setName(name);
 			if(null == column.getPosition()) {
-				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO"));
+				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO", "POSITION"));
 			}
 			column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT", "COMMENTS", "REMARKS"), column.getComment()));
 			column.setTypeName(BasicUtil.evl(row.getString("DATA_TYPE", "TYPENAME", "DATA_TYPE_NAME"), column.getTypeName()));
-			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT"), column.getDefaultValue())+"";
+			String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT", "DEFAULT_VALUE"), column.getDefaultValue())+"";
 			if(BasicUtil.isNotEmpty(def)) {
 				while(def.startsWith("(") && def.endsWith(")")){
 					def = def.substring(1, def.length()-1);
