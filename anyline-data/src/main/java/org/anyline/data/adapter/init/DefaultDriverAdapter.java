@@ -4620,8 +4620,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				ColumnType columnType = metadata.getColumnType();
 				if(null == columnType){
 					columnType = type(metadata.getTypeName());
-					columnType.setArray(metadata.isArray());
-					metadata.setColumnType(columnType);
+					if(null != columnType) {
+						columnType.setArray(metadata.isArray());
+						metadata.setColumnType(columnType);
+					}
 				}
 				value = convert(runtime, columnType, value);
 			}
