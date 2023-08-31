@@ -434,7 +434,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					if(mode == 1) {
 						long qty = runtime.getAdapter().delete(runtime, random, join.dependencyTable, join.joinColumn, pv + "");
 						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
-							if(!(obj instanceof DataRow)){
+							if(!(obj instanceof Map)){
 								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 							}
@@ -688,7 +688,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try {
-			return runtime.getAdapter().save(runtime, random, dest, data, checkPrimary, columns);
+			long result = runtime.getAdapter().save(runtime, random, dest, data, checkPrimary, columns);
+			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
+			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			return result;
 		}finally{
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
