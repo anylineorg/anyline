@@ -180,6 +180,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     @Override
     public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
+        int batch = run.getBatch();
         if(null == builder){
             builder = new StringBuilder();
             run.setBuilder(builder);
@@ -209,6 +210,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         builder.append(") VALUES ");
         int dataSize = list.size();
         int idx = 0;
+        if(batch > 1){
+            //批量执行
+            builder.append("(");
+            int size = columns.size();
+            run.setVol(size);
+            for(int i=0; i<size; i++){
+                if(i>0){
+                    builder.append(",");
+                }
+                builder.append("?");
+            }
+            builder.append(")");
+        }
         for(Object obj:list){
             /*if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
@@ -224,7 +238,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 }
                 insertValue(runtime, run, obj, true, false, true, columns);
             //}
-            if(idx<dataSize-1){
+            if(idx<dataSize-1 && batch <= 1){
                 //多行数据之间的分隔符
                 builder.append(batchInsertSeparator());
             }
@@ -388,7 +402,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(null == cols || cols.size() == 0){
             throw new SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
         }
-        fillInsertContent(runtime, run, dest, list, cols);
+        run.setVol(cols.size());
+        fillInsertContent(runtime, run,  dest, list, cols);
 
         return run;
     }

@@ -657,17 +657,16 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param dest 表名
      * @param data entity或list或DataRow或DataSet
      * @param checkPrimary 是否检测主键重复
-     * @param fixs 需要插入哪些列
      * @param columns 需要插入哪些列
      * @return 影响行数
      */
     @Override
-    public long insert(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public long insert(int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).insert(batch, ps[1], checkPrimary, fixs, columns);
+            return ServiceProxy.service(ps[0]).insert(batch, ps[1], data, checkPrimary, columns);
         }
-        return dao.insert(batch, dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
+        return dao.insert(batch, dest, data, checkPrimary, columns);
     }
 
     /* *****************************************************************************************************************
@@ -680,8 +679,6 @@ public class DefaultService<E> implements AnylineService<E> {
      * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
      * 可以提供了ConfigStore以实现更复杂的更新条件
      * 需要更新的列通过fixs/columns提供
-     *
-     * @param fixs    需要更新的列
      * @param columns 需要更新的列
      * @param dest    表
      * @param data    更新的数据及更新条件(如果有ConfigStore则以ConfigStore为准)
@@ -689,13 +686,12 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return int 影响行数
      */
     @Override
-    public long update(int batch, String dest, Object data, ConfigStore configs, List<String> fixs, String... columns) {
+    public long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, fixs, columns);
+            return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
         }
         dest = DataSourceUtil.parseDataSource(dest, dest);
-        fixs = BeanUtil.merge(fixs, columns);
         return dao.update(dest, data, configs, columns);
     }
 
@@ -718,21 +714,19 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param dest 表
      * @param data  数据
      * @param checkPrimary 是否检测主键
-     * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
      * @param columns 指定更新或保存的列
      * @return 影响行数
      */
     @Override 
-    public long save(int batch, String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    public long save(int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
         if (null == data) {
             return 0;
         }
 
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).save(ps[1], data, checkPrimary, fixs, columns);
+            return ServiceProxy.service(ps[0]).save(ps[1], data, checkPrimary, columns);
         }
-        columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
         if (data instanceof Collection) {
             Collection datas = (Collection) data;
             long cnt = 0;
@@ -745,7 +739,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
 
-    protected long saveObject(String dest, Object data, boolean checkPrimary, List<String> fixs, String... columns) {
+    protected long saveObject(String dest, Object data, boolean checkPrimary, List<String> columns) {
         if (BasicUtil.isEmpty(dest)) {
             if (data instanceof DataRow || data instanceof DataSet) {
                 dest = DataSourceUtil.parseDataSource(dest, data);
@@ -753,11 +747,11 @@ public class DefaultService<E> implements AnylineService<E> {
                 dest = EntityAdapterProxy.table(data.getClass(), true);
             }
         }
-        return dao.save(dest, data, checkPrimary, BeanUtil.merge(fixs, columns));
+        return dao.save(dest, data, checkPrimary, columns);
     }
 
-    protected long saveObject(String dest, Object data, boolean checkPrimary, String[] fixs, String... columns) {
-        return saveObject(dest, data, checkPrimary, BeanUtil.array2list(fixs, columns));
+    protected long saveObject(String dest, Object data, boolean checkPrimary, String... columns) {
+        return saveObject(dest, data, checkPrimary, BeanUtil.array2list(columns));
     }
 
     
