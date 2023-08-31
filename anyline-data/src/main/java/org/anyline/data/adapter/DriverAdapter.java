@@ -982,6 +982,9 @@ public interface DriverAdapter {
 	default <T> long deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values){
 		return deletes(runtime, random, 0, table, column, values);
 	}
+	default <T> long deletes(DataRuntime runtime, String random, String table, String column, T ... values){
+		return deletes(runtime, random, 0, table, column, BeanUtil.array2list(values));
+	}
 
 	/**
 	 * delete [入口]
