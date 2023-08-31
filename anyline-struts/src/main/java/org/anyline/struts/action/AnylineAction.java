@@ -34,12 +34,14 @@
 
 
 package org.anyline.struts.action;
- 
+
+import org.anyline.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.anyline.data.param.ConfigStore;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.Constant;
@@ -53,7 +55,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
-import org.anyline.adapter.KeyAdapter.KEY_CASE;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware {
 	public static int RESULT_TYPE_DEFAULT = 0; 
@@ -78,116 +79,51 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, clazz, keyEncrypt, valueEncrypt, params);
 	}
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(request, clazz, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
-	}
-
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String... params) {
 		return entity(request, clazz, keyEncrypt, false, params);
 	}
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, clazz, keyEncrypt, false, BeanUtil.merge(fixs, params));
-	}
-
 	public <T> T entity(Class<T> clazz, String... params) {
 		return entity(request, clazz, false, false, params);
 	}
-	public <T> T entity(Class<T> clazz, String[] fixs, String... params) {
-		return entity(request, clazz, false, false, BeanUtil.merge(fixs, params));
-	}
-
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, params);
 	}
-	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(request, KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
-	}
-
 	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, params);
 	}
-	public DataRow entity(DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.merge(fixs, params));
-	}
-
 	public DataRow entity(DataRow row, String... params) {
 		return entity(request, KEY_CASE.CONFIG, row, false, false, params);
-	}
-	public DataRow entity(DataRow row, String[] fixs, String... params) {
-		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
 	}
 
-	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
-	}
-
 	public DataRow entity(boolean keyEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, params);
 	}
-	public DataRow entity(boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.merge(fixs, params));
-	}
-
 	public DataRow entity(String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, false, false, params);
-	}
-	public DataRow entity(String[] fixs, String... params) {
-		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
 	}
-	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
-	}
-
 	public DataSet entitys(boolean keyEncrypt, String... params) {
 		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, false, params);
 	}
-
-	public DataSet entitys(boolean keyEncrypt, String[] fixs, String... params) {
-		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, false, BeanUtil.merge(fixs, params));
-	}
-
 	public DataSet entitys(String... params) {
 		return entitys(request, KEY_CASE.CONFIG, false, false, params);
 	}
-
-	public DataSet entitys(String[] fixs, String... params) {
-		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.merge(fixs, params));
-	}
-
 	protected ConfigStore condition(boolean navi, String... configs) {
 		return condition(request, navi, configs);
 	}
-	protected ConfigStore condition(boolean navi, String[] fixs, String... configs) {
-		return condition(request, navi, BeanUtil.merge(fixs, configs));
-	}
-
-	protected ConfigStore condition(int vol, String[] fixs, String... configs) {
-		return condition(request, vol, BeanUtil.merge(fixs, configs));
-	}
-
 	protected ConfigStore condition(long fr, long to, String... configs) {
 		return condition(request, fr, to, configs);
 	}
-	protected ConfigStore condition(long fr, long to, String[] fixs, String... configs) {
-		return condition(request, fr, to, BeanUtil.merge(fixs, configs));
-	}
-
 	protected ConfigStore condition(String... configs) {
 		return condition(request, false, configs);
 	}
-
-	protected ConfigStore condition(String[] fixs, String... configs) {
-		return condition(request, false, BeanUtil.merge(fixs, configs));
-	}
-
 	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt) {
 		return getParam(request, key, keyEncrypt, valueEncrypt);
 	}

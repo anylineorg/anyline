@@ -121,53 +121,20 @@ public class AnylineController extends AbstractBasicController {
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), clazz, keyEncrypt, valueEncrypt, params);
 	}
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), clazz, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), clazz, keyEncrypt, valueEncrypt, fixs, params);
-	}
-
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String... params) {
 		return entity(getRequest(), clazz, keyEncrypt, false, params);
-	}
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), clazz, keyEncrypt, false, fixs,  params);
-	}
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), clazz, keyEncrypt, false, fixs,params);
 	}
 
 	public <T> T entity(Class<T> clazz, String... params) {
 		return entity(getRequest(), clazz, false, false, params);
 	}
-	public <T> T entity(Class<T> clazz, String[] fixs, String... params) {
-		return entity(getRequest(), clazz, false, false, fixs, params);
-	}
-	public <T> T entity(Class<T> clazz, List<String> fixs, String... params) {
-		return entity(getRequest(), clazz, false, false, fixs, params);
-	}
 
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
 	}
-	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, fixs, params);
-	}
-
 	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, false, params);
 	}
-	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(),keyCase, null, keyEncrypt, false, fixs, params);
-	}
-	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(),keyCase, null, keyEncrypt, false, fixs, params);
-	}
-
 	public DataRow entity(TableBuilder table){
 		return entity(table, null);
 	}
@@ -181,161 +148,52 @@ public class AnylineController extends AbstractBasicController {
 	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, params);
 	}
-	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, fixs, params);
-	}
-
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, params);
-	}
-	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, fixs, params);
 	}
 	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String... params) {
 		return entity(getRequest(),keyCase, row, keyEncrypt, false, params);
 	}
-	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(),keyCase, row, keyEncrypt, false, fixs, params);
-	}
-	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(),keyCase, row, keyEncrypt, false, fixs, params);
-	}
-
 	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, false, params);
-	}
-	public DataRow entity(DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, false, fixs, params);
-	}
-	public DataRow entity(DataRow row, boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, false, fixs, params);
 	}
 	public DataRow entity(KEY_CASE keyCase, DataRow row, String... params) {
 		return entity(getRequest(),keyCase, row, false, false, params);
 	}
-	public DataRow entity(KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
-		return entity(getRequest(),keyCase, row, false, false, fixs, params);
-	}
-	public DataRow entity(KEY_CASE keyCase, DataRow row, List<String> fixs, String... params) {
-		return entity(getRequest(),keyCase, row, false, false, fixs, params);
-	}
-
 	public DataRow entity(DataRow row, String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, params);
-	}
-
-	public DataRow entity(DataRow row, String[] fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, fixs, params);
-	}
-	public DataRow entity(DataRow row, List<String> fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, fixs, params);
 	}
 
 	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
 	}
-	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
-	}
-
-
 	public DataRow entity(boolean keyEncrypt, String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, params);
 	}
-
-	public DataRow entity(boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
-	}
-
-	public DataRow entity(boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
-	}
-
 	public DataRow entity(KEY_CASE keyCase, String... params) {
 		return entity(getRequest(),keyCase, null, false, false, params);
-	}
-	public DataRow entity(KEY_CASE keyCase, String[] fixs, String... params) {
-		return entity(getRequest(),keyCase, null, false, false, fixs, params);
-	}
-	public DataRow entity(KEY_CASE keyCase, List<String> fixs, String... params) {
-		return entity(getRequest(),keyCase, null, false, false, fixs, params);
 	}
 	public DataRow entity(String... params) {
 		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, params);
 	}
-	public DataRow entity(String[] fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, fixs, params);
-	}
-	public DataRow entity(List<String> fixs, String... params) {
-		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, fixs, params);
-	}
-
 	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, params);
 	}
-	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, fixs, params);
-	}
-
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
-	}
-	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
-	}
-	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
 	}
 	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, false, params);
 	}
-	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
-		return entitys(getRequest(),keyCase, keyEncrypt, false, fixs, params);
-	}
-	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
-		return entitys(getRequest(),keyCase, keyEncrypt, false, fixs, params);
-	}
 	public DataSet entitys(boolean keyEncrypt, String... params) {
 		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, params);
 	}
-	public DataSet entitys(boolean keyEncrypt, String[] fixs, String... params) {
-		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
-	}
-	public DataSet entitys(boolean keyEncrypt, List<String> fixs, String... params) {
-		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
-	}
-
 	public DataSet entitys(KEY_CASE keyCase, String... params) {
 		return entitys(getRequest(),keyCase, false, false, params);
-	}
-	public DataSet entitys(KEY_CASE keyCase, String[] fixs, String... params) {
-		return entitys(getRequest(),keyCase, false, false, fixs, params);
-	}
-	public DataSet entitys(KEY_CASE keyCase, List<String> fixs, String... params) {
-		return entitys(getRequest(),keyCase, false, false, fixs, params);
 	}
 	public DataSet entitys(String... params) {
 		return entitys(getRequest(), KEY_CASE.CONFIG, false, false, params);
 	}
-	public DataSet entitys(String[] fixs, String... params) {
-		return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
-	}
-	public DataSet entitys(List<String> fixs, String... params) {
-		return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
-	}
-
 	public DataSet entitys(TableBuilder table){
 		List<String> metadatas = service.columns(table.getTable());
 		List<String> params = EntityAdapterProxy.column2param(metadatas);
@@ -357,23 +215,9 @@ public class AnylineController extends AbstractBasicController {
 	protected ConfigStore condition(boolean navi, String... configs) {
 		return condition(getRequest(), navi, configs);
 	}
-	protected ConfigStore condition(boolean navi, String[] fixs, String... configs) {
-		return condition(getRequest(), navi, fixs, configs);
-	}
-	protected ConfigStore condition(boolean navi, List<String> fixs, String... configs) {
-		return condition(getRequest(), navi, fixs, configs);
-	}
-
 	protected ConfigStore condition(int vol, String... configs) {
 		return condition(getRequest(), vol, configs);
 	}
-	protected ConfigStore condition(int vol, String[] fixs, String... configs) {
-		return condition(getRequest(), vol, fixs, configs);
-	}
-	protected ConfigStore condition(int vol, List<String> fixs, String... configs) {
-		return condition(getRequest(), vol, fixs, configs);
-	}
-
 	/**
 	 * 构造查询条件
 	 * @param fr 开始行数
@@ -384,68 +228,23 @@ public class AnylineController extends AbstractBasicController {
 	protected ConfigStore condition(long fr, long to, String... configs) {
 		return condition(getRequest(), fr, to, configs);
 	}
-	protected ConfigStore condition(long fr, long to, String[] fixs, String... configs) {
-		return condition(getRequest(), fr, to, fixs, configs);
-	}
-	protected ConfigStore condition(long fr, long to, List<String> fixs, String... configs) {
-		return condition(getRequest(), fr, to, fixs, configs);
-	}
-
 	protected ConfigStore condition(String... conditions) {
 		return condition(getRequest(), false, conditions);
 	}
-	protected ConfigStore condition(String[] fixs, String... conditions) {
-		return condition(getRequest(), false, fixs, conditions);
-	}
-
-	protected ConfigStore condition(List<String> fixs, String... conditions) {
-		return condition(getRequest(), false, fixs, conditions);
-	}
-
-
-
 
 	protected ConfigStore where(boolean navi, String... configs) {
 		return condition(getRequest(), navi, configs);
 	}
-	protected ConfigStore where(boolean navi, String[] fixs, String... configs) {
-		return condition(getRequest(), navi, fixs, configs);
-	}
-	protected ConfigStore where(boolean navi, List<String> fixs, String... configs) {
-		return condition(getRequest(), navi, fixs, configs);
-	}
-
 	protected ConfigStore where(int vol, String... configs) {
 		return condition(getRequest(), vol, configs);
-	}
-	protected ConfigStore where(int vol, String[] fixs, String... configs) {
-		return condition(getRequest(), vol, fixs, configs);
-	}
-	protected ConfigStore where(int vol, List<String> fixs, String... configs) {
-		return condition(getRequest(), vol, fixs, configs);
 	}
 
 	protected ConfigStore where(long fr, long to, String... configs) {
 		return condition(getRequest(), fr, to, configs);
 	}
-	protected ConfigStore where(long fr, long to, String[] fixs, String... configs) {
-		return condition(getRequest(), fr, to, fixs, configs);
-	}
-	protected ConfigStore where(long fr, long to, List<String> fixs, String... configs) {
-		return condition(getRequest(), fr, to, fixs, configs);
-	}
-
 	protected ConfigStore where(String... conditions) {
 		return condition(getRequest(), false, conditions);
 	}
-	protected ConfigStore where(String[] fixs, String... conditions) {
-		return condition(getRequest(), false, fixs, conditions);
-	}
-	protected ConfigStore where(List<String> fixs, String... conditions) {
-		return condition(getRequest(), false, fixs, conditions);
-	}
-
-
 	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
 		return getParam(getRequest(), key, keyEncrypt, valueEncrypt, defs);
 	} 
