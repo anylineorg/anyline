@@ -45,6 +45,9 @@ import java.util.List;
 public abstract class BasicRun implements Run {
 	protected static final Logger log = LoggerFactory.getLogger(BasicRun.class);
 	protected StringBuilder builder = new StringBuilder();
+	protected List<String> sqls = new ArrayList<>();
+	protected int batch;
+	protected int vol;//每行多少个值
 	protected RunPrepare prepare;
 	protected String catalog;
 	protected String schema;
@@ -565,6 +568,18 @@ public abstract class BasicRun implements Run {
 	}
 
 
+	public List<String> getFinalInserts(){
+		return sqls;
+	}
+	public List<String> getFinalDeletes(){
+		return sqls;
+	}
+	public List<String> getFinalUpdates(){
+		return sqls;
+	}
+	public List<String> getFinalExecutes(){
+		return sqls;
+	}
 	@Override
 	public EMPTY_VALUE_SWITCH getStrict() {
 		return swt;
@@ -867,6 +882,27 @@ public abstract class BasicRun implements Run {
 		}
 		return this;
 	}
+
+	@Override
+	public int getBatch() {
+		return batch;
+	}
+
+	@Override
+	public void setBatch(int batch) {
+		this.batch = batch;
+	}
+
+	@Override
+	public int getVol() {
+		return vol;
+	}
+
+	@Override
+	public void setVol(int vol) {
+		this.vol = vol;
+	}
+
 	/**
 	 * 需要查询的列
 	 * @return String
