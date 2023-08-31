@@ -3032,7 +3032,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null == items) {
             return this;
         }
-        if(keys.size() == 0){
+        if(keys.isEmpty()){
             throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
