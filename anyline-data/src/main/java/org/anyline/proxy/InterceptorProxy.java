@@ -122,7 +122,7 @@ public class InterceptorProxy {
     public static SWITCH prepareQuery(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
-            swt = interceptor.prepare(runtime, prepare, configs, conditions);
+            swt = interceptor.prepare(runtime, random, prepare, configs, conditions);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -133,7 +133,7 @@ public class InterceptorProxy {
     public static SWITCH prepareQuery(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
-            swt = interceptor.prepare(runtime, procedure, navi);
+            swt = interceptor.prepare(runtime, random, procedure, navi);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -144,7 +144,7 @@ public class InterceptorProxy {
     public static SWITCH beforeQuery(DataRuntime runtime, String random, Run run, PageNavi navi){
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
-            swt = interceptor.before(runtime, run, navi);
+            swt = interceptor.before(runtime, random, run, navi);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -155,7 +155,7 @@ public class InterceptorProxy {
     public static SWITCH beforeQuery(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
-            swt = interceptor.before(runtime, procedure, navi);
+            swt = interceptor.before(runtime, random, procedure, navi);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -166,7 +166,7 @@ public class InterceptorProxy {
     public static SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean exe, Object result, PageNavi navi, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
-            swt = interceptor.after(runtime, run, exe, result, navi, millis);
+            swt = interceptor.after(runtime, random, run, exe, result, navi, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -178,7 +178,7 @@ public class InterceptorProxy {
     public static SWITCH afterQuery(DataRuntime runtime, String random, Procedure procedure, PageNavi navi, boolean success, Object result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(QueryInterceptor interceptor:queryInterceptors){
-            swt = interceptor.after(runtime, procedure, navi, success, result, millis);
+            swt = interceptor.after(runtime, random, procedure, navi, success, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -191,7 +191,7 @@ public class InterceptorProxy {
     public static SWITCH prepareCount(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONTINUE;
         for(CountInterceptor interceptor:countInterceptors){
-            swt = interceptor.prepare(runtime, prepare, configs, conditions);
+            swt = interceptor.prepare(runtime, random, prepare, configs, conditions);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -202,7 +202,7 @@ public class InterceptorProxy {
     public static SWITCH beforeCount(DataRuntime runtime, String random, Run run){
         SWITCH swt = SWITCH.CONTINUE;
         for(CountInterceptor interceptor:countInterceptors){
-            swt = interceptor.before(runtime, run);
+            swt = interceptor.before(runtime, random, run);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -213,7 +213,7 @@ public class InterceptorProxy {
     public static SWITCH afterCount(DataRuntime runtime, String random, Run run, boolean exe, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(CountInterceptor interceptor:countInterceptors){
-            swt = interceptor.after(runtime, run, exe, result, millis);
+            swt = interceptor.after(runtime, random, run, exe, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -223,10 +223,10 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareUpdate(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+    public static SWITCH prepareUpdate(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
-            swt = interceptor.prepare(runtime, dest, data, configs, columns);
+            swt = interceptor.prepare(runtime, random, batch,  dest, data, configs, columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -237,7 +237,7 @@ public class InterceptorProxy {
     public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
-            swt = interceptor.before(runtime, run, dest, data, configs, columns);
+            swt = interceptor.before(runtime, random, run, dest, data, configs, columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -248,7 +248,7 @@ public class InterceptorProxy {
     public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
-            swt = interceptor.after(runtime, run, dest, data, configs, columns, success, result, millis);
+            swt = interceptor.after(runtime, random, run, dest, data, configs, columns, success, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -258,10 +258,10 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareInsert(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
+    public static SWITCH prepareInsert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
-            swt = interceptor.prepare(runtime, dest, data,checkPrimary,  columns);
+            swt = interceptor.prepare(runtime, random, batch, dest, data, checkPrimary,  columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -272,7 +272,7 @@ public class InterceptorProxy {
     public static SWITCH beforeInsert(DataRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
-            swt = interceptor.before(runtime, run, dest, data,checkPrimary,  columns);
+            swt = interceptor.before(runtime, random, run, dest, data,checkPrimary,  columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -283,7 +283,7 @@ public class InterceptorProxy {
     public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, String dest, Object data, boolean checkPrimary, List<String> columns, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
-            swt = interceptor.after(runtime, run, dest, data,checkPrimary,  columns, success, result, millis);
+            swt = interceptor.after(runtime, random, run, dest, data,checkPrimary,  columns, success, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -292,10 +292,10 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareDelete(DataRuntime runtime, String random, String table, String key, Collection values){
+    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, String table, String key, Collection values){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.prepare(runtime, table, key, values);
+            swt = interceptor.prepare(runtime, random, batch, table, key, values);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -303,10 +303,10 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH prepareDelete(DataRuntime runtime, String random, String table, ConfigStore configs, String ... conditions){
+    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.prepare(runtime, table, configs, conditions);
+            swt = interceptor.prepare(runtime, random, batch, table, configs, conditions);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -315,10 +315,10 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareDelete(DataRuntime runtime, String random, String dest, Object obj, String... columns){
+    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, String dest, Object obj, String... columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.prepare(runtime, dest, obj, columns);
+            swt = interceptor.prepare(runtime, random, batch, dest, obj, columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -329,7 +329,7 @@ public class InterceptorProxy {
     public static SWITCH beforeDelete(DataRuntime runtime, String random, Run run){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.before(runtime, run);
+            swt = interceptor.before(runtime, random, run);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -340,7 +340,7 @@ public class InterceptorProxy {
     public static SWITCH afterDelete(DataRuntime runtime, String random, Run run, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
-            swt = interceptor.after(runtime, run, success, result, millis);
+            swt = interceptor.after(runtime, random, run, success, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -353,7 +353,7 @@ public class InterceptorProxy {
     public static SWITCH prepareExecute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
-            swt = interceptor.prepare(runtime, prepare, configs, conditions);
+            swt = interceptor.prepare(runtime, random, prepare, configs, conditions);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -364,7 +364,7 @@ public class InterceptorProxy {
     public static SWITCH prepareExecute(DataRuntime runtime, String random, Procedure procedure){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
-            swt = interceptor.prepare(runtime, procedure);
+            swt = interceptor.prepare(runtime, random, procedure);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -375,7 +375,7 @@ public class InterceptorProxy {
     public static SWITCH beforeExecute(DataRuntime runtime, String random, Run run){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
-            swt = interceptor.before(runtime, run);
+            swt = interceptor.before(runtime, random, run);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -387,7 +387,7 @@ public class InterceptorProxy {
     public static SWITCH beforeExecute(DataRuntime runtime, String random, Procedure procedure){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
-            swt = interceptor.before(runtime, procedure);
+            swt = interceptor.before(runtime, random, procedure);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 before
                 return swt;
@@ -398,7 +398,7 @@ public class InterceptorProxy {
     public static SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
-            swt = interceptor.after(runtime, run, success, result, millis);
+            swt = interceptor.after(runtime, random, run, success, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
@@ -409,7 +409,7 @@ public class InterceptorProxy {
     public static SWITCH afterExecute(DataRuntime runtime, String random, Procedure procedure, boolean success, boolean result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(ExecuteInterceptor interceptor:executeInterceptors){
-            swt = interceptor.after(runtime, procedure, success, result, millis);
+            swt = interceptor.after(runtime, random, procedure, success, result, millis);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 after
                 return swt;
