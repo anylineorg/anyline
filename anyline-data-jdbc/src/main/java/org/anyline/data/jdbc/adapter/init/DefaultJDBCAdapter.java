@@ -112,12 +112,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null == random){
 			random = random(runtime);
 		}
-		swt = InterceptorProxy.prepareUpdate(runtime, random, dest, data, configs, columns);
+		swt = InterceptorProxy.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			swt = dmListener.prepareUpdate(runtime, random, dest, data, configs, false, columns);
+			swt = dmListener.prepareUpdate(runtime, random, batch, dest, data, configs, false, columns);
 		}
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
@@ -929,7 +929,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, String dest, Object data, Run run){
+	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, Run run){
 		int result = 0;
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -937,7 +937,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return -1;
 		}
-		String sql = run.getFinalUpdate();
+		List<String> sqls = null;
+		String sql = null;
+		if(batch>1) {
+			sqls = run.getFinalUpdates();
+		}
+		sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
 			return -1;
@@ -1005,12 +1010,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
-		swt = InterceptorProxy.prepareInsert(runtime, random,  dest, data, checkPrimary, columns);
+		swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			swt = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
+			swt = dmListener.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
 		}
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
@@ -1032,7 +1037,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 				dest = ptables.values().iterator().next().getName();
 			}
 		}
-		Run run = buildInsertRun(runtime, dest, data, checkPrimary, columns);
+		Run run = buildInsertRun(runtime, batch, dest, data, checkPrimary, columns);
 		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
@@ -1095,33 +1100,57 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[action:insert][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			if(batch > 1){
+				log.info("{}[action:batch insert][sql:\n{}\n]\n[param size:{}]", random, sql, values.size());
+			}else {
+				log.info("{}[action:insert][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			}
 		}
 		long millis = -1;
 
-		KeyHolder keyholder = new GeneratedKeyHolder();
+		KeyHolder keyholder = null;
 		JdbcTemplate jdbc = jdbc(runtime);
 		try {
-			cnt = jdbc.update(new PreparedStatementCreator() {
-				@Override
-				public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
-					PreparedStatement ps = null;
-					if (null != pks && pks.length > 0) {
-						//返回多个值
-						ps = con.prepareStatement(sql, pks);
-					} else {
-						ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-					}
-					int idx = 0;
-					if (null != values) {
-						for (Object obj : values) {
-							ps.setObject(++idx, obj);
+			if(batch > 1){
+				int vol = run.getVol();
+				int size = values.size();
+				int page = (size-1)/vol+1;
+				//batch insert保持SQL一致,如果不一致应该调用save方法
+				//返回每个SQL的影响行数
+				jdbc.batchUpdate(sql,
+					new BatchPreparedStatementSetter() {
+						public void setValues(PreparedStatement ps, int i) throws SQLException {
+							//i从0开始 参数下标从1开始
+							for(int p=1; p<=vol; p++){
+								ps.setObject(p, values.get(vol*i+p-1));
+							}
 						}
+						public int getBatchSize() {
+							return page;
+						}
+					});
+			}else {
+				keyholder = new GeneratedKeyHolder();
+				cnt = jdbc.update(new PreparedStatementCreator() {
+					@Override
+					public PreparedStatement createPreparedStatement(Connection con) throws java.sql.SQLException {
+						PreparedStatement ps = null;
+						if (null != pks && pks.length > 0) {
+							//返回多个值
+							ps = con.prepareStatement(sql, pks);
+						} else {
+							ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+						}
+						int idx = 0;
+						if (null != values) {
+							for (Object obj : values) {
+								ps.setObject(++idx, obj);
+							}
+						}
+						return ps;
 					}
-					return ps;
-				}
-			}, keyholder);
-
+				}, keyholder);
+			}
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -1257,7 +1286,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 */
 	@Override
 	public long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
-
 		if(null == random){
 			random = random(runtime);
 		}
@@ -1271,22 +1299,32 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		if(data instanceof Collection){
 			Collection<?> items = (Collection<?>)data;
-			long cnt = 0;
-			for(Object item:items){
-				cnt += save(runtime, random, dest, item, checkPrimary, columns);
+			if(batch > 1){
+				//批量操作
+				return saveCollection(runtime, random, batch, dest, items, checkPrimary, columns);
+			}else {
+				long cnt = 0;
+				for (Object item : items) {
+					cnt += save(runtime, random, dest, item, checkPrimary, columns);
+				}
+				return cnt;
 			}
-			return cnt;
 		}
 		return saveObject(runtime, random, batch, dest, data, checkPrimary, columns);
 	}
 
+	protected long saveCollection(DataRuntime runtime, String random, int batch, String dest, Collection<?> data, boolean checkPrimary, List<String> columns){
+		long cnt = 0;
+		//List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, checkPrimary, columns);
+		return cnt;
+	}
 	protected long saveObject(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
 		if(null == data){
 			return 0;
 		}
 		boolean isNew = checkIsNew(data);
 		if(isNew){
-			return insert(runtime, random, dest, data, checkPrimary, columns);
+			return insert(runtime, random, batch, dest, data, checkPrimary, columns);
 		}else{
 			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
 			Boolean override = checkOverride(data);
@@ -2013,12 +2051,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(null == random){
 			random = random(runtime);
 		}
-		ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, table, key, values);
+		ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, key, values);
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			swt = dmListener.prepareDelete(runtime, random, table, key, values);
+			swt = dmListener.prepareDelete(runtime, random, batch, table, key, values);
 		}
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
@@ -2063,12 +2101,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
 				}
 			}else{
-				swt = InterceptorProxy.prepareDelete(runtime, random, dest, obj, columns);
+				swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
 				if(swt == ACTION.SWITCH.BREAK){
 					return -1;
 				}
 				if(null != dmListener){
-					swt = dmListener.prepareDelete(runtime, random, dest, obj, columns);
+					swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
 				}
 				if(swt == ACTION.SWITCH.BREAK){
 					return -1;
@@ -2101,12 +2139,12 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
 		table = DataSourceUtil.parseDataSource(table, null);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-		swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
+		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
 		if(null != dmListener){
-			swt = dmListener.prepareDelete(runtime,random, table, configs, conditions);
+			swt = dmListener.prepareDelete(runtime, random, 0, table, configs, conditions);
 		}
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;

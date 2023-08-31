@@ -27,7 +27,6 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
@@ -39,13 +38,11 @@ import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.Join;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -53,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
@@ -268,7 +264,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 *
 	 * protected void insertValue(Run run, Object obj, boolean placeholder, LinkedHashMap<String,Column> columns)
 	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
-	 * protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)
+	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns)
 	 ******************************************************************************************************************/
 
 	/**
@@ -281,7 +277,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, boolean checkPrimary, List<String> columns){
 		if(null == obj){
 			return null;
 		}
@@ -291,8 +287,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
-			if(list.size() >0){
-				return createInsertRunFromCollection(runtime, dest, list, checkPrimary, columns);
+			if(list.size() > 0){
+				return createInsertRunFromCollection(runtime, batch, dest, list, checkPrimary, columns);
 			}
 			return null;
 		}else {
@@ -529,9 +525,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需要插入的列,如果不指定则全部插入
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.data.jdbc.config.db.impl.", "") + ")未实现 Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns)", 37));
 		}
 		return null;
 	}

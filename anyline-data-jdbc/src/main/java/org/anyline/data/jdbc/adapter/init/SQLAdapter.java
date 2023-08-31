@@ -81,7 +81,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * long insert(DataRuntime runtime, String random, Object data, Run run) throws Exception
      *
      * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns)
-     * protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns)
+     * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns)
      * protected void insertValue(Run run, Object obj, boolean placeholder, LinkedHashMap<String,Column> columns)
      ******************************************************************************************************************/
 
@@ -95,8 +95,8 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
-        return super.buildInsertRun(runtime, dest, obj, checkPrimary, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, boolean checkPrimary, List<String> columns){
+        return super.buildInsertRun(runtime, batch, dest, obj, checkPrimary, columns);
     }
 
     /**
@@ -110,6 +110,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
     @Override
     public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
+        int batch = run.getBatch();
         if(null == builder){
             builder = new StringBuilder();
             run.setBuilder(builder);
@@ -133,6 +134,19 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
         }
         builder.append(") VALUES ");
+        if(batch > 1){
+            //批量执行
+            builder.append("(");
+            int size = columns.size();
+            run.setVol(size);
+            for(int i=0; i<size; i++){
+                if(i>0){
+                    builder.append(",");
+                }
+                builder.append("?");
+            }
+            builder.append(")");
+        }
         int dataSize = set.size();
         for(int i=0; i<dataSize; i++){
             DataRow row = set.getRow(i);
@@ -146,9 +160,11 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                 //createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             insertValue(runtime, run, row, true, false,true, columns);
-            if(i<dataSize-1){
-                //多行数据之间的分隔符
-                builder.append(batchInsertSeparator());
+            if(batch <=1) {
+                if (i < dataSize - 1) {
+                    //多行数据之间的分隔符
+                    builder.append(batchInsertSeparator());
+                }
             }
         }
     }
@@ -168,8 +184,6 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
-
-
         if(list instanceof DataSet){
             DataSet set = (DataSet) list;
             this.fillInsertContent(runtime, run, dest, set, columns);
@@ -344,8 +358,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(runtime, dest);
+        run.setBatch(batch);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");
         }
@@ -390,8 +405,9 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
      * @param columns          需要插入的列
      */
     protected void insertValue(DataRuntime runtime, Run run, Object obj, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns){
+        int batch = run.getBatch();
         StringBuilder builder = run.getBuilder();
-        if(scope) {
+        if(scope && batch<=1) {
             builder.append("(");
         }
         int from = 1;
@@ -403,7 +419,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         for(Column column:columns.values()){
             boolean place = placeholder;
             String key = column.getName();
-            if (!first) {
+            if (!first && batch<=1) {
                 builder.append(",");
             }
             first = false;
@@ -425,19 +441,23 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
                     }
                 }
             }
-            if(place){
-                builder.append("?");
+            if(batch<=1) {
+                if (place) {
+                    builder.append("?");
+                    addRunValue(runtime, run, Compare.EQUAL, column, value);
+                } else {
+                    //value(builder, obj, key);
+                    builder.append(write(runtime, null, obj, false));
+                }
+            }else{
                 addRunValue(runtime, run, Compare.EQUAL, column, value);
-            }else {
-                //value(builder, obj, key);
-                builder.append(write(runtime, null, obj, false));
             }
 
-            if(alias){
+            if(alias && batch<=1){
                 builder.append(" AS ").append(key);
             }
         }
-        if(scope) {
+        if(scope && batch<=1) {
             builder.append(")");
         }
     }

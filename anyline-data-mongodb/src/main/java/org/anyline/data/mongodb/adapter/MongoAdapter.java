@@ -113,17 +113,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         boolean cmd_success = false;
-        swt = InterceptorProxy.prepareInsert(runtime, random,  dest, data, checkPrimary, columns);
+        swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
         if(null != dmListener){
-            swt = dmListener.prepareInsert(runtime, random, dest, data, checkPrimary, columns);
+            swt = dmListener.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
         }
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
-        Run run = buildInsertRun(runtime, dest, data, checkPrimary, columns);
+        Run run = buildInsertRun(runtime, batch, dest, data, checkPrimary, columns);
         Table table = new Table(dest);
         //提前设置好columns,到了adapter中需要手动检测缓存
         if(ConfigTable.IS_AUTO_CHECK_METADATA){
@@ -183,7 +183,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(runtime, dest);
         run.setValue(list);
         return run;
@@ -522,7 +522,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, Run run) {
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, Run run) {
         return 0;
     }
 
@@ -550,12 +550,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
         table = DataSourceUtil.parseDataSource(table, null);
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        swt = InterceptorProxy.prepareDelete(runtime, random, table, configs, conditions);
+        swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
         if(null != dmListener){
-            swt = dmListener.prepareDelete(runtime,random, table, configs, conditions);
+            swt = dmListener.prepareDelete(runtime,random, 0, table, configs, conditions);
         }
         if(swt == ACTION.SWITCH.BREAK){
             return -1;

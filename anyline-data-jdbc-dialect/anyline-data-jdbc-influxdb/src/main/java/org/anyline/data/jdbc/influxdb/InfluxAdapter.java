@@ -100,7 +100,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch,  String dest, Object obj, boolean checkPrimary, List<String> columns){
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();

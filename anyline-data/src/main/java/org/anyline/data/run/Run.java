@@ -115,6 +115,11 @@ public interface Run {
 	String getFinalDelete(); 
 	String getFinalUpdate();
 	String getFinalExecute();
+
+	List<String> getFinalInserts();
+	List<String> getFinalDeletes();
+	List<String> getFinalUpdates();
+	List<String> getFinalExecutes();
 	List<RunValue> getRunValues() ;
 	List<Object> getValues() ;
 	PageNavi getPageNavi() ; 
@@ -148,4 +153,8 @@ public interface Run {
 
 	void setValue(Object value);
 	Object getValue();
+	void setBatch(int batch);
+	int getBatch();
+	void setVol(int vol);
+	int getVol();
 }

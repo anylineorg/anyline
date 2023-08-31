@@ -109,8 +109,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
-        return super.buildInsertRun(runtime, dest, obj, checkPrimary, columns);
+    public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, boolean checkPrimary, List<String> columns){
+        return super.buildInsertRun(runtime, batch, dest, obj, checkPrimary, columns);
     }
 
     /**
@@ -247,7 +247,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, String dest, Collection list, boolean checkPrimary, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(runtime, dest);
         if(null == list || list.size() ==0){
             throw new SQLException("空数据");

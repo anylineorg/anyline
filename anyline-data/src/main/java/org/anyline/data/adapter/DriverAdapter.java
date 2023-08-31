@@ -207,39 +207,39 @@ public interface DriverAdapter {
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns);
-	default Run buildInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, String ... columns){
-		return buildInsertRun(runtime, dest, obj, checkPrimary, BeanUtil.array2list(columns));
+	Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, boolean checkPrimary, List<String> columns);
+	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(runtime, batch, dest, obj, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(DataRuntime runtime, Object obj, boolean checkPrimary, String ... columns){
-		return buildInsertRun(runtime, null, obj, checkPrimary, BeanUtil.array2list(columns));
+	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(runtime, batch, null, obj, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(DataRuntime runtime, String dest, Object obj, List<String> columns){
-		return buildInsertRun(runtime, dest, obj, false, columns);
+	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, List<String> columns){
+		return buildInsertRun(runtime, batch, dest, obj, false, columns);
 	}
-	default Run buildInsertRun(DataRuntime runtime, String dest, Object obj, String ... columns){
-		return buildInsertRun(runtime, dest, obj, false, BeanUtil.array2list(columns));
+	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, String ... columns){
+		return buildInsertRun(runtime, batch, dest, obj, false, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(DataRuntime runtime, Object obj, String ... columns){
-		return buildInsertRun(runtime, null, obj, false, BeanUtil.array2list(columns));
+	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, String ... columns){
+		return buildInsertRun(runtime, batch, null, obj, false, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(String dest, Object obj, boolean checkPrimary, List<String> columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, checkPrimary, columns);
+	default Run buildInsertRun(int batch, String dest, Object obj, boolean checkPrimary, List<String> columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), batch, dest, obj, checkPrimary, columns);
 	}
-	default Run buildInsertRun(String dest, Object obj, boolean checkPrimary, String ... columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, checkPrimary, BeanUtil.array2list(columns));
+	default Run buildInsertRun(int batch, String dest, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), batch, dest, obj, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(Object obj, boolean checkPrimary, String ... columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), null, obj, checkPrimary, BeanUtil.array2list(columns));
+	default Run buildInsertRun(int batch, Object obj, boolean checkPrimary, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(),batch,  null, obj, checkPrimary, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(String dest, Object obj, List<String> columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, false, columns);
+	default Run buildInsertRun(int batch, String dest, Object obj, List<String> columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), batch, dest, obj, false, columns);
 	}
-	default Run buildInsertRun(String dest, Object obj, String ... columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), dest, obj, false, BeanUtil.array2list(columns));
+	default Run buildInsertRun(int batch, String dest, Object obj, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), batch, dest, obj, false, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(Object obj, String ... columns){
-		return buildInsertRun(RuntimeHolder.getRuntime(), null, obj, false, BeanUtil.array2list(columns));
+	default Run buildInsertRun(int batch, Object obj, String ... columns){
+		return buildInsertRun(RuntimeHolder.getRuntime(), batch, null, obj, false, BeanUtil.array2list(columns));
 	}
 	/**
 	 * 填充inset命令内容(根据集合类型)
@@ -696,7 +696,10 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
-	long update(DataRuntime runtime, String random, String dest, Object data, Run run);
+	long update(DataRuntime runtime, String random, int batch, String dest, Object data, Run run);
+	default long update(DataRuntime runtime, String random, String dest, Object data, Run run){
+		return update(runtime, random, 0, dest, data, run);
+	}
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/

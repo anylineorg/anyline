@@ -713,7 +713,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try{
-			long result =  runtime.getAdapter().insert(runtime, random, dest,data, checkPrimary, columns);
+			long result =  runtime.getAdapter().insert(runtime, random, batch, dest,data, checkPrimary, columns);
 			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
 			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
