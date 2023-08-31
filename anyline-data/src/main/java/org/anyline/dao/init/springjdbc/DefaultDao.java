@@ -366,11 +366,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						set.add(row);
 					}
 					if(mode == 1) {
-						long qty = runtime.getAdapter().delete(runtime, null,  join.joinTable, join.joinColumn, pv + "");
+						long qty = runtime.getAdapter().deletes(runtime, random, join.joinTable, join.joinColumn, pv);
 						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 							if(!(obj instanceof DataRow)){
-								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
-								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
+								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY);
+								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY);
 							}
 						}
 					}
@@ -432,7 +432,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						throw new RuntimeException(field+"关联表异常");
 					}
 					if(mode == 1) {
-						long qty = runtime.getAdapter().delete(runtime, random, join.dependencyTable, join.joinColumn, pv + "");
+						long qty = runtime.getAdapter().deletes(runtime, random, join.dependencyTable, join.joinColumn, pv);
 						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
 							if(!(obj instanceof Map)){
 								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
@@ -568,7 +568,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				runtime.getAdapter().delete(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+				runtime.getAdapter().deletes(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
 
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -598,7 +598,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				OneToMany join = PersistenceAdapter.oneToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				runtime.getAdapter().delete(runtime, random, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase())+"");
+				runtime.getAdapter().deletes(runtime, random, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
 
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -690,8 +690,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		try {
 			long result = runtime.getAdapter().save(runtime, random, dest, data, checkPrimary, columns);
 			int ENTITY_FIELD_INSERT_DEPENDENCY = ThreadConfig.check(runtime.getKey()).ENTITY_FIELD_INSERT_DEPENDENCY();
-			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
-			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
+			checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 1);
+			checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 			return result;
 		}finally{
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
