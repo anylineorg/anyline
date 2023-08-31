@@ -188,7 +188,7 @@ public interface DMListener {
      * @return 如果返回false 则中断执行
      * @return SWITCH
      */
-    default SWITCH  prepareUpdate(DataRuntime runtime, String random, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareUpdate(DataRuntime runtime, String random, int batch, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
 
 
     /**
@@ -236,7 +236,7 @@ public interface DMListener {
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return SWITCH
      */
-    default SWITCH  prepareInsert(DataRuntime runtime, String random, String dest, Object obj, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareInsert(DataRuntime runtime, String random, int batch, String dest, Object obj, boolean checkPrimary, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 创建insert sql之前调用
      *
@@ -360,7 +360,7 @@ public interface DMListener {
      * @param columns 删除条件的我
      * @return SWITCH
      */
-    default SWITCH  prepareDelete(DataRuntime runtime, String random, String dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
     /**
      * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件),修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
@@ -374,7 +374,7 @@ public interface DMListener {
      * @param values values
      * @return SWITCH
      */
-    default SWITCH  prepareDelete(DataRuntime runtime, String random, String table, String key, Object values){return SWITCH.CONTINUE;}
+    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String table, String key, Object values){return SWITCH.CONTINUE;}
     /**
      * 执行删除前调用
      *
