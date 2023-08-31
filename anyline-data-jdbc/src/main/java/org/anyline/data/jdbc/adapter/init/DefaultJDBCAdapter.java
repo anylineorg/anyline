@@ -3680,12 +3680,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						}
 					}
 				} catch (Exception e) {
-					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
-					}else {
-						if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
-							log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
-						}
+					if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()) {
+						log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
 					}
 				}
 				if(null != columns) {
