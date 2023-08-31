@@ -214,7 +214,6 @@ public class ThreadConfig extends ConfigTable {
                             field.set(instance, value);
                         }
                     }catch (Exception e){
-                        e.printStackTrace();
                     }
                 }
             }else{
@@ -226,7 +225,6 @@ public class ThreadConfig extends ConfigTable {
                             field.set(instance, value);
                         }
                     }catch (Exception e){
-                        e.printStackTrace();
                     }
                 }
             }
@@ -253,7 +251,7 @@ public class ThreadConfig extends ConfigTable {
             }
         }
         if(null == instance){
-            instance = new ConfigTable();
+            instance = instance(datasource);
         }
         return instance;
     }
