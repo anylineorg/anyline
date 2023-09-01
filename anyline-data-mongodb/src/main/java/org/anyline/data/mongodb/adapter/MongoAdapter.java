@@ -526,6 +526,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return 0;
     }
 
+    @Override
+    public long execute(DataRuntime runtime, String random, int batch, String sql, List<Object> values) {
+        return 0;
+    }
+
 
     @Override
     public long update(DataRuntime runtime, String random, String dest, Object data, Run run) {
