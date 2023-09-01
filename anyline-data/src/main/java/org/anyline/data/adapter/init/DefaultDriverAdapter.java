@@ -549,7 +549,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		if(null == obj){
 			return null;
 		}
@@ -560,8 +560,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}else if(obj instanceof Map){
 			obj = new DataRow((Map)obj);
 		}
-
-		if(obj instanceof DataRow){
+		if(obj instanceof Collection){
+			return buildUpdateRunFromCollection(runtime, batch, dest, (Collection)obj, configs, checkPrimary, columns);
+		}else if(obj instanceof DataRow){
 			return buildUpdateRunFromDataRow(runtime, dest, (DataRow)obj, configs, checkPrimary, columns);
 		}else{
 			return buildUpdateRunFromEntity(runtime, dest, obj, configs, checkPrimary, columns);
@@ -585,6 +586,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		return buildUpdateRunFromDataRow(runtime, dest, row, configs, checkPrimary, cols);
+	}
+	protected Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+		if(null != columns){
+			for(String column:columns){
+				cols.put(column.toUpperCase(), new Column(column));
+			}
+		}
+		return buildUpdateRunFromCollection(runtime, batch, dest, list, configs, checkPrimary, cols);
 	}
 
 	/**
@@ -932,8 +942,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
 	 ******************************************************************************************************************/
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values){
-		return buildDeleteRunFromTable(runtime, table, key, values);
+	public Run buildDeleteRun(DataRuntime runtime, int batch, String table, String key, Object values){
+		return buildDeleteRunFromTable(runtime, batch, table, key, values);
 	}
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){

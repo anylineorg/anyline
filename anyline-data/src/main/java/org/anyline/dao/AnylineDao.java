@@ -143,7 +143,7 @@ public interface AnylineDao<E>{
 
 	long update(DataRuntime runtime, String random, boolean recover, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
 	default long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime(), null, false,batch, dest, data, configs, columns);
+		return update(runtime(), null, false, batch, dest, data, configs, columns);
 	}
 	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
 		return update(batch,dest, data, configs, BeanUtil.array2list(columns));

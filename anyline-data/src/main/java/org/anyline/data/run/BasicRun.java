@@ -45,7 +45,6 @@ import java.util.List;
 public abstract class BasicRun implements Run {
 	protected static final Logger log = LoggerFactory.getLogger(BasicRun.class);
 	protected StringBuilder builder = new StringBuilder();
-	protected List<String> sqls = new ArrayList<>();
 	protected int batch;
 	protected int vol;//每行多少个值
 	protected RunPrepare prepare;
@@ -54,6 +53,7 @@ public abstract class BasicRun implements Run {
 	protected String table;
 	protected List<String> keys;
 	protected List<RunValue> values;
+	protected List<Object> batchValues;
 	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			// 查询条件
 	protected ConfigStore configStore;
@@ -197,6 +197,9 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public List<Object> getValues() {
+		if(null != batchValues){
+			return batchValues;
+		}
 		List<Object> list = new ArrayList<>();
 		if(null != values){
 			for(RunValue value:values){
@@ -568,18 +571,6 @@ public abstract class BasicRun implements Run {
 	}
 
 
-	public List<String> getFinalInserts(){
-		return sqls;
-	}
-	public List<String> getFinalDeletes(){
-		return sqls;
-	}
-	public List<String> getFinalUpdates(){
-		return sqls;
-	}
-	public List<String> getFinalExecutes(){
-		return sqls;
-	}
 	@Override
 	public EMPTY_VALUE_SWITCH getStrict() {
 		return swt;
@@ -842,6 +833,11 @@ public abstract class BasicRun implements Run {
 	@Override
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+	@Override
+	public void setValues(List<Object> values) {
+		this.batchValues = values;
 	}
 
 

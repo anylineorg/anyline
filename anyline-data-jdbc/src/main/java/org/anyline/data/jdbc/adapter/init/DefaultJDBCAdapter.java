@@ -130,15 +130,17 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 		}
 		long result = 0;
-		if(data instanceof DataSet){
-			DataSet set = (DataSet)data;
-			for(int i=0; i<set.size(); i++){
-				result += update(runtime, random, dest, set.getRow(i), configs,  columns);
+		if(data instanceof Collection){
+			if(batch <= 1){
+				Collection list = (Collection) data;
+				for (Object item : list) {
+					result += update(runtime, random, 0, dest, item, configs, columns);
+				}
+				return result;
 			}
-			return result;
 		}
 
-		Run run = buildUpdateRun(runtime, dest, data, configs,false, columns);
+		Run run = buildUpdateRun(runtime, batch, dest, data, configs,false, columns);
 
 		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
@@ -918,7 +920,24 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return map;
 	}
-
+	protected void batch(JdbcTemplate jdbc, String sql, int batch, int vol,  List<Object> values){
+		int size = values.size(); //一共多少参数
+		int line = size/vol; //一共多少行
+		//batch insert保持SQL一致,如果不一致应该调用save方法
+		//返回每个SQL的影响行数
+		jdbc.batchUpdate(sql,
+				new BatchPreparedStatementSetter() {
+					public void setValues(PreparedStatement ps, int i) throws SQLException {
+						//i从0开始 参数下标从1开始
+						for(int p=1; p<=vol; p++){
+							ps.setObject(p, values.get(vol*i+p-1));
+						}
+					}
+					public int getBatchSize() {
+						return line;
+					}
+				});
+	}
 	/**
 	 * update [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -929,7 +948,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, Run run){
+	public long update(DataRuntime runtime, String random, String dest, Object data, Run run){
 		int result = 0;
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -937,26 +956,31 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return -1;
 		}
-		List<String> sqls = null;
 		String sql = null;
-		if(batch>1) {
-			sqls = run.getFinalUpdates();
-		}
 		sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
 			return -1;
 		}
 		List<Object> values = run.getValues();
+		int batch = run.getBatch();
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-			log.info("{}[action:update][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			if(batch > 1){
+				log.info("{}[action:batch update][sql:\n{}\n]\n[param size:{}]", random, sql, values.size());
+			}else {
+				log.info("{}[action:update][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			}
 		}
 		long millis = -1;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
-			result = jdbc.update(sql, values.toArray());
+			if(batch > 1){
+				batch(jdbc, sql, batch, run.getVol(), values);
+			}else {
+				result = jdbc.update(sql, values.toArray());
+			}
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
@@ -990,7 +1014,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		return result;
 	}
-
 	/**
 	 * insert [入口]<br/>
 	 * 执行完成后会补齐自增主键值
@@ -1063,7 +1086,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
-		cnt = insert(runtime, random, batch, data, run, null);
+		cnt = insert(runtime, random, data, run, null);
 		if (null != dmListener) {
 			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
 		}
@@ -1083,7 +1106,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks) {
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
 		long cnt = 0;
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
@@ -1096,9 +1119,11 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			log.warn("[不具备执行条件][dest:{}]",run.getTable());
 			return -1;
 		}
+		int batch = run.getBatch();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
+
 		if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
 			if(batch > 1){
 				log.info("{}[action:batch insert][sql:\n{}\n]\n[param size:{}]", random, sql, values.size());
@@ -1112,23 +1137,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		JdbcTemplate jdbc = jdbc(runtime);
 		try {
 			if(batch > 1){
-				int vol = run.getVol();
-				int size = values.size();
-				int page = (size-1)/vol+1;
-				//batch insert保持SQL一致,如果不一致应该调用save方法
-				//返回每个SQL的影响行数
-				jdbc.batchUpdate(sql,
-					new BatchPreparedStatementSetter() {
-						public void setValues(PreparedStatement ps, int i) throws SQLException {
-							//i从0开始 参数下标从1开始
-							for(int p=1; p<=vol; p++){
-								ps.setObject(p, values.get(vol*i+p-1));
-							}
-						}
-						public int getBatchSize() {
-							return page;
-						}
-					});
+				batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
 				keyholder = new GeneratedKeyHolder();
 				cnt = jdbc.update(new PreparedStatementCreator() {
@@ -1198,7 +1207,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks, boolean simple) {
+	public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
 		long cnt = 0;
 		if(null == random){
 			random = random(runtime);
@@ -1285,7 +1294,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
+	public long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 		if(null == random){
 			random = random(runtime);
 		}
@@ -1299,32 +1308,27 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		if(data instanceof Collection){
 			Collection<?> items = (Collection<?>)data;
-			if(batch > 1){
-				//批量操作
-				return saveCollection(runtime, random, batch, dest, items, checkPrimary, columns);
-			}else {
-				long cnt = 0;
-				for (Object item : items) {
-					cnt += save(runtime, random, dest, item, checkPrimary, columns);
-				}
-				return cnt;
+			long cnt = 0;
+			for (Object item : items) {
+				cnt += save(runtime, random, dest, item, checkPrimary, columns);
 			}
+			return cnt;
 		}
-		return saveObject(runtime, random, batch, dest, data, checkPrimary, columns);
+		return saveObject(runtime, random, dest, data, checkPrimary, columns);
 	}
 
-	protected long saveCollection(DataRuntime runtime, String random, int batch, String dest, Collection<?> data, boolean checkPrimary, List<String> columns){
+	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, boolean checkPrimary, List<String> columns){
 		long cnt = 0;
 		//List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, checkPrimary, columns);
 		return cnt;
 	}
-	protected long saveObject(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
 		if(null == data){
 			return 0;
 		}
 		boolean isNew = checkIsNew(data);
 		if(isNew){
-			return insert(runtime, random, batch, dest, data, checkPrimary, columns);
+			return insert(runtime, random, dest, data, checkPrimary, columns);
 		}else{
 			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
 			Boolean override = checkOverride(data);
@@ -1344,7 +1348,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 						log.warn("[跳过更新][数据已存在:{}({})]",dest, BeanUtil.map2json(pvs));
 					}
 				}else{
-					return insert(runtime, random, batch, dest, data, checkPrimary, columns);
+					return insert(runtime, random, dest, data, checkPrimary, columns);
 				}
 			}else{
 				return update(runtime, random, dest, data, null, columns);
@@ -2061,7 +2065,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(swt == ACTION.SWITCH.BREAK){
 			return -1;
 		}
-		Run run = buildDeleteRun(runtime, table, key, values);
+		Run run = buildDeleteRun(runtime, batch, table, key, values);
 		if(!run.isValid()){
 			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
 				log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");

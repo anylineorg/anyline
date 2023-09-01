@@ -24,10 +24,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.TablePrepare;
-import org.anyline.data.run.Run;
-import org.anyline.data.run.TableRun;
-import org.anyline.data.run.TextRun;
-import org.anyline.data.run.XMLRun;
+import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.Compare;
@@ -786,6 +783,107 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         return run;
     }
 
+    @Override
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns){
+        TableRun run = new TableRun(runtime, dest);
+        run.setFrom(1);
+        Object first = list.iterator().next();
+        if (null == first){
+            return run;
+        }LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        List<String> primaryKeys = new ArrayList<>();
+        boolean replaceEmptyNull = false;
+        if(first instanceof DataRow){
+            DataRow row = (DataRow)first;
+            primaryKeys = row.getPrimaryKeys();
+            cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
+            replaceEmptyNull = row.isReplaceEmptyNull();
+        }else{
+            if(null != columns && columns.size() >0 ){
+                cols = columns;
+            }else{
+                cols.putAll(EntityAdapterProxy.columns(first.getClass(), EntityAdapter.MODE.UPDATE)); ;
+            }
+            if(EntityAdapterProxy.hasAdapter(first.getClass())){
+                primaryKeys.addAll(EntityAdapterProxy.primaryKeys(first.getClass()).keySet());
+            }else{
+                primaryKeys = new ArrayList<>();
+                primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+            }
+            replaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
+        }
+        cols = checkMetadata(runtime, dest, cols);
+        StringBuilder builder = run.getBuilder();
+        if(primaryKeys.size() == 0){
+            throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
+        }
+
+        // 不更新主键 除非显示指定
+        for(String pk:primaryKeys){
+            if(!columns.containsKey(pk.toUpperCase())) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+        //不更新默认主键  除非显示指定
+        if(!columns.containsKey(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        }
+
+        List<String> updateColumns = new ArrayList<>();
+        /*构造SQL*/
+
+        if(!cols.isEmpty()){
+            builder.append("UPDATE ").append(parseTable(dest));
+            builder.append(" SET ");
+            boolean start = true;
+            for(Column col:cols.values()){
+                String key = col.getName();
+                if(!start){
+                    builder.append(", ");
+                }
+                start = false;
+                builder.append(key);
+                builder.append(" = ?");
+            }
+            start = true;
+            for (String pk : primaryKeys) {
+                if(start){
+                    builder.append(" WHERE ");
+                }else {
+                    builder.append(" AND ");
+                }
+                SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+            }
+
+        }
+        run.setUpdateColumns(updateColumns);
+        List<Object> values = new ArrayList<>();
+        for(Object item:list){
+            for(Column col:cols.values()){
+                String key = col.getName();
+                Object value = BeanUtil.getFieldValue(item, key);
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                }else{
+                    if("NULL".equals(value)){
+                        value = null;
+                    }else if("".equals(value) && replaceEmptyNull){
+                        value = null;
+                    }
+                }
+                values.add(value);
+
+                for (String pk : primaryKeys) {
+                    values.add(BeanUtil.getFieldValue(item, pk));
+                }
+            }
+        }
+        run.setBatch(batch);
+        run.setVol(cols.size()+primaryKeys.size());
+        run.setValues(values);
+        return run;
+    }
 
     /* *****************************************************************************************************************
      * 													QUERY
@@ -1130,7 +1228,7 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
 
     @SuppressWarnings("rawtypes")
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
+    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values){
         if(null == table || null == key || null == values){
             return null;
         }

@@ -692,7 +692,7 @@ public class DefaultService<E> implements AnylineService<E> {
             return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
         }
         dest = DataSourceUtil.parseDataSource(dest, dest);
-        return dao.update(dest, data, configs, columns);
+        return dao.update(batch, dest, data, configs, columns);
     }
 
 

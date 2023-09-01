@@ -308,10 +308,8 @@ public interface DriverAdapter {
 	 * @param pks 需要返回的主键
 	 * @return 影响行数
 	 */
-	long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks);
-	default long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks){
-		return insert(runtime, random, 0, data, run, pks);
-	}
+	long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks);
+
 	/**
 	 * insert [执行]
 	 * <br/>
@@ -325,9 +323,8 @@ public interface DriverAdapter {
 	 * @param simple 没有实际作用 用来标识有些不支持返回自增的单独执行
 	 * @return 影响行数
 	 */
-	long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks, boolean simple);
 	default long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple){
-		return insert(runtime, random, 0, data, run, pks, simple);
+		return insert(runtime, random, data, run, pks, simple);
 	}
 
 	/**
@@ -344,57 +341,8 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 */
 
-	long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns);
-	default long save(DataRuntime runtime, String random, int batch, Object data, boolean checkPrimary, List<String> columns){
-		return save(runtime, random,  batch, null, data, checkPrimary, columns);
-	}
-	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
-		return save(runtime, random,  batch, dest, data, false, columns);
-	}
-	default long save(DataRuntime runtime, String random, int batch, Object data, List<String> columns){
-		return save(runtime, random,  batch, null, data, false, columns);
-	}
-	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, String ... columns){
-		return save(runtime, random,  batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
-	}
-	default long save(DataRuntime runtime, String random, int batch, Object data, boolean checkPrimary, String ... columns){
-		return save(runtime, random,  batch, null, data, checkPrimary, BeanUtil.array2list(columns));
-	}
-	default long save(DataRuntime runtime, String random, int batch, String dest, Object data, String ... columns){
-		return save(runtime, random,  batch, dest, data, false, BeanUtil.array2list(columns));
-	}
-	default long save(DataRuntime runtime, String random, int batch, Object data, String ... columns){
-		return save(runtime, random,  batch, null, data, false, BeanUtil.array2list(columns));
-	}
+	long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns);
 
-	default long save(int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, checkPrimary, columns);
-	}
-	default long save(int batch, Object data, boolean checkPrimary, List<String> columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, checkPrimary, columns);
-	}
-	default long save(int batch, String dest, Object data, List<String> columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, false, columns);
-	}
-	default long save(int batch, Object data, List<String> columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, false, columns);
-	}
-	default long save(int batch, String dest, Object data, boolean checkPrimary, String ... columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, checkPrimary, BeanUtil.array2list(columns));
-	}
-	default long save(int batch, Object data, boolean checkPrimary, String ... columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, checkPrimary, BeanUtil.array2list(columns));
-	}
-	default long save(int batch, String dest, Object data, String ... columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, dest, data, false, BeanUtil.array2list(columns));
-	}
-	default long save(int batch, Object data, String ... columns){
-		return save(RuntimeHolder.getRuntime(), null,  batch, null, data, false, BeanUtil.array2list(columns));
-	}
-
-	default long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns){
-		return save(runtime, random, 0, dest, data, checkPrimary, columns);
-	}
 	default long save(DataRuntime runtime, String random, Object data, boolean checkPrimary, List<String> columns){
 		return save(runtime, random, null, data, checkPrimary, columns);
 	}
@@ -570,7 +518,10 @@ public interface DriverAdapter {
 	 * @param configs 更新条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+	Run buildUpdateRun(DataRuntime runtime, int btch, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns);
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
+		return buildUpdateRun(runtime, 0, dest, obj, configs, checkPrimary, columns);
+	}
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, boolean checkPrimary, List<String> columns){
 		return buildUpdateRun(runtime, null, obj, configs, checkPrimary, columns);
 	}
@@ -686,6 +637,17 @@ public interface DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns);
+	/**
+	 * 批量执行时考生调用，否则会遍历调用 fromDataRow或fromEntity
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表
+	 * @param list Collection
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 需要更新的列
+	 * @param configs 更新条件
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
+	Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns);
 
 	/**
 	 * update [执行]
@@ -696,10 +658,8 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
-	long update(DataRuntime runtime, String random, int batch, String dest, Object data, Run run);
-	default long update(DataRuntime runtime, String random, String dest, Object data, Run run){
-		return update(runtime, random, 0, dest, data, run);
-	}
+	long update(DataRuntime runtime, String random, String dest, Object data, Run run);
+
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/
@@ -982,6 +942,9 @@ public interface DriverAdapter {
 	default <T> long deletes(DataRuntime runtime, String random, String table, String column, Collection<T> values){
 		return deletes(runtime, random, 0, table, column, values);
 	}
+	default <T> long deletes(DataRuntime runtime, String random, int batch, String table, String column, T ... values){
+		return deletes(runtime, random, batch, table, column, BeanUtil.array2list(values));
+	}
 	default <T> long deletes(DataRuntime runtime, String random, String table, String column, T ... values){
 		return deletes(runtime, random, 0, table, column, BeanUtil.array2list(values));
 	}
@@ -1040,7 +1003,7 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, String table, String column, Object values);
+	Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values);
 
 	/**
 	 * 构造 delete 命令<br/>
@@ -1051,7 +1014,7 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRunFromTable(DataRuntime runtime, String table, String column, Object values);
+	Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values);
 	/**
 	 * 构造 delete 命令<br/>
 	 * 合成 where k1 = v1 and k2 = v2
