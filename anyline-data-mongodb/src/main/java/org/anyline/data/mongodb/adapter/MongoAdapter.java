@@ -149,7 +149,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
-        cnt = insert(runtime, random, batch, data, run, null);
+        cnt = insert(runtime, random, data, run, null);
         if (null != dmListener) {
             dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
         }
@@ -199,7 +199,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @throws Exception 异常
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks) {
+    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
         long cnt = 0;
         Object value = run.getValue();
         String collection = run.getTable();
@@ -274,6 +274,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         return cnt;
     }
+
+    @Override
+    public long save(DataRuntime runtime, String random, String dest, Object data, boolean checkPrimary, List<String> columns) {
+        return 0;
+    }
+
     /**
      * 创建查询SQL
      * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -522,7 +528,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, Run run) {
+    public long update(DataRuntime runtime, String random, String dest, Object data, Run run) {
         return 0;
     }
 
@@ -684,14 +690,10 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, Object data, Run run, String[] pks, boolean simple) {
+    public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks, boolean simple) {
         return 0;
     }
 
-    @Override
-    public long save(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
-        return 0;
-    }
 
     @Override
     public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns) {
@@ -700,6 +702,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns) {
+        return null;
+    }
+
+    @Override
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
@@ -725,7 +732,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
 
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values) {
+    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values) {
         return null;
     }
 
@@ -745,8 +752,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values){
-        return buildDeleteRunFromTable(runtime, table, key, values);
+    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, String key, Object values){
+        return buildDeleteRunFromTable(runtime, batch, table, key, values);
     }
     @Override
     public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){

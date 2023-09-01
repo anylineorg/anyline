@@ -1056,7 +1056,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, String table, String key, Object values){
+    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values){
         if(null == table || null == key || null == values){
             return null;
         }
