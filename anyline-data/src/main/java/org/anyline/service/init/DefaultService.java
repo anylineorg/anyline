@@ -811,7 +811,10 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-    
+    public long execute(int batch, String sql, List<Object> values){
+        dao.execute(batch, sql, values);
+        return 0;
+    }
     @Override 
     public long execute(String src, ConfigStore store, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(src);

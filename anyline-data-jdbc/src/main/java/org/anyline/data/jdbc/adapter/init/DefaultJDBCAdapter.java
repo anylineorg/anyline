@@ -1452,7 +1452,32 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		InterceptorProxy.afterExecute(runtime, random, run, cmd_success, result, System.currentTimeMillis()-fr);
 		return result;
 	}
-
+	public long execute(DataRuntime runtime, String random, int batch, String sql, List<Object> values){
+		Run run = new SimpleRun();
+		StringBuilder builder = run.getBuilder();
+		builder.append(sql);
+		run.setValues(values);
+		Object first = values.get(0);
+		if(first instanceof Collection){
+			List<Object> list = new ArrayList<>();
+			for(Object item:values){
+				Collection col = (Collection) item;
+				list.addAll(col);
+			}
+			run.setValues(list);
+		}
+		run.setBatch(batch);
+		String[] strs = sql.split("");
+		int vol = 0;
+		for(String str:strs){
+			if(str.equals("?")){
+				vol ++;
+			}
+		}
+		run.setVol(vol);
+		long result = execute(runtime, random, run);
+		return result;
+	}
 	/**
 	 * execute [执行]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1466,17 +1491,27 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		String sql = run.getFinalExecute();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
+		int batch = run.getBatch();
 		if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-			log.info("{}[action:execute][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			if(batch >1) {
+				log.info("{}[action:batch execute][sql:\n{}\n]\n[param size:{}]", random, sql, values.size());
+			}else {
+				log.info("{}[action:execute][sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			}
 		}
 		long millis = -1;
 		try{
  			JdbcTemplate jdbc = jdbc(runtime);
-			if (null != values && values.size() > 0) {
-				result = jdbc.update(sql, values.toArray());
-			} else {
-				result = jdbc.update(sql);
-			}
+			 if(batch>1){
+				batch(jdbc, sql, batch, run.getVol(), values);
+				result = 0;
+			 }else {
+				 if (null != values && values.size() > 0) {
+					 result = jdbc.update(sql, values.toArray());
+				 } else {
+					 result = jdbc.update(sql);
+				 }
+			 }
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();

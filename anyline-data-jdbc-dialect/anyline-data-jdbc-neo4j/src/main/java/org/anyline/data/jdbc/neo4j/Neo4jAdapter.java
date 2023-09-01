@@ -1017,6 +1017,11 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
 
+    @Override
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns) {
+        return null;
+    }
+
     protected Run fillDeleteRunContent(TableRun run){
         RunPrepare prepare =   run.getPrepare();
         StringBuilder builder = run.getBuilder();

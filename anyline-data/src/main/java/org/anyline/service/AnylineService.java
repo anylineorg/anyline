@@ -775,6 +775,7 @@ public interface AnylineService<E>{
 	default long execute(String src, String ... conditions){
 		return execute(src, null, conditions);
 	}
+	long execute(int batch, String sql, List<Object> values);
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure

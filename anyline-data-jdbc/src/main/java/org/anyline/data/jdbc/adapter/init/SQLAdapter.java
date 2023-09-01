@@ -1241,26 +1241,42 @@ public abstract class SQLAdapter extends DefaultJDBCAdapter implements JDBCAdapt
         if(values instanceof Collection){
             Collection cons = (Collection)values;
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
-            if(cons.size() > 1){
-                builder.append(" IN(");
-                int idx = 0;
-                for(Object obj:cons){
-                    if(idx > 0){
-                        builder.append(",");
+            if(batch >1){
+                builder.append(" = ?");
+                List<Object> list = null;
+                if(values instanceof List){
+                    list = (List<Object>) values;
+                }else{
+                    list = new ArrayList<>();
+                    for(Object item:cons){
+                        list.add(item);
                     }
-                    // builder.append("'").append(obj).append("'");
-                    builder.append("?");
-                    idx ++;
                 }
-                builder.append(")");
-            }else if(cons.size() == 1){
-                for(Object obj:cons){
-                    builder.append("=?");
+                run.setValues(list);
+                run.setVol(1);
+                run.setBatch(batch);
+            }else {
+                if (cons.size() > 1) {
+                    builder.append(" IN(");
+                    int idx = 0;
+                    for (Object obj : cons) {
+                        if (idx > 0) {
+                            builder.append(",");
+                        }
+                        // builder.append("'").append(obj).append("'");
+                        builder.append("?");
+                        idx++;
+                    }
+                    builder.append(")");
+                } else if (cons.size() == 1) {
+                    for (Object obj : cons) {
+                        builder.append("=?");
+                    }
+                } else {
+                    throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
                 }
-            }else{
-                throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
+                addRunValue(runtime, run, Compare.IN, new Column(key), values);
             }
-            addRunValue(runtime, run, Compare.IN, new Column(key), values);
         }else{
             SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
             builder.append("=?");

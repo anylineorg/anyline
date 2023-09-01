@@ -148,7 +148,7 @@ public interface Run {
 	Run setExcludeColumns(String... columns);
 
 	void setValue(Object value);
-	void setValues(List<Object> value);
+	void setValues(List<Object> values);
 	Object getValue();
 	void setBatch(int batch);
 	int getBatch();

@@ -316,6 +316,10 @@ public interface AnylineDao<E>{
 	default long execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return execute(runtime(), null, false, prepare, configs, conditions);
 	}
+	long execute(DataRuntime runtime, String random, boolean recover, int batch, String sql, List<Object> values);
+	default long execute(int batch, String sql, List<Object> values){
+		return execute(runtime(), null, false, batch, sql, values);
+	}
 	default long execute(RunPrepare prepare,  String ... conditions){
 		return execute(prepare, null, conditions);
 	}

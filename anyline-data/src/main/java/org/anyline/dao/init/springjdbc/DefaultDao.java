@@ -776,6 +776,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 
+	public long execute(DataRuntime runtime, String random, boolean recover, int batch, String sql, List<Object> values){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		try{
+			return runtime.getAdapter().execute(runtime, random, batch, sql, values);
+		}finally {
+			if(recover && !isFix() && ClientHolder.isAutoRecover()){
+				ClientHolder.recoverDataSource();
+			}
+		}
+	}
+
 	/**
 	 * 执行存储过程
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -835,7 +848,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		try {
-			return runtime.getAdapter().deletes(runtime, random, table, key, values);
+			return runtime.getAdapter().deletes(runtime, random, batch, table, key, values);
 		}finally {
 			if(recover && !isFix() && ClientHolder.isAutoRecover()){
 				ClientHolder.recoverDataSource();
