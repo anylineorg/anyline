@@ -116,10 +116,6 @@ public interface Run {
 	String getFinalUpdate();
 	String getFinalExecute();
 
-	List<String> getFinalInserts();
-	List<String> getFinalDeletes();
-	List<String> getFinalUpdates();
-	List<String> getFinalExecutes();
 	List<RunValue> getRunValues() ;
 	List<Object> getValues() ;
 	PageNavi getPageNavi() ; 
@@ -152,9 +148,11 @@ public interface Run {
 	Run setExcludeColumns(String... columns);
 
 	void setValue(Object value);
+	void setValues(List<Object> value);
 	Object getValue();
 	void setBatch(int batch);
 	int getBatch();
 	void setVol(int vol);
 	int getVol();
+
 }
