@@ -63,6 +63,7 @@ public abstract class BasicRun implements Run {
 	protected List<Variable> variables;
 
 	protected Object filter;
+	protected Object update;
 	protected Object value;
 
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE;
@@ -823,6 +824,16 @@ public abstract class BasicRun implements Run {
 	@Override
 	public Object getFilter() {
 		return filter;
+	}
+
+	@Override
+	public Object getUpdate() {
+		return update;
+	}
+
+	@Override
+	public void setUpdate(Object update) {
+		this.update = update;
 	}
 
 	@Override
